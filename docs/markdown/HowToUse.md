@@ -10,7 +10,7 @@ The output will look like this :
 
 ## Installation ##
 
-Just download the repository from GitHub here : [https://github.com/cavo789/markdown](https://github.com/cavo789/markdown)https://github.com/cavo789/markdown.
+Just download the repository from GitHub here : [https://github.com/cavo789/markdown](https://github.com/cavo789/markdown).
 
 Create a new localhost website (let's say `markdown`).
 
@@ -61,7 +61,7 @@ If you've modify something in your .md file, the .html file will be generated ag
 
 The right pane use Bootstrap and contains jQuery lines of code for retrieving the first h1 of the .md content : that heading will be used to initialize the `<title>` of the page.
 
-That preview pane also provide a links "Open in a new window" : click on that link and a new tab will be created on your browser and will display the .html file (no more the .md file).   "Open in a new window" will refers to the local file and no more the `index.php` script.
+That preview pane also provide a links "`Open in a new window`" : click on that link and a new tab will be created on your browser and will display the .html file (no more the .md file).   "`Open in a new window`" will refers to the local file and no more the `index.php` script.
 
 ## Print ##
 
@@ -71,9 +71,11 @@ The list of files and hyperlinks won't be printed.
 
 ## Improve and share ##
 
+> Don't be afraid to propose improvements, for sure, a lot of things (like the graphical interface) can be done better.
+
 The current script has been coded quickly, in a few hours, for helping me to works more efficiently with my .md files.  
 
-Don't be afraid to propose improvements, for sure, a lot of things (like the graphical interface) can be done better.
+
 
 ## Credits ##
 
