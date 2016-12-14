@@ -26,7 +26,7 @@ You can too, without changing anything, just create a symbolic links called "doc
 
 ## Taking notes ##
 
-Take a look on this `HowToUse.md` file : the syntax is the one of markdown (if you don't know this syntax, refer to the official GitHub guide : [https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf](https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf)).
+Take a look on this `HowToUse.md` file : the syntax is the one of markdown (if you don't know this syntax, refer to the official GitHub guide : [https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf](https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf)).  You can also play online with [https://stackedit.io/](https://stackedit.io/).
 
 Note that there are a lot of editors, free or commercial, to make life easier. At writing time, I'm using [MarkdownPad 2](http://markdownpad.com/) for Windows.
 
