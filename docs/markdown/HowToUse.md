@@ -81,5 +81,5 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 Thank you to 
 
-* Emanuil Rusev for the Parsedown class ([http://erusev.com](http://erusev.com))
-* The Bootstrap and jQuery teams
+* Emanuil Rusev for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
+* The [Bootstrap](https://github.com/twbs/bootstrap) and [jQuery](https://github.com/jquery/jquery) teams
