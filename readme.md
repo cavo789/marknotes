@@ -6,7 +6,7 @@ The script is called `index.php` and just need to be put on a localhost website 
 
 The output will look like this : 
 
-<img src="images/interface.png" width="680"/>
+<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/interface.png" width="680"/>
 
 [Read more](https://github.com/cavo789/markdown/blob/master/docs/markdown/HowToUse.md)
 
