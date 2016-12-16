@@ -285,6 +285,7 @@ class aeSecureMarkdown {
       $fnameHTML=dirname($_SERVER['HTTP_REFERER']).str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML);
       
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
+      $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
       $html='<h5 class="onlyscreen filename">'.utf8_encode($fullname).'</h5>'.
          //'<div class="onlyscreen"><span class="showFileList">'.GOBACK.'</span></div>'.
          (OUTPUT_HTML===TRUE ? '<div class="onlyscreen"><a href="'.utf8_encode($fnameHTML).'" style="text-decoration:underline;" target="_blank">'.OPEN_HTML.'</a></div>' : '').

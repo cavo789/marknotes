@@ -10,7 +10,20 @@ The output will look like this :
 
 [Read more](https://github.com/cavo789/markdown/blob/master/docs/markdown/HowToUse.md)
 
-## Credits ##
+## Read more ##
+
+A very nice tool for editing markdown files is [Typora](http://www.typora.io/#windows) (both for Windows or Mac) or [MarkDownPad 2](http://markdownpad.com/).    Typora is still in a beta version (end 2016) but is a really, really nice tool.  *Give it a try.*
+
+Need help for writing in Markdown ? 
+
+Learn the syntax, for French speaking :
+
+* [http://blog.wax-o.com/2014/04/tutoriel-un-guide-pour-bien-commencer-avec-markdown/](http://blog.wax-o.com/2014/04/tutoriel-un-guide-pour-bien-commencer-avec-markdown/)
+* [https://fr.wikipedia.org/wiki/Markdown](https://fr.wikipedia.org/wiki/Markdown)
+* [https://michelf.ca/projets/php-markdown/syntaxe/](https://michelf.ca/projets/php-markdown/syntaxe/)
+* [https://openclassrooms.com/courses/redigez-en-markdown](https://openclassrooms.com/courses/redigez-en-markdown)
+
+## redits ##
 
 Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com) 
 
