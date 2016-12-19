@@ -23,7 +23,7 @@ Learn the syntax, for French speaking :
 * [https://michelf.ca/projets/php-markdown/syntaxe/](https://michelf.ca/projets/php-markdown/syntaxe/)
 * [https://openclassrooms.com/courses/redigez-en-markdown](https://openclassrooms.com/courses/redigez-en-markdown)
 
-## redits ##
+## Credits ##
 
 Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com) 
 
