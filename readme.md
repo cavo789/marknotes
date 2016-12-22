@@ -29,5 +29,6 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 Thank you to 
 
-* Emanuil Rusev for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
+* Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
+* Stanislav Sopov (stassop) for the jQuery highlite plugin (https://github.com/stassop/highlite)
 * The [Bootstrap](https://github.com/twbs/bootstrap) and [jQuery](https://github.com/jquery/jquery) teams

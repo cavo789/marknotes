@@ -3,8 +3,6 @@
 /**
  * Author : AVONTURE Christophe - https://www.aesecure.com
  * 
- * Based on Parsedown.php : https://github.com/erusev/parsedown
- * 
  * Written date : December 14 2016 
  * 
  * PHP Version : This script has been developped for PHP 7+, the script willn't run with PHP 5.x
@@ -18,6 +16,7 @@
  * History :
  * 
  * 2016-12-19 : Add support for encryption (tag <encrypt>)
+ * 2016-12-14 : First version
  */
 
 // PHP 7 : force the use of the correct type
@@ -50,12 +49,15 @@ define('HTML_TEMPLATE',
 // Folder in this application where .md files are stored
 define('DOC_FOLDER','docs');
 
+// Max allowed size for the search string
+define ('SEARCH_MAX_WIDTH',100);
+
 // Default text, english
 define('CONFIDENTIAL','confidential');
 define('IS_ENCRYPTED','This information is encrypted in the original file and decoded here for screen display');
 define('OPEN_HTML','Open in a new window');
-
-//define('EDITOR','C:\Users\avonture_christophe\AppData\Local\Programs\MarkdownPad 2\MarkdownPad2.exe');
+define('SEARCH_PLACEHOLDER','Type here keywords and search for them');
+define('SEARCH_NO_RESULT','No result found');
 
 set_time_limit(0);
 
@@ -71,7 +73,7 @@ class aeSecureFct {
     * @param type $default       f.i. "default"
     * @return type
     */
-   public static function getParam($name, $type='string', $default='', $base64=false) {
+   static public function getParam($name, $type='string', $default='', $base64=false, $maxsize=0) {
       
       $tmp='';
       $return=$default;
@@ -86,6 +88,7 @@ class aeSecureFct {
          } elseif ($type=='string') {
             $return=filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING);    
             if($base64===true) $return=base64_decode($return);
+            if($maxsize>0) $return=substr($return, 0, $maxsize);
          } elseif ($type=='unsafe') {
             $return=$_POST[$name];            
          }
@@ -101,7 +104,8 @@ class aeSecureFct {
                $return=(in_array(strtolower($tmp), array('on','true')))?true:false;
             } elseif ($type=='string') {
                $return=filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);    
-               if($base64===true) $return=base64_decode($return);                 
+               if($base64===true) $return=base64_decode($return);    
+               if($maxsize>0) $return=substr($return, 0, $maxsize);             
             } elseif ($type=='unsafe') {
                $return=$_GET[$name];            
             }
@@ -114,6 +118,53 @@ class aeSecureFct {
       return $return;	   
 	  
    } // function getParam()
+  
+   /**
+    * Generic function for adding a js in the HTML response
+    * @param type $localfile
+    * @param type $weblocation
+    * @return string
+    */
+   static public function addJavascript($localfile,$weblocation='',$defer=false){
+      
+      $return='';
+   
+      // Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the 
+      // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
+      //if (is_file(dirname(__DIR__).DS.str_replace('/',DS,$localfile))) {
+      
+      if (is_file(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])).DS.$localfile)) {
+        $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
+      } else {
+         if($weblocation!='') $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$weblocation.'"></script>';
+      }
+      
+      return $return;
+      
+   } // function addJavascript()  
+   
+   /**
+    * Generic function for adding a css in the HTML response
+    * @param type $localfile
+    * @param type $weblocation
+    * @return string
+    */
+   static public function addStylesheet($localfile,$weblocation=''){
+      
+      $return='';
+      
+      // Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the 
+      // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
+      //if (is_file(dirname(__DIR__).DS.str_replace('/',DS,$localfile))) {
+      if (is_file(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])).DS.$localfile)) {
+         $return='<link href="'.$localfile.'" rel="stylesheet" />';
+      } else {
+         if($weblocation!='') $return='<link href="'.$weblocation.'" rel="stylesheet" />';
+      }
+      
+      return $return;
+      
+   } // function addStylesheet()
    
 } // class aeSecureFct
 
@@ -329,17 +380,14 @@ class aeSecureMarkdown {
    private $_rootFolder='';            // root folder of the web application (f.i. "C:\Christophe\Documents\")
    
    private $_settingsDocsFolder='';    // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
-   private $_settingsLanguage='';      // user's language
+   private $_settingsLanguage='en';    // user's language
    
    private $_encryptionMethod='';      // Method to use for the encryption
    private $_encryptionPassword='';    // Password for the encryption / decryption
    
    private $_saveHTML=TRUE;            // When displaying a .md file, generate and store its .html rendering
    private $_htmlTemplate='';          // Template to use for the exportation
-   
-	private $_langOPEN_HTML='';         // Translation for "Open in a new window"
-   private $_langISENCRYPTED='';       // Translation for "This information is encrypted in the original file"
-   
+      
    /**
     * Class constructor : initialize a few private variables
     * 
@@ -356,10 +404,6 @@ class aeSecureMarkdown {
       $this->_settingsLanguage='en';
       $this->_htmlTemplate=HTML_TEMPLATE;
       $this->_saveHTML=OUTPUT_HTML;
-      
-      $this->_langCONFIDENTIAL=CONFIDENTIAL;
-      $this->_langISENCRYPTED=IS_ENCRYPTED;
-      $this->_langOPEN_HTML=OPEN_HTML;
       
       // No password defined by default
       $this->_settingsPassword='';
@@ -403,15 +447,8 @@ class aeSecureMarkdown {
             if(isset($tmp['html']))      $this->_htmlTemplate=$tmp['html'];
          }
          
-         // Get translations
-         if(isset($this->_json['languages'][$this->_settingsLanguage])) {
-            $tmp=$this->_json['languages'][$this->_settingsLanguage];
-            if(isset($tmp['confidential'])) $this->_langCONFIDENTIAL=$tmp['confidential'];
-            if(isset($tmp['encrypted'])) $this->_langISENCRYPTED=$tmp['encrypted'];
-            if(isset($tmp['open_html'])) $this->_langOPEN_HTML=$tmp['open_html'];
-         }
-         
       }  
+      
       return TRUE;
       
    } // function ReadSettings()
@@ -431,23 +468,25 @@ class aeSecureMarkdown {
       // Sort, case insensitve
       natcasesort($arrFiles);   
 
-      $sReturn = '<h5>'.$this->_rootFolder.$this->_settingsDocsFolder.'</h5>'.
-         '<table id="tblFiles" class="table tablesorter table-hover table-bordered table-striped">'.
-         '<thead>'.
+      $sReturn = '<h5 class="rootfolder">'.$this->_rootFolder.$this->_settingsDocsFolder.'</h5>'.
+         '<table id="tblFiles" class="table tablesorter table-hover table-bordered">'.
+        /* '<thead>'.
             '<tr>'.
                '<td data-placeholder="Filter on a folder" class="filter-select filter-exact ext">Folder</td>'.
-               '<td data-placeholder="Search for a filename..."  class="filter-match">Filename</td>'.
+               '<td data-placeholder="Search for a filename..."  data-filter="false">Filename</td>'.
             '</tr>'.
-         '</thead>'.
+         '</thead>'.*/
          '<tbody>';
 
       foreach ($arrFiles as $file) {
+         
          // Don't mention the full path, should be relative for security reason
          $file=str_replace($this->_rootFolder.$this->_settingsDocsFolder,'',$file);
          
          $folder=(trim(dirname($file))=='.')?'(root)':dirname($file);
          
-         $sReturn.='<tr><td data-folder="'.$folder.'">'.$folder.'</td><td data-file="'.$file.'">'.str_replace('.md','',basename($file)).' <span class="edit">(edit)</span></td></tr>';
+         $sReturn.='<tr><td data-folder="'.$folder.'">'.$folder.'</td><td data-file="'.$file.'">'.str_replace('.md','',basename($file)).'</td></tr>';
+         
       }
       
       $sReturn.='</tbody></table>';
@@ -477,7 +516,7 @@ class aeSecureMarkdown {
       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
       if (count($matches[1])>0) {
          
-         $icon_stars='<span class="encrypted onlyscreen" data-encrypt="true" title="'.str_replace('"','\"',$this->_langISENCRYPTED).'">&nbsp;</span>';
+         $icon_stars='<span class="encrypted onlyscreen" data-encrypt="true" title="'.str_replace('"','\"',$this->getText('is_encrypted','IS_ENCRYPTED')).'">&nbsp;</span>';
          
          // Initialize the encryption class
          $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
@@ -620,7 +659,7 @@ class aeSecureMarkdown {
                   $i=0;
 
                   for($i;$i<$j;$i++) {
-                     $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.$this->_langCONFIDENTIAL.'</strong>', $tmp);
+                     $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential','CONFIDENTIAL').'</strong>', $tmp);
                   }
                }
 
@@ -661,22 +700,81 @@ class aeSecureMarkdown {
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
       $html='<h5 class="onlyscreen filename">'.utf8_encode($fullname).'</h5>'.
-         (OUTPUT_HTML===TRUE ? '<div class="onlyscreen"><a href="'.utf8_encode($fnameHTML).'" style="text-decoration:underline;" target="_blank">'.OPEN_HTML.'</a></div>' : '').
+         (OUTPUT_HTML===TRUE 
+            ? '<a href="'.utf8_encode($fnameHTML).'" style="text-decoration:underline;" target="_blank" class="onlyscreen open_newwindow">'.$this->getText('open_html','OPEN_HTML').'</a>'
+            : ''
+         ).
          $html.'<hr/>';
 
       return $html;
 	  
    } // function ShowFile()
    
-   /*public static function EditFile($filename) {
-	   
-      $cmd=EDITOR.' '.escapeshellarg(trim($filename)); 
+   /**
+    * Return the translation of a given text
+    * @param string $variable
+    */
+   public function getText(string $variable, string $default) : string {
+      
+      if (isset($this->_json['languages'][$this->_settingsLanguage])) {
+         $lang=&$this->_json['languages'][$this->_settingsLanguage];
+         return isset($lang[$variable]) ? $lang[$variable] : (trim($default)!=='' ? constant($default) : '');
+      } else {
+         return (trim($default)!=='' ? constant($default) : '');
+      }
+      
+   } // function getText()
+   
+   /**
+    * Search for "$keywords" in the filename or in the file content.  Stop on the first occurence to speed up
+    * the process
+    * 
+    * @param string $keywords
+    * @return array
+    */
+   public function Search(string $keywords) : array {
+      
+      $arrFiles=array_unique(aeSecureFiles::rglob('*.md',$this->_rootFolder.$this->_settingsDocsFolder));
 
-      if (substr(php_uname(), 0, 7) == "Windows") pclose(popen("start /B ". $cmd, "r"));
+      // Be carefull, folders / filenames perhaps contains accentuated characters
+      $arrFiles=array_map('utf8_encode', $arrFiles);
+      
+      // Sort, case insensitve
+      natcasesort($arrFiles);   
+      
+      $return=array();
 
-      return true;
-
-   } // function EditFile()*/
+      //$return['keywords']=$keywords;
+      foreach ($arrFiles as $file) {
+         
+         // Don't mention the full path, should be relative for security reason
+         $file=str_replace($this->_rootFolder.$this->_settingsDocsFolder,'',$file);
+         
+         // If the keyword can be found in the document title, yeah, it's the fatest solution,
+         // return that filename
+         if (stripos($file, $keywords)!==FALSE) {
+            
+            $return['files'][]=$file;
+            
+         } else {
+            
+            // Open the file and check against its content
+            
+            $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$file);
+            $content=file_get_contents($fullname);
+            
+            if (stripos($content, $keywords)!==FALSE) {
+               $return['files'][]=$file;
+            }
+            
+         } // if (stripos($file, $keywords)!==FALSE)
+            
+         // $folder=(trim(dirname($file))=='.')?'(root)':dirname($file);
+         
+      }
+      
+      return $return;
+   }
    
 } // class aeSecureMarkdown
 
@@ -700,10 +798,6 @@ class aeSecureMarkdown {
    
    switch ($task) {
       
-      /*case 'editFile':
-         $fname=json_decode(urldecode(base64_decode(aeSecureFct::getParam('param','string','',false))));
-         die(aeSecureMarkdown::EditFile($fname));*/
-         
       case 'display':
          
          header('Content-Type: text/html; charset=utf-8'); 
@@ -722,10 +816,16 @@ class aeSecureMarkdown {
          unset($aeSMarkDown);
          die();
 		 
+      case 'search': 
+         
+         header('Content-Type: application/json'); 
+         $json=$aeSMarkDown->Search(aeSecureFct::getParam('param','string','',false, SEARCH_MAX_WIDTH));
+         echo json_encode($json, JSON_PRETTY_PRINT); 
+         unset($aeSMarkDown);
+         die();
+         
    } // switch ($task)
    
-   unset($aeSMarkDown);
-
 ?>
 
 <!DOCTYPE html>
@@ -746,56 +846,78 @@ class aeSecureMarkdown {
       <link href= "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAACXZwQWcAAAAQAAAAEABcxq3DAAAHeUlEQVRIx4XO+VOTdx7A8c/z5HmSJ0CCCYiGcF9BkVOQiiA0A6hYxauyKqutHQW1u7Z1QXS8sYoDWo9WHbQV2LWOiKDWCxS1XAZUQAFRkRsxIcFw5HzyPM93/4Cdzr5/f828QV0xK9k5wXeb5nZYvSt5qFdri1msEIqbdcKYVYoI+L+Zbmy7t8UNwHJnx+c/aHjJk9z682nyhd99WpBUHDXh1PeJTGSiXP/a46zHZKBe8SGEr5bf8i1t+NFeESyfN+F2V2gO8IioBjBe2+aW0fm/ECGEEALALOwwswYA5jHH6D6ZA7FXnObkqtZSwd5hs4yjXvZDEcKEXX89gJmzvhVs8QOAMrQfXSSCYC/mjDXEVhMvCR3B1wejnbAHbhkc2WXMZibKJxbVAA9GvG7DI+gGrbPRvNQ4ajjhOmiMNew3yBVfO5mnHnEJ423ElfgZvOCgnzWRLqE9aoJVAU29qn28EiwQdLADjqOTQMMwnkhAAawEJQAcxVIx39hK9jnbwjYenDVWOXZaz/i847fyXwqi8N3Cdsqf2iUtxzbhvbiWukj30DvpGEjV9Ns6bJkAxEZZoew63KJn06W2nwAoPl6E10x0Oyrdnrh1NchgTuMmtMC5gkcSd4lLSWVcLHJCYtSJozsgBRIA5oAR1CskzH0UiTzna03RM1OCjG4S/b8DEwJVruc+ZbFi5gmlgRCYC9GQaktHUxAL4FCXiJKOANhNKAWJOwGMjTI/2W4A1t8WbwuVx9NFulrdTrtzb/O7Et81a73crrmp3G/OvTnN3WXqtPvexwn2CjoGpQD8ECwFHo+3cWspGeUN0Q5nZldE4gAT0j773ngANlTiKd0CgNImlk6sA+B9hSkxMQDmbWwwfgDAXET94h4ArMCy06IEmMhH+TAe0Hz4156zWpeFw2dZUyCjLS1RVY3zxpbW+ZLd5B3yC1Ui4VDy5enPpgK8KC9ZUCNjivyfCzBWCdEmqAuqZQH4GyiCCgEQlI+GjZoBzHbcN+wGAGY3U8S8B0Q+epH0Ig3m8I2iOyLKclMQQdfSR2xpuiac5UmbQ1600du5wr9XpeUviF/+m2BQYZIfEq9ILkEL8c1YfOMcwgXPnv97dJhjfJFTt+j03CXn13hLnB+0TpW0aLu0N6RnuOVcHKc1GdgMLAh7Othofc65c/UjgzwB/2e+3OJM+pA1pHT8KcqEOcwrh1+YXF4l1qXFqFKth+4/xVnuVXSGqVox5Hrf1mjWH931+rLeF7WcqI4ZDvUOmv1hMS7O4veT5V/3dMRYlSx9r9opmDaaW5M82QI0yaUfr8NyyRPE23ed3IDgARmJx9ml2tc7tHtJqDbKkYqMe8hbC3JQr6rGvqKN7P51+RjJ7uHE22/3/6YJ1JgKIzI/08f2/UOWP6AjLlPXW++ml+qWMlb0e7D6z972W5ZjBK+NtwdfOEvBaPB8XkpxxutC6wOrt1+z5Jn0oiglR08uc9I418u6x9NtK+hnALxo0EIerCeruMfcSwAm21hsvAyAV6v3fvwChqTZkjKpAYCqEh4Tdky5TlcObZocv4O9PTp9gThFnSzItrpZ5YvOtU8+qWsYL5bj2HtsDRYoFHmGT+aM7jaFkot8JL4nM0a09dhqIGTdb4qbcNUhgB7R/dy7DwF6N9Qfr2UBuk41HWg0AxhC8Td4FYDwnahFFAbA43gdPB2A5xb3DI/MK/e6fkg+8GXRcAC5At+NoREx5onVY+0uRTJNxNSQcOEKgvgJYmACHVz+PauYdFx5xDKgFWtVlq2mpNH20V30czTAJbGFfE/H1pmHgxCAg8Kv1D8BwGI/0j5yFgDfyr3iegEEQQJvSgsA32HfYm8BDBeMCYYrqSbvVa/21937sw+FyE+GPeZ/jtQoHFrxq1w1Z0L+yI+XWxN1KRJtto/3EWdSD9wu4UZmOsO+2S684aP2+SNablfuu8t/iH+AQi450/YBWDU6lVYJQDuPGcYcAcRa0SuHcgDxZSaHDQDA/TAGowBMF0zbzUXuKbp6/T9Hs0Mr2uIIvf1evU27HjVhGqxzIOLpsnvdf2QQXWnmzdZfHt3tWwzTiSH3vEUd6k19g7UB0olpntNd1j0cr+hUdQb7gDG/d0OPEgDN4Aa5AgD7jZ6kVz2IRHG+Tn4G9Ti+0VyqwYceoUasHWsZVWJboRhlv2FtV4mV/JzUQpSH8riedDt6IesCB45M+vfP7186CwC/2DD8Wr/yQsGVIj1uyZI8aRq0rQK7vCX6s83xz0uHVjk9C58REaVqEJ6RnZeFAPAZSY60H0B6Pfx4+LW2SnhKGamRZY947dY8a6/yFG4CgMbv1zrFTfGQZAgTPs32tAR4yWW6LZBHLB4RGfusWXR55SGbgy2TXg3A897m93Fm29hNW5mthlltjB2bJD9QH9e8Jg5TV4UjN7rm5wbZB+z4MdfhQ0hQ6C1purg2oF2RbJonLHMQiH79VxkZpRgIVNd9I7ox1DGwj9lonsHM4OoOR9ZWmYZs7zefKmz5dMgc2u2qU1s20Uu2RdtV8Kfzn/Ul/S2fzJpMB/gvTGJ+Ljto3eoAAABZelRYdFNvZnR3YXJlAAB42vPMTUxP9U1Mz0zOVjDTM9KzUDAw1Tcw1zc0Ugg0NFNIy8xJtdIvLS7SL85ILErV90Qo1zXTM9Kz0E/JT9bPzEtJrdDLKMnNAQCtThisdBUuawAAACF6VFh0VGh1bWI6OkRvY3VtZW50OjpQYWdlcwAAeNozBAAAMgAyDBLihAAAACF6VFh0VGh1bWI6OkltYWdlOjpoZWlnaHQAAHjaMzQ3BQABOQCe2kFN5gAAACB6VFh0VGh1bWI6OkltYWdlOjpXaWR0aAAAeNozNDECAAEwAJjOM9CLAAAAInpUWHRUaHVtYjo6TWltZXR5cGUAAHjay8xNTE/VL8hLBwARewN4XzlH4gAAACB6VFh0VGh1bWI6Ok1UaW1lAAB42jM0trQ0MTW1sDADAAt5AhucJezWAAAAGXpUWHRUaHVtYjo6U2l6ZQAAeNoztMhOAgACqAE33ps9oAAAABx6VFh0VGh1bWI6OlVSSQAAeNpLy8xJtdLX1wcADJoCaJRAUaoAAAAASUVORK5CYII=" rel="shortcut icon" type="image/vnd.microsoft.icon"/>  
 	  
       <?php 
-         if (file_exists($fname='libs/bootstrap.min.css')) {
-            echo '<link href="'.$fname.'" rel="stylesheet">';
-         } else {
-            echo '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">';
-         }
-         if (file_exists($fname='libs/theme.ice.min.css')) {
-            echo '<link href="'.$fname.'" rel="stylesheet">';
-         } else {
-            echo '<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.3/css/theme.ice.min.css" rel="stylesheet" media="screen" />';
-         }
-       ?>
+         echo aeSecureFct::addStylesheet('libs/bootstrap.min.css','https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+         //echo aeSecureFct::addStylesheet('libs/theme.ice.min.css','https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.3/css/theme.ice.min.css');
+      ?>
 
       <style>
 
-         .selected{background-color:#90b6e2 !important;color:white !important;}
-         .showFileList{color:blue;text-decoration:underline;cursor:pointer;}
-         .filename{font-style:italic;font-weight:bold;}
-         .edit{font-size:smaller;display:none;}
-         
-         #files{background-color:#f9f2db;padding:15px 0px 15px 40px;border:5px solid white;}
-         #files li{display:block;min-width:74px;text-decoration:underline;cursor:pointer;}
-         #files li:before{content:"\e022";font-family:'Glyphicons Halflings';font-size:9px;float:left;margin-top:4px;margin-left:-17px;color:#CCCCCC;}
-
-         #icons {display:inline-block;position:absolute;top:5px;right:-1px;margin-right:10px;}
-         
-         body{background:rgb(204,204,204);}
-         page{background:white;display:block;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}
-         
-         /* Images */
-         .encrypted {background-repeat:no-repeat;display:inline-block;height:16px;width:48px;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUBJREFUeNrsVdENgjAQReMAuEFHYANhAnECIekAOoE6AQ7QDzbQDawbMAIjdAM92qsgKbWYGn94yTWBvh7vjtc2CCZM+AMY20GEDrxIct1yppI/EvMvxGcwFhAHB3Yhg7H4Q04C4wXjxwW0wjPrX1Ci496aTzkJNsgZM8euN52MMPqiOYSAyKUAJSbsiNeoMe4BpUcUusU1pMetMOceuJVN2sKx0MwgXCPGj+n5dICnhQp8XhuK1Ig6ayofFkqweyYIOU9pjd3KLXnaeUo3MJYWbg6cqx8LtZ6+GWaa33w2WM50+iyBK3rch4HHgZf43sRk4H1osYD9vTp9XHN6K6CWXVebt8HKIoAjVwwIIx0bnjqWcr4PFiMKKKV4SvVHzvLyacW920r5nGOnSzwI+MCeuL6sxdjJsrknTPCNpwADAM/IW54Td+BPAAAAAElFTkSuQmCC");}
-         /*.lock_orange{background-repeat:no-repeat;display:inline-block;height:64px;width:64px;background-image:url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHEgkIBxQKFRMLGBsaGBcYGBUaHRcdIBciICAeHRUZHSknHR0lGxcfITEhJzUrLzouGB8zODMtNyotLi0BCgoKDg0OGxAQGy0jHyIyNy43MDcrLisrMjcrNy03Nys3Ny0tLS84Njc3Ky8rLzUtKysrLTU4Ly0tLS8uLTAtLf/AABEIAEAAQAMBEQACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAABQIEBgEDB//EADAQAAEDAgQCCQMFAAAAAAAAAAEAAgMEEQUhQXESwQYTQlGBkaGx4RQyMzFSYWLw/8QAGgEAAwADAQAAAAAAAAAAAAAAAAQFAQMGAv/EACwRAAICAQICCgIDAQAAAAAAAAABAgMEERIFMRMhMjNBUWFxgbGRwSI00SP/2gAMAwEAAhEDEQA/APuKABAFCvr+pvHDa+p7vlTMzP6N7Ic/oapo3dcuQqd9RUXuZHeZ9FK33WvxY6tkPJEQaimIsZG+Y9EKd1T8UZ/hNeDGuH4j1xEU9uLQ9/yq2JndI9k+f2JX4+3+UeQxVIUBAAgDyqZOpa+TuC05FnR1Sn5HuuO6SQlpYTUvDTfvK53Gpd9u1+7KNk9kdR7GxsYDWAABdNCEYLbFaImSk5PVhJGyUFkgBBROEZrbJaoIycXqjOV0BpHljb94K5vIpdFu1e6K1M+khqP6Obr2RyfuHqugos6StS8yZbDZNxPZbjWCAKmJ/jf4e6S4j/Xfx9m/H7xFTBvuk25pDhXeS9jfl9lDJ80UeT3MG5CsSurj1Skl8iahJ8kDJ4pMmOYdiERurl1Rkn8g4SXNCjHvuj25qRxTtx9h/C7LL2D/AIo/H3T2B3C+RbK71l1Oi4IAW43UtiaItX+wUni2RGutQ8X+hvErcpbvITx1j4uLguOLuUOrLlDXb1aj8qVLmQMzT+t1hWxfM9bGc6xuhC9qS8DOjJTTyTcPWG/Dkt07ZWabnroeYVxjyHOBTteww6s9irPDrU69nihDMg1Ld5jNURMEAZfGJTJLJfs5Dw+VyPE7HPJl6dRZxYbal6lIlIDAwwegjrON817M0Gqq8NwYX6ynyQrlXuvRR5sjjeHx0XA+G9n6HRZ4jhQoalDkzOJkO3VS5oUEqah4u4HMYp4f75Hx+bJ/h03DIj69QvmQ3Uv06zYrqiCCAMlirSyWcHU3881x+fHbkTT8/suYz1qiUyUob9Bl0fme2URA5PBuNgqnCbJRv2rk/wBCmbBOvd5Eekcz3SmInJgFhuF64rZKV218l+zODBKvd4sUEqaPFrBmmSemA0N/LPkm8GLlkQXr9GnKelMjbLrDngQAi6R0hPDVR6ZO5H/fwofF8ZvS6Ps/9KWDau7Zny5QtCnoe+H1f0cjJ7X4dNwmcW7oLVPTU13VdJBxI4lV/WSPntbitlsFnJv6a1z00M0VdHBRKhK0G40XRehLeKsk7WTeZ5eaucKx2tbZey/0l8QuT/5r5NCrRLBAHHAOBa6xBWGk1ozKenWjO4lgLwTJQ5g9k6bFQsrhTT3U/gqUZy5WfkSTQTw5StkG4KlzpnDqkmvgoRnCXZaZyKnnmyibIdgUQpnPspszKyEe00h1hnR55Ikr8gOyP1O5VXF4W9d1v4J9+etNK/yaRrQ0BrbABXEkloiU3r1s6smD/9k=");}*/
-         .lock_green{background-repeat:no-repeat;display:inline-block;height:64px;width:64px;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAS1BMVEX///+m14W84aTr9uTI5rOo2Ij0+vD8/frX7cjQ6r664KHi8tex3JT6/fjM6Lq64KDw+Orn9N6s2o3D5Ky03ZjB46nd8NHZ7svF5bAJ+5OZAAACD0lEQVRYhdVXy4KDIAxcURCqWN/t/3/paguukgngcedIkgGSEJKfHxa2McvctvNiGstrsRgWWRyQy3DTvHwWAZ7lDfO6C813dHWuvX0g+6J4ZLrCzti+KOYshvpiL+WFIecW70O9NcO2pR1Meyy90/aN1x3Xv8V19KtN8gJ+t6c6Lysf1jZ1Ce0URaBYCyfQCQJ3gJb423pJ3H5w+4DMjYhOcCkokMxdoosSzBFfu/jMUYJv2kjo6toJY/bKhRBLXSgVln7Qf1UmLJ2+0j5CUEYT1iV5rDA4ggpLq/9IYNWGI6tvEigt3CMehVa3CXoXM4+pv0dgZBFAmhsEiwjNd4glTdAgwxCRqmbbtDkqNgfgh0TBVgRFPIchufdY5dmzmZp7APYIOm3pgWs7+JPHrmm6ka4/kL2lN5g/R1X0t5YokgNVU6xz0OdAXXCUxomIkBNoEDXPjQK5EC3jRYaIFkBAX+DxPZCWDf594Am7FmOlkkwC+WFYQYYigjdV++qh6oK+HuqpCIEBBKgasQSoKqk7BPA5gnrGEeBGCTiBI0AuOJqDHAKmRWByMS8Pd4AHvW3V5z1m5ghjVdGCxB0gt6yyVX3DK4fgxdvjBxEgPjLU8F8+I2zjQ3ADl0d68KppBT1hyhmaNBsLmZo2HHpubow1uVc0YHSck/PWBcM1A8fq7vS9odSV2Md/UelIX/UL02QTP+0VvS8AAAAASUVORK5CYII=");}
-
          @media screen {
             
-            #TDM{left:5px; top:5px !important;max-height:960px;overflow:scroll;}
-            #CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow:scroll;}
-            .onlyprint{display:none;}
-            /*page[size="A4"][layout="portrait"] {width:29.7cm;height:auto;}*/
+            /* By selecting a file from the filelist, highlight its name */
+            #tblFiles > tbody > tr:nth-child(odd) .selected{background-color:#90b6e2;color:white;}
+            #tblFiles  > tbody > tr:nth-child(even) .selected{background-color:#90b6e2;color:white;}
+
+            /* Style for the "Open in a new window" hyperlink */
+            .open_newwindow{font-size:0.6em;position:fixed;top:5px;background-color:white;padding:5px;}
+
+            /* Style for the formatting of the name of the file, displayed in the content, first line */
+            .filename{font-style:italic;font-weight:bold;color:#dfdfe0;top:15px;position:inherit;} 
+
+            /* Default page background color */
+            body{background:#F7F2E9;}
+
+            /* The root folder name */
+            .rootfolder{display:none;}
+
+            /* The search area.  The width will be initialized by javascript */
+            #edtSearch{position:fixed;left:5px;top:5px;z-index: 1;}
+
+            /* Formating of the array with the list of files */
+            /* The search area.  The width will be initialized by javascript */
+            #tblFiles{font-size:0.8em;color:#445c7b;background-color:#f5f5f5;}
+            #tblFiles>thead>tr{font-size:1.2em;color:#445c7b;background-color:#c7c0c0;color:white;}
+            /*#tblFiles>thead>tr.tablesorter-filter-row{background-color:red;color:white;}*/
+
+            /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
+            #icons {display:inline-block;position:absolute;top:5px;right:-1px;margin-right:10px;}
+
+            /* Images */
+            .encrypted {background-repeat:no-repeat;display:inline-block;position:relative;top:2px;height:16px;width:48px;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUBJREFUeNrsVdENgjAQReMAuEFHYANhAnECIekAOoE6AQ7QDzbQDawbMAIjdAM92qsgKbWYGn94yTWBvh7vjtc2CCZM+AMY20GEDrxIct1yppI/EvMvxGcwFhAHB3Yhg7H4Q04C4wXjxwW0wjPrX1Ci496aTzkJNsgZM8euN52MMPqiOYSAyKUAJSbsiNeoMe4BpUcUusU1pMetMOceuJVN2sKx0MwgXCPGj+n5dICnhQp8XhuK1Ig6ayofFkqweyYIOU9pjd3KLXnaeUo3MJYWbg6cqx8LtZ6+GWaa33w2WM50+iyBK3rch4HHgZf43sRk4H1osYD9vTp9XHN6K6CWXVebt8HKIoAjVwwIIx0bnjqWcr4PFiMKKKV4SvVHzvLyacW920r5nGOnSzwI+MCeuL6sxdjJsrknTPCNpwADAM/IW54Td+BPAAAAAElFTkSuQmCC");}
+            .lock_green{background-repeat:no-repeat;display:inline-block;height:64px;width:64px;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAS1BMVEX///+m14W84aTr9uTI5rOo2Ij0+vD8/frX7cjQ6r664KHi8tex3JT6/fjM6Lq64KDw+Orn9N6s2o3D5Ky03ZjB46nd8NHZ7svF5bAJ+5OZAAACD0lEQVRYhdVXy4KDIAxcURCqWN/t/3/paguukgngcedIkgGSEJKfHxa2McvctvNiGstrsRgWWRyQy3DTvHwWAZ7lDfO6C813dHWuvX0g+6J4ZLrCzti+KOYshvpiL+WFIecW70O9NcO2pR1Meyy90/aN1x3Xv8V19KtN8gJ+t6c6Lysf1jZ1Ce0URaBYCyfQCQJ3gJb423pJ3H5w+4DMjYhOcCkokMxdoosSzBFfu/jMUYJv2kjo6toJY/bKhRBLXSgVln7Qf1UmLJ2+0j5CUEYT1iV5rDA4ggpLq/9IYNWGI6tvEigt3CMehVa3CXoXM4+pv0dgZBFAmhsEiwjNd4glTdAgwxCRqmbbtDkqNgfgh0TBVgRFPIchufdY5dmzmZp7APYIOm3pgWs7+JPHrmm6ka4/kL2lN5g/R1X0t5YokgNVU6xz0OdAXXCUxomIkBNoEDXPjQK5EC3jRYaIFkBAX+DxPZCWDf594Am7FmOlkkwC+WFYQYYigjdV++qh6oK+HuqpCIEBBKgasQSoKqk7BPA5gnrGEeBGCTiBI0AuOJqDHAKmRWByMS8Pd4AHvW3V5z1m5ghjVdGCxB0gt6yyVX3DK4fgxdvjBxEgPjLU8F8+I2zjQ3ADl0d68KppBT1hyhmaNBsLmZo2HHpubow1uVc0YHSck/PWBcM1A8fq7vS9odSV2Md/UelIX/UL02QTP+0VvS8AAAAASUVORK5CYII=");}
+
+            /* Content if the full page : contains the list of files and the content of the select note */
             
-         }
+            #CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
+
+            /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
+            #TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
+            #TOC{position:inherit;top:30px;}
+            
+            /* page is used to display the content of the selected note */
+            page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}
+
+            /* Don't display informations that are targeted for printers only */            
+            .onlyprint{display:none;}
+            
+            /* Use by the jQuery Highlite plugin, highlight searched keywords */
+            .highlight{background-color:yellow;border-radius:.125em;}  
+            
+         } /* @media screen */
 
          @media print {
 
             page[size="A4"][layout="portrait"] {width:29.7cm;height:21cm;}
-            
+
+            /* Don't print objects that only should be displayed on screen */
             .onlyscreen{display:none;}
+            
+            /* Don't print the left part */
             #TDM{display:none;}
 
             body, page{margin:0;box-shadow:0;}
+            
+            /* Make text a little larger on print */
             page{font-size:larger;}
 
             #footer.onlyprint{position:fixed;bottom:-10px;left:0;display: block;}
@@ -803,34 +925,31 @@ class aeSecureMarkdown {
          }
 
        </style>
-   
+       
+      <?php 
+         // Add your custom stylesheet if the custom.css file is present
+         echo aeSecureFct::addStylesheet('custom.css');
+      ?>
 	   
    </head>
    
    <body style="overflow:hidden;">
    
       <div class="row">
-         <div class="container col-md-4" id="TDM" >&nbsp;</div>	  
+         <div class="container col-md-4" id="TDM">
+            <div class="container col-md-12"><input id="edtSearch" type="text" size="60" maxlength="<?php echo SEARCH_MAX_WIDTH; ?>" placeholder="<?php echo $aeSMarkDown->getText('search_placeholder','SEARCH_PLACEHOLDER');?>"/></div>
+            <div id="TOC">&nbsp;</div>	  
+         </div>
          <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
       </div>
       
       <?php 
-         if (file_exists($fname='libs/jquery.min.js')) {
-            echo '<script type="text/javascript" src="'.$fname.'"></script>';
-         } else {
-            echo '<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>';
-         }
-         if (file_exists($fname='libs/bootstrap.min.js')) {
-            echo '<script type="text/javascript" src="'.$fname.'"></script>';
-         } else {
-            echo '<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>';
-         }
-         if (file_exists($fname='libs/jquery.tablesorter.combined.min.js')) {
-            echo '<script type="text/javascript" src="'.$fname.'"></script>';
-         } else {
-            echo '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.3/js/jquery.tablesorter.combined.min.js"></script>';
-         }
-       ?>
+         echo aeSecureFct::addJavascript('libs/jquery.min.js','//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js');
+         echo aeSecureFct::addJavascript('libs/bootstrap.min.js','//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js');
+         echo aeSecureFct::addJavascript('libs/jquery.tablesorter.combined.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.3/js/jquery.tablesorter.combined.min.js');
+         echo aeSecureFct::addJavascript('libs/jquery.noty.packaged.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.3.8/packaged/jquery.noty.packaged.min.js');
+         echo aeSecureFct::addJavascript('libs/highlite/js/jquery.highlite.js');         
+      ?>
       
       <footer class="onlyprint" id="footer">&nbsp;</footer>	        
 
@@ -839,12 +958,22 @@ class aeSecureMarkdown {
          $(document).ready(function() {
             
             // On page entry, get the list of .md files on the server
-            ajaxify({task:'listFiles',callback:'initFiles(data)',target:'TDM'});
+            ajaxify({task:'listFiles',callback:'initFiles(data)',target:'TOC'});
             
             // Size correctly depending on screen resolution
             $('#TDM').css('max-height', $(window).height()-10);
+            $('#TDM').css('min-height', $(window).height()-10);
+            
+            // Maximise the width of the table of contents i.e. the array with the list of files
+            $('#TOC').css('width', $('#TDM').width()-5);
+            $('#edtSearch').css('width', $('#TDM').width()-5);
+            
             $('#CONTENT').css('max-height', $(window).height()-10);
+            $('#CONTENT').css('min-height', $(window).height()-10);
             $('#CONTENT').css('width', $('#CONTENT').width()-5);
+            
+            // When the user will exit the field, call the onChangeSearch function to fire the search
+            $('#edtSearch').change(function(e) { onChangeSearch(); } );
             
          }); // $( document ).ready()
 		 
@@ -889,23 +1018,12 @@ class aeSecureMarkdown {
 		 
          } // function ajaxify()
          
-         function showFileList() {
-            
-            $('html, body').animate({
-               'scrollTop' : $("#TDM").position().top
-            });
-            
-            return true;
-            
-         } // function showFileList()
-		
          /**
           * Called once 
           */
          function initFiles() {
             
             $("#tblFiles").tablesorter({
-               theme: "ice",
                widthFixed: false,
                sortMultiSortKey: "shiftKey",
                sortResetKey: "ctrlKey",
@@ -915,15 +1033,12 @@ class aeSecureMarkdown {
                },
                ignoreCase: true,
                headerTemplate: "{content} {icon}",
-               widgets: [ 'uitheme', 'zebra', 'stickyHeaders', 'filter' ],
+               widgets: [ ],
                initWidgets: true,
-               widgetOptions: {
-                  uitheme: "ice"
-               },               
                sortList: [[0,0],[1,0]]
             }); // $("#tblFiles")
             
-            $('#tblFiles td').click(function(e) {
+            $('#tblFiles > tbody  > tr > td').click(function(e) {
                
                // By clicking on the second column, with the data-file attribute, display the file content
                if ($(this).attr('data-file')) {
@@ -938,19 +1053,7 @@ class aeSecureMarkdown {
                   filters.eq(col).val(txt).trigger('search', false);
                }
                
-            }); // $('#tblFiles td').click()
-			 
-            /*$('#files li span.edit').click(function(e) {
-               e.preventDefault(); e.stopImmediatePropagation();  
-               var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).parent().data('file'))));
-               $.ajax({
-			      cache: false,
-                  type:'<?php echo (DEBUG===true?'GET':'POST'); ?>',
-                  url: '<?php echo basename(__FILE__); ?>',
-                  data: 'task=editFile&param='+$fname,
-                  dataType:'html'
-               });
-            });*/
+            }); // $('#tblFiles > tbody  > tr > td').click()
 			 
             return true;
 			 
@@ -966,9 +1069,7 @@ class aeSecureMarkdown {
             $('html, body').animate({
                'scrollTop' : $("#CONTENT").position().top -25
             });
-            
-            $('.showFileList').click(function(e) { showFileList(); })
-            
+                        
             // Retrieve the heading 1 from the loaded file 
             var $title=$('#CONTENT h1').text();				  
             if ($title!=='') $('title').text($title);
@@ -990,10 +1091,92 @@ class aeSecureMarkdown {
                   }
                }
             }); // $('a').each()
+            
+
+            // Get the searched keywords.  Apply the restriction on the size.
+            var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
+            
+            if ($searchKeywords!='') {
+               $("#CONTENT").highlite({
+                  text: $searchKeywords
+               });
+            }
 			
          } // function afterDisplay()
+         
+         /**
+          * 
+          * @returns {undefined}
+          */
+         function onChangeSearch() {
+            
+            // Get the searched keywords.  Apply the restriction on the size.
+            var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
+            
+            // On page entry, get the list of .md files on the server
+            ajaxify({task:'search',param:$searchKeywords, callback:'afterSearch(data)'});
+            
+         } // Search()
+         
+         /*
+          * Called when the ajax request "onChangeSearch" has been successfully fired.
+          * Process the result of the search : the returned data is a json string that represent an 
+          * array of files that matched the searched pattern.
+          */
+         function afterSearch($data) {
+            
+            // Check if we've at least one file
+            if (Object.keys($data).length>0) {
+               
+               // Process every rows of the tblFiles array => process every files 
+               $('#tblFiles > tbody  > tr > td').each(function() {
+                  
+                  // Be sure to process only cells with the data-file attribute.
+                  // That attribute contains the filename, not encoded
+                  if ($(this).attr('data-file')) {
+                     
+                     // Get the filename (is relative like /myfolder/filename.md)
+                     $filename=$(this).data('file');
+                     $tr=$(this).parent();
+                     
+                     // Default : hide the filename
+                     $tr.hide();                     
+                     
+                     // Now, check if the file is mentionned in the result, if yes, show the row back
+                     $.each($data, function() {
+                        $.each(this, function($key, $value) {                           
+                           if ($value==$filename) {
+                              $tr.show();
+                              return false;  // break
+                           }
+                        });
+                     }); // $.each($data)
+                     
+                  }
+               }); // $('#tblFiles > tbody  > tr > td')
+      
+            } else {
+               
+               // Nothing found
+               var n = noty({
+                  text: '<?php echo str_replace("'","\'",$aeSMarkDown->getText('search_no_result','SEARCH_NO_RESULT'));?>',
+                  theme: 'relax',
+                  timeout: 2400,
+                  layout: 'bottomRight',
+                  type: 'success'
+               }); // noty() 
+               
+            } // if (Object.keys($data).length>0)
+            
+         } // function afterSearch()
          
       </script>
 	  
    </body>
 </html>   
+
+<?php
+
+   unset($aeSMarkDown);
+
+?>
