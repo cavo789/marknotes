@@ -69,6 +69,22 @@ If you wish to print your document, you don't need to open the file in a new tab
 
 The list of files and hyperlinks won't be printed. 
 
+## Use your own style
+
+Just rename the `custom.css.dist` file present in the root folder to `custom.css`.  
+
+This done, just edit the `custom.css` and put your own styles there.  The `custom.css` file won't be overriden by taking a newer version of this script
+
+## Don't share your confidential data
+
+> Are you saving your notes on a Git service or on a cloud ?   Then it's a very (**very!**) bad idea to type sensitive informations in your notes...
+
+... except if they are encrypted before.
+
+This `markdown.php` script support a custom `<encrypt>` tag : by typing your notes, instead of just typing a password f.i. type this : `<encrypt>password</encrypt>`.   Save the note and display it through `markdown.php`.   The script will detect that the information isn't encrypted and will crypt it by using a SSL encryption method.  Then, the information will be stored again in your .md file like this : `<encrypt data-encrypt="true">very_encrypted_password</encrypt>`
+
+**But first, you'll need to mention your password : rename the file settings.json.dist to settings.json and edit that file.  Locate the `"password"` node and type your password there.**   The password won't be asked again, you just need to put it there.  If you're synchronizing your notes on a cloud, once again, don't store the settings.json file.  Keep that file secret.
+
 ## Improve and share ##
 
 > Don't be afraid to propose improvements, for sure, a lot of things (like the graphical interface) can be done better.

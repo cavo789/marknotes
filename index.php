@@ -15,7 +15,8 @@
  * 
  * History :
  * 
- * 2016-12-21 : Add search functionality, add comments, add custom.css, add change a few css to try to make things clearer
+ * 2016-12-21 : Add search functionality, add comments, add custom.css, 
+ *              add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
  * 2016-12-19 : Add support for encryption (tag <encrypt>)
  * 2016-12-14 : First version
  */
@@ -1059,7 +1060,28 @@ class aeSecureMarkdown {
             return true;
 			 
          } // iniFiles()
-    
+
+         /** 
+          *  Force links that points on the same server (localhost) to be opened in a new window
+          * @returns {Boolean}     
+          */
+         function forceNewWindow() {
+
+            $('a').each(function() {					
+               var a = new RegExp('/' + window.location.host + '/');
+               if(a.test(this.href)) {
+                  $(this).click(function(e) {
+                     e.preventDefault(); 
+                     e.stopImmediatePropagation();
+                     window.open(this.href, '_blank');
+                  });
+               }
+            }); // $('a').each()
+            
+            return true;      
+            
+         } // function forceNewWindow()
+         
          /**
           * Called when a file is displayed
           */
@@ -1078,22 +1100,9 @@ class aeSecureMarkdown {
             var $fname=$('#CONTENT h5').text();				  
             if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
             
-            // Force each links to be opened in a new window 
-            $('a').each(function() {				
-			
-               var a = new RegExp('/' + window.location.host + '/');
-
-               if (this.text!=='back') {
-                  if(!a.test(this.href)) {
-                     $(this).click(function(e) {
-                        e.preventDefault(); e.stopPropagation();
-                        window.open(this.href, '_blank');
-                     });
-                  }
-               }
-            }); // $('a').each()
+            // Force links that points on the same server (localhost) to be opened in a new window
+            forceNewWindow();
             
-
             // Get the searched keywords.  Apply the restriction on the size.
             var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
             
