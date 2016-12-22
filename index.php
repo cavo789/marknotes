@@ -15,6 +15,7 @@
  * 
  * History :
  * 
+ * 2016-12-21 : Add search functionality, add comments, add custom.css, add change a few css to try to make things clearer
  * 2016-12-19 : Add support for encryption (tag <encrypt>)
  * 2016-12-14 : First version
  */
