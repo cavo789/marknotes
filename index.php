@@ -1056,6 +1056,12 @@ class aeSecureMarkdown {
                }
                
             }); // $('#tblFiles > tbody  > tr > td').click()
+            
+            // Interface : put the cursor immediatly in the edit box
+            try {               
+               $('#edtSearch').focus();
+            } catch(err) {         
+            }
 			 
             return true;
 			 
@@ -1103,6 +1109,12 @@ class aeSecureMarkdown {
             // Force links that points on the same server (localhost) to be opened in a new window
             forceNewWindow();
             
+            // Interface : put the cursor immediatly in the edit box
+            try {               
+               $('#edtSearch').focus();
+            } catch(err) {         
+            }
+			 
             // Get the searched keywords.  Apply the restriction on the size.
             var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
             
@@ -1111,6 +1123,7 @@ class aeSecureMarkdown {
                   text: $searchKeywords
                });
             }
+            
 			
          } // function afterDisplay()
          
