@@ -15,6 +15,7 @@
  * 
  * History :
  * 
+ * 2016-12-30 : Search supports encrypted data now
  * 2016-12-21 : Add search functionality, add comments, add custom.css, 
  *              add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
  * 2016-12-19 : Add support for encryption (tag <encrypt>)
@@ -753,7 +754,9 @@ class aeSecureMarkdown {
    
    /**
     * Search for "$keywords" in the filename or in the file content.  Stop on the first occurence to speed up
-    * the process
+    * the process.
+    * 
+    * Note : if the content contains encrypted data, the data is decrypted so the search can be done on these info too
     * 
     * @param string $keywords
     * @return array
@@ -761,6 +764,8 @@ class aeSecureMarkdown {
    public function Search(string $keywords) : array {
       
       $arrFiles=array_unique(aeSecureFiles::rglob('*.md',$this->_rootFolder.$this->_settingsDocsFolder));
+      
+      if (count($arrFiles)==0) return null;
 
       // Be carefull, folders / filenames perhaps contains accentuated characters
       $arrFiles=array_map('utf8_encode', $arrFiles);
@@ -770,6 +775,9 @@ class aeSecureMarkdown {
       
       $return=array();
 
+      // Initialize the encryption class
+      $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
+
       //$return['keywords']=$keywords;
       foreach ($arrFiles as $file) {
          
@@ -778,8 +786,10 @@ class aeSecureMarkdown {
          
          // If the keyword can be found in the document title, yeah, it's the fatest solution,
          // return that filename
+         
          if (stripos($file, $keywords)!==FALSE) {
-            
+         
+            // Found in the filename => stop process of this file
             $return['files'][]=$file;
             
          } else {
@@ -790,17 +800,68 @@ class aeSecureMarkdown {
             $content=file_get_contents($fullname);
             
             if (stripos($content, $keywords)!==FALSE) {
+               
+               // The searched pattern has been found in the filecontent (unencrypted), great, return the filename
+               
                $return['files'][]=$file;
-            }
+               
+            } else {
+               
+               // Not found in filename and filecontent (unencrypted); check if there are encrypted info
+
+               // Check if the note has encrypted data.  If you, decrypt and search in the decrypted version
+               
+               $matches = array();         
+               // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+               preg_match_all('/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $content, $matches);
+
+               // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+               if (count($matches[1])>0) {
+                  
+                  $j=count($matches[0]);
+
+                  $i=0;
+
+                  // Loop and process every <encrypt> tags
+                  // For instance : <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
+
+                  for($i;$i<$j;$i++) {
+                        
+                     // Retrieve the attributes (f.i. data-encrypt="true")            
+                     $attributes=$matches[1][$i];
+
+                     // Are there data-encrypt=true content ? If yes, unencrypt it
+                     $tmp=array();
+                     preg_match('#data-encrypt="(.*)"#', $attributes, $tmp);
+                     
+                     if(count($tmp)>0) {
+                        // Only when data-encrypt="true" is found, consider the content has an encrypted one.
+                        $isEncrypted=(strcasecmp(rtrim($tmp[1]),'true')===0?TRUE:FALSE);
+                        $decrypt=$aesEncrypt->sslDecrypt($matches[2][$i],NULL);
+                        $content=str_replace($matches[2][$i], $decrypt, $content);
+                     }                  
+
+                     // Now $content is full decrypted, search again
+                     if (stripos($content, $keywords)!==FALSE) { 
+                        $return['files'][]=$file;
+                        break;                        
+                     }
+                  
+                  } // for($i;$i<$j;$i++)
+                  
+               } // if (count($matches[1])>0) {
+                  
+            } // if (stripos($content, $keywords)!==FALSE) {
             
          } // if (stripos($file, $keywords)!==FALSE)
             
-         // $folder=(trim(dirname($file))=='.')?'(root)':dirname($file);
-         
-      }
+      } // foreach ($arrFiles as $file)
+      
+      unset($aesEncrypt);
       
       return $return;
-   }
+      
+   } // function Search()
    
 } // class aeSecureMarkdown
 
