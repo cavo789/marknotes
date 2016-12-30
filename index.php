@@ -68,6 +68,24 @@ if(!defined('DS')) define('DS',DIRECTORY_SEPARATOR);
 class aeSecureFct {
 	
    /**
+    * Return the current URL
+    * 
+    * @param type $use_forwarded_host
+    * @param type $bNoScriptName          If FALSE, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
+    * @return type string
+    */  
+   static public function getCurrentURL(bool $use_forwarded_host=FALSE, bool $bNoScriptName=FALSE) : string {
+      $ssl      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
+      $sp       = strtolower($_SERVER['SERVER_PROTOCOL']);
+      $protocol = substr($sp, 0, strpos($sp, '/')) . (($ssl)?'s':'');
+      $port     = $_SERVER['SERVER_PORT'];
+      $port     = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
+      $host     = ($use_forwarded_host && isset($_SERVER['HTTP_X_FORWARDED_HOST'])) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
+      $host     = isset($host) ? $host : $_SERVER['SERVER_NAME'].$port;
+      return $protocol .'://'.$host.($bNoScriptName===TRUE?dirname($_SERVER['REQUEST_URI']).'/':$_SERVER['REQUEST_URI']);
+   } // function getCurrentURL
+
+   /**
     * Safely read posted variables
     * 
     * @param type $name          f.i. "password"
@@ -75,7 +93,7 @@ class aeSecureFct {
     * @param type $default       f.i. "default"
     * @return type
     */
-   static public function getParam($name, $type='string', $default='', $base64=false, $maxsize=0) {
+   static public function getParam(string $name, string $type='string', $default='', bool $base64=false, int $maxsize=0) {
       
       $tmp='';
       $return=$default;
@@ -127,7 +145,7 @@ class aeSecureFct {
     * @param type $weblocation
     * @return string
     */
-   static public function addJavascript($localfile,$weblocation='',$defer=false){
+   static public function addJavascript(string $localfile, string $weblocation='', bool $defer=false) : string {
       
       $return='';
    
@@ -151,7 +169,7 @@ class aeSecureFct {
     * @param type $weblocation
     * @return string
     */
-   static public function addStylesheet($localfile,$weblocation=''){
+   static public function addStylesheet(string $localfile, string $weblocation='') : string {
       
       $return='';
       
@@ -179,7 +197,7 @@ class aeSecureFiles {
     * @param type $filename
     * @return boolean
     */
-   static public function fileExists($filename) : bool {
+   static public function fileExists(string $filename) : bool {
       
       if ($filename=='') return FALSE;
      
@@ -201,7 +219,7 @@ class aeSecureFiles {
     * @param type $filename
     * @return boolean
     */
-   static private function folderExists($folderName) : bool {
+   static private function folderExists(string $folderName) : bool {
       
       if ($folderName=='') return FALSE;
 
@@ -229,7 +247,7 @@ class aeSecureFiles {
     * @param type $arrSkipFolder   Folders to skip... (subfolders will be also skipped)
     * @return type
     */
-   static public function rglob($pattern='*', $path='', $flags=0, $arrSkipFolder=null) : array {
+   static public function rglob(string $pattern='*', string $path='', int $flags=0, $arrSkipFolder=null) : array {
       
       static $adjustCase=false;
       
@@ -286,10 +304,10 @@ class aeSecureFiles {
 	  
    } // function rglob()
    
-   static public function replace_extension($filename, $new_extension) : string {
+   static public function replace_extension(string $filename, string $new_extension) : string {
       $info = pathinfo($filename);
       return dirname($filename).DS.$info['filename'].'.'.$new_extension;
-   }
+   } // function replace_extension
    
 } // class aeSecureFiles 
 
@@ -503,7 +521,7 @@ class aeSecureMarkdown {
     * @param type $filename   Relative filename of the .md file to open and display
     * @return string          HTML rendering 
     */ 
-   public function ShowFile($filename) : string {
+   public function ShowFile(string $filename) : string {
 	   
       $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename);
       
@@ -512,9 +530,10 @@ class aeSecureMarkdown {
       $icons='';
 
       // Check if there are <encrypt> tags.  If yes, check the status (encrypted or not) and retrieve its content
-      $matches = array();
-      preg_match_all('/<encrypt[[:blank:]]*([^>]*)>(.*?)<\/encrypt>/', $markdown, $matches);
-
+      $matches = array();    
+      // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+      preg_match_all('/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+      
       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
       if (count($matches[1])>0) {
          
@@ -597,9 +616,10 @@ class aeSecureMarkdown {
          // --------------------------------------------------------------------------------------------
          // 
          // Add a three-stars icon (only for the display) to inform the user about the encrypted feature
-         
-         $matches = array();
-         preg_match_all('/<encrypt[[:blank:]]*[^>]*>(.*?)<\/encrypt>/', $markdown, $matches);
+ 
+         $matches = array();         
+         // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+         preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
 
          // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
          if (count($matches[1])>0) {
@@ -632,10 +652,10 @@ class aeSecureMarkdown {
       $Parsedown=new Parsedown();      
       $html=$Parsedown->text($markdown);
       
+      $fnameHTML=aeSecureFiles::replace_extension($fullname,'html');
+      
       // Check if the .html version of the markdown file already exists; if not, create it 
       if ($this->_saveHTML===TRUE) {
-
-         $fnameHTML=aeSecureFiles::replace_extension($fullname,'html');
 
          if (is_writable(dirname($fullname).DS)) {
 
@@ -651,7 +671,10 @@ class aeSecureMarkdown {
                
                // Don't save unencrypted informations
                $matches = array();
-               preg_match_all('/<encrypt[[:blank:]]*[^>]*>(.*?)<\/encrypt>/', $tmp, $matches);
+         
+               // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+               preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $tmp, $matches);
+               //preg_match_all('/<encrypt[[:blank:]]*[^>]*>(.*?)<\/encrypt>/', $tmp, $matches);
 
                // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
                if (count($matches[0])>0) {
@@ -695,8 +718,9 @@ class aeSecureMarkdown {
 		 } // if (is_writable(dirname($fname)))
 
       } // if (OUTPUT_HTML===TRUE)
-
-      $fnameHTML=dirname($_SERVER['HTTP_REFERER']).str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML);
+      
+      // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
+      $fnameHTML = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML));
       
       $html=str_replace('</h1>', '</h1><div id="icons">'.$icons.'</div>',$html);
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
