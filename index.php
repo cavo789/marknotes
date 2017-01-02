@@ -997,9 +997,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }            
             
             /* Add a XLS icon */
@@ -1009,9 +1007,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }            
             a[href$=".xls"]{
                background-image: url('data:image/gif;base64,R0lGODlhEAAQANU/AOj05yt3K22lW5nKl6mqqSuGL87PztTU1Nna2bjMtvj+9rKystPk0/7//Yq3iFSINGmtZ4K5fz17HYimhuHr3MzizLu9u3G3bPL47iNjHuvu6svaw6PKpsHDwPj/8/r/+Lzcucreyvz/+8bRxLzSu9be1efn5zRxDx9tHt3j2Xarc8DfvyJfHaLOm5+fn+Dw3rLYsZ29kdbr18nKyUmYQ2+2aqXRomywcre4tzFuC5/SnJPIkOv36ySNLf///////yH5BAEAAD8ALAAAAAAQABAAAAbJwN+PcaP1jkik8Mfp7WS8qDTaE4YKKwBMx+0OeNUfZADYmc/mb7hQGUQYoUoFBLMNGBBhIeWI+P4+DYINIiIaCGwqDj4PDwKDhR8IBwEkGRM+GDk5MS8XFzsAMwaVLAmBGycnAjU2CgodpCQsGoIvNDkSIB8fCjgGKCMBgiufEjkCEC0eCwcoCZggEZ8QJ8gvGATOMSOCIr0eMZs8FM0oKBMjJd+8Ch7vGwsIPyYzCwQuBAQWsSkUJTjm0UMwycCMDhbuEcAxQ0MQADs=');
@@ -1019,9 +1015,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }            
             
             /* Add a docx icon */
@@ -1031,9 +1025,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }       
             a[href$=".doc"]{
                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAn1BMVEX///81SWOQrtbi7Pzo8P3Z5vsENYLT4vrL3Pg2SmQISrKXteHd6fsFQZusu9Hy9v70+P6UpLmzwtbc4vR4k9Z5pOmmtcuKruTr7vCTq+aju91Dabl/nuaDnNqAp+eFrOZfgM3Q1+YAMXdUbKSJpekpYbdmitVWfNA5WZg3YK5Maad2ipxBbcSvvN8gS5qqvvEHLou3yPRmfbMnPWwxWrbPYmmFAAAAvUlEQVQYlU3N2ZaCMBBF0aISMpEYJsEQFRTnefr/bzM03Wv1eat9HwoAIM/zSaiqqlm4nNvMy92+u2ytzWQQB7+pNM3yIJv7olt1Re8GkFLCvFh0hS9OZ4VIm0ZCCaW/3txhZVKkpIlgBy/fs88bjEWqA+yhPzwZmwCzSHQSwQUeR8s8AEMkcQD/93ZNieYBtkopYwxja8SY19GwZTREiNZctCMQgj8JsRwhHuJcCDEdgTdJktR1u5yOEP3vC345DTl56qgPAAAAAElFTkSuQmCC');
@@ -1041,9 +1033,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }
             /* Add a 7z and zip icon */
             a[href$=".zip"]{
@@ -1052,9 +1042,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }           
             
             a[href$=".7z"]{
@@ -1063,9 +1051,7 @@ class aeSecureMarkdown {
                background-repeat: no-repeat;
                background-color: #e4ffe2;
                padding-right: 25px;
-               height: 35px;
                display: inline-block;
-               padding-top: 10px;
             }            
             
             
