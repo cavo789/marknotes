@@ -19,6 +19,7 @@
  *              + Add filtering on folder name : just click on a folder name and the list will be limited to that folder
  *              + Start editing code
  *              + Remove leading / ending spaces before searching
+ *              + Add Google font support (node "page::google_font" in the settings.json file)
  * 2016-12-30 : + Search supports encrypted data now
  * 2016-12-21 : + Add search functionality, add comments, add custom.css, 
  *              + Add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
@@ -47,9 +48,10 @@ define('HTML_TEMPLATE',
          '<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />'.
          '<title>%TITLE%</title>'.
          '<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">'.
+         '%FONT%'.
       '</head>'.
       '<body>'.
-         '<div class="container">%CONTENT%</div>'.
+         '<page><div class="container">%CONTENT%</div></page>'.
       '</body>'.
       '</html>');
 
@@ -408,6 +410,8 @@ class aeSecureMarkdown {
    
    private $_settingsEditor='';        // defaut editor program 
    
+   private $_settingsFontName='';      // Google fontname if specified in the settings.json file
+   
    private $_settingsDocsFolder='';    // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
    private $_settingsLanguage='en';    // user's language
    
@@ -469,6 +473,13 @@ class aeSecureMarkdown {
          // Retrieve the password if mentionned
          if(isset($this->_json['password'])) $this->_settingsPassword=$this->_json['password'];
          
+          // Get export settings
+         if(isset($this->_json['page'])) {
+            $tmp=$this->_json['page'];
+            // Spaces should be replaced by a "+" sign
+            if(isset($tmp['google_font'])) $this->_settingsFontName=str_replace(' ','+',$tmp['google_font']);
+         }
+        
          // Get export settings
          if(isset($this->_json['encryption'])) {
             $tmp=$this->_json['encryption'];
@@ -504,7 +515,7 @@ class aeSecureMarkdown {
       // Sort, case insensitve
       natcasesort($arrFiles);   
 
-      $sReturn = '<h5 class="rootfolder">'.$this->_rootFolder.$this->_settingsDocsFolder.'</h5>'.
+      $sReturn = '<div class="rootfolder">'.$this->_rootFolder.$this->_settingsDocsFolder.'</div>'.
          '<table id="tblFiles" class="table tablesorter table-hover table-bordered">'.
         /* '<thead>'.
             '<tr>'.
@@ -704,7 +715,6 @@ class aeSecureMarkdown {
                   }
                }
 
-
                if ($handle = fopen($fnameHTML,'w+')) {
 
                   // Try to find a heading 1 and if so use that text for the title tag of the generated page
@@ -719,9 +729,14 @@ class aeSecureMarkdown {
                   } catch(Exception $e){    
                   }
 
+                  
                   // Write the file but first replace variables
                   $tmpl=str_replace('%TITLE%',$title,$this->_htmlTemplate);
                   $tmpl=str_replace('%CONTENT%',$tmp,$tmpl);
+                  
+                  // Perhaps a Google font should be used.  
+                  $sFont=self::GoogleFont();
+                  $tmpl=str_replace('%FONT%',$sFont,$tmpl);
                   
                   fwrite($handle,$tmpl);
 
@@ -741,7 +756,7 @@ class aeSecureMarkdown {
       $html=str_replace('</h1>', '</h1><div id="icons">'.$icons.'</div>',$html);
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
-      $html='<h5 class="onlyscreen filename">'.utf8_encode($fullname).'</h5>'.
+      $html='<div class="onlyscreen filename">'.utf8_encode($fullname).'</div>'.
          (OUTPUT_HTML===TRUE 
             ? '<div class="top_links onlyscreen"><a href="'.utf8_encode($fnameHTML).'" target="_blank" class="open_newwindow">'.$this->getText('open_html','OPEN_HTML').'</a>&nbsp;|&nbsp;<span data-file="'.utf8_encode($filename).'" class="edit_file">'.$this->getText('edit_file','EDIT_FILE').'</span></div>'
             : ''
@@ -914,6 +929,31 @@ class aeSecureMarkdown {
       
    } // function Edit()
    
+   /**
+    * Detect if a Google Font was specified in the json and if so, generate a string to load that font
+    * 
+    * @return string
+    */
+   public function GoogleFont() : string {
+      
+      $result='';
+      
+      if ($this->_settingsFontName!=='') {
+         
+         $result='<link href="https://fonts.googleapis.com/css?family='.$this->_settingsFontName.'" rel="stylesheet">';
+
+         $i=0;
+         $result.='<style>';
+         $sFontName=str_replace('+',' ',$this->_settingsFontName);
+         for($i=1;$i<7;$i++) $result.='page h'.$i.'{font-family:"'.$sFontName.'";}';
+         $result.='</style>';
+         
+      } // if ($this->_settingsFontName!=='')
+     
+      return $result;
+      
+   } // function GoogleFont()
+   
 } // class aeSecureMarkdown
 
    if (DEBUG===TRUE) {
@@ -989,10 +1029,15 @@ class aeSecureMarkdown {
       <meta http-equiv="pragma" content="no-cache" />
       <title>aeSecure - Docs</title>
       <link href= "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAACXZwQWcAAAAQAAAAEABcxq3DAAAHeUlEQVRIx4XO+VOTdx7A8c/z5HmSJ0CCCYiGcF9BkVOQiiA0A6hYxauyKqutHQW1u7Z1QXS8sYoDWo9WHbQV2LWOiKDWCxS1XAZUQAFRkRsxIcFw5HzyPM93/4Cdzr5/f828QV0xK9k5wXeb5nZYvSt5qFdri1msEIqbdcKYVYoI+L+Zbmy7t8UNwHJnx+c/aHjJk9z682nyhd99WpBUHDXh1PeJTGSiXP/a46zHZKBe8SGEr5bf8i1t+NFeESyfN+F2V2gO8IioBjBe2+aW0fm/ECGEEALALOwwswYA5jHH6D6ZA7FXnObkqtZSwd5hs4yjXvZDEcKEXX89gJmzvhVs8QOAMrQfXSSCYC/mjDXEVhMvCR3B1wejnbAHbhkc2WXMZibKJxbVAA9GvG7DI+gGrbPRvNQ4ajjhOmiMNew3yBVfO5mnHnEJ423ElfgZvOCgnzWRLqE9aoJVAU29qn28EiwQdLADjqOTQMMwnkhAAawEJQAcxVIx39hK9jnbwjYenDVWOXZaz/i847fyXwqi8N3Cdsqf2iUtxzbhvbiWukj30DvpGEjV9Ns6bJkAxEZZoew63KJn06W2nwAoPl6E10x0Oyrdnrh1NchgTuMmtMC5gkcSd4lLSWVcLHJCYtSJozsgBRIA5oAR1CskzH0UiTzna03RM1OCjG4S/b8DEwJVruc+ZbFi5gmlgRCYC9GQaktHUxAL4FCXiJKOANhNKAWJOwGMjTI/2W4A1t8WbwuVx9NFulrdTrtzb/O7Et81a73crrmp3G/OvTnN3WXqtPvexwn2CjoGpQD8ECwFHo+3cWspGeUN0Q5nZldE4gAT0j773ngANlTiKd0CgNImlk6sA+B9hSkxMQDmbWwwfgDAXET94h4ArMCy06IEmMhH+TAe0Hz4156zWpeFw2dZUyCjLS1RVY3zxpbW+ZLd5B3yC1Ui4VDy5enPpgK8KC9ZUCNjivyfCzBWCdEmqAuqZQH4GyiCCgEQlI+GjZoBzHbcN+wGAGY3U8S8B0Q+epH0Ig3m8I2iOyLKclMQQdfSR2xpuiac5UmbQ1600du5wr9XpeUviF/+m2BQYZIfEq9ILkEL8c1YfOMcwgXPnv97dJhjfJFTt+j03CXn13hLnB+0TpW0aLu0N6RnuOVcHKc1GdgMLAh7Othofc65c/UjgzwB/2e+3OJM+pA1pHT8KcqEOcwrh1+YXF4l1qXFqFKth+4/xVnuVXSGqVox5Hrf1mjWH931+rLeF7WcqI4ZDvUOmv1hMS7O4veT5V/3dMRYlSx9r9opmDaaW5M82QI0yaUfr8NyyRPE23ed3IDgARmJx9ml2tc7tHtJqDbKkYqMe8hbC3JQr6rGvqKN7P51+RjJ7uHE22/3/6YJ1JgKIzI/08f2/UOWP6AjLlPXW++ml+qWMlb0e7D6z972W5ZjBK+NtwdfOEvBaPB8XkpxxutC6wOrt1+z5Jn0oiglR08uc9I418u6x9NtK+hnALxo0EIerCeruMfcSwAm21hsvAyAV6v3fvwChqTZkjKpAYCqEh4Tdky5TlcObZocv4O9PTp9gThFnSzItrpZ5YvOtU8+qWsYL5bj2HtsDRYoFHmGT+aM7jaFkot8JL4nM0a09dhqIGTdb4qbcNUhgB7R/dy7DwF6N9Qfr2UBuk41HWg0AxhC8Td4FYDwnahFFAbA43gdPB2A5xb3DI/MK/e6fkg+8GXRcAC5At+NoREx5onVY+0uRTJNxNSQcOEKgvgJYmACHVz+PauYdFx5xDKgFWtVlq2mpNH20V30czTAJbGFfE/H1pmHgxCAg8Kv1D8BwGI/0j5yFgDfyr3iegEEQQJvSgsA32HfYm8BDBeMCYYrqSbvVa/21937sw+FyE+GPeZ/jtQoHFrxq1w1Z0L+yI+XWxN1KRJtto/3EWdSD9wu4UZmOsO+2S684aP2+SNablfuu8t/iH+AQi450/YBWDU6lVYJQDuPGcYcAcRa0SuHcgDxZSaHDQDA/TAGowBMF0zbzUXuKbp6/T9Hs0Mr2uIIvf1evU27HjVhGqxzIOLpsnvdf2QQXWnmzdZfHt3tWwzTiSH3vEUd6k19g7UB0olpntNd1j0cr+hUdQb7gDG/d0OPEgDN4Aa5AgD7jZ6kVz2IRHG+Tn4G9Ti+0VyqwYceoUasHWsZVWJboRhlv2FtV4mV/JzUQpSH8riedDt6IesCB45M+vfP7186CwC/2DD8Wr/yQsGVIj1uyZI8aRq0rQK7vCX6s83xz0uHVjk9C58REaVqEJ6RnZeFAPAZSY60H0B6Pfx4+LW2SnhKGamRZY947dY8a6/yFG4CgMbv1zrFTfGQZAgTPs32tAR4yWW6LZBHLB4RGfusWXR55SGbgy2TXg3A897m93Fm29hNW5mthlltjB2bJD9QH9e8Jg5TV4UjN7rm5wbZB+z4MdfhQ0hQ6C1purg2oF2RbJonLHMQiH79VxkZpRgIVNd9I7ox1DGwj9lonsHM4OoOR9ZWmYZs7zefKmz5dMgc2u2qU1s20Uu2RdtV8Kfzn/Ul/S2fzJpMB/gvTGJ+Ljto3eoAAABZelRYdFNvZnR3YXJlAAB42vPMTUxP9U1Mz0zOVjDTM9KzUDAw1Tcw1zc0Ugg0NFNIy8xJtdIvLS7SL85ILErV90Qo1zXTM9Kz0E/JT9bPzEtJrdDLKMnNAQCtThisdBUuawAAACF6VFh0VGh1bWI6OkRvY3VtZW50OjpQYWdlcwAAeNozBAAAMgAyDBLihAAAACF6VFh0VGh1bWI6OkltYWdlOjpoZWlnaHQAAHjaMzQ3BQABOQCe2kFN5gAAACB6VFh0VGh1bWI6OkltYWdlOjpXaWR0aAAAeNozNDECAAEwAJjOM9CLAAAAInpUWHRUaHVtYjo6TWltZXR5cGUAAHjay8xNTE/VL8hLBwARewN4XzlH4gAAACB6VFh0VGh1bWI6Ok1UaW1lAAB42jM0trQ0MTW1sDADAAt5AhucJezWAAAAGXpUWHRUaHVtYjo6U2l6ZQAAeNoztMhOAgACqAE33ps9oAAAABx6VFh0VGh1bWI6OlVSSQAAeNpLy8xJtdLX1wcADJoCaJRAUaoAAAAASUVORK5CYII=" rel="shortcut icon" type="image/vnd.microsoft.icon"/>  
-	  
+
       <?php 
+      
+         // Check if a Google font was specified and if so, load it
+         echo $aeSMarkDown->GoogleFont();
+      
+         // Load Bootstrap
          echo aeSecureFct::addStylesheet('libs/bootstrap.min.css','https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
-         //echo aeSecureFct::addStylesheet('libs/theme.ice.min.css','https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.3/css/theme.ice.min.css');
+         
       ?>
 
       <style>
@@ -1003,7 +1048,7 @@ class aeSecureMarkdown {
             #tblFiles > tbody > tr:nth-child(odd) .selected{background-color:#90b6e2;color:white;}
             #tblFiles  > tbody > tr:nth-child(even) .selected{background-color:#90b6e2;color:white;}
 
-            .top_links {font-size:0.6em;position:fixed;top:5px;background-color:white;padding:5px;}
+            .top_links {font-size:0.6em;position:fixed;top:5px;padding:5px;}
            
             /* Style for the "Open in a new window" hyperlink */
             .open_newwindow{text-decoration:underline;}
@@ -1090,7 +1135,6 @@ class aeSecureMarkdown {
          // Add your custom stylesheet if the custom.css file is present
          echo aeSecureFct::addStylesheet('custom.css');
       ?>
-	   
    </head>
    
    <body style="overflow:hidden;">
