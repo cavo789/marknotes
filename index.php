@@ -1,11 +1,11 @@
-<?php
+<?php                 /* REQUIRES PHP 7.x AT LEAST */
 
 /**
  * Author : AVONTURE Christophe - https://www.aesecure.com
  * 
  * Written date : December 14 2016 
  * 
- * PHP Version : This script has been developped for PHP 7+, the script willn't run with PHP 5.x
+ * PHP Version : This script has been developed for PHP 7+, the script won't run with PHP 5.x
  * 
  * Put this script in a website root folder (f.i. site /documentation) and create a subfolder called "docs" (see DOC_FOLDER constant).
  * In "docs", create as many subfolders you want and store there your markdown (.md) files.
@@ -15,10 +15,13 @@
  * 
  * History :
  * 
- * 2016-12-30 : Search supports encrypted data now
- * 2016-12-21 : Add search functionality, add comments, add custom.css, 
- *              add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
- * 2016-12-19 : Add support for encryption (tag <encrypt>)
+ * 2017-01-03 : + Improve add icons (based on jQuery and no more pure css)
+ *              + Add filtering on folder name : just click on a folder name and the list will be limited to that folder
+ *              + Start editing code
+ * 2016-12-30 : + Search supports encrypted data now
+ * 2016-12-21 : + Add search functionality, add comments, add custom.css, 
+ *              + Add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
+ * 2016-12-19 : + Add support for encryption (tag <encrypt>)
  * 2016-12-14 : First version
  */
 
@@ -57,6 +60,8 @@ define ('SEARCH_MAX_WIDTH',100);
 
 // Default text, english
 define('CONFIDENTIAL','confidential');
+define('EDIT_FILE','Edit');
+define('EDITOR','C:\Windows\System32\notepad.exe'); // default editor
 define('IS_ENCRYPTED','This information is encrypted in the original file and decoded here for screen display');
 define('OPEN_HTML','Open in a new window');
 define('SEARCH_PLACEHOLDER','Type here keywords and search for them');
@@ -400,6 +405,8 @@ class aeSecureMarkdown {
 
    private $_rootFolder='';            // root folder of the web application (f.i. "C:\Christophe\Documents\")
    
+   private $_settingsEditor='';        // defaut editor program 
+   
    private $_settingsDocsFolder='';    // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
    private $_settingsLanguage='en';    // user's language
    
@@ -447,6 +454,13 @@ class aeSecureMarkdown {
    
          $this->_json=json_decode(file_get_contents($fname),true);
 
+         if(isset($this->_json['editor'])) {
+            $this->_settingsEditor=rtrim($this->_json['editor']);
+            if(!file_exists($this->_settingsEditor)) $this->_settingsEditor=EDITOR;
+         } else {
+            $this->_settingsEditor=EDITOR;
+         }
+         
          // Retrieve the subfolder if any
          if(isset($this->_json['folder']))   $this->_settingsDocsFolder=rtrim($this->_json['folder'],DS).DS;
          if(isset($this->_json['language'])) $this->_settingsLanguage=$this->_json['language'];
@@ -510,7 +524,7 @@ class aeSecureMarkdown {
          
       }
       
-      $sReturn.='</tbody></table>';
+      $sReturn.='</tbody></table><div class="countfiles">#'.count($arrFiles).' files processed</div>';
 
       return $sReturn;
 	  
@@ -728,7 +742,7 @@ class aeSecureMarkdown {
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
       $html='<h5 class="onlyscreen filename">'.utf8_encode($fullname).'</h5>'.
          (OUTPUT_HTML===TRUE 
-            ? '<a href="'.utf8_encode($fnameHTML).'" style="text-decoration:underline;" target="_blank" class="onlyscreen open_newwindow">'.$this->getText('open_html','OPEN_HTML').'</a>'
+            ? '<div class="top_links onlyscreen"><a href="'.utf8_encode($fnameHTML).'" target="_blank" class="open_newwindow">'.$this->getText('open_html','OPEN_HTML').'</a>&nbsp;|&nbsp;<span data-file="'.utf8_encode($filename).'" class="edit_file">'.$this->getText('edit_file','EDIT_FILE').'</span></div>'
             : ''
          ).
          $html.'<hr/>';
@@ -863,8 +877,43 @@ class aeSecureMarkdown {
       
    } // function Search()
    
-} // class aeSecureMarkdown
+   /**
+    * Start the editor program
+    * 
+    * @param string $filename   Relative filename like "privÃ©\Fisc.md".  Need to be utf8_decoded
+    * @return bool
+    */
+   public function Edit(string $filename) : bool {
+      
+      if ($filename!="") {
+         
+         // Get the fullname like "C:\Christophe\notes\docs\privé\Fisc.md"
+         $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename);
 
+         try {
+
+            // Make the command line : the editor followed by the name of the file that should be edited
+            // For instance : C:\Windows\System32\notepad.exe "C:\Christophe\notes\docs\privé\Fisc.md"
+            $cmd = $this->_settingsEditor.' "'.$fullname.'"'; // Open the directory and select the file
+
+            //echo __LINE__.'  **'.$cmd.'**<br/>';   
+            if (substr(php_uname(), 0, 7) == "Windows") {
+               pclose(popen("start /B ".$cmd, "r"));
+            } else {
+               exec($cmd);
+            }
+
+         } catch (Exception $ex) {
+            die('Error in line '.__LINE__.' : '.$ex->getMessage());
+         }
+         
+      } // if ($filename!="") 
+    
+      return true;
+      
+   } // function Edit()
+   
+} // class aeSecureMarkdown
 
    if (DEBUG===TRUE) {
       ini_set("display_errors", "1");
@@ -892,6 +941,14 @@ class aeSecureMarkdown {
          $result=$aeSMarkDown->ShowFile($fname);
          echo $result;
          unset($aeSMarkDown);
+         die();
+         
+      case 'edit' : 
+         
+         $fname=json_decode(urldecode(base64_decode(aeSecureFct::getParam('param','string','',false))));
+         $aeSMarkDown->Edit($fname);
+         unset($aeSMarkDown);
+          
          die();
          
       case 'listFiles':
@@ -945,8 +1002,13 @@ class aeSecureMarkdown {
             #tblFiles > tbody > tr:nth-child(odd) .selected{background-color:#90b6e2;color:white;}
             #tblFiles  > tbody > tr:nth-child(even) .selected{background-color:#90b6e2;color:white;}
 
+            .top_links {font-size:0.6em;position:fixed;top:5px;background-color:white;padding:5px;}
+           
             /* Style for the "Open in a new window" hyperlink */
-            .open_newwindow{font-size:0.6em;position:fixed;top:5px;background-color:white;padding:5px;}
+            .open_newwindow{text-decoration:underline;}
+
+            /* Style for the "Edit file" hyperlink */
+            .edit_file{text-decoration:underline;color:#337ab7;cursor:pointer;}
 
             /* Style for the formatting of the name of the file, displayed in the content, first line */
             .filename{font-style:italic;font-weight:bold;color:#dfdfe0;top:15px;position:inherit;} 
@@ -987,73 +1049,17 @@ class aeSecureMarkdown {
             /* Don't display informations that are targeted for printers only */            
             .onlyprint{display:none;}
             
+            .countfiles{font-size:xx-small;font-style:italic;}
             /* Use by the jQuery Highlite plugin, highlight searched keywords */
             .highlight{background-color:yellow;border-radius:.125em;}  
             
-            /* Add a PDF icon to link to .pdf files*/
-            a[href$=".pdf"]{
-               background-image: url('data:image/gif;base64,R0lGODlhEAAQAOZZAP0CAv///36Inpqr3Kq6509ZdekCAt4CAvECAuwCAucCAvUCAtwCAtsCAtoCAuMCAvHx9O0CAp+94O4CAvwCAvACApyt3m99qObn6258piMjJAAAASEhI9gCAuPk6OACAr7H5LnH8VhkiBATGqy86dXi7fsCAvHy9d0CAiguQOns8+3u8+jp7gsNFE9ZdsDG3w8RFpaYpa6850ZPbWt4nOfo6/Dw8vYCAvgCAgEBA/MCAiAhI+gCAn6Mt7fA2uvs7t/g5/cCAvX196y97+QCAq7B/NcCAuXm6uTm89zd5O7u8bzH64GMoy81R+UCAqe25pWm1+YCAiIiJOsCAu3u8eLk63SBqu/v8/ICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFkALAAAAAAQABAAQAeygFmCg1kCTAOIiIIAjAABARQLAU4BKI8GCIQxSFVASVdCJyoEO4RZNDI+LyBLISQWPTCmhRIlAh41GCwEUlmNjgGMj8LBFAARDR0BRg4HjwoGARMVWIQiFzMpLRuzswISAjZKP1QEGqYCBeoFRxAQKwQcvr/09b/B+I44AQkRCIwmggSIcsBBAAYBHgTgkaACgCkNGBz48IAItAQTEOhYcINQhiJDnkCx4qLJiBzdUg4KBAA7');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }            
-            
-            /* Add a XLS icon */
-            a[href$=".xlsx"]{
-               background-image: url('data:image/gif;base64,R0lGODlhEAAQANU/AOj05yt3K22lW5nKl6mqqSuGL87PztTU1Nna2bjMtvj+9rKystPk0/7//Yq3iFSINGmtZ4K5fz17HYimhuHr3MzizLu9u3G3bPL47iNjHuvu6svaw6PKpsHDwPj/8/r/+Lzcucreyvz/+8bRxLzSu9be1efn5zRxDx9tHt3j2Xarc8DfvyJfHaLOm5+fn+Dw3rLYsZ29kdbr18nKyUmYQ2+2aqXRomywcre4tzFuC5/SnJPIkOv36ySNLf///////yH5BAEAAD8ALAAAAAAQABAAAAbJwN+PcaP1jkik8Mfp7WS8qDTaE4YKKwBMx+0OeNUfZADYmc/mb7hQGUQYoUoFBLMNGBBhIeWI+P4+DYINIiIaCGwqDj4PDwKDhR8IBwEkGRM+GDk5MS8XFzsAMwaVLAmBGycnAjU2CgodpCQsGoIvNDkSIB8fCjgGKCMBgiufEjkCEC0eCwcoCZggEZ8QJ8gvGATOMSOCIr0eMZs8FM0oKBMjJd+8Ch7vGwsIPyYzCwQuBAQWsSkUJTjm0UMwycCMDhbuEcAxQ0MQADs=');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }            
-            a[href$=".xls"]{
-               background-image: url('data:image/gif;base64,R0lGODlhEAAQANU/AOj05yt3K22lW5nKl6mqqSuGL87PztTU1Nna2bjMtvj+9rKystPk0/7//Yq3iFSINGmtZ4K5fz17HYimhuHr3MzizLu9u3G3bPL47iNjHuvu6svaw6PKpsHDwPj/8/r/+Lzcucreyvz/+8bRxLzSu9be1efn5zRxDx9tHt3j2Xarc8DfvyJfHaLOm5+fn+Dw3rLYsZ29kdbr18nKyUmYQ2+2aqXRomywcre4tzFuC5/SnJPIkOv36ySNLf///////yH5BAEAAD8ALAAAAAAQABAAAAbJwN+PcaP1jkik8Mfp7WS8qDTaE4YKKwBMx+0OeNUfZADYmc/mb7hQGUQYoUoFBLMNGBBhIeWI+P4+DYINIiIaCGwqDj4PDwKDhR8IBwEkGRM+GDk5MS8XFzsAMwaVLAmBGycnAjU2CgodpCQsGoIvNDkSIB8fCjgGKCMBgiufEjkCEC0eCwcoCZggEZ8QJ8gvGATOMSOCIr0eMZs8FM0oKBMjJd+8Ch7vGwsIPyYzCwQuBAQWsSkUJTjm0UMwycCMDhbuEcAxQ0MQADs=');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }            
-            
-            /* Add a docx icon */
-            a[href$=".docx"]{
-               background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAn1BMVEX///81SWOQrtbi7Pzo8P3Z5vsENYLT4vrL3Pg2SmQISrKXteHd6fsFQZusu9Hy9v70+P6UpLmzwtbc4vR4k9Z5pOmmtcuKruTr7vCTq+aju91Dabl/nuaDnNqAp+eFrOZfgM3Q1+YAMXdUbKSJpekpYbdmitVWfNA5WZg3YK5Maad2ipxBbcSvvN8gS5qqvvEHLou3yPRmfbMnPWwxWrbPYmmFAAAAvUlEQVQYlU3N2ZaCMBBF0aISMpEYJsEQFRTnefr/bzM03Wv1eat9HwoAIM/zSaiqqlm4nNvMy92+u2ytzWQQB7+pNM3yIJv7olt1Re8GkFLCvFh0hS9OZ4VIm0ZCCaW/3txhZVKkpIlgBy/fs88bjEWqA+yhPzwZmwCzSHQSwQUeR8s8AEMkcQD/93ZNieYBtkopYwxja8SY19GwZTREiNZctCMQgj8JsRwhHuJcCDEdgTdJktR1u5yOEP3vC345DTl56qgPAAAAAElFTkSuQmCC');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }       
-            a[href$=".doc"]{
-               background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAn1BMVEX///81SWOQrtbi7Pzo8P3Z5vsENYLT4vrL3Pg2SmQISrKXteHd6fsFQZusu9Hy9v70+P6UpLmzwtbc4vR4k9Z5pOmmtcuKruTr7vCTq+aju91Dabl/nuaDnNqAp+eFrOZfgM3Q1+YAMXdUbKSJpekpYbdmitVWfNA5WZg3YK5Maad2ipxBbcSvvN8gS5qqvvEHLou3yPRmfbMnPWwxWrbPYmmFAAAAvUlEQVQYlU3N2ZaCMBBF0aISMpEYJsEQFRTnefr/bzM03Wv1eat9HwoAIM/zSaiqqlm4nNvMy92+u2ytzWQQB7+pNM3yIJv7olt1Re8GkFLCvFh0hS9OZ4VIm0ZCCaW/3txhZVKkpIlgBy/fs88bjEWqA+yhPzwZmwCzSHQSwQUeR8s8AEMkcQD/93ZNieYBtkopYwxja8SY19GwZTREiNZctCMQgj8JsRwhHuJcCDEdgTdJktR1u5yOEP3vC345DTl56qgPAAAAAElFTkSuQmCC');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }
-            /* Add a 7z and zip icon */
-            a[href$=".zip"]{
-               background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAGYktHRP///////wlY99wAAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAISSURBVHicpVNNaFNBEP42bdPUJLwmVikqlUo1Wk2C9CRKvYhSFHry5qkUwZsn74I/oCAIohc99SJ6EKFa1IsUSktVaCykWnJT8IemsWhr3ts/d2dfm8T0IPhgdpbdb775ZnYe/vdjdinPXdebXfqRnVj8WEDP1p/w0r109vlb8VL+1NjNdUzELkpJpA8dRvpgDqn+fqQOZNC5fy9E9xlMfz+JOy8G4PXtRlsygR3bMjfqkzgCKQAtoLVvvE9eqyqmXj/D28lxAipRRawr6bDNBIEJ4mbDoe1e+mQnhs/h6rXLBNTKNzifsE0EUppAJUILSVSAVBT4VGGOgIg5YTdXYPrQSMLx5OUbFOdehQQCv758hRQ+Zh6NnG5UILjrQRhowdYXFz5gdGAWy8tlyrxarqC9aztiHbHxmYcjd+sIAgqyDSKS0LI9W3D7uYdosGBRENxHPNGKPbldJiG7UNeDYEO+MpnWbfhoCvlsHxLdx2wWwimxiiB+3mAZGhWYjJC81kRjT6cqKMyXcHbwh5kVTjgl1sJXAZpKqPXAdXzoiIdcdh8eT3bSPeHEbxepWf0rcJpGJaXrRfgiE9MreD+/SArMRVhaFRffrZi5+WsO3Il2TjmJQ/mgpsBkpHkxBEtLa40lKCJgBKIj1kI2UYjWFLAI4Wx5D3qvWGxp42+cHTuu//X3DUTGqixppe4Njt6/9QfWoIkcU8DL+wAAAABJRU5ErkJggg==');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }           
-            
-            a[href$=".7z"]{
-               background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZklEQVR4nM2SUQrAMAhDk9H7X9l9DIvYtB0TyvyT6FM0NDNU4ip1/wJAAKUjNAD4ekiSD8CTWawGtJiowhV4AMTiDMsg1+UXXMxAteEAUM15iwg6ZyQ1HUhHjIVvQR2wM9NML1v5BpOZLxyagrcCAAAAAElFTkSuQmCC');
-               background-position: center right;
-               background-repeat: no-repeat;
-               background-color: #e4ffe2;
-               padding-right: 25px;
-               display: inline-block;
-            }            
-            
+            .download-link{background-position:center right;background-repeat:no-repeat;background-color:#e4ffe2;padding-right:25px;display:inline-block;}
+
+            .download-pdf{background-image:url('data:image/gif;base64,R0lGODlhEAAQAOZZAP0CAv///36Inpqr3Kq6509ZdekCAt4CAvECAuwCAucCAvUCAtwCAtsCAtoCAuMCAvHx9O0CAp+94O4CAvwCAvACApyt3m99qObn6258piMjJAAAASEhI9gCAuPk6OACAr7H5LnH8VhkiBATGqy86dXi7fsCAvHy9d0CAiguQOns8+3u8+jp7gsNFE9ZdsDG3w8RFpaYpa6850ZPbWt4nOfo6/Dw8vYCAvgCAgEBA/MCAiAhI+gCAn6Mt7fA2uvs7t/g5/cCAvX196y97+QCAq7B/NcCAuXm6uTm89zd5O7u8bzH64GMoy81R+UCAqe25pWm1+YCAiIiJOsCAu3u8eLk63SBqu/v8/ICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFkALAAAAAAQABAAQAeygFmCg1kCTAOIiIIAjAABARQLAU4BKI8GCIQxSFVASVdCJyoEO4RZNDI+LyBLISQWPTCmhRIlAh41GCwEUlmNjgGMj8LBFAARDR0BRg4HjwoGARMVWIQiFzMpLRuzswISAjZKP1QEGqYCBeoFRxAQKwQcvr/09b/B+I44AQkRCIwmggSIcsBBAAYBHgTgkaACgCkNGBz48IAItAQTEOhYcINQhiJDnkCx4qLJiBzdUg4KBAA7');}
+            .download-xls{background-image:url('data:image/gif;base64,R0lGODlhEAAQANU/AOj05yt3K22lW5nKl6mqqSuGL87PztTU1Nna2bjMtvj+9rKystPk0/7//Yq3iFSINGmtZ4K5fz17HYimhuHr3MzizLu9u3G3bPL47iNjHuvu6svaw6PKpsHDwPj/8/r/+Lzcucreyvz/+8bRxLzSu9be1efn5zRxDx9tHt3j2Xarc8DfvyJfHaLOm5+fn+Dw3rLYsZ29kdbr18nKyUmYQ2+2aqXRomywcre4tzFuC5/SnJPIkOv36ySNLf///////yH5BAEAAD8ALAAAAAAQABAAAAbJwN+PcaP1jkik8Mfp7WS8qDTaE4YKKwBMx+0OeNUfZADYmc/mb7hQGUQYoUoFBLMNGBBhIeWI+P4+DYINIiIaCGwqDj4PDwKDhR8IBwEkGRM+GDk5MS8XFzsAMwaVLAmBGycnAjU2CgodpCQsGoIvNDkSIB8fCjgGKCMBgiufEjkCEC0eCwcoCZggEZ8QJ8gvGATOMSOCIr0eMZs8FM0oKBMjJd+8Ch7vGwsIPyYzCwQuBAQWsSkUJTjm0UMwycCMDhbuEcAxQ0MQADs=');}
+            .download-doc{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAn1BMVEX///81SWOQrtbi7Pzo8P3Z5vsENYLT4vrL3Pg2SmQISrKXteHd6fsFQZusu9Hy9v70+P6UpLmzwtbc4vR4k9Z5pOmmtcuKruTr7vCTq+aju91Dabl/nuaDnNqAp+eFrOZfgM3Q1+YAMXdUbKSJpekpYbdmitVWfNA5WZg3YK5Maad2ipxBbcSvvN8gS5qqvvEHLou3yPRmfbMnPWwxWrbPYmmFAAAAvUlEQVQYlU3N2ZaCMBBF0aISMpEYJsEQFRTnefr/bzM03Wv1eat9HwoAIM/zSaiqqlm4nNvMy92+u2ytzWQQB7+pNM3yIJv7olt1Re8GkFLCvFh0hS9OZ4VIm0ZCCaW/3txhZVKkpIlgBy/fs88bjEWqA+yhPzwZmwCzSHQSwQUeR8s8AEMkcQD/93ZNieYBtkopYwxja8SY19GwZTREiNZctCMQgj8JsRwhHuJcCDEdgTdJktR1u5yOEP3vC345DTl56qgPAAAAAElFTkSuQmCC');}
+            .download-zip{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAGYktHRP///////wlY99wAAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAISSURBVHicpVNNaFNBEP42bdPUJLwmVikqlUo1Wk2C9CRKvYhSFHry5qkUwZsn74I/oCAIohc99SJ6EKFa1IsUSktVaCykWnJT8IemsWhr3ts/d2dfm8T0IPhgdpbdb775ZnYe/vdjdinPXdebXfqRnVj8WEDP1p/w0r109vlb8VL+1NjNdUzELkpJpA8dRvpgDqn+fqQOZNC5fy9E9xlMfz+JOy8G4PXtRlsygR3bMjfqkzgCKQAtoLVvvE9eqyqmXj/D28lxAipRRawr6bDNBIEJ4mbDoe1e+mQnhs/h6rXLBNTKNzifsE0EUppAJUILSVSAVBT4VGGOgIg5YTdXYPrQSMLx5OUbFOdehQQCv758hRQ+Zh6NnG5UILjrQRhowdYXFz5gdGAWy8tlyrxarqC9aztiHbHxmYcjd+sIAgqyDSKS0LI9W3D7uYdosGBRENxHPNGKPbldJiG7UNeDYEO+MpnWbfhoCvlsHxLdx2wWwimxiiB+3mAZGhWYjJC81kRjT6cqKMyXcHbwh5kVTjgl1sJXAZpKqPXAdXzoiIdcdh8eT3bSPeHEbxepWf0rcJpGJaXrRfgiE9MreD+/SArMRVhaFRffrZi5+WsO3Il2TjmJQ/mgpsBkpHkxBEtLa40lKCJgBKIj1kI2UYjWFLAI4Wx5D3qvWGxp42+cHTuu//X3DUTGqixppe4Njt6/9QfWoIkcU8DL+wAAAABJRU5ErkJggg==');}
+            .download-7z {background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZklEQVR4nM2SUQrAMAhDk9H7X9l9DIvYtB0TyvyT6FM0NDNU4ip1/wJAAKUjNAD4ekiSD8CTWawGtJiowhV4AMTiDMsg1+UXXMxAteEAUM15iwg6ZyQ1HUhHjIVvQR2wM9NML1v5BpOZLxyagrcCAAAAAElFTkSuQmCC');}
             
          } /* @media screen */
 
@@ -1201,8 +1207,8 @@ class aeSecureMarkdown {
                
                // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
                if ($(this).attr('data-folder')) {
-                  var filters = $('#tblFiles').find('select.tablesorter-filter'),col=0,txt=$(this).data('folder');
-                  filters.eq(col).val(txt).trigger('search', false);
+                  $('#edtSearch').val($(this).data('folder'));   
+                  onChangeSearch();
                }
                
             }); // $('#tblFiles > tbody  > tr > td').click()
@@ -1224,19 +1230,33 @@ class aeSecureMarkdown {
          function forceNewWindow() {
 
             $('a').each(function() {					
-               var a = new RegExp('/' + window.location.host + '/');
-               if(a.test(this.href)) {
+               //var a = new RegExp('/' + window.location.host + '/');
+               //if(a.test(this.href)) {
                   $(this).click(function(e) {
                      e.preventDefault(); 
                      e.stopImmediatePropagation();
                      window.open(this.href, '_blank');
                   });
-               }
+               //}
             }); // $('a').each()
             
             return true;      
             
          } // function forceNewWindow()
+         
+         /**
+          * Add icons to .pdf, .xls, .doc, ... hyperlinks
+          */
+         function addIcons() {
+            $('a[href$="pdf"]').addClass('download-link download-pdf');
+            $('a[href$="doc"]').addClass('download-link download-doc');
+            $('a[href$="docx"]').addClass('download-link download-doc');
+            $('a[href$="xls"]').addClass('download-link download-xls');
+            $('a[href$="xlsx"]').addClass('download-link download-xls');
+            $('a[href$="zip"]').addClass('download-link download-zip');
+            $('a[href$="7z"]').addClass('download-link download-7z');
+            return true;            
+         } // function addIcons()
          
          /**
           * Called when a file is displayed
@@ -1259,6 +1279,9 @@ class aeSecureMarkdown {
             // Force links that points on the same server (localhost) to be opened in a new window
             forceNewWindow();
             
+            // Add icons to .pdf, .xls, .doc, ... hyperlinks
+            addIcons();
+            
             // Interface : put the cursor immediatly in the edit box
             try {               
                $('#edtSearch').focus();
@@ -1274,6 +1297,12 @@ class aeSecureMarkdown {
                });
             }
             
+            // By clicking on the "Edit" link, start the associated edit program (like Notepad f.i.)
+            $('.edit_file').click(function(e) {
+               var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));              
+               ajaxify({task:'edit',param:$fname});
+//alert($(this).data('file'));
+            })
 			
          } // function afterDisplay()
          
@@ -1287,7 +1316,7 @@ class aeSecureMarkdown {
             var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
             
             // On page entry, get the list of .md files on the server
-            ajaxify({task:'search',param:$searchKeywords, callback:'afterSearch(data)'});
+            ajaxify({task:'search',param:$searchKeywords, callback:'afterSearch("'+$searchKeywords+'",data)'});
             
          } // Search()
          
@@ -1296,8 +1325,8 @@ class aeSecureMarkdown {
           * Process the result of the search : the returned data is a json string that represent an 
           * array of files that matched the searched pattern.
           */
-         function afterSearch($data) {
-            
+         function afterSearch($keywords, $data) {
+           
             // Check if we've at least one file
             if (Object.keys($data).length>0) {
                
@@ -1330,14 +1359,26 @@ class aeSecureMarkdown {
       
             } else {
                
-               // Nothing found
-               var n = noty({
-                  text: '<?php echo str_replace("'","\'",$aeSMarkDown->getText('search_no_result','SEARCH_NO_RESULT'));?>',
-                  theme: 'relax',
-                  timeout: 2400,
-                  layout: 'bottomRight',
-                  type: 'success'
-               }); // noty() 
+               if ($keywords!=='') {
+               
+                  // Nothing found
+                  var n = noty({
+                     text: '<?php echo str_replace("'","\'",$aeSMarkDown->getText('search_no_result','SEARCH_NO_RESULT'));?>',
+                     theme: 'relax',
+                     timeout: 2400,
+                     layout: 'bottomRight',
+                     type: 'success'
+                  }); // noty() 
+                  
+               } else { // if ($keywords!=='')
+               
+                  // show everything back
+                  $('#tblFiles > tbody  > tr > td').each(function() {
+                     if ($(this).attr('data-file')) {
+                        $(this).parent().show();
+                     }
+                  });
+               } // if ($keywords!=='')
                
             } // if (Object.keys($data).length>0)
             

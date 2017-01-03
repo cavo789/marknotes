@@ -1,4 +1,5 @@
 {   
+   "editor": "C:\\Windows\\System32\\notepad.exe",
    "folder":"docs",
    "language":"fr",
    "encryption": {
@@ -11,11 +12,12 @@
    },
    "languages":{
       "fr": {
-	     "confidential":"confidentiel",
-		 "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.", 	
-	     "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",	 		 
-		 "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
-		 "search_placeholder":"Tapez ici des mots-cléfs pour lancer une recherche"
+         "confidential":"confidentiel",
+         "edit_file":"Éditer",
+         "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.", 	
+         "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",	 		 
+         "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
+         "search_placeholder":"Tapez ici des mots-cléfs pour lancer une recherche"
 	  }      
    }
 }
