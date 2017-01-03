@@ -18,6 +18,7 @@
  * 2017-01-03 : + Improve add icons (based on jQuery and no more pure css)
  *              + Add filtering on folder name : just click on a folder name and the list will be limited to that folder
  *              + Start editing code
+ *              + Remove leading / ending spaces before searching
  * 2016-12-30 : + Search supports encrypted data now
  * 2016-12-21 : + Add search functionality, add comments, add custom.css, 
  *              + Add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
@@ -1289,8 +1290,8 @@ class aeSecureMarkdown {
             }
 			 
             // Get the searched keywords.  Apply the restriction on the size.
-            var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
-            
+            var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>).trim();
+          
             if ($searchKeywords!='') {
                $("#CONTENT").highlite({
                   text: $searchKeywords
@@ -1313,7 +1314,7 @@ class aeSecureMarkdown {
          function onChangeSearch() {
             
             // Get the searched keywords.  Apply the restriction on the size.
-            var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>);
+            var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>).trim();
             
             // On page entry, get the list of .md files on the server
             ajaxify({task:'search',param:$searchKeywords, callback:'afterSearch("'+$searchKeywords+'",data)'});
