@@ -3,7 +3,8 @@
    "folder":"docs",
    "language":"fr",
    "page":{
-      "google_font":""
+      "google_font":"",
+      "img_maxwidth":800
    },
    "encryption": {
       "password":"",

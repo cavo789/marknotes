@@ -15,6 +15,10 @@
  * 
  * History :
  * 
+ * 2017-01-05 : + Add custom.js to allow the end user to add his own script
+ *              + Add a IMG_MAX_WIDTH constant to be sure that images will be correctly resized if too big
+ * 2017-01-04 : + Add Print preview feature (thanks to https://github.com/etimbo/jquery-print-preview-plugin)
+ *              + Remove icons (images) and use font-awesome instead
  * 2017-01-03 : + Improve add icons (based on jQuery and no more pure css)
  *              + Add filtering on folder name : just click on a folder name and the list will be limited to that folder
  *              + Start editing code
@@ -31,6 +35,9 @@
 declare(strict_types=1);
 
 define('DEBUG',TRUE);
+
+// When images are too big, force a resize by css to a max-width of ...
+define('IMG_MAX_WIDTH','800');
 
 // -------------------------------------------------------------------------------------------------------------------------
 // 
@@ -54,6 +61,8 @@ define('HTML_TEMPLATE',
          '<page><div class="container">%CONTENT%</div></page>'.
       '</body>'.
       '</html>');
+
+define('APP_NAME','Notes management (c) Christophe Avonture');
 
 // Folder in this application where .md files are stored
 define('DOC_FOLDER','docs');
@@ -161,7 +170,7 @@ class aeSecureFct {
       // Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the 
       // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
       //if (is_file(dirname(__DIR__).DS.str_replace('/',DS,$localfile))) {
-      
+
       if (is_file(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])).DS.$localfile)) {
         $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
       } else {
@@ -437,6 +446,7 @@ class aeSecureMarkdown {
       $this->_settingsLanguage='en';
       $this->_htmlTemplate=HTML_TEMPLATE;
       $this->_saveHTML=OUTPUT_HTML;
+      $this->_settingsImgMaxWidth=IMG_MAX_WIDTH;
       
       // No password defined by default
       $this->_settingsPassword='';
@@ -478,6 +488,8 @@ class aeSecureMarkdown {
             $tmp=$this->_json['page'];
             // Spaces should be replaced by a "+" sign
             if(isset($tmp['google_font'])) $this->_settingsFontName=str_replace(' ','+',$tmp['google_font']);
+            if(isset($tmp['img_maxwidth'])) $this->_settingsImgMaxWidth=str_replace(' ','+',$tmp['img_maxwidth']);
+            
          }
         
          // Get export settings
@@ -499,6 +511,16 @@ class aeSecureMarkdown {
       return TRUE;
       
    } // function ReadSettings()
+   
+   public function getSetting(string $name, $defaultValue) {
+      switch ($name) {
+         case 'ImgMaxWidth' :
+            return $this->_settingsImgMaxWidth;
+            break;
+         default:
+           return null;        
+      }
+   } // function getSetting()
    
    /**
     * Get the list of .md files.  This list will be used in the "table of contents"
@@ -549,7 +571,7 @@ class aeSecureMarkdown {
     * @return string          HTML rendering 
     */ 
    public function ShowFile(string $filename) : string {
-	   
+	    
       $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename);
       
       $markdown=file_get_contents($fullname);
@@ -564,7 +586,8 @@ class aeSecureMarkdown {
       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
       if (count($matches[1])>0) {
          
-         $icon_stars='<span class="encrypted onlyscreen" data-encrypt="true" title="'.str_replace('"','\"',$this->getText('is_encrypted','IS_ENCRYPTED')).'">&nbsp;</span>';
+         $icon_stars='<i class="icon_encrypted fa fa-lock onlyscreen" aria-hidden="true" '.
+            'data-encrypt="true" title="'.str_replace('"','\"',$this->getText('is_encrypted','IS_ENCRYPTED')).'"></i>';
          
          // Initialize the encryption class
          $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
@@ -659,7 +682,7 @@ class aeSecureMarkdown {
 
                // Great, the info is already encrypted
                
-               $icons='<div class="lock_green">&nbsp;</div>';
+               //$icons='<i id="icon_lock" class="fa fa-lock" aria-hidden="true"></i>';
                
                $decrypt=$aesEncrypt->sslDecrypt($matches[1][$i],NULL);
 
@@ -674,12 +697,26 @@ class aeSecureMarkdown {
          unset($aesEncrypt);
          
       } // if (count($matches[1])>0)
+      
+      // -----------------------------------
+      // Add additionnal icons at the left
+
+      $fnameHTML=aeSecureFiles::replace_extension($fullname,'html');
+      
+      // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
+      $tmp = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML));
+   
+      // Open new window icon
+      if(OUTPUT_HTML===TRUE) $icons.='<i data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" id="icon_window" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
+      
+      // Edit icon : only if an editor has been defined
+      if ($this->_settingsEditor!=='') {
+         $icons.='<i id="icon_edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file','EDIT_FILE').'" data-file="'.utf8_encode($filename).'"></i>';
+      }
 
       require_once("libs/Parsedown.php");
       $Parsedown=new Parsedown();      
       $html=$Parsedown->text($markdown);
-      
-      $fnameHTML=aeSecureFiles::replace_extension($fullname,'html');
       
       // Check if the .html version of the markdown file already exists; if not, create it 
       if ($this->_saveHTML===TRUE) {
@@ -753,15 +790,10 @@ class aeSecureMarkdown {
       // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
       $fnameHTML = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML));
       
-      $html=str_replace('</h1>', '</h1><div id="icons">'.$icons.'</div>',$html);
+      $html=str_replace('</h1>', '</h1><div id="icons" class="onlyscreen fa-3x"><i id="icon_printer" class="fa fa-print" aria-hidden="true"></i>'.$icons.'</div>',$html);
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
-      $html='<div class="onlyscreen filename">'.utf8_encode($fullname).'</div>'.
-         (OUTPUT_HTML===TRUE 
-            ? '<div class="top_links onlyscreen"><a href="'.utf8_encode($fnameHTML).'" target="_blank" class="open_newwindow">'.$this->getText('open_html','OPEN_HTML').'</a>&nbsp;|&nbsp;<span data-file="'.utf8_encode($filename).'" class="edit_file">'.$this->getText('edit_file','EDIT_FILE').'</span></div>'
-            : ''
-         ).
-         $html.'<hr/>';
+      $html='<div class="onlyscreen filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
 
       return $html;
 	  
@@ -1027,8 +1059,8 @@ class aeSecureMarkdown {
       <meta http-equiv="expires" content="0" />
       <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
       <meta http-equiv="pragma" content="no-cache" />
-      <title>aeSecure - Docs</title>
-      <link href= "data:image/x-icon;base64,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" rel="shortcut icon" type="image/vnd.microsoft.icon"/>  
+      <title><?php echo APP_NAME;?></title>
+      <link href="data:image/x-icon;base64,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" rel="shortcut icon" type="image/vnd.microsoft.icon"/>  
 
       <?php 
       
@@ -1037,19 +1069,22 @@ class aeSecureMarkdown {
       
          // Load Bootstrap
          echo aeSecureFct::addStylesheet('libs/bootstrap.min.css','https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+         echo aeSecureFct::addStylesheet('libs/font-awesome/css/font-awesome.min.css','https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+         
+         echo aeSecureFct::addStylesheet('libs/print-preview/print-preview.css');
          
       ?>
 
       <style>
 
+         img {max-width: <?php echo $aeSMarkDown->getSetting('ImgMaxWidth','800');?>px;}
+         
          @media screen {
             
             /* By selecting a file from the filelist, highlight its name */
             #tblFiles > tbody > tr:nth-child(odd) .selected{background-color:#90b6e2;color:white;}
             #tblFiles  > tbody > tr:nth-child(even) .selected{background-color:#90b6e2;color:white;}
 
-            .top_links {font-size:0.6em;position:fixed;top:5px;padding:5px;}
-           
             /* Style for the "Open in a new window" hyperlink */
             .open_newwindow{text-decoration:underline;}
 
@@ -1076,11 +1111,16 @@ class aeSecureMarkdown {
 
             /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
             #icons {display:inline-block;position:absolute;top:5px;right:-1px;margin-right:10px;}
-
+            
             /* Images */
-            .encrypted {background-repeat:no-repeat;display:inline-block;position:relative;top:2px;height:16px;width:48px;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUBJREFUeNrsVdENgjAQReMAuEFHYANhAnECIekAOoE6AQ7QDzbQDawbMAIjdAM92qsgKbWYGn94yTWBvh7vjtc2CCZM+AMY20GEDrxIct1yppI/EvMvxGcwFhAHB3Yhg7H4Q04C4wXjxwW0wjPrX1Ci496aTzkJNsgZM8euN52MMPqiOYSAyKUAJSbsiNeoMe4BpUcUusU1pMetMOceuJVN2sKx0MwgXCPGj+n5dICnhQp8XhuK1Ig6ayofFkqweyYIOU9pjd3KLXnaeUo3MJYWbg6cqx8LtZ6+GWaa33w2WM50+iyBK3rch4HHgZf43sRk4H1osYD9vTp9XHN6K6CWXVebt8HKIoAjVwwIIx0bnjqWcr4PFiMKKKV4SvVHzvLyacW920r5nGOnSzwI+MCeuL6sxdjJsrknTPCNpwADAM/IW54Td+BPAAAAAElFTkSuQmCC");}
-            .lock_green{background-repeat:no-repeat;display:inline-block;height:64px;width:64px;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAS1BMVEX///+m14W84aTr9uTI5rOo2Ij0+vD8/frX7cjQ6r664KHi8tex3JT6/fjM6Lq64KDw+Orn9N6s2o3D5Ky03ZjB46nd8NHZ7svF5bAJ+5OZAAACD0lEQVRYhdVXy4KDIAxcURCqWN/t/3/paguukgngcedIkgGSEJKfHxa2McvctvNiGstrsRgWWRyQy3DTvHwWAZ7lDfO6C813dHWuvX0g+6J4ZLrCzti+KOYshvpiL+WFIecW70O9NcO2pR1Meyy90/aN1x3Xv8V19KtN8gJ+t6c6Lysf1jZ1Ce0URaBYCyfQCQJ3gJb423pJ3H5w+4DMjYhOcCkokMxdoosSzBFfu/jMUYJv2kjo6toJY/bKhRBLXSgVln7Qf1UmLJ2+0j5CUEYT1iV5rDA4ggpLq/9IYNWGI6tvEigt3CMehVa3CXoXM4+pv0dgZBFAmhsEiwjNd4glTdAgwxCRqmbbtDkqNgfgh0TBVgRFPIchufdY5dmzmZp7APYIOm3pgWs7+JPHrmm6ka4/kL2lN5g/R1X0t5YokgNVU6xz0OdAXXCUxomIkBNoEDXPjQK5EC3jRYaIFkBAX+DxPZCWDf594Am7FmOlkkwC+WFYQYYigjdV++qh6oK+HuqpCIEBBKgasQSoKqk7BPA5gnrGEeBGCTiBI0AuOJqDHAKmRWByMS8Pd4AHvW3V5z1m5ghjVdGCxB0gt6yyVX3DK4fgxdvjBxEgPjLU8F8+I2zjQ3ADl0d68KppBT1hyhmaNBsLmZo2HHpubow1uVc0YHSck/PWBcM1A8fq7vS9odSV2Md/UelIX/UL02QTP+0VvS8AAAAASUVORK5CYII=");}
-
+            #icon_edit{margin-left:20px;color:lightgray;}
+            #icon_lock{margin-left:2px;color:#abe0ab;}
+            #icon_printer{color:lightgray;}
+            #icon_window{margin-left:20px;color:lightgray;}
+            
+            .icon_file{padding-left:5px;}
+            .icon_encrypted{padding-left:5px;padding-right:5px;color:#abe0ab;}
+            
             /* Content if the full page : contains the list of files and the content of the select note */
             
             #CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
@@ -1099,20 +1139,59 @@ class aeSecureMarkdown {
             /* Use by the jQuery Highlite plugin, highlight searched keywords */
             .highlight{background-color:yellow;border-radius:.125em;}  
             
-            .download-link{background-position:center right;background-repeat:no-repeat;background-color:#e4ffe2;padding-right:25px;display:inline-block;}
-
-            .download-7z {background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZklEQVR4nM2SUQrAMAhDk9H7X9l9DIvYtB0TyvyT6FM0NDNU4ip1/wJAAKUjNAD4ekiSD8CTWawGtJiowhV4AMTiDMsg1+UXXMxAteEAUM15iwg6ZyQ1HUhHjIVvQR2wM9NML1v5BpOZLxyagrcCAAAAAElFTkSuQmCC');}
-            .download-doc{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAn1BMVEX///81SWOQrtbi7Pzo8P3Z5vsENYLT4vrL3Pg2SmQISrKXteHd6fsFQZusu9Hy9v70+P6UpLmzwtbc4vR4k9Z5pOmmtcuKruTr7vCTq+aju91Dabl/nuaDnNqAp+eFrOZfgM3Q1+YAMXdUbKSJpekpYbdmitVWfNA5WZg3YK5Maad2ipxBbcSvvN8gS5qqvvEHLou3yPRmfbMnPWwxWrbPYmmFAAAAvUlEQVQYlU3N2ZaCMBBF0aISMpEYJsEQFRTnefr/bzM03Wv1eat9HwoAIM/zSaiqqlm4nNvMy92+u2ytzWQQB7+pNM3yIJv7olt1Re8GkFLCvFh0hS9OZ4VIm0ZCCaW/3txhZVKkpIlgBy/fs88bjEWqA+yhPzwZmwCzSHQSwQUeR8s8AEMkcQD/93ZNieYBtkopYwxja8SY19GwZTREiNZctCMQgj8JsRwhHuJcCDEdgTdJktR1u5yOEP3vC345DTl56qgPAAAAAElFTkSuQmCC');}
-            .download-pdf{background-image:url('data:image/gif;base64,R0lGODlhEAAQAOZZAP0CAv///36Inpqr3Kq6509ZdekCAt4CAvECAuwCAucCAvUCAtwCAtsCAtoCAuMCAvHx9O0CAp+94O4CAvwCAvACApyt3m99qObn6258piMjJAAAASEhI9gCAuPk6OACAr7H5LnH8VhkiBATGqy86dXi7fsCAvHy9d0CAiguQOns8+3u8+jp7gsNFE9ZdsDG3w8RFpaYpa6850ZPbWt4nOfo6/Dw8vYCAvgCAgEBA/MCAiAhI+gCAn6Mt7fA2uvs7t/g5/cCAvX196y97+QCAq7B/NcCAuXm6uTm89zd5O7u8bzH64GMoy81R+UCAqe25pWm1+YCAiIiJOsCAu3u8eLk63SBqu/v8/ICAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAFkALAAAAAAQABAAQAeygFmCg1kCTAOIiIIAjAABARQLAU4BKI8GCIQxSFVASVdCJyoEO4RZNDI+LyBLISQWPTCmhRIlAh41GCwEUlmNjgGMj8LBFAARDR0BRg4HjwoGARMVWIQiFzMpLRuzswISAjZKP1QEGqYCBeoFRxAQKwQcvr/09b/B+I44AQkRCIwmggSIcsBBAAYBHgTgkaACgCkNGBz48IAItAQTEOhYcINQhiJDnkCx4qLJiBzdUg4KBAA7');}
-            .download-ppt{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MEJFQTY2REIwM0U5MTFFMUJBNkM5MjBCRTQ1NURBOTUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MEJFQTY2REMwM0U5MTFFMUJBNkM5MjBCRTQ1NURBOTUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowQkVBNjZEOTAzRTkxMUUxQkE2QzkyMEJFNDU1REE5NSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowQkVBNjZEQTAzRTkxMUUxQkE2QzkyMEJFNDU1REE5NSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Ph+6lvkAAAKKSURBVHjajFNdSxRhFH5mdtZtQ40u2szdXGOLPmg1v7YsjTIi6sK8CY0uuoh+QtDHTREEdVWgN912E94VUoHFFpFpiKYLGoWkws66yrqzOju6HzOn807btlSEBx4OM+97nnPO854jERGESZLkY7ed4cD/bZExz3GW/SUICiRN6+vrWi6XM/P5PP0LfE69vb2P+G4tQ7bjSghCIljXdUqn00WkUilKJpMUj8dtklgsRn19fUUSR8eHx5SPDN0+4XJe1UfGpNH7D1C5EMPwvTuoWIxiihNmonOobD4Ct9sNp9OJ+vr6w36/Xx4YGJhGrNtDtDJNtDpHlE4QaRpRaoXBfmWZv5fpXecZWlpa+qslUbWyGl1ElZTBxLn9qNjVCHVGxr6zFzD+/ClqOlqx9/pd+EMtKCsrg6ZpsCwLHAyPx2NrKO8IBQHLxJbqcmiJWbS9GsRQOIzTg2Gor4f4eRyYGHwDRVFsEtGCy+UqPok8G46wkgrUbzoa+0fAp9jc3oZnXT0Idl0UV3Dw+Ck4HA6bRECQFE29HCDSpyhxq4E1mCLKp4iyadYkSe+PNdua9IdaKJvNUiaTIcMwbPzSQI4uzHCSNcy9HYf68ApYciCnYqwngOoAz4rTRE1DUAyanVBUIstysQClqs7LfQLbOg4g/uIjNhmX8OXlOKr3lCP1fYz10aF+HUUjz4ogESKWmpL8HIVvzYDv5hP4bvAfy42j13JMmhdjwvoYqGva/Vu0kuw2QWXbeUS627H1kBcLk1F4qwJITM6g9mQQsU8RVHg9mF92wl9o4U+T6Gdp4rSFhRmG3dCGzOIXaZULCyUUtUzTXBN+I8F812BvSiXrvLOwzvIGKzDFav8QYAAnw3e0BozkGgAAAABJRU5ErkJggg==');}
-            .download-xls{background-image:url('data:image/gif;base64,R0lGODlhEAAQANU/AOj05yt3K22lW5nKl6mqqSuGL87PztTU1Nna2bjMtvj+9rKystPk0/7//Yq3iFSINGmtZ4K5fz17HYimhuHr3MzizLu9u3G3bPL47iNjHuvu6svaw6PKpsHDwPj/8/r/+Lzcucreyvz/+8bRxLzSu9be1efn5zRxDx9tHt3j2Xarc8DfvyJfHaLOm5+fn+Dw3rLYsZ29kdbr18nKyUmYQ2+2aqXRomywcre4tzFuC5/SnJPIkOv36ySNLf///////yH5BAEAAD8ALAAAAAAQABAAAAbJwN+PcaP1jkik8Mfp7WS8qDTaE4YKKwBMx+0OeNUfZADYmc/mb7hQGUQYoUoFBLMNGBBhIeWI+P4+DYINIiIaCGwqDj4PDwKDhR8IBwEkGRM+GDk5MS8XFzsAMwaVLAmBGycnAjU2CgodpCQsGoIvNDkSIB8fCjgGKCMBgiufEjkCEC0eCwcoCZggEZ8QJ8gvGATOMSOCIr0eMZs8FM0oKBMjJd+8Ch7vGwsIPyYzCwQuBAQWsSkUJTjm0UMwycCMDhbuEcAxQ0MQADs=');}
-            .download-zip{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAGYktHRP///////wlY99wAAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAISSURBVHicpVNNaFNBEP42bdPUJLwmVikqlUo1Wk2C9CRKvYhSFHry5qkUwZsn74I/oCAIohc99SJ6EKFa1IsUSktVaCykWnJT8IemsWhr3ts/d2dfm8T0IPhgdpbdb775ZnYe/vdjdinPXdebXfqRnVj8WEDP1p/w0r109vlb8VL+1NjNdUzELkpJpA8dRvpgDqn+fqQOZNC5fy9E9xlMfz+JOy8G4PXtRlsygR3bMjfqkzgCKQAtoLVvvE9eqyqmXj/D28lxAipRRawr6bDNBIEJ4mbDoe1e+mQnhs/h6rXLBNTKNzifsE0EUppAJUILSVSAVBT4VGGOgIg5YTdXYPrQSMLx5OUbFOdehQQCv758hRQ+Zh6NnG5UILjrQRhowdYXFz5gdGAWy8tlyrxarqC9aztiHbHxmYcjd+sIAgqyDSKS0LI9W3D7uYdosGBRENxHPNGKPbldJiG7UNeDYEO+MpnWbfhoCvlsHxLdx2wWwimxiiB+3mAZGhWYjJC81kRjT6cqKMyXcHbwh5kVTjgl1sJXAZpKqPXAdXzoiIdcdh8eT3bSPeHEbxepWf0rcJpGJaXrRfgiE9MreD+/SArMRVhaFRffrZi5+WsO3Il2TjmJQ/mgpsBkpHkxBEtLa40lKCJgBKIj1kI2UYjWFLAI4Wx5D3qvWGxp42+cHTuu//X3DUTGqixppe4Njt6/9QfWoIkcU8DL+wAAAABJRU5ErkJggg==');}
+            .download-link{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}
             
          } /* @media screen */
 
          @media print {
+            
+            #CONTENT:before {
+               content:"<?php echo APP_NAME;?>";
+               display:block;
+               text-align:center;
+               border:1px solid #ccc;
+               font-style:italic;
+               margin:0 0 1em;
+               padding:8px 10px;
+            }
+            /*page[size="A4"][layout="portrait"] {width:29.7cm;height:21cm;}*/
 
-            page[size="A4"][layout="portrait"] {width:29.7cm;height:21cm;}
+            body {
+               background:#FFF;
+               color: #000;
+               font-family: Georgia, serif;
+               line-height: 1.2;
+            }
+
+            #CONTENT p, table, ul, ol, dl, blockquote, pre, code, form {
+               margin: 0 0 1em;
+            }
+
+            #CONTENT h1,h2,h3,h4,h5 {
+               font-weight: normal;
+               margin: 2em 0 0.5em;
+               text-shadow: rgba(0, 0, 0, 0.44) 1px 1px 2px;
+            }
+            
+            /* Put the href of the link in the content, juste after the link */
+            /* So <a href="www.google.be">Google</a> will be printed like */
+            /* Google (www.google.be) */
+            a:link:after {
+               content: " (" attr(href) ") ";
+               font-size: 80%;
+               text-decoration: none;
+            }
+            
+            #CONTENT h1 {font-size:2em; margin: 2em 0 0.25em;}
+            #CONTENT h2 {font-size:1.7em;}
+            #CONTENT h3 {font-size:1.5em;}
+            #CONTENT h4 {font-size:1.2em;}
+            #CONTENT h5 {font-size:1em;}
+
+            #CONTENT ul, li {
+               display:block;
+               page-break-inside:avoid;
+            }
 
             /* Don't print objects that only should be displayed on screen */
             .onlyscreen{display:none;}
@@ -1120,13 +1199,20 @@ class aeSecureMarkdown {
             /* Don't print the left part */
             #TDM{display:none;}
 
-            body, page{margin:0;box-shadow:0;}
+            /*body, page{box-shadow:0;}*/
             
             /* Make text a little larger on print */
-            page{font-size:larger;}
+            /*page{font-size:larger;}*/
 
-            #footer.onlyprint{position:fixed;bottom:-10px;left:0;display: block;}
-
+            footer {
+               position:fixed;
+               display:block;
+               bottom:0px;
+               border-top: 1px solid #cecece;
+               font-size: 0.83em;
+               margin: 2em 0 0;
+               padding: 1em 0 0;
+            }
          }
 
        </style>
@@ -1140,11 +1226,14 @@ class aeSecureMarkdown {
    <body style="overflow:hidden;">
    
       <div class="row">
-         <div class="container col-md-4" id="TDM">
+         <div class="container col-md-4 onlyscreen" id="TDM">
             <div class="container col-md-12"><input id="edtSearch" type="text" size="60" maxlength="<?php echo SEARCH_MAX_WIDTH; ?>" placeholder="<?php echo $aeSMarkDown->getText('search_placeholder','SEARCH_PLACEHOLDER');?>"/></div>
-            <div id="TOC">&nbsp;</div>	  
+            <div id="TOC" class="onlyscreen">&nbsp;</div>	  
          </div>
          <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
+
+         <div id="aside">&nbsp;</div>   
+         
       </div>
       
       <?php 
@@ -1152,15 +1241,29 @@ class aeSecureMarkdown {
          echo aeSecureFct::addJavascript('libs/bootstrap.min.js','//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js');
          echo aeSecureFct::addJavascript('libs/jquery.tablesorter.combined.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.25.3/js/jquery.tablesorter.combined.min.js');
          echo aeSecureFct::addJavascript('libs/jquery.noty.packaged.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.3.8/packaged/jquery.noty.packaged.min.js');
-         echo aeSecureFct::addJavascript('libs/highlite/js/jquery.highlite.js');         
+         echo aeSecureFct::addJavascript('libs/highlite/js/jquery.highlite.js');
+         echo aeSecureFct::addJavascript('libs/print-preview/jquery.print-preview.js');
       ?>
-      
-      <footer class="onlyprint" id="footer">&nbsp;</footer>	        
 
+      <footer class="onlyprint">&nbsp;</footer>	        
+
+      <?php 
+         // Add your custom javascript if the custom.js file is present
+         echo aeSecureFct::addJavascript('custom.js');
+      ?>
       <script type="text/javascript">
 
          $(document).ready(function() {
-            
+
+            // Add keybinding (not recommended for production use)
+            /*$(document).bind('keydown', function(e) {
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 80 && !$('#print-modal').length) {
+                    $.printPreview.loadPrintPreview();
+                    return false;
+                }            
+            });*/
+
             // On page entry, get the list of .md files on the server
             ajaxify({task:'listFiles',callback:'initFiles(data)',target:'TOC'});
             
@@ -1265,6 +1368,11 @@ class aeSecureMarkdown {
             } catch(err) {         
             }
 			 
+            // See if the custominiFiles() function has been defined and if so, call it
+            if (typeof custominiFiles !== 'undefined' && $.isFunction(custominiFiles)) {
+               custominiFiles();
+            }
+            
             return true;
 			 
          } // iniFiles()
@@ -1294,24 +1402,51 @@ class aeSecureMarkdown {
           * Add icons to .pdf, .xls, .doc, ... hyperlinks
           */
          function addIcons() {
-            $('a[href$="7z"]').addClass('download-link download-7z');
-            $('a[href$="doc"]').addClass('download-link download-doc');
-            $('a[href$="docx"]').addClass('download-link download-doc');
-            $('a[href$="pdf"]').addClass('download-link download-pdf');
-            $('a[href$="ppt"]').addClass('download-link download-ppt');
-            $('a[href$="pptx"]').addClass('download-link download-ppt');
-            $('a[href$="xls"]').addClass('download-link download-xls');
-            $('a[href$="xlsm"]').addClass('download-link download-xls');
-            $('a[href$="xlsx"]').addClass('download-link download-xls');
-            $('a[href$="zip"]').addClass('download-link download-zip');
-            return true;            
+            
+            $("a").each(function() {
+               
+               $href=$(this).attr("href");   
+               $sAnchor=$(this).text();
+               
+               if (/\.doc[x]?$/i.test($href)) { 
+                  // Word document
+                  $sAnchor+='<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';            
+                  $(this).html($sAnchor).addClass('download-link');       
+               } else if (/\.pdf$/i.test($href)) { 
+                  // PDF
+                  $sAnchor+='<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';            
+                  $(this).html($sAnchor).addClass('download-link');       
+               } else if (/\.ppt[x]?$/i.test($href)) { 
+                  // Powerpoint
+                  $sAnchor+='<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';            
+                  $(this).html($sAnchor).addClass('download-link');       
+               } else if (/\.xls[m|x]?$/i.test($href)) { 
+                  // Excel
+                  $sAnchor+='<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';            
+                  $(this).html($sAnchor).addClass('download-link');       
+               } else if (/\.(7z|gzip|tar|zip)$/i.test($href)) { 
+                  // Archive
+                  $sAnchor+='<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';            
+                  $(this).html($sAnchor).addClass('download-link');    
+               }
+               
+            });
+
+            return true;  
+            
          } // function addIcons()
          
          /**
           * Called when a file is displayed
           */
          function afterDisplay() {
-         
+                     
+            /*
+             * Initialise print preview plugin
+             */
+            // Add link for print preview and intialise
+            $('#icon_printer').printPreview();
+            
             $('#CONTENT').show();
             
             $('html, body').animate({
@@ -1322,7 +1457,7 @@ class aeSecureMarkdown {
             var $title=$('#CONTENT h1').text();				  
             if ($title!=='') $('title').text($title);
             
-            var $fname=$('#CONTENT h5').text();				  
+            var $fname=$('div.filename').text();				  
             if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
             
             // Force links that points on the same server (localhost) to be opened in a new window
@@ -1347,12 +1482,23 @@ class aeSecureMarkdown {
             }
             
             // By clicking on the "Edit" link, start the associated edit program (like Notepad f.i.)
-            $('.edit_file').click(function(e) {
-               var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));              
+            $('#icon_edit').click(function(e) {
+               var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));      
                ajaxify({task:'edit',param:$fname});
-//alert($(this).data('file'));
             })
-			
+   
+            $('#icon_window').click(function(e) {
+               var $fname=$(this).data('file');  
+               window.open($fname);
+            })
+            
+            // See if the customafterDisplay() function has been defined and if so, call it
+            if (typeof customafterDisplay !== 'undefined' && $.isFunction(customafterDisplay)) {
+               customafterDisplay($fname);
+            }
+            
+            return true;
+            
          } // function afterDisplay()
          
          /**
@@ -1364,8 +1510,20 @@ class aeSecureMarkdown {
             // Get the searched keywords.  Apply the restriction on the size.
             var $searchKeywords = $('#edtSearch').val().substr(0, <?php echo SEARCH_MAX_WIDTH; ?>).trim();
             
-            // On page entry, get the list of .md files on the server
-            ajaxify({task:'search',param:$searchKeywords, callback:'afterSearch("'+$searchKeywords+'",data)'});
+            var $bContinue=true;
+            // See if the customonChangeSearch() function has been defined and if so, call it
+            if (typeof customonChangeSearch !== 'undefined' && $.isFunction(customonChangeSearch)) {
+               $bContinue=customonChangeSearch($searchKeywords);
+            }
+            
+            if ($bContinue==true) {
+               // On page entry, get the list of .md files on the server
+               ajaxify({task:'search',param:$searchKeywords, callback:'afterSearch("'+$searchKeywords+'",data)'});
+            } else {
+               console.log('cancel the search');
+            }
+            
+            return true;
             
          } // Search()
          
@@ -1430,6 +1588,12 @@ class aeSecureMarkdown {
                } // if ($keywords!=='')
                
             } // if (Object.keys($data).length>0)
+            
+            // See if the customafterSearch() function has been defined and if so, call it
+            if (typeof customafterSearch !== 'undefined' && $.isFunction(customafterSearch)) {
+               customafterSearch($keywords, $data);
+            }
+            
             
          } // function afterSearch()
          
