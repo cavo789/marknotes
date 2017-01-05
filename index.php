@@ -17,6 +17,7 @@
  * 
  * 2017-01-05 : + Add custom.js to allow the end user to add his own script
  *              + Add a IMG_MAX_WIDTH constant to be sure that images will be correctly resized if too big
+ *              + Add selectize.js
  * 2017-01-04 : + Add Print preview feature (thanks to https://github.com/etimbo/jquery-print-preview-plugin)
  *              + Remove icons (images) and use font-awesome instead
  * 2017-01-03 : + Improve add icons (based on jQuery and no more pure css)
@@ -1072,6 +1073,7 @@ class aeSecureMarkdown {
          echo aeSecureFct::addStylesheet('libs/font-awesome/css/font-awesome.min.css','https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
          
          echo aeSecureFct::addStylesheet('libs/print-preview/print-preview.css');
+         echo aeSecureFct::addStylesheet('libs/selectize/css/selectize.bootstrap3.css');
          
       ?>
 
@@ -1127,7 +1129,7 @@ class aeSecureMarkdown {
 
             /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
             #TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
-            #TOC{position:inherit;top:30px;}
+            #TOC{position:inherit;}
             
             /* page is used to display the content of the selected note */
             page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}
@@ -1227,13 +1229,30 @@ class aeSecureMarkdown {
    
       <div class="row">
          <div class="container col-md-4 onlyscreen" id="TDM">
-            <div class="container col-md-12"><input id="edtSearch" type="text" size="60" maxlength="<?php echo SEARCH_MAX_WIDTH; ?>" placeholder="<?php echo $aeSMarkDown->getText('search_placeholder','SEARCH_PLACEHOLDER');?>"/></div>
+               
+            <!--@TODO Ajaxify this list -->
+            <select id="edtSearch" placeholder="<?php echo $aeSMarkDown->getText('search_placeholder','SEARCH_PLACEHOLDER');?>" maxlength="<?php echo SEARCH_MAX_WIDTH; ?>">
+               <option value=""></option>
+               <option value="Activité indépendant">Activité indépendant</option>
+               <option value="aeSecure">aeSecure</option>
+               <option value="AllEvents">AllEvents</option>
+               <option value="CINNK">CINNK</option>
+               <option value="Development">Development</option>
+               <option value="Excel">Excel</option>
+               <option value="Joomla">Joomla</option>
+               <option value="NDD">NDD</option>
+               <option value="Privé">Privé</option>
+               <option value="Réseau sociaux">Réseau sociaux</option>
+               <option value="SEO">SEO</option>
+               <option value="SPF">SPF</option>
+               <option value="Tools">Tools</option>
+               <option value="Windows">Windows</option>
+            </select>  
+ 
             <div id="TOC" class="onlyscreen">&nbsp;</div>	  
          </div>
-         <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
-
-         <div id="aside">&nbsp;</div>   
-         
+        <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
+      
       </div>
       
       <?php 
@@ -1243,6 +1262,7 @@ class aeSecureMarkdown {
          echo aeSecureFct::addJavascript('libs/jquery.noty.packaged.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery-noty/2.3.8/packaged/jquery.noty.packaged.min.js');
          echo aeSecureFct::addJavascript('libs/highlite/js/jquery.highlite.js');
          echo aeSecureFct::addJavascript('libs/print-preview/jquery.print-preview.js');
+         echo aeSecureFct::addJavascript('libs/selectize/js/selectize.min.js');
       ?>
 
       <footer class="onlyprint">&nbsp;</footer>	        
@@ -1251,10 +1271,19 @@ class aeSecureMarkdown {
          // Add your custom javascript if the custom.js file is present
          echo aeSecureFct::addJavascript('custom.js');
       ?>
+      
       <script type="text/javascript">
 
          $(document).ready(function() {
 
+$('#edtSearch').selectize({
+	create: true,
+   sortField: {
+      field: 'text',
+      direction: 'asc'
+   },
+   dropdownParent: 'body'
+});      
             // Add keybinding (not recommended for production use)
             /*$(document).bind('keydown', function(e) {
                 var code = (e.keyCode ? e.keyCode : e.which);
@@ -1345,6 +1374,8 @@ class aeSecureMarkdown {
                sortList: [[0,0],[1,0]]
             }); // $("#tblFiles")
             
+
+    
             $('#tblFiles > tbody  > tr > td').click(function(e) {
                
                // By clicking on the second column, with the data-file attribute, display the file content
