@@ -2,26 +2,43 @@
    "editor": "C:\\Windows\\System32\\notepad.exe",
    "folder":"docs",
    "language":"fr",
-   "page":{
-      "google_font":"",
-      "img_maxwidth":800
+   "templates":{
+      "screen":"screen",
+	  "html":"html"
    },
    "encryption": {
       "password":"",
       "method":"aes-256-ctr"
    },
    "export":{
-      "save_html":true,   
-      "html":"<!DOCTYPE html><html lang='en'><head><meta http-equiv='Cache-control' content='public'><meta name='robots' content='noindex, nofollow' /><meta charset='utf-8'/><meta http-equiv='content-type' content='text/html; charset=UTF-8'/><meta name='viewport' content='width=device-width, initial-scale=1.0'/><meta http-equiv='X-UA-Compatible' content='IE=9; IE=8;'/><title>%TITLE%</title><link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet'><style>.confidential{text-transform:uppercase;font-weight:bolder;color:red;}</style>%FONT%</head><body><page><div class='container'>%CONTENT%</div></page></body></html>"
+      "save_html":1
    },
    "languages":{
+      "en": {
+         "apply_filter":"Filtering to [%s]",
+         "confidential":"confidential",
+         "edit_file":"Edit",
+         "files_found":"%s has been retrieved",
+         "is_encrypted":"This information is encrypted in the original file and decoded here for screen display", 	
+         "open_html":"Open in a new window",	 		 
+         "please_wait":"Please wait...",
+         "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
+         "search_placeholder":"Sorry, the search is not successfull"
+	  },
       "fr": {
+         "apply_filter":"Limite la liste des notes à [%s]",
          "confidential":"confidentiel",
          "edit_file":"Éditer",
+         "files_found":"%s fichiers ont été retrouvés",
          "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.", 	
          "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",	 		 
+         "please_wait":"Un peu de patience s&#x27;il vous pla&#xEE;t...",
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Tapez ici des mots-cléfs pour lancer une recherche"
 	  }      
-   }
+   },
+   "page":{
+      "google_font":"",
+      "img_maxwidth":800
+   }   
 }
