@@ -124,6 +124,7 @@ function initFiles($data) {
 
          // By clicking on the second column, with the data-file attribute, display the file content
          if ($(this).attr('data-file')) {
+$('#BACKGROUND').remove();            
             var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));              
             ajaxify({task:'display',param:$fname,callback:'afterDisplay()',target:'CONTENT'});
             $(this).addClass("selected");                  
@@ -158,25 +159,7 @@ function initFiles($data) {
             $('#search').append($('<option>', {value: $item,text :$item}));            
          });
 
-/* 
- * TROUVER UNE SOLUTION POUR FAIRE FONCTIONNER LE PLUGIN remove_button.  
- * JE NE VOIS PAS LA STYLISATION NI LE BOUTON x POUR SUPPRIMER LA VALEUR
- */
-         Selectize.define('remove_button', function(options) {   
-            var self = this;
-            this.setup = (function() {
-               var original = self.setup;
-               return function() {
-                  original.apply(this, arguments);
-                  this.$control.on('click', 'div', function(e) {
-                     this.remove();
-                  });
-                };
-            })();
-         });
-
          $('#search').selectize({            
-            plugins:['remove_button'],
             delimiter: ',',
             persist: false,
             create: function(input) {

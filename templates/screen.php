@@ -46,8 +46,11 @@
             
          </div>
          
-         <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
-      
+         <div class="container col-md-8">
+            <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>         
+            <img id="IMG_BACKGROUND" src="assets/background.jpg"/>
+         </div>
+         
       </div>
 
       <footer class="onlyprint">&nbsp;</footer>	        

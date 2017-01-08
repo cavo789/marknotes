@@ -52,7 +52,10 @@ body{background:#F7F2E9;}
 
 /* Content if the full page : contains the list of files and the content of the select note */
 
-#CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
+#CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;width:100%;left:-15px;}
+
+/* Background image displayed on the first screen */
+#IMG_BACKGROUND{width:100%;height:100%;vertical-align:middle;}
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
 #TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
