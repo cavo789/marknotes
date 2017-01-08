@@ -275,7 +275,7 @@ class aeSecureMarkdown {
     */ 
    private function ShowFile(string $filename) : string {
 	    
-      $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename);
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename));
       
       $markdown=file_get_contents($fullname);
       
