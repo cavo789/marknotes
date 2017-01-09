@@ -23,6 +23,8 @@ define('APPLY_FILTER','Searching for %s');
 define('COPY_LINK','Copy the link to this note in the clipboard');
 define('CONFIDENTIAL','confidential');
 define('EDIT_FILE','Edit');
+define('ERROR','Error');
+define('FILE_NOT_FOUND','The file [%s] doesn\'t exists (anymore)');
 define('FILES_FOUND','%s has been retrieved');
 define('IS_ENCRYPTED','This information is encrypted in the original file and decoded here for screen display');
 define('OPEN_HTML','Open in a new window');
@@ -279,15 +281,40 @@ class aeSecureMarkdown {
    } // function ListFiles()	  
   
    /**
+    * Display an error
+    * 
+    * @param string $msg   The error message to display
+    * @param bool $die     Die() once displayed or not ?
+    * @return bool         TRUE
+    */
+   private function ShowError(string $msg, bool $die = TRUE) : bool {
+      
+      if (DEBUG) $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].')</em>';
+      
+      $msg='<div class="error bg-danger">'.$this->getText('error','ERROR').' - '.$msg.'</div>';
+      if ($die===TRUE) {         
+         die($msg);
+      } else {
+         echo $msg;
+         return true;
+      }
+      
+   } // function ShowError()
+   
+   /**
     * Return the HTML rendering of a .md file
     * 
     * @param type $filename   Relative filename of the .md file to open and display
     * @return string          HTML rendering 
     */ 
    private function ShowFile(string $filename) : string {
-	    
-      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename));
       
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename));
+
+      if (!file_exists($fullname)) {
+         self::ShowError(str_replace('%s','<strong>'.$fullname.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
+      }
+
       $markdown=file_get_contents($fullname);
       
       $icons='';
@@ -679,7 +706,7 @@ class aeSecureMarkdown {
             }
 
          } catch (Exception $ex) {
-            die('Error in line '.__LINE__.' : '.$ex->getMessage());
+            self::ShowError('<strong>'.$ex->getMessage().'</strong>',TRUE);
          }
          
       } // if ($filename!="") 
@@ -774,8 +801,8 @@ class aeSecureMarkdown {
          
       } else { // if (is_file($template=dirname(__DIR__).'/templates/main.php'))
          
-         return 'ERROR - The file '.$template.' is missing';
-         
+         self::ShowError(str_replace('%s','<strong>'.$template.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
+
       } // if (is_file($template=dirname(__DIR__).'/templates/main.php'))
       
    } // function showInterface()   

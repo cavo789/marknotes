@@ -12,6 +12,8 @@ a.note_link:after { font-family: FontAwesome; content: " \f18e"; }
 
 body {overflow:hidden;}
 
+.error {padding:10px;margin:10px;border:1px solid red;}
+
 /* By selecting a file from the filelist, highlight its name */
 #tblFiles > tbody > tr:nth-child(odd) .selected{background-color:#90b6e2;color:white;}
 #tblFiles  > tbody > tr:nth-child(even) .selected{background-color:#90b6e2;color:white;}

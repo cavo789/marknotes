@@ -19,9 +19,11 @@
    "languages":{
       "en": {
          "apply_filter":"Filtering to [%s]",
-		 "copy_link":"Copy the link to this note in the clipboard",
+         "copy_link":"Copy the link to this note in the clipboard",
          "confidential":"confidential",
          "edit_file":"Edit",
+         "error":"Error",
+         "file_not_found":"The file [%s] doesn\'t exists (anymore)",
          "files_found":"%s has been retrieved",
          "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
          "open_html":"Open in a new window",
@@ -32,14 +34,16 @@
 	  },
       "fr": {
          "apply_filter":"Limite la liste des notes à [%s]",
-		 "copy_link":"Copier le lien vers cette note dans le presse-papier",
+         "copy_link":"Copier le lien vers cette note dans le presse-papier",
          "confidential":"confidentiel",
          "edit_file":"Éditer",
+         "error":"Erreur",
+         "file_not_found":"Le fichier [%s] n\'existe pas (ou plus)",
          "files_found":"%s fichiers ont été retrouvés",
          "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
          "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",
          "please_wait":"Un peu de patience s&#x27;il vous pla&#xEE;t...",
-		 "print_preview":"Aper&ccedil;u avant impression",
+         "print_preview":"Aper&ccedil;u avant impression",
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Tapez ici des mots-cléfs pour lancer une recherche"
 	  }      
