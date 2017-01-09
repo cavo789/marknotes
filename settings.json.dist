@@ -38,7 +38,7 @@
          "confidential":"confidentiel",
          "edit_file":"Éditer",
          "error":"Erreur",
-         "file_not_found":"Le fichier [%s] n\'existe pas (ou plus)",
+         "file_not_found":"Le fichier [%s] n\\'existe pas (ou plus)",
          "files_found":"%s fichiers ont été retrouvés",
          "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
          "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",

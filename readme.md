@@ -6,7 +6,11 @@ The script is called `index.php` and just need to be put on a localhost website 
 
 The output will look like this : 
 
-<img src="images/interface.png" width="680"/>
+<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/interface.png" width="680"/>
+
+## Demo site
+
+Please visit the demo site : [https://markdown.cavo789.com/](https://markdown.cavo789.com/)
 
 ## Installation
 
@@ -38,7 +42,7 @@ So, you've create a localhost website and you've call it "`markdown`".  To use t
 
 If you've correctly configured your webserver and alias, you'll should see the interface.  Just after the installation of the script, you'll see something like this :
 
-<img src="images/howtouse.png" width="680"/>
+<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/howtouse.png" width="680"/>
 
 -  In the left pane, you'll retrieve the list of .md files found in the /docs folder.
 -  In the right pane, just after a click on a file, you'll get his HTML output (with image support).
@@ -73,7 +77,7 @@ So it's easy to create a link : edit a note and copy/paste there the link.
 
 Info : the `note_link` CSS class will be added to the hyperlink so it's also easy to define how intern links should be displayed on screen.
 
-<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/links_notes.png" width="680"/>
+<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/links_notes.png"/>
 
 ## Print
 

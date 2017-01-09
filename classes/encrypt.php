@@ -36,8 +36,8 @@ class aeSecureEncrypt {
       // (http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
       // And concatenate that "IV" to the encrypted texte
       
-      $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-      $this->_iv= mcrypt_create_iv($iv_size, MCRYPT_RAND);;
+      $iv_size = @mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+      $this->_iv= @mcrypt_create_iv($iv_size, MCRYPT_RAND);;
 
    } // function __construct()   
    
@@ -74,7 +74,7 @@ class aeSecureEncrypt {
       
       $tmp=urldecode($data);
       
-      $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+      $iv_size = @mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
       $iv = substr($tmp, 0, $iv_size);
 
       if(function_exists('openssl_decrypt')) {
