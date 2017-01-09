@@ -2,6 +2,9 @@
    "editor": "C:\\Windows\\System32\\notepad.exe",
    "folder":"docs",
    "language":"fr",
+   "optimisation":{
+      "cache":1
+   },
    "templates":{
       "screen":"screen",
 	  "html":"html"
@@ -16,23 +19,27 @@
    "languages":{
       "en": {
          "apply_filter":"Filtering to [%s]",
+		 "copy_link":"Copy the link to this note in the clipboard",
          "confidential":"confidential",
          "edit_file":"Edit",
          "files_found":"%s has been retrieved",
-         "is_encrypted":"This information is encrypted in the original file and decoded here for screen display", 	
-         "open_html":"Open in a new window",	 		 
+         "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
+         "open_html":"Open in a new window",
          "please_wait":"Please wait...",
+         "print_preview":"Print preview",
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Sorry, the search is not successfull"
 	  },
       "fr": {
          "apply_filter":"Limite la liste des notes à [%s]",
+		 "copy_link":"Copier le lien vers cette note dans le presse-papier",
          "confidential":"confidentiel",
          "edit_file":"Éditer",
          "files_found":"%s fichiers ont été retrouvés",
-         "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.", 	
-         "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",	 		 
+         "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
+         "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",
          "please_wait":"Un peu de patience s&#x27;il vous pla&#xEE;t...",
+		 "print_preview":"Aper&ccedil;u avant impression",
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Tapez ici des mots-cléfs pour lancer une recherche"
 	  }      

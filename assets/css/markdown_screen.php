@@ -7,6 +7,9 @@
    
 ?>
 
+/* note_link will allow to stylize links to other notes within the local website */
+a.note_link:after { font-family: FontAwesome; content: " \f18e"; }
+
 body {overflow:hidden;}
 
 /* By selecting a file from the filelist, highlight its name */
@@ -45,6 +48,7 @@ body{background:#F7F2E9;}
 #icon_edit{margin-left:20px;color:lightgray;}
 #icon_lock{margin-left:2px;color:#abe0ab;}
 #icon_printer{color:lightgray;}
+#icon_clipboard{margin-left:20px;color:lightgray;}
 #icon_window{margin-left:20px;color:lightgray;}
 
 .icon_file{padding-left:5px;}

@@ -20,12 +20,14 @@ define('EDITOR','C:\Windows\System32\notepad.exe'); // default editor
 // Default text, english
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
 define('APPLY_FILTER','Searching for %s');
+define('COPY_LINK','Copy the link to this note in the clipboard');
 define('CONFIDENTIAL','confidential');
 define('EDIT_FILE','Edit');
 define('FILES_FOUND','%s has been retrieved');
 define('IS_ENCRYPTED','This information is encrypted in the original file and decoded here for screen display');
 define('OPEN_HTML','Open in a new window');
 define('PLEASE_WAIT','Please wait...');
+define('PRINT_PREVIEW','Print preview');
 define('SEARCH_PLACEHOLDER','Type here keywords and search for them');
 define('SEARCH_NO_RESULT','Sorry, the search is not successfull');
 
@@ -52,6 +54,8 @@ class aeSecureMarkdown {
    private $_settingsTemplateScreen=''; // template to use; default is /templates/screen.php
    private $_settingsTemplateHTML='';   // template to use; default is /templates/html.php
    private $_settingsEditor='';         // defaut editor program 
+   
+   private $_useCache=TRUE;             // Use browser's cache
    
    private $_settingsFontName='';       // Google fontname if specified in the settings.json file
    
@@ -82,6 +86,7 @@ class aeSecureMarkdown {
       $this->_settingsDocsFolder='';
       $this->_settingsTemplateScreen='screen';
       $this->_settingsTemplateHTML='html';
+      $this->_useCache=TRUE;
       $this->_settingsLanguage='en';
       $this->_saveHTML=OUTPUT_HTML;
       $this->_settingsImgMaxWidth=IMG_MAX_WIDTH;
@@ -168,6 +173,12 @@ class aeSecureMarkdown {
             $tmp=$this->_json['encryption'];
             if(isset($tmp['password'])) $this->_encryptionPassword=$tmp['password'];
             if(isset($tmp['method']))   $this->_encryptionMethod=$tmp['method'];
+         }
+         
+         // Get optimisation settings
+         if(isset($this->_json['optimisation'])) {
+            $tmp=$this->_json['optimisation'];
+            if(isset($tmp['cache'])) $this->_useCache=((trim($tmp['cache'])=='1')?true:false);
          }
          
          // Get export settings
@@ -497,7 +508,16 @@ class aeSecureMarkdown {
       // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
       $fnameHTML = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML));
       
-      $html=str_replace('</h1>', '</h1><div id="icons" class="onlyscreen fa-3x"><i id="icon_printer" class="fa fa-print" aria-hidden="true"></i>'.$icons.'</div>',$html);
+      // Retrieve the URL to this note
+      $thisNote= urldecode(aeSecureFct::getCurrentURL(FALSE,FALSE));
+
+      // Keep only the script name and querystring so remove f.i. http://localhost/notes/
+      //$thisNote=str_replace(aeSecureFct::getCurrentURL(FALSE,TRUE),'',$thisNote);
+      
+      $html=str_replace('</h1>', '</h1><div id="icons" class="onlyscreen fa-3x">'.
+         '<i id="icon_printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview','PRINT_PREVIEW')).'"></i>'.
+         '<i id="icon_clipboard" class="fa fa-clipboard copy_clip" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link','COPY_LINK')).'"></i>'.
+         $icons.'</div>',$html);
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
       $html='<div class="onlyscreen filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
@@ -705,6 +725,18 @@ class aeSecureMarkdown {
          $html= file_get_contents($template);
          
          // replace variables         
+         
+         if ($this->_useCache==TRUE) {
+            
+            // Define metadata for the cache
+            $cache='<meta http-equiv="cache-control" content="max-age=0" /><meta http-equiv="cache-control" content="no-cache" /><meta http-equiv="expires" content="0" />'.
+               '<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" /><meta http-equiv="pragma" content="no-cache" />';
+            $html=str_replace('<!--%META_CACHE%-->', $cache, $html);
+         } else {
+            $html=str_replace('<!--%META_CACHE%-->', '', $html);
+         }
+         
+         
          $html=str_replace('%APP_NAME%', APP_NAME, $html);
          $html=str_replace('%APP_NAME_64%', base64_encode(APP_NAME), $html);
          $html=str_replace('%IMG_MAXWIDTH%', self::getSetting('ImgMaxWidth','800'), $html);
@@ -760,14 +792,16 @@ class aeSecureMarkdown {
          case 'display':
 
             header('Content-Type: text/html; charset=utf-8'); 
-            $fname=json_decode(urldecode(base64_decode(aeSecureFct::getParam('param','string','',false))));
+
+            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
+
             $result=self::ShowFile($fname);
             echo $result;
             die();
 
          case 'edit' : 
 
-            $fname=json_decode(urldecode(base64_decode(aeSecureFct::getParam('param','string','',false))));
+            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
             self::Edit($fname);            
             die();
 

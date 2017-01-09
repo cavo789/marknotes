@@ -17,6 +17,8 @@
  * 
  * History :
  * 
+ * 2017-01-09 : + Add support of links toward another notes 
+ *              + Add the copy the link in the clipboard feature
  * 2017-01-06 : + Move assets from inline to /assets folder
  *              + Move classes into /classes folder
  *              + Move HTML inline to /templates folder

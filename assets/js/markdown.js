@@ -1,6 +1,30 @@
 
 /* global markdown, custominiFiles, customafterDisplay, customafterSearch */
 
+/*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
+var QueryString = function () {
+  // This function is anonymous, is executed immediately and 
+  // the return value is assigned to QueryString!
+  var query_string = {};
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = decodeURIComponent(pair[1]);
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+    }
+  } 
+  return query_string;
+}();
+
 $(document).ready(function() {
    
    // Add keybinding (not recommended for production use)
@@ -78,7 +102,7 @@ function ajaxify($params) {
  * @returns {Boolean}
  */
 function initFiles($data) {
-   
+
    //console.log($data.count);
    
    if($data.hasOwnProperty('count')) {
@@ -124,7 +148,10 @@ function initFiles($data) {
 
          // By clicking on the second column, with the data-file attribute, display the file content
          if ($(this).attr('data-file')) {
-$('#BACKGROUND').remove();            
+            
+            // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
+            if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
+           
             var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));              
             ajaxify({task:'display',param:$fname,callback:'afterDisplay()',target:'CONTENT'});
             $(this).addClass("selected");                  
@@ -191,7 +218,47 @@ $('#BACKGROUND').remove();
 } // iniFiles()
 
 /** 
- *  Force links that points on the same server (localhost) to be opened in a new window
+ * If a note contains a link to an another note, use ajax and not normal links
+ * @returns {Boolean}     
+ */
+function replaceLinksToOtherNotes() {
+   
+   // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
+   var $currentURL=location.protocol + '//' + location.host + location.pathname;   
+   
+   // Define a regex for matching every links in the displayed note pointing to that URL
+   var searchPattern = new RegExp('^' + $currentURL, 'i');
+
+   $('a').each(function() {	
+      if (searchPattern.test(this.href)) {
+
+         // We've found an internal link; can be a link to an another note 
+         
+         // Add the "note_link" class so it's possible to stylize links to other notes
+         $(this).addClass('note_link');
+         
+         // Extract only the querystring (f.i. task=display&param=xxxxxx)
+         $queryString=this.href.replace($currentURL+'?', '');
+
+         $task = $queryString.match(/task=([^&]*)/);     // The task is more probably 'display'
+         $param = $queryString.match(/param=([^&]*)/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed
+
+         $(this).click(function(e) {
+            e.preventDefault(); 
+            e.stopImmediatePropagation();
+            
+            // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
+            ajaxify({task:$task[1],param:$param[1],callback:'afterDisplay()',target:'CONTENT'});
+         });
+
+      }
+   
+   }); // $('a').each()
+   return true;   
+}
+
+/** 
+ * Force links that points on the same server (localhost) to be opened in a new window
  * @returns {Boolean}     
  */
 function forceNewWindow() {
@@ -251,6 +318,10 @@ function addIcons() {
  */
 function afterDisplay() {
 
+   // Initialize the Copy into the clipboard button
+   // See https://clipboardjs.com/
+   new Clipboard('.copy_clip');
+   
    // Initialise print preview plugin
    $('#icon_printer').printPreview();
 
@@ -267,12 +338,15 @@ function afterDisplay() {
    var $fname=$('div.filename').text();				  
    if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
 
+   // If a note contains a link to an another note, use ajax and not normal links
+   replaceLinksToOtherNotes();
+
    // Force links that points on the same server (localhost) to be opened in a new window
    forceNewWindow();
 
    // Add icons to .pdf, .xls, .doc, ... hyperlinks
-   addIcons();
-
+   addIcons();  
+   
    // Interface : put the cursor immediatly in the edit box
    try {               
       $('#search').focus();

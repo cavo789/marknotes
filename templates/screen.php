@@ -8,11 +8,8 @@
       <meta name="robots" content="noindex, nofollow" />
       <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" /> 
-      <meta http-equiv="cache-control" content="max-age=0" />
-      <meta http-equiv="cache-control" content="no-cache" />
-      <meta http-equiv="expires" content="0" />
-      <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-      <meta http-equiv="pragma" content="no-cache" />
+      
+      <!--%META_CACHE%-->
       
       <title>%APP_NAME%</title>
       
@@ -62,6 +59,7 @@
       <script type="text/javascript" src="libs/highlite/js/jquery.highlite.js"></script>
       <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
       <script type="text/javascript" src="libs/selectize/js/selectize.min.js"></script> 
+      <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script> 
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       <!--%CUSTOM_JS%-->
