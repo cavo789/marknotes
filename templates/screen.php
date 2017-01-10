@@ -19,9 +19,8 @@
       
       <link href="libs/bootstrap.min.css" rel="stylesheet" />
       <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="libs/print-preview/print-preview.css" rel="stylesheet" />
-      <link href="libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" />
-
+      <link media="screen" href="libs/print-preview/print-preview.css" rel="stylesheet" />
+      <link media="screen" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" rel="stylesheet" />      
       <link rel="stylesheet" type="text/css" media="screen" href="assets/css/markdown_screen.php?%IMG_MAXWIDTH%">
       <link rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
       
@@ -34,11 +33,11 @@
       <div class="row">
          
          <div class="container col-md-4 onlyscreen" id="TDM">
-               
-            <select id="search" placeholder="%EDT_SEARCH_PLACEHOLDER%" maxlength="%EDT_SEARCH_MAXLENGTH%">
-               <option value=""></option>
-            </select>  
- 
+            
+            <input id='search' name='search' type='text' class='flexdatalist' placeholder='%EDT_SEARCH_PLACEHOLDER%' 
+               alt=""accesskey=""accept=""maxlength='%EDT_SEARCH_MAXLENGTH%' data-data='index.php?task=tags' data-search-in='name'
+               data-visible-properties='["name","type"]' multiple='multiple' />
+         
             <div id="TOC" class="onlyscreen">&nbsp;</div>	  
             
          </div>
@@ -58,8 +57,8 @@
       <script type="text/javascript" src="libs/jquery.noty.packaged.min.js"></script>
       <script type="text/javascript" src="libs/highlite/js/jquery.highlite.js"></script>
       <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
-      <script type="text/javascript" src="libs/selectize/js/selectize.min.js"></script> 
       <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script> 
+      <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>       
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       <!--%CUSTOM_JS%-->

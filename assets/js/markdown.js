@@ -102,7 +102,7 @@ function ajaxify($params) {
  * @returns {Boolean}
  */
 function initFiles($data) {
-
+   
    //console.log($data.count);
    
    if($data.hasOwnProperty('count')) {
@@ -149,6 +149,9 @@ function initFiles($data) {
          // By clicking on the second column, with the data-file attribute, display the file content
          if ($(this).attr('data-file')) {
             
+            // Just for esthetics purposes
+            $('#CONTENT').fadeOut(1).fadeIn();            
+            
             // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
             if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
            
@@ -163,13 +166,9 @@ function initFiles($data) {
             // retrieve the name of the folder from data-folder
             var $folder=$(this).data('folder');
 
-            // Initialize the selectize.js object
-            var $select = $('#search').selectize();
-            var $selectize = $select[0].selectize; 
-
-            // Set the value
-            $selectize.setValue($folder.replace('\\','/'), true);
-
+            // Set the value in the search area
+            $('#search').val($folder.replace('\\','/'));
+            
             onChangeSearch();
          }
 
@@ -177,36 +176,27 @@ function initFiles($data) {
 
    } // if($data.hasOwnProperty('results'))
 
-   // Feed in the list with the tags
-   if($data.hasOwnProperty('tags')) {
+   // initialize the search area, thanks to the Flexdatalist plugin
+   $('.flexdatalist').flexdatalist({
+      toggleSelected: true,
+      minLength: 2,
+      valueProperty: 'id',
+      selectionRequired: false,
+      visibleProperties: ["name","type"],
+      searchIn: 'name',
+      data: 'index.php?task=tags',
+      focusFirstResult:true,
+      toggleSelected:true,
+      noResultsText:markdown.message.search_no_result
+   });
 
-      if ($('#search').length) {
-         
-         $.each($data['tags'], function($id, $item) {                
-            $('#search').append($('<option>', {value: $item,text :$item}));            
-         });
-
-         $('#search').selectize({            
-            delimiter: ',',
-            persist: false,
-            create: function(input) {
-               return {
-                   value: input,
-                   text: input
-               }
-           }
-         });      
-         
-         $('.selectize-dropdown').css('width', $('#TDM').width()-5);
-         $('.selectize-input').css('width', $('#TDM').width()-5);
-         
-      } // if ($('#search').length)
-      
-   }
+   $('#search').css('width', $('#TDM').width()-5);
+   $('.flexdatalist-multiple').css('width', $('#TDM').width()-5).show();
+   $('#search-flexdatalist').css('width', $('#TDM').width()-35);
    
    // Interface : put the cursor immediatly in the edit box
    try {               
-      $('#search').focus();
+      $('#search-flexdatalist').focus();
    } catch(err) {         
    }
 
@@ -314,6 +304,43 @@ function addIcons() {
 } // function addIcons()
 
 /**
+ * Try to detect every emails in the HTML content but not yet in a html tags
+ * So match "christophe@test.be" and don't match <a ...>christophe@test.be</a>
+ * 
+ * Then add the mailto hyperlink to these 'plain text' emails
+ * 
+ * @returns {undefined}
+ */
+function ProcesseMails() {
+
+   var $text=$('#CONTENT').html();
+   
+   // ([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+) : search emails
+   // (?![^<]*>|[^<>]*<\/) add a restriction : don't search content within html tags
+   var $emails = $text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)(?![^<]*>|[^<>]*<\/)/gi);
+   
+   if ($emails!==null) {
+
+      $.each($emails, function($index, $email) {       
+         $seMail='<a class="email" href="mailto:'+$email+'">'+$email+'</a>';
+
+         console.log('replace '+$email);      
+         console.log('by '+$seMail);     
+         
+         $text=$text.replace(new RegExp($email, "g"), $seMail);
+      });
+      
+      console.log($text);
+
+      $('#CONTENT').html($text);
+      
+   } // if ($emails!==null)
+   
+   return true;
+   
+} // function ProcesseMails()
+
+/**
  * Called when a file is displayed
  */
 function afterDisplay() {
@@ -346,6 +373,8 @@ function afterDisplay() {
 
    // Add icons to .pdf, .xls, .doc, ... hyperlinks
    addIcons();  
+   
+   ProcesseMails();
    
    // Interface : put the cursor immediatly in the edit box
    try {               
@@ -489,6 +518,8 @@ function afterSearch($keywords, $data) {
  * @returns {undefined}
  */
 function Noty($params) {
+   
+   if($params.message==='') return false;
    
    $type = (($params.type==='undefined')?'info':$params.type);
    

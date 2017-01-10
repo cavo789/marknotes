@@ -17,6 +17,8 @@
  * 
  * History :
  * 
+ * 2017-01-10 : - Remove selective.js
+ *              + Add Flexdatalist jquery
  * 2017-01-09 : + Add support of links toward another notes 
  *              + Add the copy the link in the clipboard feature
  * 2017-01-06 : + Move assets from inline to /assets folder

@@ -10,6 +10,9 @@
 /* note_link will allow to stylize links to other notes within the local website */
 a.note_link:after { font-family: FontAwesome; content: " \f18e"; }
 
+/* email will add a small envelope */
+a.email:after { font-family: FontAwesome; content: " \f003"; }
+
 body {overflow:hidden;}
 
 .error {padding:10px;margin:10px;border:1px solid red;}
@@ -35,7 +38,7 @@ body{background:#F7F2E9;}
 
 /* The search area.  The width will be initialized by javascript */
 #search{position:fixed !important;left:5px;top:5px;z-index: 1;}
-.selectize-dropdown, .selectize-input {position:fixed;}
+#TDM .flexdatalist-multiple {position:fixed;z-index:1;display:none;border-width:1px !important;}
 
 /* Formating of the array with the list of files */
 /* The search area.  The width will be initialized by javascript */
@@ -65,7 +68,7 @@ body{background:#F7F2E9;}
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
 #TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
-#TOC{position:inherit;top:30px;}
+#TOC{position:inherit;top:35px;}
 
 /* page is used to display the content of the selected note */
 page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}

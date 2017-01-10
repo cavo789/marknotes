@@ -212,24 +212,9 @@ class aeSecureMarkdown {
       }
    } // function getSetting()
    
-   /**
-    * Get the list of .md files.  This list will be used in the "table of contents"
-    * 
-    * @return string
-    */   
-   private function ListFiles() : array {
-
-      $arrFiles=array_unique(aeSecureFiles::rglob('*.md',$this->_rootFolder.$this->_settingsDocsFolder));
+   private function getTags() : array {
     
-      // Be carefull, folders / filenames perhaps contains accentuated characters
-      $arrFiles=array_map('utf8_encode', $arrFiles);
-      
-      // Sort, case insensitve
-      natcasesort($arrFiles);   
-     
       $root=$this->_rootFolder.$this->_settingsDocsFolder;
-      
-      $return['settings']['root']=$root;
       
       // get the list of folders and generate a "tags" node
       
@@ -255,8 +240,36 @@ class aeSecureMarkdown {
       foreach ($paths as $dir) $tmp.=utf8_encode(basename($dir)).';';      
       $tmp=rtrim($tmp,';');
       
-      $return['tags']= explode(';',$tmp); 
+      $return=array();
+      
+      $tmp=explode(';',$tmp); 
+      foreach ($tmp as $folder) {
+         $return[]=array('name'=>$folder,'type'=>'folder');
+      }
+      
+      return $return;
+  
+   } // function getTags()
+   
+   /**
+    * Get the list of .md files.  This list will be used in the "table of contents"
+    * 
+    * @return string
+    */   
+   private function ListFiles() : array {
 
+      $arrFiles=array_unique(aeSecureFiles::rglob('*.md',$this->_rootFolder.$this->_settingsDocsFolder));
+    
+      // Be carefull, folders / filenames perhaps contains accentuated characters
+      $arrFiles=array_map('utf8_encode', $arrFiles);
+      
+      // Sort, case insensitve
+      natcasesort($arrFiles);   
+     
+      $root=$this->_rootFolder.$this->_settingsDocsFolder;
+      
+      $return['settings']['root']=$root;
+      
       // Get the number of files
       $return['count']=count($arrFiles);
           
@@ -846,6 +859,12 @@ class aeSecureMarkdown {
             header('Content-Type: application/json'); 
             $json=self::Search(urldecode(aeSecureFct::getParam('param','string','',true, SEARCH_MAX_LENGTH)));
             echo json_encode($json, JSON_PRETTY_PRINT); 
+            die();
+            
+         case 'tags':            
+            
+            header('Content-Type: application/json'); 
+            echo json_encode(self::getTags(), JSON_PRETTY_PRINT); 
             die();
             
          default :  // task=main => display the main interface
