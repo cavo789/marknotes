@@ -77,6 +77,7 @@ class aeSecureMarkdown {
     */
    function __construct(string $folder) {
       
+      if(!class_exists('aeSecureDebug'))   require_once 'debug.php';
       if(!class_exists('aeSecureEncrypt')) require_once 'encrypt.php';
       if(!class_exists('aeSecureFiles'))   require_once 'files.php';
       if(!class_exists('aeSecureFct'))     require_once 'functions.php';
@@ -592,6 +593,16 @@ class aeSecureMarkdown {
     */
    private function Search(string $keywords) : array {
 
+      $return=array();
+      if (trim($keywords)=='') return $return;
+      
+      $return['debug'][]=aeSecureDebug::log('Search',true);
+      $return['debug'][]=aeSecureDebug::log('Search for ['.str_replace(",",", ",$keywords).']',true);    
+      
+      // $keywords can contains multiple terms like 'invoices,2017,internet'.  
+      // Search for these three keywords (AND)
+      $keywords=explode(',',rtrim($keywords,','));
+            
       $arrFiles=array_unique(aeSecureFiles::rglob('*.md',$this->_rootFolder.$this->_settingsDocsFolder));
       
       if (count($arrFiles)==0) return null;
@@ -601,9 +612,7 @@ class aeSecureMarkdown {
       
       // Sort, case insensitve
       natcasesort($arrFiles);   
-      
-      $return=array();
-
+     
       // Initialize the encryption class
       $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
 
@@ -616,26 +625,48 @@ class aeSecureMarkdown {
          // If the keyword can be found in the document title, yeah, it's the fatest solution,
          // return that filename
          
-         if (stripos($file, $keywords)!==FALSE) {
+         foreach($keywords as $keyword) {
+            $bFound=TRUE;             
+            if (stripos($file, $keyword)===FALSE) {
+               // at least one term is not present in the filename, stop            
+               $bFound=FALSE;
+               break;
+            }            
+         } // foreach($keywords as $keyword)
          
+         if ($bFound) {
+            
+            $return['debug'][]=aeSecureDebug::log('All keywords found in filename : ['.$file.']',true);    
+            
             // Found in the filename => stop process of this file
             $return['files'][]=$file;
             
-         } else {
-            
+         } else { // if ($bFound)
+                     
             // Open the file and check against its content
             
             $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$file);
             $content=file_get_contents($fullname);
             
-            if (stripos($content, $keywords)!==FALSE) {
+            $bFound=TRUE;
+            
+            foreach($keywords as $keyword) {               
+               if (stripos($content, $keyword)===FALSE) {
+                  // at least one term is not present in the content (unencrypted), stop   
+                  $bFound=FALSE;
+                  break;
+               }            
+            } // foreach($keywords as $keyword)
+            
+            if ($bFound) {
+            
+               $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
                
-               // The searched pattern has been found in the filecontent (unencrypted), great, return the filename
-               
+               // Found in the filename => stop process of this file
                $return['files'][]=$file;
-               
-            } else {
-               
+            
+            } else { // if ($bFound)
+  
                // Not found in filename and filecontent (unencrypted); check if there are encrypted info
 
                // Check if the note has encrypted data.  If you, decrypt and search in the decrypted version
@@ -668,26 +699,35 @@ class aeSecureMarkdown {
                         $isEncrypted=(strcasecmp(rtrim($tmp[1]),'true')===0?TRUE:FALSE);
                         $decrypt=$aesEncrypt->sslDecrypt($matches[2][$i],NULL);
                         $content=str_replace($matches[2][$i], $decrypt, $content);
-                     }                  
-
-                     // Now $content is full decrypted, search again
-                     if (stripos($content, $keywords)!==FALSE) { 
-                        $return['files'][]=$file;
-                        break;                        
-                     }
+                     }    
                   
                   } // for($i;$i<$j;$i++)
                   
+                  $bFound=TRUE;
+
+                  foreach($keywords as $keyword) {               
+                     if (stripos($content, $keyword)===FALSE) { 
+                        // at least one term is not present in the encrypted content, stop   
+                        $bFound=FALSE;
+                        break;
+                     }  
+                  } // foreach($keywords as $keyword)    
+                  
                } // if (count($matches[1])>0) {
                   
-            } // if (stripos($content, $keywords)!==FALSE) {
-            
-         } // if (stripos($file, $keywords)!==FALSE)
+               if($bFound) {
+                  $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
+                  $return['files'][]=$file;
+               }
+               
+            } // if ($bFound)
+           
+         } // if ($bFound) {
             
       } // foreach ($arrFiles as $file)
       
       unset($aesEncrypt);
-      
+
       return $return;
       
    } // function Search()
@@ -775,7 +815,6 @@ class aeSecureMarkdown {
          } else {
             $html=str_replace('<!--%META_CACHE%-->', '', $html);
          }
-         
          
          $html=str_replace('%APP_NAME%', APP_NAME, $html);
          $html=str_replace('%APP_NAME_64%', base64_encode(APP_NAME), $html);

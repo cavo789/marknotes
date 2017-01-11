@@ -50,8 +50,8 @@ define('DEBUG',TRUE);
 // Application name
 define('APP_NAME','Notes management (c) Christophe Avonture');
 
-// No timeout please
-set_time_limit(0);
+   // No timeout please
+   set_time_limit(0);
 
    require_once(__DIR__.'/classes/functions.php');
    require_once(__DIR__.'/classes/markdown.php');
@@ -65,7 +65,7 @@ set_time_limit(0);
       ini_set("error_append_string", "</div>");
       error_reporting(E_ALL);
    } else {	   
-      ini_set('error_reporting', E_ALL & ~ E_NOTICE);	  
+      error_reporting(E_ALL & ~ E_NOTICE);	  
    }
    
    $task=aeSecureFct::getParam('task','string','main',false);
