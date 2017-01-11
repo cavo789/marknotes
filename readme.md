@@ -203,8 +203,9 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 Thank you to 
 
--  Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
--  Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin
--  Stanislav Sopov (stassop) for the jQuery highlite plugin (https://github.com/stassop/highlite)
--  Zero Rocha for the clipboard.js (https://clipboardjs.com/) plugin
--  The [Bootstrap](https://github.com/twbs/bootstrap) and [jQuery](https://github.com/jquery/jquery) teams
+- Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
+- Ivan Sagalaev (isagalaev) for the [highlight.js](https://github.com/isagalaev/highlight.js) plugin which allow to highlight languages (html, javascript, php, ...)
+- Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin
+- Stanislav Sopov (stassop) for the jQuery highlite plugin (https://github.com/stassop/highlite)
+- Zero Rocha for the clipboard.js (https://clipboardjs.com/) plugin
+- The [Bootstrap](https://github.com/twbs/bootstrap) and [jQuery](https://github.com/jquery/jquery) teams

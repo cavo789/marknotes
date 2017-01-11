@@ -17,6 +17,8 @@
  * 
  * History :
  * 
+ * 2017-01-11 : + Search : allow to specify more than one term (boolean operator is AND)
+ *              + Add highlight.js for syntax color
  * 2017-01-10 : - Remove selective.js
  *              + Add Flexdatalist jquery
  * 2017-01-09 : + Add support of links toward another notes 

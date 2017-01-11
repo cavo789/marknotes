@@ -344,7 +344,7 @@ function ProcesseMails() {
  * Called when a file is displayed
  */
 function afterDisplay() {
-
+   
    // Initialize the Copy into the clipboard button
    // See https://clipboardjs.com/
    new Clipboard('.copy_clip');
@@ -352,6 +352,12 @@ function afterDisplay() {
    // Initialise print preview plugin
    $('#icon_printer').printPreview();
 
+   // Highlight common languages (html, javascript, php, ...)
+   // @link : https://github.com/isagalaev/highlight.js
+   $('pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+   });
+   
    $('#CONTENT').show();
 
    $('html, body').animate({

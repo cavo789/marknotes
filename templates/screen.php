@@ -8,7 +8,6 @@
       <meta name="robots" content="noindex, nofollow" />
       <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" /> 
-      
       <!--%META_CACHE%-->
       
       <title>%APP_NAME%</title>
@@ -19,6 +18,8 @@
       
       <link href="libs/bootstrap.min.css" rel="stylesheet" />
       <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="libs/highlight.js/styles/default.css" rel="stylesheet" />
+  
       <link media="screen" href="libs/print-preview/print-preview.css" rel="stylesheet" />
       <link media="screen" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" rel="stylesheet" />      
       <link rel="stylesheet" type="text/css" media="screen" href="assets/css/markdown_screen.php?%IMG_MAXWIDTH%">
@@ -58,7 +59,8 @@
       <script type="text/javascript" src="libs/highlite/js/jquery.highlite.js"></script>
       <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
       <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script> 
-      <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>       
+      <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>   
+      <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>   
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       <!--%CUSTOM_JS%-->
