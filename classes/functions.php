@@ -1,9 +1,7 @@
 <?php
+declare(strict_types=1);
 
 /* REQUIRES PHP 7.x AT LEAST */
-
-// PHP 7 : force the use of the correct type
-declare(strict_types=1);
 
 class aeSecureFct {
 	

@@ -166,6 +166,15 @@ The `settings.json` allows you to define your own settings.
    -  `google_font` : specify here a Google font name like f.i. `Roboto` if you want to use such font.  Please note : no fonts are downloaded.  The script will just add a call to the font and will generate css to use the font for h1 till h6.  You can do more by editing the custom.css file
    -  `img_maxwidth` : if you wish to make sure that images can be displayed on screen and on printed documents, specify here a max width like f.i. `800` (pixels).   If images will be bigger, they'll be resized in css.​
 
+## tags.json
+
+The search engine at the top left of the screen will suggest entries based on :
+
+- folder name : if you've created a structure like /private/home/invoice/2017 f.i., "private", "home", "invoice" and "2017" will be used as entries of the entry auto-completion since these terms are important for you
+- tags : if in documents, you've used a syntax like §Some_Tag (f.i. "Check out this §webdev tool, it's amazing"), that tag will be also used for auto_completion.  *A tag should be prefixed by the § character and not # since that one is meaningfull in markdown language* 
+
+The tags.json file is automatically updated : each time a note is displayed, if there are tags in it, a control will be made with the tags.json file to see if there are new tags and in that case, add the new ones in the file.
+
 ## Don't share your confidential data
 
 >  Are you saving your notes on a Git service or on a cloud ?   Then it's a very (**very!**) bad idea to type sensitive informations in your notes...
@@ -203,6 +212,7 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 Thank you to 
 
+- Contributors of [remark](https://github.com/gnab/remark)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
 - Ivan Sagalaev (isagalaev) for the [highlight.js](https://github.com/isagalaev/highlight.js) plugin which allow to highlight languages (html, javascript, php, ...)
 - Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin

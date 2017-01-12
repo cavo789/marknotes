@@ -3,7 +3,7 @@
    header('Content-type: text/css');
    
    $imgMaxWidth=filter_input(INPUT_GET, 'imgMaxWidth', FILTER_SANITIZE_NUMBER_INT);   
-   if ($imgMaxWidth != 0) echo 'img {max-width:'.$imgMaxWidth.'px;}';
+   if ($imgMaxWidth != 0) echo '#CONTENT img {max-width:'.$imgMaxWidth.'px;}';
    
 ?>
 
@@ -52,6 +52,7 @@ body{background:#F7F2E9;}
 /* Images */
 #icon_edit{margin-left:20px;color:lightgray;}
 #icon_lock{margin-left:2px;color:#abe0ab;}
+#icon_slideshow{margin-left:20px;color:lightgray;}
 #icon_printer{color:lightgray;}
 #icon_clipboard{margin-left:20px;color:lightgray;}
 #icon_window{margin-left:20px;color:lightgray;}
@@ -81,3 +82,6 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 .highlight{background-color:yellow;border-radius:.125em;}  
 
 .download-link{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}
+
+span.tags:after {font-family: FontAwesome; content: " \f02b";}
+span.tags {background-color:#f4f4c5;}

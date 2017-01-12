@@ -25,6 +25,26 @@ var QueryString = function () {
   return query_string;
 }();
 
+
+// http://stackoverflow.com/a/11247412
+// Check if an array contains a specific value
+Array.prototype.contains = function(v) {
+   for(var i = 0; i < this.length; i++) {
+      if(this[i] === v) return true;
+   }
+   return false;
+};
+// Extract unique values of an array
+Array.prototype.unique = function() {
+   var arr = [];
+   for(var i = 0; i < this.length; i++) {
+      if(!arr.contains(this[i])) {
+          arr.push(this[i]);
+      }
+   }
+   return arr; 
+}
+
 $(document).ready(function() {
    
    // Add keybinding (not recommended for production use)
@@ -95,6 +115,22 @@ function ajaxify($params) {
 
 } // function ajaxify()
 
+function addSearchEntry($newValue) {
+
+   $current=$('#search').val().trim();
+   
+   if ($current!='') {
+      var values = $current.split(','); 
+      values.push($newValue); 			   
+      $('#search').val(values.join(',')); 
+   } else {
+      $('#search').val($newValue);
+   }
+   
+   return true;
+
+} // function addSearchEntry()
+
 /**
  * The ajax request has returned the list of files.  Build the table and initialize the #TOC DOM object
  *
@@ -103,7 +139,7 @@ function ajaxify($params) {
  */
 function initFiles($data) {
    
-   //console.log($data.count);
+   //if (markdown.settings.debug) console.log($data.count);
    
    if($data.hasOwnProperty('count')) {
       // Display the number of returned files
@@ -155,7 +191,9 @@ function initFiles($data) {
             // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
             if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
            
-            var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));              
+            var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));  
+            
+            if (markdown.settings.debug) console.log("Show note "+$(this).data('file'));  
             ajaxify({task:'display',param:$fname,callback:'afterDisplay()',target:'CONTENT'});
             $(this).addClass("selected");                  
          }
@@ -164,13 +202,16 @@ function initFiles($data) {
          if ($(this).attr('data-folder')) {    
             
             // retrieve the name of the folder from data-folder
-            var $folder=$(this).data('folder');
+            var $folder=$(this).data('folder').replace('\\','/');
 
-            // Set the value in the search area
-            $('#search').val($folder.replace('\\','/'));
+            if (markdown.settings.debug) console.log("Apply filter for "+$folder);  
             
-            onChangeSearch();
-         }
+            // Set the value in the search area
+            addSearchEntry($folder);        
+            
+            //$('#search').val($folder);
+           
+         } // if ($(this).attr('data-folder'))
 
       }); // $('#tblFiles > tbody  > tr > td').click()
 
@@ -244,8 +285,47 @@ function replaceLinksToOtherNotes() {
       }
    
    }); // $('a').each()
+   
    return true;   
-}
+   
+} // replaceLinksToOtherNotes()
+
+/**
+ * Try to find tags i.ex. §some_tag  (the tag is prefixed by the § character because # is meaningfull in markdown
+ * 
+ * @returns {undefined}
+ */
+function addLinksToTags() {
+   
+   var $text=$('#CONTENT').html();
+   
+   var $tags = $text.match(/(§[a-zA-Z0-9]+)(?!.*\\1)/i);
+  
+   if ($tags!==null) {
+      
+      // Keep unique values
+      $tags = $tags.unique();
+   
+      $.each($tags, function($index, $tag) {           
+         if (markdown.settings.debug) console.log("Process tag "+$tag);         
+         $sTags='<span class="tags" data-tag="'+$tag.substr(1)+'">'+$tag+'</span>';
+         $text=$text.replace(new RegExp($tag, "g"), $sTags);
+      });
+      
+      // Set the new page content
+      $('#CONTENT').html($text);
+      
+      // Add a click event to every tags : by clicking on a tag, update the search box
+      $('#CONTENT').on('click','.tags',function(){
+         $tag=$(this).data('tag').replace('\\','/');
+         // Set the value in the search area
+         addSearchEntry($tag);      
+      });
+
+   } // if ($tags!==null)
+   
+   return; 
+} // function addLinksToTags()
 
 /** 
  * Force links that points on the same server (localhost) to be opened in a new window
@@ -324,13 +404,13 @@ function ProcesseMails() {
       $.each($emails, function($index, $email) {       
          $seMail='<a class="email" href="mailto:'+$email+'">'+$email+'</a>';
 
-         console.log('replace '+$email);      
-         console.log('by '+$seMail);     
+         if (markdown.settings.debug) console.log('replace '+$email);      
+         if (markdown.settings.debug) console.log('by '+$seMail);     
          
          $text=$text.replace(new RegExp($email, "g"), $seMail);
       });
       
-      console.log($text);
+      if (markdown.settings.debug) console.log($text);
 
       $('#CONTENT').html($text);
       
@@ -357,9 +437,9 @@ function afterDisplay() {
    $('pre code').each(function(i, block) {
       hljs.highlightBlock(block);
    });
-   
-   $('#CONTENT').show();
 
+   $('#CONTENT').show();
+   
    $('html, body').animate({
       'scrollTop' : $("#CONTENT").position().top -25
    });
@@ -374,6 +454,9 @@ function afterDisplay() {
    // If a note contains a link to an another note, use ajax and not normal links
    replaceLinksToOtherNotes();
 
+   // Add links to tags
+   addLinksToTags();
+   
    // Force links that points on the same server (localhost) to be opened in a new window
    forceNewWindow();
 
@@ -401,6 +484,13 @@ function afterDisplay() {
    $('#icon_edit').click(function(e) {
       var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));      
       ajaxify({task:'edit',param:$fname});
+   });
+   
+   // By clicking on the "Slideshow" link, open a new tab in the browser and show the markdown 
+   // in a slideshow format
+   $('#icon_slideshow').click(function(e) {
+      var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));   
+      slideshow($fname);
    });
 
    $('#icon_window').click(function(e) {
@@ -444,7 +534,7 @@ function onChangeSearch() {
       
    } else {
       
-      console.log('cancel the search');
+      if (markdown.settings.debug) console.log('cancel the search');
       
    }
 
@@ -514,6 +604,44 @@ function afterSearch($keywords, $data) {
    }
 
 } // function afterSearch()
+
+function slideshow($fname) {
+      
+   var $data = new Object;
+   $data.task  = 'slideshow';
+   $data.param = $fname;
+
+   $.ajax({
+      async:true,
+      type:(markdown.settings.debug?'GET':'POST'),
+      url: markdown.url,
+      data: $data,
+      datatype:'json',
+      success: function (data) {  
+      
+         // data is a URL pointing to the HTML version of the slideshow so ... just display
+         var w = window.open(data, "slideshow");   
+
+         if(w==undefined) {
+            Noty({message:markdown.message.allow_popup_please, type:'notification'});         
+         }
+  
+var $data = new Object;
+   $data.task  = 'killSlideshow';
+   $data.param = $fname;         
+$.ajax({
+      async:true,
+  type: "GET",
+  url: markdown.url,
+      data: $data
+});         
+      } // success
+      
+   }); // $.ajax() 
+   
+   return true;
+  
+} // function slideshow()
 
 /**
  * 

@@ -22,7 +22,7 @@
   
       <link media="screen" href="libs/print-preview/print-preview.css" rel="stylesheet" />
       <link media="screen" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" rel="stylesheet" />      
-      <link rel="stylesheet" type="text/css" media="screen" href="assets/css/markdown_screen.php?%IMG_MAXWIDTH%">
+      <link rel="stylesheet" type="text/css" media="screen" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%">
       <link rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
       
       <!--%CUSTOM_CSS%-->
@@ -45,7 +45,7 @@
          
          <div class="container col-md-8">
             <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>         
-            <img id="IMG_BACKGROUND" src="assets/background.jpg"/>
+            <img class="visible-lg" id="IMG_BACKGROUND" src="assets/background.jpg"/>
          </div>
          
       </div>
@@ -61,6 +61,7 @@
       <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script> 
       <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>   
       <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>   
+
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       <!--%CUSTOM_JS%-->

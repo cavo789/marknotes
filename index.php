@@ -1,4 +1,5 @@
 <?php                 
+declare(strict_types=1);
 
 /* REQUIRES PHP 7.x AT LEAST */
 
@@ -17,6 +18,9 @@
  * 
  * History :
  * 
+ * 2017-01-12 : + Tags : maintain automatically the tags.json file. Just need to put §Some_Tag in a document (une § and not #)
+ *              + Tags : detect tags in JS and allow to click on it for filtering
+ *              + Wallpaper image : only visible for large screen
  * 2017-01-11 : + Search : allow to specify more than one term (boolean operator is AND)
  *              + Add highlight.js for syntax color
  * 2017-01-10 : - Remove selective.js
@@ -43,9 +47,6 @@
  * 2016-12-19 : + Add support for encryption (tag <encrypt>)
  * 2016-12-14 : First version
  */
-
-// PHP 7 : force the use of the correct type
-declare(strict_types=1);
 
 define('DEBUG',TRUE);
 

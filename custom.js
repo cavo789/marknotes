@@ -9,7 +9,7 @@
  * This function has no return value
  */
 function custominiFiles() {
-   //console.log('List of files, #'+$('#tblFiles tr').length+' files retrieved');;
+   //if (markdown.settings.debug) console.log('List of files, #'+$('#tblFiles tr').length+' files retrieved');;
 }
 
 /*
@@ -24,7 +24,7 @@ function custominiFiles() {
  * This function has no return value
  */
 function customafterDisplay($filename) {
-   //console.info('The note '+ $filename+ ' has been displayed');
+   //if (markdown.settings.debug) console.info('The note '+ $filename+ ' has been displayed');
 }
 
 /**
@@ -34,7 +34,7 @@ function customafterDisplay($filename) {
  * @returns {Boolean}        True : the search can be done, False : the search will be cancelled
  */
 function customonChangeSearch($keywords) {
-   //console.info('Search for '+$keywords);
+   //if (markdown.settings.debug) console.info('Search for '+$keywords);
    return true;   // true : the search can be fired, false : the search will be cancelled
 }
 
@@ -48,5 +48,5 @@ function customonChangeSearch($keywords) {
  *  This function has no return value
  */
 function customafterSearch($keywords, $data) {
-	//console.log($data);
+	//if (markdown.settings.debug) console.log($data);
 }
