@@ -16,7 +16,7 @@
 
       <!--%FONT%-->
       
-      <link href="libs/bootstrap.min.css" rel="stylesheet" />
+      <link href="libs/bootstrap/bootstrap.min.css" rel="stylesheet" />
       <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
       <link href="libs/highlight.js/styles/default.css" rel="stylesheet" />
   
@@ -53,17 +53,35 @@
       <footer class="onlyprint">&nbsp;</footer>	        
       
       <!-- Add libraries. Thank you to these developpers! -->
-      <script type="text/javascript" src="libs/jquery.min.js"></script>
-      <script type="text/javascript" src="libs/bootstrap.min.js"></script>
-      <script type="text/javascript" src="libs/jquery.noty.packaged.min.js"></script>
-      <script type="text/javascript" src="libs/highlite/js/jquery.highlite.js"></script>
-      <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
-      <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script> 
+      <script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
+      <script type="text/javascript" src="libs/bootstrap/bootstrap.min.js"></script>
+      
+      <!-- Used by the search box, for auto-completion -->
       <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>   
+
+      <!-- Needed for the "Copy note hyperlink" button, to make easier to copy the link of a note in an another one -->      
+      <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script> 
+
+      <!-- For the Print preview button -->
+      <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
+
+      <!-- For nice user alerts (informations, warning, ...) -->
+      <script type="text/javascript" src="libs/noty/jquery.noty.packaged.min.js"></script>
+
+      <!-- For converting plain text (emails, urls, ...) into links -->
+      <script type="text/javascript" src="libs/linkify/linkify.min.js"></script>   
+      <script type="text/javascript" src="libs/linkify/linkify-jquery.min.js"></script>   
+
+      <!-- For highligthing content in a note : after a search, the displayed note will have the search term highlighted -->
+
+      <script type="text/javascript" src="libs/jquery.highlight.js/jquery.highlight.js"></script>
+
+      <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks tho highlight.js -->
       <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>   
 
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
+      
       <!--%CUSTOM_JS%-->
       
    </body>

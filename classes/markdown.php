@@ -22,8 +22,10 @@ define('EDITOR','C:\Windows\System32\notepad.exe'); // default editor
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
 define('ALLOW_POPUP_PLEASE','Please allow popup for this site');
 define('APPLY_FILTER','Searching for %s');
+define('APPLY_FILTER_TAG','Display notes containing this tag');
 define('COPY_LINK','Copy the link to this note in the clipboard');
 define('CONFIDENTIAL','confidential');
+define('DISPLAY_THAT_NOTE','Display that note');
 define('EDIT_FILE','Edit');
 define('ERROR','Error');
 define('FILE_NOT_FOUND','The file [%s] doesn\'t exists (anymore)');
@@ -61,6 +63,8 @@ class aeSecureMarkdown {
    private $_settingsEditor='';         // defaut editor program 
    
    private $_useCache=TRUE;             // Use browser's cache
+   
+   private $_arrTagsAutoSelect=array(); // Tags to automatically select when displaying the page
    
    private $_settingsFontName='';       // Google fontname if specified in the settings.json file
    
@@ -117,6 +121,10 @@ class aeSecureMarkdown {
       if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'settings.json')) {
    
          $this->_json=json_decode(file_get_contents($fname),true);
+
+         if(isset($this->_json['tags'])) {
+            $this->_arrTagsAutoSelect=$this->_json['tags'];
+         }
 
          if(isset($this->_json['editor'])) {
             $this->_settingsEditor=rtrim($this->_json['editor']);
@@ -532,11 +540,11 @@ class aeSecureMarkdown {
       $tmp = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']),'',$fnameHTML));
    
       // Open new window icon
-      if($this->_saveHTML===TRUE) $icons.='<i data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" id="icon_window" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
+      if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
       
       // Edit icon : only if an editor has been defined
       if ($this->_settingsEditor!=='') {
-         $icons.='<i id="icon_edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file','EDIT_FILE').'" data-file="'.$filename.'"></i>';
+         $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file','EDIT_FILE').'" data-file="'.$filename.'"></i>';
       }
 
       require_once("libs/Parsedown.php");
@@ -641,9 +649,9 @@ class aeSecureMarkdown {
       //$thisNote=str_replace(aeSecureFct::getCurrentURL(FALSE,TRUE),'',$thisNote);
       
       $html=str_replace('</h1>', '</h1><div id="icons" class="onlyscreen fa-3x">'.
-         '<i id="icon_printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview','PRINT_PREVIEW')).'"></i>'.
-         '<i id="icon_clipboard" class="fa fa-clipboard copy_clip" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link','COPY_LINK')).'"></i>'.
-         '<i id="icon_slideshow" data-file="'.$filename.'" class="fa fa-slideshare" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow','SLIDESHOW')).'"></i>'.        
+         '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview','PRINT_PREVIEW')).'"></i>'.
+         '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link','COPY_LINK')).'"></i>'.
+         '<i id="icon_slideshow" data-task="slideshow" data-file="'.$filename.'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow','SLIDESHOW')).'"></i>'.        
          $icons.'</div>',$html);
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
@@ -909,19 +917,21 @@ class aeSecureMarkdown {
          $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', self::getText('search_placeholder','SEARCH_PLACEHOLDER'), $html);
          $html=str_replace('%EDT_SEARCH_MAXLENGTH%', SEARCH_MAX_LENGTH, $html);
          
-         
          // Define the global markdown variable.  Used by the assets/js/markdown.js script
          $JS=
             "\nvar markdown = {};\n".
             "markdown.message={};\n".
             "markdown.message.allow_popup_please='".str_replace("'","\'",self::getText('allow_popup_please','ALLOW_POPUP_PLEASE'))."';\n".
             "markdown.message.apply_filter='".str_replace("'","\'",self::getText('apply_filter','APPLY_FILTER'))."';\n".
+            "markdown.message.apply_filter_tag='".str_replace("'","\'",self::getText('apply_filter_tag','APPLY_FILTER_TAG'))."';\n".               
+            "markdown.message.display_that_note='".str_replace("'","\'",self::getText('display_that_note','DISPLAY_THAT_NOTE'))."';\n".                              
             "markdown.message.filesfound='".str_replace("'","\'",self::getText('files_found','FILES_FOUND'))."';\n".
             "markdown.message.pleasewait='".str_replace("'","\'",self::getText('please_wait','PLEASE_WAIT'))."';\n".
             "markdown.message.search_no_result='".str_replace("'","\'",self::getText('search_no_result','SEARCH_NO_RESULT'))."';\n".
             "markdown.url='index.php';\n".
             "markdown.settings={};\n".
             "markdown.settings.debug=".DEBUG.";\n".
+            "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
          
          $html=str_replace('%MARKDOWN_GLOBAL_VARIABLES%', $JS, $html);
@@ -962,25 +972,80 @@ class aeSecureMarkdown {
          }
 
          $markdown=file_get_contents($fullname);
+		 
+		 // ------------------------------------------------------------------
+		 // Remove <encrypt xxxx> content </encrypt>
+         // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+         preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+
+         // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+         if (count($matches[0])>0) {
+
+            $j=count($matches[0]);
+
+            $i=0;
+
+            for($i;$i<$j;$i++) {
+               $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential','CONFIDENTIAL').'</strong>', $markdown);
+            }
+         }
+         
+         //
+         // ------------------------------------------------------------------
+		 	
+         // Try to retrieve the heading 1
+       
+         preg_match("/# (.*)/", $markdown, $matches);   
+         $pageTitle = (count($matches)>0) ? $matches[1] : '';
          
          // Consider that every Headings 2 and 3 should start in a new slide
-         // The "remark" library
-         $markdown=str_replace("## ", "---".PHP_EOL."## ", $markdown);
-         $markdown=str_replace("### ", "---".PHP_EOL."### ", $markdown);
+         // The "remark" library allow indeed to give a name to each slide by just adding "name: NAME" in the markdown string
+		 
+         // Get every heading 2 (i.e. lines starting with "## TITLE") and heading 3 ("### Subtitle")
+		 
+         $arrHeading=array('##','###');
+         foreach ($arrHeading as $head) {
 
+            $matches=array();	
+			
+            preg_match_all("/\\n".$head." (.*)/", $markdown, $matches);
+			
+            if(count($matches)>0) {
+
+			   // Process one by one
+               $j=count($matches[0]);
+			   
+               for ($i=0;$i<$j;$i++) {
+				
+                  // $matches[0][$i] is f.i. "## TITLE" while $matches[1][$i] is "TITLE"
+                  // 
+                  // remark allow to specify the name of the slide so add a "name:" property in the markdown like this : 
+                  //
+                  //   name: TITLE
+                  //   ---
+                  //   ## TITLE
+			   
+                  $markdown=str_replace($matches[0][$i],
+                        //"???".PHP_EOL.str_replace('/',DS,$filename).PHP_EOL.  // Add speaker note : ??? followed by a line and the text
+                        "---".PHP_EOL.
+                        "name: ".$matches[1][$i].PHP_EOL.
+                        ".footnote[.italic[".$pageTitle."]]".PHP_EOL.
+                        $matches[0][$i], $markdown);
+			   
+               } // for ($i)
+
+            } // if(count($matches)>0)
+
+         } // foreach ($arrHeading as $head)
+		 
+		 //
+         // --------------------------------------------------------------------------------
+		 
          $slideshow=file_get_contents(dirname(__DIR__).'/templates/slideshow.php');
          
          $html=str_replace('<!--%SOURCE%-->',$markdown,$slideshow);
          $html=str_replace('<!--%URL%-->',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/'),$html);
-        
-         // Try to retrieve the heading 1
-       
-         preg_match("/# ?(.*)/", $markdown, $matches);   
-         if(count($matches)>0) {
-            $html=str_replace('<--%TITLE%-->',$matches[1],$html);
-         } else {
-            $html=str_replace('<--%TITLE%-->','',$html);
-         }
+         $html=str_replace('<--%TITLE%-->',$pageTitle,$html);
  
          // Store that HTML to the server
          $fnameHTML=str_replace('.md','_slideshow.html',$fullname);
@@ -1001,38 +1066,6 @@ class aeSecureMarkdown {
       } // if ($filename!="")
       
    } // function getSlideshow()
-   
-   
-   /**
-    * The slideshow created by getSlideshow shouldn't stay on the disk since it can contains confidential
-    * info
-    * 
-    * @param string $filename   
-    * @return bool
-    */
-   private function killSlideshow(string $filename) : bool {
-    
-      if ($filename!="") {
-         
-         $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename);
-
-         if (!file_exists($fullname)) {
-            self::ShowError(str_replace('%s','<strong>'.$fullname.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
-         }
-         
-         // Try to kill the file
-         $fnameHTML=str_replace('.md','_slideshow.html',$fullname);
-         try{
-            @unlink($fnameHTML);
-         } catch (Exception $ex) {
-            self::ShowError($ex->getMessage().'<br/>Filename : <strong>'.$fullname.'</strong>',TRUE);
-         }
-         
-      } // if ($filename!="")
-      
-      return true;
-      
-   } // function killSlideshow()
    
    /**
     * Entry point of this class, run a task
@@ -1058,14 +1091,7 @@ class aeSecureMarkdown {
             $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
             self::Edit($fname);            
             die();
-            
-         case 'killSlideshow':            
-            
-            header('Content-Type: application/json');
-            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
-            self::killSlideshow($fname);
-            die();
-            
+                        
          case 'listFiles':
 
             // Retrieve the list of .md files.   

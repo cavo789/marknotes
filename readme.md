@@ -1,4 +1,4 @@
-# Markdown v0 - December 2016
+# Markdown v1 - January 2017
 
 The idea behind this script is to display the list of all .md files of a specific folder and every subfolders.
 
@@ -105,6 +105,9 @@ The `settings.json` allows you to define your own settings.
    "optimisation":{
       "cache":1
    },
+   "tags":[
+      ""
+   ],
    "templates":{
       "screen":"screen",
 	  "html":"html"
@@ -152,6 +155,7 @@ The `settings.json` allows you to define your own settings.
 -  `language` : your interface language.  Be sure that strings are translated in that language.  You can see that (or translate) in the `languages` node.
 -  `optimisation` :
    -  `cache` : do you wan to use the navigator cache ?  If so, specify `1` here so that the needed meta will be added
+-  `tags` : (optional) a list of tags that you want to automatically select when the page is displayed
 -  `templates` :
    -  `screen` : you can change the template used by the Markdown script here.   Just specify a filename without extension (so f.i. `MyTemplate`).  You'll need to create that template : go to the `templates` folder, make a copy of the `screen.php` file and rename it to, f.i. `MyTemplate.php`.   Edit and set the template to match yours needs.
    -  `html` : same for `screen` but the `html` template is used when the script generate .html files.
@@ -212,10 +216,14 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 Thank you to 
 
+- Bartek Szopka for [jquery.highlight.js](http://bartaz.github.io/sandbox.js/jquery.highlight.html)
 - Contributors of [remark](https://github.com/gnab/remark)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
+- [Font Awesome](https://github.com/FortAwesome/Font-Awesome) contributors
 - Ivan Sagalaev (isagalaev) for the [highlight.js](https://github.com/isagalaev/highlight.js) plugin which allow to highlight languages (html, javascript, php, ...)
+- Nedim Arabaci for the [noty](https://github.com/needim/noty) plugin
 - Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin
-- Stanislav Sopov (stassop) for the jQuery highlite plugin (https://github.com/stassop/highlite)
-- Zero Rocha for the clipboard.js (https://clipboardjs.com/) plugin
+- SoapBox Innovations for [linkifyjs](https://github.com/SoapBox/linkifyjs)
+- Tim Connell for [jquery-print-preview](https://github.com/etimbo/jquery-print-preview-plugin) plugin
+- Zero Rocha for the [clipboard.js](https://github.com/zenorocha/clipboard.js) plugin
 - The [Bootstrap](https://github.com/twbs/bootstrap) and [jQuery](https://github.com/jquery/jquery) teams

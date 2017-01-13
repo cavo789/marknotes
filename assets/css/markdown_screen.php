@@ -7,12 +7,6 @@
    
 ?>
 
-/* note_link will allow to stylize links to other notes within the local website */
-a.note_link:after { font-family: FontAwesome; content: " \f18e"; }
-
-/* email will add a small envelope */
-a.email:after { font-family: FontAwesome; content: " \f003"; }
-
 body {overflow:hidden;}
 
 .error {padding:10px;margin:10px;border:1px solid red;}
@@ -20,12 +14,6 @@ body {overflow:hidden;}
 /* By selecting a file from the filelist, highlight its name */
 #tblFiles > tbody > tr:nth-child(odd) .selected{background-color:#90b6e2;color:white;}
 #tblFiles  > tbody > tr:nth-child(even) .selected{background-color:#90b6e2;color:white;}
-
-/* Style for the "Open in a new window" hyperlink */
-.open_newwindow{text-decoration:underline;}
-
-/* Style for the "Edit file" hyperlink */
-.edit_file{text-decoration:underline;color:#337ab7;cursor:pointer;}
 
 /* Style for the formatting of the name of the file, displayed in the content, first line */
 .filename{font-style:italic;font-weight:bold;color:#dfdfe0;top:15px;position:inherit;} 
@@ -47,9 +35,7 @@ body{background:#F7F2E9;}
 /*#tblFiles>thead>tr.tablesorter-filter-row{background-color:red;color:white;}*/
 
 /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
-#icons {display:inline-block;position:absolute;top:5px;right:-1px;margin-right:10px;}
-
-/* Images */
+#icons {display:inline-block;position:absolute;top:5px;right:-1px;margin-right:10px;cursor:pointer;}
 #icon_edit{margin-left:20px;color:lightgray;}
 #icon_lock{margin-left:2px;color:#abe0ab;}
 #icon_slideshow{margin-left:20px;color:lightgray;}
@@ -59,6 +45,7 @@ body{background:#F7F2E9;}
 
 .icon_file{padding-left:5px;}
 .icon_encrypted{padding-left:5px;padding-right:5px;color:#abe0ab;}
+
 
 /* Content if the full page : contains the list of files and the content of the select note */
 
@@ -78,10 +65,17 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 .onlyprint{display:none;}
 
 .countfiles{font-size:xx-small;font-style:italic;}
-/* Use by the jQuery Highlite plugin, highlight searched keywords */
+
+/* Use by the jQuery highlight plugin, highlight searched keywords */
 .highlight{background-color:yellow;border-radius:.125em;}  
 
-.download-link{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}
+/* ---------------------------------------------------------- */
+/* Classes added by javascript during the display of the note */
 
-span.tags:after {font-family: FontAwesome; content: " \f02b";}
-span.tags {background-color:#f4f4c5;}
+/* "note" will allow to stylize links to other notes within the local website */
+.note{border-bottom: 1px dotted #000;}
+
+/* "tag" added for tags */
+.tag {border-bottom: 1px dotted #000;}
+
+.download{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}

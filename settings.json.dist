@@ -5,6 +5,9 @@
    "optimisation":{
       "cache":1
    },
+   "tags":[
+      ""
+   ],
    "templates":{
       "screen":"screen",
 	  "html":"html"
@@ -19,11 +22,13 @@
    "languages":{
       "en": {
          "apply_filter":"Filtering to [%s]",
+		 "apply_filter_tag":"Display notes containing this tag",
          "copy_link":"Copy the link to this note in the clipboard",
          "confidential":"confidential",
+		 "display_that_note":"Display that note",
          "edit_file":"Edit",
          "error":"Error",
-         "file_not_found":"The file [%s] doesn\'t exists (anymore)",
+		 "file_not_found":"The file [%s] doesn\\'t exists (anymore)",
          "files_found":"%s has been retrieved",
          "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
          "open_html":"Open in a new window",
@@ -35,8 +40,10 @@
 	  },
       "fr": {
          "apply_filter":"Limite la liste des notes à [%s]",
+		 "apply_filter_tag":"Affiche les notes reprennant ce mot",
          "copy_link":"Copier le lien vers cette note dans le presse-papier",
          "confidential":"confidentiel",
+		 "display_that_note":"Afficher cette note",
          "edit_file":"Éditer",
          "error":"Erreur",
          "file_not_found":"Le fichier [%s] n\\'existe pas (ou plus)",

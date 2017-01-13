@@ -25,7 +25,6 @@ var QueryString = function () {
   return query_string;
 }();
 
-
 // http://stackoverflow.com/a/11247412
 // Check if an array contains a specific value
 Array.prototype.contains = function(v) {
@@ -45,16 +44,12 @@ Array.prototype.unique = function() {
    return arr; 
 }
 
+// http://stackoverflow.com/a/2593661/1065340
+RegExp.quote = function(str) {
+    return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+};
+
 $(document).ready(function() {
-   
-   // Add keybinding (not recommended for production use)
-   /*$(document).bind('keydown', function(e) {
-       var code = (e.keyCode ? e.keyCode : e.which);
-       if (code == 80 && !$('#print-modal').length) {
-           $.printPreview.loadPrintPreview();
-           return false;
-       }            
-   });*/
 
    // On page entry, get the list of .md files on the server
    ajaxify({task:'listFiles',callback:'initFiles(data)'});
@@ -115,6 +110,12 @@ function ajaxify($params) {
 
 } // function ajaxify()
 
+/**
+ * Add a new entry in the search box (append and not replace)
+ * 
+ * @param {type} $newValue
+ * @returns {Boolean}
+ */
 function addSearchEntry($newValue) {
 
    $current=$('#search').val().trim();
@@ -185,16 +186,13 @@ function initFiles($data) {
          // By clicking on the second column, with the data-file attribute, display the file content
          if ($(this).attr('data-file')) {
             
-            // Just for esthetics purposes
-            $('#CONTENT').fadeOut(1).fadeIn();            
-            
             // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
             if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
            
             var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));  
             
             if (markdown.settings.debug) console.log("Show note "+$(this).data('file'));  
-            ajaxify({task:'display',param:$fname,callback:'afterDisplay()',target:'CONTENT'});
+            ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
             $(this).addClass("selected");                  
          }
 
@@ -218,18 +216,23 @@ function initFiles($data) {
    } // if($data.hasOwnProperty('results'))
 
    // initialize the search area, thanks to the Flexdatalist plugin
-   $('.flexdatalist').flexdatalist({
-      toggleSelected: true,
-      minLength: 2,
-      valueProperty: 'id',
-      selectionRequired: false,
-      visibleProperties: ["name","type"],
-      searchIn: 'name',
-      data: 'index.php?task=tags',
-      focusFirstResult:true,
-      toggleSelected:true,
-      noResultsText:markdown.message.search_no_result
-   });
+   if ($.isFunction($.fn.flexdatalist)){
+      $('.flexdatalist').flexdatalist({
+         toggleSelected: true,
+         minLength: 2,
+         valueProperty: 'id',
+         selectionRequired: false,
+         visibleProperties: ["name","type"],
+         searchIn: 'name',
+         data: 'index.php?task=tags',
+         focusFirstResult:true,
+         toggleSelected:true,
+         noResultsText:markdown.message.search_no_result
+      });
+   
+      // Add automatic filtering if defined in the settings.json file
+      if(markdown.settings.auto_tags!=='') addSearchEntry(markdown.settings.auto_tags);
+   }
 
    $('#search').css('width', $('#TDM').width()-5);
    $('.flexdatalist-multiple').css('width', $('#TDM').width()-5).show();
@@ -248,45 +251,128 @@ function initFiles($data) {
 
 } // iniFiles()
 
+/**
+ * Initialize each action buttons of the displayed note.  
+ * These buttons should : 
+ *    - Have an id starting with "icon_xxxx" (f.i. id="icon_preview")
+ *    - Have a data-task attribute           (f.i. data-task="preview")
+ *    
+ * @returns {undefined}
+ */
+function initializeTasks() {
+
+   // Initialise print preview plugin, should be done before clicking on the button
+   if ($.isFunction($.fn.printPreview)) $('[data-task="printer"]').printPreview();
+   
+   // Get all DOM objects having a data-task attribute
+   $("[data-task]").click(function() {
+      
+      var $task=$(this).data('task');
+
+      var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');
+      var $tag=  ( $(this).attr('data-tag') ? $(this).data('tag').replace('\\','/')  : '');
+
+      if($fname!=='') $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));   
+
+      switch($task) {
+         
+         case 'clipboard':   
+            
+            // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+            if (markdown.settings.debug) console.log('Clipboard -> copy the link of the current note in the clipboard');
+            if(typeof Clipboard == 'function'){
+               new Clipboard('*[data-task="clipboard"]');
+            } else {
+               $(this).remove();
+            }
+            break;
+            
+         case 'display':
+            
+            // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
+            if (markdown.settings.debug) console.log('Display -> show note ['+$fname+']');
+            ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});            
+            break;
+            
+         case 'edit':   
+            
+            //if (markdown.settings.debug) console.log('Edit -> start the associated edit program (like Notepad f.i.)');
+            ajaxify({task:$task,param:$fname});
+            break;
+            
+         case 'printer':   
+            
+            //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
+            break;               
+            
+         case 'slideshow':
+            
+            //if (markdown.settings.debug) console.log('Slideshow -> open a new tab in the browser and show the markdown in a slideshow format');
+            slideshow($fname);
+            break;
+            
+         case 'tag':   
+            
+            if (markdown.settings.debug) console.log('Tag -> filter on ['+$tag+']');
+            addSearchEntry($tag);      
+            break;
+            
+         case 'window':   
+            
+            //if (markdown.settings.debug) console.log('Window -> Open the note in a new window');
+            window.open($fname);
+            break;
+            
+         default : 
+            
+            console.warn('Sorry, unknown task ['+$task+']');
+            
+      } // switch($task)
+     
+   }); // $("[data-task]").click(function()
+
+   return true;
+   
+} // function initializeTasks()
+
 /** 
  * If a note contains a link to an another note, use ajax and not normal links
  * @returns {Boolean}     
  */
 function replaceLinksToOtherNotes() {
    
+   if (markdown.settings.debug) console.log('Replace internal links to notes');
+   
+   var $text=$('#CONTENT').html();
+
    // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
    var $currentURL=location.protocol + '//' + location.host + location.pathname;   
    
    // Define a regex for matching every links in the displayed note pointing to that URL
-   var searchPattern = new RegExp('^' + $currentURL, 'i');
-
-   $('a').each(function() {	
-      if (searchPattern.test(this.href)) {
-
-         // We've found an internal link; can be a link to an another note 
-         
-         // Add the "note_link" class so it's possible to stylize links to other notes
-         $(this).addClass('note_link');
-         
-         // Extract only the querystring (f.i. task=display&param=xxxxxx)
-         $queryString=this.href.replace($currentURL+'?', '');
-
-         $task = $queryString.match(/task=([^&]*)/);     // The task is more probably 'display'
-         $param = $queryString.match(/param=([^&]*)/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed
-
-         $(this).click(function(e) {
-            e.preventDefault(); 
-            e.stopImmediatePropagation();
-            
-            // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
-            ajaxify({task:$task[1],param:$param[1],callback:'afterDisplay()',target:'CONTENT'});
-         });
-
-      }
+   var RegEx=new RegExp('<a href=[\'|"]' + RegExp.quote($currentURL)+ '\?.*>(.*)<\/a>', 'i');
    
-   }); // $('a').each()
+   var $nodes=RegEx.exec($text);
+
+   var $param=[];
+   var $fname='';
+
+   while ($nodes!=null) {
+
+      $param=$nodes[0].match(/param=(.*)['|"]/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed         
+      $fname=JSON.parse(decodeURIComponent(window.atob($param[1])));
+
+      $sNodes='<span class="note" title="'+markdown.message.display_that_note+'" data-task="display" data-file="'+$fname+'">'+$nodes[1]+'</span>';
+
+      $text=$text.replace($nodes[0], $sNodes);
+
+      $nodes=RegEx.exec($text);
+      
+   } // while
    
-   return true;   
+   // Set the new page content
+   $('#CONTENT').html($text);
+   
+   return; 
    
 } // replaceLinksToOtherNotes()
 
@@ -299,7 +385,7 @@ function addLinksToTags() {
    
    var $text=$('#CONTENT').html();
    
-   var $tags = $text.match(/(§[a-zA-Z0-9]+)(?!.*\\1)/i);
+   var $tags = $text.match(/§([a-zA-Z0-9]+)(?!.*\\1)/gi);
   
    if ($tags!==null) {
       
@@ -308,19 +394,12 @@ function addLinksToTags() {
    
       $.each($tags, function($index, $tag) {           
          if (markdown.settings.debug) console.log("Process tag "+$tag);         
-         $sTags='<span class="tags" data-tag="'+$tag.substr(1)+'">'+$tag+'</span>';
+         $sTags='<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tag.substr(1)+'">'+$tag.substr(1)+'</span>';
          $text=$text.replace(new RegExp($tag, "g"), $sTags);
       });
       
       // Set the new page content
       $('#CONTENT').html($text);
-      
-      // Add a click event to every tags : by clicking on a tag, update the search box
-      $('#CONTENT').on('click','.tags',function(){
-         $tag=$(this).data('tag').replace('\\','/');
-         // Set the value in the search area
-         addSearchEntry($tag);      
-      });
 
    } // if ($tags!==null)
    
@@ -333,20 +412,16 @@ function addLinksToTags() {
  */
 function forceNewWindow() {
 
-   $('a').each(function() {					
-      $(this).click(function(e) {
-         e.preventDefault(); 
-         e.stopImmediatePropagation();
-         window.open(this.href, '_blank');
-      });
-   }); // $('a').each()
+   var $currentURL=location.protocol + '//' + location.host;   
 
+   $('a[href^="http:"], a[href^="https:"]').not('[href^="'+$currentURL+'/"]').attr('target', '_blank');
+    
    return true;      
 
 } // function forceNewWindow()
 
 /**
- * Add icons to .pdf, .xls, .doc, ... hyperlinks
+ * Add icons to .pdf, .xls, .doc, ... hyperlinks and for some extensions (like log, md, pdf, txt, ...) force to open in a new window
  */
 function addIcons() {
 
@@ -358,11 +433,15 @@ function addIcons() {
       if (/\.doc[x]?$/i.test($href)) { 
          // Word document
          $sAnchor+='<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link');       
+         $(this).html($sAnchor).addClass('download');       
+      } else if (/\.(log|md|markdown|txt)$/i.test($href)) { 
+         // LOG - Open it in a new windows and not in the current one
+         $sAnchor+='<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';            
+         $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
       } else if (/\.pdf$/i.test($href)) { 
-         // PDF
+         // PDF - Open it in a new windows and not in the current one
          $sAnchor+='<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link');       
+         $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
       } else if (/\.ppt[x]?$/i.test($href)) { 
          // Powerpoint
          $sAnchor+='<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';            
@@ -384,65 +463,34 @@ function addIcons() {
 } // function addIcons()
 
 /**
- * Try to detect every emails in the HTML content but not yet in a html tags
- * So match "christophe@test.be" and don't match <a ...>christophe@test.be</a>
- * 
- * Then add the mailto hyperlink to these 'plain text' emails
- * 
- * @returns {undefined}
+ * Called after the ajax "display" request, the file is almost displayed
  */
-function ProcesseMails() {
+function afterDisplay($fname) {
 
-   var $text=$('#CONTENT').html();
+   // Remove functionnalities if jQuery librairies are not loaded
+   if(typeof Clipboard !== 'function') $('[data-task="clipboard"]').remove();
+   if (!$.isFunction($.fn.printPreview)) $('[data-task="printer"]').remove();
    
-   // ([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+) : search emails
-   // (?![^<]*>|[^<>]*<\/) add a restriction : don't search content within html tags
-   var $emails = $text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)(?![^<]*>|[^<>]*<\/)/gi);
+   // Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
+   if ($.isFunction($.fn.linkify)) {
+      if (markdown.settings.debug) console.log('linkify plain text');
+      $('page').linkify();
+   }
    
-   if ($emails!==null) {
+   // If a note contains a link to an another note, use ajax and not normal links
+   replaceLinksToOtherNotes();
 
-      $.each($emails, function($index, $email) {       
-         $seMail='<a class="email" href="mailto:'+$email+'">'+$email+'</a>';
+   // Add links to tags
+   addLinksToTags();
 
-         if (markdown.settings.debug) console.log('replace '+$email);      
-         if (markdown.settings.debug) console.log('by '+$seMail);     
-         
-         $text=$text.replace(new RegExp($email, "g"), $seMail);
-      });
-      
-      if (markdown.settings.debug) console.log($text);
+   // Force links that points on the same server (localhost) to be opened in a new window
+   forceNewWindow();
 
-      $('#CONTENT').html($text);
-      
-   } // if ($emails!==null)
-   
-   return true;
-   
-} // function ProcesseMails()
+   // Add icons to .pdf, .xls, .doc, ... hyperlinks
+   addIcons();  
 
-/**
- * Called when a file is displayed
- */
-function afterDisplay() {
-   
-   // Initialize the Copy into the clipboard button
-   // See https://clipboardjs.com/
-   new Clipboard('.copy_clip');
-   
-   // Initialise print preview plugin
-   $('#icon_printer').printPreview();
-
-   // Highlight common languages (html, javascript, php, ...)
-   // @link : https://github.com/isagalaev/highlight.js
-   $('pre code').each(function(i, block) {
-      hljs.highlightBlock(block);
-   });
-
-   $('#CONTENT').show();
-   
-   $('html, body').animate({
-      'scrollTop' : $("#CONTENT").position().top -25
-   });
+   // Initialize each action buttons of the displayed note
+   initializeTasks()
 
    // Retrieve the heading 1 from the loaded file 
    var $title=$('#CONTENT h1').text();				  
@@ -450,58 +498,43 @@ function afterDisplay() {
 
    var $fname=$('div.filename').text();				  
    if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
-
-   // If a note contains a link to an another note, use ajax and not normal links
-   replaceLinksToOtherNotes();
-
-   // Add links to tags
-   addLinksToTags();
    
-   // Force links that points on the same server (localhost) to be opened in a new window
-   forceNewWindow();
-
-   // Add icons to .pdf, .xls, .doc, ... hyperlinks
-   addIcons();  
-   
-   ProcesseMails();
+   // Highlight common languages (html, javascript, php, ...)
+   // @link : https://github.com/isagalaev/highlight.js
+   try {
+      $('pre code').each(function(i, block) {
+         hljs.highlightBlock(block);
+      });
+   } catch(err) {
+      if (markdown.settings.debug) console.warn(err.message);
+   }
    
    // Interface : put the cursor immediatly in the edit box
    try {               
+      
       $('#search').focus();
-   } catch(err) {         
+      
+      // Get the searched keywords.  Apply the restriction on the size.
+      var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
+
+      if ($searchKeywords!=='') {
+         
+         if ($.isFunction($.fn.highlight)){
+            $("#CONTENT").highlight($searchKeywords);
+         }
+      }
+
+   } catch(err) { 
+      if (markdown.settings.debug) console.warn(err.message);
    }
-
-   // Get the searched keywords.  Apply the restriction on the size.
-   var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
-
-   if ($searchKeywords!=='') {
-      $("#CONTENT").highlite({
-         text: $searchKeywords
-      });
-   }
-
-   // By clicking on the "Edit" link, start the associated edit program (like Notepad f.i.)
-   $('#icon_edit').click(function(e) {
-      var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));      
-      ajaxify({task:'edit',param:$fname});
-   });
-   
-   // By clicking on the "Slideshow" link, open a new tab in the browser and show the markdown 
-   // in a slideshow format
-   $('#icon_slideshow').click(function(e) {
-      var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));   
-      slideshow($fname);
-   });
-
-   $('#icon_window').click(function(e) {
-      var $fname=$(this).data('file');  
-      window.open($fname);
-   });
 
    // See if the customafterDisplay() function has been defined and if so, call it
    if (typeof customafterDisplay !== 'undefined' && $.isFunction(customafterDisplay)) {
       customafterDisplay($fname);
    }
+   
+   // Just for esthetics purposes
+   $('#CONTENT').fadeOut(1).fadeIn(3);         
 
    return true;
 
@@ -605,6 +638,12 @@ function afterSearch($keywords, $data) {
 
 } // function afterSearch()
 
+/**
+ * Open the "slideshow" view
+ * 
+ * @param {type} $fname
+ * @returns {Boolean}
+ */
 function slideshow($fname) {
       
    var $data = new Object;
@@ -625,16 +664,7 @@ function slideshow($fname) {
          if(w==undefined) {
             Noty({message:markdown.message.allow_popup_please, type:'notification'});         
          }
-  
-var $data = new Object;
-   $data.task  = 'killSlideshow';
-   $data.param = $fname;         
-$.ajax({
-      async:true,
-  type: "GET",
-  url: markdown.url,
-      data: $data
-});         
+         
       } // success
       
    }); // $.ajax() 
@@ -653,17 +683,21 @@ $.ajax({
  */
 function Noty($params) {
    
-   if($params.message==='') return false;
-   
-   $type = (($params.type==='undefined')?'info':$params.type);
-   
-   // More options, see http://ned.im/noty/options.html
-   var n = noty({
-      text: $params.message,
-      theme: 'relax',
-      timeout: 2400,
-      layout: 'bottomRight',
-      type: $type
-   }); // noty() 
+   if ($.isFunction($.fn.noty)) {
+      
+      if($params.message==='') return false;
 
-}
+      $type = (($params.type==='undefined')?'info':$params.type);
+
+      // More options, see http://ned.im/noty/options.html
+      var n = noty({
+         text: $params.message,
+         theme: 'relax',
+         timeout: 2400,
+         layout: 'bottomRight',
+         type: $type
+      }); // noty() 
+      
+   }
+   
+} // function Noty()

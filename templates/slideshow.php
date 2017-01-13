@@ -8,9 +8,8 @@
     <meta charset="utf-8" />
     <title><--%TITLE%--></title>
     <style>
-      @import url(https://fonts.googleapis.com/css?family=Droid+Serif);
-      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
-      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+	
+	#source{display:none;}
 
       body {
         font-family: 'Droid Serif';
@@ -20,14 +19,17 @@
         font-weight: 400;
         margin-bottom: 0;
       }
+      
+      img {max-width:800px;}
       .remark-slide-content h1 { font-size: 3em; }
       .remark-slide-content h2 { font-size: 2em; }
       .remark-slide-content h3 { font-size: 1.6em; }
       .footnote {
         position: absolute;
-        bottom: 3em;
+        bottom: 1em;
       }
       li p { line-height: 1.25em; }
+      .italic {font-style:italic;}
       .red { color: #fa0000; }
       .large { font-size: 2em; }
       a, a > code {

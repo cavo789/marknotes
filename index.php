@@ -18,6 +18,13 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-13 : + Javascript improvements
+ *              + CSS improvements
+ *              + Add a Slideshow button to display the note like a slideshow
+ *              + libs folder reorganization
+ *              + add linkify.js to convert plain text email, urls, ... into clickable ones
+ *              + search : add a auto keyword i.e. a filtering that is immediatly done when showing the application screen
+ *              - remove highlite and replace by jquery.highlight.js
  * 2017-01-12 : + Tags : maintain automatically the tags.json file. Just need to put §Some_Tag in a document (une § and not #)
  *              + Tags : detect tags in JS and allow to click on it for filtering
  *              + Wallpaper image : only visible for large screen
