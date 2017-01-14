@@ -42,6 +42,9 @@ define('SLIDESHOW','slideshow');
 // Can be override : settings.json->page->img_maxwidth (integer)
 define('IMG_MAX_WIDTH','800');
 
+// Prefix to use to indicate a word as a tag
+define('PREFIX_TAG','§');
+
 //
 // -------------------------------------------------------------------------------------------------------------------------
 
@@ -293,7 +296,7 @@ class aeSecureMarkdown {
          }
       
          $arrTags=aeSecureFct::array_iunique($arrTags);
-         sort($arrTags);     
+         natcasesort ($arrTags);     
          
          if (count($arrJSON)==0) {
             
@@ -307,20 +310,28 @@ class aeSecureMarkdown {
          
             $bAdd=FALSE;
             foreach($arrTags as $tag) {
-               
-               if (!in_array($tag, $arrJSON)) { 
+
+               // Use preg_grep and not in_array to be able to make a case insensitive search
+               if (count(preg_grep("/".$tag."/i" , $arrJSON))==0) {
                   $bAdd = TRUE; 
                   $arrJSON[]=$tag;            
                }
+               
             } // foreach()
             
          } // if (count($arrJSON)==0)
+         
+         try {
+            $sJSON=json_encode($arrJSON, JSON_PRETTY_PRINT);
+         } catch (Exception $ex) {
+            $sJSON='';
+         }
 
-         if (($bAdd===TRUE)&&(count($arrJSON)>0)) {   
+         if (($bAdd===TRUE)&&($sJSON!='')) {   
 
-            sort($arrJSON);           
             if ($handle = fopen($fname,'w')) {
-               fwrite($handle, json_encode($arrJSON, JSON_PRETTY_PRINT));
+               sort($arrJSON);
+               fwrite($handle, $sJSON);
                fclose($handle);		
             }    
          }
@@ -408,6 +419,39 @@ class aeSecureMarkdown {
       }
 
       $markdown=file_get_contents($fullname);
+       
+      // -----------------------------------------------------------------------
+      // Check if the file contains words present in the tags.json file : if the file being displayed contains a word (f.i. "javascript") that is in the 
+      // tags.json (so it's a known tag) and that word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix 
+      
+      if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
+         if(filesize($fname)>0) {
+            
+            $old=$markdown;
+            $arrTags=json_decode(file_get_contents($fname));
+            foreach($arrTags as $tag) {
+
+               // For each tag, try to find the word in the markdown file 
+               // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  : the word can be followed by one of these possibilities i.e. a carriage return, a comma or dot-comma, a dot, a ending ) and a space or nothing (end of line)
+               preg_match('/(\\n|[[:blank:]])('.preg_quote($tag).')(\\n|,|;|\\.|\\)|[[:blank:]]|$)/i', $markdown, $matches);
+               if (count($matches)>0) {
+                  $markdown=preg_replace('/'.$matches[2].'/',PREFIX_TAG.$matches[2],$markdown);
+               }
+
+            } // foreach
+
+            if ($old!=$markdown) {
+               // rewrite the file
+               if ($handle = fopen($fullname,'w')) {
+                  fwrite($handle, $markdown);
+                  fclose($handle);		
+               }    
+            }
+         } // if(filesize($fname)>0)
+         
+      } // if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json'))
+      //
+      // -----------------------------------------------------------------------
       
       $icons='';
 
@@ -530,7 +574,7 @@ class aeSecureMarkdown {
          unset($aesEncrypt);
          
       } // if (count($matches[1])>0)
-      
+     
       // -----------------------------------
       // Add additionnal icons at the left
 
@@ -558,7 +602,7 @@ class aeSecureMarkdown {
       
       $matches = array();
 
-      preg_match_all('/§([a-zA-Z0-9]+)/', $html, $matches);
+      preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
 
       if (count($matches[1])>0) self::StoreTags($matches[1]);
@@ -930,8 +974,9 @@ class aeSecureMarkdown {
             "markdown.message.search_no_result='".str_replace("'","\'",self::getText('search_no_result','SEARCH_NO_RESULT'))."';\n".
             "markdown.url='index.php';\n".
             "markdown.settings={};\n".
-            "markdown.settings.debug=".DEBUG.";\n".
             "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
+            "markdown.settings.debug=".DEBUG.";\n".
+            "markdown.settings.prefix_tag='".PREFIX_TAG."';\n";
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
          
          $html=str_replace('%MARKDOWN_GLOBAL_VARIABLES%', $JS, $html);
@@ -973,10 +1018,13 @@ class aeSecureMarkdown {
 
          $markdown=file_get_contents($fullname);
 		 
-		 // ------------------------------------------------------------------
-		 // Remove <encrypt xxxx> content </encrypt>
+         // ------------------------------------------------------------------
+         // Remove <encrypt xxxx> content </encrypt>
          // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
          preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+         
+         // Remove the tag prefix
+         $markdown=str_replace(PREFIX_TAG,'',$markdown);
 
          // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
          if (count($matches[0])>0) {

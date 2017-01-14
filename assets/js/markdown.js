@@ -113,19 +113,25 @@ function ajaxify($params) {
 /**
  * Add a new entry in the search box (append and not replace)
  * 
- * @param {type} $newValue
+ * @param {json} $entry
+ *      keyword           : the value to add in the search area
+ *      reset (optional)  : if true, the search area will be resetted before (so only search for the new keyword)
+ *      
  * @returns {Boolean}
  */
-function addSearchEntry($newValue) {
+function addSearchEntry($entry) {
+
+   $bReset  = (($entry.reset==='undefined') ? false : $entry.reset);
 
    $current=$('#search').val().trim();
    
-   if ($current!='') {
+   if (($current!='') && ($bReset==false)){
+      // Append the new keyword only when bReset is not set or set to False
       var values = $current.split(','); 
-      values.push($newValue); 			   
+      values.push($entry.keyword); 			   
       $('#search').val(values.join(',')); 
    } else {
-      $('#search').val($newValue);
+      $('#search').val($entry.keyword);
    }
    
    return true;
@@ -205,9 +211,7 @@ function initFiles($data) {
             if (markdown.settings.debug) console.log("Apply filter for "+$folder);  
             
             // Set the value in the search area
-            addSearchEntry($folder);        
-            
-            //$('#search').val($folder);
+            addSearchEntry({keyword:$folder});        
            
          } // if ($(this).attr('data-folder'))
 
@@ -231,7 +235,7 @@ function initFiles($data) {
       });
    
       // Add automatic filtering if defined in the settings.json file
-      if(markdown.settings.auto_tags!=='') addSearchEntry(markdown.settings.auto_tags);
+      if(markdown.settings.auto_tags!=='') addSearchEntry({keyword:markdown.settings.auto_tags});
    }
 
    $('#search').css('width', $('#TDM').width()-5);
@@ -314,7 +318,7 @@ function initializeTasks() {
          case 'tag':   
             
             if (markdown.settings.debug) console.log('Tag -> filter on ['+$tag+']');
-            addSearchEntry($tag);      
+            addSearchEntry({keyword:$tag, reset:true});      
             break;
             
          case 'window':   
@@ -341,36 +345,44 @@ function initializeTasks() {
  */
 function replaceLinksToOtherNotes() {
    
-   if (markdown.settings.debug) console.log('Replace internal links to notes');
-   
-   var $text=$('#CONTENT').html();
-
-   // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
-   var $currentURL=location.protocol + '//' + location.host + location.pathname;   
-   
-   // Define a regex for matching every links in the displayed note pointing to that URL
-   var RegEx=new RegExp('<a href=[\'|"]' + RegExp.quote($currentURL)+ '\?.*>(.*)<\/a>', 'i');
-   
-   var $nodes=RegEx.exec($text);
-
-   var $param=[];
-   var $fname='';
-
-   while ($nodes!=null) {
-
-      $param=$nodes[0].match(/param=(.*)['|"]/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed         
-      $fname=JSON.parse(decodeURIComponent(window.atob($param[1])));
-
-      $sNodes='<span class="note" title="'+markdown.message.display_that_note+'" data-task="display" data-file="'+$fname+'">'+$nodes[1]+'</span>';
-
-      $text=$text.replace($nodes[0], $sNodes);
-
-      $nodes=RegEx.exec($text);
+   try {
       
-   } // while
+      if (markdown.settings.debug) console.log('Replace internal links to notes');
+
+      var $text=$('#CONTENT').html();
+
+      // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
+      var $currentURL=location.protocol + '//' + location.host + location.pathname;   
+
+      // Define a regex for matching every links in the displayed note pointing to that URL
+      var RegEx=new RegExp('<a href=[\'|"]' + RegExp.quote($currentURL)+ '\?.*>(.*)<\/a>', 'i');
+
+      var $nodes=RegEx.exec($text);
+
+      var $param=[];
+      var $fname='';
+
+      while ($nodes!=null) {
+
+         $param=$nodes[0].match(/param=(.*)['|"]/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed         
+         $fname=JSON.parse(decodeURIComponent(window.atob($param[1])));
+
+         $sNodes='<span class="note" title="'+markdown.message.display_that_note+'" data-task="display" data-file="'+$fname+'">'+$nodes[1]+'</span>';
+
+         $text=$text.replace($nodes[0], $sNodes);
+
+         $nodes=RegEx.exec($text);
+
+      } // while
+
+      // Set the new page content
+      $('#CONTENT').html($text);
    
-   // Set the new page content
-   $('#CONTENT').html($text);
+   } catch(err) {         
+      
+      console.warn(err.message);
+      
+   }
    
    return; 
    
@@ -385,24 +397,36 @@ function addLinksToTags() {
    
    var $text=$('#CONTENT').html();
    
-   var $tags = $text.match(/§([a-zA-Z0-9]+)(?!.*\\1)/gi);
-  
-   if ($tags!==null) {
+   // markdown.settings.prefix_tag is set by markdown.php and, by default, equal to § 
+   // Every words prefixed by § will be considered as a tag just like "#word" in social network.
+   // The # character is used by markdown language so, use an another one.
+   try {
       
-      // Keep unique values
-      $tags = $tags.unique();
-   
-      $.each($tags, function($index, $tag) {           
-         if (markdown.settings.debug) console.log("Process tag "+$tag);         
-         $sTags='<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tag.substr(1)+'">'+$tag.substr(1)+'</span>';
-         $text=$text.replace(new RegExp($tag, "g"), $sTags);
-      });
+      // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  : the word can be followed by one of these possibilities i.e. a carriage return, a comma or dot-comma, a dot, a ending ) and a space or nothing (end of line)
+      var RegEx=new RegExp('([[:blank:]]|,|;|\\.|\\n|\\r|\\t)'+markdown.settings.prefix_tag+'([a-zA-Z0-9]+)([[:blank:]]|,|;|\\.|\\n|\\r|\\t)', 'i');
+      if (markdown.settings.debug) console.log('RegEx for finding tags : '+RegEx);
       
+      var $tags=RegEx.exec($text);
+
+      while ($tags!=null) {         
+
+         if (markdown.settings.debug) console.log("Process tag "+$tags[0]);         
+         $sTags='<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tags[1]+'">'+$tags[1]+'</span>';
+         $text=$text.replace(new RegExp($tags[0], "g"), $sTags);
+
+         $tags=RegEx.exec($text);
+
+      } // while
+
       // Set the new page content
       $('#CONTENT').html($text);
 
-   } // if ($tags!==null)
-   
+   } catch(err) {         
+      
+      console.warn(err.message);
+      
+   }
+
    return; 
 } // function addLinksToTags()
 
@@ -425,39 +449,47 @@ function forceNewWindow() {
  */
 function addIcons() {
 
-   $("a").each(function() {
+   try {
+      
+      $("a").each(function() {
 
-      $href=$(this).attr("href");   
-      $sAnchor=$(this).text();
+         $href=$(this).attr("href");   
+         $sAnchor=$(this).text();
 
-      if (/\.doc[x]?$/i.test($href)) { 
-         // Word document
-         $sAnchor+='<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download');       
-      } else if (/\.(log|md|markdown|txt)$/i.test($href)) { 
-         // LOG - Open it in a new windows and not in the current one
-         $sAnchor+='<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
-      } else if (/\.pdf$/i.test($href)) { 
-         // PDF - Open it in a new windows and not in the current one
-         $sAnchor+='<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
-      } else if (/\.ppt[x]?$/i.test($href)) { 
-         // Powerpoint
-         $sAnchor+='<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link');       
-      } else if (/\.xls[m|x]?$/i.test($href)) { 
-         // Excel
-         $sAnchor+='<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link');       
-      } else if (/\.(7z|gzip|tar|zip)$/i.test($href)) { 
-         // Archive
-         $sAnchor+='<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';            
-         $(this).html($sAnchor).addClass('download-link');    
-      }
+         if (/\.doc[x]?$/i.test($href)) { 
+            // Word document
+            $sAnchor+='<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';            
+            $(this).html($sAnchor).addClass('download');       
+         } else if (/\.(log|md|markdown|txt)$/i.test($href)) { 
+            // LOG - Open it in a new windows and not in the current one
+            $sAnchor+='<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';            
+            $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
+         } else if (/\.pdf$/i.test($href)) { 
+            // PDF - Open it in a new windows and not in the current one
+            $sAnchor+='<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';            
+            $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
+         } else if (/\.ppt[x]?$/i.test($href)) { 
+            // Powerpoint
+            $sAnchor+='<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';            
+            $(this).html($sAnchor).addClass('download-link');       
+         } else if (/\.xls[m|x]?$/i.test($href)) { 
+            // Excel
+            $sAnchor+='<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';            
+            $(this).html($sAnchor).addClass('download-link');       
+         } else if (/\.(7z|gzip|tar|zip)$/i.test($href)) { 
+            // Archive
+            $sAnchor+='<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';            
+            $(this).html($sAnchor).addClass('download-link');    
+         }
 
-   });
-
+      });
+      
+    } catch(err) {         
+      
+      console.warn(err.message);
+      
+   }
+   
    return true;  
 
 } // function addIcons()
@@ -467,70 +499,78 @@ function addIcons() {
  */
 function afterDisplay($fname) {
 
-   // Remove functionnalities if jQuery librairies are not loaded
-   if(typeof Clipboard !== 'function') $('[data-task="clipboard"]').remove();
-   if (!$.isFunction($.fn.printPreview)) $('[data-task="printer"]').remove();
-   
-   // Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
-   if ($.isFunction($.fn.linkify)) {
-      if (markdown.settings.debug) console.log('linkify plain text');
-      $('page').linkify();
-   }
-   
-   // If a note contains a link to an another note, use ajax and not normal links
-   replaceLinksToOtherNotes();
-
-   // Add links to tags
-   addLinksToTags();
-
-   // Force links that points on the same server (localhost) to be opened in a new window
-   forceNewWindow();
-
-   // Add icons to .pdf, .xls, .doc, ... hyperlinks
-   addIcons();  
-
-   // Initialize each action buttons of the displayed note
-   initializeTasks()
-
-   // Retrieve the heading 1 from the loaded file 
-   var $title=$('#CONTENT h1').text();				  
-   if ($title!=='') $('title').text($title);
-
-   var $fname=$('div.filename').text();				  
-   if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
-   
-   // Highlight common languages (html, javascript, php, ...)
-   // @link : https://github.com/isagalaev/highlight.js
    try {
-      $('pre code').each(function(i, block) {
-         hljs.highlightBlock(block);
-      });
-   } catch(err) {
-      if (markdown.settings.debug) console.warn(err.message);
-   }
-   
-   // Interface : put the cursor immediatly in the edit box
-   try {               
-      
-      $('#search').focus();
-      
-      // Get the searched keywords.  Apply the restriction on the size.
-      var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
 
-      if ($searchKeywords!=='') {
-         
-         if ($.isFunction($.fn.highlight)){
-            $("#CONTENT").highlight($searchKeywords);
-         }
+      // Remove functionnalities if jQuery librairies are not loaded
+      if(typeof Clipboard !== 'function') $('[data-task="clipboard"]').remove();
+      if (!$.isFunction($.fn.printPreview)) $('[data-task="printer"]').remove();
+
+      // Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
+      if ($.isFunction($.fn.linkify)) {
+         if (markdown.settings.debug) console.log('linkify plain text');
+         $('page').linkify();
       }
 
-   } catch(err) { 
-      if (markdown.settings.debug) console.warn(err.message);
-   }
+      // If a note contains a link to an another note, use ajax and not normal links
+      replaceLinksToOtherNotes();
 
-   // See if the customafterDisplay() function has been defined and if so, call it
-   if (typeof customafterDisplay !== 'undefined' && $.isFunction(customafterDisplay)) {
-      customafterDisplay($fname);
+      // Add links to tags
+      addLinksToTags();
+
+      // Force links that points on the same server (localhost) to be opened in a new window
+      forceNewWindow();
+
+      // Add icons to .pdf, .xls, .doc, ... hyperlinks
+      addIcons();  
+
+      // Initialize each action buttons of the displayed note
+      initializeTasks()
+
+      // Retrieve the heading 1 from the loaded file 
+      var $title=$('#CONTENT h1').text();				  
+      if ($title!=='') $('title').text($title);
+
+      var $fname=$('div.filename').text();				  
+      if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
+
+      // Highlight common languages (html, javascript, php, ...)
+      // @link : https://github.com/isagalaev/highlight.js
+      try {
+         $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+         });
+      } catch(err) {
+         if (markdown.settings.debug) console.warn(err.message);
+      }
+
+      // Interface : put the cursor immediatly in the edit box
+      try {               
+
+         $('#search').focus();
+
+         // Get the searched keywords.  Apply the restriction on the size.
+         var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
+
+         if ($searchKeywords!=='') {
+
+            if ($.isFunction($.fn.highlight)){
+               $("#CONTENT").highlight($searchKeywords);
+            }
+         }
+
+      } catch(err) { 
+         if (markdown.settings.debug) console.warn(err.message);
+      }
+
+      // See if the customafterDisplay() function has been defined and if so, call it
+      if (typeof customafterDisplay !== 'undefined' && $.isFunction(customafterDisplay)) {
+         customafterDisplay($fname);
+      }
+
+   } catch(err) {         
+      
+      console.warn(err.message);
+      
    }
    
    // Just for esthetics purposes
@@ -546,31 +586,39 @@ function afterDisplay($fname) {
  */
 function onChangeSearch() {
 
-   // Get the searched keywords.  Apply the restriction on the size.
-   var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
-   
-   var $bContinue=true;
-   // See if the customonChangeSearch() function has been defined and if so, call it
-   if (typeof customonChangeSearch !== 'undefined' && $.isFunction(customonChangeSearch)) {
-      $bContinue=customonChangeSearch($searchKeywords);
-   }
-
-   if ($bContinue===true) {
+   try {
       
-      if ($searchKeywords!='') {
-         $msg=markdown.message.apply_filter;
-         Noty({message:$msg.replace('%s', $searchKeywords), type:'notification'});         
+      // Get the searched keywords.  Apply the restriction on the size.
+      var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
+
+      var $bContinue=true;
+      // See if the customonChangeSearch() function has been defined and if so, call it
+      if (typeof customonChangeSearch !== 'undefined' && $.isFunction(customonChangeSearch)) {
+         $bContinue=customonChangeSearch($searchKeywords);
       }
 
-      // On page entry, get the list of .md files on the server
-      ajaxify({task:'search',param:window.btoa(encodeURIComponent($searchKeywords)), callback:'afterSearch("'+$searchKeywords+'",data)'});
+      if ($bContinue===true) {
+
+         if ($searchKeywords!='') {
+            $msg=markdown.message.apply_filter;
+            Noty({message:$msg.replace('%s', $searchKeywords), type:'notification'});         
+         }
+
+         // On page entry, get the list of .md files on the server
+         ajaxify({task:'search',param:window.btoa(encodeURIComponent($searchKeywords)), callback:'afterSearch("'+$searchKeywords+'",data)'});
+
+      } else {
+
+         if (markdown.settings.debug) console.log('cancel the search');
+
+      }
+
+   } catch(err) {         
       
-   } else {
-      
-      if (markdown.settings.debug) console.log('cancel the search');
+      console.warn(err.message);
       
    }
-
+   
    return true;
 
 } // Search()
@@ -582,58 +630,66 @@ function onChangeSearch() {
  */
 function afterSearch($keywords, $data) {
 
-   // Check if we've at least one file
-   if (Object.keys($data).length>0) {
+   try {
 
-      // Process every rows of the tblFiles array => process every files 
-      $('#tblFiles > tbody  > tr > td').each(function() {
+      // Check if we've at least one file
+      if (Object.keys($data).length>0) {
 
-         // Be sure to process only cells with the data-file attribute.
-         // That attribute contains the filename, not encoded
-         if ($(this).attr('data-file')) {
-
-            // Get the filename (is relative like /myfolder/filename.md)
-            $filename=$(this).data('file');
-            $tr=$(this).parent();
-
-            // Default : hide the filename
-            $tr.hide();                     
-
-            // Now, check if the file is mentionned in the result, if yes, show the row back
-            $.each($data, function() {
-               $.each(this, function($key, $value) {                           
-                  if ($value===$filename) {
-                     $tr.show();
-                     return false;  // break
-                  }
-               });
-            }); // $.each($data)
-
-         }
-      }); // $('#tblFiles > tbody  > tr > td')
-
-   } else {
-
-      if ($keywords!=='') {
-
-         noty({message:markdown.message.search_no_result, type:'success'});         
-
-      } else { // if ($keywords!=='')
-
-         // show everything back
+         // Process every rows of the tblFiles array => process every files 
          $('#tblFiles > tbody  > tr > td').each(function() {
+
+            // Be sure to process only cells with the data-file attribute.
+            // That attribute contains the filename, not encoded
             if ($(this).attr('data-file')) {
-               $(this).parent().show();
+
+               // Get the filename (is relative like /myfolder/filename.md)
+               $filename=$(this).data('file');
+               $tr=$(this).parent();
+
+               // Default : hide the filename
+               $tr.hide();                     
+
+               // Now, check if the file is mentionned in the result, if yes, show the row back
+               $.each($data, function() {
+                  $.each(this, function($key, $value) {                           
+                     if ($value===$filename) {
+                        $tr.show();
+                        return false;  // break
+                     }
+                  });
+               }); // $.each($data)
+
             }
-         });
-         
-      } // if ($keywords!=='')
+         }); // $('#tblFiles > tbody  > tr > td')
 
-   } // if (Object.keys($data).length>0)
+      } else {
 
-   // See if the customafterSearch() function has been defined and if so, call it
-   if (typeof customafterSearch !== 'undefined' && $.isFunction(customafterSearch)) {
-      customafterSearch($keywords, $data);
+         if ($keywords!=='') {
+
+            noty({message:markdown.message.search_no_result, type:'success'});         
+
+         } else { // if ($keywords!=='')
+
+            // show everything back
+            $('#tblFiles > tbody  > tr > td').each(function() {
+               if ($(this).attr('data-file')) {
+                  $(this).parent().show();
+               }
+            });
+
+         } // if ($keywords!=='')
+
+      } // if (Object.keys($data).length>0)
+
+      // See if the customafterSearch() function has been defined and if so, call it
+      if (typeof customafterSearch !== 'undefined' && $.isFunction(customafterSearch)) {
+         customafterSearch($keywords, $data);
+      }
+      
+   } catch(err) {         
+      
+      console.warn(err.message);
+      
    }
 
 } // function afterSearch()
@@ -645,30 +701,37 @@ function afterSearch($keywords, $data) {
  * @returns {Boolean}
  */
 function slideshow($fname) {
+     
+   try {
       
-   var $data = new Object;
-   $data.task  = 'slideshow';
-   $data.param = $fname;
+      var $data = new Object;
+      $data.task  = 'slideshow';
+      $data.param = $fname;
 
-   $.ajax({
-      async:true,
-      type:(markdown.settings.debug?'GET':'POST'),
-      url: markdown.url,
-      data: $data,
-      datatype:'json',
-      success: function (data) {  
-      
-         // data is a URL pointing to the HTML version of the slideshow so ... just display
-         var w = window.open(data, "slideshow");   
+      $.ajax({
+         async:true,
+         type:(markdown.settings.debug?'GET':'POST'),
+         url: markdown.url,
+         data: $data,
+         datatype:'json',
+         success: function (data) {  
 
-         if(w==undefined) {
-            Noty({message:markdown.message.allow_popup_please, type:'notification'});         
-         }
-         
-      } // success
+            // data is a URL pointing to the HTML version of the slideshow so ... just display
+            var w = window.open(data, "slideshow");   
+
+            if(w==undefined) {
+               Noty({message:markdown.message.allow_popup_please, type:'notification'});         
+            }
+
+         } // success
+
+      }); // $.ajax() 
       
-   }); // $.ajax() 
-   
+   } catch(err) {         
+      
+      console.warn(err.message);
+      
+   }
    return true;
   
 } // function slideshow()

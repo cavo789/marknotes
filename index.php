@@ -18,6 +18,7 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-14 : + Add automatically known tags in markdown existing files
  * 2017-01-13 : + Javascript improvements
  *              + CSS improvements
  *              + Add a Slideshow button to display the note like a slideshow
