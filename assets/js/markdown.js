@@ -286,6 +286,7 @@ function initializeTasks() {
             if (markdown.settings.debug) console.log('Clipboard -> copy the link of the current note in the clipboard');
             if(typeof Clipboard == 'function'){
                new Clipboard('*[data-task="clipboard"]');
+               Noty({message:markdown.message.copy_link_done, type:'success'});
             } else {
                $(this).remove();
             }
@@ -402,8 +403,15 @@ function addLinksToTags() {
    // The # character is used by markdown language so, use an another one.
    try {
       
-      // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  : the word can be followed by one of these possibilities i.e. a carriage return, a comma or dot-comma, a dot, a ending ) and a space or nothing (end of line)
-      var RegEx=new RegExp('([[:blank:]]|,|;|\\.|\\n|\\r|\\t)'+markdown.settings.prefix_tag+'([a-zA-Z0-9]+)([[:blank:]]|,|;|\\.|\\n|\\r|\\t)', 'i');
+      // Explanation of the regex
+      // 
+      // ( |,|;|\\.|\\n|\\r|\\t)*       Before : Allowed characters before the tag : a space, comma, dot comma, dot, carriage return, linefeed or tab, one or more (f.i. a carriage return and a linefeed are matched)
+      // markdown.settings.prefix_tag   Symbol : Match the § character
+      // ([a-zA-Z0-9]+)                 Tag    : a word composed of letters and figures  
+      // ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
+      
+      
+      var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([a-zA-Z0-9]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
       if (markdown.settings.debug) console.log('RegEx for finding tags : '+RegEx);
       
       var $tags=RegEx.exec($text);
@@ -411,7 +419,12 @@ function addLinksToTags() {
       while ($tags!=null) {         
 
          if (markdown.settings.debug) console.log("Process tag "+$tags[0]);         
-         $sTags='<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tags[1]+'">'+$tags[1]+'</span>';
+         
+         $sTags=
+            (($tags[1]!==undefined)?$tags[1]:'')+                                                                                           // Before the span
+            '<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tags[2]+'">'+$tags[2]+'</span>'+  // The span for tagging the word
+            (($tags[3]!==undefined)?$tags[3]:'');                                                                                           // After the span
+    
          $text=$text.replace(new RegExp($tags[0], "g"), $sTags);
 
          $tags=RegEx.exec($text);

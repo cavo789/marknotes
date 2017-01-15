@@ -18,6 +18,9 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-15 : + Add Debug and Development entries in settings.json
+ *              + Replace editor by a boolean in settings.json
+ *              + Auto tagging regex improved
  * 2017-01-14 : + Add automatically known tags in markdown existing files
  * 2017-01-13 : + Javascript improvements
  *              + CSS improvements
@@ -56,8 +59,6 @@ declare(strict_types=1);
  * 2016-12-14 : First version
  */
 
-define('DEBUG',TRUE);
-
 // Application name
 define('APP_NAME','Notes management (c) Christophe Avonture');
 
@@ -66,18 +67,6 @@ define('APP_NAME','Notes management (c) Christophe Avonture');
 
    require_once(__DIR__.'/classes/functions.php');
    require_once(__DIR__.'/classes/markdown.php');
-   
-   if (DEBUG===TRUE) {
-      ini_set("display_errors", "1");
-      ini_set("display_startup_errors", "1");
-      ini_set("html_errors", "1");
-      ini_set("docref_root", "http://www.php.net/");
-      ini_set("error_prepend_string", "<div style='color:black;font-family:verdana;border:1px solid red; padding:5px;'>");
-      ini_set("error_append_string", "</div>");
-      error_reporting(E_ALL);
-   } else {	   
-      error_reporting(E_ALL & ~ E_NOTICE);	  
-   }
    
    $task=aeSecureFct::getParam('task','string','main',false);
 

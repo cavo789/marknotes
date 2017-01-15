@@ -24,6 +24,7 @@ define('ALLOW_POPUP_PLEASE','Please allow popup for this site');
 define('APPLY_FILTER','Searching for %s');
 define('APPLY_FILTER_TAG','Display notes containing this tag');
 define('COPY_LINK','Copy the link to this note in the clipboard');
+define('COPY_LINK_DONE','The URL of this note has been copied into the clipboard');
 define('CONFIDENTIAL','confidential');
 define('DISPLAY_THAT_NOTE','Display that note');
 define('EDIT_FILE','Edit');
@@ -61,14 +62,17 @@ class aeSecureMarkdown {
 
    private $_rootFolder='';             // root folder of the web application (f.i. "C:\Christophe\Documents\")
    
+   private $_DEBUGMODE=FALSE;           // Debug mode enabled or not
+   private $_DEVMODE=FALSE;             // Development mode enabled or not
+   
    private $_settingsTemplateScreen=''; // template to use; default is /templates/screen.php
    private $_settingsTemplateHTML='';   // template to use; default is /templates/html.php
-   private $_settingsEditor='';         // defaut editor program 
    
    private $_useCache=TRUE;             // Use browser's cache
    
    private $_arrTagsAutoSelect=array(); // Tags to automatically select when displaying the page
    
+   private $_settingsEditAllowed=TRUE;  // Allow editions
    private $_settingsFontName='';       // Google fontname if specified in the settings.json file
    
    private $_settingsDocsFolder='';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
@@ -128,13 +132,24 @@ class aeSecureMarkdown {
          if(isset($this->_json['tags'])) {
             $this->_arrTagsAutoSelect=$this->_json['tags'];
          }
-
-         if(isset($this->_json['editor'])) {
-            $this->_settingsEditor=rtrim($this->_json['editor']);
-            if(!file_exists($this->_settingsEditor)) $this->_settingsEditor=EDITOR;
-         } else {
-            $this->_settingsEditor=EDITOR;
+         
+         if(isset($this->_json['debug'])) $this->_DEBUGMODE=($this->_json['debug']==1?TRUE:FALSE); // Debug mode enabled or not
+         
+         if ($this->_DEBUGMODE===TRUE) {
+            ini_set("display_errors", "1");
+            ini_set("display_startup_errors", "1");
+            ini_set("html_errors", "1");
+            ini_set("docref_root", "http://www.php.net/");
+            ini_set("error_prepend_string", "<div style='color:black;font-family:verdana;border:1px solid red; padding:5px;'>");
+            ini_set("error_append_string", "</div>");
+            error_reporting(E_ALL);
+         } else {	   
+            error_reporting(E_ALL & ~ E_NOTICE);	  
          }
+         
+         if(isset($this->_json['development'])) $this->_DEVMODE=($this->_json['development']==1?TRUE:FALSE); // Development mode enabled or not
+   
+         if(isset($this->_json['editor']))      $this->_settingsEditAllowed=($this->_json['editor']==1?TRUE:FALSE); // Allow editions
          
          // Retrieve the subfolder if any
          if(isset($this->_json['folder']))   $this->_settingsDocsFolder=rtrim($this->_json['folder'],'/').'/';  // Be sure that there is a slash at the end
@@ -164,7 +179,7 @@ class aeSecureMarkdown {
                         
                      } else {
                         // The specified template doesn't exists. Back to the default one;
-                        if (DEBUG) echo '<span style="font-size:0.8em;">'.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
+                        if ($this->_DEBUGMODE) echo '<span style="font-size:0.8em;">'.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
                         echo '<strong><em>Template ['.$tmp[$name].'] not found, please review your settings.json file.</em></strong>';
                         die();
                      }
@@ -392,7 +407,7 @@ class aeSecureMarkdown {
     */
    private function ShowError(string $msg, bool $die = TRUE) : bool {
       
-      if (DEBUG) $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].')</em>';
+      if ($this->_DEBUGMODE) $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].')</em>';
       
       $msg='<div class="error bg-danger">'.$this->getText('error','ERROR').' - '.$msg.'</div>';
       if ($die===TRUE) {         
@@ -412,44 +427,102 @@ class aeSecureMarkdown {
     */ 
    private function ShowFile(string $filename) : string {
       
-      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename));
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
 
       if (!file_exists($fullname)) {
          self::ShowError(str_replace('%s','<strong>'.$fullname.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
       }
 
       $markdown=file_get_contents($fullname);
-       
+      
+      $old=$markdown;
+      
+      // -----------------------------------------------------------------------
+      // URL Cleaner : Make a few cleaning like replacing space char in URL or in image source
+      // Replace " " by "%20"
+      
+      if (preg_match_all('/<img *src *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
+         foreach($matches[1] as $match) {
+            $sMatch=str_replace(' ','%20',$match);
+            $markdown=str_replace($match,$sMatch,$markdown);
+         }
+      }
+      
+      // And do the same for links
+      if (preg_match_all('/<a *href *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
+         foreach($matches[1] as $match) {
+            $sMatch=str_replace(' ','%20',$match);
+            $markdown=str_replace($match,$sMatch,$markdown);
+         }
+      }      
+
       // -----------------------------------------------------------------------
       // Check if the file contains words present in the tags.json file : if the file being displayed contains a word (f.i. "javascript") that is in the 
       // tags.json (so it's a known tag) and that word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix 
-      
+
       if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
          if(filesize($fname)>0) {
             
-            $old=$markdown;
             $arrTags=json_decode(file_get_contents($fname));
             foreach($arrTags as $tag) {
 
                // For each tag, try to find the word in the markdown file 
-               // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  : the word can be followed by one of these possibilities i.e. a carriage return, a comma or dot-comma, a dot, a ending ) and a space or nothing (end of line)
-               preg_match('/(\\n|[[:blank:]])('.preg_quote($tag).')(\\n|,|;|\\.|\\)|[[:blank:]]|$)/i', $markdown, $matches);
-               if (count($matches)>0) {
-                  $markdown=preg_replace('/'.$matches[2].'/',PREFIX_TAG.$matches[2],$markdown);
-               }
+               
+               // /( |\\n|\\r|\\t)+                Before the tag, allowed : space, carriage return, linefeed or tab  
+               // [^`\/\\#_\-§]?                   Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
+               // ('.preg_quote($tag).')           The tag term (f.i. "javascript"
+               // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
+               
+               // Capture the full line (.* ---Full Regex--- .*)
+               preg_match_all('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$).*)/i', $markdown, $matches);
+
+               foreach ($matches[0] as $match) {
+                  
+                  if (count($match)>0) {
+
+                     preg_match('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$).*)/i', $match, $matches);
+
+                     // Replace, in the line, the word f.i.    (don't use a preg_replace because preg_replace will replace all occurences of the word)
+
+                     //   Line  : Start a SSH connexion     (original)
+                     //   By    : Start a §SSH connexion    (new line)
+
+                     // $matches[2] : what was just before the tag      f.i.   " Start a SSH, then ..."  => the space before SSH
+                     // $matches[3] : the tag                                  " Start a SSH, then ..."  => SSH
+                     // $matches[4] : what was just after the tag              " Start a SSH, then ..."  => the comma after SSH
+
+                     $sLine=str_ireplace($matches[2].$matches[3].$matches[4],$matches[2].PREFIX_TAG.$matches[3].$matches[4],$matches[0]);
+
+                     // And now, replace the original line ($matches[0]) by the new one in the document.
+
+                     $markdown=str_replace($matches[0],$sLine,$markdown);
+                     
+                  } // if (count($match)>0)
+
+               } // foreach ($matches[0] as $match)
 
             } // foreach
-
-            if ($old!=$markdown) {
-               // rewrite the file
-               if ($handle = fopen($fullname,'w')) {
-                  fwrite($handle, $markdown);
-                  fclose($handle);		
-               }    
-            }
+            
          } // if(filesize($fname)>0)
          
       } // if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json'))
+
+      //DEVELOPMENT : SHOW THE RESULT AND DIE SO DON'T MODIFY THE FILE
+      if (($this->_DEVMODE) && ($old!=$markdown)) {
+         echo aeSecureDebug::log('=== DEV MODE ENABLED ===',true);
+         echo aeSecureDebug::log('= new file content ('.$fullname.') =',true);
+         require_once("libs/Parsedown.php");$Parsedown=new Parsedown();$html=$Parsedown->text($markdown);echo $html;die();      
+      }
+      
+      // Rewrite the file if a change has been done
+      if ($old!=$markdown) {
+         // rewrite the file
+         if ($handle = fopen($fullname,'w')) {
+            fwrite($handle, $markdown);
+            fclose($handle);		
+         }    
+      }
+      
       //
       // -----------------------------------------------------------------------
       
@@ -587,7 +660,7 @@ class aeSecureMarkdown {
       if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
       
       // Edit icon : only if an editor has been defined
-      if ($this->_settingsEditor!=='') {
+      if ($this->_settingsEditAllowed==TRUE) {
          $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file','EDIT_FILE').'" data-file="'.$filename.'"></i>';
       }
 
@@ -734,8 +807,10 @@ class aeSecureMarkdown {
       $return=array();
       if (trim($keywords)=='') return $return;
       
-      $return['debug'][]=aeSecureDebug::log('Search',true);
-      $return['debug'][]=aeSecureDebug::log('Search for ['.str_replace(",",", ",$keywords).']',true);    
+      if ($this->_DEBUGMODE) {
+         $return['debug'][]=aeSecureDebug::log('Search',true);
+         $return['debug'][]=aeSecureDebug::log('Search for ['.str_replace(",",", ",$keywords).']',true);    
+      }
       
       // $keywords can contains multiple terms like 'invoices,2017,internet'.  
       // Search for these three keywords (AND)
@@ -774,7 +849,7 @@ class aeSecureMarkdown {
          
          if ($bFound) {
             
-            $return['debug'][]=aeSecureDebug::log('All keywords found in filename : ['.$file.']',true);    
+            if ($this->_DEBUGMODE) $return['debug'][]=aeSecureDebug::log('All keywords found in filename : ['.$file.']',true);    
             
             // Found in the filename => stop process of this file
             $return['files'][]=$file;
@@ -798,7 +873,7 @@ class aeSecureMarkdown {
             
             if ($bFound) {
             
-               $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
+               if ($this->_DEBUGMODE) $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
                
                // Found in the filename => stop process of this file
                $return['files'][]=$file;
@@ -854,7 +929,7 @@ class aeSecureMarkdown {
                } // if (count($matches[1])>0) {
                   
                if($bFound) {
-                  $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
+                  if ($this->_DEBUGMODE) $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
                   $return['files'][]=$file;
                }
                
@@ -877,31 +952,7 @@ class aeSecureMarkdown {
     * @return bool
     */
    private function Edit(string $filename) : bool {
-      
-      if ($filename!="") {
-         
-         // Get the fullname like "C:\Christophe\notes\docs\privé\Fisc.md"
-         $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$filename);
-
-         try {
-
-            // Make the command line : the editor followed by the name of the file that should be edited
-            // For instance : C:\Windows\System32\notepad.exe "C:\Christophe\notes\docs\privé\Fisc.md"
-            $cmd = $this->_settingsEditor.' "'.$fullname.'"'; // Open the directory and select the file
-
-            //echo __LINE__.'  **'.$cmd.'**<br/>';   
-            if (substr(php_uname(), 0, 7) == "Windows") {
-               pclose(popen("start /B ".$cmd, "r"));
-            } else {
-               exec($cmd);
-            }
-
-         } catch (Exception $ex) {
-            self::ShowError('<strong>'.$ex->getMessage().'</strong>',TRUE);
-         }
-         
-      } // if ($filename!="") 
-    
+      die(__METHOD__.' should be coded');
       return true;
       
    } // function Edit()
@@ -968,6 +1019,7 @@ class aeSecureMarkdown {
             "markdown.message.allow_popup_please='".str_replace("'","\'",self::getText('allow_popup_please','ALLOW_POPUP_PLEASE'))."';\n".
             "markdown.message.apply_filter='".str_replace("'","\'",self::getText('apply_filter','APPLY_FILTER'))."';\n".
             "markdown.message.apply_filter_tag='".str_replace("'","\'",self::getText('apply_filter_tag','APPLY_FILTER_TAG'))."';\n".               
+            "markdown.message.copy_link_done='".str_replace("'","\'",self::getText('copy_link_done','COPY_LINK_DONE'))."';\n".                              
             "markdown.message.display_that_note='".str_replace("'","\'",self::getText('display_that_note','DISPLAY_THAT_NOTE'))."';\n".                              
             "markdown.message.filesfound='".str_replace("'","\'",self::getText('files_found','FILES_FOUND'))."';\n".
             "markdown.message.pleasewait='".str_replace("'","\'",self::getText('please_wait','PLEASE_WAIT'))."';\n".
@@ -975,7 +1027,8 @@ class aeSecureMarkdown {
             "markdown.url='index.php';\n".
             "markdown.settings={};\n".
             "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
-            "markdown.settings.debug=".DEBUG.";\n".
+            "markdown.settings.debug=".($this->_DEBUGMODE?1:0).";\n".
+            "markdown.settings.development=".($this->_DEVMODE?1:0).";\n".
             "markdown.settings.prefix_tag='".PREFIX_TAG."';\n";
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
          

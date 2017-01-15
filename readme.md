@@ -98,8 +98,10 @@ You'll find a `settings.json.dist` file in the application rootfolder.  To use t
 The `settings.json` allows you to define your own settings.
 
 ```json
-{   
-   "editor": "C:\\Windows\\System32\\notepad.exe",
+{  
+   "debug": 0,
+   "development": 0,
+   "editor": 1,
    "folder":"docs",
    "language":"fr",
    "optimisation":{
@@ -150,7 +152,9 @@ The `settings.json` allows you to define your own settings.
 }
 ```
 
--  `editor`  : full path to your local text editor; for instance Notepad on a Windows machine.  If that variable is initialized with a valid program, the `edit` icon will be displayed when seeing a note.
+-  `debug` : 0 / 1.  Enable or not debuging i.e. get extra logging informations
+-  `development` : 0 / 1.  Enable or not the development mode.  That mode can break the normal way of working of the application f.i. stop functionnalities before doing it (f.i. rewrite files).  Don't activate that mode unless you really know what you're doing.   For coders only
+-  `editor`  : 0 / 1.  Allow or not editing through the interface
 -  `folder`: by default, your notes should be located in a folder called 'docs'. You can change the name here.
 -  `language` : your interface language.  Be sure that strings are translated in that language.  You can see that (or translate) in the `languages` node.
 -  `optimisation` :

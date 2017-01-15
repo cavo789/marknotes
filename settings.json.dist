@@ -1,5 +1,7 @@
 ﻿{   
-   "editor": "C:\\Windows\\System32\\notepad.exe",
+   "debug":0,
+   "development":0,
+   "editor":1,
    "folder":"docs",
    "language":"fr",
    "optimisation":{
@@ -24,6 +26,7 @@
          "apply_filter":"Filtering to [%s]",
 		 "apply_filter_tag":"Display notes containing this tag",
          "copy_link":"Copy the link to this note in the clipboard",
+		 "copy_link_done":"The URL of this note has been copied into the clipboard",
          "confidential":"confidential",
 		 "display_that_note":"Display that note",
          "edit_file":"Edit",
@@ -42,6 +45,7 @@
          "apply_filter":"Limite la liste des notes à [%s]",
 		 "apply_filter_tag":"Affiche les notes reprennant ce mot",
          "copy_link":"Copier le lien vers cette note dans le presse-papier",
+		 "copy_link_done":"L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
          "confidential":"confidentiel",
 		 "display_that_note":"Afficher cette note",
          "edit_file":"Éditer",
