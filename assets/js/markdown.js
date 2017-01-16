@@ -276,7 +276,7 @@ function initializeTasks() {
       var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');
       var $tag=  ( $(this).attr('data-tag') ? $(this).data('tag').replace('\\','/')  : '');
 
-      if($fname!=='') $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));   
+      if(($fname!=='')&&($task!='window')) $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));   
 
       switch($task) {
          
@@ -323,7 +323,7 @@ function initializeTasks() {
             break;
             
          case 'window':   
-            
+     
             //if (markdown.settings.debug) console.log('Window -> Open the note in a new window');
             window.open($fname);
             break;

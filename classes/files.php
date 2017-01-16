@@ -121,7 +121,7 @@ class aeSecureFiles {
    
    static public function replace_extension(string $filename, string $new_extension) : string {
       $info = pathinfo($filename);
-      return dirname($filename).'/'.$info['filename'].'.'.$new_extension;
+      return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
    } // function replace_extension
    
 } // class aeSecureFiles 

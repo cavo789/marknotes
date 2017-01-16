@@ -5,7 +5,8 @@
    "folder":"docs",
    "language":"fr",
    "optimisation":{
-      "cache":1
+      "cache":1,
+      "lazyload":1
    },
    "tags":[
       ""

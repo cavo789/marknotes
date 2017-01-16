@@ -79,6 +79,8 @@
       <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks tho highlight.js -->
       <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>   
 
+      <!--%ADDITIONNAL_JS%-->
+      
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       

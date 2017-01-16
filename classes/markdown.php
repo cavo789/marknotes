@@ -78,8 +78,10 @@ class aeSecureMarkdown {
    private $_settingsDocsFolder='';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
    private $_settingsLanguage='en';     // user's language
    
-   private $_encryptionMethod='';       // Method to use for the encryption
+   private $_encryptionMethod='aes-256-ctr';   // Method to use for the encryption, default method
    private $_encryptionPassword='';     // Password for the encryption / decryption
+   
+   private $_OptimizeLazyLoad=0;        // Optimization : lazyload enabled or not ? 
    
    private $_saveHTML=TRUE;             // When displaying a .md file, generate and store its .html rendering
    
@@ -118,6 +120,7 @@ class aeSecureMarkdown {
       $this->_settingsLanguage='en';
       $this->_saveHTML=OUTPUT_HTML;
       $this->_settingsImgMaxWidth=IMG_MAX_WIDTH;
+      $this->_OptimizeLazyLoad=0;
       
       // No password defined by default
       $this->_settingsPassword='';
@@ -219,6 +222,7 @@ class aeSecureMarkdown {
          if(isset($this->_json['optimisation'])) {
             $tmp=$this->_json['optimisation'];
             if(isset($tmp['cache'])) $this->_useCache=(($tmp['cache']==1)?true:false);
+            if(isset($tmp['lazyload'])) $this->_OptimizeLazyLoad=(($tmp['lazyload']==1)?1:0);
          }
          
          // Get export settings
@@ -540,7 +544,7 @@ class aeSecureMarkdown {
       $matches = array();    
       // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
       preg_match_all('/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
-      
+
       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
       if (count($matches[1])>0) {
          
@@ -661,11 +665,14 @@ class aeSecureMarkdown {
 
       $fnameHTML=aeSecureFiles::replace_extension($fullname,'html');
 
+      $fnameHTMLrel=str_replace(str_replace('/',DS,$this->_rootFolder),'',$fnameHTML);      
+
       // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-      $tmp = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']),'',$fnameHTML));
-   
+      $tmp = rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').'/'.str_replace(DS,'/',$fnameHTMLrel);
+
       // Open new window icon
-      if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
+//if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
+      if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
       
       // Edit icon : only if an editor has been defined
       if ($this->_settingsEditAllowed==TRUE) {
@@ -781,6 +788,11 @@ class aeSecureMarkdown {
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
       $html='<div class="onlyscreen filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
+      
+      // LazyLoad images ? 
+      if ($this->_OptimizeLazyLoad==1) {
+         $html=str_replace('<img src=','<img class="lazyload" data-src=',$html);
+      }
 
       return $html;
 	  
@@ -1048,18 +1060,25 @@ class aeSecureMarkdown {
             "markdown.settings={};\n".
             "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
             "markdown.settings.debug=".($this->_DEBUGMODE?1:0).";\n".
-            "markdown.settings.development=".($this->_DEVMODE?1:0).";\n".
+            "markdown.settings.development=".($this->_DEVMODE?1:0).";\n".               
+            "markdown.settings.lazyload=".$this->_OptimizeLazyLoad.";\n".
             "markdown.settings.prefix_tag='".PREFIX_TAG."';\n";
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
          
          $html=str_replace('%MARKDOWN_GLOBAL_VARIABLES%', $JS, $html);
-         
          
          // if any, output the code for the Google Font (see settings.json)
          $html=str_replace('<!--%FONT%-->', self::GoogleFont(), $html);
 
          // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
          $html=str_replace('<!--%CUSTOM_CSS%-->', aeSecureFct::addStylesheet('custom.css'), $html);
+
+
+         // Additionnal javascript, depends on user's settings
+         $sAdditionnalJS='';
+         if ($this->_OptimizeLazyLoad==1) $AdditionnalJS='<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
+         
+         $html=str_replace('<!--%ADDITIONNAL_JS%-->', $AdditionnalJS, $html);
          
          // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
          $html=str_replace('<!--%CUSTOM_JS%-->', aeSecureFct::addJavascript('custom.js'), $html);

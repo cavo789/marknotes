@@ -225,6 +225,7 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 Thank you to 
 
+- Alexander Farkas for [lazysizes](https://github.com/aFarkas/lazysizes)
 - Bartek Szopka for [jquery.highlight.js](http://bartaz.github.io/sandbox.js/jquery.highlight.html)
 - Contributors of [remark](https://github.com/gnab/remark)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
