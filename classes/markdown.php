@@ -82,6 +82,9 @@ class aeSecureMarkdown {
    private $_encryptionPassword='';     // Password for the encryption / decryption
    
    private $_saveHTML=TRUE;             // When displaying a .md file, generate and store its .html rendering
+   
+   private $aeDebug=null; 
+   private $aeJSON=null;
       
    /**
     * Class constructor : initialize a few private variables
@@ -91,10 +94,18 @@ class aeSecureMarkdown {
     */
    function __construct(string $folder) {
       
-      if(!class_exists('aeSecureDebug'))   require_once 'debug.php';
+      if(!class_exists('aeSecureDebug')) { 
+         require_once 'debug.php'; 
+         $this->aeDebug=aeSecureDebug::getInstance(); 
+      }
+      
       if(!class_exists('aeSecureEncrypt')) require_once 'encrypt.php';
       if(!class_exists('aeSecureFiles'))   require_once 'files.php';
       if(!class_exists('aeSecureFct'))     require_once 'functions.php';
+      if(!class_exists('aeSecureJSON')) {
+         require_once 'json.php';
+         $this->aeJSON=aeSecureJSON::getInstance();
+      }
       
       // Get the root folder and be sure the folder ends with a slash
       $this->_rootFolder=rtrim($folder,'/').'/';
@@ -127,22 +138,19 @@ class aeSecureMarkdown {
       // Process the settings.json file
       if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'settings.json')) {
    
-         $this->_json=json_decode(file_get_contents($fname),true);
+         $this->_json=$this->aeJSON->json_decode($fname,true);
 
          if(isset($this->_json['tags'])) {
             $this->_arrTagsAutoSelect=$this->_json['tags'];
          }
          
-         if(isset($this->_json['debug'])) $this->_DEBUGMODE=($this->_json['debug']==1?TRUE:FALSE); // Debug mode enabled or not
+         if(isset($this->_json['debug'])) {
+            $this->_DEBUGMODE=($this->_json['debug']==1?TRUE:FALSE); // Debug mode enabled or not
+         }
          
          if ($this->_DEBUGMODE===TRUE) {
-            ini_set("display_errors", "1");
-            ini_set("display_startup_errors", "1");
-            ini_set("html_errors", "1");
-            ini_set("docref_root", "http://www.php.net/");
-            ini_set("error_prepend_string", "<div style='color:black;font-family:verdana;border:1px solid red; padding:5px;'>");
-            ini_set("error_append_string", "</div>");
-            error_reporting(E_ALL);
+            $this->aeDebug->enable();
+            $this->aeJSON->debug(TRUE);
          } else {	   
             error_reporting(E_ALL & ~ E_NOTICE);	  
          }
@@ -279,13 +287,13 @@ class aeSecureMarkdown {
       
       if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
          if(filesize($fname)>0) {
-            $arrTags=json_decode(file_get_contents($fname));
+            $arrTags=$this->aeJSON->json_decode($fname,true);      
             foreach($arrTags as $tag) {
                $return[]=array('name'=>$tag,'type'=>'tag');
             }
          }
       }
-      
+       
       $tmp=explode(';',$tmp); 
       foreach ($tmp as $folder) {
          $return[]=array('name'=>$folder,'type'=>'folder');
@@ -307,9 +315,9 @@ class aeSecureMarkdown {
          
          $arrJSON=array();
          if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
-            if(filesize($fname)>0) $arrJSON=json_decode(file_get_contents($fname),true);
+            if(filesize($fname)>0) $arrJSON=$this->aeJSON->json_decode($fname,true);
          }
-      
+    
          $arrTags=aeSecureFct::array_iunique($arrTags);
          natcasesort ($arrTags);     
          
@@ -463,7 +471,7 @@ class aeSecureMarkdown {
       if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
          if(filesize($fname)>0) {
             
-            $arrTags=json_decode(file_get_contents($fname));
+            $arrTags=$this->aeJSON->json_decode($fname);
             foreach($arrTags as $tag) {
 
                // For each tag, try to find the word in the markdown file 
@@ -509,8 +517,8 @@ class aeSecureMarkdown {
 
       //DEVELOPMENT : SHOW THE RESULT AND DIE SO DON'T MODIFY THE FILE
       if (($this->_DEVMODE) && ($old!=$markdown)) {
-         echo aeSecureDebug::log('=== DEV MODE ENABLED ===',true);
-         echo aeSecureDebug::log('= new file content ('.$fullname.') =',true);
+         echo $this->aeDebug->log('=== DEV MODE ENABLED ===',true);
+         echo $this->aeDebug->log('= new file content ('.$fullname.') =',true);
          require_once("libs/Parsedown.php");$Parsedown=new Parsedown();$html=$Parsedown->text($markdown);echo $html;die();      
       }
       
@@ -784,12 +792,24 @@ class aeSecureMarkdown {
     */
    private function getText(string $variable, string $default) : string {
       
+      $return='';   
+      
       if (isset($this->_json['languages'][$this->_settingsLanguage])) {
          $lang=&$this->_json['languages'][$this->_settingsLanguage];
-         return isset($lang[$variable]) ? $lang[$variable] : (trim($default)!=='' ? constant($default) : '');
-      } else {
-         return (trim($default)!=='' ? constant($default) : '');
+         $return=isset($lang[$variable]) ? $lang[$variable] : '';
       }
+      
+      if (($return=='') && (file_exists($fname=dirname(__DIR__).DS.'settings.json.dist'))) {
+
+         $json=$this->aeJSON->json_decode($fname,true);
+
+         $lang=&$json['languages'][$this->_settingsLanguage];
+         $return=isset($lang[$variable]) ? $lang[$variable] : '';
+      }
+      
+      if ($return=='') $return=(trim($default)!=='' ? constant($default) : '');
+      
+      return $return;
       
    } // function getText()
    
@@ -808,8 +828,8 @@ class aeSecureMarkdown {
       if (trim($keywords)=='') return $return;
       
       if ($this->_DEBUGMODE) {
-         $return['debug'][]=aeSecureDebug::log('Search',true);
-         $return['debug'][]=aeSecureDebug::log('Search for ['.str_replace(",",", ",$keywords).']',true);    
+         $return['debug'][]=$this->aeDebug->log('Search',true);
+         $return['debug'][]=$this->aeDebug->log('Search for ['.str_replace(",",", ",$keywords).']',true);    
       }
       
       // $keywords can contains multiple terms like 'invoices,2017,internet'.  
@@ -849,7 +869,7 @@ class aeSecureMarkdown {
          
          if ($bFound) {
             
-            if ($this->_DEBUGMODE) $return['debug'][]=aeSecureDebug::log('All keywords found in filename : ['.$file.']',true);    
+            if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in filename : ['.$file.']',true);    
             
             // Found in the filename => stop process of this file
             $return['files'][]=$file;
@@ -873,7 +893,7 @@ class aeSecureMarkdown {
             
             if ($bFound) {
             
-               if ($this->_DEBUGMODE) $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
+               if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
                
                // Found in the filename => stop process of this file
                $return['files'][]=$file;
@@ -929,7 +949,7 @@ class aeSecureMarkdown {
                } // if (count($matches[1])>0) {
                   
                if($bFound) {
-                  if ($this->_DEBUGMODE) $return['debug'][]=aeSecureDebug::log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
+                  if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
                   $return['files'][]=$file;
                }
                
@@ -988,7 +1008,7 @@ class aeSecureMarkdown {
     * @return string  html content
     */
    private function showInterface() : string {
-      
+
       if (is_file($template=dirname(__DIR__).'/templates/'.$this->_settingsTemplateScreen.'.php')) {
          
          $html= file_get_contents($template);
@@ -1232,5 +1252,3 @@ class aeSecureMarkdown {
    } // function process()
    
 } // class aeSecureMarkdown
-
-?>

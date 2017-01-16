@@ -1,4 +1,4 @@
-﻿{   
+{   
    "debug":0,
    "development":0,
    "editor":1,
@@ -12,7 +12,7 @@
    ],
    "templates":{
       "screen":"screen",
-	  "html":"html"
+      "html":"html"
    },
    "encryption": {
       "password":"",
@@ -24,14 +24,14 @@
    "languages":{
       "en": {
          "apply_filter":"Filtering to [%s]",
-		 "apply_filter_tag":"Display notes containing this tag",
+         "apply_filter_tag":"Display notes containing this tag",
          "copy_link":"Copy the link to this note in the clipboard",
-		 "copy_link_done":"The URL of this note has been copied into the clipboard",
+         "copy_link_done":"The URL of this note has been copied into the clipboard",
          "confidential":"confidential",
-		 "display_that_note":"Display that note",
+         "display_that_note":"Display that note",
          "edit_file":"Edit",
          "error":"Error",
-		 "file_not_found":"The file [%s] doesn\\'t exists (anymore)",
+         "file_not_found":"The file [%s] doesn\\'t exists (anymore)",
          "files_found":"%s has been retrieved",
          "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
          "open_html":"Open in a new window",
@@ -40,14 +40,14 @@
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Sorry, the search is not successfull",
          "slideshow":"slideshow"
-	  },
+      },
       "fr": {
          "apply_filter":"Limite la liste des notes à [%s]",
-		 "apply_filter_tag":"Affiche les notes reprennant ce mot",
+         "apply_filter_tag":"Affiche les notes reprennant ce mot",
          "copy_link":"Copier le lien vers cette note dans le presse-papier",
-		 "copy_link_done":"L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
+         "copy_link_done":"L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
          "confidential":"confidentiel",
-		 "display_that_note":"Afficher cette note",
+         "display_that_note":"Afficher cette note",
          "edit_file":"Éditer",
          "error":"Erreur",
          "file_not_found":"Le fichier [%s] n\\'existe pas (ou plus)",
@@ -59,7 +59,7 @@
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Tapez ici des mots-cléfs pour lancer une recherche",
          "slideshow":"Affiche le document au format 'pr&eacute;sentation'"
-	  }      
+      }      
    },
    "page":{
       "google_font":"",

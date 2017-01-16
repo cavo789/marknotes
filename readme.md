@@ -93,7 +93,12 @@ This done, just edit the `custom.css` and put your own styles there.  The `custo
 
 ## Settings.json
 
-You'll find a `settings.json.dist` file in the application rootfolder.  To use that file, rename the file to `settings.json`.  Changes you'll made to the .json file won't be overwritte by getting a newer version of this script.
+You'll find a `settings.json.dist` file in the application rootfolder.  
+To be able to use your own settings, just rename the file to `settings.json`.  
+
+Changes you'll made to the .json file won't be overwritten by getting a newer version of this script.
+
+Note : except if you're using your own translations, don't keep the languages node in your settings.json file.  The program will then use string from settings.json.dist if the localized string are already there.
 
 The `settings.json` allows you to define your own settings.
 

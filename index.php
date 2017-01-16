@@ -18,6 +18,8 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-16 : + Add aeSecureJSON class for better JSON handling (error handling)
+ *              + If translated string isn't in settings.json, use the one of settings.json.dist
  * 2017-01-15 : + Add Debug and Development entries in settings.json
  *              + Replace editor by a boolean in settings.json
  *              + Auto tagging regex improved

@@ -84,5 +84,3 @@ class aeSecureEncrypt {
    } // function sslDecrypt()
    
 } // class aeSecureEncrypt
-
-?>

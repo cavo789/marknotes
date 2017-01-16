@@ -135,5 +135,3 @@ class aeSecureFct {
 }
    
 } // class aeSecureFct
-
-?>

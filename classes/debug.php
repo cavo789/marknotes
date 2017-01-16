@@ -5,6 +5,38 @@ declare(strict_types=1);
 
 class aeSecureDebug {
 	
+   protected static $instance = null;
+   
+   private static $_enable=false;
+   
+   function __construct() {
+
+      self::$_enable=FALSE;
+      return true;
+
+   } // function __construct()
+	
+   public static function getInstance() {
+		if (self::$instance === null) self::$instance = new aeSecureDebug();
+		return self::$instance;
+	} // function getInstance()
+   
+   public function enable() {
+      
+      self::$_enable=true;
+   
+      ini_set("display_errors", "1");
+      ini_set("display_startup_errors", "1");
+      ini_set("html_errors", "1");
+      ini_set("docref_root", "http://www.php.net/");
+      ini_set("error_prepend_string", "<div style='color:black;font-family:verdana;border:1px solid red; padding:5px;'>");
+      ini_set("error_append_string", "</div>");
+      error_reporting(E_ALL);
+            
+      return true;
+      
+   } // function enable()
+   
    /**
     * Return the current URL
     * 
@@ -19,11 +51,9 @@ class aeSecureDebug {
       if($return==true) {
          return $line;
       } else {
-         if (DEBUG) echo $line; 
+         if (self::$_enable) echo $line; 
          return '';
       }
    } // function log()
    
 } // class aeSecureDebug
-
-?>

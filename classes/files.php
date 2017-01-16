@@ -125,5 +125,3 @@ class aeSecureFiles {
    } // function replace_extension
    
 } // class aeSecureFiles 
-
-?>
