@@ -374,6 +374,8 @@ class aeSecureMarkdown {
     * @return string
     */   
    private function ListFiles() : array {
+      
+      $i=0;
 
       $arrFiles=aeSecureFct::array_iunique(aeSecureFiles::rglob('*.md',$this->_rootFolder.$this->_settingsDocsFolder));
     
@@ -404,8 +406,28 @@ class aeSecureMarkdown {
          $tmp['display']=str_replace('.md','',basename($file));
          $return['results'][]=$tmp;
          
-      }
+      } // foreach()      
       
+      // --------------------------------------------------------------------------------------
+      // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
+      
+      foreach ($arrFiles as $file) {
+         // Don't mention the full path, should be relative for security reason
+         $file=str_replace($this->_rootFolder.$this->_settingsDocsFolder,'',$file);
+         
+         $folder=in_array(trim(dirname($file)), array(DIRECTORY_SEPARATOR,'.'))?'(root)':dirname($file);
+         
+         $i+=1;
+         
+         $tmp=array();
+         $tmp['id']=$i;
+         $tmp['text']=$file;
+         $return['tree'][]=$tmp;
+
+      } // foreach()
+      
+      // --------------------------------------------------------------------------------------
+
       return $return;
 	  
    } // function ListFiles()	  

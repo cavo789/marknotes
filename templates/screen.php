@@ -25,6 +25,8 @@
       <link rel="stylesheet" type="text/css" media="screen" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%">
       <link rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
       
+      <link media="screen" rel="stylesheet" href="libs/jsTree/themes/default/style.min.css" />
+      
       <!--%CUSTOM_CSS%-->
        
    </head>
@@ -39,8 +41,7 @@
                alt=""accesskey=""accept=""maxlength='%EDT_SEARCH_MAXLENGTH%' data-data='index.php?task=tags' data-search-in='name'
                data-visible-properties='["name","type"]' multiple='multiple' />
          
-            <div id="TOC" class="onlyscreen">&nbsp;</div>	  
-            
+            <div id="TOC" class="onlyscreen">&nbsp;</div>
          </div>
          
          <div class="container col-md-8">
@@ -79,6 +80,9 @@
       <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks tho highlight.js -->
       <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>   
 
+      <!-- jsTree -->
+      <script type="text/javascript" src="libs/jsTree/jsTree.min.js"></script>   
+      
       <!--%ADDITIONNAL_JS%-->
       
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>

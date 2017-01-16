@@ -230,6 +230,7 @@ Thank you to
 - Contributors of [remark](https://github.com/gnab/remark)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) contributors
+- Ivan Bozhanov (vakata) for [jsTree](https://github.com/vakata/jstree)
 - Ivan Sagalaev (isagalaev) for the [highlight.js](https://github.com/isagalaev/highlight.js) plugin which allow to highlight languages (html, javascript, php, ...)
 - Nedim Arabaci for the [noty](https://github.com/needim/noty) plugin
 - Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin

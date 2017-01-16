@@ -153,72 +153,91 @@ function initFiles($data) {
       var $msg=markdown.message.filesfound;
       Noty({message:$msg.replace('%s', $data.count), type:'notification'});         
    }
-
-   // Build the table
-   if($data.hasOwnProperty('results')) {
-
-      var tbl = document.createElement('table');
+   
+   if ($.isFunction($.fn.jstree)){
       
-      tbl.id="tblFiles"
-      tbl.setAttribute("class","table table-hover table-bordered");
-      tbl.style.width = '100%';
+      // Use jsTree for the display
       
-      var tbdy = document.createElement('tbody');
-
-      $.each($data['results'], function($id, $item) {     
-         
-         var tr = document.createElement('tr');
-         
-         var td = document.createElement('td');
-         td.dataset.folder=$item.folder;
-         td.appendChild(document.createTextNode($item.folder))
-         tr.appendChild(td)
-         
-         var td = document.createElement('td');
-         td.dataset.file=$item.file;
-         td.appendChild(document.createTextNode($item.display))
-         tr.appendChild(td)
-        
-         tbdy.appendChild(tr);
-      
-      });
-  
-      // The table is now complete, add it into the page
-      tbl.appendChild(tbdy);    
-      $('#TOC').html(tbl);
-
-      $('#tblFiles > tbody  > tr > td').click(function(e) {
-
-         // By clicking on the second column, with the data-file attribute, display the file content
-         if ($(this).attr('data-file')) {
-            
-            // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
-            if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
-           
-            var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));  
-            
-            if (markdown.settings.debug) console.log("Show note "+$(this).data('file'));  
-            ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-            $(this).addClass("selected");                  
+      $('#TOC').on('changed.jstree', function (e, data) {
+         var objNode = data.instance.get_node(data.selected);
+         console.log('Selected: ' + objNode.id+'-'+objNode.text);
+      }).jstree({
+         core: {
+            data: $data['tree']
          }
+      });
+      
+   } else { // if ($.isFunction($.fn.jstree))
+      
+      // jsTree not loaded, use a table
 
-         // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
-         if ($(this).attr('data-folder')) {    
-            
-            // retrieve the name of the folder from data-folder
-            var $folder=$(this).data('folder').replace('\\','/');
+      // Build the table
+      if($data.hasOwnProperty('results')) {
 
-            if (markdown.settings.debug) console.log("Apply filter for "+$folder);  
-            
-            // Set the value in the search area
-            addSearchEntry({keyword:$folder});        
-           
-         } // if ($(this).attr('data-folder'))
+         var tbl = document.createElement('table');
 
-      }); // $('#tblFiles > tbody  > tr > td').click()
+         tbl.id="tblFiles"
+         tbl.setAttribute("class","table table-hover table-bordered");
+         tbl.style.width = '100%';
 
-   } // if($data.hasOwnProperty('results'))
+         var tbdy = document.createElement('tbody');
 
+         $.each($data['results'], function($id, $item) {     
+
+            var tr = document.createElement('tr');
+
+            var td = document.createElement('td');
+            td.dataset.folder=$item.folder;
+            td.appendChild(document.createTextNode($item.folder))
+            tr.appendChild(td)
+
+            var td = document.createElement('td');
+            td.dataset.file=$item.file;
+            td.appendChild(document.createTextNode($item.display))
+            tr.appendChild(td)
+
+            tbdy.appendChild(tr);
+
+         });
+
+         // The table is now complete, add it into the page
+         tbl.appendChild(tbdy);    
+         $('#TOC').html(tbl);
+
+         $('#tblFiles > tbody  > tr > td').click(function(e) {
+
+            // By clicking on the second column, with the data-file attribute, display the file content
+            if ($(this).attr('data-file')) {
+
+               // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
+               if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
+
+               var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));  
+
+               if (markdown.settings.debug) console.log("Show note "+$(this).data('file'));  
+               ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+               $(this).addClass("selected");                  
+            }
+
+            // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
+            if ($(this).attr('data-folder')) {    
+
+               // retrieve the name of the folder from data-folder
+               var $folder=$(this).data('folder').replace('\\','/');
+
+               if (markdown.settings.debug) console.log("Apply filter for "+$folder);  
+
+               // Set the value in the search area
+               addSearchEntry({keyword:$folder});        
+
+            } // if ($(this).attr('data-folder'))
+
+         }); // $('#tblFiles > tbody  > tr > td').click()
+
+      } // if($data.hasOwnProperty('results'))
+
+   } // // if ($.isFunction($.fn.jstree))
+   
    // initialize the search area, thanks to the Flexdatalist plugin
    if ($.isFunction($.fn.flexdatalist)){
       $('.flexdatalist').flexdatalist({
