@@ -107,5 +107,57 @@ class aeSecureJSON {
       return $arr;
 
    } // function json_decode()
+   
+   public function json_encode($value, int $option = JSON_PRETTY_PRINT) : string {
+      
+      $return='';
+
+      try {
+         
+         $return=json_encode($value, $option);
+         
+         if (json_last_error()!==JSON_ERROR_NONE) {
+
+            switch (json_last_error()) {
+
+               case JSON_ERROR_DEPTH:
+                  self::ShowError('Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']',FALSE);
+                  break;
+
+               case JSON_ERROR_STATE_MISMATCH:
+                  self::ShowError('Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']',FALSE);
+                  break;
+
+               case JSON_ERROR_CTRL_CHAR:
+                  self::ShowError('Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']',FALSE);
+                  break;
+
+               case JSON_ERROR_SYNTAX:
+                  self::ShowError('Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] (be sure file is UTF8-NoBOM)',FALSE);
+                  break;
+
+               case JSON_ERROR_UTF8:
+                  self::ShowError('Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']',FALSE);
+                  break;
+
+               default:
+                  self::ShowError($fname.' - Unknown error',FALSE);
+                  break;
+            } // switch (json_last_error())
+            
+            if (self::$_debug) echo '<pre>'.print_r($value,true).'</pre>';  
+            die();
+            
+         } // if (json_last_error()!==JSON_ERROR_NONE)
+
+      } catch (Exception $ex) {
+         
+         self::ShowError($ex->getMessage(),TRUE);
+
+      }
+      
+      return $return;
+
+   } // function json_encode()
 
 } // class aeSecureJSON

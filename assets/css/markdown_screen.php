@@ -46,7 +46,6 @@ body{background:#F7F2E9;}
 .icon_file{padding-left:5px;}
 .icon_encrypted{padding-left:5px;padding-right:5px;color:#abe0ab;}
 
-
 /* Content if the full page : contains the list of files and the content of the select note */
 
 #CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;width:100%;left:-15px;}
@@ -57,6 +56,7 @@ body{background:#F7F2E9;}
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
 #TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
 #TOC{position:inherit;top:35px;}
+#TOC .file-text, #tree .file-txt, #tree .file-md, #tree .file-log, #tree .file-htaccess { background-position: -254px -18px }
 
 /* page is used to display the content of the selected note */
 page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}

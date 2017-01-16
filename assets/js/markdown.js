@@ -160,10 +160,25 @@ function initFiles($data) {
       
       $('#TOC').on('changed.jstree', function (e, data) {
          var objNode = data.instance.get_node(data.selected);
-         console.log('Selected: ' + objNode.id+'-'+objNode.text);
+         console.log('Selected: ' +objNode.text);
       }).jstree({
          core: {
-            data: $data['tree']
+            animation : 1,
+            data : $data['tree'],
+            sort : function(a, b) {
+               return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
+            },
+            themes : {
+               responsive : 1,
+               variant : 'small',
+               stripes : 1
+            },
+            types : {
+               default : { icon : 'folder' },
+               file : { icon : 'file' },
+               folder : { icon : 'folder' }
+            },
+            plugins : ['state','dnd','sort','types','unique','wholerow']
          }
       });
       

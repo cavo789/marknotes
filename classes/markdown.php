@@ -411,27 +411,84 @@ class aeSecureMarkdown {
       // --------------------------------------------------------------------------------------
       // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
       
-      foreach ($arrFiles as $file) {
-         // Don't mention the full path, should be relative for security reason
-         $file=str_replace($this->_rootFolder.$this->_settingsDocsFolder,'',$file);
-         
-         $folder=in_array(trim(dirname($file)), array(DIRECTORY_SEPARATOR,'.'))?'(root)':dirname($file);
-         
-         $i+=1;
-         
-         $tmp=array();
-         $tmp['id']=$i;
-         $tmp['text']=$file;
-         $return['tree'][]=$tmp;
+      $return['tree']=$this->dir_to_jstree_array(str_replace(DS,'/',$this->_rootFolder.$this->_settingsDocsFolder),'a',array('md'));      
 
-      } // foreach()
-      
       // --------------------------------------------------------------------------------------
-
+//echo $this->aeJSON->json_encode($return['tree']);
+//die();
       return $return;
 	  
    } // function ListFiles()	  
   
+   /**
+    * 
+    * http://stackoverflow.com/a/23679146/1065340
+    * 
+    * @param type $dir
+    * @param type $order
+    * @param string $ext
+    * @return type
+    */
+   private function dir_to_jstree_array($dir, $order = "a", $ext = array()) {      
+      
+      if(empty($ext)) $ext = array ("md");
+
+      // Entry for the folder
+      $listDir = array(
+         'id' => utf8_encode(basename($dir)),
+         'type'=>'folder',
+         'text' => utf8_encode(basename($dir)),
+         'state'=>array('opened'=>1,'disabled'=>1),
+         'children' => array()
+      );
+
+      $files = array();
+      $dirs = array();
+
+      if($handler = opendir($dir)) {
+         while (($sub = readdir($handler)) !== FALSE) {
+            if ($sub != "." && $sub != "..") {
+               if(is_file($dir."/".$sub)) {
+                  $extension = pathinfo($dir."/".$sub, PATHINFO_EXTENSION);
+                  if(in_array($extension, $ext)) {
+                     $files []= utf8_encode($sub);
+                  }
+               } 
+               elseif (is_dir($dir."/".$sub)) {
+                  $dirs []= $dir."/".$sub;
+               }
+            }
+         }
+         if($order === "a") {
+           asort($dirs);
+         } 
+         else {
+            arsort($dirs);
+         }
+
+         foreach($dirs as $d) {
+            $listDir['children'][]= $this->dir_to_jstree_array($d);
+         }
+
+         if($order === "a") {
+            asort($files);
+         } 
+         else {
+            arsort($files);
+         }
+
+         foreach($files as $file) {
+            $listDir['children'][]= $file;
+         }
+
+         closedir($handler);
+      } // if($handler = opendir($dir))
+
+      return $listDir;
+      
+   } // function dir_to_jstree_array()
+
+
    /**
     * Display an error
     * 
