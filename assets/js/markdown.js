@@ -551,6 +551,29 @@ function addIcons() {
 } // function addIcons()
 
 /**
+ * Add the "table" class to any <table>
+ * 
+ * @returns {undefined}
+ */
+function NiceTable() {
+   
+   try {
+      
+      $("table").each(function() {         
+         $(this).addClass('table');
+      });
+
+    } catch(err) {         
+      
+      console.warn(err.message);
+      
+   }
+   
+   return true;
+   
+} // function NiceTable()
+
+/**
  * Called after the ajax "display" request, the file is almost displayed
  */
 function afterDisplay($fname) {
@@ -578,6 +601,9 @@ function afterDisplay($fname) {
 
       // Add icons to .pdf, .xls, .doc, ... hyperlinks
       addIcons();  
+      
+      // Make table nicer
+      NiceTable();
 
       // Initialize each action buttons of the displayed note
       initializeTasks()
