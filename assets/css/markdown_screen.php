@@ -9,6 +9,11 @@
 
 body {overflow:hidden;}
 
+/* Style for the scrollbars */
+::-webkit-scrollbar {width:15px;}
+::-webkit-scrollbar-track {-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);border-radius:10px;}
+::-webkit-scrollbar-thumb {border-radius:10px;-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.5);}
+
 .error {padding:10px;margin:10px;border:1px solid red;}
 
 /* By selecting a file from the filelist, highlight its name */
@@ -51,12 +56,14 @@ body{background:#F7F2E9;}
 #CONTENT{margin-left:10px;top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;width:100%;left:-15px;}
 
 /* Background image displayed on the first screen */
-#IMG_BACKGROUND{width:100%;height:100%;vertical-align:middle;}
+#IMG_BACKGROUND{width:100%;;vertical-align:middle;top:5px;left:-5px;position:relative;}
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
 #TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
 #TOC{position:inherit;top:35px;}
-#TOC .file-text, #tree .file-txt, #tree .file-md, #tree .file-log, #tree .file-htaccess { background-position: -254px -18px }
+#TOC .folder {background:url('../../libs/jsTree/file_sprite.png') right bottom no-repeat;}
+#TOC .file {background:url('../../libs/jsTree/file_sprite.png') 0 0 no-repeat;}
+#TOC .file-text, #TOC .file-txt, #TOC .file-md, #TOC .file-log, #TOC .file-htaccess {background-position: -254px -18px;}
 
 /* page is used to display the content of the selected note */
 page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}
@@ -79,3 +86,5 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 .tag {border-bottom: 1px dotted #000;}
 
 .download{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}
+
+		#tree .file { background:url('./file_sprite.png') 0 0 no-repeat; }

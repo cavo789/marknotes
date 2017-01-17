@@ -227,6 +227,7 @@ Thank you to
 
 - Alexander Farkas for [lazysizes](https://github.com/aFarkas/lazysizes)
 - Bartek Szopka for [jquery.highlight.js](http://bartaz.github.io/sandbox.js/jquery.highlight.html)
+- Contributors of [DataTables](https://github.com/DataTables/DataTables)
 - Contributors of [remark](https://github.com/gnab/remark)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) contributors

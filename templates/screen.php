@@ -16,16 +16,16 @@
 
       <!--%FONT%-->
       
-      <link href="libs/bootstrap/bootstrap.min.css" rel="stylesheet" />
-      <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="libs/highlight.js/styles/default.css" rel="stylesheet" />
-  
-      <link media="screen" href="libs/print-preview/print-preview.css" rel="stylesheet" />
-      <link media="screen" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" rel="stylesheet" />      
-      <link rel="stylesheet" type="text/css" media="screen" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%">
-      <link rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
-      
-      <link media="screen" rel="stylesheet" href="libs/jsTree/themes/default/style.min.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/bootstrap/bootstrap.min.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/highlight.js/styles/default.css" />  
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/Datatables/css/dataTables.bootstrap4.min.css"/>
+
+      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
       
       <!--%CUSTOM_CSS%-->
        
@@ -42,6 +42,7 @@
                data-visible-properties='["name","type"]' multiple='multiple' />
          
             <div id="TOC" class="onlyscreen">&nbsp;</div>
+            
          </div>
          
          <div class="container col-md-8">
@@ -83,6 +84,10 @@
       <!-- jsTree -->
       <script type="text/javascript" src="libs/jsTree/jsTree.min.js"></script>   
       
+      <!-- dataTables -->     
+      <script type="text/javascript" src="libs/Datatables/js/jquery.dataTables.min.js"></script>      
+      <script type="text/javascript" src="libs/Datatables/js/dataTables.bootstrap4.min.js"></script>      
+  
       <!--%ADDITIONNAL_JS%-->
       
       <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>

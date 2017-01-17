@@ -184,7 +184,7 @@ function initFiles($data) {
             },
             types : {
                default : { icon : 'folder' },
-               file : { icon : 'file' },
+               file : { icon : 'file file-md' },
                folder : { icon : 'folder' }
             },
             plugins : ['state','dnd','search','sort','types','unique','wholerow']
@@ -450,11 +450,11 @@ function addLinksToTags() {
       // 
       // ( |,|;|\\.|\\n|\\r|\\t)*       Before : Allowed characters before the tag : a space, comma, dot comma, dot, carriage return, linefeed or tab, one or more (f.i. a carriage return and a linefeed are matched)
       // markdown.settings.prefix_tag   Symbol : Match the § character
-      // ([a-zA-Z0-9]+)                 Tag    : a word composed of letters and figures  
+      // ([a-zA-Z0-9]+)                 Tag    : a word composed of letters and figures, can also contains dot (like ".htaccess")
       // ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
       
       
-      var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([a-zA-Z0-9]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
+      var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([\\.a-zA-Z0-9]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
       if (markdown.settings.debug) console.log('RegEx for finding tags : '+RegEx);
       
       var $tags=RegEx.exec($text);
@@ -560,7 +560,23 @@ function NiceTable() {
    try {
       
       $("table").each(function() {         
-         $(this).addClass('table');
+         $(this).addClass('table table-striped table-hover table-bordered');
+         
+         if ($.isFunction($.fn.DataTable)){
+            $(this).addClass('display');
+            $(this).DataTable({  
+               scrollY:"50vh", // 50%
+               scrollCollapse: true,
+               info:true,
+               //order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
+               lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+               language: {   
+                  decimal: '.',
+                  thousands: ',',
+                  url: 'libs/DataTables/'+markdown.settings.language+'.json'
+               }
+            });
+         }
       });
 
     } catch(err) {         
@@ -736,7 +752,7 @@ function afterSearch($keywords, $data) {
 
                $.each($files, function($key, $value) {    
 
-                  if ($value===$filename) {
+                  if ($value===$filename+'.md') {
                      if($(element).hasClass('jstree-leaf')) {
                         $(element).addClass('highlight').show();
                      }

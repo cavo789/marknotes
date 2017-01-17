@@ -470,6 +470,7 @@ class aeSecureMarkdown {
       $listDir = array(
          'id' => utf8_encode(str_replace($root,'',$dir).DS),
          'type'=>'folder',
+         'icon'=>'folder',         
          'text' =>basename(utf8_encode($dir)),
          'state'=>array('opened'=>1,'disabled'=>1),
          'children' => array());
@@ -482,7 +483,7 @@ class aeSecureMarkdown {
             if ($sub != "." && $sub != "..") {
                if(is_file($dir.DS.$sub)) {
                   $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
-                  if(in_array($extension, $ext)) $files []= utf8_encode($sub);
+                  if(in_array($extension, $ext)) $files []= array('icon'=>'file file-md','text'=>str_replace('.'.$extension,'',utf8_encode($sub)));  // Don't display the extension
                } elseif (is_dir($dir.DS.$sub)) {
                   $dirs []= $dir.DS.$sub;
                }
@@ -545,6 +546,9 @@ class aeSecureMarkdown {
     * @return string          HTML rendering 
     */ 
    private function ShowFile(string $filename) : string {
+
+      // If the filename doesn't mention the file's extension, add it.
+      if(substr($filename,-3)!='.md') $filename.='.md';
       
       $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
 
@@ -581,7 +585,7 @@ class aeSecureMarkdown {
 
       if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
          if(filesize($fname)>0) {
-            
+
             $arrTags=$this->aeJSON->json_decode($fname);
             foreach($arrTags as $tag) {
 
@@ -593,10 +597,10 @@ class aeSecureMarkdown {
                // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
                
                // Capture the full line (.* ---Full Regex--- .*)
-               preg_match_all('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$).*)/i', $markdown, $matches);
+               preg_match_all('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$)*)/i', $markdown, $matches);
 
                foreach ($matches[0] as $match) {
-                  
+
                   if (count($match)>0) {
 
                      preg_match('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$).*)/i', $match, $matches);
@@ -627,20 +631,21 @@ class aeSecureMarkdown {
       } // if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json'))
 
       //DEVELOPMENT : SHOW THE RESULT AND DIE SO DON'T MODIFY THE FILE
-      if (($this->_DEVMODE) && ($old!=$markdown)) {
-         echo $this->aeDebug->log(DEVMODE,true);
-         echo $this->aeDebug->log('= new file content ('.$fullname.') =',true);
-         require_once("libs/Parsedown.php");$Parsedown=new Parsedown();$html=$Parsedown->text($markdown);echo $html;die();      
-      }
+      //if (($this->_DEVMODE) && ($old!=$markdown)) {
+      //   echo $this->aeDebug->log(DEVMODE,true);
+      //   echo $this->aeDebug->log('= new file content ('.$fullname.') =',true);
+      //   require_once("libs/Parsedown.php");$Parsedown=new Parsedown();$html=$Parsedown->text($markdown);echo $html;die();      
+      //}
       
       // Rewrite the file if a change has been done
-      if ($old!=$markdown) {
-         // rewrite the file
-         if ($handle = fopen($fullname,'w')) {
-            fwrite($handle, $markdown);
-            fclose($handle);		
-         }    
-      }
+      //DON'T REWRITE THE .MD ANYMORE, DON'T STORE THE "§tag" IN THE FILE, JUST DO IT ON THE FLY
+      //if ($old!=$markdown) {
+      //   // rewrite the file
+      //   if ($handle = fopen($fullname,'w')) {
+      //      fwrite($handle, $markdown);
+      //      fclose($handle);		
+      //   }    
+      //}
       
       //
       // -----------------------------------------------------------------------
@@ -1171,7 +1176,8 @@ class aeSecureMarkdown {
             "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
             "markdown.settings.debug=".($this->_DEBUGMODE?1:0).";\n".
             "markdown.settings.development=".($this->_DEVMODE?1:0).";\n".    
-            "markdown.settings.DS='".preg_quote(DS)."';\n".           
+            "markdown.settings.DS='".preg_quote(DS)."';\n".                          
+            "markdown.settings.language='".$this->_settingsLanguage."';\n".
             "markdown.settings.lazyload=".$this->_OptimizeLazyLoad.";\n".
             "markdown.settings.prefix_tag='".PREFIX_TAG."';\n";
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
