@@ -15,8 +15,8 @@ define('DOC_FOLDER','docs');
 // Can be override : settings.json->export->save_html (boolean, 0 or 1)
 define('OUTPUT_HTML',TRUE);
 
-// Can be override : settings.json->editor (string, full path to the editor program)
-define('EDITOR','C:\Windows\System32\notepad.exe'); // default editor
+// Can be override : settings.json->editor 
+define('EDITOR',FALSE); // enable online editing or not
 
 // Default text, english
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
@@ -53,6 +53,7 @@ define('PREFIX_TAG','§');
 define ('SEARCH_MAX_LENGTH',100);
 
 defined('DS') or define('DS',DIRECTORY_SEPARATOR);
+define('DEVMODE','=== DEV MODE ENABLED ===');
 
 // Requires PHP 7.x
          
@@ -411,69 +412,96 @@ class aeSecureMarkdown {
       // --------------------------------------------------------------------------------------
       // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
       
-      $return['tree']=$this->dir_to_jstree_array(str_replace(DS,'/',$this->_rootFolder.$this->_settingsDocsFolder),'a',array('md'));      
+      $folder=str_replace(DS,'/',$this->_rootFolder.$this->_settingsDocsFolder);
+      
+      // $arr is an array with arrays that contains arrays ... 
+      // i.e. the root folder that contains subfolders and subfolders can contains subfolders...
+      $arr=$this->dir_to_jstree_array($folder,'a',array('md'));
+      
+      // Now, there are subfolders (arrays) where there was no .md files : don't display that folders
+      // on the jsTree DOM elemen.  The "jstree_hide_emptyFolder" will add a "hidden" state for these
+      // empty folders
+      $this->jstree_hide_emptyFolder($arr);
+      
+      // The array is now ready
+      $return['tree']=$arr;      
 
       // --------------------------------------------------------------------------------------
-//echo $this->aeJSON->json_encode($return['tree']);
-//die();
+
       return $return;
 	  
    } // function ListFiles()	  
-  
+   
    /**
+    * Called by ListFiles().  Add a "hidden" state for arrays in the array (like folder and subfolders) when 
+    * the number of children is zero (i.e. that subfolder doesn't contains any relevant files)
+    * 
+    * @param int $array
+    * @param type $unwanted_key
+    */
+   private function jstree_hide_emptyFolder(&$array) {
+      if (isset($array['children'])) {
+         if (count($array['children'])==0) $array["state"]["hidden"]=1;
+      }
+      foreach ($array as &$value) {
+          if (is_array($value)) $this->jstree_hide_emptyFolder($value, 'children');
+      }
+   } // function jstree_hide_emptyFolder()
+
+   /**
+    * Called by ListFiles().  Populate an array with the list of .md files.
+    * 
+    * The structure of the array match the needed definition of the jsTree jQuery plugin
     * 
     * http://stackoverflow.com/a/23679146/1065340
     * 
-    * @param type $dir
-    * @param type $order
-    * @param string $ext
-    * @return type
+    * @param type $dir     Root folder to scan
+    * @param type $order   "a" for ascending
+    * @param string $ext   array() with extensions to search for (only .md for this program)
+    * @return array 
     */
-   private function dir_to_jstree_array($dir, $order = "a", $ext = array()) {      
+   private function dir_to_jstree_array(string $dir, string $order="a", array $ext=array()) : array {      
+      
+      $root=str_replace(DS,'/',$this->_rootFolder.$this->_settingsDocsFolder);
       
       if(empty($ext)) $ext = array ("md");
-
+      
       // Entry for the folder
       $listDir = array(
-         'id' => utf8_encode(basename($dir)),
+         'id' => utf8_encode(str_replace($root,'',$dir).DS),
          'type'=>'folder',
-         'text' => utf8_encode(basename($dir)),
+         'text' =>basename(utf8_encode($dir)),
          'state'=>array('opened'=>1,'disabled'=>1),
-         'children' => array()
-      );
-
+         'children' => array());
+      
       $files = array();
       $dirs = array();
 
       if($handler = opendir($dir)) {
          while (($sub = readdir($handler)) !== FALSE) {
             if ($sub != "." && $sub != "..") {
-               if(is_file($dir."/".$sub)) {
-                  $extension = pathinfo($dir."/".$sub, PATHINFO_EXTENSION);
-                  if(in_array($extension, $ext)) {
-                     $files []= utf8_encode($sub);
-                  }
-               } 
-               elseif (is_dir($dir."/".$sub)) {
-                  $dirs []= $dir."/".$sub;
+               if(is_file($dir.DS.$sub)) {
+                  $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
+                  if(in_array($extension, $ext)) $files []= utf8_encode($sub);
+               } elseif (is_dir($dir.DS.$sub)) {
+                  $dirs []= $dir.DS.$sub;
                }
             }
-         }
+         } // while
+         
          if($order === "a") {
-           asort($dirs);
-         } 
-         else {
+            asort($dirs);
+         } else {
             arsort($dirs);
          }
 
          foreach($dirs as $d) {
-            $listDir['children'][]= $this->dir_to_jstree_array($d);
+            $listDir['children'][]=$this->dir_to_jstree_array($d);
          }
 
          if($order === "a") {
             asort($files);
-         } 
-         else {
+         } else {
             arsort($files);
          }
 
@@ -482,12 +510,12 @@ class aeSecureMarkdown {
          }
 
          closedir($handler);
+         
       } // if($handler = opendir($dir))
-
+      
       return $listDir;
       
    } // function dir_to_jstree_array()
-
 
    /**
     * Display an error
@@ -600,7 +628,7 @@ class aeSecureMarkdown {
 
       //DEVELOPMENT : SHOW THE RESULT AND DIE SO DON'T MODIFY THE FILE
       if (($this->_DEVMODE) && ($old!=$markdown)) {
-         echo $this->aeDebug->log('=== DEV MODE ENABLED ===',true);
+         echo $this->aeDebug->log(DEVMODE,true);
          echo $this->aeDebug->log('= new file content ('.$fullname.') =',true);
          require_once("libs/Parsedown.php");$Parsedown=new Parsedown();$html=$Parsedown->text($markdown);echo $html;die();      
       }
@@ -940,6 +968,7 @@ class aeSecureMarkdown {
       // Initialize the encryption class
       $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
 
+      $docs=str_replace('/',DS,$this->_settingsDocsFolder);
       //$return['keywords']=$keywords;
       foreach ($arrFiles as $file) {
          
@@ -961,9 +990,11 @@ class aeSecureMarkdown {
          if ($bFound) {
             
             if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in filename : ['.$file.']',true);    
+          
+            if ($this->_DEVMODE) echo $this->aeDebug->log(DEVMODE.' All keywords found in filename',true);
             
             // Found in the filename => stop process of this file
-            $return['files'][]=$file;
+            $return['files'][]=$docs.$file;
             
          } else { // if ($bFound)
                      
@@ -983,11 +1014,11 @@ class aeSecureMarkdown {
             } // foreach($keywords as $keyword)
             
             if ($bFound) {
-            
+               
                if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
                
                // Found in the filename => stop process of this file
-               $return['files'][]=$file;
+               $return['files'][]=$docs.$file;
             
             } else { // if ($bFound)
   
@@ -1041,7 +1072,7 @@ class aeSecureMarkdown {
                   
                if($bFound) {
                   if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
-                  $return['files'][]=$file;
+                  $return['files'][]=$docs.$file;
                }
                
             } // if ($bFound)
@@ -1051,7 +1082,7 @@ class aeSecureMarkdown {
       } // foreach ($arrFiles as $file)
       
       unset($aesEncrypt);
-
+            
       return $return;
       
    } // function Search()
@@ -1139,7 +1170,8 @@ class aeSecureMarkdown {
             "markdown.settings={};\n".
             "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
             "markdown.settings.debug=".($this->_DEBUGMODE?1:0).";\n".
-            "markdown.settings.development=".($this->_DEVMODE?1:0).";\n".               
+            "markdown.settings.development=".($this->_DEVMODE?1:0).";\n".    
+            "markdown.settings.DS='".preg_quote(DS)."';\n".           
             "markdown.settings.lazyload=".$this->_OptimizeLazyLoad.";\n".
             "markdown.settings.prefix_tag='".PREFIX_TAG."';\n";
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
@@ -1152,9 +1184,8 @@ class aeSecureMarkdown {
          // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
          $html=str_replace('<!--%CUSTOM_CSS%-->', aeSecureFct::addStylesheet('custom.css'), $html);
 
-
          // Additionnal javascript, depends on user's settings
-         $sAdditionnalJS='';
+         $AdditionnalJS='';
          if ($this->_OptimizeLazyLoad==1) $AdditionnalJS='<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
          
          $html=str_replace('<!--%ADDITIONNAL_JS%-->', $AdditionnalJS, $html);

@@ -67,7 +67,7 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 .countfiles{font-size:xx-small;font-style:italic;}
 
 /* Use by the jQuery highlight plugin, highlight searched keywords */
-.highlight{background-color:yellow;border-radius:.125em;}  
+.highlight{background-color:yellow !important;border-radius:.125em;}  
 
 /* ---------------------------------------------------------- */
 /* Classes added by javascript during the display of the note */

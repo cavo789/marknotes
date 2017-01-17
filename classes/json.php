@@ -23,8 +23,40 @@ class aeSecureJSON {
 		return self::$instance;
 	} // function getInstance()
    
-   private static function ShowError(string $msg, bool $die=TRUE) : bool {
+   private static function ShowError(string $param, bool $die=TRUE) : bool {
 
+      if(trim($param)!=='') $param.=' - ';
+      
+      $msg='';
+      
+      switch (json_last_error()) {
+
+         case JSON_ERROR_DEPTH:
+            $msg=$param.'Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']';
+            break;
+
+         case JSON_ERROR_STATE_MISMATCH:
+            $msg=$param.'Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']';
+            break;
+
+         case JSON_ERROR_CTRL_CHAR:
+            $msg=$param.'Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']';
+            break;
+
+         case JSON_ERROR_SYNTAX:
+            $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] (be sure file is UTF8-NoBOM)';
+            break;
+
+         case JSON_ERROR_UTF8:
+            $msg=$param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']';
+            break;
+
+         default:
+            $msg=$param.'Unknown error';
+            break;
+         
+      } // switch (json_last_error())
+            
       if (self::$_debug==TRUE) $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].', '.debug_backtrace()[2]['class'].'::'.debug_backtrace()[2]['function'].', line '.debug_backtrace()[2]['line'].')</em>';
 
       $msg='<div class="error bg-danger">ERROR - '.$msg.'</div>';
@@ -65,34 +97,8 @@ class aeSecureJSON {
          $arr=json_decode(file_get_contents($fname), $assoc);
          
          if (json_last_error()!==JSON_ERROR_NONE) {
-
-            switch (json_last_error()) {
-
-               case JSON_ERROR_DEPTH:
-                  self::ShowError($fname.' - Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']',FALSE);
-                  break;
-
-               case JSON_ERROR_STATE_MISMATCH:
-                  self::ShowError($fname.' - Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']',FALSE);
-                  break;
-
-               case JSON_ERROR_CTRL_CHAR:
-                  self::ShowError($fname.' - Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']',FALSE);
-                  break;
-
-               case JSON_ERROR_SYNTAX:
-                  self::ShowError($fname.' - Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] (be sure file is UTF8-NoBOM)',FALSE);
-                  break;
-
-               case JSON_ERROR_UTF8:
-                  self::ShowError($fname.' - Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']',FALSE);
-                  break;
-
-               default:
-                  self::ShowError($fname.' - Unknown error',FALSE);
-                  break;
-            } // switch (json_last_error())
             
+            self::ShowError($fname,FALSE);
             if (self::$_debug) echo '<pre>'.file_get_contents($fname).'</pre>';  
             die();
             
@@ -118,33 +124,7 @@ class aeSecureJSON {
          
          if (json_last_error()!==JSON_ERROR_NONE) {
 
-            switch (json_last_error()) {
-
-               case JSON_ERROR_DEPTH:
-                  self::ShowError('Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']',FALSE);
-                  break;
-
-               case JSON_ERROR_STATE_MISMATCH:
-                  self::ShowError('Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']',FALSE);
-                  break;
-
-               case JSON_ERROR_CTRL_CHAR:
-                  self::ShowError('Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']',FALSE);
-                  break;
-
-               case JSON_ERROR_SYNTAX:
-                  self::ShowError('Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] (be sure file is UTF8-NoBOM)',FALSE);
-                  break;
-
-               case JSON_ERROR_UTF8:
-                  self::ShowError('Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']',FALSE);
-                  break;
-
-               default:
-                  self::ShowError($fname.' - Unknown error',FALSE);
-                  break;
-            } // switch (json_last_error())
-            
+            self::ShowError('',FALSE);
             if (self::$_debug) echo '<pre>'.print_r($value,true).'</pre>';  
             die();
             

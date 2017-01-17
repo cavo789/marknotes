@@ -159,8 +159,17 @@ function initFiles($data) {
       // Use jsTree for the display
       
       $('#TOC').on('changed.jstree', function (e, data) {
+
          var objNode = data.instance.get_node(data.selected);
-         console.log('Selected: ' +objNode.text);
+         
+         // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
+         // and objNode.text the name of the file (f.i. jsTree.md)
+         if (markdown.settings.debug) console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
+         
+         var $fname=window.btoa(encodeURIComponent(JSON.stringify(objNode.parent+objNode.text)));  
+         
+         ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+         
       }).jstree({
          core: {
             animation : 1,
@@ -178,7 +187,7 @@ function initFiles($data) {
                file : { icon : 'file' },
                folder : { icon : 'folder' }
             },
-            plugins : ['state','dnd','sort','types','unique','wholerow']
+            plugins : ['state','dnd','search','sort','types','unique','wholerow']
          }
       });
       
@@ -682,34 +691,67 @@ function afterSearch($keywords, $data) {
       // Check if we've at least one file
       if (Object.keys($data).length>0) {
 
-         // Process every rows of the tblFiles array => process every files 
-         $('#tblFiles > tbody  > tr > td').each(function() {
+         if ($.isFunction($.fn.jstree)){
 
-            // Be sure to process only cells with the data-file attribute.
-            // That attribute contains the filename, not encoded
-            if ($(this).attr('data-file')) {
+            // Get the list of files returned by the search : these files have matched th keyword
+            $files=$data['files'];
+            
+            // Use jsTree : iterate and get every node full path which is, in fact, a filename
+            // For instance /aesecure/todo/a_note.md
+           
+            $.each($("#TOC").jstree('full').find("li"), function (index, element) {
+               
+               // Get the node associated filename
+               $filename=$("#TOC").jstree(true).get_path(element, markdown.settings.DS);  // DIRECTORY_SEPARATOR
 
-               // Get the filename (is relative like /myfolder/filename.md)
-               $filename=$(this).data('file');
-               $tr=$(this).parent();
-
-               // Default : hide the filename
-               $tr.hide();                     
+               if($(element).hasClass('jstree-leaf')) $(element).hide();
 
                // Now, check if the file is mentionned in the result, if yes, show the row back
-               $.each($data, function() {
-                  $.each(this, function($key, $value) {                           
-                     if ($value===$filename) {
-                        $tr.show();
-                        return false;  // break
+
+               $.each($files, function($key, $value) {    
+
+                  if ($value===$filename) {
+                     if($(element).hasClass('jstree-leaf')) {
+                        $(element).addClass('highlight').show();
                      }
-                  });
-               }); // $.each($data)
+                     return false;  // break
+                  }
+               }); // $.each($files)
+               
+            }); // $.each($("#TOC").jstree('full')
 
-            }
-         }); // $('#tblFiles > tbody  > tr > td')
+         } else { // if ($.isFunction($.fn.jstree)){
+  
+            // Process every rows of the tblFiles array => process every files 
+            $('#tblFiles > tbody  > tr > td').each(function() {
 
-      } else {
+               // Be sure to process only cells with the data-file attribute.
+               // That attribute contains the filename, not encoded
+               if ($(this).attr('data-file')) {
+
+                  // Get the filename (is relative like /myfolder/filename.md)
+                  $filename=$(this).data('file');
+                  $tr=$(this).parent();
+
+                  // Default : hide the filename
+                  $tr.hide();                     
+
+                  // Now, check if the file is mentionned in the result, if yes, show the row back
+                  $.each($data, function() {
+                     $.each(this, function($key, $value) {                           
+                        if ($value===$filename) {
+                           $tr.show();
+                           return false;  // break
+                        }
+                     });
+                  }); // $.each($data)
+
+               }
+            }); // $('#tblFiles > tbody  > tr > td')
+
+         } // if ($.isFunction($.fn.jstree)){
+    
+      } else { // if (Object.keys($data['files']).length>0)
 
          if ($keywords!=='') {
 
@@ -718,11 +760,20 @@ function afterSearch($keywords, $data) {
          } else { // if ($keywords!=='')
 
             // show everything back
-            $('#tblFiles > tbody  > tr > td').each(function() {
-               if ($(this).attr('data-file')) {
-                  $(this).parent().show();
-               }
-            });
+            
+            if ($.isFunction($.fn.jstree)){
+               
+               // jsTree plugin
+               $.each($("#TOC").jstree('full').find("li"), function (index, element) {
+                  $(element).removeClass('highlight').show();
+               }); // $.each($("#TOC").jstree('full')
+               
+            } else { //  if ($.isFunction($.fn.jstree))
+               
+               $('#tblFiles > tbody  > tr > td').each(function() {
+                  if ($(this).attr('data-file')) $(this).parent().show();
+               });
+            } //  if ($.isFunction($.fn.jstree))
 
          } // if ($keywords!=='')
 
