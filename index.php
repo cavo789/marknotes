@@ -18,6 +18,7 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-18 : + Keep jsTree as compact as possible : after a search, close all nodes and show only ones with selected node
  * 2017-01-17 : + Add "table" class to tables
  *              + Add jsTree
  *              + Add DataTables plugin

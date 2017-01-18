@@ -483,7 +483,18 @@ class aeSecureMarkdown {
             if ($sub != "." && $sub != "..") {
                if(is_file($dir.DS.$sub)) {
                   $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
-                  if(in_array($extension, $ext)) $files []= array('icon'=>'file file-md','text'=>str_replace('.'.$extension,'',utf8_encode($sub)));  // Don't display the extension
+                  if(in_array($extension, $ext)) {
+                     $files[]=array(
+                        'icon'=>'file file-md',
+                        'text'=>str_replace('.'.$extension,'',utf8_encode($sub)), // Don't display the extension
+                        
+                        // Populate the data attribute with the task to fire and the filename of the note
+                        'data'=>array(
+                           'task'=>'display',
+                           'file'=>utf8_encode(str_replace($root,'',$dir.DS.$sub))
+                         )
+                     );  
+                  }
                } elseif (is_dir($dir.DS.$sub)) {
                   $dirs []= $dir.DS.$sub;
                }
@@ -597,13 +608,13 @@ class aeSecureMarkdown {
                // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
                
                // Capture the full line (.* ---Full Regex--- .*)
-               preg_match_all('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$)*)/i', $markdown, $matches);
+               preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $markdown, $matches);
 
                foreach ($matches[0] as $match) {
 
                   if (count($match)>0) {
 
-                     preg_match('/(.*( |\\n|\\r|\\t)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t| |$).*)/i', $match, $matches);
+                     preg_match('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$).*)/i', $match, $matches);
 
                      // Replace, in the line, the word f.i.    (don't use a preg_replace because preg_replace will replace all occurences of the word)
 
@@ -899,7 +910,7 @@ class aeSecureMarkdown {
          $icons.'</div>',$html);
       $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
-      $html='<div class="onlyscreen filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
+      $html='<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
       
       // LazyLoad images ? 
       if ($this->_OptimizeLazyLoad==1) {

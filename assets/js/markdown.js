@@ -154,113 +154,125 @@ function initFiles($data) {
       Noty({message:$msg.replace('%s', $data.count), type:'notification'});         
    }
    
-   if ($.isFunction($.fn.jstree)){
-      
-      // Use jsTree for the display
-      
-      $('#TOC').on('changed.jstree', function (e, data) {
+   try {
+     
+      if ($.isFunction($.fn.jstree)){
 
-         var objNode = data.instance.get_node(data.selected);
-         
-         // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
-         // and objNode.text the name of the file (f.i. jsTree.md)
-         if (markdown.settings.debug) console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
-         
-         var $fname=window.btoa(encodeURIComponent(JSON.stringify(objNode.parent+objNode.text)));  
-         
-         ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-         
-      }).jstree({
-         core: {
-            animation : 1,
-            data : $data['tree'],
-            sort : function(a, b) {
-               return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
-            },
-            themes : {
-               responsive : 1,
-               variant : 'small',
-               stripes : 1
-            },
-            types : {
-               default : { icon : 'folder' },
-               file : { icon : 'file file-md' },
-               folder : { icon : 'folder' }
-            },
-            plugins : ['state','dnd','search','sort','types','unique','wholerow']
-         }
-      });
-      
-   } else { // if ($.isFunction($.fn.jstree))
-      
-      // jsTree not loaded, use a table
+         // Use jsTree for the display
 
-      // Build the table
-      if($data.hasOwnProperty('results')) {
+         $('#TOC').on('changed.jstree', function (e, data) {
 
-         var tbl = document.createElement('table');
+            var objNode = data.instance.get_node(data.selected);
 
-         tbl.id="tblFiles"
-         tbl.setAttribute("class","table table-hover table-bordered");
-         tbl.style.width = '100%';
+            if (typeof(objNode.parent)!="undefined") {
 
-         var tbdy = document.createElement('tbody');
+               // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
+               // and objNode.text the name of the file (f.i. jsTree.md)
+               if (markdown.settings.debug) console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
 
-         $.each($data['results'], function($id, $item) {     
+               var $fname=window.btoa(encodeURIComponent(JSON.stringify(objNode.data.file)));  
 
-            var tr = document.createElement('tr');
+               ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
 
-            var td = document.createElement('td');
-            td.dataset.folder=$item.folder;
-            td.appendChild(document.createTextNode($item.folder))
-            tr.appendChild(td)
+            } // if (typeof(objNode.parent)!="undefined")
 
-            var td = document.createElement('td');
-            td.dataset.file=$item.file;
-            td.appendChild(document.createTextNode($item.display))
-            tr.appendChild(td)
-
-            tbdy.appendChild(tr);
-
+         }).jstree({
+            core: {
+               animation : 1,
+               data : $data['tree'],
+               sort : function(a, b) {
+                  return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
+               },
+               themes : {
+                  responsive : 1,
+                  variant : 'small',
+                  stripes : 1
+               },
+               types : {
+                  default : { icon : 'folder' },
+                  file : { icon : 'file file-md' },
+                  folder : { icon : 'folder' }
+               },
+               plugins : ['state','dnd','sort','types','unique','wholerow']
+            }
          });
 
-         // The table is now complete, add it into the page
-         tbl.appendChild(tbdy);    
-         $('#TOC').html(tbl);
+      } else { // if ($.isFunction($.fn.jstree))
 
-         $('#tblFiles > tbody  > tr > td').click(function(e) {
+         // jsTree not loaded, use a table
 
-            // By clicking on the second column, with the data-file attribute, display the file content
-            if ($(this).attr('data-file')) {
+         // Build the table
+         if($data.hasOwnProperty('results')) {
 
-               // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
-               if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
+            var tbl = document.createElement('table');
 
-               var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));  
+            tbl.id="tblFiles"
+            tbl.setAttribute("class","table table-hover table-bordered");
+            tbl.style.width = '100%';
 
-               if (markdown.settings.debug) console.log("Show note "+$(this).data('file'));  
-               ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-               $(this).addClass("selected");                  
-            }
+            var tbdy = document.createElement('tbody');
 
-            // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
-            if ($(this).attr('data-folder')) {    
+            $.each($data['results'], function($id, $item) {     
 
-               // retrieve the name of the folder from data-folder
-               var $folder=$(this).data('folder').replace('\\','/');
+               var tr = document.createElement('tr');
 
-               if (markdown.settings.debug) console.log("Apply filter for "+$folder);  
+               var td = document.createElement('td');
+               td.dataset.folder=$item.folder;
+               td.appendChild(document.createTextNode($item.folder))
+               tr.appendChild(td)
 
-               // Set the value in the search area
-               addSearchEntry({keyword:$folder});        
+               var td = document.createElement('td');
+               td.dataset.file=$item.file;
+               td.appendChild(document.createTextNode($item.display))
+               tr.appendChild(td)
 
-            } // if ($(this).attr('data-folder'))
+               tbdy.appendChild(tr);
 
-         }); // $('#tblFiles > tbody  > tr > td').click()
+            });
 
-      } // if($data.hasOwnProperty('results'))
+            // The table is now complete, add it into the page
+            tbl.appendChild(tbdy);    
+            $('#TOC').html(tbl);
 
-   } // // if ($.isFunction($.fn.jstree))
+            $('#tblFiles > tbody  > tr > td').click(function(e) {
+
+               // By clicking on the second column, with the data-file attribute, display the file content
+               if ($(this).attr('data-file')) {
+
+                  // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
+                  if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
+
+                  var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));  
+
+                  if (markdown.settings.debug) console.log("Show note "+$(this).data('file'));  
+                  ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+                  $(this).addClass("selected");                  
+               }
+
+               // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
+               if ($(this).attr('data-folder')) {    
+
+                  // retrieve the name of the folder from data-folder
+                  var $folder=$(this).data('folder').replace('\\','/');
+
+                  if (markdown.settings.debug) console.log("Apply filter for "+$folder);  
+
+                  // Set the value in the search area
+                  addSearchEntry({keyword:$folder});        
+
+               } // if ($(this).attr('data-folder'))
+
+            }); // $('#tblFiles > tbody  > tr > td').click()
+
+         } // if($data.hasOwnProperty('results'))
+
+      } // // if ($.isFunction($.fn.jstree))
+
+   } catch(err) {         
+      
+      console.warn(err.message);
+      
+   }
    
    // initialize the search area, thanks to the Flexdatalist plugin
    if ($.isFunction($.fn.flexdatalist)){
@@ -288,12 +300,17 @@ function initFiles($data) {
    // Interface : put the cursor immediatly in the edit box
    try {               
       $('#search-flexdatalist').focus();
-   } catch(err) {         
+   } catch(err) {        
+      console.warn(err.message);
    }
 
    // See if the custominiFiles() function has been defined and if so, call it
-   if (typeof custominiFiles !== 'undefined' && $.isFunction(custominiFiles)) custominiFiles();
-
+   try {    
+      if (typeof custominiFiles !== 'undefined' && $.isFunction(custominiFiles)) custominiFiles();
+   } catch(err) {        
+      console.warn(err.message);
+   }
+   
    return true;
 
 } // iniFiles()
@@ -313,6 +330,9 @@ function initializeTasks() {
    
    // Get all DOM objects having a data-task attribute
    $("[data-task]").click(function() {
+      
+      // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
+      if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();      
       
       var $task=$(this).data('task');
 
@@ -454,7 +474,7 @@ function addLinksToTags() {
       // ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
       
       
-      var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([\\.a-zA-Z0-9]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
+      var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
       if (markdown.settings.debug) console.log('RegEx for finding tags : '+RegEx);
       
       var $tags=RegEx.exec($text);
@@ -741,27 +761,67 @@ function afterSearch($keywords, $data) {
             // Use jsTree : iterate and get every node full path which is, in fact, a filename
             // For instance /aesecure/todo/a_note.md
            
+            $filename='';
+            
             $.each($("#TOC").jstree('full').find("li"), function (index, element) {
                
-               // Get the node associated filename
                $filename=$("#TOC").jstree(true).get_path(element, markdown.settings.DS);  // DIRECTORY_SEPARATOR
 
+               // It's a file, not a folder : hide it 
                if($(element).hasClass('jstree-leaf')) $(element).hide();
 
-               // Now, check if the file is mentionned in the result, if yes, show the row back
+               // Get the node associated filename
+           
+               if ($filename!=='') {  
 
-               $.each($files, function($key, $value) {    
+                  // Now, check if the file is mentionned in the result, if yes, show the row back
 
-                  if ($value===$filename+'.md') {
-                     if($(element).hasClass('jstree-leaf')) {
-                        $(element).addClass('highlight').show();
+                  $.each($files, function($key, $value) { 
+               
+                     if ($value===$filename+'.md') {   
+
+                        if($(element).hasClass('jstree-leaf')) {
+                           $(element).addClass('highlight').show();
+                           
+                           // Automatically open the node (and parents if needed) and select the node
+                           $('#TOC').jstree('select_node',element);   
+                           
+                        }
+                        return false;  // break
                      }
-                     return false;  // break
-                  }
-               }); // $.each($files)
+                  }); // $.each($files)
+               
+               } // if ($filename!=='')
                
             }); // $.each($("#TOC").jstree('full')
 
+            // -------------------------------------------------
+            // PROBABLY NOT EFFICIENT
+            //
+            // The idea is to close every parent node in the treeview when they don't have a child (=a file)
+            // that was selected by the search engine here above.
+            // 
+            // Idea is to keep the treeview the most compact as possible (if a root node contains 20 children, 
+            // with children too, ... and no files have been selected so just close the rood node immediatly)
+            
+            $.each($("#TOC").jstree('full').find("li"), function (index, element) {
+               // If the node was not selected (i.e. has the "highlight" class), close the node
+               if(!$(element).hasClass('highlight')) $('#TOC').jstree('close_node',element);
+            });
+
+            $.each($("#TOC").jstree('full').find("li"), function (index, element) {
+               // Now, for each node with the "highlight" class, be sure that each parents are opened
+               if($(element).hasClass('highlight')) { 
+                  $("#TOC").jstree('open_node', element, function(e,d) {
+                     for (var i = 0; i < e.parents.length; i++) {
+                        $("#TOC").jstree('open_node', e.parents[i]);
+                     }
+                  });
+               } // if($(element).hasClass('highlight'))
+            });
+            //
+            // -------------------------------------------------
+            
          } else { // if ($.isFunction($.fn.jstree)){
   
             // Process every rows of the tblFiles array => process every files 
@@ -806,9 +866,12 @@ function afterSearch($keywords, $data) {
             if ($.isFunction($.fn.jstree)){
                
                // jsTree plugin
-               $.each($("#TOC").jstree('full').find("li"), function (index, element) {
+               $.each($('#TOC').jstree('full').find("li"), function (index, element) {
                   $(element).removeClass('highlight').show();
                }); // $.each($("#TOC").jstree('full')
+               
+               // And show the entire tree
+               $('#TOC').jstree('open_all');
                
             } else { //  if ($.isFunction($.fn.jstree))
                
@@ -822,8 +885,12 @@ function afterSearch($keywords, $data) {
       } // if (Object.keys($data).length>0)
 
       // See if the customafterSearch() function has been defined and if so, call it
-      if (typeof customafterSearch !== 'undefined' && $.isFunction(customafterSearch)) {
-         customafterSearch($keywords, $data);
+      try {
+         if (typeof customafterSearch !== 'undefined' && $.isFunction(customafterSearch)) {
+            customafterSearch($keywords, $data);
+         }
+      } catch(err) {        
+         console.warn(err.message);
       }
       
    } catch(err) {         
