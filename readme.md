@@ -1,5 +1,9 @@
 # Markdown v1 - January 2017
 
+
+[![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master)](https://travis-ci.org/cavo789/markdown.svg?branch=master)
+
+
 The idea behind this script is to display the list of all .md files of a specific folder and every subfolders.
 
 The script is called `index.php` and just need to be put on a localhost website (refer to f.i. [WAMP](http://www.wampserver.com/)/[MAMP](https://www.mamp.info/en/) for learning how to create a local website)  
