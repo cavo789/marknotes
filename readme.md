@@ -2,7 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master)](https://travis-ci.org/cavo789/markdown.svg?branch=master)
-![License: MIT][docs/images/license.svg]
+[![License: MIT](https://raw.githubusercontent.com/cavo789/markdown/master/docs/license.svg)](https://raw.githubusercontent.com/cavo789/markdown/master/docs/license.svg)
 
 The idea behind this script is to display the list of all .md files of a specific folder and every subfolders.
 
@@ -10,7 +10,7 @@ The script is called `index.php` and just need to be put on a localhost website 
 
 The output will look like this : 
 
-![Main interface][https://github.com/cavo789/markdown/raw/master/docs/images/interface.png]
+[![Main interface](https://github.com/cavo789/markdown/blob/master/docs/interface.png)](https://github.com/cavo789/markdown/blob/master/docs/interface.png)
 
 ## Demo site
 
