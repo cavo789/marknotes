@@ -2,7 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master)](https://travis-ci.org/cavo789/markdown.svg?branch=master)
-
+![License: MIT][docs/images/license.svg]
 
 The idea behind this script is to display the list of all .md files of a specific folder and every subfolders.
 
@@ -10,7 +10,7 @@ The script is called `index.php` and just need to be put on a localhost website 
 
 The output will look like this : 
 
-<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/interface.png" width="680"/>
+![Main interface][https://github.com/cavo789/markdown/raw/master/docs/images/interface.png]
 
 ## Demo site
 
@@ -46,7 +46,7 @@ So, you've create a localhost website and you've call it "`markdown`".  To use t
 
 If you've correctly configured your webserver and alias, you'll should see the interface.  Just after the installation of the script, you'll see something like this :
 
-<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/howtouse.png" width="680"/>
+![Main interface][https://github.com/cavo789/markdown/raw/master/docs/images/interface.png]
 
 -  In the left pane, you'll retrieve the list of .md files found in the /docs folder.
 -  In the right pane, just after a click on a file, you'll get his HTML output (with image support).
@@ -81,8 +81,6 @@ So it's easy to create a link : edit a note and copy/paste there the link.
 
 Info : the `note_link` CSS class will be added to the hyperlink so it's also easy to define how intern links should be displayed on screen.
 
-<img src="https://github.com/cavo789/markdown/raw/master/docs/markdown/images/links_notes.png"/>
-
 ## Print
 
 If you wish to print your document, you don't need to open the file in a new tab, just press CTRL-P or click on the printer icon : thanks to special css style (`@media print`), only the right page and only the content will be sent to the printer.
@@ -114,7 +112,8 @@ The `settings.json` allows you to define your own settings.
    "folder":"docs",
    "language":"fr",
    "optimisation":{
-      "cache":1
+      "cache":1,
+      "lazyload":1
    },
    "tags":[],
    "templates":{
@@ -172,7 +171,8 @@ The `settings.json` allows you to define your own settings.
    -  `opened` : 0 / 1.  Should the treeview with the list of folders/files be opened (all nodes will be immediatly opened) or not.  0 means that only the root node will be opened.
    -  `auto_open` : (optional) a list of folder name that should be automatically opened.  Just mention the relative folder name so s.i. 'folder1', 'folder2', 'folder3/subfolder1', ...  Relative : name compared to `folder` mentionned here above.
 -  `optimisation` :
-   -  `cache` : do you wan to use the navigator cache ?  If so, specify `1` here so that the needed meta will be added
+   -  `cache` : do you want to use the navigator cache ?  If so, specify `1` here so that the needed meta will be added
+   -  `lazyload`: do you wish to load images only when they are about to be displayed on the screen i.e. not every images during the load time of the page but only when needed.
 -  `tags` : (optional) a list of tags that you want to automatically select when the page is displayed
 -  `templates` :
    -  `screen` : you can change the template used by the Markdown script here.   Just specify a filename without extension (so f.i. `MyTemplate`).  You'll need to create that template : go to the `templates` folder, make a copy of the `screen.php` file and rename it to, f.i. `MyTemplate.php`.   Edit and set the template to match yours needs.
