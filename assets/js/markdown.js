@@ -722,7 +722,7 @@ function afterEdit($fname) {
          autofocus:true,
          element: document.getElementById("sourceMarkDown"),
          indentWithTabs:false,
-         codeSyntaxHighlighting:true,
+         //codeSyntaxHighlighting:true,
          toolbar:[
             {       
                // Add a custom button for saving
