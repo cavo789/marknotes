@@ -235,6 +235,7 @@ Thank you to
 - Contributors of [DataTables](https://github.com/DataTables/DataTables)
 - Contributors of [Prism](http://prismjs.com)
 - Contributors of [remark](https://github.com/gnab/remark)
+- Contributors of [simplemde-markdown-editor](https://github.com/NextStepWebs/simplemde-markdown-editor)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) contributors
 - Ivan Bozhanov (vakata) for [jsTree](https://github.com/vakata/jstree)

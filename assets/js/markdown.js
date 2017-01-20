@@ -161,7 +161,7 @@ function initFiles($data) {
          // Use jsTree for the display
 
          $('#TOC').on('changed.jstree', function (e, data) {
-            
+
             if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
 
             var objNode = data.instance.get_node(data.selected);
@@ -178,10 +178,21 @@ function initFiles($data) {
 
             } // if (typeof(objNode.parent)!="undefined")
 
+         }).on('keydown.jstree', '.jstree-anchor', function (e) {
+
+            // console.log(e.keyCode);   40 for down, 38 for up
+            
+            // @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
+            // If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
+            // Not found a solution...
+            var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);             
+            console.log('changed.jstree - '+objNode.data.file);            
+
          }).jstree({
             core: {
                animation : 1,
                data : $data['tree'],
+               initially_open : ['phtml_1'],    // Automatically open the root node
                sort : function(a, b) {
                   return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
                },
@@ -293,11 +304,11 @@ function initFiles($data) {
    
       // Add automatic filtering if defined in the settings.json file
       if(markdown.settings.auto_tags!=='') addSearchEntry({keyword:markdown.settings.auto_tags});
-   }
+      
+   } // if ($.isFunction($.fn.flexdatalist))
 
    $('#search').css('width', $('#TDM').width()-5);
-   $('.flexdatalist-multiple').css('width', $('#TDM').width()-5).show();
-   $('#search-flexdatalist').css('width', $('#TDM').width()-35);
+   $('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width()-10).show();
    
    // Interface : put the cursor immediatly in the edit box
    try {               
@@ -366,8 +377,10 @@ function initializeTasks() {
             
          case 'edit':   
             
-            //if (markdown.settings.debug) console.log('Edit -> start the associated edit program (like Notepad f.i.)');
-            ajaxify({task:$task,param:$fname});
+            if (markdown.settings.debug) console.log('Edit -> show the editor and the source markdown file)');
+            ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});            
+
+            //EditMD($fname);
             break;
             
          case 'printer':   
@@ -691,6 +704,88 @@ function afterDisplay($fname) {
    return true;
 
 } // function afterDisplay()
+
+/**
+ * EDIT MODE - Render the textarea in a nice editor
+ * 
+ * @param {type} $fname   Filename
+ * @returns {Boolean}
+ */
+function afterEdit($fname) {
+   
+   // Create the Simple Markdown Editor
+   // @link https://github.com/NextStepWebs/simplemde-markdown-editor
+   
+   var simplemde = new SimpleMDE(
+      { 
+         autoDownloadFontAwesome:false,
+         autofocus:true,
+         element: document.getElementById("sourceMarkDown"),
+         indentWithTabs:false,
+         codeSyntaxHighlighting:true,
+         toolbar:[
+            {       
+               // Add a custom button for saving
+               name: "Save",  
+               action: function customFunction(editor) { saveChanges($fname, simplemde.value()); },
+               className: "fa fa-floppy-o",
+               title: markdown.message.button_save     
+            },
+            {       
+               // Add a custom button for saving
+               name: "Exit",  
+               action: function customFunction(editor) { 
+                  $('#sourceMarkDown').parent().hide(); 
+                  ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+               },
+               className: "fa fa-sign-out",
+               title: markdown.message.button_exit_edit_mode
+            },
+            "|","preview","side-by-side","fullscreen","|",
+            "bold","italic","strikethrough","|","heading","heading-smaller","heading-bigger","|", "heading-1","heading-2","heading-3","|",
+            "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule","|","guide"
+
+         ] 
+      }
+      );
+/*   
+   var editor = new Editor({
+       element: document.getElementById("sourceMarkDown")
+   });
+  */ 
+   return true;
+   
+} // function afterEdit()
+
+/**
+ * EDIT MODE - Save the new content.  Called by the "Save" button of the simplemde editor, initialized in the afterEdit function)
+ * 
+ * @param {type} $fname        Filename
+ * @param {type} $markdown     The new content
+ * @returns {boolean}
+ */
+function saveChanges($fname, $markdown) {
+   
+   var $data = new Object;
+   $data.task  = 'save';
+   $data.param = $fname;
+   $data.markdown = window.btoa(encodeURIComponent(JSON.stringify($markdown)));
+
+   $.ajax({
+      async:true,
+      type:'POST',
+      url: markdown.url,
+      data: $data,
+      datatype:'json',
+      success: function (data) {    
+         
+         Noty({message:data.status.message, type:(data.status.success==1?'success':'error')});         
+      }
+   }); // $.ajax()    
+   
+   return true;
+   
+} // function saveChanges()
 
 /**
  * 

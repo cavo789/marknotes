@@ -20,25 +20,8 @@ define('EDITOR',FALSE); // enable online editing or not
 
 // Default text, english
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
-define('ALLOW_POPUP_PLEASE','Please allow popup for this site');
-define('APPLY_FILTER','Searching for %s');
-define('APPLY_FILTER_TAG','Display notes containing this tag');
-define('COPY_LINK','Copy the link to this note in the clipboard');
-define('COPY_LINK_DONE','The URL of this note has been copied into the clipboard');
-define('CONFIDENTIAL','confidential');
-define('DISPLAY_THAT_NOTE','Display that note');
-define('EDIT_FILE','Edit');
 define('ERROR','Error');
-define('EXPORT_PDF','Export the note as a PDF document');
 define('FILE_NOT_FOUND','The file [%s] doesn\'t exists (anymore)');
-define('FILES_FOUND','%s has been retrieved');
-define('IS_ENCRYPTED','This information is encrypted in the original file and decoded here for screen display');
-define('OPEN_HTML','Open in a new window');
-define('PLEASE_WAIT','Please wait...');
-define('PRINT_PREVIEW','Print preview');
-define('SEARCH_PLACEHOLDER','Type here keywords and search for them');
-define('SEARCH_NO_RESULT','Sorry, the search is not successfull');
-define('SLIDESHOW','slideshow');
 
 // When images are too big, force a resize by css to a max-width of ...
 // Can be override : settings.json->page->img_maxwidth (integer)
@@ -120,6 +103,7 @@ class aeSecureMarkdown {
       }
       
       $this->_rootFolder=$folder;
+      $this->_settingsDocsFolder=DOC_FOLDER;
 
       // Initialize with default values
       $this->_settingsDocsFolder='';
@@ -677,7 +661,7 @@ class aeSecureMarkdown {
       if (count($matches[1])>0) {
          
          $icon_stars='<i class="icon_encrypted fa fa-lock onlyscreen" aria-hidden="true" '.
-            'data-encrypt="true" title="'.str_replace('"','\"',$this->getText('is_encrypted','IS_ENCRYPTED')).'"></i>';
+            'data-encrypt="true" title="'.str_replace('"','\"',$this->getText('is_encrypted')).'"></i>';
          
          // Initialize the encryption class
          $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
@@ -799,11 +783,11 @@ class aeSecureMarkdown {
       $tmp = rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').'/'.str_replace(DS,'/',$fnameHTMLrel);
 
       // Open new window icon
-      if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
+      if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html').'"></i>';
       
       // Edit icon : only if an editor has been defined
       if ($this->_settingsEditAllowed==TRUE) {
-         $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file','EDIT_FILE').'" data-file="'.$filename.'"></i>';
+         $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file').'" data-file="'.$filename.'"></i>';
       }
 
       require_once("libs/Parsedown.php");
@@ -855,7 +839,7 @@ class aeSecureMarkdown {
                   $i=0;
 
                   for($i;$i<$j;$i++) {
-                     $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential','CONFIDENTIAL').'</strong>', $tmp);
+                     $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential').'</strong>', $tmp);
                   }
                }
 
@@ -964,14 +948,17 @@ class aeSecureMarkdown {
       // Keep only the script name and querystring so remove f.i. http://localhost/notes/
       //$thisNote=str_replace(aeSecureFct::getCurrentURL(FALSE,TRUE),'',$thisNote);
     
-      $html=str_replace('</h1>', '</h1><div id="icons" class="onlyscreen fa-3x">'.
-         '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview','PRINT_PREVIEW')).'"></i>'.
-         '<i id="icon_pdf" data-task="pdf" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf','EXPORT_PDF')).'"></i>'.
-         '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link','COPY_LINK')).'"></i>'.
-         '<i id="icon_slideshow" data-task="slideshow" data-file="'.$filename.'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow','SLIDESHOW')).'"></i>'.        
-         $icons.'</div>',$html);
-      $html=str_replace('src="images/', 'src="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
-      $html=str_replace('href="files/', 'href="'.DOC_FOLDER.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
+      $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
+         '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview')).'"></i>'.
+         '<i id="icon_pdf" data-task="pdf" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf')).'"></i>'.
+         '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link')).'"></i>'.
+         '<i id="icon_slideshow" data-task="slideshow" data-file="'.$filename.'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow')).'"></i>'.        
+         $icons.'</div>';
+      
+      $html=$toolbar.$html;
+      
+      $html=str_replace('src="images/', 'src="'.$this->_settingsDocsFolder.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
+      $html=str_replace('href="files/', 'href="'.$this->_settingsDocsFolder.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
       $html='<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
       
       // LazyLoad images ? 
@@ -987,7 +974,7 @@ class aeSecureMarkdown {
     * Return the translation of a given text
     * @param string $variable
     */
-   private function getText(string $variable, string $default) : string {
+   private function getText(string $variable, string $default = '') : string {
       
       $return='';   
       
@@ -1181,11 +1168,89 @@ class aeSecureMarkdown {
     * @param string $filename   Relative filename like "privÃ©\Fisc.md".  Need to be utf8_decoded
     * @return bool
     */
-   private function Edit(string $filename) : bool {
-      die(__METHOD__.' should be coded');
-      return true;
+   private function Edit(string $filename) : string {
+      
+      // If the filename doesn't mention the file's extension, add it.
+      if(substr($filename,-3)!='.md') $filename.='.md';
+      
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
+
+      if (!file_exists($fullname)) {
+         self::ShowError(str_replace('%s','<strong>'.$fullname.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
+      }
+
+      $markdown=file_get_contents($fullname);
+      
+      $sReturn='<div class="editor-wrapper"><strong class="filename">'.$fullname.'</strong><textarea id="sourceMarkDown" placeholder="Content here ....">'.$markdown.'</textarea></div>';
+
+      return $sReturn;
       
    } // function Edit()
+   
+   /**
+    * Save the new content of the file.   This function is called by the "Save" button available in the JS editor
+    * 
+    * @param string $filename   Filename
+    * @param string $markdown   New content
+    * @return array
+    */
+   private function Save(string $filename, string $markdown) : array {
+      
+      $return=array();
+   
+      // If the filename doesn't mention the file's extension, add it.
+      if(substr($filename,-3)!='.md') $filename.='.md';
+      
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
+
+      if (file_exists($fullname)) {
+      
+         // The file has been changed => there was information with an <encrypt> tag but not yet encrypted.
+         // Now, $markdown contains only encrypted <encrypt> tag (i.e. with data-encrypt="true" attribute)
+
+         rename($fullname, $fullname.'.old');
+
+         try {
+
+            if ($handle = fopen($fullname,'w')) {
+
+               fwrite($handle, $markdown);
+               fclose($handle);	
+
+               if (filesize($fullname)>0) {
+
+                  unlink($fullname.'.old');
+
+                  // The new content has been created, check if the .html version exists and if so, remove that old file
+                  if(file_exists($fnameHTML=aeSecureFiles::replace_extension($fullname,'html'))) @unlink($fnameHTML);
+                  if(file_exists($fnameHTML=str_replace('.html','_slideshow.html',$fnameHTML))) @unlink($fnameHTML);
+
+                  $status=1;
+
+               }
+
+               $status=array('success'=>$status,'message'=>$this->getText('button_save_done'));
+
+            } else { 
+
+               // There is a problem
+               $status=array('success'=>$status,'newsize'=>array('filesize'=>filesize($fullname)));
+
+            }
+         } catch (Exception $ex) {               
+         }         
+         
+      } else { // if (file_exists($fullname))
+         
+         $status=array('success'=>0,'message'=>str_replace('%s',$fullname,$this->getText('file_not_found','FILE_NOT_FOUND')));
+         
+      } // if (file_exists($fullname))
+      
+      $return['status']=$status;
+      $return['filename']=$fullname;
+      
+      return $return;
+   }
    
    /**
     * Detect if a Google Font was specified in the json and if so, generate a string to load that font
@@ -1239,21 +1304,25 @@ class aeSecureMarkdown {
          $html=str_replace('%APP_NAME_64%', base64_encode(APP_NAME), $html);
          $html=str_replace('%IMG_MAXWIDTH%', self::getSetting('ImgMaxWidth','800'), $html);
          
-         $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', self::getText('search_placeholder','SEARCH_PLACEHOLDER'), $html);
+         $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', self::getText('search_placeholder'), $html);
          $html=str_replace('%EDT_SEARCH_MAXLENGTH%', SEARCH_MAX_LENGTH, $html);
          
          // Define the global markdown variable.  Used by the assets/js/markdown.js script
          $JS=
             "\nvar markdown = {};\n".
             "markdown.message={};\n".
-            "markdown.message.allow_popup_please='".str_replace("'","\'",self::getText('allow_popup_please','ALLOW_POPUP_PLEASE'))."';\n".
-            "markdown.message.apply_filter='".str_replace("'","\'",self::getText('apply_filter','APPLY_FILTER'))."';\n".
-            "markdown.message.apply_filter_tag='".str_replace("'","\'",self::getText('apply_filter_tag','APPLY_FILTER_TAG'))."';\n".               
-            "markdown.message.copy_link_done='".str_replace("'","\'",self::getText('copy_link_done','COPY_LINK_DONE'))."';\n".                              
-            "markdown.message.display_that_note='".str_replace("'","\'",self::getText('display_that_note','DISPLAY_THAT_NOTE'))."';\n".                              
-            "markdown.message.filesfound='".str_replace("'","\'",self::getText('files_found','FILES_FOUND'))."';\n".
-            "markdown.message.pleasewait='".str_replace("'","\'",self::getText('please_wait','PLEASE_WAIT'))."';\n".
-            "markdown.message.search_no_result='".str_replace("'","\'",self::getText('search_no_result','SEARCH_NO_RESULT'))."';\n".
+            "markdown.message.allow_popup_please='".str_replace("'","\'",html_entity_decode(self::getText('allow_popup_please')))."';\n".
+            "markdown.message.apply_filter='".str_replace("'","\'",html_entity_decode(self::getText('apply_filter')))."';\n".
+            "markdown.message.apply_filter_tag='".str_replace("'","\'",html_entity_decode(self::getText('apply_filter_tag')))."';\n".               
+            "markdown.message.button_save='".str_replace("'","\'",html_entity_decode(self::getText('button_save')))."';\n".
+            "markdown.message.button_save_done='".str_replace("'","\'",html_entity_decode(self::getText('button_save_done')))."';\n".
+            "markdown.message.button_save_error='".str_replace("'","\'",html_entity_decode(self::getText('button_save_error')))."';\n".
+            "markdown.message.copy_link_done='".str_replace("'","\'",html_entity_decode(self::getText('copy_link_done')))."';\n".                              
+            "markdown.message.display_that_note='".str_replace("'","\'",html_entity_decode(self::getText('display_that_note')))."';\n".
+            "markdown.message.button_exit_edit_mode='".str_replace("'","\'", html_entity_decode(self::getText('button_exit_edit_mode')))."';\n".
+            "markdown.message.filesfound='".str_replace("'","\'",html_entity_decode(self::getText('files_found')))."';\n".
+            "markdown.message.pleasewait='".str_replace("'","\'",html_entity_decode(self::getText('please_wait')))."';\n".
+            "markdown.message.search_no_result='".str_replace("'","\'",html_entity_decode(self::getText('search_no_result')))."';\n".
             "markdown.url='index.php';\n".
             "markdown.settings={};\n".
             "markdown.settings.auto_tags='".implode($this->_arrTagsAutoSelect,",")."';\n".
@@ -1262,7 +1331,7 @@ class aeSecureMarkdown {
             "markdown.settings.DS='".preg_quote(DS)."';\n".                          
             "markdown.settings.language='".$this->_settingsLanguage."';\n".
             "markdown.settings.lazyload=".$this->_OptimizeLazyLoad.";\n".
-            "markdown.settings.prefix_tag='".PREFIX_TAG."';\n";
+            "markdown.settings.prefix_tag='".PREFIX_TAG."';\n".
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
          
          $html=str_replace('%MARKDOWN_GLOBAL_VARIABLES%', $JS, $html);
@@ -1325,7 +1394,7 @@ class aeSecureMarkdown {
             $i=0;
 
             for($i;$i<$j;$i++) {
-               $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential','CONFIDENTIAL').'</strong>', $markdown);
+               $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential').'</strong>', $markdown);
             }
          }
          
@@ -1428,8 +1497,9 @@ class aeSecureMarkdown {
 
          case 'edit' : 
 
+            header('Content-Type: text/plain; charset=utf-8'); 
             $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
-            self::Edit($fname);            
+            echo self::Edit($fname);            
             die();
                         
          case 'listFiles':
@@ -1439,6 +1509,14 @@ class aeSecureMarkdown {
             
             header('Content-Type: application/json'); 
             echo json_encode(self::ListFiles(), JSON_PRETTY_PRINT);
+            die();
+            
+         case 'save': 
+            
+            header('Content-Type: application/json');             
+            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
+            $markdown=json_decode(urldecode(aeSecureFct::getParam('markdown','string','',true)));
+            echo json_encode(self::Save($fname, $markdown), JSON_PRETTY_PRINT);
             die();
 
          case 'search': 

@@ -31,7 +31,8 @@ body{background:#F7F2E9;}
 
 /* The search area.  The width will be initialized by javascript */
 #search{position:fixed !important;left:5px;top:5px;z-index: 1;}
-#TDM .flexdatalist-multiple {position:fixed;z-index:1;display:none;border-width:1px !important;}
+#TDM .flexdatalist-multiple {z-index:1;display:none;border-width:1px !important; height:37px;}
+#TDM #search-flexdatalist{max-width:150px;}
 
 /* Formating of the array with the list of files */
 /* The search area.  The width will be initialized by javascript */
@@ -45,7 +46,7 @@ body{background:#F7F2E9;}
 #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_window {margin-left:20px;color:lightgray;}
 
 /*TEMPORARY - WHILE FUNCTIONS ARE NOT CODED*/
-#icon_edit, #icon_pdf {color:rgba(211, 211, 211, 0.21);}
+#icon_pdf {color:rgba(211, 211, 211, 0.21);}
 
 #icon_lock{margin-left:2px;color:#abe0ab;}
 

@@ -18,6 +18,7 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-20 : + Edit mode 
  * 2017-01-19 : + Add settings->list->opened
  *              + First initialize the program by reading settings.json.dist file
  *              + Replace highlight.js by Prism (for language syntax highlighting)
