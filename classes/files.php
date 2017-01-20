@@ -124,4 +124,40 @@ class aeSecureFiles {
       return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
    } // function replace_extension
    
+   
+   /**
+    * Be sure that the filename isn't something like f.i. ../../../../dangerous.file
+    * Remove dangerouse characters and remove ../
+    * 
+    * @param string $filename
+    * @return string
+    * 
+    * @link http://stackoverflow.com/a/2021729/1065340
+    */
+   static public function sanitizeFileName(string $filename) : string {
+      
+      // Remove anything which isn't a word, whitespace, number
+      // or any of the following caracters -_~,;[]().
+      // If you don't need to handle multi-byte characters
+      // you can use preg_replace rather than mb_ereg_replace
+      // Thanks @Łukasz Rysiak!
+      
+      // Remove any trailing dots, as those aren't ever valid file names.
+		$filename = rtrim($filename, '.');
+
+      // Pattern with allowed characters
+		$regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\\\/\_\- ]#', '#^\.#');
+      
+      $filename=trim(preg_replace($regex, '', $filename));
+      
+      // If $filename was f.i. '../../../../../'.$filename 
+      // the preg_replace has change it to '/////'.$filename so remove leading /
+      // Remove directory separator for Unix and Windows
+      
+      $filename=ltrim($filename, '\\\/');
+
+		return $filename;
+      
+   } // function sanitizeFileName
+   
 } // class aeSecureFiles 

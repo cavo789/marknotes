@@ -1199,8 +1199,12 @@ class aeSecureMarkdown {
     * @return array
     */
    private function Save(string $filename, string $markdown) : array {
-      
+
       $return=array();
+      
+      if (!$this->_settingsEditAllowed) {
+         return array('status'=>array('success'=>0,'message'=>$this->getText('no_save_allowed')));
+      }
    
       // If the filename doesn't mention the file's extension, add it.
       if(substr($filename,-3)!='.md') $filename.='.md';
@@ -1487,23 +1491,25 @@ class aeSecureMarkdown {
     */
    public function process(string $task) {
       
+      $filename=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
+      if($filename!='') $filename=aeSecureFiles::sanitizeFileName(trim($filename));
+      
       switch ($task) {
 
          case 'display':
 
             header('Content-Type: text/html; charset=utf-8'); 
 
-            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
+            
 
-            $result=self::ShowFile($fname);
+            $result=self::ShowFile($filename);
             echo $result;
             die();
 
          case 'edit' : 
 
             header('Content-Type: text/plain; charset=utf-8'); 
-            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
-            echo self::Edit($fname);            
+            echo self::Edit($filename);            
             die();
                         
          case 'listFiles':
@@ -1518,23 +1524,21 @@ class aeSecureMarkdown {
          case 'save': 
             
             header('Content-Type: application/json');             
-            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
             $markdown=json_decode(urldecode(aeSecureFct::getParam('markdown','string','',true)));
-            echo json_encode(self::Save($fname, $markdown), JSON_PRETTY_PRINT);
+            echo json_encode(self::Save($filename, $markdown), JSON_PRETTY_PRINT);
             die();
 
          case 'search': 
 
             header('Content-Type: application/json'); 
-            $json=self::Search(urldecode(aeSecureFct::getParam('param','string','',true, SEARCH_MAX_LENGTH)));
+            $json=aeSecureFiles::Search(urldecode(aeSecureFct::getParam('param','string','',true, SEARCH_MAX_LENGTH)));
             echo json_encode($json, JSON_PRETTY_PRINT); 
             die();
             
          case 'slideshow':            
             
             header('Content-Type: application/json');
-            $fname=json_decode(urldecode(aeSecureFct::getParam('param','string','',true)));
-            echo json_encode(self::getSlideshow($fname), JSON_PRETTY_PRINT);
+            echo json_encode(self::getSlideshow($filename), JSON_PRETTY_PRINT);
             die();
             
          case 'tags':            
