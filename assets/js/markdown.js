@@ -93,6 +93,7 @@ function ajaxify($params) {
          $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">'+markdown.message.pleasewait+'</span></div>');
       },// beforeSend()
       async:true,
+      cache: false,
       type:(markdown.settings.debug?'GET':'POST'),
       url: markdown.url,
       data: $data,
