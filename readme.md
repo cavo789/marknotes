@@ -2,7 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master)](https://travis-ci.org/cavo789/markdown.svg?branch=master)
-[![License: MIT](https://github.com/cavo789/markdown/blob/master/docs/license.svg)](https://github.com/cavo789/markdown/blob/master/docs/license.svg)
+<img src="https://github.com/cavo789/markdown/blob/master/docs/license.svg" alt="License MIT"/>
 
 The idea behind this script is to display the list of all .md files of a specific folder and every subfolders.
 
