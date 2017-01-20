@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master)](https://travis-ci.org/cavo789/markdown.svg?branch=master)
 <img src="https://github.com/cavo789/markdown/blob/master/docs/license.svg" alt="License MIT"/>
+![License MIT](https://github.com/cavo789/markdown/blob/master/docs/license.svg)
 
 The idea behind this script is to display the list of all .md files of a specific folder and every subfolders.
 
@@ -26,9 +27,23 @@ Uncompress the markdown.zip file to the "markdown" folder you've just created un
 
 In that folder, you'll file the `index.php` script, a `libs` folder and a `docs` one.  The `docs` folder is aimed to be the location of your markdown files.
 
+## Directory structure
+
+```
+assets/         javascript, css and images of the software
+classes/        php classes, not accessible by URL
+docs/           documentation, folder where to put notes
+libs/           external libraries
+templates/      templates (layout for the screen, slideshow and output as html page)
+```
+
+## Requirements
+
+The minimum requirement for Markdown is that your Web server supports PHP 7
+
 ## Folder "docs"
 
-By default, the `index.php` script will scan the `docs` folder.  You can change this in the very first line of the source.
+By default, the `index.php` script will scan the `docs` folder.  You can change this in the settings.json file, see below..
 
 You can too, without changing anything, just create a symbolic links called "docs" but pointing to the folder where, already today, you're saving your .md files.
 
