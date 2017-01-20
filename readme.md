@@ -112,9 +112,7 @@ The `settings.json` allows you to define your own settings.
    "optimisation":{
       "cache":1
    },
-   "tags":[
-      ""
-   ],
+   "tags":[],
    "templates":{
       "screen":"screen",
 	  "html":"html"
@@ -125,6 +123,10 @@ The `settings.json` allows you to define your own settings.
    },
    "export":{
       "save_html":1
+   },
+   "list":{
+      "opened":1,
+      "auto_open":[]
    },
    "languages":{
       "en": {
@@ -162,6 +164,9 @@ The `settings.json` allows you to define your own settings.
 -  `editor`  : 0 / 1.  Allow or not editing through the interface
 -  `folder`: by default, your notes should be located in a folder called 'docs'. You can change the name here.
 -  `language` : your interface language.  Be sure that strings are translated in that language.  You can see that (or translate) in the `languages` node.
+-  `list` :
+   -  `opened` : 0 / 1.  Should the treeview with the list of folders/files be opened (all nodes will be immediatly opened) or not.  0 means that only the root node will be opened.
+   -  `auto_open` : (optional) a list of folder name that should be automatically opened.  Just mention the relative folder name so s.i. 'folder1', 'folder2', 'folder3/subfolder1', ...  Relative : name compared to `folder` mentionned here above.
 -  `optimisation` :
    -  `cache` : do you wan to use the navigator cache ?  If so, specify `1` here so that the needed meta will be added
 -  `tags` : (optional) a list of tags that you want to automatically select when the page is displayed
@@ -228,11 +233,11 @@ Thank you to
 - Alexander Farkas for [lazysizes](https://github.com/aFarkas/lazysizes)
 - Bartek Szopka for [jquery.highlight.js](http://bartaz.github.io/sandbox.js/jquery.highlight.html)
 - Contributors of [DataTables](https://github.com/DataTables/DataTables)
+- Contributors of [Prism](http://prismjs.com)
 - Contributors of [remark](https://github.com/gnab/remark)
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) contributors
 - Ivan Bozhanov (vakata) for [jsTree](https://github.com/vakata/jstree)
-- Ivan Sagalaev (isagalaev) for the [highlight.js](https://github.com/isagalaev/highlight.js) plugin which allow to highlight languages (html, javascript, php, ...)
 - Nedim Arabaci for the [noty](https://github.com/needim/noty) plugin
 - Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin
 - SoapBox Innovations for [linkifyjs](https://github.com/SoapBox/linkifyjs)

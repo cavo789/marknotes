@@ -8,9 +8,7 @@
       "cache":1,
       "lazyload":1
    },
-   "tags":[
-      ""
-   ],
+   "tags":[],
    "templates":{
       "screen":"screen",
       "html":"html"
@@ -22,6 +20,10 @@
    "export":{
       "save_html":1
    },
+   "list":{
+      "opened":0,
+	  "auto_open": []
+   },
    "languages":{
       "en": {
          "apply_filter":"Filtering to [%s]",
@@ -32,6 +34,7 @@
          "display_that_note":"Display that note",
          "edit_file":"Edit",
          "error":"Error",
+         "export_pdf":"Export the note as a PDF document",
          "file_not_found":"The file [%s] doesn\\'t exists (anymore)",
          "files_found":"%s has been retrieved",
          "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
@@ -51,6 +54,7 @@
          "display_that_note":"Afficher cette note",
          "edit_file":"Éditer",
          "error":"Erreur",
+         "export_pdf":"Exporter cette note au format pdf",
          "file_not_found":"Le fichier [%s] n\\'existe pas (ou plus)",
          "files_found":"%s fichiers ont été retrouvés",
          "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
@@ -65,5 +69,5 @@
    "page":{
       "google_font":"",
       "img_maxwidth":800
-   }   
+   }
 }

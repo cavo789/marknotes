@@ -29,6 +29,7 @@ define('CONFIDENTIAL','confidential');
 define('DISPLAY_THAT_NOTE','Display that note');
 define('EDIT_FILE','Edit');
 define('ERROR','Error');
+define('EXPORT_PDF','Export the note as a PDF document');
 define('FILE_NOT_FOUND','The file [%s] doesn\'t exists (anymore)');
 define('FILES_FOUND','%s has been retrieved');
 define('IS_ENCRYPTED','This information is encrypted in the original file and decoded here for screen display');
@@ -79,6 +80,9 @@ class aeSecureMarkdown {
    private $_settingsDocsFolder='';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
    private $_settingsLanguage='en';     // user's language
    
+   private $_settingsTreeOpened=TRUE;   // Should nodes of the treeview be opened at loading time ? 
+   private $_settingsFoldersAutoOpen=array(); // List of folders that should be immediatly opened
+   
    private $_encryptionMethod='aes-256-ctr';   // Method to use for the encryption, default method
    private $_encryptionPassword='';     // Password for the encryption / decryption
    
@@ -95,8 +99,13 @@ class aeSecureMarkdown {
     * @param string $folder    Root folder of the website (f.i. "C:\Christophe\Documents\").
     * @return boolean
     */
-   function __construct(string $folder) {
+   function __construct(string $folder = '') {
       
+      // Get the root folder and be sure the folder ends with a slash
+      // Respect the directory separator (which is "\" on Windows system)
+      if(trim($folder)=='') $folder=str_replace('/',DIRECTORY_SEPARATOR,dirname($_SERVER['SCRIPT_FILENAME']));
+      $folder=rtrim($folder,DS).DS;
+   
       if(!class_exists('aeSecureDebug')) { 
          require_once 'debug.php'; 
          $this->aeDebug=aeSecureDebug::getInstance(); 
@@ -110,13 +119,13 @@ class aeSecureMarkdown {
          $this->aeJSON=aeSecureJSON::getInstance();
       }
       
-      // Get the root folder and be sure the folder ends with a slash
-      $this->_rootFolder=rtrim($folder,'/').'/';
+      $this->_rootFolder=$folder;
 
       // Initialize with default values
       $this->_settingsDocsFolder='';
       $this->_settingsTemplateScreen='screen';
       $this->_settingsTemplateHTML='html';
+      $this->_settingsTreeOpened=TRUE;
       $this->_useCache=TRUE;
       $this->_settingsLanguage='en';
       $this->_saveHTML=OUTPUT_HTML;
@@ -139,100 +148,154 @@ class aeSecureMarkdown {
     */
    private function ReadSettings() : bool {
      
-      // Process the settings.json file
-      if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'settings.json')) {
-   
-         $this->_json=$this->aeJSON->json_decode($fname,true);
+      // Process first the json.dist file then the settings.json (if files exists)
+      // Order is important.  First the .dist file so default values can be initialized, then the user
+      // settings.json to match his configuration.
+      
+      $arr=array(
+         dirname(dirname(__FILE__)).DS.'settings.json.dist', 
+         $this->_rootFolder.'settings.json');
 
-         if(isset($this->_json['tags'])) {
-            $this->_arrTagsAutoSelect=$this->_json['tags'];
-         }
+      foreach ($arr as $fname) {
          
-         if(isset($this->_json['debug'])) {
-            $this->_DEBUGMODE=($this->_json['debug']==1?TRUE:FALSE); // Debug mode enabled or not
-         }
-         
-         if ($this->_DEBUGMODE===TRUE) {
-            $this->aeDebug->enable();
-            $this->aeJSON->debug(TRUE);
-         } else {	   
-            error_reporting(E_ALL & ~ E_NOTICE);	  
-         }
-         
-         if(isset($this->_json['development'])) $this->_DEVMODE=($this->_json['development']==1?TRUE:FALSE); // Development mode enabled or not
-   
-         if(isset($this->_json['editor']))      $this->_settingsEditAllowed=($this->_json['editor']==1?TRUE:FALSE); // Allow editions
-         
-         // Retrieve the subfolder if any
-         if(isset($this->_json['folder']))   $this->_settingsDocsFolder=rtrim($this->_json['folder'],'/').'/';  // Be sure that there is a slash at the end
-         if(isset($this->_json['language'])) $this->_settingsLanguage=$this->_json['language'];
-         
-         if(isset($this->_json['templates'])) {
-            
-            $tmp=$this->_json['templates'];
-            
-            // Process all templates (screen and html)
-            for($i=0;$i<2;$i++) {               
+         // Process the settings.json file
+         if (aeSecureFiles::fileExists($fname)) {
+
+            $this->_json=$this->aeJSON->json_decode($fname,true);
+
+            if(isset($this->_json['tags'])) {
+               $this->_arrTagsAutoSelect=$this->_json['tags'];
+            }
+
+            if(isset($this->_json['debug'])) {
+               $this->_DEBUGMODE=($this->_json['debug']==1?TRUE:FALSE); // Debug mode enabled or not
+            }
+
+            if ($this->_DEBUGMODE===TRUE) {
+               $this->aeDebug->enable();
+               $this->aeJSON->debug(TRUE);
+            } else {	   
+               error_reporting(E_ALL & ~ E_NOTICE);	  
+            }
+
+            if(isset($this->_json['development'])) {
+               $this->_DEVMODE=($this->_json['development']==1?TRUE:FALSE); // Development mode enabled or not
+            }
+
+            if(isset($this->_json['editor'])) { 
+               $this->_settingsEditAllowed=($this->_json['editor']==1?TRUE:FALSE); // Allow editions
+            }
+
+            // Retrieve the subfolder if any
+            if(isset($this->_json['folder'])) {
                
-               $name= ($i==0 ? 'screen' : 'html');
+               $this->_settingsDocsFolder=$this->_json['folder'];  
+               
+               // Respect OS directory separator
+               $this->_settingsDocsFolder=str_replace('/',DS,$this->_settingsDocsFolder);
+               
+               // Be sure that there is a slash at the end
+               $this->_settingsDocsFolder=rtrim($this->_settingsDocsFolder,DS).DS;
+               
+            }
+                 
+            if(isset($this->_json['language'])) {
+               $this->_settingsLanguage=$this->_json['language'];
+            }
 
-               if (trim($tmp[$name])!='') { // can't be empty
-
-                  if (preg_match('/^[A-Za-z0-9-_\.]+$/',trim($tmp[$name]))) { // should only contains letters, figures or dot/minus/underscore
-
-                     if (is_file(dirname(__DIR__).'/templates/'.trim($tmp[$name]).'.php')) {                     
-                        
-                        // The template exists, ok.
-                        if($i==0) {
-                           $this->_settingsTemplateScreen=trim($tmp[$name]);
-                        } else {
-                           $this->_settingsTemplateHTML=trim($tmp[$name]);
-                        }
-                        
-                     } else {
-                        // The specified template doesn't exists. Back to the default one;
-                        if ($this->_DEBUGMODE) echo '<span style="font-size:0.8em;">'.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
-                        echo '<strong><em>Template ['.$tmp[$name].'] not found, please review your settings.json file.</em></strong>';
-                        die();
-                     }
+            // Process list node
+            if(isset($this->_json['list'])) { 
+               
+               $tmp=$this->_json['list'];
+               
+               if(isset($tmp['opened'])) {
+                  $this->_settingsTreeOpened=($tmp['opened']==1?TRUE:FALSE); // Should nodes of the treeview be opened at loading time
+               }
+               
+               if(isset($tmp['auto_open'])) {
+                  foreach($tmp['auto_open'] as $folder) {
+                     // Respect OS directory separator
+                     $folder=rtrim(str_replace('/',DS,$folder),DS);
+                     $this->_settingsFoldersAutoOpen[]=$this->_rootFolder.$this->_settingsDocsFolder.$folder; // List of folders that should be immediatly opened
                   }
                }
-            } // for()
+            } // if(isset($this->_json['list']))
+       
+            if(!in_array($this->_rootFolder.$this->_settingsDocsFolder,$this->_settingsFoldersAutoOpen)) {
+               array_push($this->_settingsFoldersAutoOpen, $this->_rootFolder.$this->_settingsDocsFolder);
+            }
             
-         } // if(isset($this->_json['templates'])) {
+            asort($this->_settingsFoldersAutoOpen);
+
+            // Process templates node
+            if(isset($this->_json['templates'])) {
+
+               $tmp=$this->_json['templates'];
+
+               // Process all templates (screen and html)
+               for($i=0;$i<2;$i++) {               
+
+                  $name= ($i==0 ? 'screen' : 'html');
+
+                  if (trim($tmp[$name])!='') { // can't be empty
+
+                     if (preg_match('/^[A-Za-z0-9-_\.]+$/',trim($tmp[$name]))) { // should only contains letters, figures or dot/minus/underscore
+
+                        if (is_file(dirname(__DIR__).'/templates/'.trim($tmp[$name]).'.php')) {                     
+
+                           // The template exists, ok.
+                           if($i==0) {
+                              $this->_settingsTemplateScreen=trim($tmp[$name]);
+                           } else {
+                              $this->_settingsTemplateHTML=trim($tmp[$name]);
+                           }
+
+                        } else {
+                           // The specified template doesn't exists. Back to the default one;
+                           if ($this->_DEBUGMODE) echo '<span style="font-size:0.8em;">'.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
+                           echo '<strong><em>Template ['.$tmp[$name].'] not found, please review your settings.json file.</em></strong>';
+                           die();
+                        }
+                     }
+                  }
+               } // for()
+
+            } // if(isset($this->_json['templates'])) {
+
+            // Retrieve the password if mentionned
+            if(isset($this->_json['password'])) $this->_settingsPassword=$this->_json['password'];
+
+             // Get page settings
+            if(isset($this->_json['page'])) {
+               $tmp=$this->_json['page'];
+               // Spaces should be replaced by a "+" sign
+               if(isset($tmp['google_font'])) $this->_settingsFontName=str_replace(' ','+',$tmp['google_font']);
+               if(isset($tmp['img_maxwidth'])) $this->_settingsImgMaxWidth=str_replace(' ','+',$tmp['img_maxwidth']);            
+            }
+
+            // Get encryption settings
+            if(isset($this->_json['encryption'])) {
+               $tmp=$this->_json['encryption'];
+               if(isset($tmp['password'])) $this->_encryptionPassword=$tmp['password'];
+               if(isset($tmp['method']))   $this->_encryptionMethod=$tmp['method'];
+            }
+
+            // Get optimisation settings
+            if(isset($this->_json['optimisation'])) {
+               $tmp=$this->_json['optimisation'];
+               if(isset($tmp['cache'])) $this->_useCache=(($tmp['cache']==1)?true:false);
+               if(isset($tmp['lazyload'])) $this->_OptimizeLazyLoad=(($tmp['lazyload']==1)?1:0);
+            }
+
+            // Get export settings
+            if(isset($this->_json['export'])) {
+               $tmp=$this->_json['export'];
+               if(isset($tmp['save_html'])) $this->_saveHTML=(($tmp['save_html']==1)?true:false);
+            }
+
+         } // if (aeSecureFiles::fileExists($fname))
          
-         // Retrieve the password if mentionned
-         if(isset($this->_json['password'])) $this->_settingsPassword=$this->_json['password'];
-         
-          // Get page settings
-         if(isset($this->_json['page'])) {
-            $tmp=$this->_json['page'];
-            // Spaces should be replaced by a "+" sign
-            if(isset($tmp['google_font'])) $this->_settingsFontName=str_replace(' ','+',$tmp['google_font']);
-            if(isset($tmp['img_maxwidth'])) $this->_settingsImgMaxWidth=str_replace(' ','+',$tmp['img_maxwidth']);            
-         }
-        
-         // Get encryption settings
-         if(isset($this->_json['encryption'])) {
-            $tmp=$this->_json['encryption'];
-            if(isset($tmp['password'])) $this->_encryptionPassword=$tmp['password'];
-            if(isset($tmp['method']))   $this->_encryptionMethod=$tmp['method'];
-         }
-         
-         // Get optimisation settings
-         if(isset($this->_json['optimisation'])) {
-            $tmp=$this->_json['optimisation'];
-            if(isset($tmp['cache'])) $this->_useCache=(($tmp['cache']==1)?true:false);
-            if(isset($tmp['lazyload'])) $this->_OptimizeLazyLoad=(($tmp['lazyload']==1)?1:0);
-         }
-         
-         // Get export settings
-         if(isset($this->_json['export'])) {
-            $tmp=$this->_json['export'];
-            if(isset($tmp['save_html'])) $this->_saveHTML=(($tmp['save_html']==1)?true:false);
-         }
-         
-      }  
+      } // foreach ($arr as $fname)
       
       return TRUE;
       
@@ -314,7 +377,7 @@ class aeSecureMarkdown {
     * @param array $arrTags  Array with tags like array('§tag1','§tag2', ...)
     * @return bool
     */
-   private function StoreTags(array $arrTags) : bool {
+   /*private function StoreTags(array $arrTags) : bool {
     
       if (count($arrTags)>0) {
          
@@ -367,7 +430,7 @@ class aeSecureMarkdown {
       }
       return true;
       
-   } // function StoreTags()
+   } // function StoreTags()*/
    
    /**
     * Get the list of .md files.  This list will be used in the "table of contents"
@@ -394,6 +457,7 @@ class aeSecureMarkdown {
       $return['count']=count($arrFiles);
           
       // And process every files
+      /*    THIS PART IS NO MORE NEEDED SINCE THE jsTree PLUGIN IS USED.
       foreach ($arrFiles as $file) {
          
          // Don't mention the full path, should be relative for security reason
@@ -407,12 +471,13 @@ class aeSecureMarkdown {
          $tmp['display']=str_replace('.md','',basename($file));
          $return['results'][]=$tmp;
          
-      } // foreach()      
+      } // foreach()  
+       */    
       
       // --------------------------------------------------------------------------------------
       // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
       
-      $folder=str_replace(DS,'/',$this->_rootFolder.$this->_settingsDocsFolder);
+      $folder=str_replace('/',DS,$this->_rootFolder.$this->_settingsDocsFolder);
       
       // $arr is an array with arrays that contains arrays ... 
       // i.e. the root folder that contains subfolders and subfolders can contains subfolders...
@@ -461,18 +526,29 @@ class aeSecureMarkdown {
     * @return array 
     */
    private function dir_to_jstree_array(string $dir, string $order="a", array $ext=array()) : array {      
-      
-      $root=str_replace(DS,'/',$this->_rootFolder.$this->_settingsDocsFolder);
-      
+
+      $root=str_replace('/',DS,$this->_rootFolder.$this->_settingsDocsFolder);
+
       if(empty($ext)) $ext = array ("md");
       
+      // The first note, root node, will always be opened (first level)
+      // As from the second level, pay attention to the _settingsTreeOpened flag.  If not set, nodes will be
+      // set in a closed state (user will need to click on the node to see items)
+      $opened=($root==$dir?1:$this->_settingsTreeOpened);
+      
+      // if $this->_settingsFoldersAutoOpen if not empty, check if that folder is currently processing
+   
+      if($opened==FALSE) {
+         if(in_array(rtrim(utf8_encode($dir),DS), $this->_settingsFoldersAutoOpen)) $opened=TRUE;
+      } 
+
       // Entry for the folder
       $listDir = array(
          'id' => utf8_encode(str_replace($root,'',$dir).DS),
          'type'=>'folder',
          'icon'=>'folder',         
          'text' =>basename(utf8_encode($dir)),
-         'state'=>array('opened'=>1,'disabled'=>1),
+         'state'=>array('opened'=>$opened,'disabled'=>1),
          'children' => array());
       
       $files = array();
@@ -496,7 +572,7 @@ class aeSecureMarkdown {
                      );  
                   }
                } elseif (is_dir($dir.DS.$sub)) {
-                  $dirs []= $dir.DS.$sub;
+                  $dirs []= rtrim($dir,DS).DS.$sub;
                }
             }
          } // while
@@ -589,77 +665,6 @@ class aeSecureMarkdown {
             $markdown=str_replace($match,$sMatch,$markdown);
          }
       }      
-
-      // -----------------------------------------------------------------------
-      // Check if the file contains words present in the tags.json file : if the file being displayed contains a word (f.i. "javascript") that is in the 
-      // tags.json (so it's a known tag) and that word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix 
-
-      if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
-         if(filesize($fname)>0) {
-
-            $arrTags=$this->aeJSON->json_decode($fname);
-            foreach($arrTags as $tag) {
-
-               // For each tag, try to find the word in the markdown file 
-               
-               // /( |\\n|\\r|\\t)+                Before the tag, allowed : space, carriage return, linefeed or tab  
-               // [^`\/\\#_\-§]?                   Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
-               // ('.preg_quote($tag).')           The tag term (f.i. "javascript"
-               // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
-               
-               // Capture the full line (.* ---Full Regex--- .*)
-               preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $markdown, $matches);
-
-               foreach ($matches[0] as $match) {
-
-                  if (count($match)>0) {
-
-                     preg_match('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$).*)/i', $match, $matches);
-
-                     // Replace, in the line, the word f.i.    (don't use a preg_replace because preg_replace will replace all occurences of the word)
-
-                     //   Line  : Start a SSH connexion     (original)
-                     //   By    : Start a §SSH connexion    (new line)
-
-                     // $matches[2] : what was just before the tag      f.i.   " Start a SSH, then ..."  => the space before SSH
-                     // $matches[3] : the tag                                  " Start a SSH, then ..."  => SSH
-                     // $matches[4] : what was just after the tag              " Start a SSH, then ..."  => the comma after SSH
-
-                     $sLine=str_ireplace($matches[2].$matches[3].$matches[4],$matches[2].PREFIX_TAG.$matches[3].$matches[4],$matches[0]);
-
-                     // And now, replace the original line ($matches[0]) by the new one in the document.
-
-                     $markdown=str_replace($matches[0],$sLine,$markdown);
-                     
-                  } // if (count($match)>0)
-
-               } // foreach ($matches[0] as $match)
-
-            } // foreach
-            
-         } // if(filesize($fname)>0)
-         
-      } // if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json'))
-
-      //DEVELOPMENT : SHOW THE RESULT AND DIE SO DON'T MODIFY THE FILE
-      //if (($this->_DEVMODE) && ($old!=$markdown)) {
-      //   echo $this->aeDebug->log(DEVMODE,true);
-      //   echo $this->aeDebug->log('= new file content ('.$fullname.') =',true);
-      //   require_once("libs/Parsedown.php");$Parsedown=new Parsedown();$html=$Parsedown->text($markdown);echo $html;die();      
-      //}
-      
-      // Rewrite the file if a change has been done
-      //DON'T REWRITE THE .MD ANYMORE, DON'T STORE THE "§tag" IN THE FILE, JUST DO IT ON THE FLY
-      //if ($old!=$markdown) {
-      //   // rewrite the file
-      //   if ($handle = fopen($fullname,'w')) {
-      //      fwrite($handle, $markdown);
-      //      fclose($handle);		
-      //   }    
-      //}
-      
-      //
-      // -----------------------------------------------------------------------
       
       $icons='';
 
@@ -794,7 +799,6 @@ class aeSecureMarkdown {
       $tmp = rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').'/'.str_replace(DS,'/',$fnameHTMLrel);
 
       // Open new window icon
-//if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode(str_replace(DS,'/',$tmp)).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
       if($this->_saveHTML===TRUE) $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html','OPEN_HTML').'"></i>';
       
       // Edit icon : only if an editor has been defined
@@ -811,12 +815,12 @@ class aeSecureMarkdown {
       // Check the presence of tags i.e. things like §tag, §frama, §webdev, ...
       // The § sign followed by a word
       
-      $matches = array();
+      /*$matches = array();
 
       preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
 
-      if (count($matches[1])>0) self::StoreTags($matches[1]);
+      if (count($matches[1])>0) self::StoreTags($matches[1]);*/
   
       //
       // -------------------------------------------------------------------------------
@@ -894,6 +898,63 @@ class aeSecureMarkdown {
 
       } // if (OUTPUT_HTML===TRUE)
       
+      
+      // -----------------------------------------------------------------------
+      // Once the .html file has been written on disk, not before !
+      // 
+      // Check if the file contains words present in the tags.json file : if the file being displayed contains a word (f.i. "javascript") that is in the 
+      // tags.json (so it's a known tag) and that word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix 
+
+      if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
+         if(filesize($fname)>0) {
+
+            $arrTags=$this->aeJSON->json_decode($fname);
+            foreach($arrTags as $tag) {
+
+               // For each tag, try to find the word in the markdown file 
+               
+               // /( |\\n|\\r|\\t)+                Before the tag, allowed : space, carriage return, linefeed or tab  
+               // [^`\/\\#_\-§]?                   Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
+               // ('.preg_quote($tag).')           The tag term (f.i. "javascript"
+               // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
+               
+               // Capture the full line (.* ---Full Regex--- .*)
+               preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $markdown, $matches);
+
+               foreach ($matches[0] as $match) {
+
+                  if (count($match)>0) {
+
+                     preg_match('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$).*)/i', $match, $matches);
+
+                     // Replace, in the line, the word f.i.    (don't use a preg_replace because preg_replace will replace all occurences of the word)
+
+                     //   Line  : Start a SSH connexion     (original)
+                     //   By    : Start a §SSH connexion    (new line)
+
+                     // $matches[2] : what was just before the tag      f.i.   " Start a SSH, then ..."  => the space before SSH
+                     // $matches[3] : the tag                                  " Start a SSH, then ..."  => SSH
+                     // $matches[4] : what was just after the tag              " Start a SSH, then ..."  => the comma after SSH
+
+                     $sLine=str_ireplace($matches[2].$matches[3].$matches[4],$matches[2].PREFIX_TAG.$matches[3].$matches[4],$matches[0]);
+
+                     // And now, replace the original line ($matches[0]) by the new one in the document.
+
+                     $markdown=str_replace($matches[0],$sLine,$markdown);
+                     
+                  } // if (count($match)>0)
+
+               } // foreach ($matches[0] as $match)
+
+            } // foreach
+            
+         } // if(filesize($fname)>0)
+         
+      } // if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json'))
+      
+      //
+      // -----------------------------------------------------------------------
+
       // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
       $fnameHTML = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(str_replace('/',DS,dirname($_SERVER['SCRIPT_FILENAME'])),'',$fnameHTML));
       
@@ -902,9 +963,10 @@ class aeSecureMarkdown {
 
       // Keep only the script name and querystring so remove f.i. http://localhost/notes/
       //$thisNote=str_replace(aeSecureFct::getCurrentURL(FALSE,TRUE),'',$thisNote);
-      
+    
       $html=str_replace('</h1>', '</h1><div id="icons" class="onlyscreen fa-3x">'.
          '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview','PRINT_PREVIEW')).'"></i>'.
+         '<i id="icon_pdf" data-task="pdf" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf','EXPORT_PDF')).'"></i>'.
          '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link','COPY_LINK')).'"></i>'.
          '<i id="icon_slideshow" data-task="slideshow" data-file="'.$filename.'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow','SLIDESHOW')).'"></i>'.        
          $icons.'</div>',$html);
@@ -1018,6 +1080,16 @@ class aeSecureMarkdown {
             
             $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$file);
             $content=file_get_contents($fullname);
+
+            // Don't search into the encrypted data.   If the user is searching for, f.i. "PHP", there is chance
+            // that "PHP" is a pattern in an encrypted note.  Don't search into that patterns
+            preg_match_all('/<encrypt data-encrypt *([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $content, $matches);
+
+            // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+            if (count($matches[1])>0) {
+               // Remove encrypted parts
+               foreach($matches[0] as $match) $content=str_ireplace($match,'',$content);
+            }
             
             $bFound=TRUE;
             
@@ -1305,7 +1377,7 @@ class aeSecureMarkdown {
 
          } // foreach ($arrHeading as $head)
 		 
-		 //
+		   //
          // --------------------------------------------------------------------------------
 		 
          $slideshow=file_get_contents(dirname(__DIR__).'/templates/slideshow.php');
@@ -1321,9 +1393,10 @@ class aeSecureMarkdown {
             fwrite($handle,$html);
             fclose($handle);		
          }
-     
+
          // And return an URL to that file
-         $tmp = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']),'',$fnameHTML));
+         $tmp = str_replace('\\','/',rtrim(aeSecureFct::getCurrentURL(FALSE,TRUE),'/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']),'',str_replace(DS,'/',$fnameHTML)));
+     
          return utf8_encode($tmp);
          
       } else { // if ($filename!="")

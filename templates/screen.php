@@ -18,13 +18,14 @@
       
       <link media="screen" rel="stylesheet" type="text/css" href="libs/bootstrap/bootstrap.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
-      <link media="screen" rel="stylesheet" type="text/css" href="libs/highlight.js/styles/default.css" />  
+<!--      <link media="screen" rel="stylesheet" type="text/css" href="libs/highlight.js/styles/default.css" />   -->
       <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/Datatables/css/dataTables.bootstrap4.min.css"/>
 
+<link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
       <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
       
       <!--%CUSTOM_CSS%-->
@@ -78,8 +79,8 @@
 
       <script type="text/javascript" src="libs/jquery.highlight.js/jquery.highlight.js"></script>
 
-      <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks tho highlight.js -->
-      <script type="text/javascript" src="libs/highlight.js/highlight.pack.js"></script>   
+      <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks to Prism -->
+      <script type="text/javascript" src="libs/prism/prism.js" data-manual></script>          
 
       <!-- jsTree -->
       <script type="text/javascript" src="libs/jsTree/jsTree.min.js"></script>   

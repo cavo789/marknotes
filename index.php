@@ -18,6 +18,10 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-19 : + Add settings->list->opened
+ *              + First initialize the program by reading settings.json.dist file
+ *              + Replace highlight.js by Prism (for language syntax highlighting)
+ *              - Remove tagging in the .html file, do it only "on-the-fly"
  * 2017-01-18 : + Keep jsTree as compact as possible : after a search, close all nodes and show only ones with selected node
  * 2017-01-17 : + Add "table" class to tables
  *              + Add jsTree
@@ -79,7 +83,7 @@ define('APP_NAME','Notes management (c) Christophe Avonture');
    $task=aeSecureFct::getParam('task','string','main',false);
 
    // Create an instance of the class and initialize the rootFolder variable (type string)
-   $aeSMarkDown = new aeSecureMarkdown((string) dirname($_SERVER['SCRIPT_FILENAME']).'/');
+   $aeSMarkDown = new aeSecureMarkdown();
    $aeSMarkDown->process($task);  
    unset($aeSMarkDown);
 

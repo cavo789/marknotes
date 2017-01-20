@@ -40,13 +40,14 @@ body{background:#F7F2E9;}
 /*#tblFiles>thead>tr.tablesorter-filter-row{background-color:red;color:white;}*/
 
 /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
-#icons {display:inline-block;position:absolute;top:5px;right:-1px;margin-right:10px;cursor:pointer;}
-#icon_edit{margin-left:20px;color:lightgray;}
-#icon_lock{margin-left:2px;color:#abe0ab;}
-#icon_slideshow{margin-left:20px;color:lightgray;}
+#icons {display:inline-block;position:fixed;top:5px;right:30px;margin-right:10px;cursor:pointer;}
 #icon_printer{color:lightgray;}
-#icon_clipboard{margin-left:20px;color:lightgray;}
-#icon_window{margin-left:20px;color:lightgray;}
+#icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_window {margin-left:20px;color:lightgray;}
+
+/*TEMPORARY - WHILE FUNCTIONS ARE NOT CODED*/
+#icon_edit, #icon_pdf {color:rgba(211, 211, 211, 0.21);}
+
+#icon_lock{margin-left:2px;color:#abe0ab;}
 
 .icon_file{padding-left:5px;}
 .icon_encrypted{padding-left:5px;padding-right:5px;color:#abe0ab;}
@@ -68,6 +69,7 @@ body{background:#F7F2E9;}
 /* page is used to display the content of the selected note */
 page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}
 
+page h1 {margin-top:60px;}
 /* Don't display informations that are targeted for printers only */            
 .onlyprint{display:none;}
 
@@ -87,4 +89,4 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 
 .download{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}
 
-		#tree .file { background:url('./file_sprite.png') 0 0 no-repeat; }
+#tree .file { background:url('./file_sprite.png') 0 0 no-repeat; }

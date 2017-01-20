@@ -161,6 +161,8 @@ function initFiles($data) {
          // Use jsTree for the display
 
          $('#TOC').on('changed.jstree', function (e, data) {
+            
+            if ($('#IMG_BACKGROUND').length) $('#IMG_BACKGROUND').remove();         
 
             var objNode = data.instance.get_node(data.selected);
 
@@ -625,7 +627,9 @@ function afterDisplay($fname) {
          if (markdown.settings.debug) console.log('linkify plain text');
          $('page').linkify();
       }
-
+      
+      if(typeof Prism == 'object') Prism.highlightAll();
+      
       // If a note contains a link to an another note, use ajax and not normal links
       replaceLinksToOtherNotes();
 
@@ -650,16 +654,6 @@ function afterDisplay($fname) {
 
       var $fname=$('div.filename').text();				  
       if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
-
-      // Highlight common languages (html, javascript, php, ...)
-      // @link : https://github.com/isagalaev/highlight.js
-      try {
-         $('pre code').each(function(i, block) {
-            hljs.highlightBlock(block);
-         });
-      } catch(err) {
-         if (markdown.settings.debug) console.warn(err.message);
-      }
 
       // Interface : put the cursor immediatly in the edit box
       try {               
@@ -754,6 +748,7 @@ function afterSearch($keywords, $data) {
       if (Object.keys($data).length>0) {
 
          if ($.isFunction($.fn.jstree)){
+                    
 
             // Get the list of files returned by the search : these files have matched th keyword
             $files=$data['files'];
@@ -763,6 +758,7 @@ function afterSearch($keywords, $data) {
            
             $filename='';
             
+            $('#TOC').jstree('open_all');
             $.each($("#TOC").jstree('full').find("li"), function (index, element) {
                
                $filename=$("#TOC").jstree(true).get_path(element, markdown.settings.DS);  // DIRECTORY_SEPARATOR
