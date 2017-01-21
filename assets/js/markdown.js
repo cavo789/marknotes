@@ -717,38 +717,45 @@ function afterEdit($fname) {
    // Create the Simple Markdown Editor
    // @link https://github.com/NextStepWebs/simplemde-markdown-editor
    
-   var simplemde = new SimpleMDE(
-      { 
-         autoDownloadFontAwesome:false,
-         autofocus:true,
-         element: document.getElementById("sourceMarkDown"),
-         indentWithTabs:false,
-         //codeSyntaxHighlighting:true,
-         toolbar:[
-            {       
-               // Add a custom button for saving
-               name: "Save",  
-               action: function customFunction(editor) { saveChanges($fname, simplemde.value()); },
-               className: "fa fa-floppy-o",
-               title: markdown.message.button_save     
+   var simplemde = new SimpleMDE({ 
+      autoDownloadFontAwesome:false,
+      autofocus:true,
+      element: document.getElementById("sourceMarkDown"),
+      indentWithTabs:false,
+      //codeSyntaxHighlighting:true,
+      toolbar:[
+         {       
+            // Add a custom button for saving
+            name: "Save",  
+            action: function customFunction(editor) { buttonSave($fname, simplemde.value()); },
+            className: "fa fa-floppy-o",
+            title: markdown.message.button_save     
+         }, 
+         {       
+            // Encrypt
+            name: "Encrypt",  
+            action: function customFunction(editor) { buttonEncrypt(editor); },
+            className: "fa fa-user-secret",
+            title: markdown.message.button_encrypt
+         },
+         "|",
+         {       
+            // Add a custom button for saving
+            name: "Exit",  
+            action: function customFunction(editor) { 
+               $('#sourceMarkDown').parent().hide(); 
+               ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
             },
-            {       
-               // Add a custom button for saving
-               name: "Exit",  
-               action: function customFunction(editor) { 
-                  $('#sourceMarkDown').parent().hide(); 
-                  ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-               },
-               className: "fa fa-sign-out",
-               title: markdown.message.button_exit_edit_mode
-            },
-            "|","preview","side-by-side","fullscreen","|",
-            "bold","italic","strikethrough","|","heading","heading-smaller","heading-bigger","|", "heading-1","heading-2","heading-3","|",
-            "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule","|","guide"
-
-         ] 
-      }
-      );
+            className: "fa fa-sign-out",
+            title: markdown.message.button_exit_edit_mode
+         },
+         "|","preview","side-by-side","fullscreen","|",
+         "bold","italic","strikethrough","|","heading","heading-smaller","heading-bigger","|", "heading-1","heading-2","heading-3","|",
+         "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule","|","guide"
+      ] // toolbar
+   });
+   
+   $('.editor-toolbar').addClass('fa-2x');
 /*   
    var editor = new Editor({
        element: document.getElementById("sourceMarkDown")
@@ -765,7 +772,7 @@ function afterEdit($fname) {
  * @param {type} $markdown     The new content
  * @returns {boolean}
  */
-function saveChanges($fname, $markdown) {
+function buttonSave($fname, $markdown) {
    
    var $data = new Object;
    $data.task  = 'save';
@@ -786,7 +793,24 @@ function saveChanges($fname, $markdown) {
    
    return true;
    
-} // function saveChanges()
+} // function buttonSave()
+
+/**
+ * EDIT MODE - Encrypt the selection.  Add the <encrypt> tag
+ * 
+ * @returns {boolean}
+ */
+function buttonEncrypt(editor) {
+   
+   var cm = editor.codemirror;
+   var output = '';
+   var selectedText = cm.getSelection();
+   var text = selectedText || 'your_confidential_info';
+
+   output = '<encrypt>' + text + '</encrypt>';
+   cm.replaceSelection(output);
+   
+} // function buttonEncrypt()
 
 /**
  * 

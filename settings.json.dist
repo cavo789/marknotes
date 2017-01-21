@@ -28,6 +28,7 @@
       "en": {
          "apply_filter":"Filtering to [%s]",
          "apply_filter_tag":"Display notes containing this tag",
+		 "button_encrypt":"Add encryption for the selection",
 		 "button_exit_edit_mode":"Exit the editing mode",
 		 "button_save":"Submit your changes",
 		 "button_save_done":"The file has been successfully saved",
@@ -53,11 +54,12 @@
       "fr": {
          "apply_filter":"Limite la liste des notes à [%s]",
          "apply_filter_tag":"Affiche les notes reprennant ce mot",
-		 "button_save":"Enregistre vos modifications sur le serveur",
+		 "button_encrypt":"Encrypte la s&eacute;lection",
+		 "button_exit_edit_mode":"Quitte le mode &eacute;dition",
+         "button_save":"Enregistre vos modifications sur le serveur",
 		 "button_save_done":"Le fichier a &eacute;t&eacute; enregistr&eacute; avec succ&egrave;s",
 		 "button_save_error":"Une erreur a &eacute;t&eacute; rencontr&eacute;e lors de la sauvegarde",		 
-		 "button_exit_edit_mode":"Quitte le mode &eacute;dition",
-         "copy_link":"Copier le lien vers cette note dans le presse-papier",
+		 "copy_link":"Copier le lien vers cette note dans le presse-papier",
          "copy_link_done":"L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
          "confidential":"confidentiel",
          "display_that_note":"Afficher cette note",

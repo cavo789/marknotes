@@ -1322,6 +1322,7 @@ class aeSecureMarkdown {
             "markdown.message.allow_popup_please='".str_replace("'","\'",html_entity_decode(self::getText('allow_popup_please')))."';\n".
             "markdown.message.apply_filter='".str_replace("'","\'",html_entity_decode(self::getText('apply_filter')))."';\n".
             "markdown.message.apply_filter_tag='".str_replace("'","\'",html_entity_decode(self::getText('apply_filter_tag')))."';\n".               
+            "markdown.message.button_encrypt='".str_replace("'","\'",html_entity_decode(self::getText('button_encrypt')))."';\n".
             "markdown.message.button_save='".str_replace("'","\'",html_entity_decode(self::getText('button_save')))."';\n".
             "markdown.message.button_save_done='".str_replace("'","\'",html_entity_decode(self::getText('button_save_done')))."';\n".
             "markdown.message.button_save_error='".str_replace("'","\'",html_entity_decode(self::getText('button_save_error')))."';\n".

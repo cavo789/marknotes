@@ -18,6 +18,7 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-28 : + Add Encrypt button in the editor
  * 2017-01-20 : + Edit mode 
  *              + Sanitize filename
  *              + Add .htaccess security, no script execution in /docs

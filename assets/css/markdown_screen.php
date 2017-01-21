@@ -91,3 +91,6 @@ page h1 {margin-top:60px;}
 .download{background-color:rgba(255, 235, 59, 0.21);text-decoration:underline;}
 
 #tree .file { background:url('./file_sprite.png') 0 0 no-repeat; }
+
+/* Edit - Toolbar size */
+div.editor-wrapper .editor-toolbar a {width:40px;}
