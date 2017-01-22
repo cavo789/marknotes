@@ -971,7 +971,7 @@ class aeSecureMarkdown {
     
       $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
          '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview')).'"></i>'.
-         '<i id="icon_pdf" data-task="pdf" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf')).'"></i>'.
+         '<i id="icon_pdf" data-task="pdf" data-file="'.$filename.'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf')).'"></i>'.
          '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link')).'"></i>'.
          '<i id="icon_slideshow" data-task="slideshow" data-file="'.$filename.'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow')).'"></i>'.        
          $icons.'</div>';
@@ -1509,8 +1509,6 @@ class aeSecureMarkdown {
 
             header('Content-Type: text/html; charset=utf-8'); 
 
-            
-
             $result=self::ShowFile($filename);
             echo $result;
             die();
@@ -1528,7 +1526,7 @@ class aeSecureMarkdown {
             
             header('Content-Type: application/json'); 
             echo json_encode(self::ListFiles(), JSON_PRETTY_PRINT);
-            die();
+            die();   
             
          case 'save': 
             

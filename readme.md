@@ -257,6 +257,7 @@ Thank you to
 - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
 - [Font Awesome](https://github.com/FortAwesome/Font-Awesome) contributors
 - Ivan Bozhanov (vakata) for [jsTree](https://github.com/vakata/jstree)
+- James Hall (MrRio) for [jsPDF] (https://github.com/MrRio/jsPDF)
 - Nedim Arabaci for the [noty](https://github.com/needim/noty) plugin
 - Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin
 - SoapBox Innovations for [linkifyjs](https://github.com/SoapBox/linkifyjs)

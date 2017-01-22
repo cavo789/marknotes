@@ -45,9 +45,6 @@ body{background:#F7F2E9;}
 #icon_printer{color:lightgray;}
 #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_window {margin-left:20px;color:lightgray;}
 
-/*TEMPORARY - WHILE FUNCTIONS ARE NOT CODED*/
-#icon_pdf {color:rgba(211, 211, 211, 0.21);}
-
 #icon_lock{margin-left:2px;color:#abe0ab;}
 
 .icon_file{padding-left:5px;}

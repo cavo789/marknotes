@@ -20,6 +20,7 @@ declare(strict_types=1);
  * 
  * 2017-01-29 : + Code reorganization
  *              + The edit form show unencrypted infos to let the user to update them
+ *              + add jsPDF for Javascript pdf exportation
  * 2017-01-28 : + Add Encrypt button in the editor
  * 2017-01-20 : + Edit mode 
  *              + Sanitize filename

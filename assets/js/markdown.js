@@ -381,8 +381,48 @@ function initializeTasks() {
             if (markdown.settings.debug) console.log('Edit -> show the editor and the source markdown file)');
             ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});            
 
-            //EditMD($fname);
             break;
+            
+         case 'pdf':   
+            
+            var $file=$(this).data('file');
+            $filePDF = $file.substr(0, $file.lastIndexOf(".")) + ".pdf";
+            
+            if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
+            
+            console.info("Use jsPDF for the PDF exportation");
+            console.info("Note : this script is not really efficient.  Seems to only work if text; don't work anymore with images");
+            
+            var $data = new Object;
+            $data.task  = 'display';
+            $data.param = $fname;
+
+            $.ajax({
+               async:true,
+               cache: false,
+               type:(markdown.settings.debug?'GET':'POST'),
+               url: markdown.url,
+               data: $data,
+               datatype:'html',
+               success: function (data) {     
+                  
+                  // Derive the name of the PDF 
+                  
+                  var doc = new jsPDF();
+                  
+                  // data contains now the HMTL of the page
+                  
+                  doc.fromHTML(data, 15, 15, {
+                     'width': 170
+                  });
+                  
+                  doc.save($filePDF);
+                  
+               } // success()
+               
+            }); // $.ajax
+            
+            break;      
             
          case 'printer':   
             

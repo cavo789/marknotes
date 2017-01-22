@@ -89,6 +89,9 @@
       <script type="text/javascript" src="libs/DataTables/js/jquery.dataTables.min.js"></script>
       <script type="text/javascript" src="libs/DataTables/js/dataTables.bootstrap4.min.js"></script>
       
+      <!-- jsPDF -->
+      <script type="text/javascript" src="libs/jsPDF/jspdf.debug.js"></script>
+      
       <!-- Simple Markup Editor -->
       <script src="libs/simplemde/simplemde.min.js"></script>
 
