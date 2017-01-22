@@ -1417,7 +1417,11 @@ class aeSecureMarkdown {
          // Try to retrieve the heading 1
        
          preg_match("/# (.*)/", $markdown, $matches);   
-         $pageTitle = (count($matches)>0) ? $matches[1] : '';
+         $pageTitle = (count($matches)>0) ? trim($matches[1]) : '';
+         
+         // Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
+         $pageTitle=rtrim($pageTitle,'#');
+         
          
          // Consider that every Headings 2 and 3 should start in a new slide
          // The "remark" library allow indeed to give a name to each slide by just adding "name: NAME" in the markdown string
@@ -1449,7 +1453,7 @@ class aeSecureMarkdown {
                   $markdown=str_replace($matches[0][$i],
                         //"???".PHP_EOL.str_replace('/',DS,$filename).PHP_EOL.  // Add speaker note : ??? followed by a line and the text
                         "---".PHP_EOL.
-                        "name: ".$matches[1][$i].PHP_EOL.
+                        "name: ".rtrim($matches[1][$i]," #").PHP_EOL.        // Be sure to not have a title like ## Heading2 ## (==> remove final # and space if there are ones)
                         ".footnote[.italic[".$pageTitle."]]".PHP_EOL.
                         $matches[0][$i], $markdown);
 			   
