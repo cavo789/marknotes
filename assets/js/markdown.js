@@ -722,7 +722,7 @@ function afterEdit($fname) {
       autofocus:true,
       element: document.getElementById("sourceMarkDown"),
       indentWithTabs:false,
-      //codeSyntaxHighlighting:true,
+      codeSyntaxHighlighting:false,
       toolbar:[
          {       
             // Add a custom button for saving
@@ -751,7 +751,7 @@ function afterEdit($fname) {
          },
          "|","preview","side-by-side","fullscreen","|",
          "bold","italic","strikethrough","|","heading","heading-smaller","heading-bigger","|", "heading-1","heading-2","heading-3","|",
-         "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule","|","guide"
+         "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule"
       ] // toolbar
    });
    

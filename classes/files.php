@@ -119,11 +119,16 @@ class aeSecureFiles {
 	  
    } // function rglob()
    
+   /**
+    * Replace file's extension
+    * @param string $filename       The filename ("test.md")
+    * @param string $new_extension  The new extension ("html")
+    * @return string                The new filename (test.html)
+    */
    static public function replace_extension(string $filename, string $new_extension) : string {
       $info = pathinfo($filename);
       return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
    } // function replace_extension
-   
    
    /**
     * Be sure that the filename isn't something like f.i. ../../../../dangerous.file
@@ -145,10 +150,9 @@ class aeSecureFiles {
       // Remove any trailing dots, as those aren't ever valid file names.
 		$filename = rtrim($filename, '.');
 
-      // Pattern with allowed characters
-		$regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\\\/\_\- ]#', '#^\.#');
-      
-      $filename=trim(preg_replace($regex, '', $filename));
+      // Pattern with allowed characters  PROBLEM : accentuated characters or special one (like @) should also be allowed
+		//$regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\\\/\_\- ]#', '#^\.#');      
+      //$filename=trim(preg_replace($regex, '', $filename));
       
       // If $filename was f.i. '../../../../../'.$filename 
       // the preg_replace has change it to '/////'.$filename so remove leading /
@@ -159,5 +163,44 @@ class aeSecureFiles {
 		return $filename;
       
    } // function sanitizeFileName
+   
+   /**
+    * Rewrite an existing file.  The function will first take a backup of the file (with new .old suffix).  If the write action is successfull, the .old file is removed
+    * 
+    * @param string $filename     Absolute filename
+    * @param string $new_content  The new content
+    * @return bool                return False in case of error
+    */
+   static public function rewriteFile(string $filename, string $new_content) : bool {
+      
+      $bReturn=FALSE;
+
+      if (file_exists($filename)) {
+
+         rename($filename, $filename.'.old');
+
+         try {
+
+            if ($handle = fopen($filename,'w')) {
+
+               fwrite($handle, $new_content);
+               fclose($handle);	
+
+               if (filesize($filename)>0) {
+                  unlink($filename.'.old');
+                  $bReturn=TRUE;
+               }
+
+            }
+            
+         } catch (Exception $ex) {
+         }
+       
+      } // if (file_exists($filename))
+      
+      return $bReturn;      
+      
+   } // function rewriteFile()
+   
    
 } // class aeSecureFiles 

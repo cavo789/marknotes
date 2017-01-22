@@ -18,6 +18,8 @@ declare(strict_types=1);
  * 
  * History :
  * 
+ * 2017-01-29 : + Code reorganization
+ *              + The edit form show unencrypted infos to let the user to update them
  * 2017-01-28 : + Add Encrypt button in the editor
  * 2017-01-20 : + Edit mode 
  *              + Sanitize filename

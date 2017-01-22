@@ -611,47 +611,24 @@ class aeSecureMarkdown {
    } // function ShowError()
    
    /**
-    * Return the HTML rendering of a .md file
+    * This function will scan the $markdown variable and search if there are <encrypt> tags in it.
+    * For un-encrypted content, the function will encrypt them and then save the new file content
     * 
-    * @param type $filename   Relative filename of the .md file to open and display
-    * @return string          HTML rendering 
-    */ 
-   private function ShowFile(string $filename) : string {
-
-      // If the filename doesn't mention the file's extension, add it.
-      if(substr($filename,-3)!='.md') $filename.='.md';
+    * Then, when the file has been rewritten (with <encrypt data-encrypt="TRUE">), each encrypted part will be un-encrypted and
+    * special tag (<i class="icon_encrypted">) will be added before and after the un-encrypted content.  That new string will be sent as
+    * the result of the function.
+    * 
+    * @param string $filename    Absolute filename
+    * @param string $markdown    Content
+    * @param bool $bEditMode     TRUE only when to $markdown content will be displayed in the Edit form => show unencrypted information back
+    * @return array
+    *    bool $bReturn               TRUE when the content of the .md file has been rewritten on the disk (=> encryption saved)
+    *    string $markdown            The new content; once <encrypt> content has been correctly processed.
+    */
+   private function HandleEncryption(string $filename, string $markdown, bool $bEditMode=FALSE) : array {
       
-      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
-
-      if (!file_exists($fullname)) {
-         self::ShowError(str_replace('%s','<strong>'.$fullname.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
-      }
-
-      $markdown=file_get_contents($fullname);
+      $bReturn=FALSE;
       
-      $old=$markdown;
-      
-      // -----------------------------------------------------------------------
-      // URL Cleaner : Make a few cleaning like replacing space char in URL or in image source
-      // Replace " " by "%20"
-      
-      if (preg_match_all('/<img *src *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
-         foreach($matches[1] as $match) {
-            $sMatch=str_replace(' ','%20',$match);
-            $markdown=str_replace($match,$sMatch,$markdown);
-         }
-      }
-      
-      // And do the same for links
-      if (preg_match_all('/<a *href *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
-         foreach($matches[1] as $match) {
-            $sMatch=str_replace(' ','%20',$match);
-            $markdown=str_replace($match,$sMatch,$markdown);
-         }
-      }      
-      
-      $icons='';
-
       // Check if there are <encrypt> tags.  If yes, check the status (encrypted or not) and retrieve its content
       $matches = array();    
       // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
@@ -671,7 +648,7 @@ class aeSecureMarkdown {
          $i=0;
          
          $rewriteFile=FALSE;
-     
+      
          // Loop and process every <encrypt> tags
          // For instance : <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
 
@@ -716,31 +693,12 @@ class aeSecureMarkdown {
             
          } // for($i;$i<$j;$i++)         
 
-         if ($rewriteFile===TRUE) {
-            
-            // The file has been changed => there was information with an <encrypt> tag but not yet encrypted.
-            // Now, $markdown contains only encrypted <encrypt> tag (i.e. with data-encrypt="true" attribute)
-
-            rename($fullname, $fullname.'.old');
-            
-            try {
-               
-               if ($handle = fopen($fullname,'w')) {
-                  fwrite($handle, $markdown);
-                  fclose($handle);		
-               }               
-               
-               if (filesize($fullname)>0) unlink($fullname.'.old');
-               
-            } catch (Exception $ex) {               
-            }
-
-         } // if ($rewriteFile===TRUE)
+         if ($rewriteFile===TRUE) $bReturn=aeSecureFiles::rewriteFile($filename, $markdown);
 
          // --------------------------------------------------------------------------------------------
          // 
          // Add a three-stars icon (only for the display) to inform the user about the encrypted feature
- 
+
          $matches = array();         
          // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
          preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
@@ -760,18 +718,81 @@ class aeSecureMarkdown {
                
                $decrypt=$aesEncrypt->sslDecrypt($matches[1][$i],NULL);
 
-               $markdown=str_replace($matches[1][$i], $icon_stars.$decrypt.$icon_stars, $markdown);
+               if($bEditMode===TRUE) {
+                  
+                  // Replace the <encrypt data-encrypt="TRUE">ENCRYPTED DATA</encrypt> by
+                  // <encrypt>UNENCRYPTED DATA</encrypt>.
+                  // 
+                  // Needed by the Edit form, to be able to display unencrypted note
+                  $markdown=str_replace($matches[0][$i], '<encrypt>'.$decrypt.'</encrypt>', $markdown);                  
+                  
+               } else { // if($bEditMode===TRUE)
+                  
+                  // This isn't the edit mode : show the lock icon ($icon_stars)
+                  $markdown=str_replace($matches[1][$i], $icon_stars.$decrypt.$icon_stars, $markdown);
+                  
+               } // if($bEditMode===TRUE)
                
-            }
+            } // for($i;$i<$j;$i++)
 
-         }
-         
+         } // if (count($matches[1])>0)
+
          // Release 
          
          unset($aesEncrypt);
          
       } // if (count($matches[1])>0)
+      
+      return array($bReturn, $markdown);
      
+   } // function HandleEncryption()
+   
+   /**
+    * Return the HTML rendering of a .md file
+    * 
+    * @param type $filename   Relative filename of the .md file to open and display
+    * @return string          HTML rendering 
+    */ 
+   private function ShowFile(string $filename) : string {
+
+      // If the filename doesn't mention the file's extension, add it.
+      if(substr($filename,-3)!='.md') $filename.='.md';
+      
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
+
+      if (!file_exists($fullname)) {
+         self::ShowError(str_replace('%s','<strong>'.$fullname.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
+      }
+
+      $markdown=file_get_contents($fullname);
+      
+      $old=$markdown;
+      
+      // -----------------------------------------------------------------------
+      // URL Cleaner : Make a few cleaning like replacing space char in URL or in image source
+      // Replace " " by "%20"
+      
+      if (preg_match_all('/<img *src *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
+         foreach($matches[1] as $match) {
+            $sMatch=str_replace(' ','%20',$match);
+            $markdown=str_replace($match,$sMatch,$markdown);
+         }
+      }
+      
+      // And do the same for links
+      if (preg_match_all('/<a *href *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
+         foreach($matches[1] as $match) {
+            $sMatch=str_replace(' ','%20',$match);
+            $markdown=str_replace($match,$sMatch,$markdown);
+         }
+      }      
+      
+      $icons='';
+
+      // bReturn will be set on TRUE when the file has been rewritten (when <encrypt> content has been found)
+      // $markdown will contains the new content (once encryption has been done)
+      list($bReturn, $markdown)=$this->HandleEncryption($fullname, $markdown);
+      
       // -----------------------------------
       // Add additionnal icons at the left
 
@@ -1169,7 +1190,7 @@ class aeSecureMarkdown {
     * @return bool
     */
    private function Edit(string $filename) : string {
-      
+         
       header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
       header("Cache-Control: post-check=0, pre-check=0", false);
       header("Pragma: no-cache");
@@ -1185,7 +1206,10 @@ class aeSecureMarkdown {
 
       $markdown=file_get_contents($fullname);
       
-      $sReturn='<div class="editor-wrapper"><strong class="filename">'.$fullname.'</strong><textarea id="sourceMarkDown" placeholder="Content here ....">'.$markdown.'</textarea></div>';
+      // TRUE = Edit mode
+      list($bReturn, $markdown)=$this->HandleEncryption($fullname, $markdown, TRUE);      
+      
+      $sReturn='<div class="editor-wrapper"><strong class="filename">'.utf8_encode($fullname).'</strong><textarea id="sourceMarkDown" placeholder="Content here ....">'.$markdown.'</textarea></div>';
 
       return $sReturn;
       
@@ -1209,47 +1233,26 @@ class aeSecureMarkdown {
       // If the filename doesn't mention the file's extension, add it.
       if(substr($filename,-3)!='.md') $filename.='.md';
       
-      $fullname=str_replace('/', DIRECTORY_SEPARATOR,utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename,DS)));
+      $fullname=str_replace('/', DIRECTORY_SEPARATOR,$this->_rootFolder.$this->_settingsDocsFolder. utf8_decode(ltrim($filename,DS)));
 
-      if (file_exists($fullname)) {
+      // bReturn will be set on TRUE when the file has been rewritten (when <encrypt> content has been found)
+      // $markdown will contains the new content (once encryption has been done)
+      list($bReturn, $markdown)=$this->HandleEncryption($fullname, $markdown);      
       
-         // The file has been changed => there was information with an <encrypt> tag but not yet encrypted.
-         // Now, $markdown contains only encrypted <encrypt> tag (i.e. with data-encrypt="true" attribute)
+      // $bReturn is on FALSE when HandleEncryption hasn't found any <encrypt> tag => save the new content (otherwise already done by HandleEncryption)
+      if(!$bReturn) $bReturn=aeSecureFiles::rewriteFile($fullname, $markdown);
 
-         rename($fullname, $fullname.'.old');
-
-         try {
-
-            if ($handle = fopen($fullname,'w')) {
-
-               fwrite($handle, $markdown);
-               fclose($handle);	
-
-               if (filesize($fullname)>0) {
-
-                  unlink($fullname.'.old');
-
-                  // The new content has been created, check if the .html version exists and if so, remove that old file
-                  if(file_exists($fnameHTML=aeSecureFiles::replace_extension($fullname,'html'))) @unlink($fnameHTML);
-                  if(file_exists($fnameHTML=str_replace('.html','_slideshow.html',$fnameHTML))) @unlink($fnameHTML);
-
-                  $status=1;
-
-               }
-
-               $status=array('success'=>$status,'message'=>$this->getText('button_save_done'));
-
-            } else { 
-
-               // There is a problem
-               $status=array('success'=>$status,'newsize'=>array('filesize'=>filesize($fullname)));
-
-            }
-         } catch (Exception $ex) {               
-         }         
+      if ($bReturn===TRUE) {
          
-      } else { // if (file_exists($fullname))
+         // The new content has been created, check if the .html version exists and if so, remove that old file
+         if(file_exists($fnameHTML=aeSecureFiles::replace_extension($fullname,'html'))) @unlink($fnameHTML);
+         if(file_exists($fnameHTML=str_replace('.html','_slideshow.html',$fnameHTML))) @unlink($fnameHTML);
          
+         $status=array('success'=>1,'message'=>$this->getText('button_save_done'));
+         
+      } else { // if ($status==true)
+
+         // There is a problem
          $status=array('success'=>0,'message'=>str_replace('%s',$fullname,$this->getText('file_not_found','FILE_NOT_FOUND')));
          
       } // if (file_exists($fullname))
@@ -1258,7 +1261,8 @@ class aeSecureMarkdown {
       $return['filename']=$fullname;
       
       return $return;
-   }
+      
+   } // function Save()
    
    /**
     * Detect if a Google Font was specified in the json and if so, generate a string to load that font
@@ -1532,7 +1536,7 @@ class aeSecureMarkdown {
          case 'search': 
 
             header('Content-Type: application/json'); 
-            $json=aeSecureFiles::Search(urldecode(aeSecureFct::getParam('param','string','',true, SEARCH_MAX_LENGTH)));
+            $json=self::Search(urldecode(aeSecureFct::getParam('param','string','',true, SEARCH_MAX_LENGTH)));
             echo json_encode($json, JSON_PRETTY_PRINT); 
             die();
             
