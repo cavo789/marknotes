@@ -385,6 +385,10 @@ function initializeTasks() {
             
          case 'pdf':   
             
+            /**
+             * @see https://github.com/MrRio/jsPDF             
+             */
+            
             var $file=$(this).data('file');
             $filePDF = $file.substr(0, $file.lastIndexOf(".")) + ".pdf";
             
@@ -393,6 +397,9 @@ function initializeTasks() {
             console.info("Use jsPDF for the PDF exportation");
             console.info("Note : this script is not really efficient.  Seems to only work if text; don't work anymore with images");
             
+            // Note: instead of canvas.toBlob, you could do var imageUrl = canvas.toDataURL('image/png');
+            // then you wouldn't need to include the polyfill.  However, your file size will be massive
+      
             var $data = new Object;
             $data.task  = 'display';
             $data.param = $fname;
@@ -404,24 +411,37 @@ function initializeTasks() {
                url: markdown.url,
                data: $data,
                datatype:'html',
-               success: function (data) {     
+               success: function (html) {     
                   
                   // Derive the name of the PDF 
                   
-                  var doc = new jsPDF();
+                  try {
+                     
+                     var pdf = new jsPDF();
+                     
+                     var specialElementHandlers = {
+                        '#editor': function(element, renderer) { return true; }
+                     };
+                     
+                     // data contains now the HMTL of the page
+
+                     pdf.fromHTML(html, 15, 15, {
+                        'width': 170, 
+                        'elementHandlers': specialElementHandlers
+                     });
+
+                     pdf.save($filePDF);
                   
-                  // data contains now the HMTL of the page
-                  
-                  doc.fromHTML(data, 15, 15, {
-                     'width': 170
-                  });
-                  
-                  doc.save($filePDF);
+                  } catch(err) {         
+
+                     console.warn(err.message);
+
+                  }
                   
                } // success()
                
             }); // $.ajax
-            
+     
             break;      
             
          case 'printer':   
