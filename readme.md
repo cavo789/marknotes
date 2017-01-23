@@ -1,7 +1,7 @@
 # Markdown v1 - January 2017
 
 
-![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master) ![License MIT](http://localhost:8080/markdown/docs/license.png)
+![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master) ![License MIT](https://github.com/cavo789/markdown/blob/master/docs/license.png)
 
 ## Table of contents
 
@@ -73,7 +73,7 @@ For clarity, this quick start is for a localhost system.
 
 *If everything goes fine, you'll see something like this (the screen and/or text can be a small different depending of the application's version)*
 
-![After installation](http://localhost:8080/markdown/docs/after_installation.png)
+![After installation](https://github.com/cavo789/markdown/blob/master/docs/after_installation.png)
 
 ### Possible problems
 * if, by accessing the URL, the index.php file is being download and not displayed, this is because you're not using PHP 7 so, please force PHP 7 for that site
@@ -115,7 +115,7 @@ Don't forget : notes should be taken by using the Markdown format and files shou
 
 By refreshing the interface, the index.php script of this application will scan the entire folder and display its content in a "treeview" as illustrated here below.  By clicking one a file, it's "hmtl" representation will be displayed in the right side
 
-![Main interface](http://localhost:8080/markdown/docs/interface.png)
+![Main interface](https://github.com/cavo789/markdown/blob/master/docs/interface.png)
 
 ### Tips
 
@@ -152,7 +152,7 @@ Then, apart of the folders, you'll find files.  Just click one on a file and the
 ```
 html representation = the note is well written in Markdown but, for displaying it in a nice way, a translation will be made 'on-the-fly' and a .html file will be generated.  Every Markdown tags (like # A title) will be translated into his html value (<h1>A title</h1>)
 ```
-![Main interface](http://localhost:8080/markdown/docs/interface.png)
+![Main interface](https://github.com/cavo789/markdown/blob/master/docs/interface.png)
 
 *[jsTree](https://github.com/vakata/jstree) is used here*
 
@@ -235,7 +235,7 @@ Everytime you'll make a change in the note, the "Open in a new window" feature w
 
 Need to make a few changes in the note's content ?  Click on the Edit button to get a very powerfull interface were you'll be able to update the text and save it on the server.
 
-![Editing notes](http://localhost:8080/markdown/docs/edit_mode.png)
+![Editing notes](https://github.com/cavo789/markdown/blob/master/docs/edit_mode.png)
 
 *This feature is based on the tremendous work of [simplemde-markdown-editor](https://github.com/NextStepWebs/simplemde-markdown-editor)*
 
@@ -419,19 +419,19 @@ Here a fictive example : login and password for the demo site.  The screen captu
 
 The idea is thus : put between  `encrypt` tag any sensitive informations.
 
-![Encrypt tag](http://localhost:8080/markdown/docs/encrypt.png)
+![Encrypt tag](https://github.com/cavo789/markdown/blob/master/docs/encrypt.png)
 
 Then, by displaying that note through the interface, every `encrypt` content will be processed and encrypted by using your password (see the [settings.json](#settings) encryption node)
 
 The result will looks like : 
 
-![Encrypt tag](http://localhost:8080/markdown/docs/encrypt_display.png)
+![Encrypt tag](https://github.com/cavo789/markdown/blob/master/docs/encrypt_display.png)
 
 The presence of the lock icon is an indicator that the displayed text **is not stored anymore** on the filesystem.
 
 By opening back your note in a text editor, you'll see that any `encrypt` content has been encrypted.
 
-![Encrypt tag](http://localhost:8080/markdown/docs/encrypt_note.png)
+![Encrypt tag](https://github.com/cavo789/markdown/blob/master/docs/encrypt_note.png)
 
 The note is now safe.
 
