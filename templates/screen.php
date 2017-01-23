@@ -36,7 +36,7 @@
 
       <div class="row">
 
-         <div class="container col-md-4 onlyscreen" id="TDM">
+         <div class="col-sm-4 onlyscreen" id="TDM">
 
             <input id='search' name='search' type='text' class='flexdatalist' placeholder='%EDT_SEARCH_PLACEHOLDER%'
                alt=""accesskey=""accept=""maxlength='%EDT_SEARCH_MAXLENGTH%' data-data='index.php?task=tags' data-search-in='name'
@@ -46,7 +46,7 @@
 
          </div>
 
-         <div class="container col-md-8">
+         <div class="col-sm-8">
             <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
             <img class="visible-lg" id="IMG_BACKGROUND" src="assets/background.jpg"/>
          </div>

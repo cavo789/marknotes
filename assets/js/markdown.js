@@ -59,8 +59,8 @@ $(document).ready(function() {
    $('#TDM').css('min-height', $(window).height()-10);
 
    // Maximise the width of the table of contents i.e. the array with the list of files
-   $('#TOC').css('width', $('#TDM').width()-5);
-   $('#search').css('width', $('#TDM').width()-5);
+   //$('#TOC').css('width', $('#TDM').width()-5);
+   //$('#search').css('width', $('#TDM').width()-5);
    
    $('#CONTENT').css('max-height', $(window).height()-10);
    $('#CONTENT').css('min-height', $(window).height()-10);
