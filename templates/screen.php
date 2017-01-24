@@ -16,7 +16,7 @@
 
       <!--%FONT%-->
 
-      <link media="screen" rel="stylesheet" type="text/css" href="libs/bootstrap/bootstrap.min.css" />
+      <link media="screen" rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
@@ -43,6 +43,8 @@
                data-visible-properties='["name","type"]' multiple='multiple' />
 
             <div id="TOC" class="onlyscreen">&nbsp;</div>
+            
+            <div class="app_version"><a href="https://github.com/cavo789/markdown" target="_blank" title="%APP_NAME% | Download a newer version">%APP_VERSION%</a></div>
 
          </div>
 
@@ -57,7 +59,7 @@
 
       <!-- Add libraries. Thank you to these developpers! -->
       <script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
-      <script type="text/javascript" src="libs/bootstrap/bootstrap.min.js"></script>
+      <script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
 
       <!-- Used by the search box, for auto-completion -->
       <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>

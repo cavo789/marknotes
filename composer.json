@@ -1,0 +1,41 @@
+{
+	"name": "Markdown",
+	"description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
+	"keywords": ["markdown", "notes", "evernote-like"],
+	"homepage": "https://github.com/cavo789/markdown",
+	"type": "project",
+	"time": "2017-01-22",
+	"license": "MIT",
+	"require": {
+		"php": ">=7.0",
+		"erusev/parsedown": "~1.4",
+		"twitter/bootstrap": "^3.3",
+		"datatables/datatables": "^1.10",
+		"fortawesome/font-awesome": "^4.7",
+		"components/jquery": "^3.1",
+		"vakata/jstree": "^3.3",
+		"needim/noty": "^2.4"
+	},
+	"config": {
+		"preferred-install": "dist"
+	},
+	"authors": [{
+		"name": "Christophe Avonture",
+		"email": "christophe@aesecure.com",
+		"homepage": "https://www.aesecure.com",
+		"role": "Developer"
+	}],
+	"support": {
+		"source": "https://github.com/cavo789/markdown",
+		"issues": "https://github.com/cavo789/markdown/issues",
+		"docs": "https://github.com/cavo789/markdown/blob/master/readme.md"
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"post-install.bat"
+		],
+		"post-update-cmd": [
+			"post-install.bat"
+		]
+	}
+}

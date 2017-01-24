@@ -55,8 +55,8 @@ $(document).ready(function() {
    ajaxify({task:'listFiles',callback:'initFiles(data)'});
 
    // Size correctly depending on screen resolution
-   $('#TDM').css('max-height', $(window).height()-10);
-   $('#TDM').css('min-height', $(window).height()-10);
+   $('#TDM').css('max-height', $(window).height()-30);
+   $('#TDM').css('min-height', $(window).height()-30);
 
    // Maximise the width of the table of contents i.e. the array with the list of files
    //$('#TOC').css('width', $('#TDM').width()-5);
@@ -340,7 +340,13 @@ function initFiles($data) {
 function initializeTasks() {
 
    // Initialise print preview plugin, should be done before clicking on the button
-   if ($.isFunction($.fn.printPreview)) $('[data-task="printer"]').printPreview();
+   if ($.isFunction($.fn.printPreview)) { 
+      try {
+         $('[data-task="printer"]').printPreview();
+      } catch(err) {   
+         console.warn(err.message);
+      }
+   }
    
    // Get all DOM objects having a data-task attribute
    $("[data-task]").click(function() {

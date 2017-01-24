@@ -1,6 +1,8 @@
 <?php                 
 declare(strict_types=1);
 
+define('VERSION','1.0.1');
+
 /* REQUIRES PHP 7.x AT LEAST */
 
 /**
@@ -26,7 +28,7 @@ declare(strict_types=1);
  */
 
 // Application name
-define('APP_NAME','Notes management (c) Christophe Avonture');
+define('APP_NAME','Notes management');
 
    // No timeout please
    set_time_limit(0);

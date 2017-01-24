@@ -58,7 +58,7 @@ body{background:#F7F2E9;}
 #IMG_BACKGROUND{width:100%;;vertical-align:middle;top:5px;left:-5px;position:relative;}
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
-#TDM{left:5px; top:5px !important;max-height:960px;overflow-y:auto;overflow-x:auto;}
+#TDM{left:5px; top:5px !important;overflow-y:auto;overflow-x:auto;}
 #TOC{position:inherit;top:35px;}
 #TOC .folder {background:url('../../libs/jsTree/file_sprite.png') right bottom no-repeat;}
 #TOC .file {background:url('../../libs/jsTree/file_sprite.png') 0 0 no-repeat;}
@@ -72,6 +72,8 @@ page h1 {margin-top:60px;}
 .onlyprint{display:none;}
 
 .countfiles{font-size:xx-small;font-style:italic;}
+
+.app_version{font-size:xx-small;height:20px;position:fixed;bottom:0%;width:100%;font-style:italic;}
 
 /* Use by the jQuery highlight plugin, highlight searched keywords */
 .highlight{background-color:yellow !important;border-radius:.125em;}  

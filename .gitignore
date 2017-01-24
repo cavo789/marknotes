@@ -1,4 +1,6 @@
 nbproject/
 nbproject/private/
-libs/highlite/index.html
+/vendor/**/.git
 settings.json
+vendor/
+composer.log

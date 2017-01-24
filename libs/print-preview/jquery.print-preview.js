@@ -1,5 +1,5 @@
 /*!
- * jQuery Print Previw Plugin v1.0.1
+ * jQuery Print Preview Plugin v1.0.1
  *
  * Copyright 2011, Tim Connell
  * Licensed under the GPL Version 2 license
@@ -8,6 +8,7 @@
  * Date: Wed Jan 25 00:00:00 2012 -000
  *
  * MODIFIED BY Christophe AVONTURE (https://www.aesecure.com)
+ * ALSO FOR jQuery 3 compatibility
  */
  
 (function($) { 
@@ -93,7 +94,14 @@
 
             // Disable scrolling
             $('body').css({overflowY: 'hidden', height: '100%'});
-            $('img', print_frame_ref).load(function() {
+			
+			// == Original ==
+            //$('img', print_frame_ref).load(function() {
+            //    print_frame.height($('body', print_frame.contents())[0].scrollHeight);
+            //});
+            
+			// == Updated by Christophe Avonture - jQuery 3 compatibility ==
+			$('img', print_frame_ref).on('load', function() {
                 print_frame.height($('body', print_frame.contents())[0].scrollHeight);
             });
             

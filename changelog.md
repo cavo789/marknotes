@@ -2,7 +2,17 @@
 
 https://github.com/cavo789/markdown
 
-## 1. 0
+## 1.0.1
+
+### 2017-01-24
+
+```diff
++ Implement composer for updating dependencies
++ Add the current version number in the bottom left of the screen with a link to the GitHub repository
+```
+
+
+## 1.0
 
 ### 2017-01-22
 

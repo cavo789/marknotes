@@ -600,6 +600,9 @@ class aeSecureMarkdown {
       
       if ($this->_DEBUGMODE) $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].')</em>';
       
+      // The \' construction is for javascript, not for PHP
+      $msg=str_replace("\'","'",$msg);
+      
       $msg='<div class="error bg-danger">'.$this->getText('error','ERROR').' - '.$msg.'</div>';
       if ($die===TRUE) {         
          die($msg);
@@ -811,7 +814,11 @@ class aeSecureMarkdown {
          $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file').'" data-file="'.$filename.'"></i>';
       }
 
-      require_once("libs/Parsedown.php");
+      // Call the Markdown parser (https://github.com/erusev/parsedown)
+      $lib="libs/parsedown/Parsedown.php";
+      if(!file_exists($lib)) self::ShowError(str_replace('%s','<strong>'.$lib.'</strong>',$this->getText('file_not_found','FILE_NOT_FOUND')),TRUE);
+      
+      require_once($lib);
       $Parsedown=new Parsedown();      
       $html=$Parsedown->text($markdown);
       
@@ -902,7 +909,6 @@ class aeSecureMarkdown {
 		 } // if (is_writable(dirname($fname)))
 
       } // if (OUTPUT_HTML===TRUE)
-      
       
       // -----------------------------------------------------------------------
       // Once the .html file has been written on disk, not before !
@@ -1313,6 +1319,7 @@ class aeSecureMarkdown {
          }
          
          $html=str_replace('%APP_NAME%', APP_NAME, $html);
+         $html=str_replace('%APP_VERSION%', APP_NAME.' v.'.VERSION, $html);
          $html=str_replace('%APP_NAME_64%', base64_encode(APP_NAME), $html);
          $html=str_replace('%IMG_MAXWIDTH%', self::getSetting('ImgMaxWidth','800'), $html);
          

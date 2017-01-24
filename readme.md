@@ -85,8 +85,8 @@ For clarity, this quick start is for a localhost system.
 assets/      javascript, css and images of the application
 classes/     php classes, for intern use (no access by URLs)
 docs/        documentation, default folder where to put your notes
-libs/        external libraries, open source ones
-templates/   layouts for the screen, slideshow and output as html page
+templates/   layouts for the screen, slideshow and output as vendor/      external libraries, open source ones
+html page
 ```
 
 In the root folder, you'll find, among others, 
