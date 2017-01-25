@@ -192,7 +192,7 @@ To make the note smarter and his use more comfortable, a few jQuery plugins will
 
 ### <a name="toolbar-fullscreen"></a>Fullscreen
 
-Give the maximum width to your content : hide the list of files, hide the search engine and also every buttons except the fullscreen one.
+Give the maximum width to your content : hide the list of files, hide the search engine and also every buttons except the fullscreen and refresh ones.
 
 Your note's content will be displayed in fullscreen.
 
