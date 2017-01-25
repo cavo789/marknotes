@@ -1,9 +1,7 @@
 # Markdown v1 - January 2017
 
 
-![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master) ![License MIT](https://github.com/cavo789/markdown/blob/master/docs/license.png)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/markdown/master/badge.svg)](https://travis-ci.org/cavo789/markdown.svg?branch=master)
-
+![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master) ![License MIT](https://markdown.cavo789.com/docs/license.png) ![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/markdown/master/badge.svg)
 
 ## Table of contents
 
@@ -16,20 +14,20 @@
 - [Taking notes](#taking-notes)
 - [Using the program](#using-the-program)
 - [Toolbar](#toolbar)
-  - [Fullscreen](#toolbar-fullscreen)
-  - [Refresh](#toolbar-refresh)
-  - [Copy note's content in the clipboard](#toolbar-clipboard)
-  - [Print](#toolbar-print)
-  - [Export as pdf](#toolbar-export-pdf)
-  - [Copy link](#toolbar-copy)
-  - [Slideshow](#toolbar-slideshow)
-  - [Open in a new window](#toolbar-window)
-  - [Edit](#toolbar-edit)
+- [Fullscreen](#toolbar-fullscreen)
+- [Refresh](#toolbar-refresh)
+- [Copy note's content in the clipboard](#toolbar-clipboard)
+- [Print](#toolbar-print)
+- [Export as pdf](#toolbar-export-pdf)
+- [Copy link](#toolbar-copy)
+- [Slideshow](#toolbar-slideshow)
+- [Open in a new window](#toolbar-window)
+- [Edit](#toolbar-edit)
 - [Customize to fit your needs](#customize)
-  - [Define your preferences](#settings)
-  - [Define your tags](#tags)
-  - [Use your own templates](#templates)
-  - [Use your own css and javascript](#custom)
+- [Define your preferences](#settings)
+- [Define your tags](#tags)
+- [Use your own templates](#templates)
+- [Use your own css and javascript](#custom)
 - [Encrypt your private data](#encrypt)
 - [Contributing](#contributing)
 - [Credits](#credits)
@@ -80,7 +78,7 @@ The last version of the program can be found here : https://github.com/cavo789/m
 
 *If everything goes fine, you'll see something like this (the screen and/or text can be a small different depending of the application's version)*
 
-![After installation](https://github.com/cavo789/markdown/blob/master/docs/after_installation.png)
+![After installation](https://markdown.cavo789.com/docs/after_installation.png)
 
 ### Possible problems
 * if, by accessing the URL, the index.php file is being download and not displayed, this is because you're not using PHP 7 so, please force PHP 7 for that site
@@ -122,7 +120,7 @@ Don't forget : notes should be taken by using the Markdown format and files shou
 
 By refreshing the interface, the index.php script of this application will scan the entire folder and display its content in a "treeview" as illustrated here below.  By clicking one a file, it's "hmtl" representation will be displayed in the right side
 
-![Main interface](https://github.com/cavo789/markdown/blob/master/docs/interface.png)
+![Main interface](https://markdown.cavo789.com/docs/interface.png)
 
 ### Tips
 
@@ -159,7 +157,7 @@ Then, apart of the folders, you'll find files.  Just click one on a file and the
 ```
 html representation = the note is well written in Markdown but, for displaying it in a nice way, a translation will be made 'on-the-fly' and a .html file will be generated.  Every Markdown tags (like # A title) will be translated into his html value (<h1>A title</h1>)
 ```
-![Main interface](https://github.com/cavo789/markdown/blob/master/docs/interface.png)
+![Main interface](https://markdown.cavo789.com/docs/interface.png)
 
 *[jsTree](https://github.com/vakata/jstree) is used here*
 
@@ -188,7 +186,7 @@ To make the note smarter and his use more comfortable, a few jQuery plugins will
 
 ## <a name="toolbar"></a>Toolbar
 
-![Toolbar](https://github.com/cavo789/markdown/blob/master/docs/toolbar.png)
+![Toolbar](https://markdown.cavo789.com/docs/toolbar.png)
 
 ### <a name="toolbar-fullscreen"></a>Fullscreen
 
@@ -260,7 +258,7 @@ Everytime you'll make a change in the note, the "Open in a new window" feature w
 
 Need to make a few changes in the note's content ?  Click on the Edit button to get a very powerfull interface were you'll be able to update the text and save it on the server.
 
-![Editing notes](https://github.com/cavo789/markdown/blob/master/docs/edit_mode.png)
+![Editing notes](https://markdown.cavo789.com/docs/edit_mode.png)
 
 *This feature is based on the tremendous work of [simplemde-markdown-editor](https://github.com/NextStepWebs/simplemde-markdown-editor)*
 
@@ -444,19 +442,19 @@ Here a fictive example : login and password for the demo site.  The screen captu
 
 The idea is thus : put between  `encrypt` tag any sensitive informations.
 
-![Encrypt tag](https://github.com/cavo789/markdown/blob/master/docs/encrypt.png)
+![Encrypt tag](https://markdown.cavo789.com/docs/encrypt.png)
 
 Then, by displaying that note through the interface, every `encrypt` content will be processed and encrypted by using your password (see the [settings.json](#settings) encryption node)
 
 The result will looks like : 
 
-![Encrypt tag](https://github.com/cavo789/markdown/blob/master/docs/encrypt_display.png)
+![Encrypt tag](https://markdown.cavo789.com/docs/encrypt_display.png)
 
 The presence of the lock icon is an indicator that the displayed text **is not stored anymore** on the filesystem.
 
 By opening back your note in a text editor, you'll see that any `encrypt` content has been encrypted.
 
-![Encrypt tag](https://github.com/cavo789/markdown/blob/master/docs/encrypt_note.png)
+![Encrypt tag](https://markdown.cavo789.com/docs/encrypt_note.png)
 
 The note is now safe.
 
