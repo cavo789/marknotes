@@ -1222,7 +1222,7 @@ function toggleFullScreen(element) {
 
    // Hide all buttons (or show it again) except icon_fullscreen
    $('#icons').children('i').each(function () {
-      if ((this.id!=='icon_fullscreen')&&(this.id!=='icon_refresh')) $(this).toggleClass('hidden');
+      if ((this.id!=='icon_fullscreen')&&(this.id!=='icon_refresh')&&(this.id!=='icon_edit')) $(this).toggleClass('hidden');
    });
 
    if (!isFullScreen()) {
