@@ -368,8 +368,9 @@ function initializeTasks() {
             // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
             if (markdown.settings.debug) console.log('Clipboard -> copy the link of the current note in the clipboard');
             if(typeof Clipboard == 'function'){
-               new Clipboard('*[data-task="clipboard"]');
-               Noty({message:markdown.message.copy_link_done, type:'success'});
+               var clipboard = new Clipboard('*[data-task="clipboard"]');
+               clipboard.on('success', function(e) { e.clearSelection(); });
+               Noty({message:markdown.message.copy_clipboard_done, type:'success'});
             } else {
                $(this).remove();
             }
@@ -387,6 +388,18 @@ function initializeTasks() {
             if (markdown.settings.debug) console.log('Edit -> show the editor and the source markdown file)');
             ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});            
 
+            break;
+            
+         case 'link_note':   
+            
+            // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+            if (markdown.settings.debug) console.log('Clipboard -> copy the link of the current note in the clipboard');
+            if(typeof Clipboard == 'function'){
+               new Clipboard('*[data-task="link_note"]');
+               Noty({message:markdown.message.copy_link_done, type:'success'});
+            } else {
+               $(this).remove();
+            }
             break;
             
          case 'pdf':   

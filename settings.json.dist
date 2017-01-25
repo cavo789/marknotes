@@ -64,6 +64,8 @@
          "button_save":"Enregistre vos modifications sur le serveur",
          "button_save_done":"Le fichier a &eacute;t&eacute; enregistr&eacute; avec succ&egrave;s",
          "button_save_error":"Une erreur a &eacute;t&eacute; rencontr&eacute;e lors de la sauvegarde",		 
+		 "copy_clipboard":"Copie le contenu de la note, avec mise en page, dans le presse-papier",	 
+		 "copy_clipboard_done":"La note a &eacute;t&eacute; copi&eacute;e.  Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
          "copy_link":"Copier le lien vers cette note dans le presse-papier",
          "copy_link_done":"L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
          "confidential":"confidentiel",

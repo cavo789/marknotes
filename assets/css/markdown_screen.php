@@ -43,9 +43,11 @@ body{background:#F7F2E9;}
 /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
 #icons {display:inline-block;position:fixed;top:5px;right:30px;margin-right:10px;cursor:pointer;}
 #icon_refresh{color:lightgray;}
-#icon_printer, #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_window {margin-left:20px;color:lightgray;}
+#icon_printer, #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_link_note, #icon_window {margin-left:20px;color:lightgray;}
 
 #icon_lock{margin-left:2px;color:#abe0ab;}
+
+img {padding:25px 5px 25px;}
 
 .icon_file{padding-left:5px;}
 .icon_encrypted{padding-left:5px;padding-right:5px;color:#abe0ab;}
@@ -67,7 +69,6 @@ body{background:#F7F2E9;}
 /* page is used to display the content of the selected note */
 page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:0 0 0.5cm rgba(0,0,0,0.5);}
 
-page h1 {margin-top:60px;}
 /* Don't display informations that are targeted for printers only */            
 .onlyprint{display:none;}
 
@@ -75,6 +76,7 @@ page h1 {margin-top:60px;}
 
 .app_version{font-size:xx-small;height:20px;position:fixed;bottom:0%;width:100%;font-style:italic;}
 
+#icon_separator{height:40px;}
 /* Use by the jQuery highlight plugin, highlight searched keywords */
 .highlight{background-color:yellow !important;border-radius:.125em;}  
 

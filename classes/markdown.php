@@ -977,13 +977,14 @@ class aeSecureMarkdown {
     
       $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
          '<i id="icon_refresh" data-task="display" data-file="'.$filename.'" class="fa fa-refresh" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('refresh')).'"></i>'.
+         '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_clipboard')).'"></i>'.
          '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview')).'"></i>'.
          '<i id="icon_pdf" data-task="pdf" data-file="'.$filename.'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf')).'"></i>'.
-         '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link')).'"></i>'.
+         '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link')).'"></i>'.
          '<i id="icon_slideshow" data-task="slideshow" data-file="'.$filename.'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('slideshow')).'"></i>'.        
          $icons.'</div>';
       
-      $html=$toolbar.$html;
+      $html=$toolbar.'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
       
       $html=str_replace('src="images/', 'src="'.$this->_settingsDocsFolder.'/'.str_replace(DS,'/',dirname($filename)).'/images/',$html);
       $html=str_replace('href="files/', 'href="'.$this->_settingsDocsFolder.'/'.str_replace(DS,'/',dirname($filename)).'/files/',$html);
@@ -1338,6 +1339,7 @@ class aeSecureMarkdown {
             "markdown.message.button_save='".str_replace("'","\'",html_entity_decode(self::getText('button_save')))."';\n".
             "markdown.message.button_save_done='".str_replace("'","\'",html_entity_decode(self::getText('button_save_done')))."';\n".
             "markdown.message.button_save_error='".str_replace("'","\'",html_entity_decode(self::getText('button_save_error')))."';\n".
+            "markdown.message.copy_clipboard_done='".str_replace("'","\'",html_entity_decode(self::getText('copy_clipboard_done')))."';\n".
             "markdown.message.copy_link_done='".str_replace("'","\'",html_entity_decode(self::getText('copy_link_done')))."';\n".                              
             "markdown.message.display_that_note='".str_replace("'","\'",html_entity_decode(self::getText('display_that_note')))."';\n".
             "markdown.message.button_exit_edit_mode='".str_replace("'","\'", html_entity_decode(self::getText('button_exit_edit_mode')))."';\n".

@@ -14,6 +14,8 @@
 - [Taking notes](#taking-notes)
 - [Using the program](#using-the-program)
 - [Toolbar](#toolbar)
+  - [Refresh](#toolbar-refresh)
+  - [Copy note's content in the clipboard](#toolbar-clipboard)
   - [Print](#toolbar-print)
   - [Export as pdf](#toolbar-export-pdf)
   - [Copy link](#toolbar-copy)
@@ -85,8 +87,8 @@ For clarity, this quick start is for a localhost system.
 assets/      javascript, css and images of the application
 classes/     php classes, for intern use (no access by URLs)
 docs/        documentation, default folder where to put your notes
-libs/        external libraries, open source ones
-templates/   layouts for the screen, slideshow and output as html page
+templates/   layouts for the screen, slideshow and output as vendor/      external libraries, open source ones
+html page
 ```
 
 In the root folder, you'll find, among others, 
@@ -181,11 +183,21 @@ To make the note smarter and his use more comfortable, a few jQuery plugins will
 
 ## <a name="toolbar"></a>Toolbar
 
+![Toolbar](https://github.com/cavo789/markdown/blob/master/docs/toolbar.png)
+
+### <a name="toolbar-refresh"></a>Refresh
+
+Reload the note.  Make easier to reresh it's content if you've modified it outside the application.
+
+### ### <a name="toolbar-clipboard"></a>Copy note's content in the clipboard
+
+Copy the content of the note, formatting included, in the clipboard.  Making things easier if you wish to put that content in a mail f.i. : just press that button, go to your email editor program and press `CTRL-V` (Windows) / `Cmd-V` (Mac)
+
 ### <a name="toolbar-print"></a>Print
 
 This feature will display a `print preview` rendering of the note.  That rendering is using a special css file (*you can found that file in the /assets/ folder*) for better print rendering.
 
-Note : you can also just press `CTRL-P` shortcut, the interface is parametrized so that only the note will be printed and not the treeview or the toolbar f.i.; only the note's content.
+Note : you can also just press `CTRL-P` / `Cmd-V`  shortcut, the interface is parametrized so that only the note will be printed and not the treeview or the toolbar f.i.; only the note's content.
 
 *This preview is based on the [jquery-print-preview](https://github.com/etimbo/jquery-print-preview-plugin) plugin.*
 
@@ -206,7 +218,7 @@ You can then f.i. open a new tab and paste the URL to get a immediate link.
 The aim here is to be able to create links between notes : 
 
 * Display a note and copy the link i.e. just click on the `Copy note link` button
-* Edit an another note and paste there the link (so just press `CTRL-V`)
+* Edit an another note and paste there the link (so just press `CTRL-V` / `Cmd-V`)
 * Save the file and display it.   You see that by clicking on the link, you stay in the interface and the note is well opened "in the context".
 
 You can create as many links you want; there is no restriction.
