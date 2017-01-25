@@ -16,6 +16,7 @@
 - [Taking notes](#taking-notes)
 - [Using the program](#using-the-program)
 - [Toolbar](#toolbar)
+  - [Fullscreen](#toolbar-fullscreen)
   - [Refresh](#toolbar-refresh)
   - [Copy note's content in the clipboard](#toolbar-clipboard)
   - [Print](#toolbar-print)
@@ -188,6 +189,14 @@ To make the note smarter and his use more comfortable, a few jQuery plugins will
 ## <a name="toolbar"></a>Toolbar
 
 ![Toolbar](https://github.com/cavo789/markdown/blob/master/docs/toolbar.png)
+
+### <a name="toolbar-fullscreen"></a>Fullscreen
+
+Give the maximum width to your content : hide the list of files, hide the search engine and also every buttons except the fullscreen one.
+
+Your note's content will be displayed in fullscreen.
+
+**Note : don't press the `escape` key on your keyboard to leave that mode but press the fullscreen button once more.**
 
 ### <a name="toolbar-refresh"></a>Refresh
 

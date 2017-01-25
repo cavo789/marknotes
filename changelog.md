@@ -7,6 +7,7 @@ https://github.com/cavo789/markdown
 ### 2017-01-25
 
 ```diff
++ Add a fullscreen button (on/off)
 + Add a copy the note's content in the clipboard, with formatting
 + Add a refresh button to reload the note more easily
 + Change the current "Copy note's link" icon to an anchor

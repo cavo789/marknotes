@@ -42,8 +42,8 @@ body{background:#F7F2E9;}
 
 /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
 #icons {display:inline-block;position:fixed;top:5px;right:30px;margin-right:10px;cursor:pointer;}
-#icon_refresh{color:lightgray;}
-#icon_printer, #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_link_note, #icon_window {margin-left:20px;color:lightgray;}
+#icon_fullscreen{color:lightgray;}
+#icon_refresh, #icon_printer, #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_link_note, #icon_window {margin-left:20px;color:lightgray;}
 
 #icon_lock{margin-left:2px;color:#abe0ab;}
 
@@ -95,3 +95,7 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 
 /* Edit - Toolbar size */
 div.editor-wrapper .editor-toolbar a {width:40px;}
+
+.fullwidth {padding-left:15px;padding-right:15px;width: 100%;
+    min-width: 100%;
+    max-width: 100%;}
