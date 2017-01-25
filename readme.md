@@ -2,6 +2,8 @@
 
 
 ![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master) ![License MIT](https://github.com/cavo789/markdown/blob/master/docs/license.png)
+[![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/markdown/master/badge.svg)](https://travis-ci.org/cavo789/markdown.svg?branch=master})
+
 
 ## Table of contents
 
