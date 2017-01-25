@@ -67,6 +67,8 @@ This is a web application, coded with PHP 7 so
 
 For clarity, this quick start is for a localhost system.  
 
+The last version of the program can be found here : https://github.com/cavo789/markdown
+
 1. Copy this repository (by downloading the ZIP archive f.i.) onto your computer,
 2. Create f.i. a folder called `markdown` and unzip the archive there,
 3. If needed, create an alias that will point to that folder (let's say `http://localhost/markdown`),
@@ -189,7 +191,7 @@ To make the note smarter and his use more comfortable, a few jQuery plugins will
 
 Reload the note.  Make easier to reresh it's content if you've modified it outside the application.
 
-### ### <a name="toolbar-clipboard"></a>Copy note's content in the clipboard
+### <a name="toolbar-clipboard"></a>Copy note's content in the clipboard
 
 Copy the content of the note, formatting included, in the clipboard.  Making things easier if you wish to put that content in a mail f.i. : just press that button, go to your email editor program and press `CTRL-V` (Windows) / `Cmd-V` (Mac)
 
