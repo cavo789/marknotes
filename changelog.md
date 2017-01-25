@@ -10,6 +10,7 @@ https://github.com/cavo789/markdown
 + Add a copy the note's content in the clipboard, with formatting
 + Add a refresh button to reload the note more easily
 + Change the current "Copy note's link" icon to an anchor
+- Remove a bug while searching in a note with encrypted data, simplify the function
 ```
 
 ### 2017-01-24

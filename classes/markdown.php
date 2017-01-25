@@ -1063,7 +1063,7 @@ class aeSecureMarkdown {
       $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
 
       $docs=str_replace('/',DS,$this->_settingsDocsFolder);
-      //$return['keywords']=$keywords;
+      
       foreach ($arrFiles as $file) {
          
          // Don't mention the full path, should be relative for security reason
@@ -1092,26 +1092,53 @@ class aeSecureMarkdown {
             
          } else { // if ($bFound)
                      
-            // Open the file and check against its content
+            // Open the file and check against its content (plain and encrypted)
             
             $fullname=utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.$file);
             $content=file_get_contents($fullname);
 
-            // Don't search into the encrypted data.   If the user is searching for, f.i. "PHP", there is chance
-            // that "PHP" is a pattern in an encrypted note.  Don't search into that patterns
-            preg_match_all('/<encrypt data-encrypt *([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $content, $matches);
+            // Verify if the note contains encrypted data and, if so, decrypt them first
+
+            $matches = array();  
+            
+            // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+            preg_match_all('/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $content, $matches);
 
             // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
             if (count($matches[1])>0) {
-               // Remove encrypted parts
-               foreach($matches[0] as $match) $content=str_ireplace($match,'',$content);
-            }
+
+               $j=count($matches[0]);
+
+               $i=0;
+
+               // Loop and process every <encrypt> tags
+               // For instance : <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
+
+               for($i;$i<$j;$i++) {
+
+                  // Retrieve the attributes (f.i. data-encrypt="true")            
+                  $attributes=$matches[1][$i];
+
+                  // Are there data-encrypt=true content ? If yes, unencrypt it
+                  $tmp=array();
+                  preg_match('#data-encrypt="(.*)"#', $attributes, $tmp);
+
+                  if(count($tmp)>0) {
+                     // Only when data-encrypt="true" is found, consider the content has an encrypted one.
+                     $isEncrypted=(strcasecmp(rtrim($tmp[1]),'true')===0?TRUE:FALSE);
+                     $decrypt=$aesEncrypt->sslDecrypt($matches[2][$i],NULL);
+                     $content=str_replace($matches[2][$i], $decrypt, $content);
+                  }    
+
+               } // for($i;$i<$j;$i++)
+
+            } // if (count($matches[1])>0) {
             
             $bFound=TRUE;
             
             foreach($keywords as $keyword) {               
                if (stripos($content, $keyword)===FALSE) {
-                  // at least one term is not present in the content (unencrypted), stop   
+                  // at least one term is not present in the content, stop   
                   $bFound=FALSE;
                   break;
                }            
@@ -1119,68 +1146,13 @@ class aeSecureMarkdown {
             
             if ($bFound) {
                
-               if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
+               if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in filecontent : ['.$file.']',true);  
                
                // Found in the filename => stop process of this file
                $return['files'][]=$docs.$file;
             
-            } else { // if ($bFound)
-  
-               // Not found in filename and filecontent (unencrypted); check if there are encrypted info
-
-               // Check if the note has encrypted data.  If you, decrypt and search in the decrypted version
-               
-               $matches = array();         
-               // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
-               preg_match_all('/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $content, $matches);
-
-               // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
-               if (count($matches[1])>0) {
-                  
-                  $j=count($matches[0]);
-
-                  $i=0;
-
-                  // Loop and process every <encrypt> tags
-                  // For instance : <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
-
-                  for($i;$i<$j;$i++) {
-                        
-                     // Retrieve the attributes (f.i. data-encrypt="true")            
-                     $attributes=$matches[1][$i];
-
-                     // Are there data-encrypt=true content ? If yes, unencrypt it
-                     $tmp=array();
-                     preg_match('#data-encrypt="(.*)"#', $attributes, $tmp);
-                     
-                     if(count($tmp)>0) {
-                        // Only when data-encrypt="true" is found, consider the content has an encrypted one.
-                        $isEncrypted=(strcasecmp(rtrim($tmp[1]),'true')===0?TRUE:FALSE);
-                        $decrypt=$aesEncrypt->sslDecrypt($matches[2][$i],NULL);
-                        $content=str_replace($matches[2][$i], $decrypt, $content);
-                     }    
-                  
-                  } // for($i;$i<$j;$i++)
-                  
-                  $bFound=TRUE;
-
-                  foreach($keywords as $keyword) {               
-                     if (stripos($content, $keyword)===FALSE) { 
-                        // at least one term is not present in the encrypted content, stop   
-                        $bFound=FALSE;
-                        break;
-                     }  
-                  } // foreach($keywords as $keyword)    
-                  
-               } // if (count($matches[1])>0) {
-                  
-               if($bFound) {
-                  if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in unencrypted filecontent : ['.$file.']',true);  
-                  $return['files'][]=$docs.$file;
-               }
-               
-            } // if ($bFound)
-           
+            }  // if ($bFound)
+          
          } // if ($bFound) {
             
       } // foreach ($arrFiles as $file)
