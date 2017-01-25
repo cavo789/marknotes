@@ -51,6 +51,7 @@
          "open_html":"Open in a new window",
          "please_wait":"Please wait...",
          "print_preview":"Print preview",
+         "refresh":"Refresh",
          "search_no_result":"Sorry, the search is not successfull",
          "search_placeholder":"Search...",
          "slideshow":"slideshow"
@@ -77,6 +78,7 @@
          "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",
          "please_wait":"Un peu de patience s&#x27;il vous pla&#xEE;t...",
          "print_preview":"Aper&ccedil;u avant impression",
+		 "refresh":"Rafra&icirc;chir",
          "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
          "search_placeholder":"Recherchez...",
          "slideshow":"Affiche le document au format 'pr&eacute;sentation'"

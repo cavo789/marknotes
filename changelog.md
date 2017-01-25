@@ -4,6 +4,12 @@ https://github.com/cavo789/markdown
 
 ## 1.0.1
 
+### 2017-01-25
+
+```diff
++ Add a refresh button to reload the note more easily
+```
+
 ### 2017-01-24
 
 ```diff

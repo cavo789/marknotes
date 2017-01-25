@@ -976,6 +976,7 @@ class aeSecureMarkdown {
       //$thisNote=str_replace(aeSecureFct::getCurrentURL(FALSE,TRUE),'',$thisNote);
     
       $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
+         '<i id="icon_refresh" data-task="display" data-file="'.$filename.'" class="fa fa-refresh" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('refresh')).'"></i>'.
          '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('print_preview')).'"></i>'.
          '<i id="icon_pdf" data-task="pdf" data-file="'.$filename.'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('export_pdf')).'"></i>'.
          '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('copy_link')).'"></i>'.

@@ -379,7 +379,7 @@ function initializeTasks() {
             
             // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
             if (markdown.settings.debug) console.log('Display -> show note ['+$fname+']');
-            ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});            
+            ajaxify({task:$task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});            
             break;
             
          case 'edit':   
@@ -453,7 +453,7 @@ function initializeTasks() {
          case 'printer':   
             
             //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
-            break;               
+            break;  
             
          case 'slideshow':
             
