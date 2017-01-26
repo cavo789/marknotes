@@ -11,18 +11,21 @@
 - [Quick Start](#quick-start)
 - [Structure](#structure)
 - [Saving your own notes](#docs)
-- [Taking notes](#taking-notes)
 - [Using the program](#using-the-program)
-- [Toolbar](#toolbar)
-  - [Fullscreen](#toolbar-fullscreen)
-  - [Refresh](#toolbar-refresh)
-  - [Copy note's content in the clipboard](#toolbar-clipboard)
-  - [Print](#toolbar-print)
-  - [Export as pdf](#toolbar-export-pdf)
-  - [Copy link](#toolbar-copy)
-  - [Slideshow](#toolbar-slideshow)
-  - [Open in a new window](#toolbar-window)
-  - [Edit](#toolbar-edit)
+  - [Main form](#main-form)
+  - [Add a new note](#add-a-note)
+  - [Delete a note](#delete-a-note)
+  - [Edit a note](#edit-a-note)
+  - [Toolbar](#toolbar)
+    - [Fullscreen](#toolbar-fullscreen)
+    - [Refresh](#toolbar-refresh)
+    - [Copy note's content in the clipboard](#toolbar-clipboard)
+    - [Print](#toolbar-print)
+    - [Export as pdf](#toolbar-export-pdf)
+    - [Copy link](#toolbar-copy)
+    - [Slideshow](#toolbar-slideshow)
+    - [Open in a new window](#toolbar-window)
+    - [Edit](#toolbar-edit)
 - [Customize to fit your needs](#customize)
 - [Define your preferences](#settings)
 - [Define your tags](#tags)
@@ -127,20 +130,9 @@ By refreshing the interface, the index.php script of this application will scan 
 * If you want to use an another folder, just edit the `settings.json` file (see below) and update the `folder` variable.
 * You can also, without changing anything, kill the current `docs` folder and create a symbolic links called "docs" but pointing to an existing folder on your system where, already today, you're saving your .md files.  Under WIndows, you can create symbolic links easily thanks the `mklink` command (f.i. `mklink /D docs c:\documents`) ([read more on howtogeek.com](http://www.howtogeek.com/howto/16226/complete-guide-to-symbolic-links-symlinks-on-windows-or-linux/))
 
-## <a name="taking-notes"></a>Taking notes
-
-Take a look on this `readme.md` file : open this file with a text editor (like Notepad on Windows).   The file is "just" text, with a very few tags (like the presence of hash tags).
-
-The advantage of Markdown is to be able to quickly type a note, that doens't need a client like a web browser to read it.  The Markdown language is self-describing and writing such file is fast : just type your text.
-
-Markdown offers tags to be able to create headings (heading 1 till 6), quotes, bold, italic, ...  You can type lists, insert images, ... easily, almost naturally.
-
-Writing in Markdown ask a very few learning.  If you don't know this syntax, refer to the official GitHub guide : [https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf](https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf)).  You can also play online with [https://stackedit.io/](https://stackedit.io/).
-
-There are a lot of dedicated editors, free or commercial, to make life easier. At writing time, I'm using [Typora](https://typora.io/), before it, I've used [MarkdownPad 2](http://markdownpad.com/).
-
 ## <a name="using-the-program"></a>Using the program
 
+### <a name="main-form"></a>Main form
 Once you've install the program and add your own notes in the `docs`folder, go to  `http://localhost/markdown` and, if needed, refresh your screen.
 
 You'll obtain a screen with two parts :
@@ -148,7 +140,7 @@ You'll obtain a screen with two parts :
 1. Your folder structure
 2. Your note
 
-### 1. Your folder structure 
+#### 1. Your folder structure 
 
 The left part will of the screen is the `treeview` : you'll find there any subfolders where .md files have been found (*so, a folder with no .md file won't be mentionned*).  You can open a folder by just double-clicking on it, like you do everywhere else.
 
@@ -167,7 +159,7 @@ Note : you can type several keywords.  The logic behind is a AND operator : note
 
 *[jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist)  is used for the search functionnality.*
 
-### 2. Your content
+#### 2. Your content
 
 Just click on a file from the left part and you'll see its content in the right part like illustrated here above.
 
@@ -183,6 +175,42 @@ To make the note smarter and his use more comfortable, a few jQuery plugins will
 * [linkifyjs](https://github.com/SoapBox/linkifyjs) allow to convert plain text emails and URLs into clickable ones, 
 * [Prism](http://prismjs.com) is used for syntax coloring (based on the language, Prism will put language's instruction in color),
 * ... and a few own made javascript script will enhance the page like the "[tags](#tags)" script
+
+### <a name="add-a-note"></a>Add a new note
+
+**In version 1.0, the creation of the note isn't yet foreseen in the software itself**
+
+In order to create a new note, open a files explorer application, go to your documents folder (by default : the `docs` folder of your website root folder).  Create a new folder and/or use an existing one and simply create a new text file with `.md` as file's extension.
+
+Take a look on this `readme.md` file : open this file with a text editor (like Notepad on Windows).   The file is "just" text, with a very few tags (like the presence of hash tags).
+
+The advantage of Markdown is to be able to quickly type a note, that doens't need a client like a web browser to read it.  The Markdown language is self-describing and writing such file is fast : just type your text.
+
+Markdown offers tags to be able to create headings (heading 1 till 6), quotes, bold, italic, ...  You can type lists, insert images, ... easily, almost naturally.
+
+Writing in Markdown ask a very few learning.  If you don't know this syntax, refer to the official GitHub guide : [https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf](https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf)).  You can also play online with [https://stackedit.io/](https://stackedit.io/).
+
+There are a lot of dedicated editors, free or commercial, to make life easier. At writing time, I'm using [Typora](https://typora.io/), before it, I've used [MarkdownPad 2](http://markdownpad.com/).
+
+### <a name="delete-a-note"></a>Delete a note
+
+**In version 1.0, the deletion of the note isn't yet foreseen in the software itself**
+
+Just like for [Add a note](#add-a-note), open your preferred files explorer application, go to your documents folder (by default : the `docs` folder of your website root folder), go to the folder where the note is stored and delete the file.
+
+You can found more than one file : 
+
+* the `.md` file (f.i. myNote.md), it's your note. Just delete the file.
+* the `.html` file (f.i. myNote.html), it's your note in a html visualization.  Delete the file too.
+* the `_slideshow.html` file (f.i. myNote_slideshow.html), it's your note too, in a slideshow format.  Delete the file too. 
+
+### <a name="edit-a-note"></a>Edit a note
+
+Take a look on the [Edit](#toolbar-edit) button available in the toolbar.
+
+You can edit the file locally (with a text editor program) or online (through the interface).
+
+If you prefer locally, just go to your documents folder (by default : the `docs` folder of your website root folder), go to the folder where the note is stored and open the file with a text editor program (f.i. [Typora](https://typora.io/) or [MarkdownPad](http://markdownpad.com/)).
 
 ## <a name="toolbar"></a>Toolbar
 
