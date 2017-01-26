@@ -134,4 +134,13 @@ class aeSecureFct {
     );
 }
    
+   /**
+    * Return true when the call to the php script has been done through an ajax request
+    * @return type
+    */
+   static public function isAjaxRequest() {
+      $bAjax=(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+      return $bAjax;
+   } // function isAjaxRequest()
+   
 } // class aeSecureFct

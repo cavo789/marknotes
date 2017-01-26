@@ -4,7 +4,7 @@
 	"keywords": ["markdown", "notes", "evernote-like"],
 	"homepage": "https://github.com/cavo789/markdown",
 	"type": "project",
-	"time": "2017-01-22",
+	"time": "2017-01-26",
 	"license": "MIT",
 	"require": {
 		"php": ">=7.0",

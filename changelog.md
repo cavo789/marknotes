@@ -4,6 +4,13 @@ https://github.com/cavo789/markdown
 
 ## 1.0.1
 
+### 2017-01-26
+
+```diff
++ Include php-error (https://github.com/JosephLenton/PHP-Error) when the development is enabled (in settings.json)
++ Add additionnals error handling in javascript
+```
+
 ### 2017-01-25
 
 ```diff

@@ -147,12 +147,23 @@ function addSearchEntry($entry) {
  */
 function initFiles($data) {
    
+   if (typeof $data === 'undefined') {
+      var $msg=markdown.message.json_error;
+      Noty({message:$msg.replace('%s', 'listFiles'),type:'error'});   
+      return false;
+   }
+   
    //if (markdown.settings.debug) console.log($data.count);
    
-   if($data.hasOwnProperty('count')) {
-      // Display the number of returned files
-      var $msg=markdown.message.filesfound;
-      Noty({message:$msg.replace('%s', $data.count), type:'notification'});         
+   try {
+      if($data.hasOwnProperty('count')) {
+         // Display the number of returned files
+         var $msg=markdown.message.filesfound;
+         Noty({message:$msg.replace('%s', $data.count), type:'notification'});         
+      }
+   } catch(err) {    
+      console.warn(err.message);
+      if (markdown.settings.debug) Noty({message:err.message, type:'error'});  
    }
    
    try {
@@ -285,6 +296,7 @@ function initFiles($data) {
    } catch(err) {         
       
       console.warn(err.message);
+      if (markdown.settings.debug) Noty({message:err.message, type:'error'});      
       
    }
    
@@ -323,6 +335,7 @@ function initFiles($data) {
       if (typeof custominiFiles !== 'undefined' && $.isFunction(custominiFiles)) custominiFiles();
    } catch(err) {        
       console.warn(err.message);
+      if (markdown.settings.debug) Noty({message:err.message, type:'error'});     
    }
    
    return true;

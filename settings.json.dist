@@ -1,7 +1,7 @@
 {   
    "debug":0,
    "development":0,
-   "editor":0,
+   "editor":1,
    "encryption": {
       "password":"",
       "method":"aes-256-ctr"
@@ -48,6 +48,7 @@
          "files_found":"%s has been retrieved",
 		 "fullscreen":"Display the note in fullscreen",
          "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
+		 "json_error":"The [%s] task has returned an invalid JSON result",
          "no_save_allowed":"Error, saving notes isn't allowed.",
          "open_html":"Open in a new window",
          "please_wait":"Please wait...",
@@ -78,6 +79,7 @@
          "files_found":"%s fichiers ont été retrouvés",
 		 "fullscreen":"Affiche la note en plein &eacute;cran",
          "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
+		 "json_error":"La t&acirc;che [%s] a retourn&eacute; une r&eacute;ponse JSON incorrecte",
          "no_save_allowed":"Erreur, l'&eacute;dition des notes n'est pas autoris&eacute;e.",
          "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",
          "please_wait":"Un peu de patience s&#x27;il vous pla&#xEE;t...",

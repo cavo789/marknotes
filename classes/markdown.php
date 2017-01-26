@@ -39,6 +39,9 @@ define ('SEARCH_MAX_LENGTH',100);
 defined('DS') or define('DS',DIRECTORY_SEPARATOR);
 define('DEVMODE','=== DEV MODE ENABLED ===');
 
+// Libraries folders path
+define('LIB',dirname(__DIR__).DS.'libs'.DS);
+
 // Requires PHP 7.x
          
 class aeSecureMarkdown {
@@ -164,6 +167,21 @@ class aeSecureMarkdown {
 
             if(isset($this->_json['development'])) {
                $this->_DEVMODE=($this->_json['development']==1?TRUE:FALSE); // Development mode enabled or not
+               
+               // Only when the development mode is enabled, include php_error library to make life easier
+               if ($this->_DEVMODE) {
+                  if(file_exists($lib=LIB.'php_error'.DS.'php_error.php')) {
+                     
+                     // Seems to not work correctly with ajax; the return JSON isn't correctly understand by JS
+                     $options = array(
+                        'catch_ajax_errors' => aeSecureFct::isAjaxRequest(),   // Don't enable ajax is not ajax call
+                        'enable_saving' => 0,                                  // Don't allow to modify sources from php-error
+                        'error_reporting_on' => 1                              // Capture everything
+                     );
+                     require($lib);
+                     \php_error\reportErrors($options);
+                  }
+               }
             }
 
             if(isset($this->_json['editor'])) { 
@@ -1085,8 +1103,6 @@ class aeSecureMarkdown {
          if ($bFound) {
             
             if ($this->_DEBUGMODE) $return['debug'][]=$this->aeDebug->log('All keywords found in filename : ['.$file.']',true);    
-          
-            if ($this->_DEVMODE) echo $this->aeDebug->log(DEVMODE.' All keywords found in filename',true);
             
             // Found in the filename => stop process of this file
             $return['files'][]=$docs.$file;
@@ -1317,6 +1333,7 @@ class aeSecureMarkdown {
             "markdown.message.display_that_note='".str_replace("'","\'",html_entity_decode(self::getText('display_that_note')))."';\n".
             "markdown.message.button_exit_edit_mode='".str_replace("'","\'", html_entity_decode(self::getText('button_exit_edit_mode')))."';\n".
             "markdown.message.filesfound='".str_replace("'","\'",html_entity_decode(self::getText('files_found')))."';\n".
+            "markdown.message.json_error='".str_replace("'","\'", html_entity_decode(self::getText('json_error')))."';\n".
             "markdown.message.pleasewait='".str_replace("'","\'",html_entity_decode(self::getText('please_wait')))."';\n".
             "markdown.message.search_no_result='".str_replace("'","\'",html_entity_decode(self::getText('search_no_result')))."';\n".
             "markdown.url='index.php';\n".
