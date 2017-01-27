@@ -9,13 +9,13 @@ var settings = require('../config').settings;
 gulp.task('copy', function() {
 
    return gulp.src(config.src)
-      .pipe(htmlreplace({		  
-         'debug':'',    
-         },{
-            keepUnassigned:true,
-            keepBlockTags:true                        // Important : si false, les autres blocs sont supprimés (bug???)
-         })
-       )
+     // .pipe(htmlreplace({		  
+     //    'debug':'',    
+     //    },{
+     //       keepUnassigned:true,
+     //       keepBlockTags:true                        // Important : si false, les autres blocs sont supprimés (bug???)
+     //    })
+     //  )
       .pipe(gulp.dest(config.dest));
 	  
 });
