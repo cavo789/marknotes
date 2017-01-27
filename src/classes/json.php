@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /* REQUIRES PHP 7.x AT LEAST */
 
 define('JSON_FILE_NOT_FOUND','The file [%s] doesn\'t exists (anymore)');

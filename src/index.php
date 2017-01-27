@@ -1,7 +1,5 @@
 <?php                 
-declare(strict_types=1);
-
-define('VERSION','1.0.1');
+define('VERSION','1.0.2');
 
 /* REQUIRES PHP 7.x AT LEAST */
 
