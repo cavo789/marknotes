@@ -96,6 +96,9 @@ page{background:white;display:none;margin:0 auto;margin-bottom:0.5cm;box-shadow:
 /* Edit - Toolbar size */
 div.editor-wrapper .editor-toolbar a {width:40px;}
 
-.fullwidth {padding-left:15px;padding-right:15px;width: 100%;
-    min-width: 100%;
-    max-width: 100%;}
+.fullwidth {padding-left:15px;padding-right:15px;width:100%;min-width:100%;max-width:100%;}
+
+/* Display folders in the treeview in italic */
+.jstree-open > .jstree-anchor, .jstree-closed > .jstree-anchor {font-style:italic;}
+	
+	
