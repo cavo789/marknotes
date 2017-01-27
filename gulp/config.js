@@ -22,8 +22,8 @@ module.exports = {
       '* @copyright : <%= pkg().license %> (c) 2016 - <%= new Date().getFullYear() %>',
       '* @url       : <%= pkg().homepage %>',
       '* @package   : <%= new Date().toISOString() %>', 
-      ' */',
-      '* ?>', 
+      '*/',
+      '?>', 
       ''].join('\n'),
    delete: {
       dest: [target]

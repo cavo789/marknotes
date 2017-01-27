@@ -5,9 +5,9 @@
 * @author    : christophe@aesecure.com
 * @copyright : MIT (c) 2016 - 2017
 * @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-01-27T17:48:23.317Z
- */
-* ?>
+* @package   : 2017-01-27T17:49:44.883Z
+*/
+?>
 <?php                 
 define('VERSION','1.0.2');
 
