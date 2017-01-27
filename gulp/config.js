@@ -13,7 +13,9 @@ function getSettings($node) {
 }
 
 module.exports = {
-   banner: ['/**',
+   banner: [
+      '<?php',   
+      '/**',
       '* <%= pkg().name %> - <%= pkg().description %>',
       '* @version   : <%= pkg().version %>',
       '* @author    : <%= pkg().author %>',
@@ -21,6 +23,7 @@ module.exports = {
       '* @url       : <%= pkg().homepage %>',
       '* @package   : <%= new Date().toISOString() %>', 
       ' */',
+      '* ?>', 
       ''].join('\n'),
    delete: {
       dest: [target]
