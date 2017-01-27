@@ -1,0 +1,13 @@
+#aeSecure
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteOptions Inherit
+RewriteCond %{REQUEST_URI} ^((.*/)assets/.*)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !index\.html [NC]
+RewriteCond %{REQUEST_FILENAME} !\.(icon?|img|gif|jpe?g|png|map|webp)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !\.css(.gz)?(\?.*)?$ [NC]
+RewriteCond %{REQUEST_FILENAME} !\.js(.gz)?(\?.*)?$ [NC]
+RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf|woff2?)(\?.*)?$ [NC]
+RewriteCond %{REQUEST_FILENAME} !markdown_(screen|print)\.php [NC]
+RewriteRule .* - [R=403,NC,L]
+</IfModule>

@@ -1,6 +1,7 @@
 nbproject/
 nbproject/private/
-/vendor/**/.git
-settings.json
+node_modules/
 vendor/
+vendor/**/.git
+settings.json
 composer.log

@@ -2,6 +2,14 @@
 
 https://github.com/cavo789/markdown
 
+## 1.0.2
+
+### 2017-01-27
+
+```diff
++ Add Gulp support to allow easier testing before submitting to git
+```
+
 ## 1.0.1
 
 ### 2017-01-26

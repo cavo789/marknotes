@@ -1,0 +1,8 @@
+#Deny access to all CGI, Perl, PHP and Python
+<FilesMatch "\.(cgi|php|pl|py|jsp|sh)$">
+Deny from all
+</FilesMatch>
+
+# secure directory by disabling script execution
+AddHandler cgi-script .php .pl .py .jsp .asp .sh .cgi
+Options -ExecCGI
