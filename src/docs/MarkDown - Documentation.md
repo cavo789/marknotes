@@ -12,11 +12,11 @@
 - [Structure](#structure)
 - [Saving your own notes](#docs)
 - [Using the program](#using-the-program)
-  - [Main form](#main-form)
-  - [Add a new note](#add-a-note)
-  - [Delete a note](#delete-a-note)
-  - [Edit a note](#edit-a-note)
-  - [Toolbar](#toolbar)
+- [Main form](#main-form)
+- [Add a new note](#add-a-note)
+- [Delete a note](#delete-a-note)
+- [Edit a note](#edit-a-note)
+- [Toolbar](#toolbar)
     - [Fullscreen](#toolbar-fullscreen)
     - [Refresh](#toolbar-refresh)
     - [Copy note's content in the clipboard](#toolbar-clipboard)
@@ -74,10 +74,11 @@ For clarity, this quick start is for a localhost system.
 The last version of the program can be found here : https://github.com/cavo789/markdown
 
 1. Copy this repository (by downloading the ZIP archive f.i.) onto your computer,
-2. Create f.i. a folder called `markdown` and unzip the archive there,
-3. If needed, create an alias that will point to that folder (let's say `http://localhost/markdown`),
-4. Be sure to enable PHP 7 for that site,
-5. Access to `http://localhost/markdown` to check that configuration is OK : the application should display his interface.
+2. Keep only the **dist** folder (*which contains distribution files*),
+3. Create f.i. a folder called `markdown` and unzip the archive there,
+4. If needed, create an alias that will point to that folder (let's say `http://localhost/markdown`),
+5. Be sure to enable PHP 7 for that site,
+6. Access to `http://localhost/markdown` to check that configuration is OK : the application should display his interface.
 
 *If everything goes fine, you'll see something like this (the screen and/or text can be a small different depending of the application's version)*
 
