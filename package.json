@@ -19,9 +19,11 @@
     "gulp-minify-css": "^1.2.4",
     "gulp-phplint": "^0.3.4",
     "gulp-remove-html-comments": "^1.0.1",
+    "gulp-shell": "^0.5.2",
     "gulp-uglify": "^2.0.1",
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
+    "phplint": "^1.7.1",
     "require-dir": "^0.3.1",
     "run-sequence": "^1.2.2"
   },
@@ -36,7 +38,7 @@
     "markdown",
     "notes",
     "documentations",
-	"evernote-like"
+    "evernote-like"
   ],
   "author": "christophe@aesecure.com",
   "license": "MIT",

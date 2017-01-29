@@ -36,5 +36,9 @@
 		"post-update-cmd": [
 			"post-composer.bat"
 		]
+	},
+	"require-dev": {
+		"sebastian/phpcpd": "^2.0",
+		"phpmd/phpmd": "^2.6"
 	}
 }

@@ -9,7 +9,7 @@ ECHO Copy - Start at %DATE% - %TIME%
 ECHO.
 
 SET VENDOR=%cd%\vendor\
-SET LIBS=%cd%\libs\
+SET LIBS=%cd%\src\libs\
 
 ECHO Copie les fichiers depuis %VENDOR% vers %LIBS% >> %LOG%
 ECHO. >> %LOG%

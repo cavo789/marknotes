@@ -1,7 +1,9 @@
 'use strict';
 
+var abspath= 'c:/christophe/repository/markdown/';
 var source = 'src';
 var target = 'dist';
+var log    = 'logs';
 
 /** 
   Read the package.json file of the project and return an object with the JSON representation  
@@ -77,6 +79,22 @@ module.exports = {
       lint: true,
       options: {debug:false, clear:true, skipPassedFiles:true},
       dest: target
+   },
+   phpmd: {
+      doit: true,
+      src: target,    
+	  exclude: '*\libs\*', // Process every php files of the target folder except the libs folder
+	  log: log
+   },
+   phpcs: {
+      doit: true,
+      src: abspath+target+'/',    
+	  log: abspath+log+'/php-code-sniffer.log'
+   },
+   phpcbf: {
+      doit: true,
+	  exclude: '*\libs\*', // Process every php files of the target folder except the libs folder
+      src: abspath+target+'/'
    },
    Settings:getSettings
 };

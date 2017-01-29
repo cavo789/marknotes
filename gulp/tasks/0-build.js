@@ -22,6 +22,9 @@ gulp.task('build', function(callback) {
 	 'copy',
 	 ['css', 'js', 'json'],    // These tasks can be simultanously fired
 	 'php',
+	 'phpmd',
+	 'phpcbf',
+	 'phpcs',
 	 callback);
 	 
 });

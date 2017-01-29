@@ -162,7 +162,8 @@ class aeSecureMarkdown {
             } else {	   
                error_reporting(E_ALL & ~ E_NOTICE);	  
             }
-
+			
+            /*<!-- build:debug -->*/
             if(isset($this->_json['development'])) {
                $this->_DEVMODE=($this->_json['development']==1?TRUE:FALSE); // Development mode enabled or not
                
@@ -181,6 +182,7 @@ class aeSecureMarkdown {
                   }
                }
             }
+			/*<!-- endbuild -->*/
 
             if(isset($this->_json['editor'])) { 
                $this->_settingsEditAllowed=($this->_json['editor']==1?TRUE:FALSE); // Allow editions
