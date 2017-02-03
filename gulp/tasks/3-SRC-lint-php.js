@@ -1,13 +1,14 @@
-var gulp        = require('gulp');
-var gulpif      = require('gulp-if');           // https://github.com/robrich/gulp-if
-var phplint     = require('gulp-phplint');
+// PHP Linting
 
-var config      = require('../config').phplint;
-var settings    = require('../config').settings;
+var gulp    = require('gulp');
+var gulpif  = require('gulp-if');           // https://github.com/robrich/gulp-if
+var phplint = require('gulp-phplint');
+var config  = require('../config').SRC_phplint;
+var pkg     = require('../config').pkg();
 
 gulp.task('phplint', function () {
 	
-   if (config.doit===false) return;
+   if (pkg.gulp.tasks.source.lint.json.doit===0) return;
 
    console.log('\n████████████████████████████████████████████████████████████████████████████')
    console.log('█ PHP Lint - Check PHP files agains syntax error                           █');
@@ -24,4 +25,4 @@ gulp.task('phplint', function () {
          }
       }));
 
-})
+});

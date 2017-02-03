@@ -1,93 +1,93 @@
-{   
-   "debug":0,
-   "development":0,
-   "editor":1,
-   "encryption": {
-      "password":"",
-      "method":"aes-256-ctr"
-   },
-   "export":{
-      "save_html":1
-   },
-   "folder":"docs",
-   "language":"fr",
-   "list":{
-      "opened":0,
-	  "auto_open": []
-   },
-   "optimisation":{
-      "cache":1,
-      "lazyload":1
-   },
-   "page":{
-      "google_font":"",
-      "img_maxwidth":800
-   },
-   "tags":[],
-   "templates":{
-      "screen":"screen",
-      "html":"html"
-   },
-   "languages":{
-      "en": {
-         "apply_filter":"Filtering to [%s]",
-         "apply_filter_tag":"Display notes containing this tag",
-         "button_encrypt":"Add encryption for the selection",
-         "button_exit_edit_mode":"Exit the editing mode",
-         "button_save":"Submit your changes",
-         "button_save_done":"The file has been successfully saved",
-         "button_save_error":"There was an error while saving the file",
-         "copy_link":"Copy the link to this note in the clipboard",
-         "copy_link_done":"The URL of this note has been copied into the clipboard",
-         "confidential":"confidential",
-         "display_that_note":"Display that note",
-         "edit_file":"Edit",
-         "error":"Error",
-         "export_pdf":"Export the note as a PDF document",
-         "file_not_found":"The file [%s] doesn\\'t exists (anymore)",
-         "files_found":"%s has been retrieved",
-		 "fullscreen":"Display the note in fullscreen",
-         "is_encrypted":"This information is encrypted in the original file and decoded here for screen display",
-		 "json_error":"The [%s] task has returned an invalid JSON result",
-         "no_save_allowed":"Error, saving notes isn't allowed.",
-         "open_html":"Open in a new window",
-         "please_wait":"Please wait...",
-         "print_preview":"Print preview",
-         "refresh":"Refresh",
-         "search_no_result":"Sorry, the search is not successfull",
-         "search_placeholder":"Search...",
-         "slideshow":"slideshow"
-      },
-      "fr": {
-         "apply_filter":"Limite la liste des notes à [%s]",
-         "apply_filter_tag":"Affiche les notes reprennant ce mot",
-         "button_encrypt":"Encrypte la s&eacute;lection",
-         "button_exit_edit_mode":"Quitte le mode &eacute;dition",
-         "button_save":"Enregistre vos modifications sur le serveur",
-         "button_save_done":"Le fichier a &eacute;t&eacute; enregistr&eacute; avec succ&egrave;s",
-         "button_save_error":"Une erreur a &eacute;t&eacute; rencontr&eacute;e lors de la sauvegarde",		 
-		 "copy_clipboard":"Copie le contenu de la note, avec mise en page, dans le presse-papier",	 
-		 "copy_clipboard_done":"La note a &eacute;t&eacute; copi&eacute;e.  Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
-         "copy_link":"Copier le lien vers cette note dans le presse-papier",
-         "copy_link_done":"L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
-         "confidential":"confidentiel",
-         "display_that_note":"Afficher cette note",
-         "edit_file":"Éditer",
-         "error":"Erreur",
-         "export_pdf":"Exporter cette note au format pdf",
-         "file_not_found":"Le fichier [%s] n\\'existe pas (ou plus)",
-         "files_found":"%s fichiers ont été retrouvés",
-		 "fullscreen":"Affiche la note en plein &eacute;cran",
-         "is_encrypted":"Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
-		 "json_error":"La t&acirc;che [%s] a retourn&eacute; une r&eacute;ponse JSON incorrecte",
-         "no_save_allowed":"Erreur, l'&eacute;dition des notes n'est pas autoris&eacute;e.",
-         "open_html":"Ouvrir dans une nouvelle fen&ecirc;tre",
-         "please_wait":"Un peu de patience s&#x27;il vous pla&#xEE;t...",
-         "print_preview":"Aper&ccedil;u avant impression",
-		 "refresh":"Rafra&icirc;chir",
-         "search_no_result":"D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
-         "search_placeholder":"Recherchez...",
-         "slideshow":"Affiche le document au format 'pr&eacute;sentation'"
-      }      
-   }
+{
+    "debug": 0,
+    "development": 0,
+    "editor": 1,
+    "encryption": {
+        "password": "",
+        "method": "aes-256-ctr"
+    },
+    "export": {
+        "save_html": 1
+    },
+    "folder": "docs",
+    "language": "fr",
+    "list": {
+        "opened": 0,
+        "auto_open": []
+    },
+    "optimisation": {
+        "cache": 1,
+        "lazyload": 1
+    },
+    "page": {
+        "google_font": "",
+        "img_maxwidth": 800
+    },
+    "tags": [],
+    "templates": {
+        "screen": "screen",
+        "html": "html"
+    },
+    "languages": {
+        "en": {
+            "apply_filter": "Filtering to [%s]",
+            "apply_filter_tag": "Display notes containing this tag",
+            "button_encrypt": "Add encryption for the selection",
+            "button_exit_edit_mode": "Exit the editing mode",
+            "button_save": "Submit your changes",
+            "button_save_done": "The file has been successfully saved",
+            "button_save_error": "There was an error while saving the file",
+            "copy_link": "Copy the link to this note in the clipboard",
+            "copy_link_done": "The URL of this note has been copied into the clipboard",
+            "confidential": "confidential",
+            "display_that_note": "Display that note",
+            "edit_file": "Edit",
+            "error": "Error",
+            "export_pdf": "Export the note as a PDF document",
+            "file_not_found": "The file [%s] doesn\\'t exists (anymore)",
+            "files_found": "%s has been retrieved",
+            "fullscreen": "Display the note in fullscreen",
+            "is_encrypted": "This information is encrypted in the original file and decoded here for screen display",
+            "json_error": "The [%s] task has returned an invalid JSON result",
+            "no_save_allowed": "Error, saving notes isn't allowed.",
+            "open_html": "Open in a new window",
+            "please_wait": "Please wait...",
+            "print_preview": "Print preview",
+            "refresh": "Refresh",
+            "search_no_result": "Sorry, the search is not successfull",
+            "search_placeholder": "Search...",
+            "slideshow": "slideshow"
+        },
+        "fr": {
+            "apply_filter": "Limite la liste des notes à [%s]",
+            "apply_filter_tag": "Affiche les notes reprennant ce mot",
+            "button_encrypt": "Encrypte la s&eacute;lection",
+            "button_exit_edit_mode": "Quitte le mode &eacute;dition",
+            "button_save": "Enregistre vos modifications sur le serveur",
+            "button_save_done": "Le fichier a &eacute;t&eacute; enregistr&eacute; avec succ&egrave;s",
+            "button_save_error": "Une erreur a &eacute;t&eacute; rencontr&eacute;e lors de la sauvegarde",
+            "copy_clipboard": "Copie le contenu de la note, avec mise en page, dans le presse-papier",
+            "copy_clipboard_done": "La note a &eacute;t&eacute; copi&eacute;e.  Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
+            "copy_link": "Copier le lien vers cette note dans le presse-papier",
+            "copy_link_done": "L'URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
+            "confidential": "confidentiel",
+            "display_that_note": "Afficher cette note",
+            "edit_file": "Éditer",
+            "error": "Erreur",
+            "export_pdf": "Exporter cette note au format pdf",
+            "file_not_found": "Le fichier [%s] n\\'existe pas (ou plus)",
+            "files_found": "%s fichiers ont été retrouvés",
+            "fullscreen": "Affiche la note en plein &eacute;cran",
+            "is_encrypted": "Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n'est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
+            "json_error": "La t&acirc;che [%s] a retourn&eacute; une r&eacute;ponse JSON incorrecte",
+            "no_save_allowed": "Erreur, l'&eacute;dition des notes n'est pas autoris&eacute;e.",
+            "open_html": "Ouvrir dans une nouvelle fen&ecirc;tre",
+            "please_wait": "Un peu de patience s&#x27;il vous pla&#xEE;t...",
+            "print_preview": "Aper&ccedil;u avant impression",
+            "refresh": "Rafra&icirc;chir",
+            "search_no_result": "D&eacute;sol&eacute;, votre recherche n'a pas retourn&eacute; de r&eacute;sultat",
+            "search_placeholder": "Recherchez...",
+            "slideshow": "Affiche le document au format 'pr&eacute;sentation'"
+        }
+    }
 }

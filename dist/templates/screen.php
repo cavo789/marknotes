@@ -1,11 +1,11 @@
 <?php
 /**
 * markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.2
+* @version   : 1.0.3
 * @author    : christophe@aesecure.com
-* @copyright : MIT (c) 2016 - 2017
+* @license   : MIT
 * @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-01-27T17:52:50.268Z
+* @package   : 2017-02-03T17:51:33.910Z
 */
 ?>
 <!DOCTYPE html>
@@ -30,13 +30,13 @@
       <link media="screen" rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
-      <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%" />
+      <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/DataTables/css/dataTables.bootstrap4.min.css"/>
       <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css">
 
       <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
-      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
+      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php">
 
       <!--%CUSTOM_CSS%-->
 

@@ -1,11 +1,11 @@
 <?php
 /**
 * markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.2
+* @version   : 1.0.3
 * @author    : christophe@aesecure.com
-* @copyright : MIT (c) 2016 - 2017
+* @license   : MIT
 * @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-01-27T17:52:50.300Z
+* @package   : 2017-02-03T17:51:33.910Z
 */
 ?>
 <!-- 

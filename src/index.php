@@ -1,5 +1,5 @@
 <?php
-define('VERSION', '1.0.2');
+define('VERSION', '1.0.3');
 
 /* REQUIRES PHP 7.x AT LEAST */
 
@@ -30,7 +30,7 @@ define('APP_NAME', 'Notes management');
 
    // No timeout please
    set_time_limit(0);
-
+   
    require_once(__DIR__.'/classes/functions.php');
    require_once(__DIR__.'/classes/markdown.php');
    

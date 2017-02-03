@@ -20,13 +20,13 @@
       <link media="screen" rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
-      <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.php?imgMaxWidth=%IMG_MAXWIDTH%" />
+      <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
       <link media="screen" rel="stylesheet" type="text/css" href="libs/DataTables/css/dataTables.bootstrap4.min.css"/>
       <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css">
 
       <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
-      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php?appName=%APP_NAME_64%">
+      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php">
 
       <!--%CUSTOM_CSS%-->
 
