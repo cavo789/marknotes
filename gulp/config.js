@@ -1,9 +1,10 @@
 'use strict';
 
-var abspath= 'c:/christophe/repository/markdown/';
-var source = 'src';
-var target = 'dist';
-var log    = 'logs';
+var abspath  = 'c:/christophe/repository/markdown/';
+var source   = 'src';
+var target   = 'dist';
+var archives = 'backups';
+var log      = 'logs';
 
 /** 
   Read the package.json file of the project and return an object with the JSON representation  
@@ -27,6 +28,30 @@ module.exports = {
       '*/',
       '?>', 
       ''].join('\n'),
+   zip: {
+      src: [source + '/**/*'],
+	  dest: archives,
+	  name: 'Markdown'
+   },
+   phpcbf: {
+      doit: true,
+	  exclude: '*/libs/*', // Process every php files except the libs folder
+      src: abspath+source
+   },   
+   phplint: {
+      doit: true,
+      src: [source + '/**/*.php'],
+      options: {debug:false, clear:true, skipPassedFiles:true}
+   },
+   jslint: {
+      doit: true, 
+      src: [source + '/**/*.js',
+         '!' + source + '/libs{,/**}'],
+      options:{}		 
+   },
+   
+   
+   
    delete: {
       dest: [target]
    }, 
@@ -68,7 +93,6 @@ module.exports = {
       doit: true, 
       src: [target + '/**/*.js',
       '!' + target + '/libs{,/**}'],
-      lint: false,
       minify:true,
       dest: target
    },
@@ -76,8 +100,6 @@ module.exports = {
       doit: true,
       minify: true,
       src: [target + '/**/*.php'],	
-      lint: true,
-      options: {debug:false, clear:true, skipPassedFiles:true},
       dest: target
    },
    phpmd: {
@@ -91,10 +113,6 @@ module.exports = {
       src: abspath+target+'/',    
 	  log: abspath+log+'/php-code-sniffer.log'
    },
-   phpcbf: {
-      doit: true,
-	  exclude: '*\libs\*', // Process every php files of the target folder except the libs folder
-      src: abspath+target+'/'
-   },
+  
    Settings:getSettings
 };

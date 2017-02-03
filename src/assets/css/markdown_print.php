@@ -2,14 +2,14 @@
 
    header('Content-type: text/css');
    
-   if (!empty($_GET['appName'])) {
-      $appName=filter_input(INPUT_GET, 'appName', FILTER_SANITIZE_STRING);    
-      if($appName!=='') { 
-         $appName=base64_decode($appName);
-         $appName=substr($appName, 0, 100);
-         echo '#CONTENT:before {content:"'.$appName.'";display:block;text-align:center;border:1px solid #ccc;font-style:italic;margin:0 0 1em;padding:8px 10px;}';         
-      }
-   }
+if (!empty($_GET['appName'])) {
+    $appName=filter_input(INPUT_GET, 'appName', FILTER_SANITIZE_STRING);
+    if ($appName!=='') {
+        $appName=base64_decode($appName);
+        $appName=substr($appName, 0, 100);
+        echo '#CONTENT:before {content:"'.$appName.'";display:block;text-align:center;border:1px solid #ccc;font-style:italic;margin:0 0 1em;padding:8px 10px;}';
+    }
+}
    
 ?>
 

@@ -1,6 +1,6 @@
 
 /* global markdown, custominiFiles, customafterDisplay, customafterSearch */
-
+ 
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
 var QueryString = function () {
   // This function is anonymous, is executed immediately and 
@@ -42,7 +42,7 @@ Array.prototype.unique = function() {
       }
    }
    return arr; 
-}
+};
 
 // http://stackoverflow.com/a/2593661/1065340
 RegExp.quote = function(str) {
@@ -82,7 +82,7 @@ $(document).ready(function() {
  */
 function ajaxify($params) { 
 
-   var $data = new Object;
+   var $data = {};
    $data.task  = (($params.task==='undefined')?'':$params.task);
    $data.param = (($params.param==='undefined')?'':$params.param);
 
@@ -126,7 +126,7 @@ function addSearchEntry($entry) {
 
    $current=$('#search').val().trim();
    
-   if (($current!='') && ($bReset==false)){
+   if (($current!=='') && ($bReset===false)){
       // Append the new keyword only when bReset is not set or set to False
       var values = $current.split(','); 
       values.push($entry.keyword); 			   
@@ -147,8 +147,10 @@ function addSearchEntry($entry) {
  */
 function initFiles($data) {
    
+   var $msg='';
+   
    if (typeof $data === 'undefined') {
-      var $msg=markdown.message.json_error;
+      $msg=markdown.message.json_error;
       Noty({message:$msg.replace('%s', 'listFiles'),type:'error'});   
       return false;
    }
@@ -158,7 +160,7 @@ function initFiles($data) {
    try {
       if($data.hasOwnProperty('count')) {
          // Display the number of returned files
-         var $msg=markdown.message.filesfound;
+         $msg=markdown.message.filesfound;
          Noty({message:$msg.replace('%s', $data.count), type:'notification'});         
       }
    } catch(err) {    
@@ -178,7 +180,7 @@ function initFiles($data) {
 
             var objNode = data.instance.get_node(data.selected);
 
-            if (typeof(objNode.parent)!="undefined") {
+            if (typeof(objNode.parent)!=="undefined") {
 
                // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
                // and objNode.text the name of the file (f.i. jsTree.md)
@@ -203,7 +205,7 @@ function initFiles($data) {
          }).jstree({
             core: {
                animation : 1,
-               data : $data['tree'],
+               data : $data.tree,
                initially_open : ['phtml_1'],    // Automatically open the root node
                sort : function(a, b) {
                   return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
@@ -231,25 +233,25 @@ function initFiles($data) {
 
             var tbl = document.createElement('table');
 
-            tbl.id="tblFiles"
+            tbl.id="tblFiles";
             tbl.setAttribute("class","table table-hover table-bordered");
             tbl.style.width = '100%';
 
             var tbdy = document.createElement('tbody');
 
-            $.each($data['results'], function($id, $item) {     
+            $.each($data.results, function($id, $item) {     
 
                var tr = document.createElement('tr');
 
                var td = document.createElement('td');
                td.dataset.folder=$item.folder;
-               td.appendChild(document.createTextNode($item.folder))
-               tr.appendChild(td)
+               td.appendChild(document.createTextNode($item.folder));
+               tr.appendChild(td);
 
-               var td = document.createElement('td');
+               td = document.createElement('td');
                td.dataset.file=$item.file;
-               td.appendChild(document.createTextNode($item.display))
-               tr.appendChild(td)
+               td.appendChild(document.createTextNode($item.display));
+               tr.appendChild(td);
 
                tbdy.appendChild(tr);
 
@@ -311,7 +313,6 @@ function initFiles($data) {
          searchIn: 'name',
          data: 'index.php?task=tags',
          focusFirstResult:true,
-         toggleSelected:true,
          noResultsText:markdown.message.search_no_result
       });
    
@@ -372,7 +373,7 @@ function initializeTasks() {
       var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');
       var $tag=  ( $(this).attr('data-tag') ? $(this).data('tag').replace('\\','/')  : '');
 
-      if(($fname!=='')&&($task!='window')) $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));   
+      if(($fname!=='')&&($task!=='window')) $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));   
 
       switch($task) {
          
@@ -380,7 +381,7 @@ function initializeTasks() {
             
             // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
             if (markdown.settings.debug) console.log('Clipboard -> copy the link of the current note in the clipboard');
-            if(typeof Clipboard == 'function'){
+            if(typeof Clipboard === 'function'){
                var clipboard = new Clipboard('*[data-task="clipboard"]');
                clipboard.on('success', function(e) { e.clearSelection(); });
                Noty({message:markdown.message.copy_clipboard_done, type:'success'});
@@ -413,7 +414,7 @@ function initializeTasks() {
             
             // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
             if (markdown.settings.debug) console.log('Clipboard -> copy the link of the current note in the clipboard');
-            if(typeof Clipboard == 'function'){
+            if(typeof Clipboard === 'function'){
                new Clipboard('*[data-task="link_note"]');
                Noty({message:markdown.message.copy_link_done, type:'success'});
             } else {
@@ -438,7 +439,7 @@ function initializeTasks() {
             // Note: instead of canvas.toBlob, you could do var imageUrl = canvas.toDataURL('image/png');
             // then you wouldn't need to include the polyfill.  However, your file size will be massive
       
-            var $data = new Object;
+            var $data = {};
             $data.task  = 'display';
             $data.param = $fname;
 
@@ -540,7 +541,7 @@ function replaceLinksToOtherNotes() {
       var $param=[];
       var $fname='';
 
-      while ($nodes!=null) {
+      while ($nodes!==null) {
 
          $param=$nodes[0].match(/param=(.*)['|"]/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed         
          $fname=JSON.parse(decodeURIComponent(window.atob($param[1])));
@@ -593,7 +594,7 @@ function addLinksToTags() {
       
       var $tags=RegEx.exec($text);
 
-      while ($tags!=null) {         
+      while ($tags!==null) {         
 
          if (markdown.settings.debug) console.log("Process tag "+$tags[0]);         
          
@@ -740,7 +741,7 @@ function afterDisplay($fname) {
          $('page').linkify();
       }
       
-      if(typeof Prism == 'object') Prism.highlightAll();
+      if(typeof Prism === 'object') Prism.highlightAll();
       
       // If a note contains a link to an another note, use ajax and not normal links
       replaceLinksToOtherNotes();
@@ -758,13 +759,13 @@ function afterDisplay($fname) {
       NiceTable();
 
       // Initialize each action buttons of the displayed note
-      initializeTasks()
+      initializeTasks();
 
       // Retrieve the heading 1 from the loaded file 
       var $title=$('#CONTENT h1').text();				  
       if ($title!=='') $('title').text($title);
 
-      var $fname=$('div.filename').text();				  
+      $fname=$('div.filename').text();				  
       if ($fname!=='') $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
 
       // Interface : put the cursor immediatly in the edit box
@@ -872,7 +873,7 @@ function afterEdit($fname) {
  */
 function buttonSave($fname, $markdown) {
    
-   var $data = new Object;
+   var $data = {};
    $data.task  = 'save';
    $data.param = $fname;
    $data.markdown = window.btoa(encodeURIComponent(JSON.stringify($markdown)));
@@ -929,7 +930,7 @@ function onChangeSearch() {
 
       if ($bContinue===true) {
 
-         if ($searchKeywords!='') {
+         if ($searchKeywords!=='') {
             $msg=markdown.message.apply_filter;
             Noty({message:$msg.replace('%s', $searchKeywords), type:'notification'});         
          }
@@ -969,7 +970,7 @@ function afterSearch($keywords, $data) {
                     
 
             // Get the list of files returned by the search : these files have matched th keyword
-            $files=$data['files'];
+            $files=$data.files;
             
             // Use jsTree : iterate and get every node full path which is, in fact, a filename
             // For instance /aesecure/todo/a_note.md
@@ -1125,7 +1126,7 @@ function slideshow($fname) {
      
    try {
       
-      var $data = new Object;
+      var $data = {};
       $data.task  = 'slideshow';
       $data.param = $fname;
 
@@ -1140,7 +1141,7 @@ function slideshow($fname) {
             // data is a URL pointing to the HTML version of the slideshow so ... just display
             var w = window.open(data, "slideshow");   
 
-            if(w==undefined) {
+            if(w===undefined) {
                Noty({message:markdown.message.allow_popup_please, type:'notification'});         
             }
 
@@ -1193,9 +1194,7 @@ function Noty($params) {
  */
 
 function isFullScreen() {
-   return (document.fullScreenElement && document.fullScreenElement !== null)
-      || document.mozFullScreen
-      || document.webkitIsFullScreen;
+   return (document.fullScreenElement && document.fullScreenElement !== null) || document.mozFullScreen || document.webkitIsFullScreen;
 } // function isFullScreen()
 
 function requestFullScreen(element) {

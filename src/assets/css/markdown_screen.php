@@ -2,8 +2,10 @@
 
    header('Content-type: text/css');
    
-   $imgMaxWidth=filter_input(INPUT_GET, 'imgMaxWidth', FILTER_SANITIZE_NUMBER_INT);   
-   if ($imgMaxWidth != 0) echo '#CONTENT img {max-width:'.$imgMaxWidth.'px;}';
+   $imgMaxWidth=filter_input(INPUT_GET, 'imgMaxWidth', FILTER_SANITIZE_NUMBER_INT);
+if ($imgMaxWidth != 0) {
+    echo '#CONTENT img {max-width:'.$imgMaxWidth.'px;}';
+}
    
 ?>
 
@@ -100,5 +102,5 @@ div.editor-wrapper .editor-toolbar a {width:40px;}
 
 /* Display folders in the treeview in italic */
 .jstree-open > .jstree-anchor, .jstree-closed > .jstree-anchor {font-style:italic;}
-	
-	
+    
+    

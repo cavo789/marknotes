@@ -2,7 +2,6 @@
 
 var gulp        = require('gulp');
 var gulpif      = require('gulp-if');           // https://github.com/robrich/gulp-if
-var phplint     = require('gulp-phplint');
 var header      = require('gulp-header');       // https://www.npmjs.com/package/gulp-header
 var htmlreplace = require('gulp-html-replace'); // Replace <!-- build:A_KEY --> .... <!-- endbuild --> by an empty string
 
@@ -23,14 +22,6 @@ gulp.task('php', function () {
             keepBlockTags:false
          })
       )
-      .pipe(phplint('',config.options))
-	//.pipe(phplint.reporter('fail'))
-      .pipe(phplint.reporter(function(file){
-         var report = file.phplintReport || {};
-        if (report.error) {
-            console.error(report.message+' on line '+report.line+' of '+report.filename);
-         }
-      })) 
       .pipe(header(banner,{pkg:getSettings}))
       .pipe(gulp.dest(config.dest));
 

@@ -6,6 +6,17 @@ var config   = require('../config');
 /**
  * Run tasks in sequence
  *
+ * ZIP (zip)
+ *
+ *    Verify / Update source files (code beautifier, linting, ...)
+ *
+ *    |--- PHP Code Beautifier (phpcbf)
+ *    |--- PHP Lint (phplint)
+ 
+ *    |--- JS Lint (jslint)
+ 
+ 
+ 
  *  DELETE (delete)               Kill the _dist folder
  *     |--- COPY (copy)           Copy files from _src to _dist
  *         |--- CSS (css)         Optimize / lint css / js / json and html
