@@ -8,3 +8,5 @@ vendor/
 vendor/**/.git
 settings.json
 composer.log
+gulpfile.js
+build.bat
