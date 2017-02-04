@@ -93,9 +93,11 @@ module.exports = {
       dest: paths.target
    },
    DIST_php: {
-      doit: true,
       src: [paths.target + '/**/*.php','!' + paths.target + '/libs{,/**}'],  // Ignore the libs folder 
       dest: paths.target
-   },  
+   }, 
+   DIST_chmod: {
+      src: path.join(__dirname+'/../'+paths.target+'/')
+   }, 
    pkg:getPackage
 };

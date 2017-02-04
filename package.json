@@ -1,6 +1,6 @@
 {
   "name": "markdown",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
   "main": "index.php",
   "devDependencies": {
@@ -51,7 +51,7 @@
     "url": "https://github.com/cavo789/markdown/issues"
   },
   "homepage": "https://github.com/cavo789/markdown#readme",
-  "gulp": {    
+  "gulp": {
     "editor": {
       "tab_size": 3,
       "encoding": "utf-8"
@@ -64,18 +64,18 @@
       "target": "dist"
     },
     "tasks": {
-	  "backup": {
-	    "doit": 1
-	  },
-	  "source": {
-	    "code_quality": {
+      "backup": {
+        "doit": 1
+      },
+      "source": {
+        "code_quality": {
           "sniffer": {
             "doit": 1
           },
           "mess_detector": {
             "doit": 1
           }
-		},
+        },
         "lint": {
           "css": {
             "doit": 1
@@ -90,7 +90,7 @@
             "doit": 1
           }
         },
-		"beautifier": {
+        "beautifier": {
           "css": {
             "doit": 1
           },
@@ -109,7 +109,7 @@
         "delete": {
           "doit": 1
         },
-		"copy": {
+        "copy": {
           "doit": 1
         },
         "removedebug": {
@@ -119,8 +119,8 @@
           "php": {
             "doit": 1
           }
-		},
-		"minify": {
+        },
+        "minify": {
           "css": {
             "doit": 1
           },
@@ -128,28 +128,28 @@
             "doit": 1
           }
         },
-		"banner": {
-		  "header": [
-	        "<?php",   
+        "banner": {
+          "header": [
             "/**",
             "* <%= info.name %> - <%= info.description %>",
             "* @version   : <%= info.version %>",
             "* @author    : <%= info.author %>",
             "* @license   : <%= info.license %>",
             "* @url       : <%= info.homepage %>",
-            "* @package   : <%= new Date().toISOString() %>", 
-            "*/",
-            "?>",
-			""
-	      ],
+            "* @package   : <%= new Date().toISOString() %>",
+            "*/"
+          ],
           "js": {
             "doit": 1
           },
           "php": {
             "doit": 1
           }
-		}
-      }      
+        },
+        "chmod": {
+          "doit": 1
+        }
+      }
     }
   }
 }

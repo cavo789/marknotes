@@ -1,21 +1,19 @@
-// PHP : Add a banner at the top of .php files
+// CHMOD - Set the DIST folder read-only to prevent file's modification (should be done in SRC, not in DIST)
 
 var gulp   = require('gulp');
-var header = require('gulp-header');       // https://www.npmjs.com/package/gulp-header
-var config = require('../config').DIST_php;
+var shell  = require('gulp-shell');
+var config = require('../config').DIST_chmod;
 var pkg    = require('../config').pkg();
-var banner = pkg.gulp.tasks.dist.banner.header;
 
-gulp.task('phpbanner', function () {
+gulp.task('chmod', function () {
 	
-   if (pkg.gulp.tasks.dist.banner.php.doit===0) return;
+   if (pkg.gulp.tasks.dist.chmod.doit===0) return;
 
    console.log('\n████████████████████████████████████████████████████████████████████████████');
-   console.log('█ PHP - Add header                                                         █');
+   console.log('█ CHMOD - Set ' + config.src + ' read-only            █');
    console.log('████████████████████████████████████████████████████████████████████████████\n');
    
-   return gulp.src(config.src)
-      .pipe(header("<?php\n"+banner.join("\n")+"?>\n",{info:pkg}))
-      .pipe(gulp.dest(config.dest));
+   return gulp.src(config.src, {read: false})
+      .pipe(shell('attrib +r '+config.src+'\*.* /s'));
 
 })

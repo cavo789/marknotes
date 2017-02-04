@@ -15,7 +15,7 @@ gulp.task('jsbanner', function() {
    console.log('████████████████████████████████████████████████████████████████████████████\n');
    
    return gulp.src(config.src)
-	  .pipe(header(banner.join("\n"),{info:pkg}))
+	  .pipe(header(banner.join("\n")+"\n",{info:pkg}))
 	  .pipe(gulp.dest(config.dest));
 
 });

@@ -26,7 +26,7 @@
       <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css">
 
       <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
-      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php">
+      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.css">
 
       <!--%CUSTOM_CSS%-->
 

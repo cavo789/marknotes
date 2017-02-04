@@ -21,6 +21,7 @@ gulp.task('dist', function(callback) {
      ['js_removedebug','php_removedebug'],
 	 ['cssmin', 'jsmin'],
 	 ['jsbanner','phpbanner'],
+	 'chmod',
 	 callback);
 	 
 });

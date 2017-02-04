@@ -1,13 +1,12 @@
 <?php
 /**
 * markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.3
+* @version   : 1.0.4
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-02-03T17:51:33.910Z
-*/
-?>
+* @package   : 2017-02-04T11:36:02.741Z
+*/?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,7 +35,7 @@
       <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css">
 
       <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
-      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.php">
+      <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.css">
 
       <!--%CUSTOM_CSS%-->
 
