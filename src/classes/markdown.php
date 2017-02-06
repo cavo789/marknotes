@@ -1,6 +1,8 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
 
+namespace AeSecure;
+
 // -------------------------------------------------------------------------------------------------------------------------
 // 
 // Can be overwritten in settings.json
@@ -42,7 +44,7 @@ define('LIB', dirname(__DIR__).DS.'libs'.DS);
 
 // Requires PHP 7.x
          
-class aeSecureMarkdown
+class Markdown
 {
    
     private $_json=null;                 // JSON, contains the content of the settings.json file
@@ -94,23 +96,23 @@ class aeSecureMarkdown
         }
         $folder=rtrim($folder, DS).DS;
    
-        if (!class_exists('aeSecureDebug')) {
+        if (!class_exists('Debug')) {
             require_once 'debug.php';
-            $this->aeDebug=aeSecureDebug::getInstance();
+            $this->aeDebug=\AeSecure\Debug::getInstance();
         }
       
-        if (!class_exists('aeSecureEncrypt')) {
+        if (!class_exists('Encrypt')) {
             require_once 'encrypt.php';
         }
-        if (!class_exists('aeSecureFiles')) {
+        if (!class_exists('Files')) {
             require_once 'files.php';
         }
-        if (!class_exists('aeSecureFct')) {
+        if (!class_exists('Fct')) {
             require_once 'functions.php';
         }
-        if (!class_exists('aeSecureJSON')) {
+        if (!class_exists('JSON')) {
             require_once 'json.php';
-            $this->aeJSON=aeSecureJSON::getInstance();
+            $this->aeJSON=\AeSecure\JSON::getInstance();
         }
       
         $this->_rootFolder=$folder;
@@ -153,7 +155,7 @@ class aeSecureMarkdown
 
         foreach ($arr as $fname) {
             // Process the settings.json file
-            if (aeSecureFiles::fileExists($fname)) {
+            if (\AeSecure\Files::fileExists($fname)) {
                 $this->_json=$this->aeJSON->json_decode($fname, true);
 
                 if (isset($this->_json['tags'])) {
@@ -180,9 +182,12 @@ class aeSecureMarkdown
                         if (file_exists($lib = LIB.'php_error'.DS.'php_error.php')) {
                             // Seems to not work correctly with ajax; the return JSON isn't correctly understand by JS
                             $options = array(
-                              'catch_ajax_errors' => aeSecureFct::isAjaxRequest(),   // Don't enable ajax is not ajax call
-                              'enable_saving' => 0,                                  // Don't allow to modify sources from php-error
-                              'error_reporting_on' => 1                              // Capture everything
+                              // Don't enable ajax is not ajax call
+                              'catch_ajax_errors' => \AeSecure\Functions::isAjaxRequest(),
+                              // Don't allow to modify sources from php-error
+                              'enable_saving' => 0,
+                               // Capture everything
+                              'error_reporting_on' => 1
                             );
                             require($lib);
                             \php_error\reportErrors($options);
@@ -215,14 +220,16 @@ class aeSecureMarkdown
                     $tmp=$this->_json['list'];
                
                     if (isset($tmp['opened'])) {
-                        $this->_settingsTreeOpened=($tmp['opened']==1?true:false); // Should nodes of the treeview be opened at loading time
+                        // Should nodes of the treeview be opened at loading time
+                        $this->_settingsTreeOpened=($tmp['opened']==1?true:false);
                     }
                
                     if (isset($tmp['auto_open'])) {
                         foreach ($tmp['auto_open'] as $folder) {
                             // Respect OS directory separator
                             $folder=rtrim(str_replace('/', DS, $folder), DS);
-                            $this->_settingsFoldersAutoOpen[]=$this->_rootFolder.$this->_settingsDocsFolder.$folder; // List of folders that should be immediatly opened
+                            // List of folders that should be immediatly opened
+                            $this->_settingsFoldersAutoOpen[]=$this->_rootFolder.$this->_settingsDocsFolder.$folder;
                         }
                     }
                 } // if(isset($this->_json['list']))
@@ -243,8 +250,8 @@ class aeSecureMarkdown
 
                         if (trim($tmp[$name])!='') { // can't be empty
 
-                            if (preg_match('/^[A-Za-z0-9-_\.]+$/', trim($tmp[$name]))) { // should only contains letters, figures or dot/minus/underscore
-
+                            // should only contains letters, figures or dot/minus/underscore
+                            if (preg_match('/^[A-Za-z0-9-_\.]+$/', trim($tmp[$name]))) {
                                 if (is_file(dirname(__DIR__).'/templates/'.trim($tmp[$name]).'.php')) {
                                     // The template exists, ok.
                                     if ($i==0) {
@@ -311,12 +318,28 @@ class aeSecureMarkdown
                         $this->_saveHTML=(($tmp['save_html']==1)?true:false);
                     }
                 }
-            } // if (aeSecureFiles::fileExists($fname))
+            } // if (\AeSecure\Files::fileExists($fname))
         } // foreach ($arr as $fname)
       
         return true;
     } // function ReadSettings()
 
+   /**
+    * Open the package.json file and retrieve an information like the version number from there
+    *
+    * @return string
+    */
+    private function getPackageInfo($info = 'version') : string
+    {
+   
+        if (file_exists($fname = dirname(dirname(dirname(__FILE__))).DS.'package.json')) {
+            $json=$this->aeJSON->json_decode($fname, true);
+            return $json[$info];
+        } else {
+            return '';
+        }
+    } // function getPackageInfo()
+   
    /**
     * Return the value of a setting
     *
@@ -363,7 +386,7 @@ class aeSecureMarkdown
             }
         }
       
-        $paths=aeSecureFct::array_iunique($paths, SORT_STRING);
+        $paths=Functions::array_iunique($paths, SORT_STRING);
       
         natcasesort($paths);
     
@@ -375,7 +398,7 @@ class aeSecureMarkdown
       
         $return=array();
       
-        if (aeSecureFiles::fileExists($fname = $this->_rootFolder.'tags.json')) {
+        if (\AeSecure\Files::fileExists($fname = $this->_rootFolder.'tags.json')) {
             if (filesize($fname)>0) {
                 $arrTags=$this->aeJSON->json_decode($fname, true);
                 foreach ($arrTags as $tag) {
@@ -403,11 +426,11 @@ class aeSecureMarkdown
       if (count($arrTags)>0) {
          
          $arrJSON=array();
-         if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json')) {
+         if (\AeSecure\Files::fileExists($fname=$this->_rootFolder.'tags.json')) {
             if(filesize($fname)>0) $arrJSON=$this->aeJSON->json_decode($fname,true);
          }
     
-         $arrTags=aeSecureFct::array_iunique($arrTags);
+         $arrTags=Functions::array_iunique($arrTags);
          natcasesort ($arrTags);     
          
          if (count($arrJSON)==0) {
@@ -463,7 +486,7 @@ class aeSecureMarkdown
       
         $i=0;
 
-        $arrFiles=aeSecureFct::array_iunique(aeSecureFiles::rglob('*.md', $this->_rootFolder.$this->_settingsDocsFolder));
+        $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.md', $this->_rootFolder.$this->_settingsDocsFolder));
     
         // Be carefull, folders / filenames perhaps contains accentuated characters
         $arrFiles=array_map('utf8_encode', $arrFiles);
@@ -645,7 +668,8 @@ class aeSecureMarkdown
     {
       
         if ($this->_DEBUGMODE) {
-            $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].')</em>';
+            $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.
+               debug_backtrace()[1]['line'].')</em>';
         }
       
         // The \' construction is for javascript, not for PHP
@@ -664,16 +688,18 @@ class aeSecureMarkdown
     * This function will scan the $markdown variable and search if there are <encrypt> tags in it.
     * For un-encrypted content, the function will encrypt them and then save the new file content
     *
-    * Then, when the file has been rewritten (with <encrypt data-encrypt="TRUE">), each encrypted part will be un-encrypted and
-    * special tag (<i class="icon_encrypted">) will be added before and after the un-encrypted content.  That new string will be sent as
-    * the result of the function.
+    * Then, when the file has been rewritten (with <encrypt data-encrypt="TRUE">), each encrypted part
+    * will be un-encrypted and special tag (<i class="icon_encrypted">) will be added before and after the
+    * un-encrypted content.  That new string will be sent as the result of the function.
     *
     * @param string $filename    Absolute filename
     * @param string $markdown    Content
-    * @param bool $bEditMode     TRUE only when to $markdown content will be displayed in the Edit form => show unencrypted information back
+    * @param bool $bEditMode     TRUE only when to $markdown content will be displayed in the
+    *                            Edit form => show unencrypted information back
     * @return array
-    *    bool $bReturn               TRUE when the content of the .md file has been rewritten on the disk (=> encryption saved)
-    *    string $markdown            The new content; once <encrypt> content has been correctly processed.
+    *    bool $bReturn           TRUE when the content of the .md file has been rewritten on the disk
+    *                            (=> encryption saved)
+    *    string $markdown        The new content; once <encrypt> content has been correctly processed.
     */
     private function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : array
     {
@@ -691,7 +717,7 @@ class aeSecureMarkdown
             'data-encrypt="true" title="'.str_replace('"', '\"', $this->getText('is_encrypted')).'"></i>';
          
             // Initialize the encryption class
-            $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
+            $aesEncrypt=new Encrypt($this->_encryptionPassword, $this->_encryptionMethod);
          
             $j=count($matches[0]);
                
@@ -722,25 +748,27 @@ class aeSecureMarkdown
                 // If we need to crypt we a new password,
                 // NULL = try to use the current password, defined in the settings.json file
                 //$decrypt=$aesEncrypt->sslDecrypt($words,NULL);
-                //if (!ctype_print($decrypt)) {  // ctype_print will return FALSE when the string still contains binary info => decrypt has failed
+                //if (!ctype_print($decrypt)) {  // ctype_print will return FALSE when the string still
+                //   contains binary info => decrypt has failed
                 //   $words=$aesEncrypt->sslDecrypt($words,'');
                 //   $isEncrypted=FALSE;
                 //}
             
                 if (!$isEncrypted) {
-                    // At least one <encrypt> tag found without attribute data-encrypt="true" => the content should be encrypted and
-                    // the file should be override with encrypted data
+                    // At least one <encrypt> tag found without attribute data-encrypt="true" => the content
+                    // should be encrypted and the file should be override with encrypted data
                
                     $encrypted=$aesEncrypt->sslEncrypt($words, null);
 
-                    $markdown=str_replace($matches[0][$i], utf8_encode('<encrypt data-encrypt="true">'.$encrypted.'</encrypt>'), $markdown);
+                    $markdown=str_replace($matches[0][$i], utf8_encode('<encrypt data-encrypt="true">'.
+                       $encrypted.'</encrypt>'), $markdown);
                
                     $rewriteFile=true;
                 } // if (!$isEncrypted)
             } // for($i;$i<$j;$i++)
 
             if ($rewriteFile===true) {
-                $bReturn=aeSecureFiles::rewriteFile($filename, $markdown);
+                $bReturn=\AeSecure\Files::rewriteFile($filename, $markdown);
             }
 
             // --------------------------------------------------------------------------------------------
@@ -800,10 +828,15 @@ class aeSecureMarkdown
             $filename.='.md';
         }
       
-        $fullname=str_replace('/', DIRECTORY_SEPARATOR, utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.ltrim($filename, DS)));
+        $fullname=str_replace('/', DIRECTORY_SEPARATOR, utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.
+           ltrim($filename, DS)));
 
         if (!file_exists($fullname)) {
-            self::ShowError(str_replace('%s', '<strong>'.$fullname.'</strong>', $this->getText('file_not_found', 'FILE_NOT_FOUND')), true);
+            self::ShowError(str_replace(
+                '%s',
+                '<strong>'.$fullname.'</strong>',
+                $this->getText('file_not_found', 'FILE_NOT_FOUND')
+            ), true);
         }
 
         $markdown=file_get_contents($fullname);
@@ -838,31 +871,37 @@ class aeSecureMarkdown
         // -----------------------------------
         // Add additionnal icons at the left
 
-        $fnameHTML=aeSecureFiles::replace_extension($fullname, 'html');
+        $fnameHTML=\AeSecure\Files::replaceExtension($fullname, 'html');
 
         $fnameHTMLrel=str_replace(str_replace('/', DS, $this->_rootFolder), '', $fnameHTML);
 
         // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-        $tmp = rtrim(aeSecureFct::getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
+        $tmp = rtrim(Functions::getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
 
         // Open new window icon
         if ($this->_saveHTML===true) {
-            $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html').'"></i>';
+            $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).
+               '" class="fa fa-external-link" aria-hidden="true" title="'.$this->getText('open_html').'"></i>';
         }
       
         // Edit icon : only if an editor has been defined
         if ($this->_settingsEditAllowed==true) {
-            $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->getText('edit_file').'" data-file="'.$filename.'"></i>';
+            $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" '.
+               'title="'.$this->getText('edit_file').'" data-file="'.$filename.'"></i>';
         }
 
         // Call the Markdown parser (https://github.com/erusev/parsedown)
         $lib="libs/parsedown/Parsedown.php";
         if (!file_exists($lib)) {
-            self::ShowError(str_replace('%s', '<strong>'.$lib.'</strong>', $this->getText('file_not_found', 'FILE_NOT_FOUND')), true);
+            self::ShowError(str_replace(
+                '%s',
+                '<strong>'.$lib.'</strong>',
+                $this->getText('file_not_found', 'FILE_NOT_FOUND')
+            ), true);
         }
       
         require_once($lib);
-        $Parsedown=new Parsedown();
+        $Parsedown=new \Parsedown();
         $html=$Parsedown->text($markdown);
       
         // -------------------------------------------------------------------------------
@@ -883,7 +922,8 @@ class aeSecureMarkdown
         // Check if the .html version of the markdown file already exists; if not, create it
         if ($this->_saveHTML===true) {
             if (is_writable(dirname($fullname).DS)) {
-                // If the file already exists check his version (md5) against the new content : replace the file if not the latest version
+                // If the file already exists check his version (md5) against the new content :
+                // replace the file if not the latest version
                 if (file_exists($fnameHTML)) {
                     $md5=md5_file($fnameHTML);
                     if ($md5!==md5($html)) {
@@ -908,7 +948,8 @@ class aeSecureMarkdown
                         $i=0;
 
                         for ($i; $i<$j; $i++) {
-                            $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.$this->getText('confidential').'</strong>', $tmp);
+                            $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.
+                               $this->getText('confidential').'</strong>', $tmp);
                         }
                     }
 
@@ -948,19 +989,20 @@ class aeSecureMarkdown
         // -----------------------------------------------------------------------
         // Once the .html file has been written on disk, not before !
         //
-        // Check if the file contains words present in the tags.json file : if the file being displayed contains a word (f.i. "javascript") that is in the
-        // tags.json (so it's a known tag) and that word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix
+        // Check if the file contains words present in the tags.json file : if the file being displayed
+        // contains a word (f.i. "javascript") that is in the tags.json (so it's a known tag) and that
+        // word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix
 
-        if (aeSecureFiles::fileExists($fname = $this->_rootFolder.'tags.json')) {
+        if (\AeSecure\Files::fileExists($fname = $this->_rootFolder.'tags.json')) {
             if (filesize($fname)>0) {
                 $arrTags=$this->aeJSON->json_decode($fname);
                 foreach ($arrTags as $tag) {
                     // For each tag, try to find the word in the markdown file
                
-                    // /( |\\n|\\r|\\t)+                Before the tag, allowed : space, carriage return, linefeed or tab
-                    // [^`\/\\#_\-§]?                   Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
-                    // ('.preg_quote($tag).')           The tag term (f.i. "javascript"
-                    // (\\n|,|;|\\.|\\)|[[:blank:]]|$)  After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
+                    // /( |\\n|\\r|\\t)+               Before the tag, allowed : space, carriage return, linefeed or tab
+                    // [^`\/\\#_\-§]?                  Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
+                    // ('.preg_quote($tag).')          The tag term (f.i. "javascript"
+                    // (\\n|,|;|\\.|\\)|[[:blank:]]|$) After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
                
                     // Capture the full line (.* ---Full Regex--- .*)
                     preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $markdown, $matches);
@@ -987,19 +1029,19 @@ class aeSecureMarkdown
                     } // foreach ($matches[0] as $match)
                 } // foreach
             } // if(filesize($fname)>0)
-        } // if (aeSecureFiles::fileExists($fname=$this->_rootFolder.'tags.json'))
+        } // if (\AeSecure\Files::fileExists($fname=$this->_rootFolder.'tags.json'))
       
         //
         // -----------------------------------------------------------------------
 
         // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-        $fnameHTML = str_replace('\\', '/', rtrim(aeSecureFct::getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
+        $fnameHTML = str_replace('\\', '/', rtrim(Functions::getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
       
         // Retrieve the URL to this note
-        $thisNote= urldecode(aeSecureFct::getCurrentURL(false, false));
+        $thisNote= urldecode(Functions::getCurrentURL(false, false));
 
         // Keep only the script name and querystring so remove f.i. http://localhost/notes/
-        //$thisNote=str_replace(aeSecureFct::getCurrentURL(FALSE,TRUE),'',$thisNote);
+        //$thisNote=str_replace(Functions::getCurrentURL(FALSE,TRUE),'',$thisNote);
     
         $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
          '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.str_replace("'", "\'", self::getText('fullscreen')).'"></i>'.
@@ -1079,7 +1121,7 @@ class aeSecureMarkdown
         // Search for these three keywords (AND)
         $keywords=explode(',', rtrim($keywords, ','));
             
-        $arrFiles=array_unique(aeSecureFiles::rglob('*.md', $this->_rootFolder.$this->_settingsDocsFolder));
+        $arrFiles=array_unique(\AeSecure\Files::rglob('*.md', $this->_rootFolder.$this->_settingsDocsFolder));
       
         if (count($arrFiles)==0) {
             return null;
@@ -1092,7 +1134,7 @@ class aeSecureMarkdown
         natcasesort($arrFiles);
      
         // Initialize the encryption class
-        $aesEncrypt=new aeSecureEncrypt($this->_encryptionPassword, $this->_encryptionMethod);
+        $aesEncrypt=new AeSecure\Encrypt($this->_encryptionPassword, $this->_encryptionMethod);
 
         $docs=str_replace('/', DS, $this->_settingsDocsFolder);
       
@@ -1248,12 +1290,12 @@ class aeSecureMarkdown
       
         // $bReturn is on FALSE when HandleEncryption hasn't found any <encrypt> tag => save the new content (otherwise already done by HandleEncryption)
         if (!$bReturn) {
-            $bReturn=aeSecureFiles::rewriteFile($fullname, $markdown);
+            $bReturn=\AeSecure\Files::rewriteFile($fullname, $markdown);
         }
 
         if ($bReturn===true) {
             // The new content has been created, check if the .html version exists and if so, remove that old file
-            if (file_exists($fnameHTML = aeSecureFiles::replace_extension($fullname, 'html'))) {
+            if (file_exists($fnameHTML = \AeSecure\Files::replaceExtension($fullname, 'html'))) {
                 @unlink($fnameHTML);
             }
             if (file_exists($fnameHTML = str_replace('.html', '_slideshow.html', $fnameHTML))) {
@@ -1322,7 +1364,8 @@ class aeSecureMarkdown
             }
          
             $html=str_replace('%APP_NAME%', APP_NAME, $html);
-            $html=str_replace('%APP_VERSION%', APP_NAME.' v.'.VERSION, $html);
+            $html=str_replace('%APP_VERSION%', APP_NAME.' v.'.self::getPackageInfo('version'), $html);
+            $html=str_replace('%APP_WEBSITE%', self::getPackageInfo('homepage'), $html);
             $html=str_replace('%APP_NAME_64%', base64_encode(APP_NAME), $html);
             $html=str_replace('%IMG_MAXWIDTH%', self::getSetting('ImgMaxWidth', '800'), $html);
          
@@ -1359,13 +1402,13 @@ class aeSecureMarkdown
             "markdown.settings.prefix_tag='".PREFIX_TAG."';\n".
             "markdown.settings.search_max_width=".SEARCH_MAX_LENGTH.";";
          
-            $html=str_replace('%MARKDOWN_GLOBAL_VARIABLES%', $JS, $html);
+            $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
          
             // if any, output the code for the Google Font (see settings.json)
             $html=str_replace('<!--%FONT%-->', self::GoogleFont(), $html);
 
             // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
-            $html=str_replace('<!--%CUSTOM_CSS%-->', aeSecureFct::addStylesheet('custom.css'), $html);
+            $html=str_replace('<!--%CUSTOM_CSS%-->', Functions::addStylesheet('custom.css'), $html);
 
             // Additionnal javascript, depends on user's settings
             $AdditionnalJS='';
@@ -1376,7 +1419,7 @@ class aeSecureMarkdown
             $html=str_replace('<!--%ADDITIONNAL_JS%-->', $AdditionnalJS, $html);
          
             // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
-            $html=str_replace('<!--%CUSTOM_JS%-->', aeSecureFct::addJavascript('custom.js'), $html);
+            $html=str_replace('<!--%CUSTOM_JS%-->', Functions::addJavascript('custom.js'), $html);
          
             return $html;
         } else { // if (is_file($template=dirname(__DIR__).'/templates/main.php'))
@@ -1476,7 +1519,7 @@ class aeSecureMarkdown
             $slideshow=file_get_contents(dirname(__DIR__).'/templates/slideshow.php');
          
             $html=str_replace('<!--%SOURCE%-->', $markdown, $slideshow);
-            $html=str_replace('<!--%URL%-->', rtrim(aeSecureFct::getCurrentURL(false, true), '/'), $html);
+            $html=str_replace('<!--%URL%-->', rtrim(Functions::getCurrentURL(false, true), '/'), $html);
             $html=str_replace('<--%TITLE%-->', $pageTitle, $html);
  
             // Store that HTML to the server
@@ -1488,7 +1531,7 @@ class aeSecureMarkdown
             }
 
             // And return an URL to that file
-            $tmp = str_replace('\\', '/', rtrim(aeSecureFct::getCurrentURL(false, true), '/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']), '', str_replace(DS, '/', $fnameHTML)));
+            $tmp = str_replace('\\', '/', rtrim(Functions::getCurrentURL(false, true), '/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']), '', str_replace(DS, '/', $fnameHTML)));
      
             return utf8_encode($tmp);
         } else { // if ($filename!="")
@@ -1505,9 +1548,9 @@ class aeSecureMarkdown
     public function process(string $task)
     {
       
-        $filename=json_decode(urldecode(aeSecureFct::getParam('param', 'string', '', true)));
+        $filename=json_decode(urldecode(Functions::getParam('param', 'string', '', true)));
         if ($filename!='') {
-            $filename=aeSecureFiles::sanitizeFileName(trim($filename));
+            $filename=\AeSecure\Files::sanitizeFileName(trim($filename));
         }
       
         switch ($task) {
@@ -1533,13 +1576,13 @@ class aeSecureMarkdown
             
             case 'save':
                 header('Content-Type: application/json');
-                $markdown=json_decode(urldecode(aeSecureFct::getParam('markdown', 'string', '', true)));
+                $markdown=json_decode(urldecode(Functions::getParam('markdown', 'string', '', true)));
                 echo json_encode(self::Save($filename, $markdown), JSON_PRETTY_PRINT);
                 die();
 
             case 'search':
                 header('Content-Type: application/json');
-                $json=self::Search(urldecode(aeSecureFct::getParam('param', 'string', '', true, SEARCH_MAX_LENGTH)));
+                $json=self::Search(urldecode(Functions::getParam('param', 'string', '', true, SEARCH_MAX_LENGTH)));
                 echo json_encode($json, JSON_PRETTY_PRINT);
                 die();
             
@@ -1558,4 +1601,4 @@ class aeSecureMarkdown
                 die();
         } // switch ($task)
     } // function process()
-} // class aeSecureMarkdown
+} // class Markdown

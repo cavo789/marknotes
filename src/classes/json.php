@@ -1,31 +1,33 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
 
+namespace AeSecure;
+
 define('JSON_FILE_NOT_FOUND', 'The file [%s] doesn\'t exists (anymore)');
 
-class aeSecureJSON
+class JSON
 {
 
     protected static $instance = null;
    
-    private static $_debug=false;
+    private static $debug=false;
    
-    function __construct()
+    public function __construct()
     {
 
-        self::$_debug=false;
+        self::$debug=false;
         return true;
     } // function __construct()
     
     public static function getInstance()
     {
         if (self::$instance === null) {
-            self::$instance = new aeSecureJSON();
+            self::$instance = new JSON();
         }
         return self::$instance;
     } // function getInstance()
    
-    private static function ShowError(string $param, bool $die = true) : bool
+    private static function showError(string $param, bool $die = true) : bool
     {
 
         if (trim($param)!=='') {
@@ -48,7 +50,8 @@ class aeSecureJSON
                 break;
 
             case JSON_ERROR_SYNTAX:
-                $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] (be sure file is UTF8-NoBOM)';
+                $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
+                   '(be sure file is UTF8-NoBOM)';
                 break;
 
             case JSON_ERROR_UTF8:
@@ -60,8 +63,10 @@ class aeSecureJSON
                 break;
         } // switch (json_last_error())
             
-        if (self::$_debug==true) {
-            $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.debug_backtrace()[1]['line'].', '.debug_backtrace()[2]['class'].'::'.debug_backtrace()[2]['function'].', line '.debug_backtrace()[2]['line'].')</em>';
+        if (self::$debug==true) {
+            $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.
+               debug_backtrace()[1]['line'].', '.debug_backtrace()[2]['class'].'::'.debug_backtrace()[2]['function'].
+               ', line '.debug_backtrace()[2]['line'].')</em>';
         }
 
         $msg='<div class="error bg-danger">ERROR - '.$msg.'</div>';
@@ -72,7 +77,7 @@ class aeSecureJSON
             echo $msg;
             return true;
         }
-    } // function ShowError()
+    } // function showError()
 
    /**
     * Enable or not the debug mode i.e. display additionnal infos in case of errors
@@ -81,7 +86,7 @@ class aeSecureJSON
     */
     public function debug(bool $bState)
     {
-        self::$_debug=$bState;
+        self::$debug=$bState;
     } // function debug()
    
    /**
@@ -95,21 +100,21 @@ class aeSecureJSON
     {
 
         if (!file_exists($fname)) {
-            self::ShowError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
+            self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
         }
 
         try {
             $arr=json_decode(file_get_contents($fname), $assoc);
          
             if (json_last_error()!==JSON_ERROR_NONE) {
-                self::ShowError($fname, false);
-                if (self::$_debug) {
+                self::showError($fname, false);
+                if (self::$debug) {
                     echo '<pre>'.file_get_contents($fname).'</pre>';
                 }
                 die();
             } // if (json_last_error()!==JSON_ERROR_NONE)
         } catch (Exception $ex) {
-            self::ShowError($ex->getMessage(), true);
+            self::showError($ex->getMessage(), true);
         }
       
         return $arr;
@@ -124,16 +129,16 @@ class aeSecureJSON
             $return=json_encode($value, $option);
          
             if (json_last_error()!==JSON_ERROR_NONE) {
-                self::ShowError('', false);
-                if (self::$_debug) {
+                self::showError('', false);
+                if (self::$debug) {
                     echo '<pre>'.print_r($value, true).'</pre>';
                 }
                 die();
             } // if (json_last_error()!==JSON_ERROR_NONE)
         } catch (Exception $ex) {
-            self::ShowError($ex->getMessage(), true);
+            self::showError($ex->getMessage(), true);
         }
       
         return $return;
     } // function json_encode()
-} // class aeSecureJSON
+} // class JSON

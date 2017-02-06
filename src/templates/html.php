@@ -1,3 +1,6 @@
+<?php 
+// @codingStandardsIgnoreFile
+?>
 <!DOCTYPE html>
 <html lang="en">
 

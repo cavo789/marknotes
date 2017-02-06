@@ -1,7 +1,9 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
 
-class aeSecureFiles
+namespace AeSecure;
+
+class Files
 {
     
    /**
@@ -55,7 +57,8 @@ class aeSecureFiles
    /**
     * Recursive glob : retrieve all files that are under $path (if empty, $path is the root folder of the website)
     *
-    * For instance : aeSecureFct::rglob($pattern='.htaccess',$path=$rootFolder); to find every .htaccess files on the server
+    * For instance : aeSecureFct::rglob($pattern='.htaccess',$path=$rootFolder); to find every .htaccess files on
+    * the server
     * If folders should be skipped :
     *    aeSecureFct::rglob('.htaccess',$rootFolder,0,array('aesecure','administrator'))
     *
@@ -65,9 +68,13 @@ class aeSecureFiles
     * @param type $arrSkipFolder   Folders to skip... (subfolders will be also skipped)
     * @return type
     */
-    public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array
-    {
-      
+    public static function rglob(
+        string $pattern = '*',
+        string $path = '',
+        int $flags = 0,
+        $arrSkipFolder = null
+    ) : array {
+    
         static $adjustCase=false;
       
         // glob() is case sensitive so, search for PHP isn't searching for php.
@@ -129,11 +136,11 @@ class aeSecureFiles
     * @param string $new_extension  The new extension ("html")
     * @return string                The new filename (test.html)
     */
-    public static function replace_extension(string $filename, string $new_extension) : string
+    public static function replaceExtension(string $filename, string $new_extension) : string
     {
         $info = pathinfo($filename);
         return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
-    } // function replace_extension
+    } // function replaceExtension
    
    /**
     * Be sure that the filename isn't something like f.i. ../../../../dangerous.file
@@ -156,9 +163,10 @@ class aeSecureFiles
         // Remove any trailing dots, as those aren't ever valid file names.
         $filename = rtrim($filename, '.');
 
-        // Pattern with allowed characters  PROBLEM : accentuated characters or special one (like @) should also be allowed
-        //$regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\\\/\_\- ]#', '#^\.#');
-        //$filename=trim(preg_replace($regex, '', $filename));
+        // Pattern with allowed characters  PROBLEM : accentuated characters or special one (like @)
+        // should also be allowed
+        // $regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\\\/\_\- ]#', '#^\.#');
+        // $filename=trim(preg_replace($regex, '', $filename));
       
         // If $filename was f.i. '../../../../../'.$filename
         // the preg_replace has change it to '/////'.$filename so remove leading /
@@ -170,7 +178,8 @@ class aeSecureFiles
     } // function sanitizeFileName
    
    /**
-    * Rewrite an existing file.  The function will first take a backup of the file (with new .old suffix).  If the write action is successfull, the .old file is removed
+    * Rewrite an existing file.  The function will first take a backup of the file (with new .old suffix).
+    * If the write action is successfull, the .old file is removed
     *
     * @param string $filename     Absolute filename
     * @param string $new_content  The new content
@@ -200,4 +209,4 @@ class aeSecureFiles
       
         return $bReturn;
     } // function rewriteFile()
-} // class aeSecureFiles
+} // class Files

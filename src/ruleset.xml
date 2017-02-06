@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ruleset name="Custom">
+ <description>Zend, but without linelength check.</description>
+ <rule ref="Zend">
+  <exclude name="Generic.Files.LineLength"/>
+ </rule>
+</ruleset>

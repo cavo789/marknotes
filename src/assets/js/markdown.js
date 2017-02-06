@@ -1279,3 +1279,4 @@ function toggleFullScreen(element)
     return true;
    
 } // function toggleFullScreen()
+

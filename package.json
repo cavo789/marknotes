@@ -50,7 +50,7 @@
   "bugs": {
     "url": "https://github.com/cavo789/markdown/issues"
   },
-  "homepage": "https://github.com/cavo789/markdown#readme",
+  "homepage": "https://github.com/cavo789/markdown",
   "gulp": {
     "editor": {
       "tab_size": 3,

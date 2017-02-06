@@ -1,3 +1,6 @@
+<?php 
+// @codingStandardsIgnoreFile
+?>
 <!-- 
    based on remark : https://github.com/gnab/remark 
    Tutorial : https://github.com/gnab/remark/wiki/Markdown
