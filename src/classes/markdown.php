@@ -96,10 +96,12 @@ class Markdown
         }
         $folder=rtrim($folder, DS).DS;
    
+        /*<!-- build:debug -->*/
         if (!class_exists('Debug')) {
             require_once 'debug.php';
             $this->aeDebug=\AeSecure\Debug::getInstance();
         }
+        /*<!-- endbuild -->*/
       
         if (!class_exists('Encrypt')) {
             require_once 'encrypt.php';
@@ -162,6 +164,7 @@ class Markdown
                     $this->_arrTagsAutoSelect=$this->_json['tags'];
                 }
 
+                /*<!-- build:debug -->*/
                 if (isset($this->_json['debug'])) {
                     $this->_DEBUGMODE=($this->_json['debug']==1?true:false); // Debug mode enabled or not
                 }
@@ -170,10 +173,10 @@ class Markdown
                     $this->aeDebug->enable();
                     $this->aeJSON->debug(true);
                 } else {
+                   /*<!-- endbuild -->*/
                     error_reporting(E_ALL & ~ E_NOTICE);
+                   /*<!-- build:debug -->*/
                 }
-            
-                /*<!-- build:debug -->*/
                 if (isset($this->_json['development'])) {
                     $this->_DEVMODE=($this->_json['development']==1?true:false); // Development mode enabled or not
                
@@ -373,10 +376,10 @@ class Markdown
         $dirs = array_filter(glob($root.'*'), 'is_dir');
         natcasesort($dirs);
 
-        $iter = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::SELF_FIRST,
-            RecursiveIteratorIterator::CATCH_GET_CHILD // Ignore "Permission denied"
+        $iter = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($root, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST,
+            \RecursiveIteratorIterator::CATCH_GET_CHILD // Ignore "Permission denied"
         );
 
         $paths = array();
@@ -666,11 +669,12 @@ class Markdown
     */
     private function ShowError(string $msg, bool $die = true) : bool
     {
-      
+        /*<!-- build:debug -->*/
         if ($this->_DEBUGMODE) {
             $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.
                debug_backtrace()[1]['line'].')</em>';
         }
+        /*<!-- endbuild -->*/
       
         // The \' construction is for javascript, not for PHP
         $msg=str_replace("\'", "'", $msg);
@@ -1112,10 +1116,12 @@ class Markdown
             return $return;
         }
       
+        /*<!-- build:debug -->*/
         if ($this->_DEBUGMODE) {
             $return['debug'][]=$this->aeDebug->log('Search', true);
             $return['debug'][]=$this->aeDebug->log('Search for ['.str_replace(",", ", ", $keywords).']', true);
         }
+        /*<!-- endbuild -->*/
       
         // $keywords can contains multiple terms like 'invoices,2017,internet'.
         // Search for these three keywords (AND)
@@ -1134,7 +1140,7 @@ class Markdown
         natcasesort($arrFiles);
      
         // Initialize the encryption class
-        $aesEncrypt=new AeSecure\Encrypt($this->_encryptionPassword, $this->_encryptionMethod);
+        $aesEncrypt=new \AeSecure\Encrypt($this->_encryptionPassword, $this->_encryptionMethod);
 
         $docs=str_replace('/', DS, $this->_settingsDocsFolder);
       
@@ -1155,9 +1161,11 @@ class Markdown
             } // foreach($keywords as $keyword)
          
             if ($bFound) {
+               /*<!-- build:debug -->*/
                 if ($this->_DEBUGMODE) {
                     $return['debug'][]=$this->aeDebug->log('All keywords found in filename : ['.$file.']', true);
                 }
+                /*<!-- endbuild -->*/
             
                 // Found in the filename => stop process of this file
                 $return['files'][]=$docs.$file;
@@ -1212,9 +1220,11 @@ class Markdown
                 } // foreach($keywords as $keyword)
             
                 if ($bFound) {
+                   /*<!-- build:debug -->*/
                     if ($this->_DEBUGMODE) {
                         $return['debug'][]=$this->aeDebug->log('All keywords found in filecontent : ['.$file.']', true);
                     }
+                    /*<!-- endbuild -->*/
                
                     // Found in the filename => stop process of this file
                     $return['files'][]=$docs.$file;

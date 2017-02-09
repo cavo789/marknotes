@@ -4,9 +4,12 @@
 * @version   : 1.0.4
 * @author    : christophe@aesecure.com
 * @license   : MIT
-* @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-02-04T11:36:02.740Z
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-02-07T09:11:36.465Z
 */?>
+<?php 
+// @codingStandardsIgnoreFile
+?>
 <!DOCTYPE html>
 <html lang="en">
 

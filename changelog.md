@@ -2,6 +2,15 @@
 
 https://github.com/cavo789/markdown
 
+## 1.0.3
+
+### 2017-02-07
+
+```diff
++ jsTree - Open folder on the single click
++ Read version number and github link from package.json
+```
+
 ## 1.0.2
 
 ### 2017-01-27

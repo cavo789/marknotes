@@ -4,9 +4,12 @@
 * @version   : 1.0.4
 * @author    : christophe@aesecure.com
 * @license   : MIT
-* @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-02-04T11:36:02.741Z
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-02-07T09:11:36.466Z
 */?>
+<?php 
+// @codingStandardsIgnoreFile
+?>
 <!-- 
    based on remark : https://github.com/gnab/remark 
    Tutorial : https://github.com/gnab/remark/wiki/Markdown

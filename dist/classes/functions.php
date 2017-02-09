@@ -4,20 +4,22 @@
 * @version   : 1.0.4
 * @author    : christophe@aesecure.com
 * @license   : MIT
-* @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-02-04T11:36:02.733Z
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-02-07T09:11:36.450Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
+namespace AeSecure;
 
-class aeSecureFct
+class Functions
 {
     
    /**
     * Return the current URL
     *
     * @param type $use_forwarded_host
-    * @param type $bNoScriptName          If FALSE, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
+    * @param type $bNoScriptName     If FALSE, only return the URL and folders name but no
+    *                                script name (f.i. remove index.php and parameters if any)
     * @return type string
     */
     public static function getCurrentURL(bool $use_forwarded_host = false, bool $bNoScriptName = false) : string
@@ -27,9 +29,13 @@ class aeSecureFct
         $protocol = substr($sp, 0, strpos($sp, '/')) . (($ssl)?'s':'');
         $port     = $_SERVER['SERVER_PORT'];
         $port     = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
-        $host     = ($use_forwarded_host && isset($_SERVER['HTTP_X_FORWARDED_HOST'])) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
+        $host     = ($use_forwarded_host && isset($_SERVER['HTTP_X_FORWARDED_HOST']))
+           ? $_SERVER['HTTP_X_FORWARDED_HOST']
+           : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
         $host     = isset($host) ? $host : $_SERVER['SERVER_NAME'].$port;
-        return $protocol .'://'.$host.($bNoScriptName===true?dirname($_SERVER['REQUEST_URI']).'/':$_SERVER['REQUEST_URI']);
+        
+        return $protocol.'://'.$host.($bNoScriptName===true?dirname($_SERVER['REQUEST_URI']).
+           '/':$_SERVER['REQUEST_URI']);
     } // function getCurrentURL
 
    /**
@@ -40,8 +46,14 @@ class aeSecureFct
     * @param type $default       f.i. "default"
     * @return type
     */
-    public static function getParam(string $name, string $type = 'string', $default = '', bool $base64 = false, int $maxsize = 0)
-    {
+    public static function getParam(
+        string $name,
+        string $type = 'string',
+        $default = '',
+        bool $base64 = false,
+        int $maxsize = 0
+    ) {
+    
       
         $tmp='';
         $return=$default;
@@ -109,10 +121,12 @@ class aeSecureFct
         // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
 
         if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
-            $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
+            $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'">'.
+               '</script>';
         } else {
             if ($weblocation!='') {
-                $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$weblocation.'"></script>';
+                $return='<script '.($defer==true?'defer="defer" ':'').'type="text/javascript" src="'.$weblocation.'">'.
+                   '</script>';
             }
         }
       
@@ -164,4 +178,4 @@ class aeSecureFct
         $bAjax=(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
         return $bAjax;
     } // function isAjaxRequest()
-} // class aeSecureFct
+} // class Functions

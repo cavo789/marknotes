@@ -163,7 +163,9 @@ function initFiles($data)
         return false;
     }
    
+    /*<!-- build:debug -->*/
     //if (markdown.settings.debug) console.log($data.count);
+    /*<!-- endbuild -->*/
    
     try {
         if ($data.hasOwnProperty('count')) {
@@ -173,9 +175,11 @@ function initFiles($data)
         }
     } catch (err) {
         console.warn(err.message);
+        /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             Noty({message:err.message, type:'error'});
         }
+        /*<!-- endbuild -->*/
     }
    
     try {
@@ -193,18 +197,20 @@ function initFiles($data)
                 if (typeof(objNode.parent)!=="undefined") {
                     // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
                     // and objNode.text the name of the file (f.i. jsTree.md)
+                    /*<!-- build:debug -->*/
                     if (markdown.settings.debug) {
                         console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
                     }
+                    /*<!-- endbuild -->*/
 
                     var $fname=window.btoa(encodeURIComponent(JSON.stringify(objNode.data.file)));
 
                     ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
                 } // if (typeof(objNode.parent)!="undefined")
 
+            }).on('click', '.jstree-anchor', function (e) {
+                $(this).jstree(true).toggle_node(e.target);
             }).on('keydown.jstree', '.jstree-anchor', function (e) {
-
-                // console.log(e.keyCode);   40 for down, 38 for up
             
                 // @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
                 // If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
@@ -280,9 +286,12 @@ function initFiles($data)
 
                         var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));
 
+                        /*<!-- build:debug -->*/
                         if (markdown.settings.debug) {
                             console.log("Show note "+$(this).data('file'));
                         }
+                        /*<!-- endbuild -->*/
+                        
                         ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
                         $(this).addClass("selected");
                     }
@@ -292,9 +301,11 @@ function initFiles($data)
                         // retrieve the name of the folder from data-folder
                         var $folder=$(this).data('folder').replace('\\','/');
 
+                        /*<!-- build:debug -->*/
                         if (markdown.settings.debug) {
                             console.log("Apply filter for "+$folder);
                         }
+                        /*<!-- endbuild -->*/
 
                         // Set the value in the search area
                         addSearchEntry({keyword:$folder});
@@ -305,9 +316,11 @@ function initFiles($data)
         } // // if ($.isFunction($.fn.jstree))
     } catch (err) {
         console.warn(err.message);
+        /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             Noty({message:err.message, type:'error'});
         }
+        /*<!-- endbuild -->*/
     }
    
    // initialize the search area, thanks to the Flexdatalist plugin
@@ -347,9 +360,11 @@ function initFiles($data)
         }
     } catch (err) {
         console.warn(err.message);
+        /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             Noty({message:err.message, type:'error'});
         }
+        /*<!-- endbuild -->*/
     }
    
     return true;
@@ -397,9 +412,12 @@ function initializeTasks()
             case 'clipboard':
             
                 // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+                /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Clipboard -> copy the link of the current note in the clipboard');
                 }
+                /*<!-- endbuild -->*/
+                
                 if (typeof Clipboard === 'function') {
                     var clipboard = new Clipboard('*[data-task="clipboard"]');
                     clipboard.on('success', function (e) {
@@ -413,17 +431,22 @@ function initializeTasks()
             case 'display':
             
                 // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
+                /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Display -> show note ['+$fname+']');
                 }
+                /*<!-- endbuild -->*/
                 ajaxify({task:$task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
                break;
             
             case 'edit':
-            
+               
+                /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Edit -> show the editor and the source markdown file)');
                 }
+                /*<!-- endbuild -->*/
+                
                 ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});
 
                break;
@@ -437,9 +460,12 @@ function initializeTasks()
             case 'link_note':
             
                 // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+                /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Clipboard -> copy the link of the current note in the clipboard');
                 }
+                /*<!-- endbuild -->*/
+                
                 if (typeof Clipboard === 'function') {
                     new Clipboard('*[data-task="link_note"]');
                     Noty({message:markdown.message.copy_link_done, type:'success'});
@@ -457,9 +483,11 @@ function initializeTasks()
                 var $file=$(this).data('file');
                 $filePDF = $file.substr(0, $file.lastIndexOf(".")) + ".pdf";
             
+                /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Print -> start the print preview plugin');
                 }
+                /*<!-- endbuild -->*/
             
                 console.info("Use jsPDF for the PDF exportation");
                 console.info("Note : this script is not really efficient.  Seems to only work if text; don't work anymore with images");
@@ -509,21 +537,27 @@ function initializeTasks()
                break;
             
             case 'printer':
-            
+               /*<!-- build:debug -->*/
                //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
+               /*<!-- endbuild -->*/
                break;
             
             case 'slideshow':
             
+                /*<!-- build:debug -->*/
                 //if (markdown.settings.debug) console.log('Slideshow -> open a new tab in the browser and show the markdown in a slideshow format');
+                /*<!-- endbuild -->*/
                 slideshow($fname);
                break;
             
             case 'tag':
             
+                /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Tag -> filter on ['+$tag+']');
                 }
+                /*<!-- endbuild -->*/
+                
                 addSearchEntry({keyword:$tag, reset:true});
                break;
             
@@ -552,10 +586,12 @@ function replaceLinksToOtherNotes()
 {
    
     try {
+        /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             console.log('Replace internal links to notes');
         }
-
+        /*<!-- endbuild -->*/
+        
         var $text=$('#CONTENT').html();
 
         // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
@@ -613,16 +649,20 @@ function addLinksToTags()
       
       
         var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
+        /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             console.log('RegEx for finding tags : '+RegEx);
         }
+        /*<!-- endbuild -->*/
       
         var $tags=RegEx.exec($text);
 
         while ($tags!==null) {
+           /*<!-- build:debug -->*/
             if (markdown.settings.debug) {
                 console.log("Process tag "+$tags[0]);
             }
+            /*<!-- endbuild -->*/
          
             $sTags=
             (($tags[1]!==undefined)?$tags[1]:'')+                                                                                           // Before the span
@@ -758,9 +798,11 @@ function afterDisplay($fname)
 
         // Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
         if ($.isFunction($.fn.linkify)) {
+            /*<!-- build:debug -->*/
             if (markdown.settings.debug) {
                 console.log('linkify plain text');
             }
+            /*<!-- endbuild -->*/
             $('page').linkify();
         }
       
@@ -810,9 +852,11 @@ function afterDisplay($fname)
                 }
             }
         } catch (err) {
+            /*<!-- build:debug -->*/
             if (markdown.settings.debug) {
                 console.warn(err.message);
             }
+            /*<!-- endbuild -->*/
         }
 
         // See if the customafterDisplay() function has been defined and if so, call it
@@ -972,9 +1016,11 @@ function onChangeSearch()
             // On page entry, get the list of .md files on the server
             ajaxify({task:'search',param:window.btoa(encodeURIComponent($searchKeywords)), callback:'afterSearch("'+$searchKeywords+'",data)'});
         } else {
+            /*<!-- build:debug -->*/
             if (markdown.settings.debug) {
                 console.log('cancel the search');
             }
+            /*<!-- endbuild -->*/
         }
     } catch (err) {
         console.warn(err.message);
@@ -1200,12 +1246,10 @@ function Noty($params)
    
 } // function Noty()
 
-
 /**
  * Toggle fullscreen
  * @link http://stackoverflow.com/a/23971798
  */
-
 function isFullScreen()
 {
     return (document.fullScreenElement && document.fullScreenElement !== null) || document.mozFullScreen || document.webkitIsFullScreen;

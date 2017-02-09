@@ -4,13 +4,12 @@
 * @version   : 1.0.4
 * @author    : christophe@aesecure.com
 * @license   : MIT
-* @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-02-04T11:36:02.721Z
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-02-07T09:11:36.431Z
 */?>
 <?php
-define('VERSION', '1.0.4');
-
 /* REQUIRES PHP 7.x AT LEAST */
+namespace AeSecure;
 
 /**
  * Author : AVONTURE Christophe - https://www.aesecure.com
@@ -43,9 +42,9 @@ define('APP_NAME', 'Notes management');
    require_once(__DIR__.'/classes/functions.php');
    require_once(__DIR__.'/classes/markdown.php');
    
-   $task=aeSecureFct::getParam('task', 'string', 'main', false);
+   $task=\AeSecure\Functions::getParam('task', 'string', 'main', false);
 
    // Create an instance of the class and initialize the rootFolder variable (type string)
-   $aeSMarkDown = new aeSecureMarkdown();
+   $aeSMarkDown = new \AeSecure\Markdown();
    $aeSMarkDown->process($task);
    unset($aeSMarkDown);

@@ -4,9 +4,12 @@
 * @version   : 1.0.4
 * @author    : christophe@aesecure.com
 * @license   : MIT
-* @url       : https://github.com/cavo789/markdown#readme
-* @package   : 2017-02-04T11:36:02.741Z
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-02-07T09:11:36.466Z
 */?>
+<?php 
+// @codingStandardsIgnoreFile
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,7 +56,7 @@
 
             <div id="TOC" class="onlyscreen">&nbsp;</div>
             
-            <div class="app_version"><a href="https://github.com/cavo789/markdown" target="_blank" title="%APP_NAME% | Download a newer version">%APP_VERSION%</a></div>
+            <div class="app_version"><a href="%APP_WEBSITE%" target="_blank" title="%APP_NAME% | Download a newer version">%APP_VERSION%</a></div>
 
          </div>
 
@@ -108,7 +111,7 @@
 
       <!--%ADDITIONNAL_JS%-->
       
-      <script type="text/javascript">%MARKDOWN_GLOBAL_VARIABLES%</script>
+      <!--%MARKDOWN_GLOBAL_VARIABLES%-->
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       
       <!--%CUSTOM_JS%-->
