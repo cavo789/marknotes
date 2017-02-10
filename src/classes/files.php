@@ -141,6 +141,17 @@ class Files
         $info = pathinfo($filename);
         return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
     } // function replaceExtension
+    
+    /**
+    * Remove file's extension
+    * @param string $filename       The filename ("test.md")
+    * @return string                The new filename (test)
+    */
+    public static function removeExtension(string $filename) : string
+    {
+        $info = pathinfo($filename);
+        return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'];
+    } // function removeExtension
    
    /**
     * Be sure that the filename isn't something like f.i. ../../../../dangerous.file

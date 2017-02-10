@@ -36,6 +36,16 @@ IF EXIST %VENDOR%%LIB% (
 )
 
 REM ----------------------------------------------------------------------
+SET LIB=dompdf\
+IF EXIST %VENDOR%%LIB%\%LIB% (
+   ECHO  === %LIB% === >> %LOG%
+   ECHO  === %LIB% ===
+   XCOPY %VENDOR%%LIB%\%LIB%lib\*.* %LIBS%%LIB%lib\*.* /E /Y >> %LOG%
+   XCOPY %VENDOR%%LIB%\%LIB%src\*.* %LIBS%%LIB%src\*.* /E /Y >> %LOG%
+   COPY %VENDOR%%LIB%\%LIB%autoload.inc.php %LIBS%%LIB%autoload.inc.php >> %LOG%
+)
+
+REM ----------------------------------------------------------------------
 SET LIB=font-awesome\
 IF EXIST %VENDOR%fortawesome\%LIB% (
    ECHO  === %LIB% === >> %LOG%
@@ -64,6 +74,13 @@ IF EXIST %VENDOR%vakata\%LIB% (
    COPY %VENDOR%vakata\%LIB%demo\filebrowser\file_sprite.png %LIBS%%LIB%file_sprite.png >> %LOG%
 )   
 
+REM ----------------------------------------------------------------------
+SET LIB=phenx\
+IF EXIST %VENDOR%%LIB% (
+   ECHO  === %LIB% === >> %LOG%
+   ECHO  === %LIB% ===
+   XCOPY %VENDOR%%LIB%*.* %LIBS%dompdf\lib\*.* /E /Y >> %LOG%
+)   
 REM ----------------------------------------------------------------------
 SET LIB=noty\
 IF EXIST %VENDOR%needim\%LIB% (

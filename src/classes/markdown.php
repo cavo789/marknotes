@@ -40,7 +40,7 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 define('DEVMODE', '=== DEV MODE ENABLED ===');
 
 // Libraries folders path
-define('LIB', dirname(__DIR__).DS.'libs'.DS);
+define('LIBS', dirname(__DIR__).DS.'libs'.DS);
 
 // Requires PHP 7.x
          
@@ -182,7 +182,7 @@ class Markdown
                
                     // Only when the development mode is enabled, include php_error library to make life easier
                     if ($this->_DEVMODE) {
-                        if (file_exists($lib = LIB.'php_error'.DS.'php_error.php')) {
+                        if (file_exists($lib = LIBS.'php_error'.DS.'php_error.php')) {
                             // Seems to not work correctly with ajax; the return JSON isn't correctly understand by JS
                             $options = array(
                               // Don't enable ajax is not ajax call
@@ -895,7 +895,7 @@ class Markdown
         }
 
         // Call the Markdown parser (https://github.com/erusev/parsedown)
-        $lib="libs/parsedown/Parsedown.php";
+        $lib=LIBS."parsedown/Parsedown.php";
         if (!file_exists($lib)) {
             self::ShowError(str_replace(
                 '%s',
@@ -1271,6 +1271,65 @@ class Markdown
         return $sReturn;
     } // function Edit()
    
+     private function PDF(string $filename) : string
+    {
+         
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
+        // If the filename doesn't mention the file's extension, add it.
+        if (substr($filename, -3)!='.md') {
+            $filename.='.md';
+        }
+        
+        $fullname=\AeSecure\Files::replaceExtension(str_replace('/', DIRECTORY_SEPARATOR, utf8_decode($this->_rootFolder.$this->_settingsDocsFolder.
+           ltrim($filename, DS))),'html');
+
+        if (file_exists($fullname)) {
+
+            $Domfolder=LIBS.'dompdf'.DS;
+            if (file_exists($lib=$Domfolder.'autoload.inc.php')) {
+
+               $html=file_get_contents($fullname);
+
+               // Replace external links to f.i. the Bootstrap CDN to local files
+               $matches=array();
+               preg_match_all('/<link\s+(?:[^>]*?\s+)?href=(\'|")([^(\'|")]*)(\'|")/',$html,$matches);               
+               foreach ($matches[2] as $match) {
+                  switch (basename($match)) {
+                      case 'bootstrap.min.css':
+                         $html=str_replace($matches[2],$this->_rootFolder.'libs'.DS.'bootstrap'.DS.'css'.DS.'bootstrap.min.css',$html);
+                       break;
+                  } // switch
+               } // foreach    
+                         
+               // include autoloader
+               require_once ($lib);
+               
+               header('Content-Type: application/pdf');
+
+               $dompdf = new \Dompdf\Dompdf();
+
+               $dompdf->set_base_path(dirname($fullname).DS);
+               $dompdf->loadHtml($html);
+               $dompdf->setPaper('A4', 'portrait');
+               $dompdf->render();
+               $dompdf->stream(basename(\AeSecure\Files::removeExtension($fullname)));
+               
+           } else { // if (file_exists($fullname)) 
+              
+              header('Content-Type: text/plain; charset=utf-8');
+              self::ShowError('The Dompdf library isn\'t installed',true);
+              
+           } // if (file_exists($fullname)) 
+
+        } // if (file_exists($fullname))
+        
+        return;
+        
+    } // function PDF()
+    
    /**
     * Save the new content of the file.   This function is called by the "Save" button available in the JS editor
     *
@@ -1582,6 +1641,12 @@ class Markdown
             
                 header('Content-Type: application/json');
                 echo json_encode(self::ListFiles(), JSON_PRETTY_PRINT);
+                die();  
+                
+            case 'pdf':
+               
+                // Generate a PDF            
+                echo self::PDF($filename);
                 die();
             
             case 'save':

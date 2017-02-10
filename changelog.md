@@ -2,6 +2,15 @@
 
 https://github.com/cavo789/markdown
 
+## 1.0.4
+
+### 2017-02-09
+
+```diff
++ Dompdf - Use Dompdf for PDF generation
+- Remove jsPDF
+```
+
 ## 1.0.3
 
 ### 2017-02-07
