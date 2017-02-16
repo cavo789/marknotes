@@ -68,7 +68,7 @@ class Files
     * @param type $arrSkipFolder   Folders to skip... (subfolders will be also skipped)
     * @return type
     */
-    public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array 
+    public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array
     {
     
         static $adjustCase=false;
@@ -217,9 +217,9 @@ class Files
         return $bReturn;
     } // function rewriteFile()
     
-    public static function createFile(string $filename, string $content, int $chmod = 644) : bool 
+    public static function createFile(string $filename, string $content, int $chmod = 644) : bool
     {
-        $bReturn=FALSE;
+        $bReturn=false;
 
         try {
             if ($handle = fopen($filename, 'w')) {
@@ -227,15 +227,13 @@ class Files
                 fclose($handle);
 
                 if (filesize($filename)>0) {
-                   chmod($filename, $chmod);
-                   $bReturn=TRUE;
+                    chmod($filename, $chmod);
+                    $bReturn=true;
                 }
             }
         } catch (Exception $ex) {
         }
         
         return $bReturn;
-        
     } // function createFile()
-    
 } // class Files

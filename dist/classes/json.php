@@ -1,11 +1,11 @@
 <?php
 /**
 * markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.4
+* @version   : 1.0.5
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-07T09:11:36.452Z
+* @package   : 2017-02-16T12:37:19.412Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -60,7 +60,7 @@ class JSON
 
             case JSON_ERROR_SYNTAX:
                 $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
-                   '(be sure file is UTF8-NoBOM)';
+                   '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
                 break;
 
             case JSON_ERROR_UTF8:
@@ -105,7 +105,7 @@ class JSON
     * @param bool $assoc    [optional] When TRUE, returned objects will be converted into associative arrays.
     * @return type
     */
-    public function json_decode(string $fname, bool $assoc = false)
+    public static function json_decode(string $fname, bool $assoc = false)
     {
 
         if (!file_exists($fname)) {
@@ -129,7 +129,7 @@ class JSON
         return $arr;
     } // function json_decode()
    
-    public function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
+    public static function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
     {
       
         $return='';
@@ -150,4 +150,28 @@ class JSON
       
         return $return;
     } // function json_encode()
+    
+    /**
+     * Convert an array into a JSON string.  Append debugging informations.
+     *
+     * @param array $arrInfos   Array with informations, will be converted into a JSON string
+     * @param array $arrDebug   Array with debugging info, can be empty
+     * @param bool $die         Display and die (true) or return to the calling code (false)
+     */
+    public static function json_return_info(array $arrInfos, array $arrDebug, bool $die = true)
+    {
+  
+        header('Content-Type: application/json');
+        
+        /**/
+ 
+        if ($die) {
+            header('Content-Type: application/json');
+        }
+        echo self::json_encode($arrInfos);
+        
+        if ($die) {
+            die();
+        }
+    } // function json_return_info()
 } // class JSON

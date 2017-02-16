@@ -11,11 +11,10 @@ class SlideShow
         $aeSettings=\AeSecure\Settings::getInstance();
         
         if ($params['filename']!="") {
-            
             $fullname=utf8_decode($aeSettings->getFolderDocs(true).$params['filename']);
 
             if (!file_exists($fullname)) {
-                echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found','The file [%s] doesn\\&#39;t exists'));
+                echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
                 die();
             }
             
@@ -36,7 +35,7 @@ class SlideShow
                 $i=0;
 
                 for ($i; $i<$j; $i++) {
-                    $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$aeSettings->getText('confidential','confidential').'</strong>', $markdown);
+                    $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$aeSettings->getText('confidential', 'confidential').'</strong>', $markdown);
                 }
             }
          
@@ -110,11 +109,8 @@ class SlideShow
      
             header('Content-Type: application/json');
             echo json_encode(utf8_encode($tmp), JSON_PRETTY_PRINT);
-            
         } // if ($filename!="")
          
         die();
-        
     } // function Run()
-    
 } // class SlideShow

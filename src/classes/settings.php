@@ -20,7 +20,7 @@ class Settings
     
         require_once('constants.php');
         
-        /*<!-- build:debug -->*/        
+        /*<!-- build:debug -->*/
         if (!class_exists('Debug')) {
             require_once 'debug.php';
         }
@@ -34,7 +34,9 @@ class Settings
         $this->aeJSON=\AeSecure\JSON::getInstance();
 
         $this->setFolderAppRoot(dirname(dirname(__FILE__)));
-        if ($folder!=='') $this->setFolderWebRoot($folder);
+        if ($folder!=='') {
+            $this->setFolderWebRoot($folder);
+        }
         $this->setFolderDocs(DOC_FOLDER);
         
         self::readSettings();
@@ -42,7 +44,7 @@ class Settings
         return true;
     } // function __construct()
     
-    public static function getInstance(string $folder='')
+    public static function getInstance(string $folder = '')
     {
      
         if (self::$instance === null) {
@@ -50,7 +52,6 @@ class Settings
         }
         
         return self::$instance;
-        
     } // function getInstance()
    
    /**
@@ -64,19 +65,19 @@ class Settings
             require_once 'files.php';
         }
         
-        if (\AeSecure\Files::fileExists($fname=$this->getFolderWebRoot().'settings.json.dist')) {
+        if (\AeSecure\Files::fileExists($fname = $this->getFolderWebRoot().'settings.json.dist')) {
             $this->json=$this->aeJSON->json_decode($fname, true);
         } else {
-            if (\AeSecure\Files::fileExists($fname=$this->getFolderAppRoot().'settings.json.dist')) {
-               $this->json=$this->aeJSON->json_decode($fname, true);
+            if (\AeSecure\Files::fileExists($fname = $this->getFolderAppRoot().'settings.json.dist')) {
+                $this->json=$this->aeJSON->json_decode($fname, true);
             } else {
-               $this->json=array();
+                $this->json=array();
             }
         }
         
-        if (\AeSecure\Files::fileExists($fname=$this->getFolderWebRoot().'settings.json')) {
-            $this->json=array_merge($this->json,$this->aeJSON->json_decode($fname, true));
-        } 
+        if (\AeSecure\Files::fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
+            $this->json=array_merge($this->json, $this->aeJSON->json_decode($fname, true));
+        }
         
         if (isset($this->json['language'])) {
             $this->setLanguage($this->json['language']);
@@ -108,7 +109,6 @@ class Settings
 */
      
         return true;
-        
     } // function ReadSettings()
 
     /**
@@ -122,6 +122,11 @@ class Settings
         $return=isset($lang[$variable]) ? $lang[$variable] : '';
 
         if ($return=='') {
+            $lang=&$this->json['languages'][DEFAULT_LANGUAGE];
+            $return=isset($lang[$variable]) ? $lang[$variable] : '';
+        }
+        
+        if ($return=='') {
             $return=(trim($default)!=='' ? constant($default) : '');
         }
               
@@ -129,30 +134,30 @@ class Settings
             $return=str_replace("'", "\'", html_entity_decode($return));
         }
         
-        return $return;
-        
+        // In case of null (i.e. the translation wasn't found, return at least the name of the variable)
+        return ($return===null?$variable:$return);
     } // function getText()
     
     /**
      * Small sanitization function to be sure that the user willn't type anything in the settings.json file
      * for filename properties
-     * 
+     *
      * @param string $fname
      * @return string
      */
-    private function sanitizeFileName(string $fname) : string {
+    private function sanitizeFileName(string $fname) : string
+    {
         
         $fname=trim($fname);
         
-        if ($fname!=='') { 
-
+        if ($fname!=='') {
             // should only contains letters, figures or dot/minus/underscore
-            if (!preg_match('/^[A-Za-z0-9-_\.]+$/', $fname)) $fname='';
-            
+            if (!preg_match('/^[A-Za-z0-9-_\.]+$/', $fname)) {
+                $fname='';
+            }
         } // if ($fname!=='')
         
         return $fname;
-        
     } // function sanitizeFileName()
     
     /**
@@ -170,87 +175,89 @@ class Settings
         } else {
             return '';
         }
-
     } // function getPackageInfo()
     
     /**
      * Return the name of the program, with or without its version number (from package.json)
-     * 
+     *
      * @param bool $addVersionNumber
      * @return string
      */
-    public function getAppName(bool $addVersionNumber = false) : string { 
+    public function getAppName(bool $addVersionNumber = false) : string
+    {
         $name=APP_NAME;
         if ($addVersionNumber) {
-           $name.=' v.'.self::getPackageInfo('version');
+            $name.=' v.'.self::getPackageInfo('version');
         }
-        return $name; 
+        return $name;
     } // function getAppName()
     
     /**
      * Return the homepage of the program (from package.json)
-     * 
+     *
      * @return string
      */
-    public function getAppHomepage() : string {
+    public function getAppHomepage() : string
+    {
         return self::getPackageInfo('homepage');
     } // function getAppHomepage()
     
-    public function getLanguage() : string {
+    public function getLanguage() : string
+    {
         return $this->language;
     }
-    public function setLanguage(string $lang) {
+    public function setLanguage(string $lang)
+    {
           
         if (isset($this->json['languages'][$lang])) {
-            
             // The language should exists in the settings.json languages node
             // If not, use the default one
-            $this->language=$lang;          
-            
+            $this->language=$lang;
         } else {
             $this->language=DEFAULT_LANGUAGE;
         }
     }
     
-    public function getDebugMode() : bool {       
+    public function getDebugMode() : bool
+    {
         return $this->debugmode;
     } // function getDebugMode()
     
-    public function setDebugMode(bool $onOff) {
+    public function setDebugMode(bool $onOff)
+    {
         
         $this->debugmode=false;
         error_reporting(0);
         
         /*<!-- build:debug -->*/
         if ($onOff) {
-            
             $this->debugmode=$onOff; // Debug mode enabled or not
             
-            if(isset($this->aeDebug)) $this->aeDebug->enable();
+            if (isset($this->aeDebug)) {
+                $this->aeDebug->enable();
+            }
             $this->aeJSON->debug(true);
-            
         } // if ($onOff)
         /*<!-- endbuild -->*/
-        
     } // function setDebugMode()
     
-    public function getDevMode() : bool {
+    public function getDevMode() : bool
+    {
         return $this->devmode;
     } // function getDevMode()
     /**
      * Set the developper mode
      * @param bool $onOff
      */
-    public function setDevMode(bool $onOff) {
+    public function setDevMode(bool $onOff)
+    {
         
         $this->devmode=false;
         
         /*<!-- build:debug -->*/
         // Only when the development mode is enabled, include php_error library to make life easier
         if ($onOff) {
-            
             if (\AeSecure\Files::fileExists($lib = $this->getFolderLibs().'php_error'.DS.'php_error.php')) {
-                
                 // Seems to not work correctly with ajax; the return JSON isn't correctly understand by JS
                 $options = array(
                   // Don't enable ajax is not ajax call
@@ -266,19 +273,20 @@ class Settings
             }
         } // if ($onOff)
         /*<!-- endbuild -->*/
-        
     } // function setDevMode()
     
     /**
      * The application root folder (due to the use of symbolic links, the .php source files can
      * be in an another folder than the website itself
-     * 
+     *
      * @return string
      */
-    public function getFolderAppRoot() : string {
+    public function getFolderAppRoot() : string
+    {
         return $this->folderAppRoot;
     }
-    public function setFolderAppRoot($folder) {
+    public function setFolderAppRoot($folder)
+    {
         
         // Respect OS directory separator
         $folder=str_replace('/', DS, $folder);
@@ -287,19 +295,20 @@ class Settings
         $folder=rtrim($folder, DS).DS;
         
         $this->folderAppRoot= $folder;
-        
     }
     
     /**
-     * Return the name of the folder (relative) of the documents folder 
-     * @param bool $absolute   Return the full path (f.i. 'C:\Repository\notes\docs\') if True, 
+     * Return the name of the folder (relative) of the documents folder
+     * @param bool $absolute   Return the full path (f.i. 'C:\Repository\notes\docs\') if True,
      *                         the relative one (f.i. 'docs') if False
-     * @return string 
+     * @return string
      */
-    public function getFolderDocs(bool $absolute=true) : string {
+    public function getFolderDocs(bool $absolute = true) : string
+    {
         return ($absolute?$this->getFolderWebRoot():'').$this->folderDocs;
     } // function getFolderDocs
-    public function setFolderDocs($folder) {
+    public function setFolderDocs($folder)
+    {
 
         // Respect OS directory separator
         $folder=str_replace('/', DS, $folder);
@@ -308,31 +317,42 @@ class Settings
         $folder=rtrim($folder, DS).DS;
 
         $this->folderDocs = $folder;
-        
-    } // function setFolderDocs    
+    } // function setFolderDocs
     /**
      * Return the root folder of the website (f.i. 'C:\Repository\notes\')
      * @return string
      */
-    public function getFolderWebRoot() : string { 
-        return $this->folderWebRoot;         
+    public function getFolderWebRoot() : string
+    {
+        return $this->folderWebRoot;
     } // function getFolderWebRoot()
-    public function setFolderWebRoot(string $folder) { 
-        $this->folderWebRoot=rtrim($folder,DS).DS;         
+    public function setFolderWebRoot(string $folder)
+    {
+        $this->folderWebRoot=rtrim($folder, DS).DS;
     } // function setFolderWebRoot()
        
-    public function getFolderLibs() : string { return $this->getFolderAppRoot().'libs'.DS; }
-    public function getFolderTasks() : string { return $this->getFolderAppRoot().'classes'.DS.'tasks'.DS; }
-    public function getFolderTemplates() : string { return $this->getFolderAppRoot().'templates'.DS; }
+    public function getFolderLibs() : string
+    {
+        return $this->getFolderAppRoot().'libs'.DS;
+    }
+    public function getFolderTasks() : string
+    {
+        return $this->getFolderAppRoot().'classes'.DS.'tasks'.DS;
+    }
+    public function getFolderTemplates() : string
+    {
+        return $this->getFolderAppRoot().'templates'.DS;
+    }
 
     /**
      * Return the template to use for the screen display or the html output.
      * Get the template info from the settings.json when the node 'templates' is found there
-     * 
+     *
      * @param string $default   Default filename with extension (f.i. 'screen' or 'html')
      * @return string           Full path to the file
      */
-    public function getTemplateFile(string $default = 'screen') : string {    
+    public function getTemplateFile(string $default = 'screen') : string
+    {
         
         $tmpl=$default;
         
@@ -343,9 +363,7 @@ class Settings
         }
         
         if ($tmpl!=='') {
-            
-            if (!\AeSecure\Files::fileExists($fname=$this->getFolderTemplates().$tmpl.'.php')) {
-               
+            if (!\AeSecure\Files::fileExists($fname = $this->getFolderTemplates().$tmpl.'.php')) {
                 // The specified template doesn't exists. Back to the default one;
                 if ($this->getDebugMode()) {
                     echo '<span style="font-size:0.8em;">Debug | '.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
@@ -353,22 +371,19 @@ class Settings
                 echo '<strong><em>Template ['.$fname.'] not found, please review your settings.json file.</em></strong>';
                 die();
             }
-            
         } else { // if ($tmpl!=='')
 
             $fname=$this->getFolderTemplates().$tmpl.'.php';
-
         } // if ($tmpl!=='')
             
-        return $fname; 
-        
+        return $fname;
     } // function getTemplateFile()
    
     /**
      * Use browser's cache or not depending on settings.json
      * @return bool
      */
-    public function getOptimisationUseCache() : bool 
+    public function getOptimisationUseCache() : bool
     {
         $bReturn=false;
         
@@ -379,14 +394,13 @@ class Settings
             }
         }
         return $bReturn;
-        
     } // function getOptimisationUseCache()
     
     /**
      * Use lazyload or not depending on settings.json
      * @return bool
      */
-    public function getOptimisationLazyLoad() : bool 
+    public function getOptimisationLazyLoad() : bool
     {
         $bReturn=false;
         
@@ -398,16 +412,16 @@ class Settings
         }
         
         return $bReturn;
-        
     } // function getOptimisationLazyLoad()
     
     /**
      * Return the Google font to use (from settings.json)
-     * 
+     *
      * @param bool $css  If true, return a css block for using the font(s).  If false, return the font(s) name
      * @return string
      */
-    public function getPageGoogleFont(bool $css=true) : string {
+    public function getPageGoogleFont(bool $css = true) : string
+    {
         
         $return='';
         
@@ -418,9 +432,7 @@ class Settings
         }
         
         if ($css===true) {
-
             if ($font!=='') {
-                
                 $result='<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
 
                 $i=0;
@@ -431,21 +443,20 @@ class Settings
                 }
                 $return.='</style>';
             } // if ($font!=='')
-
         } else {
             $return = $font;
         }
         
         return $return;
-        
     } // function getPageGoogleFont()
     
     /**
      * Return the max width size for images (from settings.json)
-     * 
+     *
      * @return string
      */
-    public function getPageImgMaxWidth() : string {
+    public function getPageImgMaxWidth() : string
+    {
         
         $return=IMG_MAX_WIDTH;
         
@@ -456,14 +467,14 @@ class Settings
         }
         
         return $return;
-        
     } // function getPageImgMaxWidth()
     
     /**
      * Max allowed size for the search string
      * @return int
      */
-    public function getSearchMaxLength() : int {
+    public function getSearchMaxLength() : int
+    {
         return SEARCH_MAX_LENGTH;
     }
     
@@ -471,20 +482,22 @@ class Settings
      * Tags to automatically select when displaying the page
      * @return string
      */
-    public function getTagsAutoSelect() : string {
+    public function getTagsAutoSelect() : string
+    {
         
         if (isset($this->json['tags'])) {
             return implode($this->json['tags'], ",");
         } else {
             return '';
         }
-    } // function getTagsAutoSelect() 
+    } // function getTagsAutoSelect()
     
     /**
      * Prefix to use to indicate a word as a tag
      * @return string
      */
-    public function getPrefixTag() : string {
+    public function getPrefixTag() : string
+    {
         return PREFIX_TAG;
     } // function getPrefixTag()
     
@@ -492,7 +505,8 @@ class Settings
      * Should nodes of the treeview be opened at loading time ?
      * @return bool
      */
-    public function getTreeOpened() : bool {
+    public function getTreeOpened() : bool
+    {
         
         $bReturn=false;
         
@@ -502,14 +516,15 @@ class Settings
             }
         }
         
-        return $bReturn;               
-    } // function getTreeOpened() 
+        return $bReturn;
+    } // function getTreeOpened()
     
     /**
      * List of folders that should be immediately opened
      * @return array
      */
-    public function getTreeFoldersAutoOpen() : array {
+    public function getTreeFoldersAutoOpen() : array
+    {
         
         $arr=array();
         
@@ -525,14 +540,14 @@ class Settings
         } // if(isset($this->json['list']))
       
         return $arr;
-        
     } // function getTreeFoldersAutoOpen()
        
     /**
      * Return the password used for encryptions
      * @return string
      */
-    public function getEncryptionPassword() : string {
+    public function getEncryptionPassword() : string
+    {
         
         $sReturn='';
         
@@ -543,33 +558,35 @@ class Settings
         }
         
         return $sReturn;
-               
     } // function getEncryptionPassword()
     
     /**
      * Return the method used for encryptions
      * @return string
      */
-    public function getEncryptionMethod() : string {
+    public function getEncryptionMethod() : string
+    {
         
         $sReturn='aes-256-ctr';
         
         if (isset($this->json['encryption'])) {
             if (isset($this->json['encryption']['method'])) {
                 $sReturn=trim($this->json['encryption']['method']);
-                if($sReturn==='') $sReturn='aes-256-ctr';
+                if ($sReturn==='') {
+                    $sReturn='aes-256-ctr';
+                }
             }
         }
         
         return $sReturn;
-               
-    } // function getEncryptionMethod()                
+    } // function getEncryptionMethod()
 
     /**
      * When displaying a .md file, generate and store its .html rendering
      * @return bool
      */
-    public function getSaveHTML() : bool {
+    public function getSaveHTML() : bool
+    {
         
         $bReturn=OUTPUT_HTML;
     
@@ -579,14 +596,15 @@ class Settings
             }
         }
         
-        return $bReturn;   
+        return $bReturn;
     } // function getSaveHTML()
     
     /**
-     * Allow editions ? 
+     * Allow editions ?
      * @return bool
      */
-    public function getEditAllowed() : bool {
+    public function getEditAllowed() : bool
+    {
         
         $bReturn=EDITOR;
         
@@ -594,11 +612,11 @@ class Settings
             $bReturn=($this->json['editor']==1?true:false);
         }
         
-        return $bReturn;   
+        return $bReturn;
     } // function getEditAllowed()
     
-    public function getchmod(string $type='folder') : int {
+    public function getchmod(string $type = 'folder') : int
+    {
         return ($type==='folder' ? CHMOD_FOLDER : CHMOD_FILE);
     } // function getchmod()
-    
 } // class Settings

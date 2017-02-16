@@ -39,7 +39,5 @@ class Edit
         echo $sReturn;
         
         die();
-        
     } // function Run()
-    
 } // class Edit

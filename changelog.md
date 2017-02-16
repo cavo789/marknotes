@@ -4,10 +4,15 @@ https://github.com/cavo789/markdown
 
 ## 1.0.5
 
-### 2017-02-13
+### 2017-02-xx
 
 ```diff
 + Add right clic on the treeview : allow to create new folder/note, remove folder/note or rename them
++ Refactoring of classes/markdown.php
++ Exporting task's logic into classes/tasks/ files
++ Refactoring of assets/markdown.js
++ Exporting jstree's logic into assets/js/jstree.js
++ Exporting fullscreen's logic into assets/js/fullscreen.js
 ```
 
 ## 1.0.4

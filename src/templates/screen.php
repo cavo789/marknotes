@@ -103,6 +103,8 @@
       <!--%ADDITIONNAL_JS%-->
       
       <!--%MARKDOWN_GLOBAL_VARIABLES%-->
+      <script type="text/javascript" src="assets/js/jstree.js"></script> 
+      <script type="text/javascript" src="assets/js/fullscreen.js"></script> 
       <script type="text/javascript" src="assets/js/markdown.js"></script> 
       
       <!--%CUSTOM_JS%-->

@@ -112,6 +112,8 @@ class Encrypt
     public function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : array
     {
       
+        $aeSettings=\AeSecure\Settings::getInstance();
+        
         $bReturn=false;
       
         // Check if there are <encrypt> tags.  If yes, check the status (encrypted or not) and retrieve its content
@@ -122,10 +124,10 @@ class Encrypt
         // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
         if (count($matches[1])>0) {
             $icon_stars='<i class="icon_encrypted fa fa-lock onlyscreen" aria-hidden="true" '.
-            'data-encrypt="true" title="'.str_replace('"', '\"', $this->getText('is_encrypted')).'"></i>';
+            'data-encrypt="true" title="'.str_replace('"', '\"', $aeSettings->getText('is_encrypted', 'This information is encrypted in the original file and decoded here for screen display')).'"></i>';
          
             // Initialize the encryption class
-            $aesEncrypt=new Encrypt($this->_encryptionPassword, $this->_encryptionMethod);
+            $aesEncrypt=new Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
          
             $j=count($matches[0]);
                
@@ -221,5 +223,4 @@ class Encrypt
       
         return array($bReturn, $markdown);
     } // function HandleEncryption()
-    
 } // class Encrypt

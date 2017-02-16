@@ -1,11 +1,11 @@
 <?php
 /**
 * markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.4
+* @version   : 1.0.5
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-07T09:11:36.442Z
+* @package   : 2017-02-16T12:37:19.393Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -20,7 +20,6 @@ class Debug
    
     public function __construct()
     {
-
         self::$enable=false;
         return true;
     } // function __construct()
@@ -61,8 +60,8 @@ class Debug
     public static function log(string $line, bool $return = false) : string
     {
       
-        $line.=' <em class="text-info">('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
-           ', line '.debug_backtrace()[0]['line'].')</em><br/>';
+        $line.=' ('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
+           ', line '.debug_backtrace()[0]['line'].')';
       
         if ($return==true) {
             return $line;

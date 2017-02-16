@@ -51,7 +51,7 @@ class JSON
 
             case JSON_ERROR_SYNTAX:
                 $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
-                   '(be sure file is UTF8-NoBOM)';
+                   '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
                 break;
 
             case JSON_ERROR_UTF8:
@@ -144,12 +144,13 @@ class JSON
     
     /**
      * Convert an array into a JSON string.  Append debugging informations.
-     * 
+     *
      * @param array $arrInfos   Array with informations, will be converted into a JSON string
      * @param array $arrDebug   Array with debugging info, can be empty
      * @param bool $die         Display and die (true) or return to the calling code (false)
      */
-    public static function json_return_info(array $arrInfos, array $arrDebug, bool $die = true) {
+    public static function json_return_info(array $arrInfos, array $arrDebug, bool $die = true)
+    {
   
         header('Content-Type: application/json');
         
@@ -159,10 +160,13 @@ class JSON
         }
         /*<!-- endbuild -->*/
  
+        if ($die) {
+            header('Content-Type: application/json');
+        }
         echo self::json_encode($arrInfos);
         
-        if($die) die();
-        
+        if ($die) {
+            die();
+        }
     } // function json_return_info()
-    
 } // class JSON

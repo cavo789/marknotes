@@ -17,9 +17,7 @@ class Save
         $return=array();
       
         if (!$aeSettings->getEditAllowed()) {
-            
-            $return=array('status'=>array('success'=>0,'message'=>$aeSettings->getText('no_save_allowed','Error, saving notes isn&#39;t allowed')));
-            
+            $return=array('status'=>array('success'=>0,'message'=>$aeSettings->getText('no_save_allowed', 'Error, saving notes isn&#39;t allowed')));
         } else { // if (!$aeSettings->getEditAllowed())
 
             // If the filename doesn't mention the file's extension, add it.
@@ -51,8 +49,7 @@ class Save
                     @unlink($fnameHTML);
                 }
 
-                $status=array('success'=>1,'message'=>$aeSettings->getText('button_save_done','The file has been successfully saved'));
-                
+                $status=array('success'=>1,'message'=>$aeSettings->getText('button_save_done', 'The file has been successfully saved'));
             } else { // if ($status==true)
 
                 // There is a problem
@@ -61,13 +58,10 @@ class Save
 
             $return['status']=$status;
             $return['filename']=$fullname;
-
         } // if (!$aeSettings->getEditAllowed())
         
-        header('Content-Type: application/json'); 
+        header('Content-Type: application/json');
         echo json_encode($return, JSON_PRETTY_PRINT);
         die();
-        
     } // function Run()
-    
 } // class Save

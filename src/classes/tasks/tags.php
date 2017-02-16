@@ -1,6 +1,7 @@
 <?php
 
 namespace AeSecureMDTasks;
+
 /**
 * Retrieve the list of folder names and tags.  Used for the search entry, allowing auto-completion
 *
@@ -44,9 +45,8 @@ class Tags
       
         $return=array();
         
-        if (\AeSecure\Files::fileExists($fname=$aeSettings->getFolderWebRoot().'tags.json')) {
+        if (\AeSecure\Files::fileExists($fname = $aeSettings->getFolderWebRoot().'tags.json')) {
             if (filesize($fname)>0) {
-                
                 $aeJSON=\AeSecure\JSON::getInstance();
         
                 $arrTags=$aeJSON->json_decode($fname, true);
@@ -67,7 +67,5 @@ class Tags
         echo json_encode($return, JSON_PRETTY_PRINT);
                   
         die();
-        
     } // function Run()
-    
 } // class Tags

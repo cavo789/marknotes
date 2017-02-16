@@ -54,6 +54,7 @@ RegExp.quote = function (str) {
 $(document).ready(function () {
 
     // On page entry, get the list of .md files on the server
+    Noty({message:markdown.message.loading_tree, type:'info'});
     ajaxify({task:'listFiles',callback:'initFiles(data)'});
 
     // Size correctly depending on screen resolution
@@ -90,8 +91,12 @@ function ajaxify($params)
     $data.task  = (($params.task==='undefined')?'':$params.task);
     $data.param = (($params.param==='undefined')?'':$params.param);
     
-    if ($params.param2!=='undefined') $data.param2 = $params.param2;
-    if ($params.param3!=='undefined') $data.param3 = $params.param3;
+    if ($params.param2!=='undefined') {
+        $data.param2 = $params.param2;
+    }
+    if ($params.param3!=='undefined') {
+        $data.param3 = $params.param3;
+    }
 
     var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
 
@@ -152,7 +157,7 @@ function addSearchEntry($entry)
 /**
  * The ajax request has returned the list of files.  Build the table and initialize the #TOC DOM object
  *
- * @param {json} $data  The return of the ?task=listFiles request
+ * @param {json} $data  The return of the JSON returned by index.php?task=listFiles
  * @returns {Boolean}
  */
 function initFiles($data)
@@ -185,169 +190,7 @@ function initFiles($data)
         /*<!-- endbuild -->*/
     }
    
-    try {
-        if ($.isFunction($.fn.jstree)) {
-            // Use jsTree for the display
-
-            $('#TOC').on('changed.jstree', function (e, data) {
-
-                if ($('#IMG_BACKGROUND').length) {
-                    $('#IMG_BACKGROUND').remove();
-                }
-
-                var objNode = data.instance.get_node(data.selected);
-
-                if (typeof(objNode.parent)!=="undefined") {
-                    // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
-                    // and objNode.text the name of the file (f.i. jsTree.md)
-                    /*<!-- build:debug -->*/
-                    if (markdown.settings.debug) {
-                        console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
-                    }
-                    /*<!-- endbuild -->*/
-                    
-                    var $fname=objNode.parent+objNode.text+'.md';
-                    $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));
-                    ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-                   
-                } // if (typeof(objNode.parent)!="undefined")
-
-            }).on('click', '.jstree-anchor', function (e) {
-               
-                // By clicking (single-click) on a folder, open / close it
-                $(this).jstree(true).toggle_node(e.target);
-                
-            }).on('keydown.jstree', '.jstree-anchor', function (e) {
-            
-                // @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
-                // If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
-                // Not found a solution...
-                var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
-                
-                if (objNode.data) {                
-                   console.log('changed.jstree - '+objNode.data.file);
-                }
-
-            }).on('create_node.jstree', function(e, data) {               
-               // The user has just click on "Create..." (folder or note)
-               // This event is fired before i.e. immediatly when the node is being created
-               jstree_create_node(e, data);
-            }).on('rename_node.jstree', function(e, data) {
-               // The user has just click on "Create..." (folder or note)
-               jstree_rename_node(e, data);
-            }).on('delete_node.jstree', function(e, data) {
-               // The user has just click on "Remove..." (folder or note)
-               jstree_remove_node(e, data);
-            }).jstree({
-                core: {
-                    animation : 1,    
-                    data : $data.tree,
-                    check_callback : true,           // Allow changes on the jsTree by javascript 
-                    multiple:false,
-                    initially_open : ['phtml_1'],    // Automatically open the root node
-                    sort : function (a, b) {
-                        return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
-                    },
-                    themes : {
-                        responsive : 1,
-                        variant : 'small',
-                        stripes : 1
-                    },
-                    types : {
-                        default : { icon : 'folder' },
-                            file : { icon : 'file file-md' },
-                            folder : { icon : 'folder' }
-                    }
-
-                },
-                plugins : ['contextmenu','state','dnd','types','unique','wholerow'],
-                contextmenu: {
-                   items: jstree_context_menu
-                }
-            });
-        } else { // if ($.isFunction($.fn.jstree))
-
-            // jsTree not loaded, use a table
-
-            // Build the table
-            if ($data.hasOwnProperty('results')) {
-                var tbl = document.createElement('table');
-
-                tbl.id="tblFiles";
-                tbl.setAttribute("class","table table-hover table-bordered");
-                tbl.style.width = '100%';
-
-                var tbdy = document.createElement('tbody');
-
-                $.each($data.results, function ($id, $item) {
-
-                    var tr = document.createElement('tr');
-
-                    var td = document.createElement('td');
-                    td.dataset.folder=$item.folder;
-                    td.appendChild(document.createTextNode($item.folder));
-                    tr.appendChild(td);
-
-                    td = document.createElement('td');
-                    td.dataset.file=$item.file;
-                    td.appendChild(document.createTextNode($item.display));
-                    tr.appendChild(td);
-
-                    tbdy.appendChild(tr);
-
-                });
-
-                // The table is now complete, add it into the page
-                tbl.appendChild(tbdy);
-                $('#TOC').html(tbl);
-
-                $('#tblFiles > tbody  > tr > td').click(function (e) {
-
-                    // By clicking on the second column, with the data-file attribute, display the file content
-                    if ($(this).attr('data-file')) {
-                        // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
-                        if ($('#IMG_BACKGROUND').length) {
-                            $('#IMG_BACKGROUND').remove();
-                        }
-
-                        var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));
-
-                        /*<!-- build:debug -->*/
-                        if (markdown.settings.debug) {
-                            console.log("Show note "+$(this).data('file'));
-                        }
-                        /*<!-- endbuild -->*/
-                        
-                        ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-                        $(this).addClass("selected");
-                    }
-
-                    // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
-                    if ($(this).attr('data-folder')) {
-                        // retrieve the name of the folder from data-folder
-                        var $folder=$(this).data('folder').replace('\\','/');
-
-                        /*<!-- build:debug -->*/
-                        if (markdown.settings.debug) {
-                            console.log("Apply filter for "+$folder);
-                        }
-                        /*<!-- endbuild -->*/
-
-                        // Set the value in the search area
-                        addSearchEntry({keyword:$folder});
-                    } // if ($(this).attr('data-folder'))
-
-                }); // $('#tblFiles > tbody  > tr > td').click()
-            } // if($data.hasOwnProperty('results'))
-        } // // if ($.isFunction($.fn.jstree))
-    } catch (err) {
-        console.warn(err.message);
-        /*<!-- build:debug -->*/
-        if (markdown.settings.debug) {
-            Noty({message:err.message, type:'error'});
-        }
-        /*<!-- endbuild -->*/
-    }
+    jstree_init($data);
    
    // initialize the search area, thanks to the Flexdatalist plugin
     if ($.isFunction($.fn.flexdatalist)) {
@@ -508,7 +351,7 @@ function initializeTasks()
                 }
                 /*<!-- endbuild -->*/
             
-               window.open('index.php?task=pdf&param='+$fname);
+                window.open('index.php?task=pdf&param='+$fname);
                 
                break;
             
@@ -521,7 +364,9 @@ function initializeTasks()
             case 'settings':
            
                 /*<!-- build:debug -->*/
-                if (markdown.settings.debug) console.log('Settings');
+                if (markdown.settings.debug) {
+                    console.log('Settings');
+                }
                 /*<!-- endbuild -->*/
                 
                 ajaxify({task:'clean',callback:'afterClean(data)'});
@@ -564,17 +409,17 @@ function initializeTasks()
    
 } // function initializeTasks()
 
-function afterClean($data) {
+function afterClean($data)
+{
     
     console.log($data);
     
     if ($data.hasOwnProperty('status')) {
-        
         $status=$data.status;
         
-        if ($status==1) {            
+        if ($status==1) {
             Noty({message:$data.msg, type:'success'});
-        } else { 
+        } else {
             Noty({message:$data.msg, type:'error'});
         }
     }
@@ -1250,283 +1095,3 @@ function Noty($params)
     }
    
 } // function Noty()
-
-/**
- * Toggle fullscreen
- * @link http://stackoverflow.com/a/23971798
- */
-function isFullScreen()
-{
-    return (document.fullScreenElement && document.fullScreenElement !== null) || document.mozFullScreen || document.webkitIsFullScreen;
-} // function isFullScreen()
-
-function requestFullScreen(element)
-{
-    if (element.requestFullscreen) {
-        element.requestFullscreen();
-    } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-    }
-} // function requestFullScreen()
-
-function exitFullScreen()
-{
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    }
-} // function exitFullScreen()
-
-/**
- * Toggle fullscreen mode Y/N
- * @param {type} element    DOM element
- * @returns boolean
- */
-function toggleFullScreen(element)
-{
-   
-   // Hide (or show it again) the treeview and the search engine i.e. everything at the left side
-    $('#TDM').toggleClass('hidden');
-
-   // Give the content part the full width (or give it back its original width)
-    $('#CONTENT').parent().toggleClass('fullwidth');
-
-   // Hide all buttons (or show it again) except icon_fullscreen
-    $('#icons').children('i').each(function () {
-        if ((this.id!=='icon_fullscreen')&&(this.id!=='icon_refresh')&&(this.id!=='icon_edit')) {
-            $(this).toggleClass('hidden');
-        }
-    });
-
-    if (!isFullScreen()) {
-        // Not yet fullscreen.  Get the max height to the content area
-      
-        $('#CONTENT').css('max-height', screen.height);
-        $('#CONTENT').css('min-height', screen.height);
-      
-        // And active the fullscreen mode
-        requestFullScreen(element || document.documentElement);
-    } else { // if (!isFullScreen())
-      
-        // Reinitialize the height of the content area
-        $('#CONTENT').css('max-height', $(window).height()-10);
-        $('#CONTENT').css('min-height', $(window).height()-10);
-      
-        // And exit the fullscreen mode
-        exitFullScreen();
-    } // if (!isFullScreen())
-   
-    return true;
-   
-} // function toggleFullScreen()
-
-/**
- * Context menu for the treeview.  This function will build the contextual menu
- * and return the list of entries of that menu
- * 
- * @param {type} node             The node on which the user has right-clicked
- * @returns {context_menu.items}
- */
-function jstree_context_menu(node)
-{
-   
-	var tree = $('#TOC').jstree(true);
-   
-   var items = {
-        Add_Folder: {
-            separator_before: false,
-            separator_after: false,
-            label: markdown.message.tree_new_folder,
-            icon:'fa fa-folder-open-o',
-            action: function () { 
-                var $node = tree.create_node(node, {
-                   text: markdown.message.tree_new_folder_name,
-                   icon: "folder"
-                });
-                tree.edit($node);
-            }
-        }, // Add_Folder
-        Add_Item: {
-            separator_before: false,
-            separator_after: false,
-            label: markdown.message.tree_new_note,
-            icon:'fa fa-file-text-o',
-            action: function () { 
-                // When the user has right-clicked on a folder, add the note within that folder
-                // When it was a note, add the new note in the same folder i.e. the parent of the note
-                var $node = tree.create_node((node.icon==='folder'?node:node.parent), {
-                    text: markdown.message.tree_new_note_name,
-                    icon: "file file-md",
-                    data: {
-                        task:"display"
-                    }
-                });
-                tree.edit($node);
-            }
-        }, // Add_Item
-        Rename: {
-            separator_before: false,
-            separator_after: false,
-            label: markdown.message.tree_rename,
-            icon: 'fa fa-pencil',
-            action: function () { 
-                tree.edit(node);
-            }
-        }, // Rename               
-        Remove: {
-            separator_before: true,
-            separator_after: false,
-            label: (node.icon==='folder' ? markdown.message.tree_delete_folder.replace('%s', node.text) : markdown.message.tree_delete_file.replace('%s', node.text)),
-            icon: 'fa fa-trash',
-            action: function () { 
-               noty({
-                 theme: 'relax',
-                 timeout: 0,
-                 layout: 'center',
-                 type:'warning',
-                 text: '<strong>'+(node.icon==='folder' ? markdown.message.tree_delete_folder_confirm.replace('%s', node.text) : markdown.message.tree_delete_file_confirm.replace('%s', node.text))+'</strong>',
-                 buttons: [
-                    {
-                       addClass: 'btn btn-primary', 
-                       text: markdown.message.ok,
-                       onClick: function($noty) 
-                       {
-                          $noty.close();
-                          tree.delete_node(node);
-                       }
-                    },
-                    {
-                       addClass: 'btn btn-danger', 
-                       text: markdown.message.cancel, 
-                       onClick: function($noty) 
-                       {
-                          $noty.close();
-                       }
-                   }
-                  ]
-               }); // noty() 
-            } // action()
-        } // Remove
-    };
-    
-    // Create a new folder : not if the user has right-clicked on a note.
-    if (node.icon!=='folder') {
-       delete items.Add_Folder;
-    }
-    
-    return items;
-    
-} // function context_menu()
-
-/**
- * The user has just click on "Create..." (folder or note)
- * This event is fired before i.e. immediatly when the node is being created
- * 
- * @param {type} e
- * @param {type} data
- * @returns {undefined}
- */
-function jstree_create_node(e, data) 
-{          
-   
-    /*<!-- build:debug -->*/
-    if (markdown.settings.debug) console.log('jstree_create_node');
-    /*<!-- endbuild -->*/
-    
-    return;
-}  
-
-/**
- * A node has been renamed.  Can be a folder or a note
- * 
- * @param {type} e
- * @param {type} data
- * @returns {undefined}
- */
-function jstree_rename_node(e, data) 
-{          
-   
-    /*<!-- build:debug -->*/
-    if (markdown.settings.debug) console.log('jstree_rename_node');
-    /*<!-- endbuild -->*/
-    
-    try {
-
-        // The user has just click on "Create..." (folder or note)
-        
-        var $type=(data.node.icon==="folder" ? "folder" : "file");
-        var $oldname='';
-        var $newname='';
-        
-        if($type==='folder') {
-            
-            $oldname=data.node.parent+data.old;
-            $newname=data.node.parent+data.text;
-
-        } else { // if($type==='folder')   
-
-            // Working on a note : retrieve the parent and append the note's name
-            var $parentNode = $('#TOC').jstree(true).get_node(data.node.parent);
-           
-            $oldname=$parentNode.parent+$parentNode.text+markdown.settings.DS+data.old;
-            $newname=$parentNode.parent+$parentNode.text+markdown.settings.DS+data.text;
-            
-            //data.node.setAttribute('data','task="display"','file="'+$newname+'"');
-        }
-        
-        $oldname=window.btoa(encodeURIComponent(JSON.stringify($oldname)));
-        $newname=window.btoa(encodeURIComponent(JSON.stringify($newname)));
-
-        ajaxify({task:'rename',param:$oldname,param2:$newname,param3:$type,callback:'jstree_show_status(data)'});
-
-    } catch (err) {
-        console.warn(err.message);
-    }
-}
-
-function jstree_show_status($data) {
-    
-    if ($data.hasOwnProperty('status')) {
-        
-        $status=$data.status;
-        
-        if ($status==1) {            
-            Noty({message:$data.msg, type:'success'});
-        } else { 
-            Noty({message:$data.msg, type:'error'});
-        }
-    }
-    
-} // jstree_after_rename_node
-
-/**
- * Removing an entire folder or just a note
- * This function is fired after the confirmation of the user
- * 
- * @param {type} e
- * @param {type} data
- * @returns {undefined}
- */
-function jstree_remove_node(e, data) {
-   
-    /*<!-- build:debug -->*/
-    if (markdown.settings.debug) console.log('jstree_remove_node');
-    /*<!-- endbuild -->*/
-    
-   console.log(data);
-   
-   if (data.node.hasOwnProperty('id')) {
-      console.log('Remove '+data.node.id);      
-   }
-   
-   return;
-}

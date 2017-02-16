@@ -51,8 +51,8 @@ class Debug
     public static function log(string $line, bool $return = false) : string
     {
       
-        $line.=' <em class="text-info">('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
-           ', line '.debug_backtrace()[0]['line'].')</em><br/>';
+        $line.=' ('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
+           ', line '.debug_backtrace()[0]['line'].')';
       
         if ($return==true) {
             return $line;

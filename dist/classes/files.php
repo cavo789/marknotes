@@ -1,11 +1,11 @@
 <?php
 /**
 * markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.4
+* @version   : 1.0.5
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-07T09:11:36.447Z
+* @package   : 2017-02-16T12:37:19.408Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -46,7 +46,7 @@ class Files
     * @param type $filename
     * @return boolean
     */
-    private static function folderExists(string $folderName) : bool
+    public static function folderExists(string $folderName) : bool
     {
       
         if ($folderName=='') {
@@ -77,12 +77,8 @@ class Files
     * @param type $arrSkipFolder   Folders to skip... (subfolders will be also skipped)
     * @return type
     */
-    public static function rglob(
-        string $pattern = '*',
-        string $path = '',
-        int $flags = 0,
-        $arrSkipFolder = null
-    ) : array {
+    public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array
+    {
     
         static $adjustCase=false;
       
@@ -150,6 +146,17 @@ class Files
         $info = pathinfo($filename);
         return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
     } // function replaceExtension
+    
+    /**
+    * Remove file's extension
+    * @param string $filename       The filename ("test.md")
+    * @return string                The new filename (test)
+    */
+    public static function removeExtension(string $filename) : string
+    {
+        $info = pathinfo($filename);
+        return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'];
+    } // function removeExtension
    
    /**
     * Be sure that the filename isn't something like f.i. ../../../../dangerous.file
@@ -218,4 +225,24 @@ class Files
       
         return $bReturn;
     } // function rewriteFile()
+    
+    public static function createFile(string $filename, string $content, int $chmod = 644) : bool
+    {
+        $bReturn=false;
+
+        try {
+            if ($handle = fopen($filename, 'w')) {
+                fwrite($handle, $content);
+                fclose($handle);
+
+                if (filesize($filename)>0) {
+                    chmod($filename, $chmod);
+                    $bReturn=true;
+                }
+            }
+        } catch (Exception $ex) {
+        }
+        
+        return $bReturn;
+    } // function createFile()
 } // class Files

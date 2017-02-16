@@ -78,13 +78,13 @@ class Display
         // Open new window icon
         if ($aeSettings->getSaveHTML()) {
             $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).
-               '" class="fa fa-external-link" aria-hidden="true" title="'.$aeSettings->getText('open_html','Open in a new window').'"></i>';
+               '" class="fa fa-external-link" aria-hidden="true" title="'.$aeSettings->getText('open_html', 'Open in a new window').'"></i>';
         }
      
         // Edit icon : only if an editor has been defined
         if ($aeSettings->getEditAllowed()) {
             $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" '.
-               'title="'.$aeSettings->getText('edit_file','Edit').'" data-file="'.$params['filename'].'"></i>';
+               'title="'.$aeSettings->getText('edit_file', 'Edit').'" data-file="'.$params['filename'].'"></i>';
         }
 
         // Call the Markdown parser (https://github.com/erusev/parsedown)
@@ -145,7 +145,7 @@ class Display
 
                         for ($i; $i<$j; $i++) {
                             $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.
-                               $this->getText('confidential').'</strong>', $tmp);
+                               $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp);
                         }
                     }
 
@@ -162,8 +162,7 @@ class Display
                         } catch (Exception $e) {
                         }
                         
-                        if (\AeSecure\Files::fileExists($template=$aeSettings->getTemplateFile('html'))) {
-                            
+                        if (\AeSecure\Files::fileExists($template = $aeSettings->getTemplateFile('html'))) {
                             $content=file_get_contents($template);
          
                             // Write the file but first replace variables
@@ -177,9 +176,7 @@ class Display
                             fwrite($handle, $content);
 
                             fclose($handle);
-                            
                         }
-                        
                     } // if ($handle = fopen($fname,'w+'))
                 } // if (!file_exists($fname))
             } // if (is_writable(dirname($fname)))
@@ -194,7 +191,6 @@ class Display
 
         if (\AeSecure\Files::fileExists($fname = $aeSettings->getFolderWebRoot().'tags.json')) {
             if (filesize($fname)>0) {
-                
                 $aeJSON=\AeSecure\JSON::getInstance();
 
                 $arrTags=$aeJSON->json_decode($fname);
@@ -247,15 +243,15 @@ class Display
         //$thisNote=str_replace(Functions::getCurrentURL(FALSE,TRUE),'',$thisNote);
     
         $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
-            '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('fullscreen')).'"></i>'.
-            '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('refresh')).'"></i>'.
-            '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('copy_clipboard')).'"></i>'.
-            '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('print_preview')).'"></i>'.
-            '<i id="icon_pdf" data-task="pdf" data-file="'.$params['filename'].'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('export_pdf')).'"></i>'.
-            '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('copy_link')).'"></i>'.
-            '<i id="icon_slideshow" data-task="slideshow" data-file="'.$params['filename'].'" class="fa fa-desktop" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('slideshow')).'"></i>'.
+            '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'"></i>'.
+            '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.$aeSettings->getText('refresh', 'Refresh', true).'"></i>'.
+            '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'"></i>'.
+            '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'"></i>'.
+            '<i id="icon_pdf" data-task="pdf" data-file="'.$params['filename'].'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
+            '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
+            '<i id="icon_slideshow" data-task="slideshow" data-file="'.$params['filename'].'" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
             $icons.
-            '<i id="icon_settings" data-task="settings" class="fa fa-cog" aria-hidden="true" title="'.str_replace("'", "\'", $aeSettings->getText('settings')).'"></i>'.
+            '<i id="icon_settings_clear" data-task="settings" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
         '</div>';
       
         $html=$toolbar.'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
@@ -272,7 +268,5 @@ class Display
         header('Content-Type: text/html; charset=utf-8');
         echo $html;
         die();
-        
     } // function Run()
-   
 } // class Display

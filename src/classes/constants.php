@@ -14,7 +14,7 @@ define('OUTPUT_HTML', true);
 // Can be override : settings.json->editor 
 define('EDITOR', false); // enable online editing or not
 
-define('DEFAULT_LANGUAGE','en');
+define('DEFAULT_LANGUAGE', 'en');
 
 // Default text, english
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
@@ -28,7 +28,7 @@ define('IMG_MAX_WIDTH', '800');
 // Prefix to use to indicate a word as a tag
 define('PREFIX_TAG', '§');
 
-define('CHMOD_FOLDER',0755);
+define('CHMOD_FOLDER', 0755);
 define('CHMOD_FILE', 0644);
 
 //

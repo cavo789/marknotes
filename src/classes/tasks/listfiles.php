@@ -42,14 +42,13 @@ class ListFiles
         // Now, there are subfolders (arrays) where there was no .md files : don't display that folders
         // on the jsTree DOM elemen.  The "jstree_hide_emptyFolder" will add a "hidden" state for these
         // empty folders
-        self::jstree_hide_emptyFolder($arr);
+        //self::jstree_hide_emptyFolder($arr);
       
         // The array is now ready
         $return['tree']=$arr;
 
         header('Content-Type: application/json');
-        echo json_encode($return, JSON_PRETTY_PRINT);      
-
+        echo json_encode($return, JSON_PRETTY_PRINT);
     } // function Run()
     
    /**
@@ -59,7 +58,7 @@ class ListFiles
     * @param int $array
     * @param type $unwanted_key
     */
-    private static function jstree_hide_emptyFolder(&$array)
+    /*private static function jstree_hide_emptyFolder(&$array)
     {
         if (isset($array['children'])) {
             if (count($array['children'])==0) {
@@ -71,7 +70,7 @@ class ListFiles
                 self::jstree_hide_emptyFolder($value, 'children');
             }
         }
-    } // function jstree_hide_emptyFolder()
+    } // function jstree_hide_emptyFolder()*/
 
    /**
     * Called by ListFiles().  Populate an array with the list of .md files.
@@ -85,9 +84,13 @@ class ListFiles
     * @param string $ext   array() with extensions to search for (only .md for this program)
     * @return array
     */
-    private static function dir_to_jstree_array(string $dir, string $order = "a", array $ext = array(),
-       array $arrTreeFoldersAutoOpen) : array
-    {
+    private static function dir_to_jstree_array(
+        string $dir,
+        string $order = "a",
+        array $ext = array(),
+        array $arrTreeFoldersAutoOpen
+    ) : array {
+    
 
         $aeSettings=\AeSecure\Settings::getInstance();
         $root=str_replace('/', DS, $aeSettings->getFolderDocs(true));
@@ -167,7 +170,5 @@ class ListFiles
         } // if($handler = opendir($dir))
       
         return $listDir;
-        
     } // function dir_to_jstree_array()
-
 } // class ListFiles

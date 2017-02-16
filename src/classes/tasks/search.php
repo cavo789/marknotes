@@ -52,7 +52,6 @@ class Search
         $docs=str_replace('/', DS, $aeSettings->getFolderDocs(false));
       
         foreach ($arrFiles as $file) {
-            
             // Don't mention the full path, should be relative for security reason
             $file=str_replace($aeSettings->getFolderDocs(true), '', $file);
          
@@ -77,7 +76,6 @@ class Search
             
                 // Found in the filename => stop process of this file
                 $return['files'][]=$docs.$file;
-                
             } else { // if ($bFound)
                      
                 // Open the file and check against its content (plain and encrypted)
@@ -137,7 +135,6 @@ class Search
                
                     // Found in the filename => stop process of this file
                     $return['files'][]=$docs.$file;
-                    
                 }  // if ($bFound)
             } // if ($bFound) {
         } // foreach ($arrFiles as $file)
@@ -148,7 +145,5 @@ class Search
         echo json_encode($return, JSON_PRETTY_PRINT);
                   
         die();
-        
     } // function Run()
-    
 } // class Search
