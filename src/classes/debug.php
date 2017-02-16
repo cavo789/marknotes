@@ -11,7 +11,6 @@ class Debug
    
     public function __construct()
     {
-
         self::$enable=false;
         return true;
     } // function __construct()

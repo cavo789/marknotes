@@ -89,6 +89,9 @@ function ajaxify($params)
     var $data = {};
     $data.task  = (($params.task==='undefined')?'':$params.task);
     $data.param = (($params.param==='undefined')?'':$params.param);
+    
+    if ($params.param2!=='undefined') $data.param2 = $params.param2;
+    if ($params.param3!=='undefined') $data.param3 = $params.param3;
 
     var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
 
@@ -202,26 +205,45 @@ function initFiles($data)
                         console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
                     }
                     /*<!-- endbuild -->*/
-
-                    var $fname=window.btoa(encodeURIComponent(JSON.stringify(objNode.data.file)));
-
+                    
+                    var $fname=objNode.parent+objNode.text+'.md';
+                    $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));
                     ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+                   
                 } // if (typeof(objNode.parent)!="undefined")
 
             }).on('click', '.jstree-anchor', function (e) {
+               
+                // By clicking (single-click) on a folder, open / close it
                 $(this).jstree(true).toggle_node(e.target);
+                
             }).on('keydown.jstree', '.jstree-anchor', function (e) {
             
                 // @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
                 // If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
                 // Not found a solution...
                 var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
-                console.log('changed.jstree - '+objNode.data.file);
+                
+                if (objNode.data) {                
+                   console.log('changed.jstree - '+objNode.data.file);
+                }
 
+            }).on('create_node.jstree', function(e, data) {               
+               // The user has just click on "Create..." (folder or note)
+               // This event is fired before i.e. immediatly when the node is being created
+               jstree_create_node(e, data);
+            }).on('rename_node.jstree', function(e, data) {
+               // The user has just click on "Create..." (folder or note)
+               jstree_rename_node(e, data);
+            }).on('delete_node.jstree', function(e, data) {
+               // The user has just click on "Remove..." (folder or note)
+               jstree_remove_node(e, data);
             }).jstree({
                 core: {
-                    animation : 1,
+                    animation : 1,    
                     data : $data.tree,
+                    check_callback : true,           // Allow changes on the jsTree by javascript 
+                    multiple:false,
                     initially_open : ['phtml_1'],    // Automatically open the root node
                     sort : function (a, b) {
                         return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
@@ -235,8 +257,12 @@ function initFiles($data)
                         default : { icon : 'folder' },
                             file : { icon : 'file file-md' },
                             folder : { icon : 'folder' }
-                    },
-                    plugins : ['state','dnd','sort','types','unique','wholerow']
+                    }
+
+                },
+                plugins : ['contextmenu','state','dnd','types','unique','wholerow'],
+                contextmenu: {
+                   items: jstree_context_menu
                 }
             });
         } else { // if ($.isFunction($.fn.jstree))
@@ -491,7 +517,17 @@ function initializeTasks()
                //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
                /*<!-- endbuild -->*/
                break;
-            
+               
+            case 'settings':
+           
+                /*<!-- build:debug -->*/
+                if (markdown.settings.debug) console.log('Settings');
+                /*<!-- endbuild -->*/
+                
+                ajaxify({task:'clean',callback:'afterClean(data)'});
+                
+                break;
+               
             case 'slideshow':
             
                 /*<!-- build:debug -->*/
@@ -527,6 +563,25 @@ function initializeTasks()
     return true;
    
 } // function initializeTasks()
+
+function afterClean($data) {
+    
+    console.log($data);
+    
+    if ($data.hasOwnProperty('status')) {
+        
+        $status=$data.status;
+        
+        if ($status==1) {            
+            Noty({message:$data.msg, type:'success'});
+        } else { 
+            Noty({message:$data.msg, type:'error'});
+        }
+    }
+    
+    return;
+    
+} // function afterClean
 
 /**
  * If a note contains a link to an another note, use ajax and not normal links
@@ -1274,3 +1329,204 @@ function toggleFullScreen(element)
    
 } // function toggleFullScreen()
 
+/**
+ * Context menu for the treeview.  This function will build the contextual menu
+ * and return the list of entries of that menu
+ * 
+ * @param {type} node             The node on which the user has right-clicked
+ * @returns {context_menu.items}
+ */
+function jstree_context_menu(node)
+{
+   
+	var tree = $('#TOC').jstree(true);
+   
+   var items = {
+        Add_Folder: {
+            separator_before: false,
+            separator_after: false,
+            label: markdown.message.tree_new_folder,
+            icon:'fa fa-folder-open-o',
+            action: function () { 
+                var $node = tree.create_node(node, {
+                   text: markdown.message.tree_new_folder_name,
+                   icon: "folder"
+                });
+                tree.edit($node);
+            }
+        }, // Add_Folder
+        Add_Item: {
+            separator_before: false,
+            separator_after: false,
+            label: markdown.message.tree_new_note,
+            icon:'fa fa-file-text-o',
+            action: function () { 
+                // When the user has right-clicked on a folder, add the note within that folder
+                // When it was a note, add the new note in the same folder i.e. the parent of the note
+                var $node = tree.create_node((node.icon==='folder'?node:node.parent), {
+                    text: markdown.message.tree_new_note_name,
+                    icon: "file file-md",
+                    data: {
+                        task:"display"
+                    }
+                });
+                tree.edit($node);
+            }
+        }, // Add_Item
+        Rename: {
+            separator_before: false,
+            separator_after: false,
+            label: markdown.message.tree_rename,
+            icon: 'fa fa-pencil',
+            action: function () { 
+                tree.edit(node);
+            }
+        }, // Rename               
+        Remove: {
+            separator_before: true,
+            separator_after: false,
+            label: (node.icon==='folder' ? markdown.message.tree_delete_folder.replace('%s', node.text) : markdown.message.tree_delete_file.replace('%s', node.text)),
+            icon: 'fa fa-trash',
+            action: function () { 
+               noty({
+                 theme: 'relax',
+                 timeout: 0,
+                 layout: 'center',
+                 type:'warning',
+                 text: '<strong>'+(node.icon==='folder' ? markdown.message.tree_delete_folder_confirm.replace('%s', node.text) : markdown.message.tree_delete_file_confirm.replace('%s', node.text))+'</strong>',
+                 buttons: [
+                    {
+                       addClass: 'btn btn-primary', 
+                       text: markdown.message.ok,
+                       onClick: function($noty) 
+                       {
+                          $noty.close();
+                          tree.delete_node(node);
+                       }
+                    },
+                    {
+                       addClass: 'btn btn-danger', 
+                       text: markdown.message.cancel, 
+                       onClick: function($noty) 
+                       {
+                          $noty.close();
+                       }
+                   }
+                  ]
+               }); // noty() 
+            } // action()
+        } // Remove
+    };
+    
+    // Create a new folder : not if the user has right-clicked on a note.
+    if (node.icon!=='folder') {
+       delete items.Add_Folder;
+    }
+    
+    return items;
+    
+} // function context_menu()
+
+/**
+ * The user has just click on "Create..." (folder or note)
+ * This event is fired before i.e. immediatly when the node is being created
+ * 
+ * @param {type} e
+ * @param {type} data
+ * @returns {undefined}
+ */
+function jstree_create_node(e, data) 
+{          
+   
+    /*<!-- build:debug -->*/
+    if (markdown.settings.debug) console.log('jstree_create_node');
+    /*<!-- endbuild -->*/
+    
+    return;
+}  
+
+/**
+ * A node has been renamed.  Can be a folder or a note
+ * 
+ * @param {type} e
+ * @param {type} data
+ * @returns {undefined}
+ */
+function jstree_rename_node(e, data) 
+{          
+   
+    /*<!-- build:debug -->*/
+    if (markdown.settings.debug) console.log('jstree_rename_node');
+    /*<!-- endbuild -->*/
+    
+    try {
+
+        // The user has just click on "Create..." (folder or note)
+        
+        var $type=(data.node.icon==="folder" ? "folder" : "file");
+        var $oldname='';
+        var $newname='';
+        
+        if($type==='folder') {
+            
+            $oldname=data.node.parent+data.old;
+            $newname=data.node.parent+data.text;
+
+        } else { // if($type==='folder')   
+
+            // Working on a note : retrieve the parent and append the note's name
+            var $parentNode = $('#TOC').jstree(true).get_node(data.node.parent);
+           
+            $oldname=$parentNode.parent+$parentNode.text+markdown.settings.DS+data.old;
+            $newname=$parentNode.parent+$parentNode.text+markdown.settings.DS+data.text;
+            
+            //data.node.setAttribute('data','task="display"','file="'+$newname+'"');
+        }
+        
+        $oldname=window.btoa(encodeURIComponent(JSON.stringify($oldname)));
+        $newname=window.btoa(encodeURIComponent(JSON.stringify($newname)));
+
+        ajaxify({task:'rename',param:$oldname,param2:$newname,param3:$type,callback:'jstree_show_status(data)'});
+
+    } catch (err) {
+        console.warn(err.message);
+    }
+}
+
+function jstree_show_status($data) {
+    
+    if ($data.hasOwnProperty('status')) {
+        
+        $status=$data.status;
+        
+        if ($status==1) {            
+            Noty({message:$data.msg, type:'success'});
+        } else { 
+            Noty({message:$data.msg, type:'error'});
+        }
+    }
+    
+} // jstree_after_rename_node
+
+/**
+ * Removing an entire folder or just a note
+ * This function is fired after the confirmation of the user
+ * 
+ * @param {type} e
+ * @param {type} data
+ * @returns {undefined}
+ */
+function jstree_remove_node(e, data) {
+   
+    /*<!-- build:debug -->*/
+    if (markdown.settings.debug) console.log('jstree_remove_node');
+    /*<!-- endbuild -->*/
+    
+   console.log(data);
+   
+   if (data.node.hasOwnProperty('id')) {
+      console.log('Remove '+data.node.id);      
+   }
+   
+   return;
+}

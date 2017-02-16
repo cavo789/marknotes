@@ -91,4 +91,135 @@ class Encrypt
                bin2hex($password)." -iv ".bin2hex($this->iv))));
         }
     } // function sslDecrypt()
+    
+    /**
+    * This function will scan the $markdown variable and search if there are <encrypt> tags in it.
+    * For un-encrypted content, the function will encrypt them and then save the new file content
+    *
+    * Then, when the file has been rewritten (with <encrypt data-encrypt="TRUE">), each encrypted part
+    * will be un-encrypted and special tag (<i class="icon_encrypted">) will be added before and after the
+    * un-encrypted content.  That new string will be sent as the result of the function.
+    *
+    * @param string $filename    Absolute filename
+    * @param string $markdown    Content
+    * @param bool $bEditMode     TRUE only when to $markdown content will be displayed in the
+    *                            Edit form => show unencrypted information back
+    * @return array
+    *    bool $bReturn           TRUE when the content of the .md file has been rewritten on the disk
+    *                            (=> encryption saved)
+    *    string $markdown        The new content; once <encrypt> content has been correctly processed.
+    */
+    public function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : array
+    {
+      
+        $bReturn=false;
+      
+        // Check if there are <encrypt> tags.  If yes, check the status (encrypted or not) and retrieve its content
+        $matches = array();
+        // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+        preg_match_all('/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+
+        // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+        if (count($matches[1])>0) {
+            $icon_stars='<i class="icon_encrypted fa fa-lock onlyscreen" aria-hidden="true" '.
+            'data-encrypt="true" title="'.str_replace('"', '\"', $this->getText('is_encrypted')).'"></i>';
+         
+            // Initialize the encryption class
+            $aesEncrypt=new Encrypt($this->_encryptionPassword, $this->_encryptionMethod);
+         
+            $j=count($matches[0]);
+               
+            $i=0;
+         
+            $rewriteFile=false;
+      
+            // Loop and process every <encrypt> tags
+            // For instance : <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
+
+            for ($i; $i<$j; $i++) {
+                // Retrieve the attributes (f.i. data-encrypt="true")
+                $attributes=$matches[1][$i];
+            
+                $isEncrypted=false;
+            
+                $tmp=array();
+                preg_match('#data-encrypt="(.*)"#', $attributes, $tmp);
+            
+                if (count($tmp)>0) {
+                    // Only when data-encrypt="true" is found, consider the content has an encrypted one.
+                    $isEncrypted=(strcasecmp(rtrim($tmp[1]), 'true')===0?true:false);
+                }
+
+                // Retrieve the text (encrypted if data-encrypt was found and set on "true"; uncrypted otherwise)
+                $words=$matches[2][$i];
+
+                // If we need to crypt we a new password,
+                // NULL = try to use the current password, defined in the settings.json file
+                //$decrypt=$aesEncrypt->sslDecrypt($words,NULL);
+                //if (!ctype_print($decrypt)) {  // ctype_print will return FALSE when the string still
+                //   contains binary info => decrypt has failed
+                //   $words=$aesEncrypt->sslDecrypt($words,'');
+                //   $isEncrypted=FALSE;
+                //}
+            
+                if (!$isEncrypted) {
+                    // At least one <encrypt> tag found without attribute data-encrypt="true" => the content
+                    // should be encrypted and the file should be override with encrypted data
+               
+                    $encrypted=$aesEncrypt->sslEncrypt($words, null);
+
+                    $markdown=str_replace($matches[0][$i], utf8_encode('<encrypt data-encrypt="true">'.
+                       $encrypted.'</encrypt>'), $markdown);
+               
+                    $rewriteFile=true;
+                } // if (!$isEncrypted)
+            } // for($i;$i<$j;$i++)
+
+            if ($rewriteFile===true) {
+                $bReturn=\AeSecure\Files::rewriteFile($filename, $markdown);
+            }
+
+            // --------------------------------------------------------------------------------------------
+            //
+            // Add a three-stars icon (only for the display) to inform the user about the encrypted feature
+
+            $matches = array();
+            // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
+            preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+
+            // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+            if (count($matches[1])>0) {
+                $j=count($matches[0]);
+
+                $i=0;
+         
+                for ($i; $i<$j; $i++) {
+                    // Great, the info is already encrypted
+               
+                    //$icons='<i id="icon_lock" class="fa fa-lock" aria-hidden="true"></i>';
+               
+                    $decrypt=$aesEncrypt->sslDecrypt($matches[1][$i], null);
+
+                    if ($bEditMode===true) {
+                        // Replace the <encrypt data-encrypt="TRUE">ENCRYPTED DATA</encrypt> by
+                        // <encrypt>UNENCRYPTED DATA</encrypt>.
+                        //
+                        // Needed by the Edit form, to be able to display unencrypted note
+                        $markdown=str_replace($matches[0][$i], '<encrypt>'.$decrypt.'</encrypt>', $markdown);
+                    } else { // if($bEditMode===TRUE)
+                  
+                        // This isn't the edit mode : show the lock icon ($icon_stars)
+                        $markdown=str_replace($matches[1][$i], $icon_stars.$decrypt.$icon_stars, $markdown);
+                    } // if($bEditMode===TRUE)
+                } // for($i;$i<$j;$i++)
+            } // if (count($matches[1])>0)
+
+            // Release
+         
+            unset($aesEncrypt);
+        } // if (count($matches[1])>0)
+      
+        return array($bReturn, $markdown);
+    } // function HandleEncryption()
+    
 } // class Encrypt

@@ -2,6 +2,14 @@
 
 https://github.com/cavo789/markdown
 
+## 1.0.5
+
+### 2017-02-13
+
+```diff
++ Add right clic on the treeview : allow to create new folder/note, remove folder/note or rename them
+```
+
 ## 1.0.4
 
 ### 2017-02-09

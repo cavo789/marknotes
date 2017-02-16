@@ -96,7 +96,7 @@ class JSON
     * @param bool $assoc    [optional] When TRUE, returned objects will be converted into associative arrays.
     * @return type
     */
-    public function json_decode(string $fname, bool $assoc = false)
+    public static function json_decode(string $fname, bool $assoc = false)
     {
 
         if (!file_exists($fname)) {
@@ -120,7 +120,7 @@ class JSON
         return $arr;
     } // function json_decode()
    
-    public function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
+    public static function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
     {
       
         $return='';
@@ -141,4 +141,28 @@ class JSON
       
         return $return;
     } // function json_encode()
+    
+    /**
+     * Convert an array into a JSON string.  Append debugging informations.
+     * 
+     * @param array $arrInfos   Array with informations, will be converted into a JSON string
+     * @param array $arrDebug   Array with debugging info, can be empty
+     * @param bool $die         Display and die (true) or return to the calling code (false)
+     */
+    public static function json_return_info(array $arrInfos, array $arrDebug, bool $die = true) {
+  
+        header('Content-Type: application/json');
+        
+        /*<!-- build:debug -->*/
+        if (count($arrDebug)>0) {
+            $arrInfos=array_merge($arrInfos, $arrDebug);
+        }
+        /*<!-- endbuild -->*/
+ 
+        echo self::json_encode($arrInfos);
+        
+        if($die) die();
+        
+    } // function json_return_info()
+    
 } // class JSON
