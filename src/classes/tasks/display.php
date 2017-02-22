@@ -170,8 +170,8 @@ class Display
                             $content=str_replace('%CONTENT%', $tmp, $content);
                   
                             // Perhaps a Google font should be used.
-                            $sFont=$aeSettings->getPageGoogleFont(false);
-                            $content=str_replace('%FONT%', $sFont, $content);
+                            $sFont=$aeSettings->getPageGoogleFont(true);
+                            $content=str_replace('<!--%FONT%-->', $sFont, $content);
                   
                             fwrite($handle, $content);
 

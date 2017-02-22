@@ -433,10 +433,10 @@ class Settings
         
         if ($css===true) {
             if ($font!=='') {
-                $result='<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
+                $return='<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
 
                 $i=0;
-                $return='<style>';
+                $return.='<style>';
                 $sFontName=str_replace('+', ' ', $font);
                 for ($i=1; $i<7; $i++) {
                     $return.='page h'.$i.'{font-family:"'.$sFontName.'";}';

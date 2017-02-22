@@ -12,7 +12,10 @@
       <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
       <title>%TITLE%</title>
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-      <!--%FONT%-->
+      <!--%FONT%-->      
+	  <style> /* inline css so there is no dependencies */
+          li{margin-top:10px;}
+      </style>
    </head>
    
    <body>
