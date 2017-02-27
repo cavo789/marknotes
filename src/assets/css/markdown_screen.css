@@ -1,3 +1,26 @@
+
+body {
+    font-family: 'Open Sans',sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #F7F2E9;
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: 600;
+    /*text-transform: uppercase;*/
+    margin-top: 0;
+}
+
+h2 {
+    display: block;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
 #CONTENT img {
     max-width: 800px;
 }
@@ -48,12 +71,6 @@ body {
     color: #dfdfe0;
     top: 15px;
     position: inherit;
-}
-
-/* Default page background color */
-
-body {
-    background: #F7F2E9;
 }
 
 /* The root folder name */
