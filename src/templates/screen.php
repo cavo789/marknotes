@@ -53,7 +53,6 @@
 
          <div class="col-sm-8">
             <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
-            <img class="visible-lg" id="IMG_BACKGROUND" src="assets/background.jpg"/>
          </div>
 
       </div>

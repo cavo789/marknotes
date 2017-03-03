@@ -263,11 +263,6 @@ function initializeTasks()
     // Get all DOM objects having a data-task attribute
     $("[data-task]").click(function () {
       
-        // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
-        if ($('#IMG_BACKGROUND').length) {
-            $('#IMG_BACKGROUND').remove();
-        }
-      
         var $task=$(this).data('task');
 
         var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');

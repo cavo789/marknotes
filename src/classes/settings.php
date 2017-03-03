@@ -428,24 +428,25 @@ class Settings
         if (isset($this->json['page'])) {
             if (isset($this->json['page']['google_font'])) {
                 $font=str_replace(' ', '+', $this->json['page']['google_font']);
-            }
-        }
-        
-        if ($css===true) {
-            if ($font!=='') {
-                $result='<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
+                
+                if ($css===true) {
+                    if ($font!=='') {
+                        $result='<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
 
-                $i=0;
-                $return='<style>';
-                $sFontName=str_replace('+', ' ', $font);
-                for ($i=1; $i<7; $i++) {
-                    $return.='page h'.$i.'{font-family:"'.$sFontName.'";}';
-                }
-                $return.='</style>';
-            } // if ($font!=='')
-        } else {
-            $return = $font;
-        }
+                        $i=0;
+                        $return='<style>';
+                        $sFontName=str_replace('+', ' ', $font);
+                        for ($i=1; $i<7; $i++) {
+                            $return.='page h'.$i.'{font-family:"'.$sFontName.'";}';
+                        }
+                        $return.='</style>';
+                    } // if ($font!=='')
+                    
+                } else { // if ($css===true)
+                    $return = $font;
+                } // if ($css===true)
+            }
+        } // if (isset($this->json['page']))
         
         return $return;
     } // function getPageGoogleFont()
@@ -512,7 +513,7 @@ class Settings
         
         if (isset($this->json['list'])) {
             if (isset($this->json['list']['opened'])) {
-                $bReturn=($tmp['opened']==1?true:false);
+                $bReturn=($this->json['list']['opened']==1?true:false);
             }
         }
         
