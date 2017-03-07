@@ -99,6 +99,9 @@
       <!-- Simple Markup Editor -->
       <script src="libs/simplemde/simplemde.min.js"></script>
 
+      <!-- Store.js -->
+      <script src="libs/store/store.everything.min.js"></script>
+      
       <!--%ADDITIONNAL_JS%-->
       
       <!--%MARKDOWN_GLOBAL_VARIABLES%-->

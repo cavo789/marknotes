@@ -55,7 +55,7 @@ $(document).ready(function () {
 
     // On page entry, get the list of .md files on the server
     Noty({message:markdown.message.loading_tree, type:'info'});
-    ajaxify({task:'listFiles',callback:'initFiles(data)'});
+    ajaxify({task:'listFiles',dataType:'json',callback:'initFiles(data)',useStore:true});
 
     // Size correctly depending on screen resolution
     $('#TDM').css('max-height', $(window).height()-30);
@@ -88,40 +88,81 @@ function ajaxify($params)
 {
 
     var $data = {};
-    $data.task  = (($params.task==='undefined')?'':$params.task);
-    $data.param = (($params.param==='undefined')?'':$params.param);
+    $data.task = (typeof $params.task === 'undefined') ? '' : $params.task;
+    $data.param = (typeof $params.param === 'undefined') ? '' : $params.param;
+
+    var $useStore = (typeof $params.useStore === 'undefined') ? false : $params.useStore;
     
-    if ($params.param2!=='undefined') {
-        $data.param2 = $params.param2;
-    }
-    if ($params.param3!=='undefined') {
-        $data.param3 = $params.param3;
-    }
-
-    var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
-
-    $.ajax({
-        beforeSend: function () {
-            $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">'+markdown.message.pleasewait+'</span></div>');
-        },// beforeSend()
-        async:true,
-        cache: false,
-        type:(markdown.settings.debug?'GET':'POST'),
-        url: markdown.url,
-        data: $data,
-        datatype:'html',
-        success: function (data) {
-
-            $($target).html(data);
-
-            /* jshint ignore:start */
-            var $callback=($params.callback===undefined)?'':$params.callback;
-            if ($callback!=='') {
-                eval($callback);
+    var $bAjax = true;
+    
+    if ($useStore) 
+    {
+        
+        // Using the cache system provided by store.js
+        
+        try  {
+            if (typeof store.get('task_'+$data.task)!=='undefined') {
+                $bAjax=false;
+                data=store.get('task_'+$data.task);
+                /*<!-- build:debug -->*/
+                if (markdown.settings.debug) console.log('Using localStorage to retrieve the previous result for ['+$data.task+']');
+                /*<!-- endbuild -->*/
             }
-            /* jshint ignore:end */
+        } catch (err) {
+            console.warn(err.message);
         }
-    }); // $.ajax()
+        
+    } // if ($useStore)
+    
+    if ($bAjax) {
+
+        $params.dataType = (typeof $params.dataType === 'undefined') ? 'html' : $params.dataType;
+
+        if (typeof $params.param2 !== 'undefined') {
+            $data.param2 = $params.param2;
+        }
+        if (typeof $params.param3 !== 'undefined') {
+            $data.param3 = $params.param3;
+        }
+
+        var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
+
+        $.ajax({
+            beforeSend: function () {
+                $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">'+markdown.message.pleasewait+'</span></div>');
+            },// beforeSend()
+            async:true,
+            cache: false,
+            type:(markdown.settings.debug?'GET':'POST'),
+            url: markdown.url,
+            data: $data,
+            datatype:$params.dataType,
+            success: function (data) {
+
+                if ($useStore===true) {
+                    store.set('task_'+$data.task, data);
+                }
+
+                if ($params.dataType==='html') $($target).html(data);
+
+                /* jshint ignore:start */
+                var $callback=($params.callback===undefined)?'':$params.callback;
+                if ($callback!=='') {
+                    eval($callback);
+                }
+                /* jshint ignore:end */
+            }
+        }); // $.ajax()
+        
+    } else {
+        
+        /* jshint ignore:start */
+        var $callback=($params.callback===undefined)?'':$params.callback;
+        if ($callback!=='') {
+            eval($callback);
+        }
+        /* jshint ignore:end */
+    }
 
 } // function ajaxify()
 
@@ -417,6 +458,13 @@ function afterClean($data)
         } else {
             Noty({message:$data.msg, type:'error'});
         }
+    }
+    
+    // Empty the localStorage too
+    try {
+       store.clearAll();
+    } catch (err) {
+        console.warn(err.message);
     }
     
     return;
