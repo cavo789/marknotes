@@ -78,7 +78,8 @@ class ShowInterface
         "markdown.settings.language='".$aeSettings->getLanguage()."';\n".
         "markdown.settings.lazyload=".$aeSettings->getOptimisationLazyLoad().";\n".
         "markdown.settings.prefix_tag='".$aeSettings->getPrefixTag()."';\n".
-        "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";";
+        "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
+        "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
          
         $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
 

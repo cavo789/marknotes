@@ -136,7 +136,8 @@ class Markdown
             case 'search':
                 // Search for one or more keywords in notes
                 
-                $pattern=\AeSecure\Functions::getParam('param', 'string', '', true, $this->aeSettings->getSearchMaxLength());
+                $pattern=\AeSecure\Functions::getParam('str', 'string', '', false, $this->aeSettings->getSearchMaxLength());
+                //$pattern=\AeSecure\Functions::getParam('param', 'string', '', true, $this->aeSettings->getSearchMaxLength());
                 
                 require_once(TASKS.'search.php');
                 \AeSecureMDTasks\Search::Run(array('pattern'=>$pattern));

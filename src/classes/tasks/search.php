@@ -14,21 +14,13 @@ class Search
     public static function Run(array $params)
     {
 
-        $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $return=array();
         if (trim($params['pattern'])=='') {
             return $return;
         }
-      
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDebugMode()) {
-            $return['debug'][]=$aeDebug->log('Search', true);
-            $return['debug'][]=$aeDebug->log('Search for ['.str_replace(",", ", ", $params['pattern']).']', true);
-        }
-        /*<!-- endbuild -->*/
-      
+            
         // $keywords can contains multiple terms like 'invoices,2017,internet'.
         // Search for these three keywords (AND)
         $keywords=explode(',', rtrim($params['pattern'], ','));
@@ -67,15 +59,9 @@ class Search
                 }
             } // foreach($keywords as $keyword)
          
-            if ($bFound) {
-                /*<!-- build:debug -->*/
-                if ($aeSettings->getDebugMode()) {
-                    $return['debug'][]=$aeDebug->log('All keywords found in filename : ['.$file.']', true);
-                }
-                /*<!-- endbuild -->*/
-            
+            if ($bFound) {            
                 // Found in the filename => stop process of this file
-                $return['files'][]=$docs.$file;
+                $return[]=md5($docs.$file);
             } else { // if ($bFound)
                      
                 // Open the file and check against its content (plain and encrypted)
@@ -126,15 +112,9 @@ class Search
                     }
                 } // foreach($keywords as $keyword)
             
-                if ($bFound) {
-                    /*<!-- build:debug -->*/
-                    if ($aeSettings->getDebugMode()) {
-                        $return['debug'][]=$aeDebug->log('All keywords found in filecontent : ['.$file.']', true);
-                    }
-                    /*<!-- endbuild -->*/
-               
+                if ($bFound) {                   
                     // Found in the filename => stop process of this file
-                    $return['files'][]=$docs.$file;
+                    $return[]=md5($docs.$file);
                 }  // if ($bFound)
             } // if ($bFound) {
         } // foreach ($arrFiles as $file)

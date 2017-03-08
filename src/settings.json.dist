@@ -17,7 +17,8 @@
     },
     "optimisation": {
         "cache": 1,
-        "lazyload": 1
+        "lazyload": 1,
+        "localStorage": 1
     },
     "page": {
         "google_font": "",

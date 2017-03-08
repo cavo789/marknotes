@@ -620,4 +620,21 @@ class Settings
     {
         return ($type==='folder' ? CHMOD_FOLDER : CHMOD_FILE);
     } // function getchmod()
+    
+    /**
+     * Can we use the navigator localStorage cache system ? 
+     * @return bool
+     */
+    public function getUseLocalCache() : bool
+    {
+        $bReturn=true;
+        
+        if (isset($this->json['optimisation'])) {
+            $tmp=$this->json['optimisation'];
+            if (isset($tmp['localStorage'])) {
+                $bReturn=(($tmp['localStorage']==1)?true:false);
+            }
+        }
+        return $bReturn;
+    }
 } // class Settings

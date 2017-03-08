@@ -1,3 +1,10 @@
+var jsTree_Search_Result = '';
+
+// Used by the search plugin to filter on notes having an ID as returned by the ajax search task
+function jsTree_ajax_search(str, node) {
+   return $.inArray(node.id, jsTree_Search_Result) >= 0;
+}
+
 /**
  * Initialize the treeview
  *
@@ -16,10 +23,6 @@ function jstree_init($data)
             
             $('#TOC').on('changed.jstree', function (e, data) {
 
-                if ($('#IMG_BACKGROUND').length) {
-                    $('#IMG_BACKGROUND').remove();
-                }
-
                 var objNode = data.instance.get_node(data.selected);
 
                 if (typeof(objNode.parent)!=="undefined") {
@@ -32,8 +35,9 @@ function jstree_init($data)
                     /*<!-- endbuild -->*/
               
                     var $fname=objNode.parent+objNode.text+'.md';
+                  
                     $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));
-                    ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+                    ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT', useStore:false});
                 } // if (typeof(objNode.parent)!="undefined")
 
             }).on('click', '.jstree-anchor', function (e) {
@@ -62,6 +66,13 @@ function jstree_init($data)
             }).on('delete_node.jstree', function (e, data) {
                // The user has just click on "Remove..." (folder or note)
                 jstree_remove_node(e, data);
+            }).on('search.jstree', function (nodes, str, res) {
+                if (str.nodes.length===0) {
+                    // No nodes found, hide all 
+                    $('#TOC').jstree(true).hide_all();
+                    // except the first node (show it)
+                    $("#TOC").jstree("show_node", "ul > li:first");
+                }
             }).jstree({
                 core: {
                     animation : 1,
@@ -87,12 +98,33 @@ function jstree_init($data)
                     },
                     types : {
                         default : { icon : 'folder' },
-                            file : { icon : 'file file-md' },
-                            folder : { icon : 'folder' }
+                        file : { icon : 'file file-md' },
+                        folder : { icon : 'folder' }
                     }
-
+                },                
+                plugins : ['contextmenu','state','dnd','search','types','unique','wholerow'],     
+                search: {
+                    case_insensitive : true,
+                    show_only_matches : true,  // Hide unmatched, show only matched records
+                    search_leaves_only : true,  // Only files, not folder
+                    ajax: {
+                        url: 'index.php?task=search',   // This request will be fired with the '&str=SEARCH_TERM' parameter
+                        dataType: 'json',
+                        type: 'POST',
+                        success : function(data){
+                            
+                            // data is a JSON string, store it in the jsTree_Search_Result variable
+                            // used by the callback : jsTree_ajax_search
+                            jsTree_Search_Result = data;
+                            /*<!-- build:debug -->*/
+                            if (markdown.settings.debug) {
+                                console.log('jsTree - Search - success, list of IDs returned :');
+                                console.log(data);
+                            }
+                        } // success
+                    },
+                    search_callback : jsTree_ajax_search
                 },
-                plugins : ['contextmenu','state','dnd','types','unique','wholerow'],
                 contextmenu: {
                     items: jstree_context_menu
                 }

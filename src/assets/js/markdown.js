@@ -55,7 +55,7 @@ $(document).ready(function () {
 
     // On page entry, get the list of .md files on the server
     Noty({message:markdown.message.loading_tree, type:'info'});
-    ajaxify({task:'listFiles',dataType:'json',callback:'initFiles(data)',useStore:true});
+    ajaxify({task:'listFiles',dataType:'json',callback:'initFiles(data)',useStore:markdown.settings.use_localcache});
 
     // Size correctly depending on screen resolution
     $('#TDM').css('max-height', $(window).height()-30);
@@ -71,8 +71,11 @@ $(document).ready(function () {
 
     // When the user will exit the field, call the onChangeSearch function to fire the search
     $('#search').change(function (e) {
-        onChangeSearch(); });
-
+        $('#TOC').jstree(true).show_all();
+        $('#TOC').jstree('search', $(this).val());
+   //     onChangeSearch(); 
+    });
+    
 }); // $( document ).ready()
 
 /**
@@ -91,13 +94,16 @@ function ajaxify($params)
     $data.task = (typeof $params.task === 'undefined') ? '' : $params.task;
     $data.param = (typeof $params.param === 'undefined') ? '' : $params.param;
 
-    var $useStore = (typeof $params.useStore === 'undefined') ? false : $params.useStore;
+    // Allow to use the navigator's localStorage ? By default, get the settings
+    var $useStore=markdown.settings.use_localcache;
+    
+    // Then, if allowed, check the useStore parameter, if specified, get it's value.
+    if ($useStore && (typeof $params.useStore !== 'undefined')) $useStore=$params.useStore;
     
     var $bAjax = true;
     
     if ($useStore) 
     {
-        
         // Using the cache system provided by store.js
         
         try  {
@@ -139,7 +145,7 @@ function ajaxify($params)
             datatype:$params.dataType,
             success: function (data) {
 
-                if ($useStore===true) {
+               if ($useStore) {
                     store.set('task_'+$data.task, data);
                 }
 
@@ -234,6 +240,7 @@ function initFiles($data)
     jstree_init($data);
    
    // initialize the search area, thanks to the Flexdatalist plugin
+      
     if ($.isFunction($.fn.flexdatalist)) {
         $('.flexdatalist').flexdatalist({
             toggleSelected: true,
@@ -461,10 +468,12 @@ function afterClean($data)
     }
     
     // Empty the localStorage too
-    try {
-       store.clearAll();
-    } catch (err) {
-        console.warn(err.message);
+    if (markdown.settings.use_localcache) {
+        try {
+           store.clearAll();
+        } catch (err) {
+            console.warn(err.message);
+        }
     }
     
     return;
@@ -935,6 +944,7 @@ function afterSearch($keywords, $data)
         // Check if we've at least one file
         if (Object.keys($data).length>0) {
             if ($.isFunction($.fn.jstree)) {
+                
                 // Get the list of files returned by the search : these files have matched th keyword
                 $files=$data.files;
             
@@ -955,20 +965,25 @@ function afterSearch($keywords, $data)
 
                     // Get the node associated filename
            
-                    if ($filename!=='') {
+                    if ($filename!=='') 
+                    {                        
                         // Now, check if the file is mentionned in the result, if yes, show the row back
 
-                        $.each($files, function ($key, $value) {
-               
-                            if ($value===$filename+'.md') {
-                                if ($(element).hasClass('jstree-leaf')) {
+                        $.each($files, function ($key, $value) 
+                        {               
+
+                            if ($(element).hasClass('jstree-leaf')) 
+                            {
+                                if ($value===$filename+'.md') 
+                                {
                                     $(element).addClass('highlight').show();
                            
                                     // Automatically open the node (and parents if needed) and select the node
                                     $('#TOC').jstree('select_node',element);
                                 }
-                                return false;  // break
-                            }
+                               // return false;  // break
+                            }  
+                            
                         }); // $.each($files)
                     } // if ($filename!=='')
                
@@ -984,22 +999,24 @@ function afterSearch($keywords, $data)
                 // with children too, ... and no files have been selected so just close the rood node immediatly)
             
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
-                      // If the node was not selected (i.e. has the "highlight" class), close the node
-                    if (!$(element).hasClass('highlight')) {
-                        $('#TOC').jstree('close_node',element);
+                    // If the node was not selected (i.e. has the "highlight" class), close the node
+                    if (!$(element).hasClass('highlight')) {                        
+                           $('#TOC').jstree('hide_node',element);
                     }
                 });
 
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
-                      // Now, for each node with the "highlight" class, be sure that each parents are opened
+
+                    // Now, for each node with the "highlight" class, be sure that each parents are opened
                     if ($(element).hasClass('highlight')) {
                         $("#TOC").jstree('open_node', element, function (e,d) {
                             for (var i = 0; i < e.parents.length; i++) {
-                                $("#TOC").jstree('open_node', e.parents[i]);
+                                $("#TOC").jstree('show_node', e.parents[i]);
                             }
                         });
                     } // if($(element).hasClass('highlight'))
                 });
+               
                 //
                 // -------------------------------------------------
             } else { // if ($.isFunction($.fn.jstree)){

@@ -13,7 +13,8 @@ https://github.com/cavo789/markdown
 + Refactoring of assets/markdown.js
 + Exporting jstree's logic into assets/js/jstree.js
 + Exporting fullscreen's logic into assets/js/fullscreen.js
-```
++ store.js (https://github.com/marcuswestin/store.js) - Store informations in the client's navigator cache to speed up page display
++ Improve the search engine by using jsTree - Search plugin
 
 ## 1.0.4
 

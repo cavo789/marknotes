@@ -94,6 +94,7 @@ class ListFiles
 
         $aeSettings=\AeSecure\Settings::getInstance();
         $root=str_replace('/', DS, $aeSettings->getFolderDocs(true));
+        $rootNode=$aeSettings->getFolderDocs(false);
 
         if (empty($ext)) {
             $ext = array ("md");
@@ -113,7 +114,7 @@ class ListFiles
         }
         // Entry for the folder
         $listDir = array(
-         'id' => utf8_encode(str_replace($root, '', $dir).DS),
+         'id'=>utf8_encode(str_replace($root, '', $dir).DS),
          'type'=>'folder',
          'icon'=>'folder',
          'text' =>basename(utf8_encode($dir)),
@@ -130,6 +131,7 @@ class ListFiles
                         $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
                         if (in_array($extension, $ext)) {
                             $files[]=array(
+                              'id'=>md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
                               'icon'=>'file file-md',
                               'text'=>str_replace('.'.$extension, '', utf8_encode($sub)), // Don't display the extension
                         
