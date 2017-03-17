@@ -40,7 +40,7 @@ function exitFullScreen()
  */
 function toggleFullScreen(element)
 {
-   
+
    // Hide (or show it again) the treeview and the search engine i.e. everything at the left side
     $('#TDM').toggleClass('hidden');
 
@@ -56,22 +56,22 @@ function toggleFullScreen(element)
 
     if (!isFullScreen()) {
         // Not yet fullscreen.  Get the max height to the content area
-      
+
         $('#CONTENT').css('max-height', screen.height);
         $('#CONTENT').css('min-height', screen.height);
-      
+
         // And active the fullscreen mode
         requestFullScreen(element || document.documentElement);
     } else { // if (!isFullScreen())
-      
+
         // Reinitialize the height of the content area
         $('#CONTENT').css('max-height', $(window).height()-10);
         $('#CONTENT').css('min-height', $(window).height()-10);
-      
+
         // And exit the fullscreen mode
         exitFullScreen();
     } // if (!isFullScreen())
-   
+
     return true;
-   
+
 } // function toggleFullScreen()

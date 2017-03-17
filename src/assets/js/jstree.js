@@ -13,14 +13,14 @@ function jsTree_ajax_search(str, node) {
  */
 function jstree_init($data)
 {
-    
+
     try {
         if ($.isFunction($.fn.jstree)) {
             $('#TOC').jstree("destroy").empty();
             $('#TOC').jstree("true");
 
             // Use jsTree for the display
-            
+
             $('#TOC').on('changed.jstree', function (e, data) {
 
                 var objNode = data.instance.get_node(data.selected);
@@ -33,25 +33,25 @@ function jstree_init($data)
                         console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
                     }
                     /*<!-- endbuild -->*/
-              
+
                     var $fname=objNode.parent+objNode.text+'.md';
-                  
+
                     $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));
                     ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT', useStore:false});
                 } // if (typeof(objNode.parent)!="undefined")
 
             }).on('click', '.jstree-anchor', function (e) {
-               
+
                 // By clicking (single-click) on a folder, open / close it
                 $(this).jstree(true).toggle_node(e.target);
-                
+
             }).on('keydown.jstree', '.jstree-anchor', function (e) {
-            
+
                 // @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
                 // If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
                 // Not found a solution...
                 var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
-                
+
                 if (objNode.data) {
                     console.log('changed.jstree - '+objNode.data.file);
                 }
@@ -68,7 +68,7 @@ function jstree_init($data)
                 jstree_remove_node(e, data);
             }).on('search.jstree', function (nodes, str, res) {
                 if (str.nodes.length===0) {
-                    // No nodes found, hide all 
+                    // No nodes found, hide all
                     $('#TOC').jstree(true).hide_all();
                     // except the first node (show it)
                     $("#TOC").jstree("show_node", "ul > li:first");
@@ -78,12 +78,12 @@ function jstree_init($data)
                     animation : 1,
                     data : $data.tree,
                     check_callback : function (operation, node, node_parent, node_position, more) {
-                        
+
                         // Return true to allow the operation, return false otherwise
                         //
                         // Allow changes on the jsTree by javascript
                         // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
-                        
+
                         return operation === 'move_node' ? false : true;
                     },
                     multiple:false,
@@ -101,8 +101,8 @@ function jstree_init($data)
                         file : { icon : 'file file-md' },
                         folder : { icon : 'folder' }
                     }
-                },                
-                plugins : ['contextmenu','state','dnd','search','types','unique','wholerow'],     
+                },
+                plugins : ['contextmenu','state','dnd','search','types','unique','wholerow'],
                 search: {
                     case_insensitive : true,
                     show_only_matches : true,  // Hide unmatched, show only matched records
@@ -112,7 +112,7 @@ function jstree_init($data)
                         dataType: 'json',
                         type: 'POST',
                         success : function(data){
-                            
+
                             // data is a JSON string, store it in the jsTree_Search_Result variable
                             // used by the callback : jsTree_ajax_search
                             jsTree_Search_Result = data;
@@ -138,7 +138,7 @@ function jstree_init($data)
         }
         /*<!-- endbuild -->*/
     }
-    
+
 } // function jstree_init()
 
 /**
@@ -150,9 +150,9 @@ function jstree_init($data)
  */
 function jstree_context_menu(node)
 {
-   
+
     var tree = $('#TOC').jstree(true);
-   
+
     var items = {
         Add_Folder: {
             separator_before: false,
@@ -227,14 +227,14 @@ function jstree_context_menu(node)
             } // action()
         } // Remove
     };
-    
+
     // Create a new folder : not if the user has right-clicked on a note.
     if (node.icon!=='folder') {
         delete items.Add_Folder;
     }
-    
+
     return items;
-    
+
 } // function context_menu()
 
 /**
@@ -247,13 +247,13 @@ function jstree_context_menu(node)
  */
 function jstree_create_node(e, data)
 {
-   
+
     /*<!-- build:debug -->*/
     if (markdown.settings.debug) {
         console.log('jstree_create_node');
     }
     /*<!-- endbuild -->*/
-    
+
     return;
 }
 
@@ -267,20 +267,20 @@ function jstree_create_node(e, data)
  */
 function jstree_CRUD_node(e, data, $task)
 {
-   
+
     /*<!-- build:debug -->*/
     if (markdown.settings.debug) {
         console.log('jstree_CRUD_node');
     }
     /*<!-- endbuild -->*/
-    
+
     try {
         // The user has just click on "Create..." (folder or note)
-        
+
         var $type=(data.node.icon==="folder" ? "folder" : "file");
         var $oldname='';
         var $newname='';
-        
+
         if ($type==='folder') {
             $oldname=data.node.parent+data.old;
             $newname=data.node.parent+data.node.text;
@@ -288,14 +288,14 @@ function jstree_CRUD_node(e, data, $task)
 
             // Working on a note : retrieve the parent and append the note's name
             var $parentNode = $('#TOC').jstree(true).get_node(data.node.parent);
-           
+
             $oldname=$parentNode.parent+$parentNode.text+markdown.settings.DS+data.old;
             $newname=$parentNode.parent+$parentNode.text+markdown.settings.DS+data.node.text;
         }
-        
+
         $oldname=window.btoa(encodeURIComponent(JSON.stringify($oldname)));
         $newname=window.btoa(encodeURIComponent(JSON.stringify($newname)));
-        
+
         if ($task!=='rename') {
             ajaxify({task: $task, param: $newname, param3: $type, callback: 'jstree_show_status(data)'});
         } else {
@@ -316,28 +316,28 @@ function jstree_CRUD_node(e, data, $task)
  */
 function jstree_show_status($data)
 {
-    
+
     if ($data.hasOwnProperty('status')) {
         $status=$data.status;
-        
+
         if ($status==1) {
             Noty({message:$data.msg, type:'success'});
-            
+
             if (($data.type==="folder") && (($data.action==="rename")||($data.action==="create"))) {
                 $('#TOC li').each(function () {
                     $("#TOC").jstree().disable_node(this.id);
                 })
-                
+
                 ajaxify({task:'listFiles',callback:'initFiles(data)'});
                 Noty({message:markdown.message.loading_tree, type:'info'});
-                
+
               //  $('#TOC').jstree('refresh');
             }
         } else {
             Noty({message:$data.msg, type:'error'});
         }
     }
-    
+
 } // function jstree_show_status()
 
 /**
@@ -349,17 +349,17 @@ function jstree_show_status($data)
  */
 function jstree_rename_node(e, data)
 {
-    
+
     /*<!-- build:debug -->*/
     if (markdown.settings.debug) {
         console.log('jstree_rename_node');
     }
     /*<!-- endbuild -->*/
-    
+
     jstree_CRUD_node(e, data, 'rename');
-   
+
     return;
-   
+
 } // function jstree_rename_node()
 
 /**
@@ -372,15 +372,15 @@ function jstree_rename_node(e, data)
  */
 function jstree_remove_node(e, data)
 {
-   
+
     /*<!-- build:debug -->*/
     if (markdown.settings.debug) {
         console.log('jstree_remove_node');
     }
     /*<!-- endbuild -->*/
-       
+
     jstree_CRUD_node(e, data, 'delete');
-   
+
     return;
-    
+
 } // function jstree_remove_node()

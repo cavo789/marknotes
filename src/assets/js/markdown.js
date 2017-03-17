@@ -1,6 +1,6 @@
 
 /* global markdown, custominiFiles, customafterDisplay, customafterSearch */
- 
+
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
 var QueryString = function () {
     // This function is anonymous, is executed immediately and
@@ -64,7 +64,7 @@ $(document).ready(function () {
     // Maximise the width of the table of contents i.e. the array with the list of files
     //$('#TOC').css('width', $('#TDM').width()-5);
     //$('#search').css('width', $('#TDM').width()-5);
-   
+
     $('#CONTENT').css('max-height', $(window).height()-10);
     $('#CONTENT').css('min-height', $(window).height()-10);
     //$('#CONTENT').css('width', $('#CONTENT').width()-5);
@@ -73,9 +73,9 @@ $(document).ready(function () {
     $('#search').change(function (e) {
         $('#TOC').jstree(true).show_all();
         $('#TOC').jstree('search', $(this).val());
-   //     onChangeSearch(); 
+   //     onChangeSearch();
     });
-    
+
 }); // $( document ).ready()
 
 /**
@@ -96,16 +96,16 @@ function ajaxify($params)
 
     // Allow to use the navigator's localStorage ? By default, get the settings
     var $useStore=markdown.settings.use_localcache;
-    
+
     // Then, if allowed, check the useStore parameter, if specified, get it's value.
     if ($useStore && (typeof $params.useStore !== 'undefined')) $useStore=$params.useStore;
-    
+
     var $bAjax = true;
-    
-    if ($useStore) 
+
+    if ($useStore)
     {
         // Using the cache system provided by store.js
-        
+
         try  {
             if (typeof store.get('task_'+$data.task)!=='undefined') {
                 $bAjax=false;
@@ -117,9 +117,9 @@ function ajaxify($params)
         } catch (err) {
             console.warn(err.message);
         }
-        
+
     } // if ($useStore)
-    
+
     if ($bAjax) {
 
         $params.dataType = (typeof $params.dataType === 'undefined') ? 'html' : $params.dataType;
@@ -159,9 +159,9 @@ function ajaxify($params)
                 /* jshint ignore:end */
             }
         }); // $.ajax()
-        
+
     } else {
-        
+
         /* jshint ignore:start */
         var $callback=($params.callback===undefined)?'':$params.callback;
         if ($callback!=='') {
@@ -187,7 +187,7 @@ function addSearchEntry($entry)
     $bReset  = (($entry.reset==='undefined') ? false : $entry.reset);
 
     $current=$('#search').val().trim();
-   
+
     if (($current!=='') && ($bReset===false)) {
         // Append the new keyword only when bReset is not set or set to False
         var values = $current.split(',');
@@ -196,7 +196,7 @@ function addSearchEntry($entry)
     } else {
         $('#search').val($entry.keyword);
     }
-   
+
     return true;
 
 } // function addSearchEntry()
@@ -209,19 +209,19 @@ function addSearchEntry($entry)
  */
 function initFiles($data)
 {
-   
+
     var $msg='';
-   
+
     if (typeof $data === 'undefined') {
         $msg=markdown.message.json_error;
         Noty({message:$msg.replace('%s', 'listFiles'),type:'error'});
         return false;
     }
-   
+
     /*<!-- build:debug -->*/
     //if (markdown.settings.debug) console.log($data.count);
     /*<!-- endbuild -->*/
-   
+
     try {
         if ($data.hasOwnProperty('count')) {
             // Display the number of returned files
@@ -236,11 +236,11 @@ function initFiles($data)
         }
         /*<!-- endbuild -->*/
     }
-   
+
     jstree_init($data);
-   
+
    // initialize the search area, thanks to the Flexdatalist plugin
-      
+
     if ($.isFunction($.fn.flexdatalist)) {
         $('.flexdatalist').flexdatalist({
             toggleSelected: true,
@@ -253,7 +253,7 @@ function initFiles($data)
             focusFirstResult:true,
             noResultsText:markdown.message.search_no_result
         });
-   
+
         // Add automatic filtering if defined in the settings.json file
         if (markdown.settings.auto_tags!=='') {
              addSearchEntry({keyword:markdown.settings.auto_tags});
@@ -262,7 +262,7 @@ function initFiles($data)
 
     $('#search').css('width', $('#TDM').width()-5);
     $('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width()-10).show();
-   
+
     // Interface : put the cursor immediatly in the edit box
     try {
         $('#search-flexdatalist').focus();
@@ -283,7 +283,7 @@ function initFiles($data)
         }
         /*<!-- endbuild -->*/
     }
-   
+
     return true;
 
 } // iniFiles()
@@ -307,10 +307,10 @@ function initializeTasks()
             console.warn(err.message);
         }
     }
-   
+
     // Get all DOM objects having a data-task attribute
     $("[data-task]").click(function () {
-      
+
         var $task=$(this).data('task');
 
         var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');
@@ -322,14 +322,14 @@ function initializeTasks()
 
         switch ($task) {
             case 'clipboard':
-            
+
                 // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Clipboard -> copy the link of the current note in the clipboard');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 if (typeof Clipboard === 'function') {
                     var clipboard = new Clipboard('*[data-task="clipboard"]');
                     clipboard.on('success', function (e) {
@@ -339,9 +339,9 @@ function initializeTasks()
                     $(this).remove();
                 }
                break;
-            
+
             case 'display':
-            
+
                 // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
@@ -350,34 +350,34 @@ function initializeTasks()
                 /*<!-- endbuild -->*/
                 ajaxify({task:$task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
                break;
-            
+
             case 'edit':
-               
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Edit -> show the editor and the source markdown file)');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});
 
                break;
-            
+
             case 'fullscreen':
-            
+
                 toggleFullScreen();
-                    
+
                break;
-            
+
             case 'link_note':
-            
+
                 // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Clipboard -> copy the link of the current note in the clipboard');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 if (typeof Clipboard === 'function') {
                     new Clipboard('*[data-task="link_note"]');
                     Noty({message:markdown.message.copy_link_done, type:'success'});
@@ -385,88 +385,88 @@ function initializeTasks()
                     $(this).remove();
                 }
                break;
-            
+
             case 'pdf':
-            
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('PDF -> generate a pdf rendenring of the note');
                 }
                 /*<!-- endbuild -->*/
-            
+
                 window.open('index.php?task=pdf&param='+$fname);
-                
+
                break;
-            
+
             case 'printer':
                /*<!-- build:debug -->*/
                //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
                /*<!-- endbuild -->*/
                break;
-               
+
             case 'settings':
-           
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Settings');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 ajaxify({task:'clean',callback:'afterClean(data)'});
-                
+
                 break;
-               
+
             case 'slideshow':
-            
+
                 /*<!-- build:debug -->*/
                 //if (markdown.settings.debug) console.log('Slideshow -> open a new tab in the browser and show the markdown in a slideshow format');
                 /*<!-- endbuild -->*/
                 slideshow($fname);
                break;
-            
+
             case 'tag':
-            
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Tag -> filter on ['+$tag+']');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 addSearchEntry({keyword:$tag, reset:true});
                break;
-            
+
             case 'window':
-     
+
                 //if (markdown.settings.debug) console.log('Window -> Open the note in a new window');
                 window.open($fname);
                break;
-            
+
             default :
-            
+
                 console.warn('Sorry, unknown task ['+$task+']');
         } // switch($task)
-     
+
     }); // $("[data-task]").click(function()
 
     return true;
-   
+
 } // function initializeTasks()
 
 function afterClean($data)
 {
-    
+
     console.log($data);
-    
+
     if ($data.hasOwnProperty('status')) {
         $status=$data.status;
-        
+
         if ($status==1) {
             Noty({message:$data.msg, type:'success'});
         } else {
             Noty({message:$data.msg, type:'error'});
         }
     }
-    
+
     // Empty the localStorage too
     if (markdown.settings.use_localcache) {
         try {
@@ -475,9 +475,9 @@ function afterClean($data)
             console.warn(err.message);
         }
     }
-    
+
     return;
-    
+
 } // function afterClean
 
 /**
@@ -486,14 +486,14 @@ function afterClean($data)
  */
 function replaceLinksToOtherNotes()
 {
-   
+
     try {
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             console.log('Replace internal links to notes');
         }
         /*<!-- endbuild -->*/
-        
+
         var $text=$('#CONTENT').html();
 
         // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
@@ -523,9 +523,9 @@ function replaceLinksToOtherNotes()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return;
-   
+
 } // replaceLinksToOtherNotes()
 
 /**
@@ -535,9 +535,9 @@ function replaceLinksToOtherNotes()
  */
 function addLinksToTags()
 {
-   
+
     var $text=$('#CONTENT').html();
-   
+
     // markdown.settings.prefix_tag is set by markdown.php and, by default, equal to §
     // Every words prefixed by § will be considered as a tag just like "#word" in social network.
     // The # character is used by markdown language so, use an another one.
@@ -548,15 +548,15 @@ function addLinksToTags()
         // markdown.settings.prefix_tag   Symbol : Match the § character
         // ([a-zA-Z0-9]+)                 Tag    : a word composed of letters and figures, can also contains dot (like ".htaccess")
         // ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
-      
-      
+
+
         var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             console.log('RegEx for finding tags : '+RegEx);
         }
         /*<!-- endbuild -->*/
-      
+
         var $tags=RegEx.exec($text);
 
         while ($tags!==null) {
@@ -565,12 +565,12 @@ function addLinksToTags()
                 console.log("Process tag "+$tags[0]);
             }
             /*<!-- endbuild -->*/
-         
+
             $sTags=
             (($tags[1]!==undefined)?$tags[1]:'')+                                                                                           // Before the span
             '<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tags[2]+'">'+$tags[2]+'</span>'+  // The span for tagging the word
             (($tags[3]!==undefined)?$tags[3]:'');                                                                                           // After the span
-    
+
             $text=$text.replace(new RegExp($tags[0], "g"), $sTags);
 
             $tags=RegEx.exec($text);
@@ -595,7 +595,7 @@ function forceNewWindow()
     var $currentURL=location.protocol + '//' + location.host;
 
     $('a[href^="http:"], a[href^="https:"]').not('[href^="'+$currentURL+'/"]').attr('target', '_blank');
-    
+
     return true;
 
 } // function forceNewWindow()
@@ -642,7 +642,7 @@ function addIcons()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return true;
 
 } // function addIcons()
@@ -654,11 +654,11 @@ function addIcons()
  */
 function NiceTable()
 {
-   
+
     try {
         $("table").each(function () {
             $(this).addClass('table table-striped table-hover table-bordered');
-         
+
             if ($.isFunction($.fn.DataTable)) {
                 $(this).addClass('display');
                 $(this).DataTable({
@@ -678,9 +678,9 @@ function NiceTable()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return true;
-   
+
 } // function NiceTable()
 
 /**
@@ -707,11 +707,11 @@ function afterDisplay($fname)
             /*<!-- endbuild -->*/
             $('page').linkify();
         }
-      
+
         if (typeof Prism === 'object') {
             Prism.highlightAll();
         }
-      
+
         // If a note contains a link to an another note, use ajax and not normal links
         replaceLinksToOtherNotes();
 
@@ -723,7 +723,7 @@ function afterDisplay($fname)
 
         // Add icons to .pdf, .xls, .doc, ... hyperlinks
         addIcons();
-      
+
         // Make table nicer
         NiceTable();
 
@@ -768,7 +768,7 @@ function afterDisplay($fname)
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     // Just for esthetics purposes
     $('#CONTENT').fadeOut(1).fadeIn(3);
 
@@ -784,10 +784,10 @@ function afterDisplay($fname)
  */
 function afterEdit($fname)
 {
-   
+
    // Create the Simple Markdown Editor
    // @link https://github.com/NextStepWebs/simplemde-markdown-editor
-   
+
     var simplemde = new SimpleMDE({
         autoDownloadFontAwesome:false,
         autofocus:true,
@@ -832,16 +832,16 @@ function afterEdit($fname)
          "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule"
         ] // toolbar
     });
-   
+
     $('.editor-toolbar').addClass('fa-2x');
-    
+
     /*
      var editor = new Editor({
        element: document.getElementById("sourceMarkDown")
      });
     */
     return true;
-   
+
 } // function afterEdit()
 
 /**
@@ -853,7 +853,7 @@ function afterEdit($fname)
  */
 function buttonSave($fname, $markdown)
 {
-   
+
     var $data = {};
     $data.task  = 'save';
     $data.param = $fname;
@@ -869,9 +869,9 @@ function buttonSave($fname, $markdown)
             Noty({message:data.status.message, type:(data.status.success==1?'success':'error')});
         }
     }); // $.ajax()
-   
+
     return true;
-   
+
 } // function buttonSave()
 
 /**
@@ -881,7 +881,7 @@ function buttonSave($fname, $markdown)
  */
 function buttonEncrypt(editor)
 {
-   
+
     var cm = editor.codemirror;
     var output = '';
     var selectedText = cm.getSelection();
@@ -889,7 +889,7 @@ function buttonEncrypt(editor)
 
     output = '<encrypt>' + text + '</encrypt>';
     cm.replaceSelection(output);
-   
+
 } // function buttonEncrypt()
 
 /**
@@ -927,14 +927,14 @@ function onChangeSearch()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return true;
 
 } // Search()
 
 /*
  * Called when the ajax request "onChangeSearch" has been successfully fired.
- * Process the result of the search : the returned data is a json string that represent an 
+ * Process the result of the search : the returned data is a json string that represent an
  * array of files that matched the searched pattern.
  */
 function afterSearch($keywords, $data)
@@ -944,18 +944,18 @@ function afterSearch($keywords, $data)
         // Check if we've at least one file
         if (Object.keys($data).length>0) {
             if ($.isFunction($.fn.jstree)) {
-                
+
                 // Get the list of files returned by the search : these files have matched th keyword
                 $files=$data.files;
-            
+
                 // Use jsTree : iterate and get every node full path which is, in fact, a filename
                 // For instance /aesecure/todo/a_note.md
-           
+
                 $filename='';
-            
+
                 $('#TOC').jstree('open_all');
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
-               
+
                     $filename=$("#TOC").jstree(true).get_path(element, markdown.settings.DS);  // DIRECTORY_SEPARATOR
 
                     // It's a file, not a folder : hide it
@@ -964,29 +964,29 @@ function afterSearch($keywords, $data)
                     }
 
                     // Get the node associated filename
-           
-                    if ($filename!=='') 
-                    {                        
+
+                    if ($filename!=='')
+                    {
                         // Now, check if the file is mentionned in the result, if yes, show the row back
 
-                        $.each($files, function ($key, $value) 
-                        {               
+                        $.each($files, function ($key, $value)
+                        {
 
-                            if ($(element).hasClass('jstree-leaf')) 
+                            if ($(element).hasClass('jstree-leaf'))
                             {
-                                if ($value===$filename+'.md') 
+                                if ($value===$filename+'.md')
                                 {
                                     $(element).addClass('highlight').show();
-                           
+
                                     // Automatically open the node (and parents if needed) and select the node
                                     $('#TOC').jstree('select_node',element);
                                 }
                                // return false;  // break
-                            }  
-                            
+                            }
+
                         }); // $.each($files)
                     } // if ($filename!=='')
-               
+
                 }); // $.each($("#TOC").jstree('full')
 
                 // -------------------------------------------------
@@ -997,10 +997,10 @@ function afterSearch($keywords, $data)
                 //
                 // Idea is to keep the treeview the most compact as possible (if a root node contains 20 children,
                 // with children too, ... and no files have been selected so just close the rood node immediatly)
-            
+
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
                     // If the node was not selected (i.e. has the "highlight" class), close the node
-                    if (!$(element).hasClass('highlight')) {                        
+                    if (!$(element).hasClass('highlight')) {
                            $('#TOC').jstree('hide_node',element);
                     }
                 });
@@ -1016,11 +1016,11 @@ function afterSearch($keywords, $data)
                         });
                     } // if($(element).hasClass('highlight'))
                 });
-               
+
                 //
                 // -------------------------------------------------
             } else { // if ($.isFunction($.fn.jstree)){
-  
+
                 // Process every rows of the tblFiles array => process every files
                 $('#tblFiles > tbody  > tr > td').each(function () {
 
@@ -1053,17 +1053,17 @@ function afterSearch($keywords, $data)
             } else { // if ($keywords!=='')
 
                 // show everything back
-            
+
                 if ($.isFunction($.fn.jstree)) {
                     // jsTree plugin
                     $.each($('#TOC').jstree('full').find("li"), function (index, element) {
                         $(element).removeClass('highlight').show();
                     }); // $.each($("#TOC").jstree('full')
-               
+
                     // And show the entire tree
                     $('#TOC').jstree('open_all');
                 } else { //  if ($.isFunction($.fn.jstree))
-               
+
                     $('#tblFiles > tbody  > tr > td').each(function () {
                         if ($(this).attr('data-file')) {
                             $(this).parent().show();
@@ -1095,7 +1095,7 @@ function afterSearch($keywords, $data)
  */
 function slideshow($fname)
 {
-     
+
     try {
         var $data = {};
         $data.task  = 'slideshow';
@@ -1123,7 +1123,7 @@ function slideshow($fname)
         console.warn(err.message);
     }
     return true;
-  
+
 } // function slideshow()
 
 /**
@@ -1136,7 +1136,7 @@ function slideshow($fname)
  */
 function Noty($params)
 {
-   
+
     if ($.isFunction($.fn.noty)) {
         if ($params.message==='') {
             return false;
@@ -1153,5 +1153,5 @@ function Noty($params)
             type: $type
         }); // noty()
     }
-   
+
 } // function Noty()

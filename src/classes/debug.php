@@ -4,17 +4,17 @@ namespace aeSecure;
 
 class Debug
 {
-    
+
     protected static $instance = null;
-   
+
     private static $enable=false;
-   
+
     public function __construct()
     {
         self::$enable=false;
         return true;
     } // function __construct()
-    
+
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -22,12 +22,12 @@ class Debug
         }
         return self::$instance;
     } // function getInstance()
-   
+
     public function enable()
     {
-      
+
         self::$enable=true;
-   
+
         ini_set("display_errors", "1");
         ini_set("display_startup_errors", "1");
         ini_set("html_errors", "1");
@@ -36,10 +36,10 @@ class Debug
            . "'font-family:verdana;border:1px solid red; padding:5px;'>");
         ini_set("error_append_string", "</div>");
         error_reporting(E_ALL);
-            
+
         return true;
     } // function enable()
-   
+
    /**
     * Return the current URL
     *
@@ -50,10 +50,10 @@ class Debug
     */
     public static function log(string $line, bool $return = false) : string
     {
-      
+
         $line.=' ('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
            ', line '.debug_backtrace()[0]['line'].')';
-      
+
         if ($return==true) {
             return $line;
         } else {
