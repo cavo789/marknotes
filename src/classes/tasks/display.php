@@ -4,7 +4,6 @@ namespace AeSecureMDTasks;
 
 /**
 * Return the HTML rendering of a .md file
-*
 */
 
 class Display
@@ -17,11 +16,19 @@ class Display
             $params['filename'].='.md';
         }
 
+        if (!class_exists('Debug')) {
+            include_once dirname(dirname(__FILE__)).'/debug.php';
+        }
+
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
-        $fullname=str_replace('/', DIRECTORY_SEPARATOR, utf8_decode($aeSettings->getFolderDocs(true).
-           ltrim($params['filename'], DS)));
+        $fullname=str_replace(
+            '/', DIRECTORY_SEPARATOR, utf8_decode(
+                $aeSettings->getFolderDocs(true).
+                ltrim($params['filename'], DS)
+            )
+        );
 
         if (!file_exists($fullname)) {
             echo str_replace(
@@ -90,13 +97,15 @@ class Display
         // Call the Markdown parser (https://github.com/erusev/parsedown)
         $lib=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
         if (!file_exists($lib)) {
-            self::ShowError(str_replace(
-                '%s',
-                '<strong>'.$lib.'</strong>',
-                $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
-            ), true);
+            self::ShowError(
+                str_replace(
+                    '%s',
+                    '<strong>'.$lib.'</strong>',
+                    $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+                ), true
+            );
         }
-        require_once($lib);
+        include_once $lib;
         $Parsedown=new \Parsedown();
         $html=$Parsedown->text($markdown);
 
@@ -107,8 +116,8 @@ class Display
 
         /*$matches = array();
 
-       preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
-       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+        preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
+        // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
 
         if (count($matches[1])>0) self::StoreTags($matches[1]);*/
 
@@ -144,8 +153,10 @@ class Display
                         $i=0;
 
                         for ($i; $i<$j; $i++) {
-                            $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.
-                               $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp);
+                            $tmp=str_replace(
+                                $matches[0][$i], '<strong class="confidential">'.
+                                $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp
+                            );
                         }
                     }
 
@@ -160,27 +171,27 @@ class Display
                     foreach ($arr as $head)
                     {
 
-                    	try {
-                    		preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $tmp, $matches);
-                    		if (count($matches[1])>0) {
+                        try {
+                            preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $tmp, $matches);
+                            if (count($matches[1])>0) {
 
-                    			$i=0;
+                                $i=0;
 
-                    			$goTop='<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>';
+                                $goTop='<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>';
 
-                    			foreach ($matches[1] as $key=>$value)
-                    			{
-                    				$i+=1;
-                    				$tmp=str_replace('<'.$head.'>'.$value.'</'.$head.'>',$goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>',$tmp);
-                    			}
-                    		}
-                    	} catch (Exception $e) {
-                    	} // try
+                                foreach ($matches[1] as $key=>$value)
+                                {
+                                    $i+=1;
+                                    $tmp=str_replace('<'.$head.'>'.$value.'</'.$head.'>', $goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>', $tmp);
+                                }
+                            }
+                        } catch (Exception $e) {
+                        } // try
                     } // foreach
 
                     // Add css to bullets
-                    $tmp=str_replace('<ul>','<ul class="fa-ul">',$tmp);
-                    $tmp=str_replace('<li>','<li><i class="fa-li fa fa-check"></i>',$tmp);
+                    $tmp=str_replace('<ul>', '<ul class="fa-ul">', $tmp);
+                    $tmp=str_replace('<li>', '<li><i class="fa-li fa fa-check"></i>', $tmp);
 
                     if ($handle = fopen($fnameHTML, 'w+')) {
                         // Try to find a heading 1 and if so use that text for the title tag of the generated page
@@ -195,18 +206,44 @@ class Display
                         } catch (Exception $e) {
                         }
 
+                        // ***********************************************************************************
+                        //
+                        // Create the HTML rendering on the disk
+
+
                         if (\AeSecure\Files::fileExists($template = $aeSettings->getTemplateFile('html'))) {
+
                             $content=file_get_contents($template);
+
 
                             // Write the file but first replace variables
                             $content=str_replace('%TITLE%', $title, $content);
                             $content=str_replace('%CONTENT%', $tmp, $content);
+                            $content=str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $content);
+                            $content=str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $content);
                             $content=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(false, true), $content);
 
                             // Perhaps a Google font should be used.
                             $sFont=$aeSettings->getPageGoogleFont(true);
                             $content=str_replace('<!--%FONT%-->', $sFont, $content);
 
+                            // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
+
+                            if (strpos($content, '%URL_IMG%')!==false) {
+
+                                // Retrieve the first image in the html
+                                $matches=array();
+                                if (preg_match('/<img *src *= *[\'|"]([^\'|"]*)/', $tmp, $match)) {
+
+                                    if(count($match)>0) {
+                                        $url_img=$match[1];
+                                    }
+
+                                    $content=str_replace('%URL_IMG%', $url_img, $content);
+
+                                } // if (preg_match)
+
+                            } // if (strpos)
                             fwrite($handle, $content);
 
                             fclose($handle);
