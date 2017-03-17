@@ -73,7 +73,7 @@ DirectoryIndex index.php
    ExpiresByType application/x-font-woff2 "access 1 year"
    ExpiresByType font/eot "access plus 1 month"
    ExpiresByType font/truetype "access 1 year"
-   ExpiresByType font/opentype "access 1 year" 
+   ExpiresByType font/opentype "access 1 year"
    ExpiresByType font/woff "access 1 year"
    ExpiresByType image/svg+xml "access 1 year"
    ExpiresByType application/vnd.ms-fontobject "access 1 year"
@@ -111,7 +111,7 @@ DirectoryIndex index.php
    ExpiresByType application/x-gzip "access 1 month"
    ExpiresByType text/x-component         "access 1 month"
 
-   # Data 
+   # Data
    ExpiresByType application/atom+xml "access plus 1 hour"
    ExpiresByType application/rdf+xml "access plus 1 hour"
    ExpiresByType application/rss+xml "access plus 1 hour"

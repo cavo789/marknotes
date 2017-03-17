@@ -1,6 +1,6 @@
 {
   "name": "markdown",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
   "main": "index.php",
   "devDependencies": {

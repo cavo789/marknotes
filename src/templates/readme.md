@@ -17,7 +17,7 @@ Edit settings.json, locate the `templates` node and replace the desired template
       "screen": "screen",   
 ```
 
-by 
+by
 
 ```json
    "templates": {

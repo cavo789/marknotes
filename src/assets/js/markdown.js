@@ -1,6 +1,6 @@
 
 /* global markdown, custominiFiles, customafterDisplay, customafterSearch */
- 
+
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
 var QueryString = function () {
     // This function is anonymous, is executed immediately and
@@ -54,7 +54,8 @@ RegExp.quote = function (str) {
 $(document).ready(function () {
 
     // On page entry, get the list of .md files on the server
-    ajaxify({task:'listFiles',callback:'initFiles(data)'});
+    Noty({message:markdown.message.loading_tree, type:'info'});
+    ajaxify({task:'listFiles',dataType:'json',callback:'initFiles(data)',useStore:markdown.settings.use_localcache});
 
     // Size correctly depending on screen resolution
     $('#TDM').css('max-height', $(window).height()-30);
@@ -63,14 +64,17 @@ $(document).ready(function () {
     // Maximise the width of the table of contents i.e. the array with the list of files
     //$('#TOC').css('width', $('#TDM').width()-5);
     //$('#search').css('width', $('#TDM').width()-5);
-   
+
     $('#CONTENT').css('max-height', $(window).height()-10);
     $('#CONTENT').css('min-height', $(window).height()-10);
     //$('#CONTENT').css('width', $('#CONTENT').width()-5);
 
     // When the user will exit the field, call the onChangeSearch function to fire the search
     $('#search').change(function (e) {
-        onChangeSearch(); });
+        $('#TOC').jstree(true).show_all();
+        $('#TOC').jstree('search', $(this).val());
+   //     onChangeSearch();
+    });
 
 }); // $( document ).ready()
 
@@ -87,33 +91,84 @@ function ajaxify($params)
 {
 
     var $data = {};
-    $data.task  = (($params.task==='undefined')?'':$params.task);
-    $data.param = (($params.param==='undefined')?'':$params.param);
+    $data.task = (typeof $params.task === 'undefined') ? '' : $params.task;
+    $data.param = (typeof $params.param === 'undefined') ? '' : $params.param;
 
-    var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
+    // Allow to use the navigator's localStorage ? By default, get the settings
+    var $useStore=markdown.settings.use_localcache;
 
-    $.ajax({
-        beforeSend: function () {
-            $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">'+markdown.message.pleasewait+'</span></div>');
-        },// beforeSend()
-        async:true,
-        cache: false,
-        type:(markdown.settings.debug?'GET':'POST'),
-        url: markdown.url,
-        data: $data,
-        datatype:'html',
-        success: function (data) {
+    // Then, if allowed, check the useStore parameter, if specified, get it's value.
+    if ($useStore && (typeof $params.useStore !== 'undefined')) $useStore=$params.useStore;
 
-            $($target).html(data);
+    var $bAjax = true;
 
-            /* jshint ignore:start */
-            var $callback=($params.callback===undefined)?'':$params.callback;
-            if ($callback!=='') {
-                eval($callback);
+    if ($useStore)
+    {
+        // Using the cache system provided by store.js
+
+        try  {
+            if (typeof store.get('task_'+$data.task)!=='undefined') {
+                $bAjax=false;
+                data=store.get('task_'+$data.task);
+                /*<!-- build:debug -->*/
+                if (markdown.settings.debug) console.log('Using localStorage to retrieve the previous result for ['+$data.task+']');
+                /*<!-- endbuild -->*/
             }
-            /* jshint ignore:end */
+        } catch (err) {
+            console.warn(err.message);
         }
-    }); // $.ajax()
+
+    } // if ($useStore)
+
+    if ($bAjax) {
+
+        $params.dataType = (typeof $params.dataType === 'undefined') ? 'html' : $params.dataType;
+
+        if (typeof $params.param2 !== 'undefined') {
+            $data.param2 = $params.param2;
+        }
+        if (typeof $params.param3 !== 'undefined') {
+            $data.param3 = $params.param3;
+        }
+
+        var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
+
+        $.ajax({
+            beforeSend: function () {
+                $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">'+markdown.message.pleasewait+'</span></div>');
+            },// beforeSend()
+            async:true,
+            cache: false,
+            type:(markdown.settings.debug?'GET':'POST'),
+            url: markdown.url,
+            data: $data,
+            datatype:$params.dataType,
+            success: function (data) {
+
+               if ($useStore) {
+                    store.set('task_'+$data.task, data);
+                }
+
+                if ($params.dataType==='html') $($target).html(data);
+
+                /* jshint ignore:start */
+                var $callback=($params.callback===undefined)?'':$params.callback;
+                if ($callback!=='') {
+                    eval($callback);
+                }
+                /* jshint ignore:end */
+            }
+        }); // $.ajax()
+
+    } else {
+
+        /* jshint ignore:start */
+        var $callback=($params.callback===undefined)?'':$params.callback;
+        if ($callback!=='') {
+            eval($callback);
+        }
+        /* jshint ignore:end */
+    }
 
 } // function ajaxify()
 
@@ -132,7 +187,7 @@ function addSearchEntry($entry)
     $bReset  = (($entry.reset==='undefined') ? false : $entry.reset);
 
     $current=$('#search').val().trim();
-   
+
     if (($current!=='') && ($bReset===false)) {
         // Append the new keyword only when bReset is not set or set to False
         var values = $current.split(',');
@@ -141,7 +196,7 @@ function addSearchEntry($entry)
     } else {
         $('#search').val($entry.keyword);
     }
-   
+
     return true;
 
 } // function addSearchEntry()
@@ -149,24 +204,24 @@ function addSearchEntry($entry)
 /**
  * The ajax request has returned the list of files.  Build the table and initialize the #TOC DOM object
  *
- * @param {json} $data  The return of the ?task=listFiles request
+ * @param {json} $data  The return of the JSON returned by index.php?task=listFiles
  * @returns {Boolean}
  */
 function initFiles($data)
 {
-   
+
     var $msg='';
-   
+
     if (typeof $data === 'undefined') {
         $msg=markdown.message.json_error;
         Noty({message:$msg.replace('%s', 'listFiles'),type:'error'});
         return false;
     }
-   
+
     /*<!-- build:debug -->*/
     //if (markdown.settings.debug) console.log($data.count);
     /*<!-- endbuild -->*/
-   
+
     try {
         if ($data.hasOwnProperty('count')) {
             // Display the number of returned files
@@ -181,149 +236,11 @@ function initFiles($data)
         }
         /*<!-- endbuild -->*/
     }
-   
-    try {
-        if ($.isFunction($.fn.jstree)) {
-            // Use jsTree for the display
 
-            $('#TOC').on('changed.jstree', function (e, data) {
+    jstree_init($data);
 
-                if ($('#IMG_BACKGROUND').length) {
-                    $('#IMG_BACKGROUND').remove();
-                }
-
-                var objNode = data.instance.get_node(data.selected);
-
-                if (typeof(objNode.parent)!=="undefined") {
-                    // Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
-                    // and objNode.text the name of the file (f.i. jsTree.md)
-                    /*<!-- build:debug -->*/
-                    if (markdown.settings.debug) {
-                        console.log('Tree - Selected item : ' +objNode.parent+objNode.text);
-                    }
-                    /*<!-- endbuild -->*/
-
-                    var $fname=window.btoa(encodeURIComponent(JSON.stringify(objNode.data.file)));
-
-                    ajaxify({task:objNode.data.task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-                } // if (typeof(objNode.parent)!="undefined")
-
-            }).on('click', '.jstree-anchor', function (e) {
-                $(this).jstree(true).toggle_node(e.target);
-            }).on('keydown.jstree', '.jstree-anchor', function (e) {
-            
-                // @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
-                // If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
-                // Not found a solution...
-                var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
-                console.log('changed.jstree - '+objNode.data.file);
-
-            }).jstree({
-                core: {
-                    animation : 1,
-                    data : $data.tree,
-                    initially_open : ['phtml_1'],    // Automatically open the root node
-                    sort : function (a, b) {
-                        return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
-                    },
-                    themes : {
-                        responsive : 1,
-                        variant : 'small',
-                        stripes : 1
-                    },
-                    types : {
-                        default : { icon : 'folder' },
-                            file : { icon : 'file file-md' },
-                            folder : { icon : 'folder' }
-                    },
-                    plugins : ['state','dnd','sort','types','unique','wholerow']
-                }
-            });
-        } else { // if ($.isFunction($.fn.jstree))
-
-            // jsTree not loaded, use a table
-
-            // Build the table
-            if ($data.hasOwnProperty('results')) {
-                var tbl = document.createElement('table');
-
-                tbl.id="tblFiles";
-                tbl.setAttribute("class","table table-hover table-bordered");
-                tbl.style.width = '100%';
-
-                var tbdy = document.createElement('tbody');
-
-                $.each($data.results, function ($id, $item) {
-
-                    var tr = document.createElement('tr');
-
-                    var td = document.createElement('td');
-                    td.dataset.folder=$item.folder;
-                    td.appendChild(document.createTextNode($item.folder));
-                    tr.appendChild(td);
-
-                    td = document.createElement('td');
-                    td.dataset.file=$item.file;
-                    td.appendChild(document.createTextNode($item.display));
-                    tr.appendChild(td);
-
-                    tbdy.appendChild(tr);
-
-                });
-
-                // The table is now complete, add it into the page
-                tbl.appendChild(tbdy);
-                $('#TOC').html(tbl);
-
-                $('#tblFiles > tbody  > tr > td').click(function (e) {
-
-                    // By clicking on the second column, with the data-file attribute, display the file content
-                    if ($(this).attr('data-file')) {
-                        // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
-                        if ($('#IMG_BACKGROUND').length) {
-                            $('#IMG_BACKGROUND').remove();
-                        }
-
-                        var $fname=window.btoa(encodeURIComponent(JSON.stringify($(this).data('file'))));
-
-                        /*<!-- build:debug -->*/
-                        if (markdown.settings.debug) {
-                            console.log("Show note "+$(this).data('file'));
-                        }
-                        /*<!-- endbuild -->*/
-                        
-                        ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-                        $(this).addClass("selected");
-                    }
-
-                    // By clicking on the first column (with foldername), get the folder name and apply a filter to only display files in that folder
-                    if ($(this).attr('data-folder')) {
-                        // retrieve the name of the folder from data-folder
-                        var $folder=$(this).data('folder').replace('\\','/');
-
-                        /*<!-- build:debug -->*/
-                        if (markdown.settings.debug) {
-                            console.log("Apply filter for "+$folder);
-                        }
-                        /*<!-- endbuild -->*/
-
-                        // Set the value in the search area
-                        addSearchEntry({keyword:$folder});
-                    } // if ($(this).attr('data-folder'))
-
-                }); // $('#tblFiles > tbody  > tr > td').click()
-            } // if($data.hasOwnProperty('results'))
-        } // // if ($.isFunction($.fn.jstree))
-    } catch (err) {
-        console.warn(err.message);
-        /*<!-- build:debug -->*/
-        if (markdown.settings.debug) {
-            Noty({message:err.message, type:'error'});
-        }
-        /*<!-- endbuild -->*/
-    }
-   
    // initialize the search area, thanks to the Flexdatalist plugin
+
     if ($.isFunction($.fn.flexdatalist)) {
         $('.flexdatalist').flexdatalist({
             toggleSelected: true,
@@ -336,7 +253,7 @@ function initFiles($data)
             focusFirstResult:true,
             noResultsText:markdown.message.search_no_result
         });
-   
+
         // Add automatic filtering if defined in the settings.json file
         if (markdown.settings.auto_tags!=='') {
              addSearchEntry({keyword:markdown.settings.auto_tags});
@@ -345,7 +262,7 @@ function initFiles($data)
 
     $('#search').css('width', $('#TDM').width()-5);
     $('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width()-10).show();
-   
+
     // Interface : put the cursor immediatly in the edit box
     try {
         $('#search-flexdatalist').focus();
@@ -366,7 +283,7 @@ function initFiles($data)
         }
         /*<!-- endbuild -->*/
     }
-   
+
     return true;
 
 } // iniFiles()
@@ -390,15 +307,10 @@ function initializeTasks()
             console.warn(err.message);
         }
     }
-   
+
     // Get all DOM objects having a data-task attribute
     $("[data-task]").click(function () {
-      
-        // On the first click, remove the image that is used for the background.  No more needed, won't be displayed anymore
-        if ($('#IMG_BACKGROUND').length) {
-            $('#IMG_BACKGROUND').remove();
-        }
-      
+
         var $task=$(this).data('task');
 
         var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');
@@ -410,14 +322,14 @@ function initializeTasks()
 
         switch ($task) {
             case 'clipboard':
-            
+
                 // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Clipboard -> copy the link of the current note in the clipboard');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 if (typeof Clipboard === 'function') {
                     var clipboard = new Clipboard('*[data-task="clipboard"]');
                     clipboard.on('success', function (e) {
@@ -427,9 +339,9 @@ function initializeTasks()
                     $(this).remove();
                 }
                break;
-            
+
             case 'display':
-            
+
                 // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
@@ -438,34 +350,34 @@ function initializeTasks()
                 /*<!-- endbuild -->*/
                 ajaxify({task:$task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
                break;
-            
+
             case 'edit':
-               
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Edit -> show the editor and the source markdown file)');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});
 
                break;
-            
+
             case 'fullscreen':
-            
+
                 toggleFullScreen();
-                    
+
                break;
-            
+
             case 'link_note':
-            
+
                 // Initialize the Copy into the clipboard button, See https://clipboardjs.com/
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Clipboard -> copy the link of the current note in the clipboard');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 if (typeof Clipboard === 'function') {
                     new Clipboard('*[data-task="link_note"]');
                     Noty({message:markdown.message.copy_link_done, type:'success'});
@@ -473,60 +385,100 @@ function initializeTasks()
                     $(this).remove();
                 }
                break;
-            
+
             case 'pdf':
-            
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('PDF -> generate a pdf rendenring of the note');
                 }
                 /*<!-- endbuild -->*/
-            
-               window.open('index.php?task=pdf&param='+$fname);
-                
+
+                window.open('index.php?task=pdf&param='+$fname);
+
                break;
-            
+
             case 'printer':
                /*<!-- build:debug -->*/
                //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
                /*<!-- endbuild -->*/
                break;
-            
+
+            case 'settings':
+
+                /*<!-- build:debug -->*/
+                if (markdown.settings.debug) {
+                    console.log('Settings');
+                }
+                /*<!-- endbuild -->*/
+
+                ajaxify({task:'clean',callback:'afterClean(data)'});
+
+                break;
+
             case 'slideshow':
-            
+
                 /*<!-- build:debug -->*/
                 //if (markdown.settings.debug) console.log('Slideshow -> open a new tab in the browser and show the markdown in a slideshow format');
                 /*<!-- endbuild -->*/
                 slideshow($fname);
                break;
-            
+
             case 'tag':
-            
+
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
                     console.log('Tag -> filter on ['+$tag+']');
                 }
                 /*<!-- endbuild -->*/
-                
+
                 addSearchEntry({keyword:$tag, reset:true});
                break;
-            
+
             case 'window':
-     
+
                 //if (markdown.settings.debug) console.log('Window -> Open the note in a new window');
                 window.open($fname);
                break;
-            
+
             default :
-            
+
                 console.warn('Sorry, unknown task ['+$task+']');
         } // switch($task)
-     
+
     }); // $("[data-task]").click(function()
 
     return true;
-   
+
 } // function initializeTasks()
+
+function afterClean($data)
+{
+
+    console.log($data);
+
+    if ($data.hasOwnProperty('status')) {
+        $status=$data.status;
+
+        if ($status==1) {
+            Noty({message:$data.msg, type:'success'});
+        } else {
+            Noty({message:$data.msg, type:'error'});
+        }
+    }
+
+    // Empty the localStorage too
+    if (markdown.settings.use_localcache) {
+        try {
+           store.clearAll();
+        } catch (err) {
+            console.warn(err.message);
+        }
+    }
+
+    return;
+
+} // function afterClean
 
 /**
  * If a note contains a link to an another note, use ajax and not normal links
@@ -534,14 +486,14 @@ function initializeTasks()
  */
 function replaceLinksToOtherNotes()
 {
-   
+
     try {
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             console.log('Replace internal links to notes');
         }
         /*<!-- endbuild -->*/
-        
+
         var $text=$('#CONTENT').html();
 
         // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
@@ -571,9 +523,9 @@ function replaceLinksToOtherNotes()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return;
-   
+
 } // replaceLinksToOtherNotes()
 
 /**
@@ -583,9 +535,9 @@ function replaceLinksToOtherNotes()
  */
 function addLinksToTags()
 {
-   
+
     var $text=$('#CONTENT').html();
-   
+
     // markdown.settings.prefix_tag is set by markdown.php and, by default, equal to §
     // Every words prefixed by § will be considered as a tag just like "#word" in social network.
     // The # character is used by markdown language so, use an another one.
@@ -596,15 +548,15 @@ function addLinksToTags()
         // markdown.settings.prefix_tag   Symbol : Match the § character
         // ([a-zA-Z0-9]+)                 Tag    : a word composed of letters and figures, can also contains dot (like ".htaccess")
         // ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
-      
-      
+
+
         var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
             console.log('RegEx for finding tags : '+RegEx);
         }
         /*<!-- endbuild -->*/
-      
+
         var $tags=RegEx.exec($text);
 
         while ($tags!==null) {
@@ -613,12 +565,12 @@ function addLinksToTags()
                 console.log("Process tag "+$tags[0]);
             }
             /*<!-- endbuild -->*/
-         
+
             $sTags=
             (($tags[1]!==undefined)?$tags[1]:'')+                                                                                           // Before the span
             '<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tags[2]+'">'+$tags[2]+'</span>'+  // The span for tagging the word
             (($tags[3]!==undefined)?$tags[3]:'');                                                                                           // After the span
-    
+
             $text=$text.replace(new RegExp($tags[0], "g"), $sTags);
 
             $tags=RegEx.exec($text);
@@ -643,7 +595,7 @@ function forceNewWindow()
     var $currentURL=location.protocol + '//' + location.host;
 
     $('a[href^="http:"], a[href^="https:"]').not('[href^="'+$currentURL+'/"]').attr('target', '_blank');
-    
+
     return true;
 
 } // function forceNewWindow()
@@ -690,7 +642,7 @@ function addIcons()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return true;
 
 } // function addIcons()
@@ -702,11 +654,11 @@ function addIcons()
  */
 function NiceTable()
 {
-   
+
     try {
         $("table").each(function () {
             $(this).addClass('table table-striped table-hover table-bordered');
-         
+
             if ($.isFunction($.fn.DataTable)) {
                 $(this).addClass('display');
                 $(this).DataTable({
@@ -726,9 +678,9 @@ function NiceTable()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return true;
-   
+
 } // function NiceTable()
 
 /**
@@ -755,11 +707,11 @@ function afterDisplay($fname)
             /*<!-- endbuild -->*/
             $('page').linkify();
         }
-      
+
         if (typeof Prism === 'object') {
             Prism.highlightAll();
         }
-      
+
         // If a note contains a link to an another note, use ajax and not normal links
         replaceLinksToOtherNotes();
 
@@ -771,7 +723,7 @@ function afterDisplay($fname)
 
         // Add icons to .pdf, .xls, .doc, ... hyperlinks
         addIcons();
-      
+
         // Make table nicer
         NiceTable();
 
@@ -816,7 +768,7 @@ function afterDisplay($fname)
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     // Just for esthetics purposes
     $('#CONTENT').fadeOut(1).fadeIn(3);
 
@@ -832,10 +784,10 @@ function afterDisplay($fname)
  */
 function afterEdit($fname)
 {
-   
+
    // Create the Simple Markdown Editor
    // @link https://github.com/NextStepWebs/simplemde-markdown-editor
-   
+
     var simplemde = new SimpleMDE({
         autoDownloadFontAwesome:false,
         autofocus:true,
@@ -880,16 +832,16 @@ function afterEdit($fname)
          "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule"
         ] // toolbar
     });
-   
+
     $('.editor-toolbar').addClass('fa-2x');
-    
+
     /*
      var editor = new Editor({
        element: document.getElementById("sourceMarkDown")
      });
     */
     return true;
-   
+
 } // function afterEdit()
 
 /**
@@ -901,7 +853,7 @@ function afterEdit($fname)
  */
 function buttonSave($fname, $markdown)
 {
-   
+
     var $data = {};
     $data.task  = 'save';
     $data.param = $fname;
@@ -917,9 +869,9 @@ function buttonSave($fname, $markdown)
             Noty({message:data.status.message, type:(data.status.success==1?'success':'error')});
         }
     }); // $.ajax()
-   
+
     return true;
-   
+
 } // function buttonSave()
 
 /**
@@ -929,7 +881,7 @@ function buttonSave($fname, $markdown)
  */
 function buttonEncrypt(editor)
 {
-   
+
     var cm = editor.codemirror;
     var output = '';
     var selectedText = cm.getSelection();
@@ -937,7 +889,7 @@ function buttonEncrypt(editor)
 
     output = '<encrypt>' + text + '</encrypt>';
     cm.replaceSelection(output);
-   
+
 } // function buttonEncrypt()
 
 /**
@@ -975,14 +927,14 @@ function onChangeSearch()
     } catch (err) {
         console.warn(err.message);
     }
-   
+
     return true;
 
 } // Search()
 
 /*
  * Called when the ajax request "onChangeSearch" has been successfully fired.
- * Process the result of the search : the returned data is a json string that represent an 
+ * Process the result of the search : the returned data is a json string that represent an
  * array of files that matched the searched pattern.
  */
 function afterSearch($keywords, $data)
@@ -992,17 +944,18 @@ function afterSearch($keywords, $data)
         // Check if we've at least one file
         if (Object.keys($data).length>0) {
             if ($.isFunction($.fn.jstree)) {
+
                 // Get the list of files returned by the search : these files have matched th keyword
                 $files=$data.files;
-            
+
                 // Use jsTree : iterate and get every node full path which is, in fact, a filename
                 // For instance /aesecure/todo/a_note.md
-           
+
                 $filename='';
-            
+
                 $('#TOC').jstree('open_all');
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
-               
+
                     $filename=$("#TOC").jstree(true).get_path(element, markdown.settings.DS);  // DIRECTORY_SEPARATOR
 
                     // It's a file, not a folder : hide it
@@ -1011,24 +964,29 @@ function afterSearch($keywords, $data)
                     }
 
                     // Get the node associated filename
-           
-                    if ($filename!=='') {
+
+                    if ($filename!=='')
+                    {
                         // Now, check if the file is mentionned in the result, if yes, show the row back
 
-                        $.each($files, function ($key, $value) {
-               
-                            if ($value===$filename+'.md') {
-                                if ($(element).hasClass('jstree-leaf')) {
+                        $.each($files, function ($key, $value)
+                        {
+
+                            if ($(element).hasClass('jstree-leaf'))
+                            {
+                                if ($value===$filename+'.md')
+                                {
                                     $(element).addClass('highlight').show();
-                           
+
                                     // Automatically open the node (and parents if needed) and select the node
                                     $('#TOC').jstree('select_node',element);
                                 }
-                                return false;  // break
+                               // return false;  // break
                             }
+
                         }); // $.each($files)
                     } // if ($filename!=='')
-               
+
                 }); // $.each($("#TOC").jstree('full')
 
                 // -------------------------------------------------
@@ -1039,28 +997,30 @@ function afterSearch($keywords, $data)
                 //
                 // Idea is to keep the treeview the most compact as possible (if a root node contains 20 children,
                 // with children too, ... and no files have been selected so just close the rood node immediatly)
-            
+
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
-                      // If the node was not selected (i.e. has the "highlight" class), close the node
+                    // If the node was not selected (i.e. has the "highlight" class), close the node
                     if (!$(element).hasClass('highlight')) {
-                        $('#TOC').jstree('close_node',element);
+                           $('#TOC').jstree('hide_node',element);
                     }
                 });
 
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
-                      // Now, for each node with the "highlight" class, be sure that each parents are opened
+
+                    // Now, for each node with the "highlight" class, be sure that each parents are opened
                     if ($(element).hasClass('highlight')) {
                         $("#TOC").jstree('open_node', element, function (e,d) {
                             for (var i = 0; i < e.parents.length; i++) {
-                                $("#TOC").jstree('open_node', e.parents[i]);
+                                $("#TOC").jstree('show_node', e.parents[i]);
                             }
                         });
                     } // if($(element).hasClass('highlight'))
                 });
+
                 //
                 // -------------------------------------------------
             } else { // if ($.isFunction($.fn.jstree)){
-  
+
                 // Process every rows of the tblFiles array => process every files
                 $('#tblFiles > tbody  > tr > td').each(function () {
 
@@ -1093,17 +1053,17 @@ function afterSearch($keywords, $data)
             } else { // if ($keywords!=='')
 
                 // show everything back
-            
+
                 if ($.isFunction($.fn.jstree)) {
                     // jsTree plugin
                     $.each($('#TOC').jstree('full').find("li"), function (index, element) {
                         $(element).removeClass('highlight').show();
                     }); // $.each($("#TOC").jstree('full')
-               
+
                     // And show the entire tree
                     $('#TOC').jstree('open_all');
                 } else { //  if ($.isFunction($.fn.jstree))
-               
+
                     $('#tblFiles > tbody  > tr > td').each(function () {
                         if ($(this).attr('data-file')) {
                             $(this).parent().show();
@@ -1135,7 +1095,7 @@ function afterSearch($keywords, $data)
  */
 function slideshow($fname)
 {
-     
+
     try {
         var $data = {};
         $data.task  = 'slideshow';
@@ -1163,7 +1123,7 @@ function slideshow($fname)
         console.warn(err.message);
     }
     return true;
-  
+
 } // function slideshow()
 
 /**
@@ -1176,7 +1136,7 @@ function slideshow($fname)
  */
 function Noty($params)
 {
-   
+
     if ($.isFunction($.fn.noty)) {
         if ($params.message==='') {
             return false;
@@ -1193,84 +1153,5 @@ function Noty($params)
             type: $type
         }); // noty()
     }
-   
+
 } // function Noty()
-
-/**
- * Toggle fullscreen
- * @link http://stackoverflow.com/a/23971798
- */
-function isFullScreen()
-{
-    return (document.fullScreenElement && document.fullScreenElement !== null) || document.mozFullScreen || document.webkitIsFullScreen;
-} // function isFullScreen()
-
-function requestFullScreen(element)
-{
-    if (element.requestFullscreen) {
-        element.requestFullscreen();
-    } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-    }
-} // function requestFullScreen()
-
-function exitFullScreen()
-{
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    }
-} // function exitFullScreen()
-
-/**
- * Toggle fullscreen mode Y/N
- * @param {type} element    DOM element
- * @returns boolean
- */
-function toggleFullScreen(element)
-{
-   
-   // Hide (or show it again) the treeview and the search engine i.e. everything at the left side
-    $('#TDM').toggleClass('hidden');
-
-   // Give the content part the full width (or give it back its original width)
-    $('#CONTENT').parent().toggleClass('fullwidth');
-
-   // Hide all buttons (or show it again) except icon_fullscreen
-    $('#icons').children('i').each(function () {
-        if ((this.id!=='icon_fullscreen')&&(this.id!=='icon_refresh')&&(this.id!=='icon_edit')) {
-            $(this).toggleClass('hidden');
-        }
-    });
-
-    if (!isFullScreen()) {
-        // Not yet fullscreen.  Get the max height to the content area
-      
-        $('#CONTENT').css('max-height', screen.height);
-        $('#CONTENT').css('min-height', screen.height);
-      
-        // And active the fullscreen mode
-        requestFullScreen(element || document.documentElement);
-    } else { // if (!isFullScreen())
-      
-        // Reinitialize the height of the content area
-        $('#CONTENT').css('max-height', $(window).height()-10);
-        $('#CONTENT').css('min-height', $(window).height()-10);
-      
-        // And exit the fullscreen mode
-        exitFullScreen();
-    } // if (!isFullScreen())
-   
-    return true;
-   
-} // function toggleFullScreen()
-
