@@ -22,8 +22,10 @@
     },
     "page": {
         "google_font": "",
-        "img_maxwidth": 800
+        "img_maxwidth": 800,
+        "robots":"noindex, nofollow"
     },
+    "site_name":"Markdown | An Open Source notes management tool",
     "tags": [],
     "templates": {
         "screen": "screen",
