@@ -244,6 +244,7 @@ class Display
                                 } // if (preg_match)
 
                             } // if (strpos)
+
                             fwrite($handle, $content);
 
                             fclose($handle);

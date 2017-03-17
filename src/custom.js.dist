@@ -5,7 +5,7 @@
 
 /**
  * The custominiFiles() function is called when the php script has finished to retrieve the list of files.
- *  
+ *
  * This function has no return value
  */
 function custominiFiles() {
@@ -18,9 +18,9 @@ function custominiFiles() {
  * line will put the heading one in red.
  *
  * With jQuery, you can easily target objects and add classes, change css on-the-fly, ...
- * 
+ *
  * @param {string} $filename   Fully qualified filename (on the Operating system)
- * 
+ *
  * This function has no return value
  */
 function customafterDisplay($filename) {
@@ -29,7 +29,7 @@ function customafterDisplay($filename) {
 
 /**
  * Called when the user has type a keyword in the search engine and before that the search is fired
- * 
+ *
  * @param {string} $keywords   The searched pattern
  * @returns {Boolean}        True : the search can be done, False : the search will be cancelled
  */
@@ -41,10 +41,10 @@ function customonChangeSearch($keywords) {
 /**
  * Called once the search event has been fired and once the list has been restricted to display only
  * matched notes
- * 
+ *
  * @param {string} $keywords  The searched pattern
- * @param {array} $data       Array with the list of files matching that 
- * 
+ * @param {array} $data       Array with the list of files matching that
+ *
  *  This function has no return value
  */
 function customafterSearch($keywords, $data) {

@@ -19,14 +19,14 @@ class Clean
      */
     public static function Run()
     {
-             
+
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.html', $aeSettings->getFolderDocs(true)));
 
         $arrDebug=array();
-        
+
         if (count($arrFiles)>0) {
             foreach ($arrFiles as $file) {
                 /*<!-- build:debug -->*/
@@ -39,7 +39,7 @@ class Clean
                 }
             }
         } else { // if(count($arrFiles)>0)
-            
+
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
                 $arrDebug['debug'][]='There are no .html files in '.$aeSettings->getFolderDocs(false);
@@ -57,7 +57,7 @@ class Clean
             )),
             $arrDebug
         );
-        
+
         die();
     } // function Run()
 } // class Clean

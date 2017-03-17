@@ -15,7 +15,7 @@ class Save
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $return=array();
-      
+
         if (!$aeSettings->getEditAllowed()) {
             $return=array('status'=>array('success'=>0,'message'=>$aeSettings->getText('no_save_allowed', 'Error, saving notes isn&#39;t allowed')));
         } else { // if (!$aeSettings->getEditAllowed())
@@ -59,7 +59,7 @@ class Save
             $return['status']=$status;
             $return['filename']=$fullname;
         } // if (!$aeSettings->getEditAllowed())
-        
+
         header('Content-Type: application/json');
         echo json_encode($return, JSON_PRETTY_PRINT);
         die();

@@ -7,7 +7,7 @@
 #tblFiles  > tbody > tr:nth-child(even) .selected {background-color:rgb(166, 215, 133);color:#615454;}
 */
 
-/* How to display the name of the file in the content page (displayed as the first line) ? */         
+/* How to display the name of the file in the content page (displayed as the first line) ? */
 /*.filename{font-style:italic;font-weight:bold;color:lightgray;}*/
 
 /* body { background:rgba(183, 141, 56, 0.32); } */

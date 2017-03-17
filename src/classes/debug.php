@@ -32,19 +32,21 @@ class Debug
         ini_set("display_startup_errors", "1");
         ini_set("html_errors", "1");
         ini_set("docref_root", "http://www.php.net/");
-        ini_set("error_prepend_string", "<div style='color:black;'."
-           . "'font-family:verdana;border:1px solid red; padding:5px;'>");
+        ini_set(
+            "error_prepend_string", "<div style='color:black;'."
+            . "'font-family:verdana;border:1px solid red; padding:5px;'>"
+        );
         ini_set("error_append_string", "</div>");
         error_reporting(E_ALL);
 
         return true;
     } // function enable()
 
-   /**
+    /**
     * Return the current URL
     *
-    * @param type $use_forwarded_host
-    * @param type $bNoScriptName    If FALSE, only return the URL and folders name
+    * @param  type $use_forwarded_host
+    * @param  type $bNoScriptName      If FALSE, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
     *                               but no script name (f.i. remove index.php and parameters if any)
     * @return type string
     */
