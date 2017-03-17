@@ -29,10 +29,10 @@ define('APP_NAME', 'Notes management');
 
    // No timeout please
    set_time_limit(0);
-
-   require_once __DIR__.'/classes/functions.php';
-   require_once __DIR__.'/classes/markdown.php';
-
+   
+   require_once(__DIR__.'/classes/functions.php');
+   require_once(__DIR__.'/classes/markdown.php');
+   
    $task=\AeSecure\Functions::getParam('task', 'string', 'main', false);
 
    // Create an instance of the class and initialize the rootFolder variable (type string)

@@ -4,6 +4,7 @@ namespace AeSecureMDTasks;
 
 /**
 * Return the HTML rendering of a .md file
+*
 */
 
 class Display
@@ -16,20 +17,11 @@ class Display
             $params['filename'].='.md';
         }
 
-
-        if (!class_exists('Debug')) {
-            include_once dirname(dirname(__FILE__)).'/debug.php';
-        }
-
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
-        $fullname=str_replace(
-            '/', DIRECTORY_SEPARATOR, utf8_decode(
-                $aeSettings->getFolderDocs(true).
-                ltrim($params['filename'], DS)
-            )
-        );
+        $fullname=str_replace('/', DIRECTORY_SEPARATOR, utf8_decode($aeSettings->getFolderDocs(true).
+           ltrim($params['filename'], DS)));
 
         if (!file_exists($fullname)) {
             echo str_replace(
@@ -86,28 +78,25 @@ class Display
         // Open new window icon
         if ($aeSettings->getSaveHTML()) {
             $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).
-            '" class="fa fa-external-link" aria-hidden="true" title="'.$aeSettings->getText('open_html', 'Open in a new window').'"></i>';
+               '" class="fa fa-external-link" aria-hidden="true" title="'.$aeSettings->getText('open_html', 'Open in a new window').'"></i>';
         }
 
         // Edit icon : only if an editor has been defined
         if ($aeSettings->getEditAllowed()) {
             $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" '.
-            'title="'.$aeSettings->getText('edit_file', 'Edit').'" data-file="'.$params['filename'].'"></i>';
+               'title="'.$aeSettings->getText('edit_file', 'Edit').'" data-file="'.$params['filename'].'"></i>';
         }
 
         // Call the Markdown parser (https://github.com/erusev/parsedown)
         $lib=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
         if (!file_exists($lib)) {
-            self::ShowError(
-                str_replace(
-                    '%s',
-                    '<strong>'.$lib.'</strong>',
-                    $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
-                ), true
-            );
+            self::ShowError(str_replace(
+                '%s',
+                '<strong>'.$lib.'</strong>',
+                $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+            ), true);
         }
-
-        include_once $lib;
+        require_once($lib);
         $Parsedown=new \Parsedown();
         $html=$Parsedown->text($markdown);
 
@@ -118,8 +107,8 @@ class Display
 
         /*$matches = array();
 
-        preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
-        // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+       preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
+       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
 
         if (count($matches[1])>0) self::StoreTags($matches[1]);*/
 
@@ -155,10 +144,8 @@ class Display
                         $i=0;
 
                         for ($i; $i<$j; $i++) {
-                            $tmp=str_replace(
-                                $matches[0][$i], '<strong class="confidential">'.
-                                $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp
-                            );
+                            $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.
+                               $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp);
                         }
                     }
 
@@ -173,27 +160,27 @@ class Display
                     foreach ($arr as $head)
                     {
 
-                        try {
-                            preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $tmp, $matches);
-                            if (count($matches[1])>0) {
+                    	try {
+                    		preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $tmp, $matches);
+                    		if (count($matches[1])>0) {
 
-                                $i=0;
+                    			$i=0;
 
-                                $goTop='<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>';
+                    			$goTop='<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>';
 
-                                foreach ($matches[1] as $key=>$value)
-                                {
-                                    $i+=1;
-                                    $tmp=str_replace('<'.$head.'>'.$value.'</'.$head.'>', $goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>', $tmp);
-                                }
-                            }
-                        } catch (Exception $e) {
-                        } // try
+                    			foreach ($matches[1] as $key=>$value)
+                    			{
+                    				$i+=1;
+                    				$tmp=str_replace('<'.$head.'>'.$value.'</'.$head.'>',$goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>',$tmp);
+                    			}
+                    		}
+                    	} catch (Exception $e) {
+                    	} // try
                     } // foreach
 
                     // Add css to bullets
-                    $tmp=str_replace('<ul>', '<ul class="fa-ul">', $tmp);
-                    $tmp=str_replace('<li>', '<li><i class="fa-li fa fa-check"></i>', $tmp);
+                    $tmp=str_replace('<ul>','<ul class="fa-ul">',$tmp);
+                    $tmp=str_replace('<li>','<li><i class="fa-li fa fa-check"></i>',$tmp);
 
                     if ($handle = fopen($fnameHTML, 'w+')) {
                         // Try to find a heading 1 and if so use that text for the title tag of the generated page
@@ -208,48 +195,21 @@ class Display
                         } catch (Exception $e) {
                         }
 
-                        // ***********************************************************************************
-                        //
-                        // Create the HTML rendering on the disk
-
                         if (\AeSecure\Files::fileExists($template = $aeSettings->getTemplateFile('html'))) {
-
                             $content=file_get_contents($template);
 
                             // Write the file but first replace variables
                             $content=str_replace('%TITLE%', $title, $content);
                             $content=str_replace('%CONTENT%', $tmp, $content);
-                            $content=str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $content);
-                            $content=str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $content);
                             $content=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(false, true), $content);
 
                             // Perhaps a Google font should be used.
                             $sFont=$aeSettings->getPageGoogleFont(true);
                             $content=str_replace('<!--%FONT%-->', $sFont, $content);
 
-                            // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
-
-                            if (strpos($content, '%URL_IMG%')!==false) {
-
-                                // Retrieve the first image in the html
-                                $matches=array();
-                                if (preg_match('/<img *src *= *[\'|"]([^\'|"]*)/', $tmp, $match)) {
-
-                                    if(count($match)>0) {
-                                        $url_img=$match[1];
-                                    }
-
-                                    $content=str_replace('%URL_IMG%', $url_img, $content);
-
-                                } // if (preg_match)
-
-                            } // if (strpos)
-
-
                             fwrite($handle, $content);
 
                             fclose($handle);
-
                         }
                     } // if ($handle = fopen($fname,'w+'))
                 } // if (!file_exists($fname))
@@ -317,15 +277,15 @@ class Display
         //$thisNote=str_replace(Functions::getCurrentURL(FALSE,TRUE),'',$thisNote);
 
         $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
-          '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'"></i>'.
-          '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.$aeSettings->getText('refresh', 'Refresh', true).'"></i>'.
-          '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'"></i>'.
-          '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'"></i>'.
-          '<i id="icon_pdf" data-task="pdf" data-file="'.$params['filename'].'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
-          '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
-          '<i id="icon_slideshow" data-task="slideshow" data-file="'.$params['filename'].'" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
-          $icons.
-          '<i id="icon_settings_clear" data-task="settings" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
+            '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'"></i>'.
+            '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.$aeSettings->getText('refresh', 'Refresh', true).'"></i>'.
+            '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'"></i>'.
+            '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'"></i>'.
+            '<i id="icon_pdf" data-task="pdf" data-file="'.$params['filename'].'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
+            '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
+            '<i id="icon_slideshow" data-task="slideshow" data-file="'.$params['filename'].'" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
+            $icons.
+            '<i id="icon_settings_clear" data-task="settings" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
         '</div>';
 
         $html=$toolbar.'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
