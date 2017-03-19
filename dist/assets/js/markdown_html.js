@@ -1,42 +1,9 @@
-$("document").ready(function () {
-
-    // Be sure that images are not bigger than the max size (class fullimg)
-    // And add special class : hidden-xs and hidden-sm so images are hidden on smartphones
-
-    $("img").addClass("fullimg hidden-xs hidden-sm");
-
-    addToc();
-
-});
-
-function addTOC()
-{
-
-    /*@url : https://css-tricks.com/automatic-table-of-contents/ */
-
-    var ToC =
-        "<nav role='navigation' class='table-of-contents hidden-xs hidden-sm'>" +
-        "<h2>Sur cette page:</h2>" +
-        "<ul>";
-
-    var newLine, el, title, link;
-
-    $("article h2").each(function () {
-
-        el = $(this);
-        title = el.text();
-        link = "#" + el.attr("id");
-
-        newLine = "<li><a href='" + link + "'>" + title + "</a></li>";
-
-        ToC += newLine;
-
-    });
-
-    ToC += "</ul></nav>";
-
-    $("article").prepend(ToC);
-
-} // function addTOC()
-C()
-
+/**
+* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
+* @version   : 1.0.5
+* @author    : christophe@aesecure.com
+* @license   : MIT
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-03-19T09:46:49.514Z
+*/
+function addTOC(){var a,e,d,n,i="<nav role='navigation' class='table-of-contents hidden-xs hidden-sm'><h2>Sur cette page:</h2><ul>";$("article h2").each(function(){e=$(this),d=e.text(),n="#"+e.attr("id"),a="<li><a href='"+n+"'>"+d+"</a></li>",i+=a}),i+="</ul></nav>",$("article").prepend(i)}$("document").ready(function(){$("img").addClass("fullimg hidden-xs hidden-sm"),addToc()}),C();

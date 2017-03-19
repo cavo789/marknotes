@@ -1,4 +1,13 @@
 <?php
+/**
+* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
+* @version   : 1.0.5
+* @author    : christophe@aesecure.com
+* @license   : MIT
+* @url       : https://github.com/cavo789/markdown
+* @package   : 2017-03-19T09:46:49.524Z
+*/?>
+<?php
 
 namespace AeSecureMDTasks;
 

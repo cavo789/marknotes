@@ -221,7 +221,7 @@ class Settings
 
     public function getDebugMode() : bool
     {
-        return $this->debugmode;
+        return $this->debugmode ? true : false;
     } // function getDebugMode()
 
     public function setDebugMode(bool $onOff)
@@ -244,7 +244,7 @@ class Settings
 
     public function getDevMode() : bool
     {
-        return $this->devmode;
+        return $this->devmode ? true : false;
     } // function getDevMode()
     /**
      * Set the developper mode
