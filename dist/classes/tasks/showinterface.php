@@ -1,14 +1,5 @@
 <?php
 /**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.436Z
-*/?>
-<?php
-/**
 * Get the main interface of the application
 *
 * @return string  html content
@@ -18,15 +9,20 @@ namespace AeSecureMDTasks;
 
 class ShowInterface
 {
-    
+
     public static function Run()
     {
-        
+
         $aeSettings=\AeSecure\Settings::getInstance();
-        $aeDebug=\AeSecure\Debug::getInstance();
         
+        if (!class_exists('Debug')) {
+            include_once dirname(dirname(__FILE__)).'/debug.php';
+        }
+
+        $aeDebug=\AeSecure\Debug::getInstance();
+
         $html=file_get_contents($aeSettings->getTemplateFile('screen'));
-         
+
         // replace variables
 
         if ($aeSettings->getOptimisationUseCache()) {
@@ -37,7 +33,7 @@ class ShowInterface
         } else {
             $html=str_replace('<!--%META_CACHE%-->', '', $html);
         }
-         
+
         $html=str_replace('%APP_NAME%', $aeSettings->getAppName(), $html);
         $html=str_replace('%APP_VERSION%', $aeSettings->getAppName(true), $html);
 
@@ -87,8 +83,9 @@ class ShowInterface
         "markdown.settings.language='".$aeSettings->getLanguage()."';\n".
         "markdown.settings.lazyload=".$aeSettings->getOptimisationLazyLoad().";\n".
         "markdown.settings.prefix_tag='".$aeSettings->getPrefixTag()."';\n".
-        "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";";
-         
+        "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
+        "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
+
         $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
 
         // if any, output the code for the Google Font (see settings.json)
@@ -102,7 +99,7 @@ class ShowInterface
         if ($aeSettings->getOptimisationLazyLoad()) {
             $AdditionnalJS='<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
         }
-         
+
         $html=str_replace('<!--%ADDITIONNAL_JS%-->', $AdditionnalJS, $html);
 
         // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js

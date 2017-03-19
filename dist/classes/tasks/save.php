@@ -1,13 +1,4 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.434Z
-*/?>
-<?php
 
 namespace AeSecureMDTasks;
 
@@ -24,7 +15,7 @@ class Save
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $return=array();
-      
+
         if (!$aeSettings->getEditAllowed()) {
             $return=array('status'=>array('success'=>0,'message'=>$aeSettings->getText('no_save_allowed', 'Error, saving notes isn&#39;t allowed')));
         } else { // if (!$aeSettings->getEditAllowed())
@@ -68,7 +59,7 @@ class Save
             $return['status']=$status;
             $return['filename']=$fullname;
         } // if (!$aeSettings->getEditAllowed())
-        
+
         header('Content-Type: application/json');
         echo json_encode($return, JSON_PRETTY_PRINT);
         die();

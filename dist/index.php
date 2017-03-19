@@ -1,13 +1,4 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.349Z
-*/?>
-<?php
 /* REQUIRES PHP 7.x AT LEAST */
 namespace AeSecure;
 
@@ -38,10 +29,10 @@ define('APP_NAME', 'Notes management');
 
    // No timeout please
    set_time_limit(0);
-   
-   require_once(__DIR__.'/classes/functions.php');
-   require_once(__DIR__.'/classes/markdown.php');
-   
+
+   require_once __DIR__.'/classes/functions.php';
+   require_once __DIR__.'/classes/markdown.php';
+
    $task=\AeSecure\Functions::getParam('task', 'string', 'main', false);
 
    // Create an instance of the class and initialize the rootFolder variable (type string)

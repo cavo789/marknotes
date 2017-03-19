@@ -24,7 +24,9 @@ class Display
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $fullname=str_replace(
-            '/', DIRECTORY_SEPARATOR, utf8_decode(
+            '/',
+            DIRECTORY_SEPARATOR,
+            utf8_decode(
                 $aeSettings->getFolderDocs(true).
                 ltrim($params['filename'], DS)
             )
@@ -102,7 +104,8 @@ class Display
                     '%s',
                     '<strong>'.$lib.'</strong>',
                     $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
-                ), true
+                ),
+                true
             );
         }
         include_once $lib;
@@ -154,8 +157,10 @@ class Display
 
                         for ($i; $i<$j; $i++) {
                             $tmp=str_replace(
-                                $matches[0][$i], '<strong class="confidential">'.
-                                $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp
+                                $matches[0][$i],
+                                '<strong class="confidential">'.
+                                $aeSettings->getText('confidential', 'confidential').'</strong>',
+                                $tmp
                             );
                         }
                     }
@@ -168,19 +173,15 @@ class Display
                     $matches=array();
                     $arr=array('h2','h3');
 
-                    foreach ($arr as $head)
-                    {
-
+                    foreach ($arr as $head) {
                         try {
                             preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $tmp, $matches);
                             if (count($matches[1])>0) {
-
                                 $i=0;
 
                                 $goTop='<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>';
 
-                                foreach ($matches[1] as $key=>$value)
-                                {
+                                foreach ($matches[1] as $key => $value) {
                                     $i+=1;
                                     $tmp=str_replace('<'.$head.'>'.$value.'</'.$head.'>', $goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>', $tmp);
                                 }
@@ -212,7 +213,6 @@ class Display
 
 
                         if (\AeSecure\Files::fileExists($template = $aeSettings->getTemplateFile('html'))) {
-
                             $content=file_get_contents($template);
 
 
@@ -230,19 +230,15 @@ class Display
                             // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
 
                             if (strpos($content, '%URL_IMG%')!==false) {
-
                                 // Retrieve the first image in the html
                                 $matches=array();
                                 if (preg_match('/<img *src *= *[\'|"]([^\'|"]*)/', $tmp, $match)) {
-
-                                    if(count($match)>0) {
+                                    if (count($match)>0) {
                                         $url_img=$match[1];
                                     }
 
                                     $content=str_replace('%URL_IMG%', $url_img, $content);
-
                                 } // if (preg_match)
-
                             } // if (strpos)
 
                             fwrite($handle, $content);
@@ -341,6 +337,5 @@ class Display
         echo $html;
 
         return;
-
     } // function Run()
 } // class Display

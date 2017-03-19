@@ -1,13 +1,4 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.428Z
-*/?>
-<?php
 
 namespace AeSecureMDTasks;
 
@@ -28,14 +19,14 @@ class Clean
      */
     public static function Run()
     {
-             
+
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.html', $aeSettings->getFolderDocs(true)));
 
         $arrDebug=array();
-        
+
         if (count($arrFiles)>0) {
             foreach ($arrFiles as $file) {
                 /**/
@@ -44,7 +35,7 @@ class Clean
                 }
             }
         } else { // if(count($arrFiles)>0)
-            
+
             /**/
         } // if(count($arrFiles)>0)
 
@@ -58,7 +49,7 @@ class Clean
             )),
             $arrDebug
         );
-        
+
         die();
     } // function Run()
 } // class Clean

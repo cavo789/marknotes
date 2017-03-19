@@ -68,7 +68,8 @@ class AddOrRename
                                 'action'=>'create',
                                 'type'=>$params['type'],
                                 'msg'=>$msg
-                            ), $arrDebug
+                            ),
+                            $arrDebug
                         );
                     } else { // if (is_dir($params['newname']))
 
@@ -84,7 +85,8 @@ class AddOrRename
                                 'action'=>'create',
                                 'type'=>$params['type'],
                                 'msg'=>$msg
-                            ), $arrDebug
+                            ),
+                            $arrDebug
                         );
                     } // if (is_dir($params['newname']))
                 } catch (Exception $ex) {
@@ -94,7 +96,8 @@ class AddOrRename
                             'action'=>'create',
                             'type'=>$params['type'],
                             'msg'=>$ex->getMessage()
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } // try
             } elseif (\AeSecure\Files::folderExists(utf8_decode($params['oldname']))) {
@@ -115,7 +118,8 @@ class AddOrRename
                             'action'=>'rename',
                             'type'=>$params['type'],
                             'msg'=>$msg
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } else { // if (is_dir($params['newname']))
 
@@ -131,7 +135,8 @@ class AddOrRename
                             'action'=>'rename',
                             'type'=>$params['type'],
                             'msg'=>$msg
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } // if (is_dir($params['newname']))
             }
@@ -211,7 +216,8 @@ class AddOrRename
                             'action'=>'rename',
                             'type'=>$params['type'],
                             'msg'=>$msg
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } else { // if (is_dir($params['newname']))
 
@@ -227,7 +233,8 @@ class AddOrRename
                             'action'=>'rename',
                             'type'=>$params['type'],
                             'msg'=>$msg
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } // if (is_dir($params['newname']))
             }

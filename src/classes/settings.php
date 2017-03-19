@@ -447,7 +447,6 @@ class Settings
                         }
                         $return.='</style>';
                     } // if ($font!=='')
-
                 } else { // if ($css===true)
                     $return = $font;
                 } // if ($css===true)
@@ -493,7 +492,6 @@ class Settings
         }
 
         return $return;
-
     } // function getPageRobots()
 
     /**

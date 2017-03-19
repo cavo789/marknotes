@@ -1,26 +1,17 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.387Z
-*/?>
-<?php
 // -------------------------------------------------------------------------------------------------------------------------
-// 
+//
 // Can be overwritten in settings.json
 
 // Folder in this application where .md files are stored
 // Can be override : settings.json->folder (string, name of the folder)
 define('DOC_FOLDER', 'docs');
 
-// Does a HTML version of the visualized note should be stored on the disk ? 
+// Does a HTML version of the visualized note should be stored on the disk ?
 // Can be override : settings.json->export->save_html (boolean, 0 or 1)
 define('OUTPUT_HTML', true);
 
-// Can be override : settings.json->editor 
+// Can be override : settings.json->editor
 define('EDITOR', false); // enable online editing or not
 
 define('DEFAULT_LANGUAGE', 'en');

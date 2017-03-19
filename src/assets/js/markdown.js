@@ -1,4 +1,3 @@
-
 /* global markdown, custominiFiles, customafterDisplay, customafterSearch */
 
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
@@ -8,14 +7,14 @@ var QueryString = function () {
     var query_string = {};
     var query = window.location.search.substring(1);
     var vars = query.split("&");
-    for (var i=0; i<vars.length; i++) {
+    for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split("=");
         // If first entry with this name
         if (typeof query_string[pair[0]] === "undefined") {
             query_string[pair[0]] = decodeURIComponent(pair[1]);
             // If second entry with this name
         } else if (typeof query_string[pair[0]] === "string") {
-            var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+            var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
             query_string[pair[0]] = arr;
             // If third or later entry with this name
         } else {
@@ -28,7 +27,7 @@ var QueryString = function () {
 // http://stackoverflow.com/a/11247412
 // Check if an array contains a specific value
 Array.prototype.contains = function (v) {
-    for (var i=0; i < this.length; i++) {
+    for (var i = 0; i < this.length; i++) {
         if (this[i] === v) {
             return true;
         }
@@ -48,32 +47,40 @@ Array.prototype.unique = function () {
 
 // http://stackoverflow.com/a/2593661/1065340
 RegExp.quote = function (str) {
-    return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+    return (str + '').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
 };
 
 $(document).ready(function () {
 
     // On page entry, get the list of .md files on the server
-    Noty({message:markdown.message.loading_tree, type:'info'});
-    ajaxify({task:'listFiles',dataType:'json',callback:'initFiles(data)',useStore:markdown.settings.use_localcache});
+    Noty({
+        message: markdown.message.loading_tree,
+        type: 'info'
+    });
+    ajaxify({
+        task: 'listFiles',
+        dataType: 'json',
+        callback: 'initFiles(data)',
+        useStore: markdown.settings.use_localcache
+    });
 
     // Size correctly depending on screen resolution
-    $('#TDM').css('max-height', $(window).height()-30);
-    $('#TDM').css('min-height', $(window).height()-30);
+    $('#TDM').css('max-height', $(window).height() - 30);
+    $('#TDM').css('min-height', $(window).height() - 30);
 
     // Maximise the width of the table of contents i.e. the array with the list of files
     //$('#TOC').css('width', $('#TDM').width()-5);
     //$('#search').css('width', $('#TDM').width()-5);
 
-    $('#CONTENT').css('max-height', $(window).height()-10);
-    $('#CONTENT').css('min-height', $(window).height()-10);
+    $('#CONTENT').css('max-height', $(window).height() - 10);
+    $('#CONTENT').css('min-height', $(window).height() - 10);
     //$('#CONTENT').css('width', $('#CONTENT').width()-5);
 
     // When the user will exit the field, call the onChangeSearch function to fire the search
     $('#search').change(function (e) {
         $('#TOC').jstree(true).show_all();
         $('#TOC').jstree('search', $(this).val());
-   //     onChangeSearch();
+        //     onChangeSearch();
     });
 
 }); // $( document ).ready()
@@ -95,33 +102,34 @@ function ajaxify($params)
     $data.param = (typeof $params.param === 'undefined') ? '' : $params.param;
 
     // Allow to use the navigator's localStorage ? By default, get the settings
-    var $useStore=markdown.settings.use_localcache;
+    var $useStore = markdown.settings.use_localcache;
 
     // Then, if allowed, check the useStore parameter, if specified, get it's value.
-    if ($useStore && (typeof $params.useStore !== 'undefined')) $useStore=$params.useStore;
+    if ($useStore && (typeof $params.useStore !== 'undefined')) {
+        $useStore = $params.useStore;
+    }
 
     var $bAjax = true;
 
-    if ($useStore)
-    {
+    if ($useStore) {
         // Using the cache system provided by store.js
 
-        try  {
-            if (typeof store.get('task_'+$data.task)!=='undefined') {
-                $bAjax=false;
-                data=store.get('task_'+$data.task);
+        try {
+            if (typeof store.get('task_' + $data.task) !== 'undefined') {
+                $bAjax = false;
+                data = store.get('task_' + $data.task);
                 /*<!-- build:debug -->*/
-                if (markdown.settings.debug) console.log('Using localStorage to retrieve the previous result for ['+$data.task+']');
+                if (markdown.settings.debug) {
+                    console.log('Using localStorage to retrieve the previous result for [' + $data.task + ']');
+                }
                 /*<!-- endbuild -->*/
             }
         } catch (err) {
             console.warn(err.message);
         }
-
     } // if ($useStore)
 
     if ($bAjax) {
-
         $params.dataType = (typeof $params.dataType === 'undefined') ? 'html' : $params.dataType;
 
         if (typeof $params.param2 !== 'undefined') {
@@ -131,40 +139,40 @@ function ajaxify($params)
             $data.param3 = $params.param3;
         }
 
-        var $target='#'+(($params.target==='undefined')?'TDM':$params.target);
+        var $target = '#' + (($params.target === 'undefined') ? 'TDM' : $params.target);
 
         $.ajax({
             beforeSend: function () {
-                $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">'+markdown.message.pleasewait+'</span></div>');
-            },// beforeSend()
-            async:true,
+                $($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">' + markdown.message.pleasewait + '</span></div>');
+            }, // beforeSend()
+            async: true,
             cache: false,
-            type:(markdown.settings.debug?'GET':'POST'),
+            type: (markdown.settings.debug ? 'GET' : 'POST'),
             url: markdown.url,
             data: $data,
-            datatype:$params.dataType,
+            datatype: $params.dataType,
             success: function (data) {
 
-               if ($useStore) {
-                    store.set('task_'+$data.task, data);
+                if ($useStore) {
+                    store.set('task_' + $data.task, data);
                 }
 
-                if ($params.dataType==='html') $($target).html(data);
+                if ($params.dataType === 'html') {
+                    $($target).html(data);
+                }
 
                 /* jshint ignore:start */
-                var $callback=($params.callback===undefined)?'':$params.callback;
-                if ($callback!=='') {
+                var $callback = ($params.callback === undefined) ? '' : $params.callback;
+                if ($callback !== '') {
                     eval($callback);
                 }
                 /* jshint ignore:end */
             }
         }); // $.ajax()
-
     } else {
-
         /* jshint ignore:start */
-        var $callback=($params.callback===undefined)?'':$params.callback;
-        if ($callback!=='') {
+        var $callback = ($params.callback === undefined) ? '' : $params.callback;
+        if ($callback !== '') {
             eval($callback);
         }
         /* jshint ignore:end */
@@ -184,11 +192,11 @@ function ajaxify($params)
 function addSearchEntry($entry)
 {
 
-    $bReset  = (($entry.reset==='undefined') ? false : $entry.reset);
+    $bReset = (($entry.reset === 'undefined') ? false : $entry.reset);
 
-    $current=$('#search').val().trim();
+    $current = $('#search').val().trim();
 
-    if (($current!=='') && ($bReset===false)) {
+    if (($current !== '') && ($bReset === false)) {
         // Append the new keyword only when bReset is not set or set to False
         var values = $current.split(',');
         values.push($entry.keyword);
@@ -210,11 +218,14 @@ function addSearchEntry($entry)
 function initFiles($data)
 {
 
-    var $msg='';
+    var $msg = '';
 
     if (typeof $data === 'undefined') {
-        $msg=markdown.message.json_error;
-        Noty({message:$msg.replace('%s', 'listFiles'),type:'error'});
+        $msg = markdown.message.json_error;
+        Noty({
+            message: $msg.replace('%s', 'listFiles'),
+            type: 'error'
+        });
         return false;
     }
 
@@ -225,21 +236,27 @@ function initFiles($data)
     try {
         if ($data.hasOwnProperty('count')) {
             // Display the number of returned files
-            $msg=markdown.message.filesfound;
-            Noty({message:$msg.replace('%s', $data.count), type:'notification'});
+            $msg = markdown.message.filesfound;
+            Noty({
+                message: $msg.replace('%s', $data.count),
+                type: 'notification'
+            });
         }
     } catch (err) {
         console.warn(err.message);
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
-            Noty({message:err.message, type:'error'});
+            Noty({
+                message: err.message,
+                type: 'error'
+            });
         }
         /*<!-- endbuild -->*/
     }
 
     jstree_init($data);
 
-   // initialize the search area, thanks to the Flexdatalist plugin
+    // initialize the search area, thanks to the Flexdatalist plugin
 
     if ($.isFunction($.fn.flexdatalist)) {
         $('.flexdatalist').flexdatalist({
@@ -247,21 +264,23 @@ function initFiles($data)
             minLength: 2,
             valueProperty: 'id',
             selectionRequired: false,
-            visibleProperties: ["name","type"],
+            visibleProperties: ["name", "type"],
             searchIn: 'name',
             data: 'index.php?task=tags',
-            focusFirstResult:true,
-            noResultsText:markdown.message.search_no_result
+            focusFirstResult: true,
+            noResultsText: markdown.message.search_no_result
         });
 
         // Add automatic filtering if defined in the settings.json file
-        if (markdown.settings.auto_tags!=='') {
-             addSearchEntry({keyword:markdown.settings.auto_tags});
+        if (markdown.settings.auto_tags !== '') {
+            addSearchEntry({
+                keyword: markdown.settings.auto_tags
+            });
         }
     } // if ($.isFunction($.fn.flexdatalist))
 
-    $('#search').css('width', $('#TDM').width()-5);
-    $('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width()-10).show();
+    $('#search').css('width', $('#TDM').width() - 5);
+    $('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width() - 10).show();
 
     // Interface : put the cursor immediatly in the edit box
     try {
@@ -279,7 +298,10 @@ function initFiles($data)
         console.warn(err.message);
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
-            Noty({message:err.message, type:'error'});
+            Noty({
+                message: err.message,
+                type: 'error'
+            });
         }
         /*<!-- endbuild -->*/
     }
@@ -311,13 +333,13 @@ function initializeTasks()
     // Get all DOM objects having a data-task attribute
     $("[data-task]").click(function () {
 
-        var $task=$(this).data('task');
+        var $task = $(this).data('task');
 
-        var $fname=( $(this).attr('data-file') ? $(this).data('file') : '');
-        var $tag=  ( $(this).attr('data-tag') ? $(this).data('tag').replace('\\','/')  : '');
+        var $fname = ($(this).attr('data-file') ? $(this).data('file') : '');
+        var $tag = ($(this).attr('data-tag') ? $(this).data('tag').replace('\\', '/') : '');
 
-        if (($fname!=='')&&($task!=='window')) {
-            $fname=window.btoa(encodeURIComponent(JSON.stringify($fname)));
+        if (($fname !== '') && ($task !== 'window')) {
+            $fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
         }
 
         switch ($task) {
@@ -333,23 +355,32 @@ function initializeTasks()
                 if (typeof Clipboard === 'function') {
                     var clipboard = new Clipboard('*[data-task="clipboard"]');
                     clipboard.on('success', function (e) {
-                        e.clearSelection(); });
-                    Noty({message:markdown.message.copy_clipboard_done, type:'success'});
+                        e.clearSelection();
+                    });
+                    Noty({
+                        message: markdown.message.copy_clipboard_done,
+                        type: 'success'
+                    });
                 } else {
                     $(this).remove();
                 }
-               break;
+                break;
 
             case 'display':
 
                 // Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
-                    console.log('Display -> show note ['+$fname+']');
+                    console.log('Display -> show note [' + $fname + ']');
                 }
                 /*<!-- endbuild -->*/
-                ajaxify({task:$task,param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
-               break;
+                ajaxify({
+                    task: $task,
+                    param: $fname,
+                    callback: 'afterDisplay($data.param)',
+                    target: 'CONTENT'
+                });
+                break;
 
             case 'edit':
 
@@ -359,15 +390,20 @@ function initializeTasks()
                 }
                 /*<!-- endbuild -->*/
 
-                ajaxify({task:$task,param:$fname,callback:'afterEdit($data.param)',target:'CONTENT'});
+                ajaxify({
+                    task: $task,
+                    param: $fname,
+                    callback: 'afterEdit($data.param)',
+                    target: 'CONTENT'
+                });
 
-               break;
+                break;
 
             case 'fullscreen':
 
                 toggleFullScreen();
 
-               break;
+                break;
 
             case 'link_note':
 
@@ -380,11 +416,14 @@ function initializeTasks()
 
                 if (typeof Clipboard === 'function') {
                     new Clipboard('*[data-task="link_note"]');
-                    Noty({message:markdown.message.copy_link_done, type:'success'});
+                    Noty({
+                        message: markdown.message.copy_link_done,
+                        type: 'success'
+                    });
                 } else {
                     $(this).remove();
                 }
-               break;
+                break;
 
             case 'pdf':
 
@@ -394,15 +433,15 @@ function initializeTasks()
                 }
                 /*<!-- endbuild -->*/
 
-                window.open('index.php?task=pdf&param='+$fname);
+                window.open('index.php?task=pdf&param=' + $fname);
 
-               break;
+                break;
 
             case 'printer':
-               /*<!-- build:debug -->*/
-               //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
-               /*<!-- endbuild -->*/
-               break;
+                /*<!-- build:debug -->*/
+                //if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
+                /*<!-- endbuild -->*/
+                break;
 
             case 'settings':
 
@@ -412,7 +451,10 @@ function initializeTasks()
                 }
                 /*<!-- endbuild -->*/
 
-                ajaxify({task:'clean',callback:'afterClean(data)'});
+                ajaxify({
+                    task: 'clean',
+                    callback: 'afterClean(data)'
+                });
 
                 break;
 
@@ -422,28 +464,31 @@ function initializeTasks()
                 //if (markdown.settings.debug) console.log('Slideshow -> open a new tab in the browser and show the markdown in a slideshow format');
                 /*<!-- endbuild -->*/
                 slideshow($fname);
-               break;
+                break;
 
             case 'tag':
 
                 /*<!-- build:debug -->*/
                 if (markdown.settings.debug) {
-                    console.log('Tag -> filter on ['+$tag+']');
+                    console.log('Tag -> filter on [' + $tag + ']');
                 }
                 /*<!-- endbuild -->*/
 
-                addSearchEntry({keyword:$tag, reset:true});
-               break;
+                addSearchEntry({
+                    keyword: $tag,
+                    reset: true
+                });
+                break;
 
             case 'window':
 
                 //if (markdown.settings.debug) console.log('Window -> Open the note in a new window');
                 window.open($fname);
-               break;
+                break;
 
-            default :
+            default:
 
-                console.warn('Sorry, unknown task ['+$task+']');
+                console.warn('Sorry, unknown task [' + $task + ']');
         } // switch($task)
 
     }); // $("[data-task]").click(function()
@@ -458,19 +503,25 @@ function afterClean($data)
     console.log($data);
 
     if ($data.hasOwnProperty('status')) {
-        $status=$data.status;
+        $status = $data.status;
 
-        if ($status==1) {
-            Noty({message:$data.msg, type:'success'});
+        if ($status == 1) {
+            Noty({
+                message: $data.msg,
+                type: 'success'
+            });
         } else {
-            Noty({message:$data.msg, type:'error'});
+            Noty({
+                message: $data.msg,
+                type: 'error'
+            });
         }
     }
 
     // Empty the localStorage too
     if (markdown.settings.use_localcache) {
         try {
-           store.clearAll();
+            store.clearAll();
         } catch (err) {
             console.warn(err.message);
         }
@@ -494,28 +545,28 @@ function replaceLinksToOtherNotes()
         }
         /*<!-- endbuild -->*/
 
-        var $text=$('#CONTENT').html();
+        var $text = $('#CONTENT').html();
 
         // Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
-        var $currentURL=location.protocol + '//' + location.host + location.pathname;
+        var $currentURL = location.protocol + '//' + location.host + location.pathname;
 
         // Define a regex for matching every links in the displayed note pointing to that URL
-        var RegEx=new RegExp('<a href=[\'|"]' + RegExp.quote($currentURL)+ '\?.*>(.*)<\/a>', 'i');
+        var RegEx = new RegExp('<a href=[\'|"]' + RegExp.quote($currentURL) + '\?.*>(.*)<\/a>', 'i');
 
-        var $nodes=RegEx.exec($text);
+        var $nodes = RegEx.exec($text);
 
-        var $param=[];
-        var $fname='';
+        var $param = [];
+        var $fname = '';
 
-        while ($nodes!==null) {
-            $param=$nodes[0].match(/param=(.*)['|"]/);   // Retrieve the "param" parameter which is the encrypted filename that should be displayed
-            $fname=JSON.parse(decodeURIComponent(window.atob($param[1])));
+        while ($nodes !== null) {
+            $param = $nodes[0].match(/param=(.*)['|"]/); // Retrieve the "param" parameter which is the encrypted filename that should be displayed
+            $fname = JSON.parse(decodeURIComponent(window.atob($param[1])));
 
-            $sNodes='<span class="note" title="'+markdown.message.display_that_note+'" data-task="display" data-file="'+$fname+'">'+$nodes[1]+'</span>';
+            $sNodes = '<span class="note" title="' + markdown.message.display_that_note + '" data-task="display" data-file="' + $fname + '">' + $nodes[1] + '</span>';
 
-            $text=$text.replace($nodes[0], $sNodes);
+            $text = $text.replace($nodes[0], $sNodes);
 
-            $nodes=RegEx.exec($text);
+            $nodes = RegEx.exec($text);
         } // while
 
         // Set the new page content
@@ -536,7 +587,7 @@ function replaceLinksToOtherNotes()
 function addLinksToTags()
 {
 
-    var $text=$('#CONTENT').html();
+    var $text = $('#CONTENT').html();
 
     // markdown.settings.prefix_tag is set by markdown.php and, by default, equal to §
     // Every words prefixed by § will be considered as a tag just like "#word" in social network.
@@ -550,30 +601,30 @@ function addLinksToTags()
         // ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
 
 
-        var RegEx=new RegExp('( |,|;|\\.|\\n|\\r|\\t)*'+markdown.settings.prefix_tag+'([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
+        var RegEx = new RegExp('( |,|;|\\.|\\n|\\r|\\t)*' + markdown.settings.prefix_tag + '([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
         /*<!-- build:debug -->*/
         if (markdown.settings.debug) {
-            console.log('RegEx for finding tags : '+RegEx);
+            console.log('RegEx for finding tags : ' + RegEx);
         }
         /*<!-- endbuild -->*/
 
-        var $tags=RegEx.exec($text);
+        var $tags = RegEx.exec($text);
 
-        while ($tags!==null) {
-           /*<!-- build:debug -->*/
+        while ($tags !== null) {
+            /*<!-- build:debug -->*/
             if (markdown.settings.debug) {
-                console.log("Process tag "+$tags[0]);
+                console.log("Process tag " + $tags[0]);
             }
             /*<!-- endbuild -->*/
 
-            $sTags=
-            (($tags[1]!==undefined)?$tags[1]:'')+                                                                                           // Before the span
-            '<span class="tag" title="'+markdown.message.apply_filter_tag+'" data-task="tag" data-tag="'+$tags[2]+'">'+$tags[2]+'</span>'+  // The span for tagging the word
-            (($tags[3]!==undefined)?$tags[3]:'');                                                                                           // After the span
+            $sTags =
+                (($tags[1] !== undefined) ? $tags[1] : '') + // Before the span
+                '<span class="tag" title="' + markdown.message.apply_filter_tag + '" data-task="tag" data-tag="' + $tags[2] + '">' + $tags[2] + '</span>' + // The span for tagging the word
+                (($tags[3] !== undefined) ? $tags[3] : ''); // After the span
 
-            $text=$text.replace(new RegExp($tags[0], "g"), $sTags);
+            $text = $text.replace(new RegExp($tags[0], "g"), $sTags);
 
-            $tags=RegEx.exec($text);
+            $tags = RegEx.exec($text);
         } // while
 
         // Set the new page content
@@ -592,9 +643,9 @@ function addLinksToTags()
 function forceNewWindow()
 {
 
-    var $currentURL=location.protocol + '//' + location.host;
+    var $currentURL = location.protocol + '//' + location.host;
 
-    $('a[href^="http:"], a[href^="https:"]').not('[href^="'+$currentURL+'/"]').attr('target', '_blank');
+    $('a[href^="http:"], a[href^="https:"]').not('[href^="' + $currentURL + '/"]').attr('target', '_blank');
 
     return true;
 
@@ -609,32 +660,32 @@ function addIcons()
     try {
         $("a").each(function () {
 
-            $href=$(this).attr("href");
-            $sAnchor=$(this).text();
+            $href = $(this).attr("href");
+            $sAnchor = $(this).text();
 
             if (/\.doc[x]?$/i.test($href)) {
                 // Word document
-                $sAnchor+='<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';
+                $sAnchor += '<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';
                 $(this).html($sAnchor).addClass('download');
             } else if (/\.(log|md|markdown|txt)$/i.test($href)) {
                 // LOG - Open it in a new windows and not in the current one
-                $sAnchor+='<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';
+                $sAnchor += '<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';
                 $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
             } else if (/\.pdf$/i.test($href)) {
                 // PDF - Open it in a new windows and not in the current one
-                $sAnchor+='<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';
+                $sAnchor += '<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';
                 $(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
             } else if (/\.ppt[x]?$/i.test($href)) {
                 // Powerpoint
-                $sAnchor+='<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';
+                $sAnchor += '<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';
                 $(this).html($sAnchor).addClass('download-link');
             } else if (/\.xls[m|x]?$/i.test($href)) {
                 // Excel
-                $sAnchor+='<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';
+                $sAnchor += '<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';
                 $(this).html($sAnchor).addClass('download-link');
             } else if (/\.(7z|gzip|tar|zip)$/i.test($href)) {
                 // Archive
-                $sAnchor+='<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';
+                $sAnchor += '<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';
                 $(this).html($sAnchor).addClass('download-link');
             }
 
@@ -662,15 +713,18 @@ function NiceTable()
             if ($.isFunction($.fn.DataTable)) {
                 $(this).addClass('display');
                 $(this).DataTable({
-                    scrollY:"50vh", // 50%
+                    scrollY: "50vh", // 50%
                     scrollCollapse: true,
-                    info:true,
+                    info: true,
                     //order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
-                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    lengthMenu: [
+                        [10, 25, 50, -1],
+                        [10, 25, 50, "All"]
+                    ],
                     language: {
                         decimal: '.',
                         thousands: ',',
-                        url: 'libs/DataTables/'+markdown.settings.language+'.json'
+                        url: 'libs/DataTables/' + markdown.settings.language + '.json'
                     }
                 });
             }
@@ -731,14 +785,14 @@ function afterDisplay($fname)
         initializeTasks();
 
         // Retrieve the heading 1 from the loaded file
-        var $title=$('#CONTENT h1').text();
-        if ($title!=='') {
+        var $title = $('#CONTENT h1').text();
+        if ($title !== '') {
             $('title').text($title);
         }
 
-        $fname=$('div.filename').text();
-        if ($fname!=='') {
-            $('#footer').html('<strong style="text-transform:uppercase;">'+$fname+'</strong>');
+        $fname = $('div.filename').text();
+        if ($fname !== '') {
+            $('#footer').html('<strong style="text-transform:uppercase;">' + $fname + '</strong>');
         }
 
         // Interface : put the cursor immediatly in the edit box
@@ -748,7 +802,7 @@ function afterDisplay($fname)
             // Get the searched keywords.  Apply the restriction on the size.
             var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
 
-            if ($searchKeywords!=='') {
+            if ($searchKeywords !== '') {
                 if ($.isFunction($.fn.highlight)) {
                     $("#CONTENT").highlight($searchKeywords);
                 }
@@ -785,27 +839,26 @@ function afterDisplay($fname)
 function afterEdit($fname)
 {
 
-   // Create the Simple Markdown Editor
-   // @link https://github.com/NextStepWebs/simplemde-markdown-editor
+    // Create the Simple Markdown Editor
+    // @link https://github.com/NextStepWebs/simplemde-markdown-editor
 
     var simplemde = new SimpleMDE({
-        autoDownloadFontAwesome:false,
-        autofocus:true,
+        autoDownloadFontAwesome: false,
+        autofocus: true,
         element: document.getElementById("sourceMarkDown"),
-        indentWithTabs:false,
-        codeSyntaxHighlighting:false,
-        toolbar:[
-         {
+        indentWithTabs: false,
+        codeSyntaxHighlighting: false,
+        toolbar: [{
                 // Add a custom button for saving
-                name: "Save",
-                action: function customFunction(editor)
-                {
-                    buttonSave($fname, simplemde.value());
-                },
-                className: "fa fa-floppy-o",
-                title: markdown.message.button_save
+            name: "Save",
+            action: function customFunction(editor)
+            {
+                buttonSave($fname, simplemde.value());
+            },
+            className: "fa fa-floppy-o",
+            title: markdown.message.button_save
         },
-         {
+            {
                 // Encrypt
                 name: "Encrypt",
                 action: function customFunction(editor)
@@ -815,21 +868,26 @@ function afterEdit($fname)
                 className: "fa fa-user-secret",
                 title: markdown.message.button_encrypt
         },
-         "|",
-         {
+            "|",
+            {
                 // Add a custom button for saving
                 name: "Exit",
                 action: function customFunction(editor)
                 {
-                       $('#sourceMarkDown').parent().hide();
-                       ajaxify({task:'display',param:$fname,callback:'afterDisplay($data.param)',target:'CONTENT'});
+                    $('#sourceMarkDown').parent().hide();
+                    ajaxify({
+                        task: 'display',
+                        param: $fname,
+                        callback: 'afterDisplay($data.param)',
+                        target: 'CONTENT'
+                    });
                 },
                 className: "fa fa-sign-out",
                 title: markdown.message.button_exit_edit_mode
         },
-         "|","preview","side-by-side","fullscreen","|",
-         "bold","italic","strikethrough","|","heading","heading-smaller","heading-bigger","|", "heading-1","heading-2","heading-3","|",
-         "code","quote","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule"
+            "|", "preview", "side-by-side", "fullscreen", "|",
+            "bold", "italic", "strikethrough", "|", "heading", "heading-smaller", "heading-bigger", "|", "heading-1", "heading-2", "heading-3", "|",
+            "code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
         ] // toolbar
     });
 
@@ -855,18 +913,21 @@ function buttonSave($fname, $markdown)
 {
 
     var $data = {};
-    $data.task  = 'save';
+    $data.task = 'save';
     $data.param = $fname;
     $data.markdown = window.btoa(encodeURIComponent(JSON.stringify($markdown)));
 
     $.ajax({
-        async:true,
-        type:'POST',
+        async: true,
+        type: 'POST',
         url: markdown.url,
         data: $data,
-        datatype:'json',
+        datatype: 'json',
         success: function (data) {
-            Noty({message:data.status.message, type:(data.status.success==1?'success':'error')});
+            Noty({
+                message: data.status.message,
+                type: (data.status.success == 1 ? 'success' : 'error')
+            });
         }
     }); // $.ajax()
 
@@ -903,20 +964,27 @@ function onChangeSearch()
         // Get the searched keywords.  Apply the restriction on the size.
         var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
 
-        var $bContinue=true;
+        var $bContinue = true;
         // See if the customonChangeSearch() function has been defined and if so, call it
         if (typeof customonChangeSearch !== 'undefined' && $.isFunction(customonChangeSearch)) {
-            $bContinue=customonChangeSearch($searchKeywords);
+            $bContinue = customonChangeSearch($searchKeywords);
         }
 
-        if ($bContinue===true) {
-            if ($searchKeywords!=='') {
-                $msg=markdown.message.apply_filter;
-                Noty({message:$msg.replace('%s', $searchKeywords), type:'notification'});
+        if ($bContinue === true) {
+            if ($searchKeywords !== '') {
+                $msg = markdown.message.apply_filter;
+                Noty({
+                    message: $msg.replace('%s', $searchKeywords),
+                    type: 'notification'
+                });
             }
 
             // On page entry, get the list of .md files on the server
-            ajaxify({task:'search',param:window.btoa(encodeURIComponent($searchKeywords)), callback:'afterSearch("'+$searchKeywords+'",data)'});
+            ajaxify({
+                task: 'search',
+                param: window.btoa(encodeURIComponent($searchKeywords)),
+                callback: 'afterSearch("' + $searchKeywords + '",data)'
+            });
         } else {
             /*<!-- build:debug -->*/
             if (markdown.settings.debug) {
@@ -942,21 +1010,20 @@ function afterSearch($keywords, $data)
 
     try {
         // Check if we've at least one file
-        if (Object.keys($data).length>0) {
+        if (Object.keys($data).length > 0) {
             if ($.isFunction($.fn.jstree)) {
-
                 // Get the list of files returned by the search : these files have matched th keyword
-                $files=$data.files;
+                $files = $data.files;
 
                 // Use jsTree : iterate and get every node full path which is, in fact, a filename
                 // For instance /aesecure/todo/a_note.md
 
-                $filename='';
+                $filename = '';
 
                 $('#TOC').jstree('open_all');
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
 
-                    $filename=$("#TOC").jstree(true).get_path(element, markdown.settings.DS);  // DIRECTORY_SEPARATOR
+                    $filename = $("#TOC").jstree(true).get_path(element, markdown.settings.DS); // DIRECTORY_SEPARATOR
 
                     // It's a file, not a folder : hide it
                     if ($(element).hasClass('jstree-leaf')) {
@@ -965,23 +1032,19 @@ function afterSearch($keywords, $data)
 
                     // Get the node associated filename
 
-                    if ($filename!=='')
-                    {
+                    if ($filename !== '') {
                         // Now, check if the file is mentionned in the result, if yes, show the row back
 
-                        $.each($files, function ($key, $value)
-                        {
+                        $.each($files, function ($key, $value) {
 
-                            if ($(element).hasClass('jstree-leaf'))
-                            {
-                                if ($value===$filename+'.md')
-                                {
+                            if ($(element).hasClass('jstree-leaf')) {
+                                if ($value === $filename + '.md') {
                                     $(element).addClass('highlight').show();
 
                                     // Automatically open the node (and parents if needed) and select the node
-                                    $('#TOC').jstree('select_node',element);
+                                    $('#TOC').jstree('select_node', element);
                                 }
-                               // return false;  // break
+                                // return false;  // break
                             }
 
                         }); // $.each($files)
@@ -1001,7 +1064,7 @@ function afterSearch($keywords, $data)
                 $.each($("#TOC").jstree('full').find("li"), function (index, element) {
                     // If the node was not selected (i.e. has the "highlight" class), close the node
                     if (!$(element).hasClass('highlight')) {
-                           $('#TOC').jstree('hide_node',element);
+                        $('#TOC').jstree('hide_node', element);
                     }
                 });
 
@@ -1009,7 +1072,7 @@ function afterSearch($keywords, $data)
 
                     // Now, for each node with the "highlight" class, be sure that each parents are opened
                     if ($(element).hasClass('highlight')) {
-                        $("#TOC").jstree('open_node', element, function (e,d) {
+                        $("#TOC").jstree('open_node', element, function (e, d) {
                             for (var i = 0; i < e.parents.length; i++) {
                                 $("#TOC").jstree('show_node', e.parents[i]);
                             }
@@ -1028,8 +1091,8 @@ function afterSearch($keywords, $data)
                     // That attribute contains the filename, not encoded
                     if ($(this).attr('data-file')) {
                         // Get the filename (is relative like /myfolder/filename.md)
-                        $filename=$(this).data('file');
-                        $tr=$(this).parent();
+                        $filename = $(this).data('file');
+                        $tr = $(this).parent();
 
                         // Default : hide the filename
                         $tr.hide();
@@ -1037,9 +1100,9 @@ function afterSearch($keywords, $data)
                         // Now, check if the file is mentionned in the result, if yes, show the row back
                         $.each($data, function () {
                             $.each(this, function ($key, $value) {
-                                if ($value===$filename) {
+                                if ($value === $filename) {
                                     $tr.show();
-                                    return false;  // break
+                                    return false; // break
                                 }
                             });
                         }); // $.each($data)
@@ -1048,8 +1111,11 @@ function afterSearch($keywords, $data)
             } // if ($.isFunction($.fn.jstree)){
         } else { // if (Object.keys($data['files']).length>0)
 
-            if ($keywords!=='') {
-                noty({message:markdown.message.search_no_result, type:'success'});
+            if ($keywords !== '') {
+                noty({
+                    message: markdown.message.search_no_result,
+                    type: 'success'
+                });
             } else { // if ($keywords!=='')
 
                 // show everything back
@@ -1098,22 +1164,25 @@ function slideshow($fname)
 
     try {
         var $data = {};
-        $data.task  = 'slideshow';
+        $data.task = 'slideshow';
         $data.param = $fname;
 
         $.ajax({
-            async:true,
-            type:(markdown.settings.debug?'GET':'POST'),
+            async: true,
+            type: (markdown.settings.debug ? 'GET' : 'POST'),
             url: markdown.url,
             data: $data,
-            datatype:'json',
+            datatype: 'json',
             success: function (data) {
 
                 // data is a URL pointing to the HTML version of the slideshow so ... just display
                 var w = window.open(data, "slideshow");
 
-                if (w===undefined) {
-                    Noty({message:markdown.message.allow_popup_please, type:'notification'});
+                if (w === undefined) {
+                    Noty({
+                        message: markdown.message.allow_popup_please,
+                        type: 'notification'
+                    });
                 }
 
             } // success
@@ -1138,11 +1207,11 @@ function Noty($params)
 {
 
     if ($.isFunction($.fn.noty)) {
-        if ($params.message==='') {
+        if ($params.message === '') {
             return false;
         }
 
-        $type = (($params.type==='undefined')?'info':$params.type);
+        $type = (($params.type === 'undefined') ? 'info' : $params.type);
 
         // More options, see http://ned.im/noty/options.html
         var n = noty({
@@ -1155,3 +1224,4 @@ function Noty($params)
     }
 
 } // function Noty()
+

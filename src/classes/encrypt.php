@@ -181,10 +181,12 @@ class Encrypt
                     $encrypted=$aesEncrypt->sslEncrypt($words, null);
 
                     $markdown=str_replace(
-                        $matches[0][$i], utf8_encode(
+                        $matches[0][$i],
+                        utf8_encode(
                             '<encrypt data-encrypt="true">'.
                             $encrypted.'</encrypt>'
-                        ), $markdown
+                        ),
+                        $markdown
                     );
 
                     $rewriteFile=true;

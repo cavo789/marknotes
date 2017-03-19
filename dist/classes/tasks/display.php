@@ -1,19 +1,9 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.430Z
-*/?>
-<?php
 
 namespace AeSecureMDTasks;
-        
+
 /**
 * Return the HTML rendering of a .md file
-*
 */
 
 class Display
@@ -25,12 +15,22 @@ class Display
         if (substr($params['filename'], -3)!='.md') {
             $params['filename'].='.md';
         }
-      
+
+        if (!class_exists('Debug')) {
+            include_once dirname(dirname(__FILE__)).'/debug.php';
+        }
+
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
-        
-        $fullname=str_replace('/', DIRECTORY_SEPARATOR, utf8_decode($aeSettings->getFolderDocs(true).
-           ltrim($params['filename'], DS)));
+
+        $fullname=str_replace(
+            '/',
+            DIRECTORY_SEPARATOR,
+            utf8_decode(
+                $aeSettings->getFolderDocs(true).
+                ltrim($params['filename'], DS)
+            )
+        );
 
         if (!file_exists($fullname)) {
             echo str_replace(
@@ -40,22 +40,22 @@ class Display
             );
             die();
         }
-        
+
         $markdown=file_get_contents($fullname);
-      
+
         $old=$markdown;
-      
+
         // -----------------------------------------------------------------------
         // URL Cleaner : Make a few cleaning like replacing space char in URL or in image source
         // Replace " " by "%20"
-      
+
         if (preg_match_all('/<img *src *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
             foreach ($matches[1] as $match) {
                 $sMatch=str_replace(' ', '%20', $match);
                 $markdown=str_replace($match, $sMatch, $markdown);
             }
         }
-      
+
         // And do the same for links
         if (preg_match_all('/<a *href *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
             foreach ($matches[1] as $match) {
@@ -63,17 +63,17 @@ class Display
                 $markdown=str_replace($match, $sMatch, $markdown);
             }
         }
-      
+
         $icons='';
 
-        
+
         // Initialize the encryption class
         $aesEncrypt=new \AeSecure\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
 
         // bReturn will be set on TRUE when the file has been rewritten (when <encrypt> content has been found)
         // $markdown will contains the new content (once encryption has been done)
         list($bReturn, $markdown)=$aesEncrypt->HandleEncryption($fullname, $markdown);
-      
+
         // -----------------------------------
         // Add additionnal icons at the left
 
@@ -89,7 +89,7 @@ class Display
             $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).
                '" class="fa fa-external-link" aria-hidden="true" title="'.$aeSettings->getText('open_html', 'Open in a new window').'"></i>';
         }
-     
+
         // Edit icon : only if an editor has been defined
         if ($aeSettings->getEditAllowed()) {
             $icons.='<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" '.
@@ -99,13 +99,16 @@ class Display
         // Call the Markdown parser (https://github.com/erusev/parsedown)
         $lib=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
         if (!file_exists($lib)) {
-            self::ShowError(str_replace(
-                '%s',
-                '<strong>'.$lib.'</strong>',
-                $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
-            ), true);
+            self::ShowError(
+                str_replace(
+                    '%s',
+                    '<strong>'.$lib.'</strong>',
+                    $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+                ),
+                true
+            );
         }
-        require_once($lib);
+        include_once $lib;
         $Parsedown=new \Parsedown();
         $html=$Parsedown->text($markdown);
 
@@ -113,17 +116,17 @@ class Display
         //
         // Check the presence of tags i.e. things like §tag, §frama, §webdev, ...
         // The § sign followed by a word
-      
+
         /*$matches = array();
 
-       preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
-       // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
+        preg_match_all('/'.PREFIX_TAG.'([a-zA-Z0-9]+)/', $html, $matches);
+        // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
 
         if (count($matches[1])>0) self::StoreTags($matches[1]);*/
-  
+
         //
         // -------------------------------------------------------------------------------
-      
+
         // Check if the .html version of the markdown file already exists; if not, create it
         if ($aeSettings->getSaveHTML()) {
             if (is_writable(dirname($fullname).DS)) {
@@ -138,10 +141,10 @@ class Display
 
                 if (!\AeSecure\Files::fileExists($fnameHTML)) {
                     $tmp=$html;
-               
+
                     // Don't save unencrypted informations
                     $matches = array();
-         
+
                     // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
                     preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $tmp, $matches);
                     //preg_match_all('/<encrypt[[:blank:]]*[^>]*>(.*?)<\/encrypt>/', $tmp, $matches);
@@ -153,10 +156,43 @@ class Display
                         $i=0;
 
                         for ($i; $i<$j; $i++) {
-                            $tmp=str_replace($matches[0][$i], '<strong class="confidential">'.
-                               $aeSettings->getText('confidential', 'confidential').'</strong>', $tmp);
+                            $tmp=str_replace(
+                                $matches[0][$i],
+                                '<strong class="confidential">'.
+                                $aeSettings->getText('confidential', 'confidential').'</strong>',
+                                $tmp
+                            );
                         }
                     }
+
+                    /*
+                     * Create a table of content.  Loop each h2 and h3 and add an "id" like "h2_1", "h2_2", ... that will then
+                     * be used in javascript (see https://css-tricks.com/automatic-table-of-contents/)
+                     */
+
+                    $matches=array();
+                    $arr=array('h2','h3');
+
+                    foreach ($arr as $head) {
+                        try {
+                            preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $tmp, $matches);
+                            if (count($matches[1])>0) {
+                                $i=0;
+
+                                $goTop='<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>';
+
+                                foreach ($matches[1] as $key => $value) {
+                                    $i+=1;
+                                    $tmp=str_replace('<'.$head.'>'.$value.'</'.$head.'>', $goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>', $tmp);
+                                }
+                            }
+                        } catch (Exception $e) {
+                        } // try
+                    } // foreach
+
+                    // Add css to bullets
+                    $tmp=str_replace('<ul>', '<ul class="fa-ul">', $tmp);
+                    $tmp=str_replace('<li>', '<li><i class="fa-li fa fa-check"></i>', $tmp);
 
                     if ($handle = fopen($fnameHTML, 'w+')) {
                         // Try to find a heading 1 and if so use that text for the title tag of the generated page
@@ -170,18 +206,41 @@ class Display
                             }
                         } catch (Exception $e) {
                         }
-                        
+
+                        // ***********************************************************************************
+                        //
+                        // Create the HTML rendering on the disk
+
+
                         if (\AeSecure\Files::fileExists($template = $aeSettings->getTemplateFile('html'))) {
                             $content=file_get_contents($template);
-         
+
+
                             // Write the file but first replace variables
                             $content=str_replace('%TITLE%', $title, $content);
                             $content=str_replace('%CONTENT%', $tmp, $content);
-                  
+                            $content=str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $content);
+                            $content=str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $content);
+                            $content=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(false, true), $content);
+
                             // Perhaps a Google font should be used.
-                            $sFont=$aeSettings->getPageGoogleFont(false);
-                            $content=str_replace('%FONT%', $sFont, $content);
-                  
+                            $sFont=$aeSettings->getPageGoogleFont(true);
+                            $content=str_replace('<!--%FONT%-->', $sFont, $content);
+
+                            // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
+
+                            if (strpos($content, '%URL_IMG%')!==false) {
+                                // Retrieve the first image in the html
+                                $matches=array();
+                                if (preg_match('/<img *src *= *[\'|"]([^\'|"]*)/', $tmp, $match)) {
+                                    if (count($match)>0) {
+                                        $url_img=$match[1];
+                                    }
+
+                                    $content=str_replace('%URL_IMG%', $url_img, $content);
+                                } // if (preg_match)
+                            } // if (strpos)
+
                             fwrite($handle, $content);
 
                             fclose($handle);
@@ -190,7 +249,7 @@ class Display
                 } // if (!file_exists($fname))
             } // if (is_writable(dirname($fname)))
         } // if (OUTPUT_HTML===TRUE)
-      
+
         // -----------------------------------------------------------------------
         // Once the .html file has been written on disk, not before !
         //
@@ -203,15 +262,15 @@ class Display
                 $aeJSON=\AeSecure\JSON::getInstance();
 
                 $arrTags=$aeJSON->json_decode($fname);
-                               
+
                 foreach ($arrTags as $tag) {
                     // For each tag, try to find the word in the markdown file
-               
+
                     // /( |\\n|\\r|\\t)+               Before the tag, allowed : space, carriage return, linefeed or tab
                     // [^`\/\\#_\-§]?                  Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
                     // ('.preg_quote($tag).')          The tag term (f.i. "javascript"
                     // (\\n|,|;|\\.|\\)|[[:blank:]]|$) After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
-               
+
                     // Capture the full line (.* ---Full Regex--- .*)
                     preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $markdown, $matches);
 
@@ -238,7 +297,7 @@ class Display
                 } // foreach
             } // if(filesize($fname)>0)
         } // if (\AeSecure\Files::fileExists($fname=$this->_rootFolder.'tags.json'))
-      
+
         //
         // -----------------------------------------------------------------------
 
@@ -250,7 +309,7 @@ class Display
 
         // Keep only the script name and querystring so remove f.i. http://localhost/notes/
         //$thisNote=str_replace(Functions::getCurrentURL(FALSE,TRUE),'',$thisNote);
-    
+
         $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
             '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'"></i>'.
             '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.$aeSettings->getText('refresh', 'Refresh', true).'"></i>'.
@@ -262,9 +321,9 @@ class Display
             $icons.
             '<i id="icon_settings_clear" data-task="settings" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
         '</div>';
-      
+
         $html=$toolbar.'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
-      
+
         $html=str_replace('src="images/', 'src="'.$aeSettings->getFolderDocs(false).'/'.str_replace(DS, '/', dirname($params['filename'])).'/images/', $html);
         $html=str_replace('href="files/', 'href="'.$aeSettings->getFolderDocs(false).'/'.str_replace(DS, '/', dirname($params['filename'])).'/files/', $html);
         $html='<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
@@ -276,6 +335,7 @@ class Display
 
         header('Content-Type: text/html; charset=utf-8');
         echo $html;
-        die();
+
+        return;
     } // function Run()
 } // class Display

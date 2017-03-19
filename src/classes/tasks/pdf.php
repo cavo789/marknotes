@@ -21,11 +21,14 @@ class PDF
 
         $fullname=\AeSecure\Files::replaceExtension(
             str_replace(
-                '/', DIRECTORY_SEPARATOR, utf8_decode(
+                '/',
+                DIRECTORY_SEPARATOR,
+                utf8_decode(
                     $aeSettings->getFolderDocs(true).
                     ltrim($params['filename'], DS)
                 )
-            ), 'html'
+            ),
+            'html'
         );
 
         if (\AeSecure\Files::fileExists($fullname)) {
@@ -38,9 +41,9 @@ class PDF
                 preg_match_all('/<link\s+(?:[^>]*?\s+)?href=(\'|")([^(\'|")]*)(\'|")/', $html, $matches);
                 foreach ($matches[2] as $match) {
                     switch (basename($match)) {
-                    case 'bootstrap.min.css':
-                        $html=str_replace($matches[2], $aeSettings->getFolderLibs().'bootstrap'.DS.'css'.DS.'bootstrap.min.css', $html);
-                        break;
+                        case 'bootstrap.min.css':
+                            $html=str_replace($matches[2], $aeSettings->getFolderLibs().'bootstrap'.DS.'css'.DS.'bootstrap.min.css', $html);
+                            break;
                     } // switch
                 } // foreach
 

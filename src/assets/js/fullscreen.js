@@ -41,15 +41,15 @@ function exitFullScreen()
 function toggleFullScreen(element)
 {
 
-   // Hide (or show it again) the treeview and the search engine i.e. everything at the left side
+    // Hide (or show it again) the treeview and the search engine i.e. everything at the left side
     $('#TDM').toggleClass('hidden');
 
-   // Give the content part the full width (or give it back its original width)
+    // Give the content part the full width (or give it back its original width)
     $('#CONTENT').parent().toggleClass('fullwidth');
 
-   // Hide all buttons (or show it again) except icon_fullscreen
+    // Hide all buttons (or show it again) except icon_fullscreen
     $('#icons').children('i').each(function () {
-        if ((this.id!=='icon_fullscreen')&&(this.id!=='icon_refresh')&&(this.id!=='icon_edit')) {
+        if ((this.id !== 'icon_fullscreen') && (this.id !== 'icon_refresh') && (this.id !== 'icon_edit')) {
             $(this).toggleClass('hidden');
         }
     });
@@ -65,8 +65,8 @@ function toggleFullScreen(element)
     } else { // if (!isFullScreen())
 
         // Reinitialize the height of the content area
-        $('#CONTENT').css('max-height', $(window).height()-10);
-        $('#CONTENT').css('min-height', $(window).height()-10);
+        $('#CONTENT').css('max-height', $(window).height() - 10);
+        $('#CONTENT').css('min-height', $(window).height() - 10);
 
         // And exit the fullscreen mode
         exitFullScreen();
@@ -75,3 +75,4 @@ function toggleFullScreen(element)
     return true;
 
 } // function toggleFullScreen()
+

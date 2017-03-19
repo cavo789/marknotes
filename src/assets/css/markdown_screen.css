@@ -1,11 +1,11 @@
 body {
-    font-family: 'Open Sans',sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     line-height: 1.42857143;
     color: #333;
     background-color: #F7F2E9;
-	overflow: hidden;
-	/* You want something else, check https://webgradients.com/ */
+    overflow: hidden;
+    /* You want something else, check https://webgradients.com/ */
     background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
 }
 
@@ -51,6 +51,7 @@ h2 {
     border: 1px solid red;
 }
 
+
 /* By selecting a file from the filelist, highlight its name */
 
 #tblFiles>tbody>tr:nth-child(odd) .selected {
@@ -63,6 +64,7 @@ h2 {
     color: white;
 }
 
+
 /* Style for the formatting of the name of the file, displayed in the content, first line */
 
 .filename {
@@ -73,6 +75,7 @@ h2 {
     position: inherit;
 }
 
+
 /* Default page background color */
 
 body {
@@ -80,11 +83,13 @@ body {
     background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
 }
 
+
 /* The root folder name */
 
 .rootfolder {
     display: none;
 }
+
 
 /* The search area.  The width will be initialized by javascript */
 
@@ -106,7 +111,10 @@ body {
     max-width: 150px;
 }
 
+
 /* Formating of the array with the list of files */
+
+
 /* The search area.  The width will be initialized by javascript */
 
 #tblFiles {
@@ -121,7 +129,9 @@ body {
     background-color: #c7c0c0;
 }
 
+
 /*#tblFiles>thead>tr.tablesorter-filter-row{background-color:red;color:white;}*/
+
 
 /* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
 
@@ -138,15 +148,7 @@ body {
     color: lightgray;
 }
 
-#icon_refresh,
-#icon_printer,
-#icon_edit,
-#icon_pdf,
-#icon_slideshow,
-#icon_clipboard,
-#icon_link_note,
-#icon_settings_clear,
-#icon_window {
+#icon_refresh, #icon_printer, #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_link_note, #icon_settings_clear, #icon_window {
     margin-left: 20px;
     color: lightgray;
 }
@@ -170,6 +172,7 @@ img {
     color: #abe0ab;
 }
 
+
 /* Content if the full page : contains the list of files and the content of the select note */
 
 #CONTENT {
@@ -181,6 +184,7 @@ img {
     width: 100%;
     left: -15px;
 }
+
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
 
@@ -204,13 +208,10 @@ img {
     background: url('../../libs/jsTree/file_sprite.png') 0 0 no-repeat;
 }
 
-#TOC .file-text,
-#TOC .file-txt,
-#TOC .file-md,
-#TOC .file-log,
-#TOC .file-htaccess {
+#TOC .file-text, #TOC .file-txt, #TOC .file-md, #TOC .file-log, #TOC .file-htaccess {
     background-position: -254px -18px;
 }
+
 
 /* page is used to display the content of the selected note */
 
@@ -221,6 +222,7 @@ page {
     margin-bottom: 0.5cm;
     box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
 }
+
 
 /* Don't display informations that are targeted for printers only */
 
@@ -246,6 +248,7 @@ page {
     height: 40px;
 }
 
+
 /* Use by the jQuery highlight plugin, highlight searched keywords */
 
 .highlight {
@@ -253,13 +256,19 @@ page {
     border-radius: .125em;
 }
 
+
 /* ---------------------------------------------------------- */
+
+
 /* Classes added by javascript during the display of the note */
+
+
 /* "note" will allow to stylize links to other notes within the local website */
 
 .note {
     border-bottom: 1px dotted #000;
 }
+
 
 /* "tag" added for tags */
 
@@ -276,6 +285,7 @@ page {
     background: url('./file_sprite.png') 0 0 no-repeat;
 }
 
+
 /* Edit - Toolbar size */
 
 div.editor-wrapper .editor-toolbar a {
@@ -290,9 +300,13 @@ div.editor-wrapper .editor-toolbar a {
     width: 100%;
 }
 
+
 /* Display folders in the treeview in italic */
 
-.jstree-open>.jstree-anchor,
-.jstree-closed>.jstree-anchor {
+.jstree-open>.jstree-anchor, .jstree-closed>.jstree-anchor {
+    font-style: italic;
+}
+
+e-anchor {
     font-style: italic;
 }

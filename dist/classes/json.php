@@ -1,13 +1,4 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.412Z
-*/?>
-<?php
 /* REQUIRES PHP 7.x AT LEAST */
 
 namespace AeSecure;
@@ -18,16 +9,16 @@ class JSON
 {
 
     protected static $instance = null;
-   
+
     private static $debug=false;
-   
+
     public function __construct()
     {
 
         self::$debug=false;
         return true;
     } // function __construct()
-    
+
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -35,16 +26,16 @@ class JSON
         }
         return self::$instance;
     } // function getInstance()
-   
+
     private static function showError(string $param, bool $die = true) : bool
     {
 
         if (trim($param)!=='') {
             $param.=' - ';
         }
-      
+
         $msg='';
-      
+
         switch (json_last_error()) {
             case JSON_ERROR_DEPTH:
                 $msg=$param.'Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']';
@@ -60,7 +51,7 @@ class JSON
 
             case JSON_ERROR_SYNTAX:
                 $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
-                   '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
+                '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
                 break;
 
             case JSON_ERROR_UTF8:
@@ -71,7 +62,7 @@ class JSON
                 $msg=$param.'Unknown error';
                 break;
         } // switch (json_last_error())
-            
+
         if (self::$debug==true) {
             $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.
                debug_backtrace()[1]['line'].', '.debug_backtrace()[2]['class'].'::'.debug_backtrace()[2]['function'].
@@ -79,7 +70,7 @@ class JSON
         }
 
         $msg='<div class="error bg-danger">ERROR - '.$msg.'</div>';
-      
+
         if ($die===true) {
             die($msg);
         } else {
@@ -88,7 +79,7 @@ class JSON
         }
     } // function showError()
 
-   /**
+    /**
     * Enable or not the debug mode i.e. display additionnal infos in case of errors
     *
     * @param bool $bState TRUE/FALSE
@@ -97,12 +88,12 @@ class JSON
     {
         self::$debug=$bState;
     } // function debug()
-   
-   /**
+
+    /**
     * json_decode with error handling.  Show error message in case of problem
     *
-    * @param string $fname  Absolute filename
-    * @param bool $assoc    [optional] When TRUE, returned objects will be converted into associative arrays.
+    * @param  string $fname Absolute filename
+    * @param  bool   $assoc [optional] When TRUE, returned objects will be converted into associative arrays.
     * @return type
     */
     public static function json_decode(string $fname, bool $assoc = false)
@@ -114,7 +105,7 @@ class JSON
 
         try {
             $arr=json_decode(file_get_contents($fname), $assoc);
-         
+
             if (json_last_error()!==JSON_ERROR_NONE) {
                 self::showError($fname, false);
                 if (self::$debug) {
@@ -125,18 +116,18 @@ class JSON
         } catch (Exception $ex) {
             self::showError($ex->getMessage(), true);
         }
-      
+
         return $arr;
     } // function json_decode()
-   
+
     public static function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
     {
-      
+
         $return='';
 
         try {
             $return=json_encode($value, $option);
-         
+
             if (json_last_error()!==JSON_ERROR_NONE) {
                 self::showError('', false);
                 if (self::$debug) {
@@ -147,29 +138,29 @@ class JSON
         } catch (Exception $ex) {
             self::showError($ex->getMessage(), true);
         }
-      
+
         return $return;
     } // function json_encode()
-    
+
     /**
      * Convert an array into a JSON string.  Append debugging informations.
      *
-     * @param array $arrInfos   Array with informations, will be converted into a JSON string
-     * @param array $arrDebug   Array with debugging info, can be empty
-     * @param bool $die         Display and die (true) or return to the calling code (false)
+     * @param array $arrInfos Array with informations, will be converted into a JSON string
+     * @param array $arrDebug Array with debugging info, can be empty
+     * @param bool  $die      Display and die (true) or return to the calling code (false)
      */
     public static function json_return_info(array $arrInfos, array $arrDebug, bool $die = true)
     {
-  
+
         header('Content-Type: application/json');
-        
+
         /**/
- 
+
         if ($die) {
             header('Content-Type: application/json');
         }
         echo self::json_encode($arrInfos);
-        
+
         if ($die) {
             die();
         }

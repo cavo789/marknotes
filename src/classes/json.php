@@ -37,30 +37,30 @@ class JSON
         $msg='';
 
         switch (json_last_error()) {
-        case JSON_ERROR_DEPTH:
-            $msg=$param.'Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']';
-            break;
+            case JSON_ERROR_DEPTH:
+                $msg=$param.'Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']';
+                break;
 
-        case JSON_ERROR_STATE_MISMATCH:
-            $msg=$param.'Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']';
-            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                $msg=$param.'Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']';
+                break;
 
-        case JSON_ERROR_CTRL_CHAR:
-            $msg=$param.'Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']';
-            break;
+            case JSON_ERROR_CTRL_CHAR:
+                $msg=$param.'Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']';
+                break;
 
-        case JSON_ERROR_SYNTAX:
-            $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
-            '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
-            break;
+            case JSON_ERROR_SYNTAX:
+                $msg=$param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
+                '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
+                break;
 
-        case JSON_ERROR_UTF8:
-            $msg=$param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']';
-            break;
+            case JSON_ERROR_UTF8:
+                $msg=$param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']';
+                break;
 
-        default:
-            $msg=$param.'Unknown error';
-            break;
+            default:
+                $msg=$param.'Unknown error';
+                break;
         } // switch (json_last_error())
 
         if (self::$debug==true) {

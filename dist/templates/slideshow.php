@@ -1,17 +1,8 @@
-<?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.425Z
-*/?>
 <?php 
 // @codingStandardsIgnoreFile
 ?>
-<!-- 
-   based on remark : https://github.com/gnab/remark 
+<!--
+   based on remark : https://github.com/gnab/remark
    Tutorial : https://github.com/gnab/remark/wiki/Markdown
 -->
 <!DOCTYPE html>
@@ -20,7 +11,7 @@
     <meta charset="utf-8" />
     <title><--%TITLE%--></title>
     <style>
-	
+
 	#source{display:none;}
 
       body {
@@ -31,7 +22,7 @@
         font-weight: 400;
         margin-bottom: 0;
       }
-      
+
       img {max-width:800px;}
       .remark-slide-content h1 { font-size: 3em; }
       .remark-slide-content h2 { font-size: 2em; }
@@ -135,11 +126,11 @@
     </style>
   </head>
   <body>
-     
+
     <textarea id="source" readonly="readonly"><!--%SOURCE%--></textarea>
-    
-    <script src="<!--%URL%-->/libs/remark/remark-latest.min.js"></script>    
-    
+
+    <script src="<!--%URL%-->/libs/remark/remark-latest.min.js"></script>
+
     <script type="text/javascript">
       var hljs = remark.highlighter.engine;
       var slideshow = remark.create({

@@ -17,7 +17,9 @@ class Delete
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $fullname=str_replace(
-            '/', DIRECTORY_SEPARATOR, $aeSettings->getFolderDocs(true).
+            '/',
+            DIRECTORY_SEPARATOR,
+            $aeSettings->getFolderDocs(true).
             ltrim($params['filename'], DS)
         );
 
@@ -121,7 +123,8 @@ class Delete
                                 'action'=>'delete',
                                 'type'=>$params['type'],
                                 'msg'=>$msg
-                                ), $arrDebug
+                                ),
+                                $arrDebug
                             );
                         } else {
                             $msg=sprintf(
@@ -135,7 +138,8 @@ class Delete
                                 'action'=>'delete',
                                 'type'=>$params['type'],
                                 'msg'=>$msg
-                                ), $arrDebug
+                                ),
+                                $arrDebug
                             );
                         }
                     } catch (Exception $ex) {
@@ -145,7 +149,8 @@ class Delete
                             'action'=>'delete',
                             'type'=>$params['type'],
                             'msg'=>$ex->getMessage()
-                            ), $arrDebug
+                            ),
+                            $arrDebug
                         );
                     } // try
                 } else { // if(is_writable($fullname))
@@ -163,7 +168,8 @@ class Delete
                         'action'=>'delete',
                         'type'=>$params['type'],
                         'msg'=>$msg
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } // if(is_writable($fullname))
             } // if (!\AeSecure\Files::folderExists($fullname))
@@ -213,7 +219,8 @@ class Delete
                                 'action'=>'delete',
                                 'type'=>$params['type'],
                                 'msg'=>$msg
-                                ), $arrDebug
+                                ),
+                                $arrDebug
                             );
                         } else { // if (!\AeSecure\Files::fileExists($fullname))
 
@@ -230,7 +237,8 @@ class Delete
                                 'action'=>'delete',
                                 'type'=>$params['type'],
                                 'msg'=>$msg
-                                ), $arrDebug
+                                ),
+                                $arrDebug
                             );
                         } // if (!\AeSecure\Files::fileExists($fullname))
                     } catch (Exception $ex) {
@@ -240,7 +248,8 @@ class Delete
                             'action'=>'delete',
                             'type'=>$params['type'],
                             'msg'=>$ex->getMessage()
-                            ), $arrDebug
+                            ),
+                            $arrDebug
                         );
                     } // try
                 } else { // if(is_writable($fullname))
@@ -258,7 +267,8 @@ class Delete
                         'action'=>'delete',
                         'type'=>$params['type'],
                         'msg'=>$msg
-                        ), $arrDebug
+                        ),
+                        $arrDebug
                     );
                 } // if(is_writable($fullname))
             } // // if (!\AeSecure\Files::fileExists($fullname))

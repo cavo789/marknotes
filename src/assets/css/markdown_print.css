@@ -5,20 +5,17 @@ body {
     line-height: 1.2;
 }
 
-#CONTENT p,
-table,
-ul,
-ol,
-dl,
-blockquote,
-pre,
-code,
-form {
+#CONTENT p, table, ul, ol, dl, blockquote, pre, code, form {
     margin: 0 0 1em;
 }
 
+
 /* Put the href of the link in the content, juste after the link */
+
+
 /* So <a href="www.google.be">Google</a> will be printed like */
+
+
 /* Google (www.google.be) */
 
 a:link:after {
@@ -48,11 +45,11 @@ a:link:after {
     font-size: 1em;
 }
 
-#CONTENT ul,
-li {
+#CONTENT ul, li {
     display: block;
     page-break-inside: avoid;
 }
+
 
 /* Don't print objects that only should be displayed on screen */
 
@@ -60,14 +57,20 @@ li {
     display: none;
 }
 
+
 /* Don't print the left part */
 
 #TDM {
     display: none;
 }
 
+
 /*body, page{box-shadow:0;}*/
+
+
 /* Make text a little larger on print */
+
+
 /*page{font-size:larger;}*/
 
 footer {
@@ -78,4 +81,7 @@ footer {
     font-size: 0.83em;
     margin: 2em 0 0;
     padding: 1em 0 0;
+}
+
+: 1em 0 0;
 }

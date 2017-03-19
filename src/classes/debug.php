@@ -33,7 +33,8 @@ class Debug
         ini_set("html_errors", "1");
         ini_set("docref_root", "http://www.php.net/");
         ini_set(
-            "error_prepend_string", "<div style='color:black;'."
+            "error_prepend_string",
+            "<div style='color:black;'."
             . "'font-family:verdana;border:1px solid red; padding:5px;'>"
         );
         ini_set("error_append_string", "</div>");

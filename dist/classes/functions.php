@@ -1,24 +1,15 @@
 <?php
-/**
-* markdown - Script that will transform your notes taken in the Markdown format (.md files) into a rich website
-* @version   : 1.0.5
-* @author    : christophe@aesecure.com
-* @license   : MIT
-* @url       : https://github.com/cavo789/markdown
-* @package   : 2017-02-16T12:37:19.411Z
-*/?>
-<?php
 /* REQUIRES PHP 7.x AT LEAST */
 namespace AeSecure;
 
 class Functions
 {
-    
-   /**
+
+    /**
     * Return the current URL
     *
-    * @param type $use_forwarded_host
-    * @param type $bNoScriptName     If FALSE, only return the URL and folders name but no
+    * @param  type $use_forwarded_host
+    * @param  type $bNoScriptName      If FALSE, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
     *                                script name (f.i. remove index.php and parameters if any)
     * @return type string
     */
@@ -33,17 +24,17 @@ class Functions
            ? $_SERVER['HTTP_X_FORWARDED_HOST']
            : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
         $host     = isset($host) ? $host : $_SERVER['SERVER_NAME'].$port;
-        
+
         return $protocol.'://'.$host.($bNoScriptName===true?dirname($_SERVER['REQUEST_URI']).
            '/':$_SERVER['REQUEST_URI']);
     } // function getCurrentURL
 
-   /**
+    /**
     * Safely read posted variables
     *
-    * @param type $name          f.i. "password"
-    * @param type $type          f.i. "string"
-    * @param type $default       f.i. "default"
+    * @param  type $name    f.i. "password"
+    * @param  type $type    f.i. "string"
+    * @param  type $default f.i. "default"
     * @return type
     */
     public static function getParam(
@@ -53,11 +44,11 @@ class Functions
         bool $base64 = false,
         int $maxsize = 0
     ) {
-    
-      
+
+
         $tmp='';
         $return=$default;
-      
+
         if (isset($_POST[$name])) {
             if (in_array($type, array('int','integer'))) {
                 $return=filter_input(INPUT_POST, $name, FILTER_SANITIZE_NUMBER_INT);
@@ -77,7 +68,7 @@ class Functions
                 $return=$_POST[$name];
             }
         } else { // if (isset($_POST[$name]))
-     
+
             if (isset($_GET[$name])) {
                 if (in_array($type, array('int','integer'))) {
                     $return=filter_input(INPUT_GET, $name, FILTER_SANITIZE_NUMBER_INT);
@@ -98,25 +89,26 @@ class Functions
                 }
             } // if (isset($_GET[$name]))
         } // if (isset($_POST[$name]))
-      
+
         if ($type=='boolean') {
             $return=(in_array($return, array('on','1'))?true:false);
         }
-      
+
         return $return;
     } // function getParam()
-  
-   /**
+
+    /**
     * Generic function for adding a js in the HTML response
-    * @param type $localfile
-    * @param type $weblocation
+     *
+    * @param  type $localfile
+    * @param  type $weblocation
     * @return string
     */
     public static function addJavascript(string $localfile, string $weblocation = '', bool $defer = false) : string
     {
-      
+
         $return='';
-   
+
         // Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the
         // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
 
@@ -129,24 +121,25 @@ class Functions
                    '</script>';
             }
         }
-      
+
         return $return;
     } // function addJavascript()
-   
-   /**
+
+    /**
     * Generic function for adding a css in the HTML response
-    * @param type $localfile
-    * @param type $weblocation
+     *
+    * @param  type $localfile
+    * @param  type $weblocation
     * @return string
     */
     public static function addStylesheet(string $localfile, string $weblocation = '') : string
     {
-      
+
         $return='';
-      
+
         // Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the
         // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
-      
+
         if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
             $return='<link href="'.$localfile.'" rel="stylesheet" />';
         } else {
@@ -154,23 +147,25 @@ class Functions
                 $return='<link href="'.$weblocation.'" rel="stylesheet" />';
             }
         }
-      
+
         return $return;
     } // function addStylesheet()
-   
-   /**
+
+    /**
     * Wrapper for array_unique but for insensitive comparaison  (Images or images should be considered as one value)
-    * @link http://stackoverflow.com/a/2276400
-    * @param array $array
+     *
+    * @link   http://stackoverflow.com/a/2276400
+    * @param  array $array
     * @return array
     */
     public static function array_iunique(array $array) : array
     {
         return array_intersect_key($array, array_unique(array_map("StrToLower", $array)));
     }
-   
-   /**
+
+    /**
     * Return true when the call to the php script has been done through an ajax request
+     *
     * @return type
     */
     public static function isAjaxRequest()
