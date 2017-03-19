@@ -8,7 +8,7 @@ namespace AeSecureMDTasks;
 
 class Display
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
         // If the filename doesn't mention the file's extension, add it.

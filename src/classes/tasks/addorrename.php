@@ -8,7 +8,7 @@ namespace AeSecureMDTasks;
 
 class AddOrRename
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
         header('Content-Type: application/json');

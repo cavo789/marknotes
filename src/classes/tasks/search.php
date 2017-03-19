@@ -11,7 +11,7 @@ namespace AeSecureMDTasks;
 
 class Search
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();

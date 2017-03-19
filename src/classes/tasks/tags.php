@@ -10,7 +10,7 @@ namespace AeSecureMDTasks;
 
 class Tags
 {
-    public static function Run()
+    public static function run()
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();

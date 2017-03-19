@@ -9,7 +9,7 @@ namespace AeSecureMDTasks;
 class ListFiles
 {
 
-    public static function Run()
+    public static function run()
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();

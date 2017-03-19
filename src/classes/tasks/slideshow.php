@@ -4,10 +4,9 @@ namespace AeSecureMDTasks;
 
 class SlideShow
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
-        $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
         if ($params['filename']!="") {
@@ -15,7 +14,7 @@ class SlideShow
 
             if (!file_exists($fullname)) {
                 echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
-                die();
+                return;
             }
 
             $markdown=file_get_contents($fullname);

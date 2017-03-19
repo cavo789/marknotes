@@ -8,10 +8,14 @@ namespace AeSecureMDTasks;
 
 class Delete
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
         header('Content-Type: text/html; charset=utf-8');
+
+        if (!class_exists('Debug')) {
+            include_once dirname(dirname(__FILE__)).'/debug.php';
+        }
 
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
@@ -33,6 +37,7 @@ class Delete
         /*<!-- endbuild -->*/
 
         if ($params['type']==='folder') {
+
             // It's a folder
 
             if (!\AeSecure\Files::folderExists(utf8_decode($fullname))) {
@@ -42,10 +47,12 @@ class Delete
                     $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists')
                 );
 
-                die();
+                return;
+
             } else { // if (!\AeSecure\Files::folderExists($fullname))
 
                 if (is_writable(utf8_decode($fullname))) {
+
                     try {
                         // Kill a folder recursivelly ==> be really sure that the folder is within the documents
                         // folder and not elsewhere
@@ -274,6 +281,7 @@ class Delete
             } // // if (!\AeSecure\Files::fileExists($fullname))
         } // if($params['type']==='folder')
 
-        die();
+        return;
+
     } // function Run()
 } // class Display

@@ -17,7 +17,7 @@ class Clean
      *
      * @return
      */
-    public static function Run()
+    public static function run()
     {
 
         $aeDebug=\AeSecure\Debug::getInstance();

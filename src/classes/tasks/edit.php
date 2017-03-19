@@ -4,7 +4,7 @@ namespace AeSecureMDTasks;
 
 class Edit
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
         $aeDebug=\AeSecure\Debug::getInstance();

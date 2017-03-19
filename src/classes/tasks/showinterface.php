@@ -10,11 +10,11 @@ namespace AeSecureMDTasks;
 class ShowInterface
 {
 
-    public static function Run()
+    public static function run()
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();
-        
+
         if (!class_exists('Debug')) {
             include_once dirname(dirname(__FILE__)).'/debug.php';
         }
