@@ -8,7 +8,7 @@ class Functions
     /**
     * Return the current URL
     *
-    * @param  type $useURI        If true, use $_SERVER['REQUEST_URI'] otherwise use $_SERVER[PHP_SELF] 
+    * @param  type $useURI        If true, use $_SERVER['REQUEST_URI'] otherwise use $_SERVER[PHP_SELF]
     *                             (can be /site/router.php and not http://localhost/site/folder/subfolder/file.html in case of URLs rewriting)
     * @param  type $useScriptName  If false, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
     *                              script name (f.i. remove index.php and parameters if any)
@@ -25,7 +25,7 @@ class Functions
             (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
             (($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');
 
-        $host     = isset($host) ? $host : $_SERVER['SERVER_NAME'].$port;
+        $host     = isset($host) ? rtrim(str_replace(DIRECTORY_SEPARATOR, '/',$host),'/') : $_SERVER['SERVER_NAME'].$port;
 
         return $protocol.'://'.$host.($useURI ? dirname($_SERVER['REQUEST_URI']) : dirname($_SERVER['PHP_SELF'])).'/';
     } // function getCurrentURL

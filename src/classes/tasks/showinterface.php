@@ -42,6 +42,8 @@ class ShowInterface
         $html=str_replace('%IMG_MAXWIDTH%', $aeSettings->getPageImgMaxWidth(), $html);
         $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
         $html=str_replace('%EDT_SEARCH_MAXLENGTH%', $aeSettings->getSearchMaxLength(), $html);
+        
+        $html=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(true, false), $html);
 
         // Define the global markdown variable.  Used by the assets/js/markdown.js script
         $JS=
