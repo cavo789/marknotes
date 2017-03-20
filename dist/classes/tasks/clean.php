@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-19T09:46:49.523Z
+* @package   : 2017-03-20T20:12:50.386Z
 */?>
 <?php
 
@@ -26,7 +26,7 @@ class Clean
      *
      * @return
      */
-    public static function Run()
+    public static function run()
     {
 
         $aeDebug=\AeSecure\Debug::getInstance();

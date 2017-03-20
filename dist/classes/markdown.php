@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-19T09:46:49.516Z
+* @package   : 2017-03-20T20:12:50.378Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -65,11 +65,15 @@ class Markdown
     * Entry point of this class, run a task
     *
     * @param string $task
+    * @param string $filename   Optional, if not mentionned, get this information from $_POST
+    *
     */
-    public function process(string $task)
+    public function process(string $task, string $filename='')
     {
 
-        $filename=json_decode(urldecode(Functions::getParam('param', 'string', '', true)));
+        if ($filename==='') {
+            $filename=json_decode(urldecode(Functions::getParam('param', 'string', '', true)));
+        }
 
         if ($filename!='') {
             $filename=\AeSecure\Files::sanitizeFileName(trim($filename));
@@ -80,7 +84,7 @@ class Markdown
                 // Remove html files.  These files aren't needed, only .md files are important
 
                 include_once TASKS.'clean.php';
-                \AeSecureMDTasks\Clean::Run();
+                \AeSecureMDTasks\Clean::run();
                 break;
 
             case 'delete':
@@ -89,34 +93,34 @@ class Markdown
                 $type=\AeSecure\Functions::getParam('param3', 'string', '', false);
 
                 include_once TASKS.'delete.php';
-                \AeSecureMDTasks\Delete::Run(array('filename'=>$filename,'type'=>$type));
+                \AeSecureMDTasks\Delete::run(array('filename'=>$filename,'type'=>$type));
                 break;
 
             case 'display':
                 // Display the HTML rendering of a note
 
                 include_once TASKS.'display.php';
-                \AeSecureMDTasks\Display::Run(array('filename'=>$filename));
+                \AeSecureMDTasks\Display::run(array('filename'=>$filename));
                 break;
 
             case 'edit':
                 // Edit an existing file
 
                 include_once TASKS.'edit.php';
-                \AeSecureMDTasks\Edit::Run(array('filename'=>$filename));
+                \AeSecureMDTasks\Edit::run(array('filename'=>$filename));
                 break;
 
             case 'listFiles':
                 // Retrieve the list of .md files.
 
                 include_once TASKS.'listfiles.php';
-                echo \AeSecureMDTasks\ListFiles::Run();
+                echo \AeSecureMDTasks\ListFiles::run();
                 break;
 
             case 'pdf':
                 // Generate a PDF
                 include_once TASKS.'pdf.php';
-                \AeSecureMDTasks\PDF::Run(array('filename'=>$filename));
+                \AeSecureMDTasks\PDF::run(array('filename'=>$filename));
                 break;
 
             case 'rename':
@@ -130,7 +134,7 @@ class Markdown
 
                 // Remove html files.  These files aren't needed, only .md files are important
                 include_once TASKS.'addorrename.php';
-                \AeSecureMDTasks\AddOrRename::Run(array('oldname'=>$filename,'newname'=>$newname,'type'=>$type));
+                \AeSecureMDTasks\AddOrRename::run(array('oldname'=>$filename,'newname'=>$newname,'type'=>$type));
                 break;
 
             case 'save':
@@ -139,7 +143,7 @@ class Markdown
                 $markdown=json_decode(urldecode(\AeSecure\Functions::getParam('markdown', 'string', '', true)));
 
                 include_once TASKS.'save.php';
-                \AeSecureMDTasks\Save::Run(array('filename'=>$filename,'markdown'=>$markdown));
+                \AeSecureMDTasks\Save::run(array('filename'=>$filename,'markdown'=>$markdown));
                 break;
 
             case 'search':
@@ -149,27 +153,27 @@ class Markdown
                 //$pattern=\AeSecure\Functions::getParam('param', 'string', '', true, $this->aeSettings->getSearchMaxLength());
 
                 include_once TASKS.'search.php';
-                \AeSecureMDTasks\Search::Run(array('pattern'=>$pattern));
+                \AeSecureMDTasks\Search::run(array('pattern'=>$pattern));
                 break;
 
             case 'slideshow':
                 // Display the "slideshow" version of the note
 
                 include_once TASKS.'slideshow.php';
-                \AeSecureMDTasks\SlideShow::Run(array('filename'=>$filename));
+                \AeSecureMDTasks\SlideShow::run(array('filename'=>$filename));
                 break;
 
             case 'tags':
                 // Get the list of folders/tags
 
                 include_once TASKS.'tags.php';
-                \AeSecureMDTasks\Tags::Run();
+                \AeSecureMDTasks\Tags::run();
                 break;
 
             default:
                 // Show the main interface
                 include_once TASKS.'showinterface.php';
-                echo \AeSecureMDTasks\ShowInterface::Run();
+                echo \AeSecureMDTasks\ShowInterface::run();
                 break;
         } // switch ($task)
     } // function process()

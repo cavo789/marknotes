@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-19T09:46:49.528Z
+* @package   : 2017-03-20T20:12:50.393Z
 */?>
 <?php
 /**
@@ -19,11 +19,11 @@ namespace AeSecureMDTasks;
 class ShowInterface
 {
 
-    public static function Run()
+    public static function run()
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();
-        
+
         if (!class_exists('Debug')) {
             include_once dirname(dirname(__FILE__)).'/debug.php';
         }

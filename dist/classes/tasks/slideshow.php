@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-19T09:46:49.530Z
+* @package   : 2017-03-20T20:12:50.394Z
 */?>
 <?php
 
@@ -13,18 +13,18 @@ namespace AeSecureMDTasks;
 
 class SlideShow
 {
-    public static function Run(array $params)
+    public static function run(array $params)
     {
 
-        $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
-        if ($params['filename']!="") {
+        if ($params['filename']!=="") {
+
             $fullname=utf8_decode($aeSettings->getFolderDocs(true).$params['filename']);
 
             if (!file_exists($fullname)) {
                 echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
-                die();
+                return;
             }
 
             $markdown=file_get_contents($fullname);
@@ -35,7 +35,8 @@ class SlideShow
             preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
 
             // Remove the tag prefix
-            $markdown=str_replace($params['prefix_tag'], '', $markdown);
+            $prefix=$aeSettings->getPrefixTag();
+            $markdown=str_replace($prefix, '', $markdown);
 
             // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
             if (count($matches[0])>0) {
@@ -53,7 +54,7 @@ class SlideShow
 
             // Try to retrieve the heading 1
 
-            preg_match("/# (.*)/", $markdown, $matches);
+            preg_match("/# ?(.*)/", $markdown, $matches);
             $pageTitle = (count($matches)>0) ? trim($matches[1]) : '';
 
             // Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
@@ -102,24 +103,39 @@ class SlideShow
             $slideshow=file_get_contents($aeSettings->getTemplateFile('slideshow'));
 
             $html=str_replace('<!--%SOURCE%-->', $markdown, $slideshow);
-            $html=str_replace('<!--%URL%-->', rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/'), $html);
+            $html=str_replace('<!--%URL%-->', rtrim(\AeSecure\Functions::getCurrentURL(false, false), '/'), $html);
             $html=str_replace('<--%TITLE%-->', $pageTitle, $html);
 
-            // Store that HTML to the server
-            $fnameHTML=str_replace('.md', '_slideshow.html', $fullname);
+            if (!\AeSecure\Functions::isAjaxRequest())
+            {
 
-            if ($handle = fopen($fnameHTML, 'w+')) {
-                fwrite($handle, $html);
-                fclose($handle);
-            }
+                // Return the HTML : display the slideshow
 
-            // And return an URL to that file
-            $tmp = str_replace('\\', '/', rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']), '', str_replace(DS, '/', $fnameHTML)));
+                header('Content-Type: text/html; charset=utf-8');
+                echo $html;
 
-            header('Content-Type: application/json');
-            echo json_encode(utf8_encode($tmp), JSON_PRETTY_PRINT);
+            } else { // if (!\AeSecure\Functions::isAjaxRequest())
+
+                // Generate a HTML file on the disk and return its name
+                $fnameHTML=str_replace('.md', '_slideshow.html', $fullname);
+
+                if ($handle = fopen($fnameHTML, 'w+')) {
+                    fwrite($handle, $html);
+                    fclose($handle);
+                }
+
+                // And return an URL to that file
+                $tmp = str_replace('\\', '/', rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').str_replace(dirname($_SERVER['SCRIPT_FILENAME']), '', str_replace(DS, '/', $fnameHTML)));
+
+                header('Content-Type: application/json');
+                echo json_encode(utf8_encode($tmp), JSON_PRETTY_PRINT);
+
+            } // if (!\AeSecure\Functions::isAjaxRequest())
+
         } // if ($filename!="")
 
-        die();
-    } // function Run()
+        return;
+
+    } // function run()
+
 } // class SlideShow
