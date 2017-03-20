@@ -56,11 +56,15 @@ class Markdown
     * Entry point of this class, run a task
     *
     * @param string $task
+    * @param string $filename   Optional, if not mentionned, get this information from $_POST
+    *
     */
-    public function process(string $task)
+    public function process(string $task, string $filename='')
     {
 
-        $filename=json_decode(urldecode(Functions::getParam('param', 'string', '', true)));
+        if ($filename==='') {
+            $filename=json_decode(urldecode(Functions::getParam('param', 'string', '', true)));
+        }
 
         if ($filename!='') {
             $filename=\AeSecure\Files::sanitizeFileName(trim($filename));

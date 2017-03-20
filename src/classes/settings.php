@@ -54,9 +54,10 @@ class Settings
         return self::$instance;
     } // function getInstance()
 
-    /**
+  /**
     * Read the user's settings i.e. the file "settings.json"
     * Initialize class properties
+    * @return {bool [description]
     */
     private function readSettings() : bool
     {
@@ -184,8 +185,7 @@ class Settings
      * @param  bool $addVersionNumber
      * @return string
      */
-    public function getAppName(bool $addVersionNumber = false) : string
-    {
+    public function getAppName(bool $addVersionNumber = false) : string {
         $name=APP_NAME;
         if ($addVersionNumber) {
             $name.=' v.'.self::getPackageInfo('version');
@@ -207,6 +207,7 @@ class Settings
     {
         return $this->language;
     }
+
     public function setLanguage(string $lang)
     {
 
@@ -224,8 +225,7 @@ class Settings
         return $this->debugmode ? true : false;
     } // function getDebugMode()
 
-    public function setDebugMode(bool $onOff)
-    {
+    public function setDebugMode(bool $onOff) {
 
         $this->debugmode=false;
         error_reporting(0);
@@ -246,6 +246,7 @@ class Settings
     {
         return $this->devmode ? true : false;
     } // function getDevMode()
+
     /**
      * Set the developper mode
      *
@@ -258,8 +259,10 @@ class Settings
 
         /*<!-- build:debug -->*/
         // Only when the development mode is enabled, include php_error library to make life easier
-        if ($onOff) {
-            if (\AeSecure\Files::fileExists($lib = $this->getFolderLibs().'php_error'.DS.'php_error.php')) {
+        if ($onOff)
+        {
+            if (\AeSecure\Files::fileExists($lib = $this->getFolderLibs().'php_error'.DS.'php_error.php'))
+            {
                 // Seems to not work correctly with ajax; the return JSON isn't correctly understand by JS
                 $options = array(
                   // Don't enable ajax is not ajax call
@@ -287,6 +290,7 @@ class Settings
     {
         return $this->folderAppRoot;
     }
+
     public function setFolderAppRoot($folder)
     {
 
@@ -310,6 +314,7 @@ class Settings
     {
         return ($absolute?$this->getFolderWebRoot():'').$this->folderDocs;
     } // function getFolderDocs
+
     public function setFolderDocs($folder)
     {
 
@@ -321,6 +326,7 @@ class Settings
 
         $this->folderDocs = $folder;
     } // function setFolderDocs
+
     /**
      * Return the root folder of the website (f.i. 'C:\Repository\notes\')
      *
@@ -330,6 +336,7 @@ class Settings
     {
         return $this->folderWebRoot;
     } // function getFolderWebRoot()
+
     public function setFolderWebRoot(string $folder)
     {
         $this->folderWebRoot=rtrim($folder, DS).DS;
@@ -339,10 +346,12 @@ class Settings
     {
         return $this->getFolderAppRoot().'libs'.DS;
     }
+
     public function getFolderTasks() : string
     {
         return $this->getFolderAppRoot().'classes'.DS.'tasks'.DS;
     }
+
     public function getFolderTemplates() : string
     {
         return $this->getFolderAppRoot().'templates'.DS;
@@ -562,7 +571,8 @@ class Settings
             }
         }
 
-        return $bReturn;
+        return $bReturn ? true : false;
+
     } // function getTreeOpened()
 
     /**
@@ -629,25 +639,6 @@ class Settings
 
         return $sReturn;
     } // function getEncryptionMethod()
-
-    /**
-     * When displaying a .md file, generate and store its .html rendering
-     *
-     * @return bool
-     */
-    public function getSaveHTML() : bool
-    {
-
-        $bReturn=OUTPUT_HTML;
-
-        if (isset($this->json['export'])) {
-            if (isset($this->json['export']['save_html'])) {
-                $bReturn=($this->json['export']['save_html']==1?true:false);
-            }
-        }
-
-        return $bReturn;
-    } // function getSaveHTML()
 
     /**
      * Allow editions ?

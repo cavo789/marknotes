@@ -1,10 +1,21 @@
 # Changelog - Markdown
 
-https://github.com/cavo789/markdown
+[https://github.com/cavo789/markdown](https://github.com/cavo789/markdown)
+
+
+## 1.0.6
+
+### 2017-0x-xx
+
+```diff
++ Add a router (accessing to http://localhost/notes/docs/Development/atom/Plugins.html will display the html rendering of the docs/Development/atom/Plugins.md page even if the .html file doesn't exists)
+- Remove fatal error "Call to undefined function AeSecure\mcrypt_get_iv_size()", mcrypt_get_iv_size is a global function loaded by php and not part of the AeSecure namespace.
+- Remove bug of not refreshing the Treeview after a folder/note creation (right-click on the treeview); use localStorage bypass.
+```
 
 ## 1.0.5
 
-### 2017-02-xx
+### 2017-03-18
 
 ```diff
 + Add right clic on the treeview : allow to create new folder/note, remove folder/note or rename them
@@ -86,7 +97,7 @@ https://github.com/cavo789/markdown
 
 ### 2017-01-20
 ```diff
-+ Edit mode 
++ Edit mode
 + Sanitize filename
 + Add .htaccess security, no script execution in /docs
 ```
@@ -163,7 +174,7 @@ https://github.com/cavo789/markdown
 
 ### 2017-01-09
 ```diff
-+ Add support of links toward another notes 
++ Add support of links toward another notes
 + Add the copy the link in the clipboard feature
 ```
 
@@ -204,7 +215,7 @@ https://github.com/cavo789/markdown
 
 ### 2016-12-21
 ```diff
-+ Add search functionality, add comments, add custom.css, 
++ Add search functionality, add comments, add custom.css,
 + Add change a few css to try to make things clearer, force links (<a href="">) to be opened in a new tab
 ```
 

@@ -32,13 +32,13 @@ class Encrypt
             $this->method=$method;
         }
 
-          // Dynamically generate an "IV" i.eI and initialization vector that will ensure cypher to be unique
-          // (http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
-          // And concatenate that "IV" to the encrypted texte
+        // Dynamically generate an "IV" i.eI and initialization vector that will ensure cypher to be unique
+        // (http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
+        // And concatenate that "IV" to the encrypted texte
 
-          $iv_size = @mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-          $this->iv= @mcrypt_create_iv($iv_size, MCRYPT_RAND);
-          ;
+        $iv_size = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $this->iv= @\mcrypt_create_iv($iv_size, MCRYPT_RAND);
+
     } // function __construct()
 
     /**
@@ -58,7 +58,7 @@ class Encrypt
         }
 
         if (function_exists('openssl_encrypt')) {
-            return urlencode($this->iv.openssl_encrypt(urlencode($data), $this->method, $password, 0, $this->iv));
+            return urlencode($this->iv.\openssl_encrypt(urlencode($data), $this->method, $password, 0, $this->iv));
         } else {
             return urlencode(
                 $this->iv.exec(
@@ -85,11 +85,11 @@ class Encrypt
 
         $tmp=urldecode($data);
 
-        $iv_size = @mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv_size = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $iv = substr($tmp, 0, $iv_size);
 
         if (function_exists('openssl_decrypt')) {
-            return trim(urldecode(openssl_decrypt(substr($tmp, $iv_size), $this->method, $password, 0, $iv)));
+            return trim(urldecode(\openssl_decrypt(substr($tmp, $iv_size), $this->method, $password, 0, $iv)));
         } else {
             return trim(
                 urldecode(

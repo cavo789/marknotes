@@ -281,7 +281,7 @@ function jstree_CRUD_node(e, data, $task) {
 
 	/*<!-- build:debug -->*/
 	if (markdown.settings.debug) {
-		console.log('jstree_CRUD_node');
+		console.log('jstree_CRUD_node, task=' + $task);
 	}
 	/*<!-- endbuild -->*/
 
@@ -337,10 +337,10 @@ function jstree_CRUD_node(e, data, $task) {
  * @returns {undefined}
  */
 function jstree_show_status($data) {
-
+	console.log('jstree_show_status');
+	console.log($data);
 	if ($data.hasOwnProperty('status')) {
 		$status = $data.status;
-
 		if ($status == 1) {
 			Noty({
 				message: $data.msg,
@@ -354,7 +354,8 @@ function jstree_show_status($data) {
 
 				ajaxify({
 					task: 'listFiles',
-					callback: 'initFiles(data)'
+					callback: 'initFiles(data)',
+					useStore: false // After a creation, don't use the localStorage, we need to get the new list
 				});
 				Noty({
 					message: markdown.message.loading_tree,

@@ -8,25 +8,26 @@ class Functions
     /**
     * Return the current URL
     *
-    * @param  type $use_forwarded_host
-    * @param  type $bNoScriptName      If FALSE, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
-    *                                script name (f.i. remove index.php and parameters if any)
+    * @param  type $useURI        If true, use $_SERVER['REQUEST_URI'] otherwise use $_SERVER[PHP_SELF] 
+    *                             (can be /site/router.php and not http://localhost/site/folder/subfolder/file.html in case of URLs rewriting)
+    * @param  type $useScriptName  If false, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
+    *                              script name (f.i. remove index.php and parameters if any)
     * @return type string
     */
-    public static function getCurrentURL(bool $use_forwarded_host = false, bool $bNoScriptName = false) : string
+    public static function getCurrentURL(bool $useSELF = true, bool $useURI = false) : string
     {
         $ssl      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
         $sp       = strtolower($_SERVER['SERVER_PROTOCOL']);
         $protocol = substr($sp, 0, strpos($sp, '/')) . (($ssl)?'s':'');
         $port     = $_SERVER['SERVER_PORT'];
         $port     = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
-        $host     = ($use_forwarded_host && isset($_SERVER['HTTP_X_FORWARDED_HOST']))
-           ? $_SERVER['HTTP_X_FORWARDED_HOST']
-           : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
+        $host     =
+            (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
+            (($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');
+
         $host     = isset($host) ? $host : $_SERVER['SERVER_NAME'].$port;
 
-        return $protocol.'://'.$host.($bNoScriptName===true?dirname($_SERVER['REQUEST_URI']).
-           '/':$_SERVER['REQUEST_URI']);
+        return $protocol.'://'.$host.($useURI ? dirname($_SERVER['REQUEST_URI']) : dirname($_SERVER['PHP_SELF'])).'/';
     } // function getCurrentURL
 
     /**
@@ -45,18 +46,17 @@ class Functions
         int $maxsize = 0
     ) {
 
-
         $tmp='';
         $return=$default;
 
         if (isset($_POST[$name])) {
             if (in_array($type, array('int','integer'))) {
                 $return=filter_input(INPUT_POST, $name, FILTER_SANITIZE_NUMBER_INT);
-            } elseif ($type=='boolean') {
+            } elseif ($type==='boolean') {
                 // false = 5 characters
                 $tmp=substr(filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING), 0, 5);
                 $return=(in_array(strtolower($tmp), array('on','true')))?true:false;
-            } elseif ($type=='string') {
+            } elseif ($type==='string') {
                 $return=filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING);
                 if ($base64===true) {
                     $return=base64_decode($return);
@@ -64,7 +64,7 @@ class Functions
                 if ($maxsize>0) {
                     $return=substr($return, 0, $maxsize);
                 }
-            } elseif ($type=='unsafe') {
+            } elseif ($type==='unsafe') {
                 $return=$_POST[$name];
             }
         } else { // if (isset($_POST[$name]))
@@ -76,7 +76,7 @@ class Functions
                     // false = 5 characters
                     $tmp=substr(filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING), 0, 5);
                     $return=(in_array(strtolower($tmp), array('on','true')))?true:false;
-                } elseif ($type=='string') {
+                } elseif ($type==='string') {
                     $return=filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);
                     if ($base64===true) {
                         $return=base64_decode($return);
@@ -84,7 +84,7 @@ class Functions
                     if ($maxsize>0) {
                         $return=substr($return, 0, $maxsize);
                     }
-                } elseif ($type=='unsafe') {
+                } elseif ($type==='unsafe') {
                     $return=$_GET[$name];
                 }
             } // if (isset($_GET[$name]))
