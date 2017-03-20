@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-20T20:12:50.388Z
+* @package   : 2017-03-20T20:44:52.372Z
 */?>
 <?php
 
@@ -176,10 +176,10 @@ class Display
         $fnameHTMLrel=str_replace(str_replace('/', DS, $aeSettings->getFolderWebRoot()), '', $fnameHTML);
 
         // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-        $tmp = rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
+        $urlHTML = rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
 
         // Open new window icon
-        $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($tmp).
+        $icons.='<i id="icon_window" data-task="window" data-file="'.utf8_encode($urlHTML).
            '" class="fa fa-external-link" aria-hidden="true" title="'.$aeSettings->getText('open_html', 'Open in a new window').'"></i>';
 
         // Edit icon : only if an editor has been defined
@@ -278,7 +278,7 @@ class Display
                 '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'"></i>'.
                 '<i id="icon_pdf" data-task="pdf" data-file="'.$params['filename'].'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
                 '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
-                '<i id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($tmp).'?format=slides" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
+                '<i id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($urlHTML).'?format=slides" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
                 $icons.
                 '<i id="icon_settings_clear" data-task="settings" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
             '</div>';
