@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-20T21:07:15.884Z
+* @package   : 2017-03-21T22:24:08.036Z
 */?>
 <?php
 
@@ -20,7 +20,6 @@ class Save
     public static function run(array $params)
     {
 
-        $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $return=array();

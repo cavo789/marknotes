@@ -7,12 +7,12 @@ class PDF
     public static function run(array $params)
     {
 
+        if (!class_exists('Debug')) {
+            include_once dirname(dirname(__FILE__)).'/debug.php';
+        }
+
         $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
-
-        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
 
         // If the filename doesn't mention the file's extension, add it.
         if (substr($params['filename'], -3)!='.md') {
@@ -32,9 +32,30 @@ class PDF
         );
 
         if (\AeSecure\Files::fileExists($fullname)) {
+
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                echo __FILE__.' - '.__LINE__;
+            }
+            /*<!-- endbuild -->*/
+
+            echo str_replace(
+                '%s',
+                '<strong>'.$fullname.'</strong>',
+                $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+            );
+
+            return false;
+
+        } else {
+
             $Domfolder=$aeSettings->getFolderLibs().'dompdf'.DS;
             if (\AeSecure\Files::fileExists($lib = $Domfolder.'autoload.inc.php')) {
-                $html=file_get_contents($fullname);
+
+
+                // Get the HTML rendering of the note
+                include_once TASKS.'display.php';
+                $html=\AeSecureMDTasks\Display::run($params);
 
                 // Replace external links to f.i. the Bootstrap CDN to local files
                 $matches=array();
@@ -51,6 +72,9 @@ class PDF
                 include_once $lib;
 
                 header('Content-Type: application/pdf');
+                header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+                header("Cache-Control: post-check=0, pre-check=0", false);
+                header("Pragma: no-cache");
 
                 $dompdf = new \Dompdf\Dompdf();
 
@@ -64,8 +88,10 @@ class PDF
                 header('Content-Type: text/plain; charset=utf-8');
                 die('The Dompdf library isn\'t installed'.($params['debug']?', file '.$lib.' is missing':''));
             } // if (file_exists($fullname))
+
         } // if (file_exists($fullname))
 
-        die();
+        return true;
+
     } // function Run()
 } // class PDF

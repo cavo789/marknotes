@@ -11,7 +11,6 @@ class Save
     public static function run(array $params)
     {
 
-        $aeDebug=\AeSecure\Debug::getInstance();
         $aeSettings=\AeSecure\Settings::getInstance();
 
         $return=array();

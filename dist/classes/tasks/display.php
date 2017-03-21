@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-20T21:07:15.881Z
+* @package   : 2017-03-21T22:24:08.032Z
 */?>
 <?php
 
@@ -102,9 +102,7 @@ class Display
         } // \AeSecure\Files::fileExists($template)
 
         header('Content-Type: text/html; charset=utf-8');
-        echo $html;
-
-        return;
+        return $html;
 
     }  // function showHTML()
 
@@ -128,6 +126,9 @@ class Display
         );
 
         if (!file_exists($fullname)) {
+
+            /**/
+
             echo str_replace(
                 '%s',
                 '<strong>'.$fullname.'</strong>',
@@ -207,7 +208,7 @@ class Display
         // Check if the .html version of the markdown file already exists; if not, create it
         if (!\AeSecure\Functions::isAjaxRequest()) {
 
-            self::showHTML($html);
+            return self::showHTML($html);
 
         } else {
 
@@ -276,7 +277,7 @@ class Display
                 '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.$aeSettings->getText('refresh', 'Refresh', true).'"></i>'.
                 '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'"></i>'.
                 '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'"></i>'.
-                '<i id="icon_pdf" data-task="pdf" data-file="'.$params['filename'].'" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
+                '<i id="icon_pdf" data-task="pdf" data-file="'.utf8_encode($urlHTML).'?format=pdf" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
                 '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
                 '<i id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($urlHTML).'?format=slides" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
                 $icons.

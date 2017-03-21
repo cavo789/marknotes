@@ -345,7 +345,7 @@ function initializeTasks() {
 		var $fname = ($(this).attr('data-file') ? $(this).data('file') : '');
 		var $tag = ($(this).attr('data-tag') ? $(this).data('tag').replace('\\', '/') : '');
 
-		var $arrNoCrypt = ['slideshow', 'window'];
+		var $arrNoCrypt = ['pdf', 'slideshow', 'window'];
 		if (($fname !== '') && (jQuery.inArray($task, $arrNoCrypt) === -1)) {
 			// Don't base64 the filename when the tasks are 'slideshow' or 'window'
 			$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
@@ -437,14 +437,7 @@ function initializeTasks() {
 
 			case 'pdf':
 
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('PDF -> generate a pdf rendenring of the note');
-				}
-				/*<!-- endbuild -->*/
-
-				window.open('index.php?task=pdf&param=' + $fname);
-
+				window.open($fname);
 				break;
 
 			case 'printer':

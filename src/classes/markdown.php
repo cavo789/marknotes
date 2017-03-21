@@ -91,7 +91,7 @@ class Markdown
                 // Display the HTML rendering of a note
 
                 include_once TASKS.'display.php';
-                \AeSecureMDTasks\Display::run(array('filename'=>$filename));
+                echo \AeSecureMDTasks\Display::run(array('filename'=>$filename));
                 break;
 
             case 'edit':

@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-20T21:07:15.872Z
+* @package   : 2017-03-21T22:24:08.023Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -100,7 +100,7 @@ class Markdown
                 // Display the HTML rendering of a note
 
                 include_once TASKS.'display.php';
-                \AeSecureMDTasks\Display::run(array('filename'=>$filename));
+                echo \AeSecureMDTasks\Display::run(array('filename'=>$filename));
                 break;
 
             case 'edit':

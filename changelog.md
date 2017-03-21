@@ -8,7 +8,10 @@
 ### 2017-0x-xx
 
 ```diff
-+ Add a router (accessing to http://localhost/notes/docs/Development/atom/Plugins.html will display the html rendering of the docs/Development/atom/Plugins.md page even if the .html file doesn't exists)
++ Add a router
+   + accessing to http://localhost/notes/docs/Development/atom/Plugins.html will display the html rendering of the docs/Development/atom/Plugins.md page even if the .html file doesn't exists) (?format=html is the default format)
+   + ?format=slides will display a slideshow version
+   + ?format=pdf will download a PDF version
 - Remove fatal error "Call to undefined function AeSecure\mcrypt_get_iv_size()", mcrypt_get_iv_size is a global function loaded by php and not part of the AeSecure namespace.
 - Remove bug of not refreshing the Treeview after a folder/note creation (right-click on the treeview); use localStorage bypass.
 ```
