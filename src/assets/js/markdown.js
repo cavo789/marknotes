@@ -47,43 +47,58 @@ Array.prototype.unique = function() {
 
 // http://stackoverflow.com/a/2593661/1065340
 RegExp.quote = function(str) {
-	return (str + '').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
+	return (str + '')
+		.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
 };
 
-$(document).ready(function() {
+$(document)
+	.ready(function() {
 
-	// On page entry, get the list of .md files on the server
-	Noty({
-		message: markdown.message.loading_tree,
-		type: 'info'
-	});
-	ajaxify({
-		task: 'listFiles',
-		dataType: 'json',
-		callback: 'initFiles(data)',
-		useStore: markdown.settings.use_localcache
-	});
+		// On page entry, get the list of .md files on the server
+		Noty({
+			message: markdown.message.loading_tree,
+			type: 'info'
+		});
+		ajaxify({
+			task: 'listFiles',
+			dataType: 'json',
+			callback: 'initFiles(data)',
+			useStore: markdown.settings.use_localcache
+		});
 
-	// Size correctly depending on screen resolution
-	$('#TDM').css('max-height', $(window).height() - 30);
-	$('#TDM').css('min-height', $(window).height() - 30);
+		// Size correctly depending on screen resolution
+		$('#TDM')
+			.css('max-height', $(window)
+				.height() - 30);
+		$('#TDM')
+			.css('min-height', $(window)
+				.height() - 30);
 
-	// Maximise the width of the table of contents i.e. the array with the list of files
-	//$('#TOC').css('width', $('#TDM').width()-5);
-	//$('#search').css('width', $('#TDM').width()-5);
+		// Maximise the width of the table of contents i.e. the array with the list of files
+		//$('#TOC').css('width', $('#TDM').width()-5);
+		//$('#search').css('width', $('#TDM').width()-5);
 
-	$('#CONTENT').css('max-height', $(window).height() - 10);
-	$('#CONTENT').css('min-height', $(window).height() - 10);
-	//$('#CONTENT').css('width', $('#CONTENT').width()-5);
+		$('#CONTENT')
+			.css('max-height', $(window)
+				.height() - 10);
+		$('#CONTENT')
+			.css('min-height', $(window)
+				.height() - 10);
+		//$('#CONTENT').css('width', $('#CONTENT').width()-5);
 
-	// When the user will exit the field, call the onChangeSearch function to fire the search
-	$('#search').change(function(e) {
-		$('#TOC').jstree(true).show_all();
-		$('#TOC').jstree('search', $(this).val());
-		//     onChangeSearch();
-	});
+		// When the user will exit the field, call the onChangeSearch function to fire the search
+		$('#search')
+			.change(function(e) {
+				$('#TOC')
+					.jstree(true)
+					.show_all();
+				$('#TOC')
+					.jstree('search', $(this)
+						.val());
+				//     onChangeSearch();
+			});
 
-}); // $( document ).ready()
+	}); // $( document ).ready()
 
 /**
  * Run an ajax query
@@ -153,7 +168,8 @@ function ajaxify($params) {
 
 		$.ajax({
 			beforeSend: function() {
-				$($target).html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">' + markdown.message.pleasewait + '</span></div>');
+				$($target)
+					.html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">' + markdown.message.pleasewait + '</span></div>');
 			}, // beforeSend()
 			async: true,
 			cache: false,
@@ -168,7 +184,8 @@ function ajaxify($params) {
 				}
 
 				if ($params.dataType === 'html') {
-					$($target).html(data);
+					$($target)
+						.html(data);
 				}
 
 				/* jshint ignore:start */
@@ -203,15 +220,19 @@ function addSearchEntry($entry) {
 
 	$bReset = (($entry.reset === 'undefined') ? false : $entry.reset);
 
-	$current = $('#search').val().trim();
+	$current = $('#search')
+		.val()
+		.trim();
 
 	if (($current !== '') && ($bReset === false)) {
 		// Append the new keyword only when bReset is not set or set to False
 		var values = $current.split(',');
 		values.push($entry.keyword);
-		$('#search').val(values.join(','));
+		$('#search')
+			.val(values.join(','));
 	} else {
-		$('#search').val($entry.keyword);
+		$('#search')
+			.val($entry.keyword);
 	}
 
 	return true;
@@ -267,17 +288,18 @@ function initFiles($data) {
 	// initialize the search area, thanks to the Flexdatalist plugin
 
 	if ($.isFunction($.fn.flexdatalist)) {
-		$('.flexdatalist').flexdatalist({
-			toggleSelected: true,
-			minLength: 2,
-			valueProperty: 'id',
-			selectionRequired: false,
-			visibleProperties: ["name", "type"],
-			searchIn: 'name',
-			data: 'index.php?task=tags',
-			focusFirstResult: true,
-			noResultsText: markdown.message.search_no_result
-		});
+		$('.flexdatalist')
+			.flexdatalist({
+				toggleSelected: true,
+				minLength: 3,
+				valueProperty: 'id',
+				selectionRequired: false,
+				visibleProperties: ["name", "type"],
+				searchIn: 'name',
+				data: 'index.php?task=tags',
+				focusFirstResult: true,
+				noResultsText: markdown.message.search_no_result
+			});
 
 		// Add automatic filtering if defined in the settings.json file
 		if (markdown.settings.auto_tags !== '') {
@@ -287,12 +309,19 @@ function initFiles($data) {
 		}
 	} // if ($.isFunction($.fn.flexdatalist))
 
-	$('#search').css('width', $('#TDM').width() - 5);
-	$('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width() - 10).show();
+	$('#search')
+		.css('width', $('#TDM')
+			.width() - 5);
+	$('.flexdatalist-multiple')
+		.css('width', $('.flexdatalist-multiple')
+			.parent()
+			.width() - 10)
+		.show();
 
 	// Interface : put the cursor immediatly in the edit box
 	try {
-		$('#search-flexdatalist').focus();
+		$('#search-flexdatalist')
+			.focus();
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -331,167 +360,177 @@ function initializeTasks() {
 	// Initialise print preview plugin, should be done before clicking on the button
 	if ($.isFunction($.fn.printPreview)) {
 		try {
-			$('[data-task="printer"]').printPreview();
+			$('[data-task="printer"]')
+				.printPreview();
 		} catch (err) {
 			console.warn(err.message);
 		}
 	}
 
 	// Get all DOM objects having a data-task attribute
-	$("[data-task]").click(function() {
+	$("[data-task]")
+		.click(function() {
 
-		var $task = $(this).data('task');
+			var $task = $(this)
+				.data('task');
 
-		var $fname = ($(this).attr('data-file') ? $(this).data('file') : '');
-		var $tag = ($(this).attr('data-tag') ? $(this).data('tag').replace('\\', '/') : '');
+			var $fname = ($(this)
+				.attr('data-file') ? $(this)
+				.data('file') : '');
+			var $tag = ($(this)
+				.attr('data-tag') ? $(this)
+				.data('tag')
+				.replace('\\', '/') : '');
 
-		var $arrNoCrypt = ['pdf', 'slideshow', 'window'];
-		if (($fname !== '') && (jQuery.inArray($task, $arrNoCrypt) === -1)) {
-			// Don't base64 the filename when the tasks are 'slideshow' or 'window'
-			$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
-		}
+			var $arrNoCrypt = ['pdf', 'slideshow', 'window'];
+			if (($fname !== '') && (jQuery.inArray($task, $arrNoCrypt) === -1)) {
+				// Don't base64 the filename when the tasks are 'slideshow' or 'window'
+				$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
+			}
 
-		switch ($task) {
+			switch ($task) {
 
-			case 'clipboard':
+				case 'clipboard':
 
-				// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Clipboard -> copy the link of the current note in the clipboard');
-				}
-				/*<!-- endbuild -->*/
+					// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Clipboard -> copy the link of the current note in the clipboard');
+					}
+					/*<!-- endbuild -->*/
 
-				if (typeof Clipboard === 'function') {
-					var clipboard = new Clipboard('*[data-task="clipboard"]');
-					clipboard.on('success', function(e) {
-						e.clearSelection();
+					if (typeof Clipboard === 'function') {
+						var clipboard = new Clipboard('*[data-task="clipboard"]');
+						clipboard.on('success', function(e) {
+							e.clearSelection();
+						});
+						Noty({
+							message: markdown.message.copy_clipboard_done,
+							type: 'success'
+						});
+					} else {
+						$(this)
+							.remove();
+					}
+					break;
+
+				case 'display':
+
+					// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Display -> show note [' + $fname + ']');
+					}
+					/*<!-- endbuild -->*/
+					ajaxify({
+						task: $task,
+						param: $fname,
+						callback: 'afterDisplay($data.param)',
+						target: 'CONTENT'
 					});
-					Noty({
-						message: markdown.message.copy_clipboard_done,
-						type: 'success'
+					break;
+
+				case 'edit':
+
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Edit -> show the editor and the source markdown file)');
+					}
+					/*<!-- endbuild -->*/
+
+					ajaxify({
+						task: $task,
+						param: $fname,
+						callback: 'afterEdit($data.param)',
+						target: 'CONTENT'
 					});
-				} else {
-					$(this).remove();
-				}
-				break;
 
-			case 'display':
+					break;
 
-				// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Display -> show note [' + $fname + ']');
-				}
-				/*<!-- endbuild -->*/
-				ajaxify({
-					task: $task,
-					param: $fname,
-					callback: 'afterDisplay($data.param)',
-					target: 'CONTENT'
-				});
-				break;
+				case 'fullscreen':
 
-			case 'edit':
+					toggleFullScreen();
 
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Edit -> show the editor and the source markdown file)');
-				}
-				/*<!-- endbuild -->*/
+					break;
 
-				ajaxify({
-					task: $task,
-					param: $fname,
-					callback: 'afterEdit($data.param)',
-					target: 'CONTENT'
-				});
+				case 'link_note':
 
-				break;
+					// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Clipboard -> copy the link of the current note in the clipboard');
+					}
+					/*<!-- endbuild -->*/
 
-			case 'fullscreen':
+					if (typeof Clipboard === 'function') {
+						new Clipboard('*[data-task="link_note"]');
+						Noty({
+							message: markdown.message.copy_link_done,
+							type: 'success'
+						});
+					} else {
+						$(this)
+							.remove();
+					}
+					break;
 
-				toggleFullScreen();
+				case 'pdf':
 
-				break;
+					window.open($fname);
+					break;
 
-			case 'link_note':
+				case 'printer':
+					/*<!-- build:debug -->*/
+					//if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
+					/*<!-- endbuild -->*/
+					break;
 
-				// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Clipboard -> copy the link of the current note in the clipboard');
-				}
-				/*<!-- endbuild -->*/
+				case 'settings':
 
-				if (typeof Clipboard === 'function') {
-					new Clipboard('*[data-task="link_note"]');
-					Noty({
-						message: markdown.message.copy_link_done,
-						type: 'success'
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Settings');
+					}
+					/*<!-- endbuild -->*/
+
+					ajaxify({
+						task: 'clean',
+						callback: 'afterClean(data)'
 					});
-				} else {
-					$(this).remove();
-				}
-				break;
 
-			case 'pdf':
+					break;
 
-				window.open($fname);
-				break;
+				case 'slideshow':
 
-			case 'printer':
-				/*<!-- build:debug -->*/
-				//if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
-				/*<!-- endbuild -->*/
-				break;
+					window.open($fname); // $fname is something like folder/subfolder/hotes.html?format=slides i.e. with the ?format=slides parameter
+					break;
 
-			case 'settings':
+				case 'tag':
 
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Settings');
-				}
-				/*<!-- endbuild -->*/
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Tag -> filter on [' + $tag + ']');
+					}
+					/*<!-- endbuild -->*/
 
-				ajaxify({
-					task: 'clean',
-					callback: 'afterClean(data)'
-				});
+					addSearchEntry({
+						keyword: $tag,
+						reset: true
+					});
+					break;
 
-				break;
+				case 'window':
 
-			case 'slideshow':
+					window.open($fname);
+					break;
 
-				window.open($fname); // $fname is something like folder/subfolder/hotes.html?format=slides i.e. with the ?format=slides parameter
-				break;
+				default:
 
-			case 'tag':
+					console.warn('Sorry, unknown task [' + $task + ']');
 
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Tag -> filter on [' + $tag + ']');
-				}
-				/*<!-- endbuild -->*/
+			} // switch($task)
 
-				addSearchEntry({
-					keyword: $tag,
-					reset: true
-				});
-				break;
-
-			case 'window':
-
-				window.open($fname);
-				break;
-
-			default:
-
-				console.warn('Sorry, unknown task [' + $task + ']');
-
-		} // switch($task)
-
-	}); // $("[data-task]").click(function()
+		}); // $("[data-task]").click(function()
 
 	return true;
 
@@ -543,7 +582,8 @@ function replaceLinksToOtherNotes() {
 		}
 		/*<!-- endbuild -->*/
 
-		var $text = $('#CONTENT').html();
+		var $text = $('#CONTENT')
+			.html();
 
 		// Retrieve the URL of this page but only the host and script name, no querystring parameter (f.i. "http://localhost:8080/notes/index.php")
 		var $currentURL = location.protocol + '//' + location.host + location.pathname;
@@ -568,7 +608,8 @@ function replaceLinksToOtherNotes() {
 		} // while
 
 		// Set the new page content
-		$('#CONTENT').html($text);
+		$('#CONTENT')
+			.html($text);
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -584,7 +625,8 @@ function replaceLinksToOtherNotes() {
  */
 function addLinksToTags() {
 
-	var $text = $('#CONTENT').html();
+	var $text = $('#CONTENT')
+		.html();
 
 	// markdown.settings.prefix_tag is set by markdown.php and, by default, equal to §
 	// Every words prefixed by § will be considered as a tag just like "#word" in social network.
@@ -625,7 +667,8 @@ function addLinksToTags() {
 		} // while
 
 		// Set the new page content
-		$('#CONTENT').html($text);
+		$('#CONTENT')
+			.html($text);
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -641,7 +684,9 @@ function forceNewWindow() {
 
 	var $currentURL = location.protocol + '//' + location.host;
 
-	$('a[href^="http:"], a[href^="https:"]').not('[href^="' + $currentURL + '/"]').attr('target', '_blank');
+	$('a[href^="http:"], a[href^="https:"]')
+		.not('[href^="' + $currentURL + '/"]')
+		.attr('target', '_blank');
 
 	return true;
 
@@ -653,38 +698,55 @@ function forceNewWindow() {
 function addIcons() {
 
 	try {
-		$("a").each(function() {
+		$("a")
+			.each(function() {
 
-			$href = $(this).attr("href");
-			$sAnchor = $(this).text();
+				$href = $(this)
+					.attr("href");
+				$sAnchor = $(this)
+					.text();
 
-			if (/\.doc[x]?$/i.test($href)) {
-				// Word document
-				$sAnchor += '<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';
-				$(this).html($sAnchor).addClass('download');
-			} else if (/\.(log|md|markdown|txt)$/i.test($href)) {
-				// LOG - Open it in a new windows and not in the current one
-				$sAnchor += '<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';
-				$(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
-			} else if (/\.pdf$/i.test($href)) {
-				// PDF - Open it in a new windows and not in the current one
-				$sAnchor += '<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';
-				$(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
-			} else if (/\.ppt[x]?$/i.test($href)) {
-				// Powerpoint
-				$sAnchor += '<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';
-				$(this).html($sAnchor).addClass('download-link');
-			} else if (/\.xls[m|x]?$/i.test($href)) {
-				// Excel
-				$sAnchor += '<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';
-				$(this).html($sAnchor).addClass('download-link');
-			} else if (/\.(7z|gzip|tar|zip)$/i.test($href)) {
-				// Archive
-				$sAnchor += '<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';
-				$(this).html($sAnchor).addClass('download-link');
-			}
+				if (/\.doc[x]?$/i.test($href)) {
+					// Word document
+					$sAnchor += '<i class="icon_file fa fa-file-word-o" aria-hidden="true"></i>';
+					$(this)
+						.html($sAnchor)
+						.addClass('download');
+				} else if (/\.(log|md|markdown|txt)$/i.test($href)) {
+					// LOG - Open it in a new windows and not in the current one
+					$sAnchor += '<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';
+					$(this)
+						.html($sAnchor)
+						.addClass('download-link')
+						.attr('target', '_blank');
+				} else if (/\.pdf$/i.test($href)) {
+					// PDF - Open it in a new windows and not in the current one
+					$sAnchor += '<i class="icon_file fa fa-file-pdf-o" aria-hidden="true"></i>';
+					$(this)
+						.html($sAnchor)
+						.addClass('download-link')
+						.attr('target', '_blank');
+				} else if (/\.ppt[x]?$/i.test($href)) {
+					// Powerpoint
+					$sAnchor += '<i class="icon_file fa fa-file-powerpoint-o" aria-hidden="true"></i>';
+					$(this)
+						.html($sAnchor)
+						.addClass('download-link');
+				} else if (/\.xls[m|x]?$/i.test($href)) {
+					// Excel
+					$sAnchor += '<i class="icon_file fa fa-file-excel-o" aria-hidden="true"></i>';
+					$(this)
+						.html($sAnchor)
+						.addClass('download-link');
+				} else if (/\.(7z|gzip|tar|zip)$/i.test($href)) {
+					// Archive
+					$sAnchor += '<i class="icon_file fa fa-file-archive-o" aria-hidden="true"></i>';
+					$(this)
+						.html($sAnchor)
+						.addClass('download-link');
+				}
 
-		});
+			});
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -701,28 +763,32 @@ function addIcons() {
 function NiceTable() {
 
 	try {
-		$("table").each(function() {
-			$(this).addClass('table table-striped table-hover table-bordered');
+		$("table")
+			.each(function() {
+				$(this)
+					.addClass('table table-striped table-hover table-bordered');
 
-			if ($.isFunction($.fn.DataTable)) {
-				$(this).addClass('display');
-				$(this).DataTable({
-					scrollY: "50vh", // 50%
-					scrollCollapse: true,
-					info: true,
-					//order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
-					lengthMenu: [
-						[10, 25, 50, -1],
-						[10, 25, 50, "All"]
-					],
-					language: {
-						decimal: '.',
-						thousands: ',',
-						url: 'libs/DataTables/' + markdown.settings.language + '.json'
-					}
-				});
-			}
-		});
+				if ($.isFunction($.fn.DataTable)) {
+					$(this)
+						.addClass('display');
+					$(this)
+						.DataTable({
+							scrollY: "50vh", // 50%
+							scrollCollapse: true,
+							info: true,
+							//order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
+							lengthMenu: [
+								[10, 25, 50, -1],
+								[10, 25, 50, "All"]
+							],
+							language: {
+								decimal: '.',
+								thousands: ',',
+								url: 'libs/DataTables/' + markdown.settings.language + '.json'
+							}
+						});
+				}
+			});
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -739,10 +805,12 @@ function afterDisplay($fname) {
 	try {
 		// Remove functionnalities if jQuery librairies are not loaded
 		if (typeof Clipboard !== 'function') {
-			$('[data-task="clipboard"]').remove();
+			$('[data-task="clipboard"]')
+				.remove();
 		}
 		if (!$.isFunction($.fn.printPreview)) {
-			$('[data-task="printer"]').remove();
+			$('[data-task="printer"]')
+				.remove();
 		}
 
 		// Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
@@ -752,7 +820,8 @@ function afterDisplay($fname) {
 				console.log('linkify plain text');
 			}
 			/*<!-- endbuild -->*/
-			$('page').linkify();
+			$('page')
+				.linkify();
 		}
 
 		if (typeof Prism === 'object') {
@@ -778,26 +847,35 @@ function afterDisplay($fname) {
 		initializeTasks();
 
 		// Retrieve the heading 1 from the loaded file
-		var $title = $('#CONTENT h1').text();
+		var $title = $('#CONTENT h1')
+			.text();
 		if ($title !== '') {
-			$('title').text($title);
+			$('title')
+				.text($title);
 		}
 
-		$fname = $('div.filename').text();
+		$fname = $('div.filename')
+			.text();
 		if ($fname !== '') {
-			$('#footer').html('<strong style="text-transform:uppercase;">' + $fname + '</strong>');
+			$('#footer')
+				.html('<strong style="text-transform:uppercase;">' + $fname + '</strong>');
 		}
 
 		// Interface : put the cursor immediatly in the edit box
 		try {
-			$('#search').focus();
+			$('#search')
+				.focus();
 
 			// Get the searched keywords.  Apply the restriction on the size.
-			var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
+			var $searchKeywords = $('#search')
+				.val()
+				.substr(0, markdown.settings.search_max_width)
+				.trim();
 
 			if ($searchKeywords !== '') {
 				if ($.isFunction($.fn.highlight)) {
-					$("#CONTENT").highlight($searchKeywords);
+					$("#CONTENT")
+						.highlight($searchKeywords);
 				}
 			}
 		} catch (err) {
@@ -817,7 +895,9 @@ function afterDisplay($fname) {
 	}
 
 	// Just for esthetics purposes
-	$('#CONTENT').fadeOut(1).fadeIn(3);
+	$('#CONTENT')
+		.fadeOut(1)
+		.fadeIn(3);
 
 	return true;
 
@@ -863,7 +943,9 @@ function afterEdit($fname) {
 				// Add a custom button for saving
 				name: "Exit",
 				action: function customFunction(editor) {
-					$('#sourceMarkDown').parent().hide();
+					$('#sourceMarkDown')
+						.parent()
+						.hide();
 					ajaxify({
 						task: 'display',
 						param: $fname,
@@ -880,7 +962,8 @@ function afterEdit($fname) {
 		] // toolbar
 	});
 
-	$('.editor-toolbar').addClass('fa-2x');
+	$('.editor-toolbar')
+		.addClass('fa-2x');
 
 	/*
 	 var editor = new Editor({
@@ -948,7 +1031,10 @@ function onChangeSearch() {
 
 	try {
 		// Get the searched keywords.  Apply the restriction on the size.
-		var $searchKeywords = $('#search').val().substr(0, markdown.settings.search_max_width).trim();
+		var $searchKeywords = $('#search')
+			.val()
+			.substr(0, markdown.settings.search_max_width)
+			.trim();
 
 		var $bContinue = true;
 		// See if the customonChangeSearch() function has been defined and if so, call it
@@ -995,7 +1081,8 @@ function afterSearch($keywords, $data) {
 
 	try {
 		// Check if we've at least one file
-		if (Object.keys($data).length > 0) {
+		if (Object.keys($data)
+			.length > 0) {
 			if ($.isFunction($.fn.jstree)) {
 				// Get the list of files returned by the search : these files have matched th keyword
 				$files = $data.files;
@@ -1005,37 +1092,49 @@ function afterSearch($keywords, $data) {
 
 				$filename = '';
 
-				$('#TOC').jstree('open_all');
-				$.each($("#TOC").jstree('full').find("li"), function(index, element) {
+				$('#TOC')
+					.jstree('open_all');
+				$.each($("#TOC")
+					.jstree('full')
+					.find("li"),
+					function(index, element) {
 
-					$filename = $("#TOC").jstree(true).get_path(element, markdown.settings.DS); // DIRECTORY_SEPARATOR
+						$filename = $("#TOC")
+							.jstree(true)
+							.get_path(element, markdown.settings.DS); // DIRECTORY_SEPARATOR
 
-					// It's a file, not a folder : hide it
-					if ($(element).hasClass('jstree-leaf')) {
-						$(element).hide();
-					}
+						// It's a file, not a folder : hide it
+						if ($(element)
+							.hasClass('jstree-leaf')) {
+							$(element)
+								.hide();
+						}
 
-					// Get the node associated filename
+						// Get the node associated filename
 
-					if ($filename !== '') {
-						// Now, check if the file is mentionned in the result, if yes, show the row back
+						if ($filename !== '') {
+							// Now, check if the file is mentionned in the result, if yes, show the row back
 
-						$.each($files, function($key, $value) {
+							$.each($files, function($key, $value) {
 
-							if ($(element).hasClass('jstree-leaf')) {
-								if ($value === $filename + '.md') {
-									$(element).addClass('highlight').show();
+								if ($(element)
+									.hasClass('jstree-leaf')) {
+									if ($value === $filename + '.md') {
+										$(element)
+											.addClass('highlight')
+											.show();
 
-									// Automatically open the node (and parents if needed) and select the node
-									$('#TOC').jstree('select_node', element);
+										// Automatically open the node (and parents if needed) and select the node
+										$('#TOC')
+											.jstree('select_node', element);
+									}
+									// return false;  // break
 								}
-								// return false;  // break
-							}
 
-						}); // $.each($files)
-					} // if ($filename!=='')
+							}); // $.each($files)
+						} // if ($filename!=='')
 
-				}); // $.each($("#TOC").jstree('full')
+					}); // $.each($("#TOC").jstree('full')
 
 				// -------------------------------------------------
 				// PROBABLY NOT EFFICIENT
@@ -1046,53 +1145,68 @@ function afterSearch($keywords, $data) {
 				// Idea is to keep the treeview the most compact as possible (if a root node contains 20 children,
 				// with children too, ... and no files have been selected so just close the rood node immediatly)
 
-				$.each($("#TOC").jstree('full').find("li"), function(index, element) {
-					// If the node was not selected (i.e. has the "highlight" class), close the node
-					if (!$(element).hasClass('highlight')) {
-						$('#TOC').jstree('hide_node', element);
-					}
-				});
+				$.each($("#TOC")
+					.jstree('full')
+					.find("li"),
+					function(index, element) {
+						// If the node was not selected (i.e. has the "highlight" class), close the node
+						if (!$(element)
+							.hasClass('highlight')) {
+							$('#TOC')
+								.jstree('hide_node', element);
+						}
+					});
 
-				$.each($("#TOC").jstree('full').find("li"), function(index, element) {
+				$.each($("#TOC")
+					.jstree('full')
+					.find("li"),
+					function(index, element) {
 
-					// Now, for each node with the "highlight" class, be sure that each parents are opened
-					if ($(element).hasClass('highlight')) {
-						$("#TOC").jstree('open_node', element, function(e, d) {
-							for (var i = 0; i < e.parents.length; i++) {
-								$("#TOC").jstree('show_node', e.parents[i]);
-							}
-						});
-					} // if($(element).hasClass('highlight'))
-				});
+						// Now, for each node with the "highlight" class, be sure that each parents are opened
+						if ($(element)
+							.hasClass('highlight')) {
+							$("#TOC")
+								.jstree('open_node', element, function(e, d) {
+									for (var i = 0; i < e.parents.length; i++) {
+										$("#TOC")
+											.jstree('show_node', e.parents[i]);
+									}
+								});
+						} // if($(element).hasClass('highlight'))
+					});
 
 				//
 				// -------------------------------------------------
 			} else { // if ($.isFunction($.fn.jstree)){
 
 				// Process every rows of the tblFiles array => process every files
-				$('#tblFiles > tbody  > tr > td').each(function() {
+				$('#tblFiles > tbody  > tr > td')
+					.each(function() {
 
-					// Be sure to process only cells with the data-file attribute.
-					// That attribute contains the filename, not encoded
-					if ($(this).attr('data-file')) {
-						// Get the filename (is relative like /myfolder/filename.md)
-						$filename = $(this).data('file');
-						$tr = $(this).parent();
+						// Be sure to process only cells with the data-file attribute.
+						// That attribute contains the filename, not encoded
+						if ($(this)
+							.attr('data-file')) {
+							// Get the filename (is relative like /myfolder/filename.md)
+							$filename = $(this)
+								.data('file');
+							$tr = $(this)
+								.parent();
 
-						// Default : hide the filename
-						$tr.hide();
+							// Default : hide the filename
+							$tr.hide();
 
-						// Now, check if the file is mentionned in the result, if yes, show the row back
-						$.each($data, function() {
-							$.each(this, function($key, $value) {
-								if ($value === $filename) {
-									$tr.show();
-									return false; // break
-								}
-							});
-						}); // $.each($data)
-					}
-				}); // $('#tblFiles > tbody  > tr > td')
+							// Now, check if the file is mentionned in the result, if yes, show the row back
+							$.each($data, function() {
+								$.each(this, function($key, $value) {
+									if ($value === $filename) {
+										$tr.show();
+										return false; // break
+									}
+								});
+							}); // $.each($data)
+						}
+					}); // $('#tblFiles > tbody  > tr > td')
 			} // if ($.isFunction($.fn.jstree)){
 		} else { // if (Object.keys($data['files']).length>0)
 
@@ -1107,19 +1221,29 @@ function afterSearch($keywords, $data) {
 
 				if ($.isFunction($.fn.jstree)) {
 					// jsTree plugin
-					$.each($('#TOC').jstree('full').find("li"), function(index, element) {
-						$(element).removeClass('highlight').show();
-					}); // $.each($("#TOC").jstree('full')
+					$.each($('#TOC')
+						.jstree('full')
+						.find("li"),
+						function(index, element) {
+							$(element)
+								.removeClass('highlight')
+								.show();
+						}); // $.each($("#TOC").jstree('full')
 
 					// And show the entire tree
-					$('#TOC').jstree('open_all');
+					$('#TOC')
+						.jstree('open_all');
 				} else { //  if ($.isFunction($.fn.jstree))
 
-					$('#tblFiles > tbody  > tr > td').each(function() {
-						if ($(this).attr('data-file')) {
-							$(this).parent().show();
-						}
-					});
+					$('#tblFiles > tbody  > tr > td')
+						.each(function() {
+							if ($(this)
+								.attr('data-file')) {
+								$(this)
+									.parent()
+									.show();
+							}
+						});
 				} //  if ($.isFunction($.fn.jstree))
 			} // if ($keywords!=='')
 		} // if (Object.keys($data).length>0)

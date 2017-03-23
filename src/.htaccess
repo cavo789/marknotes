@@ -14,10 +14,10 @@ RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
 
 <IfModule mod_rewrite.c>
 
-    # Block access to hidden files / folders
+    # Block access to hidden files / folders but allow .files, .images or .well)-known
     RewriteCond %{SCRIPT_FILENAME} -d [OR]
     RewriteCond %{SCRIPT_FILENAME} -f
-    RewriteRule "/\.|^\.(?!well-known/)" - [R=403,NC,L]
+    RewriteRule "(^|/)\.(?!(files|images|well-known))" - [R=403,NC,L]
 
     # Block access to somes files
     RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
