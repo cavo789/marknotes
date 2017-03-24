@@ -1,7 +1,7 @@
 /* global markdown, custominiFiles, customafterDisplay, customafterSearch */
 
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
-var QueryString = function() {
+var QueryString = function () {
 	// This function is anonymous, is executed immediately and
 	// the return value is assigned to QueryString!
 	var query_string = {};
@@ -26,7 +26,7 @@ var QueryString = function() {
 
 // http://stackoverflow.com/a/11247412
 // Check if an array contains a specific value
-Array.prototype.contains = function(v) {
+Array.prototype.contains = function (v) {
 	for (var i = 0; i < this.length; i++) {
 		if (this[i] === v) {
 			return true;
@@ -35,7 +35,7 @@ Array.prototype.contains = function(v) {
 	return false;
 };
 // Extract unique values of an array
-Array.prototype.unique = function() {
+Array.prototype.unique = function () {
 	var arr = [];
 	for (var i = 0; i < this.length; i++) {
 		if (!arr.contains(this[i])) {
@@ -46,13 +46,13 @@ Array.prototype.unique = function() {
 };
 
 // http://stackoverflow.com/a/2593661/1065340
-RegExp.quote = function(str) {
+RegExp.quote = function (str) {
 	return (str + '')
 		.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
 };
 
 $(document)
-	.ready(function() {
+	.ready(function () {
 
 		// On page entry, get the list of .md files on the server
 		Noty({
@@ -88,7 +88,7 @@ $(document)
 
 		// When the user will exit the field, call the onChangeSearch function to fire the search
 		$('#search')
-			.change(function(e) {
+			.change(function (e) {
 				$('#TOC')
 					.jstree(true)
 					.show_all();
@@ -167,7 +167,7 @@ function ajaxify($params) {
 		var $target = '#' + (($params.target === 'undefined') ? 'TDM' : $params.target);
 
 		$.ajax({
-			beforeSend: function() {
+			beforeSend: function () {
 				$($target)
 					.html('<div><span class="ajax_loading">&nbsp;</span><span style="font-style:italic;font-size:1.5em;">' + markdown.message.pleasewait + '</span></div>');
 			}, // beforeSend()
@@ -177,7 +177,7 @@ function ajaxify($params) {
 			url: markdown.url,
 			data: $data,
 			datatype: $params.dataType,
-			success: function(data) {
+			success: function (data) {
 
 				if ($useStore) {
 					store.set('task_' + $data.task, data);
@@ -369,7 +369,7 @@ function initializeTasks() {
 
 	// Get all DOM objects having a data-task attribute
 	$("[data-task]")
-		.click(function() {
+		.click(function () {
 
 			var $task = $(this)
 				.data('task');
@@ -390,143 +390,134 @@ function initializeTasks() {
 
 			switch ($task) {
 
-				case 'clipboard':
+			case 'clear':
 
-					// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-					/*<!-- build:debug -->*/
-					if (markdown.settings.debug) {
-						console.log('Clipboard -> copy the link of the current note in the clipboard');
-					}
-					/*<!-- endbuild -->*/
+				cleanCache();
 
-					if (typeof Clipboard === 'function') {
-						var clipboard = new Clipboard('*[data-task="clipboard"]');
-						clipboard.on('success', function(e) {
-							e.clearSelection();
-						});
-						Noty({
-							message: markdown.message.copy_clipboard_done,
-							type: 'success'
-						});
-					} else {
-						$(this)
-							.remove();
-					}
-					break;
+				break;
 
-				case 'display':
+			case 'clipboard':
 
-					// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
-					/*<!-- build:debug -->*/
-					if (markdown.settings.debug) {
-						console.log('Display -> show note [' + $fname + ']');
-					}
-					/*<!-- endbuild -->*/
-					ajaxify({
-						task: $task,
-						param: $fname,
-						callback: 'afterDisplay($data.param)',
-						target: 'CONTENT'
+				// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+				/*<!-- build:debug -->*/
+				if (markdown.settings.debug) {
+					console.log('Clipboard -> copy the link of the current note in the clipboard');
+				}
+				/*<!-- endbuild -->*/
+
+				if (typeof Clipboard === 'function') {
+					var clipboard = new Clipboard('*[data-task="clipboard"]');
+					clipboard.on('success', function (e) {
+						e.clearSelection();
 					});
-					break;
-
-				case 'edit':
-
-					/*<!-- build:debug -->*/
-					if (markdown.settings.debug) {
-						console.log('Edit -> show the editor and the source markdown file)');
-					}
-					/*<!-- endbuild -->*/
-
-					ajaxify({
-						task: $task,
-						param: $fname,
-						callback: 'afterEdit($data.param)',
-						target: 'CONTENT'
+					Noty({
+						message: markdown.message.copy_clipboard_done,
+						type: 'success'
 					});
+				} else {
+					$(this)
+						.remove();
+				}
+				break;
 
-					break;
+			case 'display':
 
-				case 'fullscreen':
+				// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
+				/*<!-- build:debug -->*/
+				if (markdown.settings.debug) {
+					console.log('Display -> show note [' + $fname + ']');
+				}
+				/*<!-- endbuild -->*/
+				ajaxify({
+					task: $task,
+					param: $fname,
+					callback: 'afterDisplay($data.param)',
+					target: 'CONTENT'
+				});
+				break;
 
-					toggleFullScreen();
+			case 'edit':
 
-					break;
+				/*<!-- build:debug -->*/
+				if (markdown.settings.debug) {
+					console.log('Edit -> show the editor and the source markdown file)');
+				}
+				/*<!-- endbuild -->*/
 
-				case 'link_note':
+				ajaxify({
+					task: $task,
+					param: $fname,
+					callback: 'afterEdit($data.param)',
+					target: 'CONTENT'
+				});
 
-					// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-					/*<!-- build:debug -->*/
-					if (markdown.settings.debug) {
-						console.log('Clipboard -> copy the link of the current note in the clipboard');
-					}
-					/*<!-- endbuild -->*/
+				break;
 
-					if (typeof Clipboard === 'function') {
-						new Clipboard('*[data-task="link_note"]');
-						Noty({
-							message: markdown.message.copy_link_done,
-							type: 'success'
-						});
-					} else {
-						$(this)
-							.remove();
-					}
-					break;
+			case 'fullscreen':
 
-				case 'pdf':
+				toggleFullScreen();
 
-					window.open($fname);
-					break;
+				break;
 
-				case 'printer':
-					/*<!-- build:debug -->*/
-					//if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
-					/*<!-- endbuild -->*/
-					break;
+			case 'link_note':
 
-				case 'settings':
+				// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+				/*<!-- build:debug -->*/
+				if (markdown.settings.debug) {
+					console.log('Clipboard -> copy the link of the current note in the clipboard');
+				}
+				/*<!-- endbuild -->*/
 
-					/*<!-- build:debug -->*/
-					if (markdown.settings.debug) {
-						console.log('Settings');
-					}
-					/*<!-- endbuild -->*/
-
-					ajaxify({
-						task: 'clean',
-						callback: 'afterClean(data)'
+				if (typeof Clipboard === 'function') {
+					new Clipboard('*[data-task="link_note"]');
+					Noty({
+						message: markdown.message.copy_link_done,
+						type: 'success'
 					});
+				} else {
+					$(this)
+						.remove();
+				}
+				break;
 
-					break;
+			case 'pdf':
 
-				case 'slideshow':
+				window.open($fname);
+				break;
 
-					window.open($fname); // $fname is something like folder/subfolder/hotes.html?format=slides i.e. with the ?format=slides parameter
-					break;
+			case 'printer':
+				/*<!-- build:debug -->*/
+				//if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
+				/*<!-- endbuild -->*/
+				break;
 
-				case 'tag':
+			case 'slideshow':
 
-					/*<!-- build:debug -->*/
-					if (markdown.settings.debug) {
-						console.log('Tag -> filter on [' + $tag + ']');
-					}
-					/*<!-- endbuild -->*/
+				window.open($fname); // $fname is something like folder/subfolder/hotes.html?format=slides i.e. with the ?format=slides parameter
+				break;
 
-					addSearchEntry({
-						keyword: $tag,
-						reset: true
-					});
-					break;
+			case 'tag':
 
-				case 'window':
+				/*<!-- build:debug -->*/
+				if (markdown.settings.debug) {
+					console.log('Tag -> filter on [' + $tag + ']');
+				}
+				/*<!-- endbuild -->*/
 
-					window.open($fname);
-					break;
+				addSearchEntry({
+					keyword: $tag,
+					reset: true
+				});
+				break;
 
-				default:
+			case 'window':
 
-					console.warn('Sorry, unknown task [' + $task + ']');
+				window.open($fname);
+				break;
+
+			default:
+
+				console.warn('Sorry, unknown task [' + $task + ']');
 
 			} // switch($task)
 
@@ -536,25 +527,7 @@ function initializeTasks() {
 
 } // function initializeTasks()
 
-function afterClean($data) {
-
-	console.log($data);
-
-	if ($data.hasOwnProperty('status')) {
-		$status = $data.status;
-
-		if ($status == 1) {
-			Noty({
-				message: $data.msg,
-				type: 'success'
-			});
-		} else {
-			Noty({
-				message: $data.msg,
-				type: 'error'
-			});
-		}
-	}
+function cleanCache() {
 
 	// Empty the localStorage too
 	if (markdown.settings.use_localcache) {
@@ -564,6 +537,11 @@ function afterClean($data) {
 			console.warn(err.message);
 		}
 	}
+
+	Noty({
+		message: markdown.message.settings_clean_done,
+		type: 'success'
+	});
 
 	return;
 
@@ -661,9 +639,15 @@ function addLinksToTags() {
 				'<span class="tag" title="' + markdown.message.apply_filter_tag + '" data-task="tag" data-tag="' + $tags[2] + '">' + $tags[2] + '</span>' + // The span for tagging the word
 				(($tags[3] !== undefined) ? $tags[3] : ''); // After the span
 
-			$text = $text.replace(new RegExp($tags[0], "g"), $sTags);
+			try {
+				// The tag can, perhaps, contains special characters like an ending parenthese so quote the tag
+				$text = $text.replace(new RegExp(RegExp.quote($tags[0]), "g"), $sTags);
+				$tags = RegEx.exec($text);
 
-			$tags = RegEx.exec($text);
+			} catch (err) {
+				$tags = null;
+				console.warn(err.lineNumber + '----' + err.message);
+			}
 		} // while
 
 		// Set the new page content
@@ -699,7 +683,7 @@ function addIcons() {
 
 	try {
 		$("a")
-			.each(function() {
+			.each(function () {
 
 				$href = $(this)
 					.attr("href");
@@ -764,7 +748,7 @@ function NiceTable() {
 
 	try {
 		$("table")
-			.each(function() {
+			.each(function () {
 				$(this)
 					.addClass('table table-striped table-hover table-bordered');
 
@@ -994,7 +978,7 @@ function buttonSave($fname, $markdown) {
 		url: markdown.url,
 		data: $data,
 		datatype: 'json',
-		success: function(data) {
+		success: function (data) {
 			Noty({
 				message: data.status.message,
 				type: (data.status.success == 1 ? 'success' : 'error')
@@ -1097,7 +1081,7 @@ function afterSearch($keywords, $data) {
 				$.each($("#TOC")
 					.jstree('full')
 					.find("li"),
-					function(index, element) {
+					function (index, element) {
 
 						$filename = $("#TOC")
 							.jstree(true)
@@ -1115,7 +1099,7 @@ function afterSearch($keywords, $data) {
 						if ($filename !== '') {
 							// Now, check if the file is mentionned in the result, if yes, show the row back
 
-							$.each($files, function($key, $value) {
+							$.each($files, function ($key, $value) {
 
 								if ($(element)
 									.hasClass('jstree-leaf')) {
@@ -1148,7 +1132,7 @@ function afterSearch($keywords, $data) {
 				$.each($("#TOC")
 					.jstree('full')
 					.find("li"),
-					function(index, element) {
+					function (index, element) {
 						// If the node was not selected (i.e. has the "highlight" class), close the node
 						if (!$(element)
 							.hasClass('highlight')) {
@@ -1160,13 +1144,13 @@ function afterSearch($keywords, $data) {
 				$.each($("#TOC")
 					.jstree('full')
 					.find("li"),
-					function(index, element) {
+					function (index, element) {
 
 						// Now, for each node with the "highlight" class, be sure that each parents are opened
 						if ($(element)
 							.hasClass('highlight')) {
 							$("#TOC")
-								.jstree('open_node', element, function(e, d) {
+								.jstree('open_node', element, function (e, d) {
 									for (var i = 0; i < e.parents.length; i++) {
 										$("#TOC")
 											.jstree('show_node', e.parents[i]);
@@ -1181,7 +1165,7 @@ function afterSearch($keywords, $data) {
 
 				// Process every rows of the tblFiles array => process every files
 				$('#tblFiles > tbody  > tr > td')
-					.each(function() {
+					.each(function () {
 
 						// Be sure to process only cells with the data-file attribute.
 						// That attribute contains the filename, not encoded
@@ -1197,8 +1181,8 @@ function afterSearch($keywords, $data) {
 							$tr.hide();
 
 							// Now, check if the file is mentionned in the result, if yes, show the row back
-							$.each($data, function() {
-								$.each(this, function($key, $value) {
+							$.each($data, function () {
+								$.each(this, function ($key, $value) {
 									if ($value === $filename) {
 										$tr.show();
 										return false; // break
@@ -1224,7 +1208,7 @@ function afterSearch($keywords, $data) {
 					$.each($('#TOC')
 						.jstree('full')
 						.find("li"),
-						function(index, element) {
+						function (index, element) {
 							$(element)
 								.removeClass('highlight')
 								.show();
@@ -1236,7 +1220,7 @@ function afterSearch($keywords, $data) {
 				} else { //  if ($.isFunction($.fn.jstree))
 
 					$('#tblFiles > tbody  > tr > td')
-						.each(function() {
+						.each(function () {
 							if ($(this)
 								.attr('data-file')) {
 								$(this)

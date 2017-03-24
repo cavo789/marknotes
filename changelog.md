@@ -5,15 +5,19 @@
 
 ## 1.0.6
 
-### 2017-0x-xx
+### 2017-03-24
 
 ```diff
 + Add a router
    + accessing to http://localhost/notes/docs/Development/atom/Plugins.html will display the html rendering of the docs/Development/atom/Plugins.md page even if the .html file doesn't exists) (?format=html is the default format)
    + ?format=slides will display a slideshow version
    + ?format=pdf will download a PDF version
++ Add JolyTypo library (https://github.com/jolicode/JoliTypo) - Web Microtypography fixer
++ Files and folders starting with a dot (like .images) won't be listed anymore in the treeview
++ Add a new template : pdf. This way it's possible to customize the look&feel of the pdf version and, also, remove unneeded calls like the javascript files (unneeded for a PDF)
 - Remove fatal error "Call to undefined function AeSecure\mcrypt_get_iv_size()", mcrypt_get_iv_size is a global function loaded by php and not part of the AeSecure namespace.
 - Remove bug of not refreshing the Treeview after a folder/note creation (right-click on the treeview); use localStorage bypass.
+- Remove a js warning when the tag contains special characters (use RegExp.quote)
 ```
 
 ## 1.0.5

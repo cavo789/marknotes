@@ -5,11 +5,13 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-21T22:24:08.032Z
+* @package   : 2017-03-24T17:10:14.446Z
 */?>
 <?php
 
 namespace AeSecureMDTasks;
+
+include 'libs/autoload.php';
 
 /**
 * Return the HTML rendering of a .md file
@@ -23,7 +25,7 @@ class Display
      * @param  string  $html [description]   html rendering of the .md file
      * @return {[type]       Nothing
      */
-    private static function showHTML(string $html)
+    private static function showHTML(string $html, array $params = null)
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();
@@ -69,8 +71,16 @@ class Display
         } catch (Exception $e) {
         }
 
-        if (\AeSecure\Files::fileExists($template = $aeSettings->getTemplateFile('html'))) {
+        // Check if a template has been specified in the parameters
+        // and if so, check that this file exists
+        if (isset($params['template'])) {
+            $template=$aeSettings->getTemplateFile($params['template']);
+            if (!\AeSecure\Files::fileExists($template)) {
+                $template=$aeSettings->getTemplateFile('html');
+            }
+        }
 
+        if (\AeSecure\Files::fileExists($template)) {
             $content=file_get_contents($template);
 
             // Write the file but first replace variables
@@ -78,7 +88,7 @@ class Display
             $content=str_replace('%CONTENT%', $html, $content);
             $content=str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $content);
             $content=str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $content);
-            $content=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(true, false), $content);
+            $content=str_replace('%ROOT%', rtrim(\AeSecure\Functions::getCurrentURL(true, false), '/'), $content);
             // Perhaps a Google font should be used.
             $sFont=$aeSettings->getPageGoogleFont(true);
             $content=str_replace('<!--%FONT%-->', $sFont, $content);
@@ -98,12 +108,10 @@ class Display
             } // if (strpos)
 
             $html=$content;
-
         } // \AeSecure\Files::fileExists($template)
 
         header('Content-Type: text/html; charset=utf-8');
         return $html;
-
     }  // function showHTML()
 
     public static function run(array $params)
@@ -126,7 +134,6 @@ class Display
         );
 
         if (!file_exists($fullname)) {
-
             /**/
 
             echo str_replace(
@@ -205,13 +212,36 @@ class Display
         $Parsedown=new \Parsedown();
         $html=$Parsedown->text($markdown);
 
+        // Can we solve somes common typo issues ?
+        if ($aeSettings->getUseJolyTypo()) {
+            if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
+                $locale=$aeSettings->getLocale();
+
+                // See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale
+                switch ($locale) {
+                    case 'fr_FR':
+                        // Those rules apply most of the recommendations of "Abrégé du code typographique à l'usage de la presse", ISBN: 9782351130667.
+                        // Remove Hypen because need a library (Hyphenator) of 12MB,
+                        $fixer=new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'FrenchNoBreakSpace', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
+                        break;
+
+                    default:
+                        // Remove Hypen because need a library (Hyphenator) of 12MB,
+                        $fixer = new Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
+                        break;
+                }
+
+                // Set the locale (en_GB, fr_FR, ...) preferences
+                $fixer->setLocale($locale);
+
+                $html=$fixer->fix($html);
+            }
+        } // if($aeSettings->getUseJolyTypo())
+
         // Check if the .html version of the markdown file already exists; if not, create it
         if (!\AeSecure\Functions::isAjaxRequest()) {
-
-            return self::showHTML($html);
-
+            return self::showHTML($html, $params);
         } else {
-
             // -----------------------------------------------------------------------
             // Once the .html file has been written on disk, not before !
             //
@@ -281,13 +311,13 @@ class Display
                 '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
                 '<i id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($urlHTML).'?format=slides" class="fa fa-desktop" aria-hidden="true" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
                 $icons.
-                '<i id="icon_settings_clear" data-task="settings" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
+                '<i id="icon_settings_clear" data-task="clear" class="fa fa-eraser" aria-hidden="true" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
             '</div>';
 
             $html=$toolbar.'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
 
-            $html=str_replace('src="images/', 'src="'.$aeSettings->getFolderDocs(false).'/'.str_replace(DS, '/', dirname($params['filename'])).'/images/', $html);
-            $html=str_replace('href="files/', 'href="'.$aeSettings->getFolderDocs(false).'/'.str_replace(DS, '/', dirname($params['filename'])).'/files/', $html);
+            $html=str_replace('src=".images/', 'src="'.rtrim($aeSettings->getFolderDocs(false), DS).'/'.str_replace(DS, '/', dirname($params['filename'])).'/.images/', $html);
+            $html=str_replace('href=".files/', 'href="'.rtrim($aeSettings->getFolderDocs(false), DS).'/'.str_replace(DS, '/', dirname($params['filename'])).'/.files/', $html);
             $html='<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
 
             // LazyLoad images ?

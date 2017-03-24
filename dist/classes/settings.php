@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-21T22:24:08.024Z
+* @package   : 2017-03-24T17:10:14.438Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -182,7 +182,8 @@ class Settings
      * @param  bool $addVersionNumber
      * @return string
      */
-    public function getAppName(bool $addVersionNumber = false) : string {
+    public function getAppName(bool $addVersionNumber = false) : string
+    {
         $name=APP_NAME;
         if ($addVersionNumber) {
             $name.=' v.'.self::getPackageInfo('version');
@@ -222,7 +223,8 @@ class Settings
         return $this->debugmode ? true : false;
     } // function getDebugMode()
 
-    public function setDebugMode(bool $onOff) {
+    public function setDebugMode(bool $onOff)
+    {
 
         $this->debugmode=false;
         error_reporting(0);
@@ -540,7 +542,6 @@ class Settings
         }
 
         return $bReturn ? true : false;
-
     } // function getTreeOpened()
 
     /**
@@ -609,6 +610,22 @@ class Settings
     } // function getEncryptionMethod()
 
     /**
+     * Get locale
+     *
+     * @return bool
+     */
+    public function getLocale() : string
+    {
+
+        $sReturn='en_GB';
+
+        if (isset($this->json['locale'])) {
+            $sReturn=trim($this->json['locale']);
+        }
+
+        return $sReturn;
+    } // function getEditAllowed()
+    /**
      * Allow editions ?
      *
      * @return bool
@@ -629,6 +646,26 @@ class Settings
     {
         return ($type==='folder' ? CHMOD_FOLDER : CHMOD_FILE);
     } // function getchmod()
+
+    /**
+     * JolyTypo is Web Microtypography fixer (https://github.com/jolicode/JoliTypo)
+     * and can solve common typo issues.
+     *
+     * @return bool
+     */
+    public function getUseJolyTypo() : bool
+    {
+        $bReturn=true;
+
+        if (isset($this->json['page'])) {
+            $tmp=$this->json['page'];
+            if (isset($tmp['jolytypo'])) {
+                $bReturn=(($tmp['jolytypo']==1)?true:false);
+            }
+        }
+        return $bReturn;
+    }
+
 
     /**
      * Can we use the navigator localStorage cache system ?

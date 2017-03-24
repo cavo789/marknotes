@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-21T22:24:08.034Z
+* @package   : 2017-03-24T17:10:14.447Z
 */?>
 <?php
 
@@ -59,27 +59,6 @@ class ListFiles
         header('Content-Type: application/json');
         echo json_encode($return, JSON_PRETTY_PRINT);
     } // function Run()
-
-    /**
-    * Called by ListFiles().  Add a "hidden" state for arrays in the array (like folder and subfolders) when
-    * the number of children is zero (i.e. that subfolder doesn't contains any relevant files)
-    *
-    * @param int $array
-    * @param type $unwanted_key
-    */
-    /*private static function jstree_hide_emptyFolder(&$array)
-    {
-        if (isset($array['children'])) {
-            if (count($array['children'])==0) {
-                $array["state"]["hidden"]=1;
-            }
-        }
-        foreach ($array as &$value) {
-            if (is_array($value)) {
-                self::jstree_hide_emptyFolder($value, 'children');
-            }
-        }
-    } // function jstree_hide_emptyFolder()*/
 
     /**
     * Called by ListFiles().  Populate an array with the list of .md files.
@@ -136,24 +115,27 @@ class ListFiles
         if ($handler = opendir($dir)) {
             while (($sub = readdir($handler)) !== false) {
                 if ($sub != "." && $sub != "..") {
-                    if (is_file($dir.DS.$sub)) {
-                        $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
-                        if (in_array($extension, $ext)) {
-                            $files[]=array(
-                              'id'=>md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
-                              'icon'=>'file file-md',
-                              'text'=>str_replace('.'.$extension, '', utf8_encode($sub)), // Don't display the extension
+                    // Don't take files/folders starting with a dot
+                    if (substr($sub, 0, 1)!=='.') {
+                        if (is_file($dir.DS.$sub)) {
+                            $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
+                            if (in_array($extension, $ext)) {
+                                $files[]=array(
+                                  'id'=>md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
+                                  'icon'=>'file file-md',
+                                  'text'=>str_replace('.'.$extension, '', utf8_encode($sub)), // Don't display the extension
 
-                              // Populate the data attribute with the task to fire and the filename of the note
-                              'data'=>array(
+                                  // Populate the data attribute with the task to fire and the filename of the note
+                                  'data'=>array(
                                  'task'=>'display',
                                  'file'=>utf8_encode(str_replace($root, '', $dir.DS.$sub))
-                               )
-                            );
+                                   )
+                                );
+                            }
+                        } elseif (is_dir($dir.DS.$sub)) {
+                            $dirs []= rtrim($dir, DS).DS.$sub;
                         }
-                    } elseif (is_dir($dir.DS.$sub)) {
-                        $dirs []= rtrim($dir, DS).DS.$sub;
-                    }
+                    } // if (substr($sub, 0, 1)!=='.')
                 }
             } // while
 

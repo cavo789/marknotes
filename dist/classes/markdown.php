@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-21T22:24:08.023Z
+* @package   : 2017-03-24T17:10:14.437Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -68,7 +68,7 @@ class Markdown
     * @param string $filename   Optional, if not mentionned, get this information from $_POST
     *
     */
-    public function process(string $task, string $filename='')
+    public function process(string $task, string $filename = '')
     {
 
         if ($filename==='') {
@@ -79,14 +79,17 @@ class Markdown
             $filename=\AeSecure\Files::sanitizeFileName(trim($filename));
         }
 
+        $aeSettings=\AeSecure\Settings::getInstance();
+        $root=$aeSettings->getFolderDocs(false);
+
+        // The filename shouldn't mention the docs folders, just the filename
+        // So, $filename should not be docs/markdown.md but only markdown.md because the
+        // folder name will be added later on
+        if (substr($filename, 0, strlen($root))===$root) {
+            $filename=substr($filename, strlen($root));
+        }
+
         switch ($task) {
-            case 'clean':
-                // Remove html files.  These files aren't needed, only .md files are important
-
-                include_once TASKS.'clean.php';
-                \AeSecureMDTasks\Clean::run();
-                break;
-
             case 'delete':
                 // Delete a note or a folder
 

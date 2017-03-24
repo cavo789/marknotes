@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "18d1cc15ac17e8686dd0a50e329de7a8",
+    "content-hash": "9e4bf96cff8c472ef174da32220cf863",
     "packages": [
         {
             "name": "components/jquery",
@@ -223,6 +223,61 @@
             "time": "2016-10-24T15:52:54+00:00"
         },
         {
+            "name": "jolicode/jolitypo",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jolicode/JoliTypo.git",
+                "reference": "7e5b849b2077ca0124bc51c239bc18c0b187186d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jolicode/JoliTypo/zipball/7e5b849b2077ca0124bc51c239bc18c0b187186d",
+                "reference": "7e5b849b2077ca0124bc51c239bc18c0b187186d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "lib-libxml": "*",
+                "org_heigl/hyphenator": "~2.0.3",
+                "php": ">=5.3.0"
+            },
+            "conflict": {
+                "ext-apc": "3.1.11"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JoliTypo": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Damien Alexandre",
+                    "email": "dalexandre@jolicode.com",
+                    "homepage": "http://damienalexandre.fr/"
+                }
+            ],
+            "description": "Microtypography fixer for the web.",
+            "homepage": "https://github.com/jolicode/JoliTypo",
+            "keywords": [
+                "ellipsis",
+                "fixer",
+                "quote",
+                "smartquote",
+                "typography"
+            ],
+            "time": "2016-05-25T22:26:45+00:00"
+        },
+        {
             "name": "needim/noty",
             "version": "v2.4.1",
             "source": {
@@ -259,6 +314,54 @@
                 "noty"
             ],
             "time": "2017-02-16T04:28:54+00:00"
+        },
+        {
+            "name": "org_heigl/hyphenator",
+            "version": "v2.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heiglandreas/Org_Heigl_Hyphenator.git",
+                "reference": "9a8ac28f654e1ec0779caaffe57edcd2575973f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/heiglandreas/Org_Heigl_Hyphenator/zipball/9a8ac28f654e1ec0779caaffe57edcd2575973f6",
+                "reference": "9a8ac28f654e1ec0779caaffe57edcd2575973f6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": "^5.3||^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9",
+                "phpunit/phpunit": "^4.8||^5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Org\\Heigl\\Hyphenator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas Heigl",
+                    "email": "andreas@heigl.org",
+                    "homepage": "http://andreas.heigl.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Word-Hyphenation for PHP based on the TeX-Hyphenation algorithm",
+            "homepage": "http://github.com/heiglandreas/Org_Heigl_Hyphenator",
+            "keywords": [
+                "hyphenate",
+                "hyphenation"
+            ],
+            "time": "2017-03-20T20:12:10+00:00"
         },
         {
             "name": "phenx/php-font-lib",

@@ -42,7 +42,7 @@ class ShowInterface
         $html=str_replace('%IMG_MAXWIDTH%', $aeSettings->getPageImgMaxWidth(), $html);
         $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
         $html=str_replace('%EDT_SEARCH_MAXLENGTH%', $aeSettings->getSearchMaxLength(), $html);
-        
+
         $html=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(true, false), $html);
 
         // Define the global markdown variable.  Used by the assets/js/markdown.js script
@@ -67,6 +67,7 @@ class ShowInterface
         "markdown.message.ok='".$aeSettings->getText('OK', 'Ok', true)."';\n".
         "markdown.message.pleasewait='".$aeSettings->getText('please_wait', 'Please wait...', true)."';\n".
         "markdown.message.search_no_result='".$aeSettings->getText('search_no_result', 'Sorry, the search is not successfull', true)."';\n".
+        "markdown.message.settings_clean_done='".$aeSettings->getText('settings_clean_done', 'The application\'s cache has been cleared', true)."';\n".
         "markdown.message.tree_delete_file='".$aeSettings->getText('tree_delete_file', 'Delete the note [%s]', true)."';\n".
         "markdown.message.tree_delete_folder='".$aeSettings->getText('tree_delete_folder', 'Delete the note [%s]', true)."';\n".
         "markdown.message.tree_delete_file_confirm='".$aeSettings->getText('tree_delete_file_confirm', 'Are you really sure you want to delete the note [%s] ?', true)."';\n".

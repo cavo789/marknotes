@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-21T22:24:08.035Z
+* @package   : 2017-03-24T17:10:14.448Z
 */?>
 <?php
 
@@ -41,7 +41,6 @@ class PDF
         );
 
         if (\AeSecure\Files::fileExists($fullname)) {
-
             /**/
 
             echo str_replace(
@@ -51,15 +50,13 @@ class PDF
             );
 
             return false;
-
         } else {
-
-            $Domfolder=$aeSettings->getFolderLibs().'dompdf'.DS;
-            if (\AeSecure\Files::fileExists($lib = $Domfolder.'autoload.inc.php')) {
-
-
+            if (is_dir($aeSettings->getFolderLibs()."dompdf")) {
                 // Get the HTML rendering of the note
                 include_once TASKS.'display.php';
+
+                // Use the pdf template and not the "html" one
+                $params['template']='pdf';
                 $html=\AeSecureMDTasks\Display::run($params);
 
                 // Replace external links to f.i. the Bootstrap CDN to local files
@@ -72,9 +69,6 @@ class PDF
                             break;
                     } // switch
                 } // foreach
-
-                // include autoloader
-                include_once $lib;
 
                 header('Content-Type: application/pdf');
                 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -91,12 +85,14 @@ class PDF
             } else { // if (file_exists($fullname))
 
                 header('Content-Type: text/plain; charset=utf-8');
-                die('The Dompdf library isn\'t installed'.($params['debug']?', file '.$lib.' is missing':''));
-            } // if (file_exists($fullname))
 
+                /**/
+
+
+                die('The Dompdf library isn\'t correctly installed');
+            } // if (file_exists($fullname))
         } // if (file_exists($fullname))
 
         return true;
-
     } // function Run()
 } // class PDF

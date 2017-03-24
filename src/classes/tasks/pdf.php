@@ -32,7 +32,6 @@ class PDF
         );
 
         if (\AeSecure\Files::fileExists($fullname)) {
-
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
                 echo __FILE__.' - '.__LINE__;
@@ -46,15 +45,13 @@ class PDF
             );
 
             return false;
-
         } else {
-
-            $Domfolder=$aeSettings->getFolderLibs().'dompdf'.DS;
-            if (\AeSecure\Files::fileExists($lib = $Domfolder.'autoload.inc.php')) {
-
-
+            if (is_dir($aeSettings->getFolderLibs()."dompdf")) {
                 // Get the HTML rendering of the note
                 include_once TASKS.'display.php';
+
+                // Use the pdf template and not the "html" one
+                $params['template']='pdf';
                 $html=\AeSecureMDTasks\Display::run($params);
 
                 // Replace external links to f.i. the Bootstrap CDN to local files
@@ -67,9 +64,6 @@ class PDF
                             break;
                     } // switch
                 } // foreach
-
-                // include autoloader
-                include_once $lib;
 
                 header('Content-Type: application/pdf');
                 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -86,12 +80,18 @@ class PDF
             } else { // if (file_exists($fullname))
 
                 header('Content-Type: text/plain; charset=utf-8');
-                die('The Dompdf library isn\'t installed'.($params['debug']?', file '.$lib.' is missing':''));
-            } // if (file_exists($fullname))
 
+                /*<!-- build:debug -->*/
+                if ($aeSettings->getDebugMode()) {
+                    echo 'The file '.$lib.' is missing ('.__FILE__.' - '.__LINE__.')'.PHP_EOL;
+                }
+                /*<!-- endbuild -->*/
+
+
+                die('The Dompdf library isn\'t correctly installed');
+            } // if (file_exists($fullname))
         } // if (file_exists($fullname))
 
         return true;
-
     } // function Run()
 } // class PDF

@@ -12,6 +12,7 @@
         "opened": 0,
         "auto_open": []
     },
+	"locale": "fr_FR",
     "optimisation": {
         "cache": 1,
         "lazyload": 1,
@@ -20,13 +21,15 @@
     "page": {
         "google_font": "",
         "img_maxwidth": 800,
+        "jolytypo": 1,
         "robots": "noindex, nofollow"
     },
     "site_name": "Markdown | An Open Source notes management tool",
     "tags": [],
     "templates": {
-        "screen": "screen",
-        "html": "html"
+        "html": "html",
+        "pdf": "pdf",
+        "screen": "screen"
     },
     "languages": {
         "en": {
@@ -79,7 +82,7 @@
             "search_no_result": "Sorry, the search is not successfull",
             "search_placeholder": "Search...",
             "settings_clean": "Clear cache",
-            "settings_clean_done": "%d files have been removed in the folder [%s]",
+            "settings_clean_done": "The application's cache has been cleared",
             "slideshow": "slideshow",
             "tree_delete_file": "Delete the note [%s]",
             "tree_delete_folder": "Remove the folder [%s] and everything in that folder",
@@ -141,7 +144,7 @@
             "search_no_result": "D&eacute;sol&eacute;, votre recherche n&#39;a pas retourn&eacute; de r&eacute;sultat",
             "search_placeholder": "Recherchez...",
             "settings_clean": "Nettoie le cache de l&#39;application",
-            "settings_clean_done": "%d fichiers inutiles ont &#233;t&#233; nettoy&#233;s dans le dossier [%s]",
+            "settings_clean_done": "Le cache de l&#39;application a été nettoyé",
             "slideshow": "Affiche le document au format &#39;pr&eacute;sentation&#39;",
             "tree_delete_file": "Supprimer la note [%s]",
             "tree_delete_folder": "Supprimer l&#39;int&eacute;gralit&eacute; du dossier [%s]",
