@@ -78,7 +78,9 @@ class Display
             if (!\AeSecure\Files::fileExists($template)) {
                 $template=$aeSettings->getTemplateFile('html');
             }
-        }
+        } else {
+			$template=$aeSettings->getTemplateFile('html');
+		}
 
         if (\AeSecure\Files::fileExists($template)) {
             $content=file_get_contents($template);

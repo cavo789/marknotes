@@ -69,6 +69,9 @@ class Display
             if (!\AeSecure\Files::fileExists($template)) {
                 $template=$aeSettings->getTemplateFile('html');
             }
+        } else {
+            // Default is html
+            $template=$aeSettings->getTemplateFile('html');
         }
 
         if (\AeSecure\Files::fileExists($template)) {
