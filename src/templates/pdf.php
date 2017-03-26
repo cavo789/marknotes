@@ -9,6 +9,7 @@
 		<meta name="designer" content="Markdown | Notes management" />
 		<meta name="keywords" content="%TITLE%" />
 		<meta name="description" content="%TITLE%" />
+		<meta property="og:url" content="%URL_PAGE%" />
 
 		<title>%TITLE%</title>
 

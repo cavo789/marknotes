@@ -7,7 +7,7 @@ $("document")
 		$("img")
 			.addClass("fullimg hidden-xs hidden-sm");
 
-		//addTOC();
+		addTOC();
 
 	});
 

@@ -8,8 +8,30 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <title><--%TITLE%--></title>
+        <meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="%ROBOTS%" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
+		<meta name="author" content="Markdown | Notes management" />
+		<meta name="designer" content="Markdown | Notes management" />
+		<meta name="keywords" content="%TITLE%" />
+		<meta name="description" content="%TITLE%" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta property="og:url" content="%URL_PAGE%" />
+		<meta property="og:type" content="article" />
+		<meta property="og:image" content="%URL_IMG%" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="522" />
+		<meta property="og:title" content="%TITLE%" />
+		<meta property="og:site_name" content="%SITE_NAME%" />
+		<meta property="og:description" content="%TITLE%" />
+
+        <title>%TITLE%</title>
+
+		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
+
         <style>
 
             #source{display:none;}
@@ -23,18 +45,35 @@
                 margin-bottom: 0;
             }
 
-            img {max-width:800px;}
-            .remark-slide-content h1 { font-size: 3em; }
-            .remark-slide-content h2 { font-size: 2em; }
-            .remark-slide-content h3 { font-size: 1.6em; }
+            img {
+                max-width:800px;
+            }
+
+            .remark-slide-content h1 {
+                font-size: 3em;
+            }
+            .remark-slide-content h2 {
+                font-size: 2em;
+            }
+            .remark-slide-content h3 {
+                font-size: 1.6em;
+            }
             .footnote {
                 position: absolute;
                 bottom: 1em;
             }
-            li p { line-height: 1.25em; }
-            .italic {font-style:italic;}
-            .red { color: #fa0000; }
-            .large { font-size: 2em; }
+            li p {
+                line-height: 1.25em;
+            }
+            .italic {
+                font-style:italic;
+            }
+            .red {
+                color: #fa0000;
+             }
+            .large {
+                font-size: 2em;
+            }
             a, a > code {
                 color: rgb(249, 38, 114);
                 text-decoration: none;
@@ -43,8 +82,12 @@
                 background: #e7e8e2;
                 border-radius: 5px;
             }
-            .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
-            .remark-code-line-highlighted     { background-color: #373832; }
+            .remark-code, .remark-inline-code {
+                font-family: 'Ubuntu Mono';
+            }
+            .remark-code-line-highlighted {
+                background-color: #373832;
+            }
             .pull-left {
                 float: left;
                 width: 47%;
@@ -127,15 +170,15 @@
     </head>
     <body>
 
-        <textarea id="source" readonly="readonly"><!--%SOURCE%--></textarea>
+        <textarea id="source" readonly="readonly">%CONTENT%</textarea>
 
-        <script src="<!--%URL%-->/libs/remark/remark-latest.min.js"></script>
+        <script src="%URL%/libs/remark/remark-latest.min.js"></script>
 
         <script type="text/javascript">
-          var hljs = remark.highlighter.engine;
-          var slideshow = remark.create({
-            highlightStyle: 'monokai'
-          });
+            var hljs = remark.highlighter.engine;
+            var slideshow = remark.create({
+                highlightStyle: 'monokai'
+            });
         </script>
 
     </body>

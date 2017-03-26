@@ -504,7 +504,7 @@ class Settings
     } // function getPageRobots()
 
     /**
-     * Return the password used for encryptions
+     * Return the name of the website
      *
      * @return string
      */
@@ -519,6 +519,23 @@ class Settings
 
         return $sReturn;
     } // function getSiteName()
+
+    /**
+     * Return the type of slideshow to use : reveal or remark
+     *
+     * @return string
+     */
+    public function getSlideshow() : string
+    {
+
+        $sReturn='reveal';
+
+        if (isset($this->json['slideshow'])) {
+            $sReturn=trim($this->json['slideshow']);
+        }
+
+        return $sReturn;
+    } // function getSlideshow()
 
     /**
      * Max allowed size for the search string
@@ -678,19 +695,19 @@ class Settings
     } // function getchmod()
 
     /**
-     * JolyTypo is Web Microtypography fixer (https://github.com/jolicode/JoliTypo)
+     * JoliTypo is Web Microtypography fixer (https://github.com/jolicode/JoliTypo)
      * and can solve common typo issues.
      *
      * @return bool
      */
-    public function getUseJolyTypo() : bool
+    public function getUseJoliTypo() : bool
     {
         $bReturn=true;
 
         if (isset($this->json['page'])) {
             $tmp=$this->json['page'];
-            if (isset($tmp['jolytypo'])) {
-                $bReturn=(($tmp['jolytypo']==1)?true:false);
+            if (isset($tmp['jolitypo'])) {
+                $bReturn=(($tmp['jolitypo']==1)?true:false);
             }
         }
         return $bReturn;

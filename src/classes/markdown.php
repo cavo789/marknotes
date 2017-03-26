@@ -94,7 +94,11 @@ class Markdown
                 // Display the HTML rendering of a note
 
                 include_once TASKS.'display.php';
-                echo \AeSecureMDTasks\Display::run(array('filename'=>$filename));
+                $aeTask=\AeSecureMDTasks\Display::getInstance();
+
+                header('Content-Type: text/html; charset=utf-8');
+                echo $aeTask->run(array('filename'=>$filename));
+
                 break;
 
             case 'edit':
@@ -113,8 +117,17 @@ class Markdown
 
             case 'pdf':
                 // Generate a PDF
+
                 include_once TASKS.'pdf.php';
-                \AeSecureMDTasks\PDF::run(array('filename'=>$filename));
+                $aeTask=\AeSecureMDTasks\PDF::getInstance();
+
+                /*header('Content-Type: application/pdf');
+                header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+                header("Cache-Control: post-check=0, pre-check=0", false);
+                header("Pragma: no-cache");*/
+
+                echo $aeTask->run(array('filename'=>$filename));
+
                 break;
 
             case 'rename':
@@ -154,7 +167,10 @@ class Markdown
                 // Display the "slideshow" version of the note
 
                 include_once TASKS.'slideshow.php';
-                \AeSecureMDTasks\SlideShow::run(array('filename'=>$filename));
+                $aeTask=\AeSecureMDTasks\SlideShow::getInstance();
+
+                header('Content-Type: text/html; charset=utf-8');
+                echo $aeTask->run(array('filename'=>$filename));
                 break;
 
             case 'tags':

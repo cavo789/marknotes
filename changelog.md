@@ -3,6 +3,15 @@
 [https://github.com/cavo789/markdown](https://github.com/cavo789/markdown)
 
 
+## 1.0.7
+
+### 2017-xx-xx
+
+```diff
++ Add the support of reveal.js and no more only remark.js
++ Code review (refactoring, new classes, reduce number of PHPMD warnings, ...)
+```
+
 ## 1.0.6
 
 ### 2017-03-24

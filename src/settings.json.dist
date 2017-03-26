@@ -21,10 +21,11 @@
     "page": {
         "google_font": "",
         "img_maxwidth": 800,
-        "jolytypo": 1,
+        "jolitypo": 1,
         "robots": "noindex, nofollow"
     },
     "site_name": "Markdown | An Open Source notes management tool",
+	"slideshow": "reveal",
     "tags": [],
     "templates": {
         "html": "html",

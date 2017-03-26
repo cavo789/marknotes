@@ -575,6 +575,7 @@ function replaceLinksToOtherNotes() {
 		var $fname = '';
 
 		while ($nodes !== null) {
+
 			$param = $nodes[0].match(/param=(.*)['|"]/); // Retrieve the "param" parameter which is the encrypted filename that should be displayed
 			$fname = JSON.parse(decodeURIComponent(window.atob($param[1])));
 
@@ -583,11 +584,13 @@ function replaceLinksToOtherNotes() {
 			$text = $text.replace($nodes[0], $sNodes);
 
 			$nodes = RegEx.exec($text);
+
 		} // while
 
 		// Set the new page content
 		$('#CONTENT')
 			.html($text);
+
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -1274,3 +1277,4 @@ function Noty($params) {
 	}
 
 } // function Noty()
+y()
