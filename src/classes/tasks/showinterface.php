@@ -48,6 +48,7 @@ class ShowInterface
         // Define the global markdown variable.  Used by the assets/js/markdown.js script
         $JS=
         "\nvar markdown = {};\n".
+        "markdown.autoload=1;\n".
         "markdown.message={};\n".
         "markdown.message.allow_popup_please='".$aeSettings->getText('allow_popup_please', 'The new window has been blocked by your browser, please allow popups for your domain', true)."';\n".
         "markdown.message.apply_filter='".$aeSettings->getText('apply_filter', 'Filtering to [%s]', true)."';\n".
@@ -85,6 +86,7 @@ class ShowInterface
         "markdown.settings.DS='".preg_quote(DS)."';\n".
         "markdown.settings.language='".$aeSettings->getLanguage()."';\n".
         "markdown.settings.lazyload=".$aeSettings->getOptimisationLazyLoad().";\n".
+        "markdown.settings.locale=".$aeSettings->getLocale().";\n".
         "markdown.settings.prefix_tag='".$aeSettings->getPrefixTag()."';\n".
         "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
         "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";

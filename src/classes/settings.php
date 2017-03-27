@@ -368,7 +368,6 @@ class Settings
     {
 
         $tmpl=$default;
-
         if (isset($this->json['templates'])) {
             if (isset($this->json['templates'][$default])) {
                 $tmpl=$this->sanitizeFileName($this->json['templates'][$default]);
@@ -376,6 +375,7 @@ class Settings
         }
 
         if ($tmpl!=='') {
+            $fname=$tmpl;
             if (!\AeSecure\Files::fileExists($fname = $this->getFolderTemplates().$tmpl.'.php')) {
                 // The specified template doesn't exists. Back to the default one;
                 if ($this->getDebugMode()) {
@@ -667,7 +667,8 @@ class Settings
         $sReturn='en_GB';
 
         if (isset($this->json['locale'])) {
-            $sReturn=trim($this->json['locale']);
+            // Be sure to have en-US (minus) and not en_US (underscore)
+            $sReturn=str_replace('_', '-', trim($this->json['locale']));
         }
 
         return $sReturn;

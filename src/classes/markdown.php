@@ -80,6 +80,10 @@ class Markdown
             $filename=substr($filename, strlen($root));
         }
 
+        if ($params===null) {
+            $params=array();
+        }
+
         switch ($task) {
             case 'delete':
                 // Delete a note or a folder
@@ -106,6 +110,17 @@ class Markdown
 
                 include_once TASKS.'edit.php';
                 \AeSecureMDTasks\Edit::run(array('filename'=>$filename));
+                break;
+
+            case 'getTimeline':
+                // Get the list of notes
+
+                include_once TASKS.'timeline.php';
+                $aeTask=\AeSecureMDTasks\Timeline::getInstance();
+
+                                header('Content-Type: text/html; charset=utf-8');
+            //    header('Content-Type: application/json');
+                echo $aeTask->getJSON($params);
                 break;
 
             case 'listFiles':
@@ -169,9 +184,7 @@ class Markdown
                 include_once TASKS.'slideshow.php';
                 $aeTask=\AeSecureMDTasks\SlideShow::getInstance();
 
-                if ($params===null) {
-                    $params=array();
-                }
+
                 if (!isset($params['filename'])) {
                     $params['filename']=$filename;
                 }
@@ -185,6 +198,16 @@ class Markdown
 
                 include_once TASKS.'tags.php';
                 \AeSecureMDTasks\Tags::run();
+                break;
+
+            case 'timeline':
+                // Display a timeline of all articles
+
+                include_once TASKS.'timeline.php';
+                $aeTask=\AeSecureMDTasks\Timeline::getInstance();
+
+                header('Content-Type: text/html; charset=utf-8');
+                echo $aeTask->run($params);
                 break;
 
             default:

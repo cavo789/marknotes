@@ -9,28 +9,28 @@
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="robots" content="%ROBOTS%" />
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
-		<meta name="author" content="Markdown | Notes management" />
-		<meta name="designer" content="Markdown | Notes management" />
-		<meta name="keywords" content="%TITLE%" />
-		<meta name="description" content="%TITLE%" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<meta property="og:url" content="%URL_PAGE%" />
-		<meta property="og:type" content="article" />
-		<meta property="og:image" content="%URL_IMG%" />
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="522" />
-		<meta property="og:title" content="%TITLE%" />
-		<meta property="og:site_name" content="%SITE_NAME%" />
-		<meta property="og:description" content="%TITLE%" />
+    		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    		<meta name="robots" content="%ROBOTS%" />
+    		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
+    		<meta name="author" content="MarkNotes | Notes management" />
+    		<meta name="designer" content="MarkNotes | Notes management" />
+    		<meta name="keywords" content="%TITLE%" />
+    		<meta name="description" content="%TITLE%" />
+    		<meta name="apple-mobile-web-app-capable" content="yes" />
+    		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    		<meta property="og:url" content="%URL_PAGE%" />
+    		<meta property="og:type" content="article" />
+    		<meta property="og:image" content="%URL_IMG%" />
+    		<meta property="og:image:width" content="1200" />
+    		<meta property="og:image:height" content="522" />
+    		<meta property="og:title" content="%TITLE%" />
+    		<meta property="og:site_name" content="%SITE_NAME%" />
+    		<meta property="og:description" content="%TITLE%" />
 
         <title>%TITLE%</title>
 
-		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
+    		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
 
         <style>
 

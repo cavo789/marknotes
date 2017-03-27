@@ -12,19 +12,19 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
 
-        <meta name="author" content="Markdown | Notes management" />
-        <meta name="designer" content="Markdown | Notes management" />
-        <meta name="keywords" content="markdown, html, slideshow, knowledge management" />
-        <meta name="description" content="Markdown is a knowledge management tool.  Notes are written in the Markdown language and then displayed as full functionnal html page.  Can be displayed as a slideshow also." />
+        <meta name="author" content="MarkNotes | Notes management" />
+        <meta name="designer" content="MarkNotes | Notes management" />
+        <meta name="keywords" content="markdown, markotes, html, slideshow, knowledge management" />
+        <meta name="description" content="MarkNotes is a knowledge management tool.  Notes are written in the Markdown language and then displayed as full functionnal html page.  Can be displayed as a slideshow also." />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="%ROOT%assets/notes.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="800" />
-        <meta property="og:title" content="Markdown | Notes management" />
-        <meta property="og:site_name" content="Markdown | Notes management" />
-        <meta property="og:description" content="Markdown | Notes management" />
+        <meta property="og:title" content="MarkNotes | Notes management" />
+        <meta property="og:site_name" content="MarkNotes | Notes management" />
+        <meta property="og:description" content="MarkNotes | Notes management" />
 
         <!--%META_CACHE%-->
 

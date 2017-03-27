@@ -10,6 +10,7 @@
 ```diff
 + Add the support of reveal.js and no more only remark.js
 + Code review (refactoring, new classes, reduce number of PHPMD warnings, ...)
++ Add a timeline task (?task=timeline) (based on [https://github.com/Albejr](https://github.com/Albejr))
 ```
 
 ## 1.0.6

@@ -44,9 +44,10 @@ class Convert
             if (is_dir($this->_aeSettings->getFolderLibs()."jolicode")) {
                 $locale=$this->_aeSettings->getLocale();
 
+
                 // See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale
                 switch ($locale) {
-                    case 'fr_FR':
+                    case 'fr-FR':
                         // Those rules apply most of the recommendations of "Abrégé du code typographique à l'usage de la presse", ISBN: 9782351130667.
                         // Remove Hypen because need a library (Hyphenator) of 12MB,
                         $fixer=new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'FrenchNoBreakSpace', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
@@ -54,7 +55,7 @@ class Convert
 
                     default:
                         // Remove Hypen because need a library (Hyphenator) of 12MB,
-                        $fixer = new Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
+                        $fixer = new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
                         break;
                 }
 

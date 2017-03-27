@@ -12,7 +12,7 @@
 		"opened": 0,
 		"auto_open": []
 	},
-	"locale": "fr_FR",
+	"locale": "fr-FR",
 	"optimisation": {
 		"cache": 1,
 		"lazyload": 1,
@@ -30,7 +30,8 @@
 	"templates": {
 		"html": "html",
 		"pdf": "pdf",
-		"screen": "screen"
+		"screen": "screen",
+		"timeline": "timeline"
 	},
 	"languages": {
 		"en": {

@@ -14,6 +14,7 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 ### Thank you to
 
+    - Alberto Júnior for [jquery-albe-timeline](https://github.com/Albejr/jquery-albe-timeline)
     - Alexander Farkas for [lazysizes](https://github.com/aFarkas/lazysizes)
     - Bartek Szopka for [jquery.highlight.js](http://bartaz.github.io/sandbox.js/jquery.highlight.html)
     - Contributors of [DataTables](https://github.com/DataTables/DataTables)
