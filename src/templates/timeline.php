@@ -51,7 +51,7 @@
                     task: 'getTimeline',
                     dataType: 'json',
                     callback: 'ShowTimeline(data)',
-                    useStore: true
+                    useStore: markdown.settings.use_localcache
                 });
 
 

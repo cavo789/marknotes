@@ -118,8 +118,7 @@ class Markdown
                 include_once TASKS.'timeline.php';
                 $aeTask=\AeSecureMDTasks\Timeline::getInstance();
 
-                                header('Content-Type: text/html; charset=utf-8');
-            //    header('Content-Type: application/json');
+                header('Content-Type: application/json');
                 echo $aeTask->getJSON($params);
                 break;
 
@@ -136,10 +135,10 @@ class Markdown
                 include_once TASKS.'pdf.php';
                 $aeTask=\AeSecureMDTasks\PDF::getInstance();
 
-                /*header('Content-Type: application/pdf');
+                header('Content-Type: application/pdf');
                 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
                 header("Cache-Control: post-check=0, pre-check=0", false);
-                header("Pragma: no-cache");*/
+                header("Pragma: no-cache");
 
                 echo $aeTask->run(array('filename'=>$filename));
 

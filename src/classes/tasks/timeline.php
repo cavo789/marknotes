@@ -7,6 +7,7 @@ class Timeline
     protected static $_instance = null;
 
     private $_aeSettings = null;
+    private $_aeMD = null;
 
     public function __construct()
     {
@@ -16,6 +17,9 @@ class Timeline
         }
 
         $this->_aeSettings=\AeSecure\Settings::getInstance();
+		
+        include_once(dirname(__DIR__)).'/filetype/markdown.php';
+		$this->_aeMD=\AeSecure\FileType\MarkDown::getInstance();
 
         return true;
     } // function __construct()
@@ -35,9 +39,9 @@ class Timeline
 
         $json=array();
 
-        include_once(dirname(__DIR__)).'/files';
-        include_once(dirname(__DIR__)).'/functions';
-
+        include_once(dirname(__DIR__)).'/files.php';
+        include_once(dirname(__DIR__)).'/functions.php';
+		
         $folder=str_replace('/', DS, $this->_aeSettings->getFolderDocs(true));
 
         $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.md', $this->_aeSettings->getFolderDocs(true)));
@@ -47,6 +51,9 @@ class Timeline
         // -------------------------------------------------------
 
         foreach ($arrFiles as $file) {
+			
+			$content=$this->_aeMD->read($file);
+			
             $relFileName=utf8_encode(str_replace($folder, '', $file));
 
             $url=rtrim(\AeSecure\Functions::getCurrentURL(false, false), '/').'/'.rtrim($this->_aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
@@ -56,7 +63,7 @@ class Timeline
               array(
                 'fmtime'=>filectime($file),
                 'time'=>date("Y-m-d", filectime($file)),
-                'header'=> utf8_encode(basename(str_replace($folder, '', $file))),
+                'header'=> utf8_encode(ltrim($this->_aeMD->getHeadingText($content),'#')),
                 'body'=>array(
                   array(
                     'tag'=>'a',
