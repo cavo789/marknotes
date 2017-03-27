@@ -1,16 +1,16 @@
 {
-   "name": "markdown",
+   "name": "marknotes",
    "version": "1.0.5",
    "description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
    "main": "index.php",
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/cavo789/markdown.git"
+      "url": "git+https://github.com/cavo789/marknotes.git"
    },
    "author": "christophe@aesecure.com",
    "license": "MIT",
    "bugs": {
-      "url": "https://github.com/cavo789/markdown/issues"
+      "url": "https://github.com/cavo789/marknotes/issues"
    },
-   "homepage": "https://github.com/cavo789/markdown"
+   "homepage": "https://github.com/cavo789/marknotes"
 }

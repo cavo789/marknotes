@@ -1,12 +1,12 @@
-# Markdown v1
+# MarkNotes v1
 
-![Build Status](https://travis-ci.org/cavo789/markdown.svg?branch=master) ![License MIT](https://markdown.cavo789.com/docs/license.png) ![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/markdown/master/badge.svg)
+![Build Status](https://travis-ci.org/cavo789/marknotes.svg?branch=master) ![License MIT](https://marknotes.cavo789.com/docs/license.png) ![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/marknotes/master/badge.svg)
 
 ## Documentation
 
-You can find the documentation on the wiki here : [https://github.com/cavo789/markdown/wiki](https://github.com/cavo789/markdown/wiki)
+You can find the documentation on the wiki here : [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki)
 
-![Main interface](https://markdown.cavo789.com/docs/interface.png)
+![Main interface](https://marknotes.cavo789.com/docs/interface.png)
 
 ## Credits
 

@@ -1,8 +1,8 @@
 {
-	"name": "Markdown",
+	"name": "MarkNotes",
 	"description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
-	"keywords": ["markdown", "notes", "documentations", "evernote-like"],
-	"homepage": "https://github.com/cavo789/markdown",
+	"keywords": ["markdown", "marknotes", "notes", "documentations", "evernote-like"],
+	"homepage": "https://github.com/cavo789/MarkNotes",
 	"type": "project",
 	"license": "MIT",
 	"require": {
@@ -28,9 +28,9 @@
 		"role": "Developer"
 	}],
 	"support": {
-		"source": "https://github.com/cavo789/markdown",
-		"issues": "https://github.com/cavo789/markdown/issues",
-		"docs": "https://github.com/cavo789/markdown/blob/master/readme.md"
+		"source": "https://github.com/cavo789/marknotes",
+		"issues": "https://github.com/cavo789/marknotes/issues",
+		"docs": "https://github.com/cavo789/marknotes/blob/master/readme.md"
 	},
 	"scripts": {
 		"post-install-cmd": [
