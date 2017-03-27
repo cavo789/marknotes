@@ -61,6 +61,9 @@ class SlideShow
             // Check if the params array contains a "type" entry and if so, check if that type is valid i.e.
             // mention the name of an existing templates.  "remark" or "reveal" are supported in the version 1.0.7
             // of MarkNotes.
+			
+			$type='';
+			
             if (isset($params['type'])) {
                 include_once dirname(dirname(__FILE__)).'/files.php';
 
