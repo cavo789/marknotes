@@ -30,6 +30,8 @@ IF EXIST %VENDOR%twitter\%LIB% (
    REM Use by autocomposer autoload and seems to be linked to bootstrap
    XCOPY %VENDOR%symfony\*.* %LIBS%symfony\*.* /E /Y >> %LOG%
 
+   ECHO      Kill unneeded files because GitHub will complain about binary files in the repository
+   DEL %VENDOR%symfony\console\Resources\bin\hiddeninput.exe >> %LOG%
 )
 
 REM ----------------------------------------------------------------------

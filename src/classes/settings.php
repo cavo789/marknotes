@@ -382,7 +382,7 @@ class Settings
                     echo '<span style="font-size:0.8em;">Debug | '.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
                 }
                 echo '<strong><em>Template ['.$fname.'] not found, please review your settings.json file.</em></strong>';
-                die();
+                $fname='';
             }
         } else { // if ($tmpl!=='')
 

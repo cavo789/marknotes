@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.450Z
+* @package   : 2017-03-27T08:34:06.657Z
 */?>
 <?php
 

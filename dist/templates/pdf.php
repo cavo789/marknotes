@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.441Z
+* @package   : 2017-03-27T08:34:06.641Z
 */?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +18,7 @@
 		<meta name="designer" content="Markdown | Notes management" />
 		<meta name="keywords" content="%TITLE%" />
 		<meta name="description" content="%TITLE%" />
+		<meta property="og:url" content="%URL_PAGE%" />
 
 		<title>%TITLE%</title>
 

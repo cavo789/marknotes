@@ -32,7 +32,6 @@ class SlideShow
 
     public function run(array $params)
     {
-
         $aeSettings=\AeSecure\Settings::getInstance();
 
         if ($params['filename']!=="") {
@@ -59,7 +58,25 @@ class SlideShow
             // Try to retrieve the heading 1
             $pageTitle=$aeMD->getHeadingText($markdown, '#');
 
-            if ($this->_aeSettings->getSlideshow()==='remark') {
+            // Check if the params array contains a "type" entry and if so, check if that type is valid i.e.
+            // mention the name of an existing templates.  "remark" or "reveal" are supported in the version 1.0.7
+            // of MarkNotes.
+            if (isset($params['type'])) {
+                include_once dirname(dirname(__FILE__)).'/files.php';
+
+                // $type will be initiealized to an empty string if the file wasn't found in the /templates folder
+                $type=\AeSecure\Files::sanitizeFileName($params['type']);
+                if ($this->_aeSettings->getTemplateFile($type)==='') {
+                    $type='';
+                }
+            }
+
+            if ($type==='') {
+                // Get the type from the settings.json file
+                $type=$this->_aeSettings->getSlideshow();
+            }
+
+            if ($type==='remark') {
                 // The slideshow functionnality will be remark
 
                 // Consider that every Headings 2 and 3 should start in a new slide

@@ -59,7 +59,7 @@ class Markdown
     * @param string $filename   Optional, if not mentionned, get this information from $_POST
     *
     */
-    public function process(string $task, string $filename = '')
+    public function process(string $task, string $filename = '', array $params = null)
     {
 
         if ($filename==='') {
@@ -169,8 +169,15 @@ class Markdown
                 include_once TASKS.'slideshow.php';
                 $aeTask=\AeSecureMDTasks\SlideShow::getInstance();
 
+                if ($params===null) {
+                    $params=array();
+                }
+                if (!isset($params['filename'])) {
+                    $params['filename']=$filename;
+                }
+
                 header('Content-Type: text/html; charset=utf-8');
-                echo $aeTask->run(array('filename'=>$filename));
+                echo $aeTask->run($params);
                 break;
 
             case 'tags':

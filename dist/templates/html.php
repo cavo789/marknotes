@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.441Z
+* @package   : 2017-03-27T08:34:06.640Z
 */?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +23,7 @@
 		<meta name="description" content="%TITLE%" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-		<meta property="og:url" content="%URL%" />
+		<meta property="og:url" content="%URL_PAGE%" />
 		<meta property="og:type" content="article" />
 		<meta property="og:image" content="%URL_IMG%" />
 		<meta property="og:image:width" content="1200" />
@@ -51,6 +51,7 @@
 			</article>
 		</div>
 		<script type="text/javascript" src="%ROOT%/libs/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="%ROOT%/libs/lazysizes/lazysizes.min.js"></script>
 		<script type="text/javascript" src="%ROOT%/assets/js/markdown_html.js"></script>
 
 	</body>

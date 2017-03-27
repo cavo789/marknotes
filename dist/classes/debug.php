@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.425Z
+* @package   : 2017-03-27T08:34:06.615Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -75,4 +75,16 @@ class Debug
             return '';
         }
     } // function log()
+
+    /**
+     * Example : $this->aeDebug->here();  will display something like
+     *   "aeSecureDebug::here called by aeSecure::Setup() in C:\Christophe\Sites\aefc\aesecure\helpers\aesecure.php line 769"
+     * @return boolean
+     */
+    public static function here($msg = null, $deep = 3)
+    {
+
+      /**/
+        return true;
+    }
 } // class Debug

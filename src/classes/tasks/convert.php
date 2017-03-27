@@ -106,6 +106,5 @@ class Convert
         }
 
         return $html;
-
     } // function getHTML()
 } // class Functions

@@ -25,7 +25,7 @@ class Functions
             (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
             (($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');
 
-        $host     = isset($host) ? rtrim(str_replace(DIRECTORY_SEPARATOR, '/',$host),'/') : $_SERVER['SERVER_NAME'].$port;
+        $host     = isset($host) ? rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $host), '/') : $_SERVER['SERVER_NAME'].$port;
 
         return $protocol.'://'.$host.($useURI ? dirname($_SERVER['REQUEST_URI']) : dirname($_SERVER['PHP_SELF'])).'/';
     } // function getCurrentURL

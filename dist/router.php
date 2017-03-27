@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.371Z
+* @package   : 2017-03-27T08:34:06.509Z
 */?>
 <?php
 
@@ -18,19 +18,31 @@ $filename=\AeSecure\Functions::getParam('file', 'string', '', false);
 $format=\AeSecure\Functions::getParam('format', 'string', 'html', false, 8);
 
 // Only these format are recognized.  Default : html
-if (!(in_array($format, array('htm','html','pdf','slides')))) $format='html';
+if (!(in_array($format, array('htm','html','pdf','slides')))) {
+    $format='html';
+}
+
+$params=array();
 
 if ($filename!=='') {
-
     require_once __DIR__.'/classes/markdown.php';
 
     switch ($format) {
-
         case 'pdf':
             $task='pdf';
             break;
 
         case 'slides':
+            // Check on the URL if the user has forced a type i.e. "remark" or "reveal", the supported slideshow framework
+
+            $type=\AeSecure\Functions::getParam('type', 'string', '', false, 10);
+            if (!(in_array($type, array('remark','reveal')))) {
+                $type='';
+            }
+
+            if ($type!=='') {
+                $params['type']=$type;
+            }
             $task='slideshow';
             break;
 
@@ -44,7 +56,6 @@ if ($filename!=='') {
 
     // Create an instance of the class and initialize the rootFolder variable (type string)
     $aeSMarkDown = new \AeSecure\Markdown();
-    $aeSMarkDown->process($task, $filename);
+    $aeSMarkDown->process($task, $filename, $params);
     unset($aeSMarkDown);
-
 }

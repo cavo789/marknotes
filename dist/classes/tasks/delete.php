@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.445Z
+* @package   : 2017-03-27T08:34:06.650Z
 */?>
 <?php
 
@@ -40,7 +40,6 @@ class Delete
         /**/
 
         if ($params['type']==='folder') {
-
             // It's a folder
 
             if (!\AeSecure\Files::folderExists(utf8_decode($fullname))) {
@@ -51,11 +50,9 @@ class Delete
                 );
 
                 return;
-
             } else { // if (!\AeSecure\Files::folderExists($fullname))
 
                 if (is_writable(utf8_decode($fullname))) {
-
                     try {
                         // Kill a folder recursivelly ==> be really sure that the folder is within the documents
                         // folder and not elsewhere
@@ -265,6 +262,5 @@ class Delete
         } // if($params['type']==='folder')
 
         return;
-
     } // function Run()
 } // class Display

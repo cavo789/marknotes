@@ -76,3 +76,4 @@ function toggleFullScreen(element)
 
 } // function toggleFullScreen()
 
+

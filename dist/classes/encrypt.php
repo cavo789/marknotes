@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.433Z
+* @package   : 2017-03-27T08:34:06.627Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -47,7 +47,6 @@ class Encrypt
 
         $iv_size = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $this->iv= @\mcrypt_create_iv($iv_size, MCRYPT_RAND);
-
     } // function __construct()
 
     /**
@@ -124,11 +123,9 @@ class Encrypt
     * @param  bool   $bEditMode TRUE only when to $markdown content will be displayed in the Edit form => show unencrypted information back Edit form => show unencrypted information back
     *                            Edit form => show unencrypted information back
     * @return array
-    *    bool $bReturn           TRUE when the content of the .md file has been rewritten on the disk
-    *                            (=> encryption saved)
     *    string $markdown        The new content; once <encrypt> content has been correctly processed.
     */
-    public function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : array
+    public function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : string
     {
 
         $aeSettings=\AeSecure\Settings::getInstance();
@@ -246,6 +243,6 @@ class Encrypt
             unset($aesEncrypt);
         } // if (count($matches[1])>0)
 
-        return array($bReturn, $markdown);
+        return $markdown;
     } // function HandleEncryption()
 } // class Encrypt

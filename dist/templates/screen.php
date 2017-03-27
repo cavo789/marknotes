@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.443Z
+* @package   : 2017-03-27T08:34:06.643Z
 */?>
 <?php
 // @codingStandardsIgnoreFile
@@ -109,6 +109,9 @@
 
       <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks to Prism -->
       <script type="text/javascript" src="libs/prism/prism.js" data-manual></script>
+
+      <!-- Lazysizes (lazyload of images) -->
+      <script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script>
 
       <!-- jsTree -->
       <script type="text/javascript" src="libs/jsTree/jstree.min.js"></script>

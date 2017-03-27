@@ -5,7 +5,7 @@
 * @author    : christophe@aesecure.com
 * @license   : MIT
 * @url       : https://github.com/cavo789/markdown
-* @package   : 2017-03-24T17:10:14.436Z
+* @package   : 2017-03-27T08:34:06.632Z
 */?>
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
@@ -34,7 +34,7 @@ class Functions
             (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
             (($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');
 
-        $host     = isset($host) ? rtrim(str_replace(DIRECTORY_SEPARATOR, '/',$host),'/') : $_SERVER['SERVER_NAME'].$port;
+        $host     = isset($host) ? rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $host), '/') : $_SERVER['SERVER_NAME'].$port;
 
         return $protocol.'://'.$host.($useURI ? dirname($_SERVER['REQUEST_URI']) : dirname($_SERVER['PHP_SELF'])).'/';
     } // function getCurrentURL
