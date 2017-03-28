@@ -9,7 +9,8 @@ DirectoryIndex index.php
 Options +FollowSymlinks
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} \.(htm|html)$
+RewriteCond %{REQUEST_FILENAME} \.(htm|html)$ [OR]
+RewriteCond %{REQUEST_FILENAME} sitemap\.xml$
 RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
 
 <IfModule mod_rewrite.c>

@@ -18,32 +18,45 @@ $params=array();
 if ($filename!=='') {
     require_once __DIR__.'/classes/markdown.php';
 
-    switch ($format) {
-        case 'pdf':
-            $task='pdf';
-            break;
+    if (in_array($filename, array('timeline.html', 'sitemap.xml'))) {
+        switch ($filename) {
+            case 'timeline.html':
+                $task='timeline';
+                break;
 
-        case 'slides':
-            // Check on the URL if the user has forced a type i.e. "remark" or "reveal", the supported slideshow framework
+            case 'sitemap.xml':
+                $task='sitemap';
+                break;
+        } // switch
 
-            $type=\AeSecure\Functions::getParam('type', 'string', '', false, 10);
-            if (!(in_array($type, array('remark','reveal')))) {
-                $type='';
-            }
+        $filename='';
+    } else {
+        switch ($format) {
+            case 'pdf':
+                $task='pdf';
+                break;
 
-            if ($type!=='') {
-                $params['type']=$type;
-            }
-            $task='slideshow';
-            break;
+            case 'slides':
+                // Check on the URL if the user has forced a type i.e. "remark" or "reveal", the supported slideshow framework
 
-        default:                  // htm or html
-            $task='display';
-            break;
-    } // switch
+                $type=\AeSecure\Functions::getParam('type', 'string', '', false, 10);
+                if (!(in_array($type, array('remark','reveal')))) {
+                    $type='';
+                }
 
+                if ($type!=='') {
+                    $params['type']=$type;
+                }
+                $task='slideshow';
+                break;
 
-    $filename = str_replace('/', DIRECTORY_SEPARATOR, str_replace('docs/', '', \AeSecure\Files::removeExtension($filename))).'.md';
+            default:                  // htm or html
+                $task='display';
+                break;
+        } // switch
+
+        $filename = str_replace('/', DIRECTORY_SEPARATOR, str_replace('docs/', '', \AeSecure\Files::removeExtension($filename))).'.md';
+    } // if (in_array($filename, array('timeline.html', 'sitemap.xml')))
 
     // Create an instance of the class and initialize the rootFolder variable (type string)
     $aeSMarkDown = new \AeSecure\Markdown();

@@ -177,6 +177,16 @@ class Markdown
                 \AeSecure\Tasks\Search::run(array('pattern'=>$pattern));
                 break;
 
+            case 'sitemap':
+                // Display a sitemap
+
+                include_once TASKS.'sitemap.php';
+                $aeTask=\AeSecure\Tasks\Sitemap::getInstance();
+
+                header('Content-Type: application/xml; charset=utf-8');
+                echo $aeTask->run();
+                break;
+
             case 'slideshow':
                 // Display the "slideshow" version of the note
 
