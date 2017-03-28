@@ -40,8 +40,9 @@
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
         <link media="screen" rel="stylesheet" type="text/css" href="assets/css/markdown_screen.css" />
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/DataTables/css/dataTables.bootstrap4.min.css"/>
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css">
+        <link media="screen" rel="stylesheet" type="text/css" href="libs/DataTables/css/dataTables.bootstrap4.min.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-toolbar/jquery.toolbar.css" />
 
         <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
         <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/markdown_print.css">
@@ -106,6 +107,9 @@
 
       <!-- jsTree -->
       <script type="text/javascript" src="libs/jsTree/jstree.min.js"></script>
+
+      <!-- jquery-toolbar -->
+      <script type="text/javascript" src="libs/jquery-toolbar/jquery.toolbar.min.js"></script>
 
       <!-- dataTables -->
       <script type="text/javascript" src="libs/DataTables/js/jquery.dataTables.min.js"></script>

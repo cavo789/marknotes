@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 /**
 * Search for "$keywords" in the filename or in the file content.  Stop on the first occurence to speed up

@@ -29,6 +29,7 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
     - Joseph Lenton for [PHP-error](https://github.com/JosephLenton/PHP-Error)
     - Marcus Westin for [store.js](https://github.com/marcuswestin/store.js)
     - Nedim Arabaci for the [noty](https://github.com/needim/noty) plugin
+    - Paul Kinzett for [jquery-toolbar](https://github.com/paulkinzett/toolbar)
     - Sérgio Dinis Lopes for the [jQuery Flexdatalist](https://github.com/sergiodlopes/jquery-flexdatalist) plugin
     - SoapBox Innovations for [linkifyjs](https://github.com/SoapBox/linkifyjs)
     - Tim Connell for [jquery-print-preview](https://github.com/etimbo/jquery-print-preview-plugin) plugin

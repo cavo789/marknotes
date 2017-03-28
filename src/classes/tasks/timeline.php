@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 class Timeline
 {
@@ -17,9 +17,9 @@ class Timeline
         }
 
         $this->_aeSettings=\AeSecure\Settings::getInstance();
-		
+
         include_once(dirname(__DIR__)).'/filetype/markdown.php';
-		$this->_aeMD=\AeSecure\FileType\MarkDown::getInstance();
+        $this->_aeMD=\AeSecure\FileType\MarkDown::getInstance();
 
         return true;
     } // function __construct()
@@ -41,7 +41,7 @@ class Timeline
 
         include_once(dirname(__DIR__)).'/files.php';
         include_once(dirname(__DIR__)).'/functions.php';
-		
+
         $folder=str_replace('/', DS, $this->_aeSettings->getFolderDocs(true));
 
         $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.md', $this->_aeSettings->getFolderDocs(true)));
@@ -51,9 +51,8 @@ class Timeline
         // -------------------------------------------------------
 
         foreach ($arrFiles as $file) {
-			
-			$content=$this->_aeMD->read($file);
-			
+            $content=$this->_aeMD->read($file);
+
             $relFileName=utf8_encode(str_replace($folder, '', $file));
 
             $url=rtrim(\AeSecure\Functions::getCurrentURL(false, false), '/').'/'.rtrim($this->_aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
@@ -63,7 +62,7 @@ class Timeline
               array(
                 'fmtime'=>filectime($file),
                 'time'=>date("Y-m-d", filectime($file)),
-                'header'=> utf8_encode(ltrim($this->_aeMD->getHeadingText($content),'#')),
+                'header'=> $this->_aeMD->getHeadingText($content),
                 'body'=>array(
                   array(
                     'tag'=>'a',
@@ -127,7 +126,7 @@ class Timeline
           "markdown.url='index.php';\n".
           "markdown.settings={};\n".
           "markdown.settings.debug=".($this->_aeSettings->getDebugMode()?1:0).";\n".
-          "markdown.settings.locale=".$this->_aeSettings->getLocale().";\n".
+          "markdown.settings.locale='".$this->_aeSettings->getLocale()."';\n".
           "markdown.settings.use_localcache=".($this->_aeSettings->getUseLocalCache()?1:0).";\n";
 
           $html=file_get_contents($this->_aeSettings->getTemplateFile('timeline'));

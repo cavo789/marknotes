@@ -1,6 +1,6 @@
 {
    "name": "marknotes",
-   "version": "1.0.5",
+   "version": "1.0.7",
    "description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
    "main": "index.php",
    "repository": {

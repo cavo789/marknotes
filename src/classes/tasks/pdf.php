@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 class PDF
 {
@@ -64,7 +64,7 @@ class PDF
                 // Get the HTML rendering of the note
 
                 include_once TASKS.'display.php';
-                $aeTask=\AeSecureMDTasks\Display::getInstance();
+                $aeTask=\AeSecure\Tasks\Display::getInstance();
 
                 // Use the pdf template and not the "html" one
                 $params['template']='pdf';

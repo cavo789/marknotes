@@ -64,8 +64,8 @@
                 list-style: none;
             }
 
-            #footer{position:absolute;z-index:10;font-size:0.8em;color:white;right:0;bottom:0;left:0;padding:1em;background-color:rgba(185, 49, 44, 0.52);}
-            #footer a {color:white;}
+            #footer{position:absolute;z-index:10;font-size:0.8em;color:white;right:0;bottom:0;left:0;padding:3px;background-color:rgba(90, 145, 199, 0.16);}
+            #footer a {color:blue;font-size:8px;}
 
             strong {background-color:green;color:white;}
             .blink {animation: blink 1s steps(5, start) infinite; -webkit-animation: blink 1s steps(5, start) infinite;} @keyframes blink {to {visibility: hidden;}} @-webkit-keyframes blink {to {visibility: hidden;}}

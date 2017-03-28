@@ -257,7 +257,7 @@ class Settings
     public function setDevMode(bool $onOff)
     {
 
-        $this->devmode=false;
+        $this->devmode=$onOff;
 
         /*<!-- build:debug -->*/
         // Only when the development mode is enabled, include php_error library to make life easier

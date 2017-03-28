@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 /**
  * Get the list of .md files.  This list will be used in the "table of contents"

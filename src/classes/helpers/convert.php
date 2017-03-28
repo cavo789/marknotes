@@ -1,6 +1,6 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
-namespace AeSecure;
+namespace AeSecure\Helpers;
 
 include 'libs/autoload.php';
 

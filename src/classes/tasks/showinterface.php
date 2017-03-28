@@ -5,7 +5,7 @@
 * @return string  html content
 */
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 class ShowInterface
 {
@@ -85,8 +85,8 @@ class ShowInterface
         "markdown.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "markdown.settings.DS='".preg_quote(DS)."';\n".
         "markdown.settings.language='".$aeSettings->getLanguage()."';\n".
-        "markdown.settings.lazyload=".$aeSettings->getOptimisationLazyLoad().";\n".
-        "markdown.settings.locale=".$aeSettings->getLocale().";\n".
+        "markdown.settings.lazyload=".($aeSettings->getOptimisationLazyLoad()?1:0).";\n".
+        "markdown.settings.locale='".$aeSettings->getLocale()."';\n".
         "markdown.settings.prefix_tag='".$aeSettings->getPrefixTag()."';\n".
         "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
         "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";

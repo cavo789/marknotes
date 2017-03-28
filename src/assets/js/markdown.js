@@ -102,7 +102,7 @@ $(document)
 							.val());
 					//     onChangeSearch();
 				});
-		} // if (markdown.autoload === 1) 
+		} // if (markdown.autoload === 1)
 	}); // $( document ).ready()
 
 /**
@@ -191,6 +191,13 @@ function ajaxify($params) {
 				}
 
 				if ($params.dataType === 'html') {
+
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Output the result into target area');
+					}
+					/*<!-- endbuild -->*/
+
 					$($target)
 						.html(data);
 				}
@@ -198,6 +205,11 @@ function ajaxify($params) {
 				/* jshint ignore:start */
 				var $callback = ($params.callback === undefined) ? '' : $params.callback;
 				if ($callback !== '') {
+					/*<!-- build:debug -->*/
+					if (markdown.settings.debug) {
+						console.log('Run the callback function : ' + $params.callback);
+					}
+					/*<!-- endbuild -->*/
 					eval($callback);
 				}
 				/* jshint ignore:end */
@@ -396,10 +408,9 @@ function initializeTasks() {
 			}
 
 			switch ($task) {
+
 			case 'clear':
-
 				cleanCache();
-
 				break;
 
 			case 'clipboard':
@@ -516,6 +527,10 @@ function initializeTasks() {
 				});
 				break;
 
+			case 'timeline':
+				window.open(markdown.url + '?task=timeline');
+				break;
+
 			case 'window':
 
 				window.open($fname);
@@ -561,7 +576,7 @@ function replaceLinksToOtherNotes() {
 	try {
 		/*<!-- build:debug -->*/
 		if (markdown.settings.debug) {
-			console.log('Replace internal links to notes');
+			console.log(' ... Replace internal links to notes (function replaceLinksToOtherNotes())');
 		}
 		/*<!-- endbuild -->*/
 
@@ -574,7 +589,7 @@ function replaceLinksToOtherNotes() {
 		// Define a regex for matching every links in the displayed note pointing to that URL
 		var RegEx = new RegExp('<a href=[\'|"]' + RegExp.quote($currentURL) + '\?.*>(.*)<\/a>', 'i');
 
-		var $nodes = RegEx.exec($text);
+		var $nodes = RegEx.exec(RegExp.quote($text));
 
 		var $param = [];
 		var $fname = '';
@@ -608,6 +623,12 @@ function replaceLinksToOtherNotes() {
  */
 function addLinksToTags() {
 
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log(' ... add links to tags (function addLinksToTags())');
+	}
+	/*<!-- endbuild -->*/
+
 	var $text = $('#CONTENT')
 		.html();
 
@@ -626,7 +647,7 @@ function addLinksToTags() {
 		var RegEx = new RegExp('( |,|;|\\.|\\n|\\r|\\t)*' + markdown.settings.prefix_tag + '([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
 		/*<!-- build:debug -->*/
 		if (markdown.settings.debug) {
-			console.log('RegEx for finding tags : ' + RegEx);
+			console.log('     RegEx for finding tags : ' + RegEx);
 		}
 		/*<!-- endbuild -->*/
 
@@ -635,7 +656,7 @@ function addLinksToTags() {
 		while ($tags !== null) {
 			/*<!-- build:debug -->*/
 			if (markdown.settings.debug) {
-				console.log("Process tag " + $tags[0]);
+				console.log("     Process tag " + $tags[0]);
 			}
 			/*<!-- endbuild -->*/
 
@@ -670,6 +691,12 @@ function addLinksToTags() {
  */
 function forceNewWindow() {
 
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log(' ... force new window by clicking on links pointing to an another server (function forceNewWindow())');
+	}
+	/*<!-- endbuild -->*/
+
 	var $currentURL = location.protocol + '//' + location.host;
 
 	$('a[href^="http:"], a[href^="https:"]')
@@ -684,6 +711,12 @@ function forceNewWindow() {
  * Add icons to .pdf, .xls, .doc, ... hyperlinks and for some extensions (like log, md, pdf, txt, ...) force to open in a new window
  */
 function addIcons() {
+
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log(' ... add icons to some filetype (function addIcons())');
+	}
+	/*<!-- endbuild -->*/
 
 	try {
 		$("a")
@@ -750,6 +783,12 @@ function addIcons() {
  */
 function NiceTable() {
 
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log(' ... NiceTable : set style to Bootstrap and use the DataTable jQuery Plugin (function NiceTable())');
+	}
+	/*<!-- endbuild -->*/
+
 	try {
 		$("table")
 			.each(function () {
@@ -791,11 +830,19 @@ function NiceTable() {
 function afterDisplay($fname) {
 
 	try {
+
+		/*<!-- build:debug -->*/
+		if (markdown.settings.debug) {
+			console.log('In function afterDisplay()');
+		}
+		/*<!-- endbuild -->*/
+
 		// Remove functionnalities if jQuery librairies are not loaded
 		if (typeof Clipboard !== 'function') {
 			$('[data-task="clipboard"]')
 				.remove();
 		}
+
 		if (!$.isFunction($.fn.printPreview)) {
 			$('[data-task="printer"]')
 				.remove();
@@ -805,7 +852,7 @@ function afterDisplay($fname) {
 		if ($.isFunction($.fn.linkify)) {
 			/*<!-- build:debug -->*/
 			if (markdown.settings.debug) {
-				console.log('linkify plain text');
+				console.log(' ... linkify plain text (in function afterDisplay())');
 			}
 			/*<!-- endbuild -->*/
 			$('page')
@@ -899,6 +946,12 @@ function afterDisplay($fname) {
  */
 function afterEdit($fname) {
 
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log('In function afterEdit()');
+	}
+	/*<!-- endbuild -->*/
+
 	// Create the Simple Markdown Editor
 	// @link https://github.com/NextStepWebs/simplemde-markdown-editor
 
@@ -953,11 +1006,6 @@ function afterEdit($fname) {
 	$('.editor-toolbar')
 		.addClass('fa-2x');
 
-	/*
-	 var editor = new Editor({
-	   element: document.getElementById("sourceMarkDown")
-	 });
-	*/
 	return true;
 
 } // function afterEdit()
@@ -1017,6 +1065,12 @@ function buttonEncrypt(editor) {
  */
 function onChangeSearch() {
 
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log('In function onChangeSearch()');
+	}
+	/*<!-- endbuild -->*/
+
 	try {
 		// Get the searched keywords.  Apply the restriction on the size.
 		var $searchKeywords = $('#search')
@@ -1058,7 +1112,7 @@ function onChangeSearch() {
 
 	return true;
 
-} // Search()
+} // onChangeSearch()
 
 /*
  * Called when the ajax request "onChangeSearch" has been successfully fired.
@@ -1066,6 +1120,12 @@ function onChangeSearch() {
  * array of files that matched the searched pattern.
  */
 function afterSearch($keywords, $data) {
+
+	/*<!-- build:debug -->*/
+	if (markdown.settings.debug) {
+		console.log('In function afterSearch()');
+	}
+	/*<!-- endbuild -->*/
 
 	try {
 		// Check if we've at least one file
@@ -1169,38 +1229,6 @@ function afterSearch($keywords, $data) {
 					}
 				);
 
-				//
-				// -------------------------------------------------
-			} else { // if ($.isFunction($.fn.jstree)){
-
-				// Process every rows of the tblFiles array => process every files
-				$('#tblFiles > tbody  > tr > td')
-					.each(function () {
-
-						// Be sure to process only cells with the data-file attribute.
-						// That attribute contains the filename, not encoded
-						if ($(this)
-							.attr('data-file')) {
-							// Get the filename (is relative like /myfolder/filename.md)
-							$filename = $(this)
-								.data('file');
-							$tr = $(this)
-								.parent();
-
-							// Default : hide the filename
-							$tr.hide();
-
-							// Now, check if the file is mentionned in the result, if yes, show the row back
-							$.each($data, function () {
-								$.each(this, function ($key, $value) {
-									if ($value === $filename) {
-										$tr.show();
-										return false; // break
-									}
-								});
-							}); // $.each($data)
-						}
-					}); // $('#tblFiles > tbody  > tr > td')
 			} // if ($.isFunction($.fn.jstree)){
 		} else { // if (Object.keys($data['files']).length>0)
 
@@ -1229,17 +1257,7 @@ function afterSearch($keywords, $data) {
 					// And show the entire tree
 					$('#TOC')
 						.jstree('open_all');
-				} else { //  if ($.isFunction($.fn.jstree))
 
-					$('#tblFiles > tbody  > tr > td')
-						.each(function () {
-							if ($(this)
-								.attr('data-file')) {
-								$(this)
-									.parent()
-									.show();
-							}
-						});
 				} //  if ($.isFunction($.fn.jstree))
 			} // if ($keywords!=='')
 		} // if (Object.keys($data).length>0)

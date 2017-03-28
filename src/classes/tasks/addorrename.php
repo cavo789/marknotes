@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 /**
  * Create file/folder or rename file/folder

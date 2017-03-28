@@ -37,7 +37,8 @@ class Markdown
             $title = (count($matches)>0) ? trim($matches[1]) : '';
 
             // Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
-            $title=rtrim($title, $heading);
+            
+            $title=ltrim(rtrim($title, $heading), $heading);
         } catch (Exception $e) {
         }
 

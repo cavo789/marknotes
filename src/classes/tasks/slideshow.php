@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 class SlideShow
 {
@@ -61,9 +61,9 @@ class SlideShow
             // Check if the params array contains a "type" entry and if so, check if that type is valid i.e.
             // mention the name of an existing templates.  "remark" or "reveal" are supported in the version 1.0.7
             // of MarkNotes.
-			
-			$type='';
-			
+
+            $type='';
+
             if (isset($params['type'])) {
                 include_once dirname(dirname(__FILE__)).'/files.php';
 
@@ -126,12 +126,9 @@ class SlideShow
             } else { // if ($aeSettings->getSlideshow()==='remark')
 
                 // Convert the Markdown text into an HTML text
+                include_once dirname(__DIR__).'/helpers/convert.php';
 
-                if (!class_exists('Convert')) {
-                    include_once 'convert.php';
-                }
-
-                $aeConvert=\AeSecure\Convert::getInstance();
+                $aeConvert=\AeSecure\Helpers\Convert::getInstance();
                 $html=$aeConvert->getHTML($markdown);
 
                 include_once dirname(__DIR__).'/filetype/html.php';

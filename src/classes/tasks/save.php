@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 /**
 * Save the new content of the file.   This function is called by the "Save" button available in the JS editor

@@ -91,14 +91,14 @@ class Markdown
                 $type=\AeSecure\Functions::getParam('param3', 'string', '', false);
 
                 include_once TASKS.'delete.php';
-                \AeSecureMDTasks\Delete::run(array('filename'=>$filename,'type'=>$type));
+                \AeSecure\Tasks\Delete::run(array('filename'=>$filename,'type'=>$type));
                 break;
 
             case 'display':
                 // Display the HTML rendering of a note
 
                 include_once TASKS.'display.php';
-                $aeTask=\AeSecureMDTasks\Display::getInstance();
+                $aeTask=\AeSecure\Tasks\Display::getInstance();
 
                 header('Content-Type: text/html; charset=utf-8');
                 echo $aeTask->run(array('filename'=>$filename));
@@ -109,14 +109,14 @@ class Markdown
                 // Edit an existing file
 
                 include_once TASKS.'edit.php';
-                \AeSecureMDTasks\Edit::run(array('filename'=>$filename));
+                \AeSecure\Tasks\Edit::run(array('filename'=>$filename));
                 break;
 
             case 'getTimeline':
                 // Get the list of notes
 
                 include_once TASKS.'timeline.php';
-                $aeTask=\AeSecureMDTasks\Timeline::getInstance();
+                $aeTask=\AeSecure\Tasks\Timeline::getInstance();
 
                 header('Content-Type: application/json');
                 echo $aeTask->getJSON($params);
@@ -126,14 +126,14 @@ class Markdown
                 // Retrieve the list of .md files.
 
                 include_once TASKS.'listfiles.php';
-                echo \AeSecureMDTasks\ListFiles::run();
+                echo \AeSecure\Tasks\ListFiles::run();
                 break;
 
             case 'pdf':
                 // Generate a PDF
 
                 include_once TASKS.'pdf.php';
-                $aeTask=\AeSecureMDTasks\PDF::getInstance();
+                $aeTask=\AeSecure\Tasks\PDF::getInstance();
 
                 header('Content-Type: application/pdf');
                 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -155,7 +155,7 @@ class Markdown
 
                 // Remove html files.  These files aren't needed, only .md files are important
                 include_once TASKS.'addorrename.php';
-                \AeSecureMDTasks\AddOrRename::run(array('oldname'=>$filename,'newname'=>$newname,'type'=>$type));
+                \AeSecure\Tasks\AddOrRename::run(array('oldname'=>$filename,'newname'=>$newname,'type'=>$type));
                 break;
 
             case 'save':
@@ -164,7 +164,7 @@ class Markdown
                 $markdown=json_decode(urldecode(\AeSecure\Functions::getParam('markdown', 'string', '', true)));
 
                 include_once TASKS.'save.php';
-                \AeSecureMDTasks\Save::run(array('filename'=>$filename,'markdown'=>$markdown));
+                \AeSecure\Tasks\Save::run(array('filename'=>$filename,'markdown'=>$markdown));
                 break;
 
             case 'search':
@@ -174,14 +174,14 @@ class Markdown
                 //$pattern=\AeSecure\Functions::getParam('param', 'string', '', true, $this->aeSettings->getSearchMaxLength());
 
                 include_once TASKS.'search.php';
-                \AeSecureMDTasks\Search::run(array('pattern'=>$pattern));
+                \AeSecure\Tasks\Search::run(array('pattern'=>$pattern));
                 break;
 
             case 'slideshow':
                 // Display the "slideshow" version of the note
 
                 include_once TASKS.'slideshow.php';
-                $aeTask=\AeSecureMDTasks\SlideShow::getInstance();
+                $aeTask=\AeSecure\Tasks\SlideShow::getInstance();
 
 
                 if (!isset($params['filename'])) {
@@ -196,14 +196,14 @@ class Markdown
                 // Get the list of folders/tags
 
                 include_once TASKS.'tags.php';
-                \AeSecureMDTasks\Tags::run();
+                \AeSecure\Tasks\Tags::run();
                 break;
 
             case 'timeline':
                 // Display a timeline of all articles
 
                 include_once TASKS.'timeline.php';
-                $aeTask=\AeSecureMDTasks\Timeline::getInstance();
+                $aeTask=\AeSecure\Tasks\Timeline::getInstance();
 
                 header('Content-Type: text/html; charset=utf-8');
                 echo $aeTask->run($params);
@@ -212,7 +212,7 @@ class Markdown
             default:
                 // Show the main interface
                 include_once TASKS.'showinterface.php';
-                echo \AeSecureMDTasks\ShowInterface::run();
+                echo \AeSecure\Tasks\ShowInterface::run();
                 break;
         } // switch ($task)
     } // function process()

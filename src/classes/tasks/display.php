@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 include 'libs/autoload.php';
 
@@ -121,11 +121,9 @@ class Display
 
         // Convert the Markdown text into an HTML text
 
-        if (!class_exists('Convert')) {
-            include_once 'convert.php';
-        }
+        include_once dirname(__DIR__).'/helpers/convert.php';
 
-        $aeConvert=\AeSecure\Convert::getInstance();
+        $aeConvert=\AeSecure\Helpers\Convert::getInstance();
         $html=$aeConvert->getHTML($markdown, $params);
 
         // Check if the .html version of the markdown file already exists; if not, create it
@@ -186,27 +184,10 @@ class Display
             // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
             $fnameHTML = str_replace('\\', '/', rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
 
-            // Retrieve the URL to this note
-            $thisNote= urldecode(\AeSecure\Functions::getCurrentURL(false, false));
+            include_once dirname(__DIR__)."/view/toolbar.php";
+            $aeToolbar=\AeSecure\View\Toolbar::getInstance();
 
-            $toolbar='<div id="icons" class="onlyscreen fa-3x">'.
-                '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true" title="'.$this->_aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'"></i>'.
-                '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true" title="'.$this->_aeSettings->getText('refresh', 'Refresh', true).'"></i>'.
-                '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true" title="'.$this->_aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'"></i>'.
-                '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true" title="'.$this->_aeSettings->getText('print_preview', 'Print preview', true).'"></i>'.
-                '<i id="icon_pdf" data-task="pdf" data-file="'.utf8_encode($urlHTML).'?format=pdf" class="fa fa-file-pdf-o" aria-hidden="true" title="'.$this->_aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'"></i>'.
-                '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true" title="'.$this->_aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'"></i>'.
-                '<i id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($urlHTML).'?format=slides" class="fa fa-desktop" aria-hidden="true" title="'.$this->_aeSettings->getText('slideshow', 'slideshow', true).'"></i>'.
-                '<i id="icon_window" data-task="window" data-file="'.utf8_encode($urlHTML).'" class="fa fa-external-link" aria-hidden="true" title="'.$this->_aeSettings->getText('open_html', 'Open in a new window').'"></i>'.
-                (
-                    $this->_aeSettings->getEditAllowed()
-                    ?'<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true" title="'.$this->_aeSettings->getText('edit_file', 'Edit').'" data-file="'.$params['filename'].'"></i>'
-                    :''
-                ).
-                '<i id="icon_settings_clear" data-task="clear" class="fa fa-eraser" aria-hidden="true" title="'.$this->_aeSettings->getText('settings_clean', 'Clear cache', true).'"></i>'.
-            '</div>';
-
-            $html=$toolbar.'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
+            $html=$aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
 
             $html='<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
         } // if (!\AeSecure\Functions::isAjaxRequest())

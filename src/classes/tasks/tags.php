@@ -1,6 +1,6 @@
 <?php
 
-namespace AeSecureMDTasks;
+namespace AeSecure\Tasks;
 
 /**
 * Retrieve the list of folder names and tags.  Used for the search entry, allowing auto-completion
