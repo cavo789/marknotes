@@ -20,8 +20,8 @@ h2 {
     display: block;
     -webkit-margin-before: 0.83em;
     -webkit-margin-after: 0.83em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
 }
 
 #CONTENT img {
@@ -52,19 +52,6 @@ h2 {
 }
 
 
-/* By selecting a file from the filelist, highlight its name */
-
-#tblFiles>tbody>tr:nth-child(odd) .selected {
-    background-color: #90b6e2;
-    color: white;
-}
-
-#tblFiles>tbody>tr:nth-child(even) .selected {
-    background-color: #90b6e2;
-    color: white;
-}
-
-
 /* Style for the formatting of the name of the file, displayed in the content, first line */
 
 .filename {
@@ -73,6 +60,15 @@ h2 {
     color: #dfdfe0;
     top: 15px;
     position: inherit;
+}
+
+#toolbar-button {
+    background-color: rgba(5, 58, 74, 0.12);
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    margin-right: 10px;
+    cursor: pointer;
 }
 
 
@@ -111,55 +107,13 @@ body {
     max-width: 150px;
 }
 
-
-/* Formating of the array with the list of files */
-
-
-/* The search area.  The width will be initialized by javascript */
-
-#tblFiles {
-    font-size: 0.8em;
-    color: #445c7b;
-    background-color: #f5f5f5;
-}
-
-#tblFiles>thead>tr {
-    font-size: 1.2em;
-    color: #445c7b;
-    background-color: #c7c0c0;
-}
-
-
-/*#tblFiles>thead>tr.tablesorter-filter-row{background-color:red;color:white;}*/
-
-
-/* The icons area is used f.i. for displaying a lock icon when the note contains encrypted data */
-
-#icons {
-    display: inline-block;
-    position: fixed;
-    top: 5px;
-    right: 30px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-#icon_fullscreen {
-    color: lightgray;
-}
-
-#icon_refresh, #icon_printer, #icon_edit, #icon_pdf, #icon_slideshow, #icon_clipboard, #icon_link_note, #icon_settings_clear, #icon_window {
-    margin-left: 20px;
-    color: lightgray;
-}
-
 #icon_lock {
     margin-left: 2px;
     color: #abe0ab;
 }
 
 img {
-    padding: 25px 5px 25px;
+    padding: 25px 5px;
 }
 
 .icon_file {
@@ -208,7 +162,7 @@ img {
     background: url('../../libs/jsTree/file_sprite.png') 0 0 no-repeat;
 }
 
-#TOC .file-text, #TOC .file-txt, #TOC .file-md, #TOC .file-log, #TOC .file-htaccess {
+#TOC .file-htaccess, #TOC .file-log, #TOC .file-md, #TOC .file-text, #TOC .file-txt {
     background-position: -254px -18px;
 }
 
@@ -218,8 +172,7 @@ img {
 page {
     background: white;
     display: none;
-    margin: 0 auto;
-    margin-bottom: 0.5cm;
+    margin: 0 auto 0.5cm;
     box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
 }
 
@@ -253,7 +206,7 @@ page {
 
 .highlight {
     background-color: yellow !important;
-    border-radius: .125em;
+    border-radius: 0.125em;
 }
 
 
@@ -303,7 +256,7 @@ div.editor-wrapper .editor-toolbar a {
 
 /* Display folders in the treeview in italic */
 
-.jstree-open>.jstree-anchor, .jstree-closed>.jstree-anchor {
+.jstree-closed>.jstree-anchor, .jstree-open>.jstree-anchor {
     font-style: italic;
 }
 
