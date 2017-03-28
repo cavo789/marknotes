@@ -53,15 +53,19 @@ class Sitemap
                 '      <url>'.PHP_EOL.
                 '         <loc>'.str_replace(' ', '%20', htmlspecialchars($urlHTML, ENT_HTML5)).'</loc>'.PHP_EOL.
                 '         <lastmod>'.date('Y-m-d\TH:i:sP', filemtime($file)).'</lastmod>'.PHP_EOL.
+                '         <changefreq>weekly</changefreq>'.PHP_EOL.
+                '         <priority>1.0</priority>'.PHP_EOL.
                 '      </url>'.PHP_EOL;
         } // foreach
 
 
         $sReturn=
             '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL.
-            '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL.
-            '   <sitemap>'.PHP_EOL.$xml.PHP_EOL.'   </sitemap>'.PHP_EOL.
-            '</sitemapindex>';
+            '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '.
+                'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" '.
+                'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL.
+            '   '.$xml.PHP_EOL.
+            '</urlset>';
 //echo '<pre>'.str_replace('<', '&lt;', $sReturn).'</pre>';die();
         return $sReturn;
     } // function run()
