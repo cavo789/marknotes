@@ -79,6 +79,7 @@ class ShowInterface
         "markdown.message.tree_new_note='".$aeSettings->getText('tree_new_note', 'Create a new note', true)."';\n".
         "markdown.message.tree_new_note_name='".$aeSettings->getText('tree_new_note_name', 'New note', true)."';\n".
         "markdown.url='index.php';\n".
+        "markdown.webroot='".rtrim(\AeSecure\Functions::getCurrentURL(true, false), '/')."/';\n".
         "markdown.settings={};\n".
         "markdown.settings.auto_tags='".$aeSettings->getTagsAutoSelect()."';\n".
         "markdown.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".

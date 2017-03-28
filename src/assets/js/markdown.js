@@ -528,7 +528,7 @@ function initializeTasks() {
 				break;
 
 			case 'timeline':
-				window.open(markdown.url + '?task=timeline');
+				window.open(markdown.webroot + 'timeline.html');
 				break;
 
 			case 'window':

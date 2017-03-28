@@ -41,21 +41,26 @@ class Sitemap
 
         $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.md', $this->_aeSettings->getFolderDocs(true)));
 
+        $xml='';
+
         foreach ($arrFiles as $file) {
             $relFileName=utf8_encode(str_replace($folder, '', $file));
 
             $url=rtrim(\AeSecure\Functions::getCurrentURL(false, false), '/').'/'.rtrim($this->_aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
             $urlHTML=$url.str_replace(DIRECTORY_SEPARATOR, '/', \AeSecure\Files::replaceExtension($relFileName, 'html'));
 
-            $arr[]=str_replace(' ', '%20', htmlspecialchars($urlHTML, ENT_HTML5));
+            $xml.=
+                '      <url>'.PHP_EOL.
+                '         <loc>'.str_replace(' ', '%20', htmlspecialchars($urlHTML, ENT_HTML5)).'</loc>'.PHP_EOL.
+                '         <lastmod>'.date('Y-m-d\TH:i:sP', filemtime($file)).'</lastmod>'.PHP_EOL.
+                '      </url>'.PHP_EOL;
         } // foreach
+
 
         $sReturn=
             '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL.
             '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL.
-            '   <sitemap>'.PHP_EOL.
-            '      <loc>'.implode($arr, '</loc>'.PHP_EOL.'      <loc>').'</loc>'.PHP_EOL.
-            '   </sitemap>'.PHP_EOL.
+            '   <sitemap>'.PHP_EOL.$xml.PHP_EOL.'   </sitemap>'.PHP_EOL.
             '</sitemapindex>';
 //echo '<pre>'.str_replace('<', '&lt;', $sReturn).'</pre>';die();
         return $sReturn;
