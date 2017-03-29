@@ -114,7 +114,7 @@ class Timeline
 
         include_once(dirname(__DIR__)).'/json.php';
         return \AeSecure\JSON::json_encode($json, JSON_PRETTY_PRINT);
-    } // function getJSON()
+    }
 
     public function run(array $params)
     {

@@ -4,16 +4,16 @@ ErrorDocument 403 '<html xmlns="http://www.w3.org/1999/xhtml"><head><style type=
 
 DirectoryIndex index.php
 
-# Own router : if the URL points to a .html file and if that file doesn't exists, redirect to router.php
-# For instance : http://localhost:8080/notes/docs/Development/atom/plugins.html will be valid and will display the html rendering of the plugins.md file
-Options +FollowSymlinks
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} \.(htm|html)$ [OR]
-RewriteCond %{REQUEST_FILENAME} sitemap\.xml$
-RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
-
 <IfModule mod_rewrite.c>
+
+    # Own router : if the URL points to a .html file and if that file doesn't exists, redirect to router.php
+    # For instance : http://localhost:8080/notes/docs/Development/atom/plugins.html will be valid and will display the html rendering of the plugins.md file
+    Options +FollowSymlinks
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} \.(htm|html)$ [OR]
+    RewriteCond %{REQUEST_FILENAME} sitemap\.xml$
+    RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
 
     # Block access to hidden files / folders but allow .files, .images or .well)-known
     RewriteCond %{SCRIPT_FILENAME} -d [OR]
@@ -24,5 +24,9 @@ RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
     RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
     RewriteCond %{SCRIPT_FILENAME} -f
     RewriteRule .* - [R=403,NC,L]
+	
+	RewriteCond %{REQUEST_FILENAME} !(index|router)\.php
+    RewriteCond %{REQUEST_FILENAME} \.(php)$ 
+	RewriteRule .* - [R=403,NC,L]
 
 </IfModule>

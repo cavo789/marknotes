@@ -15,7 +15,6 @@ class Files
     */
     public static function fileExists(string $filename) : bool
     {
-
         if ($filename=='') {
             return false;
         }
@@ -23,7 +22,7 @@ class Files
         $errorlevel=error_reporting();
         error_reporting(0);
 
-        $wReturn = is_file($filename);
+        $wReturn = is_file(utf8_decode($filename));
 
         error_reporting($errorlevel);
 

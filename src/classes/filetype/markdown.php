@@ -37,7 +37,7 @@ class Markdown
             $title = (count($matches)>0) ? trim($matches[1]) : '';
 
             // Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
-            
+
             $title=ltrim(rtrim($title, $heading), $heading);
         } catch (Exception $e) {
         }
@@ -81,6 +81,9 @@ class Markdown
      */
     public function read(string $filename, array $params = null) : string
     {
+        if (mb_detect_encoding($filename)) {
+            $filename=utf8_decode($filename);
+        }
 
         $markdown=file_get_contents($filename);
 

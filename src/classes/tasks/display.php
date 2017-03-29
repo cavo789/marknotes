@@ -67,6 +67,10 @@ class Display
             $template=$this->_aeSettings->getTemplateFile('html');
         }
 
+        // Don't keep the § (tags prefix) for slideshow
+        $html=str_replace('§', '', $html);
+        $html=str_replace('&sect;', '', $html);  // &sect; = §
+
         if (\AeSecure\Files::fileExists($template)) {
             $html=$aeHTML->replaceVariables(file_get_contents($template), $html);
         } // \AeSecure\Files::fileExists($template)

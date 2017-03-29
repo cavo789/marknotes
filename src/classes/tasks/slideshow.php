@@ -37,7 +37,7 @@ class SlideShow
         if ($params['filename']!=="") {
             $fullname=utf8_decode($aeSettings->getFolderDocs(true).$params['filename']);
 
-            if (!file_exists($fullname)) {
+            if (!\AeSecure\Files::fileExists($fullname)) {
                 echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
                 return;
             }
@@ -51,7 +51,9 @@ class SlideShow
             $params['removeConfidential']='0';
 
             $markdown=$aeMD->read($fullname, $params);
-
+/* FIXME: remove debugging */echo "<pre style='background-color:yellow; word-spacing:15px; line-height:1.5; font-size:18px;'>";
+            var_dump();
+            echo"</pre>";
             // Don't keep the § (tags prefix) for slideshow
             $markdown=str_replace('§', '', $markdown);
 
@@ -85,9 +87,9 @@ class SlideShow
                 // Consider that every Headings 2 and 3 should start in a new slide
                 // The "remark" library allow indeed to give a name to each slide by just adding "name: NAME" in the markdown string
 
-                // Get every heading 2 (i.e. lines starting with "## TITLE") and heading 3 ("### Subtitle")
+                // Get every heading 2 (i.e. lines starting with "## TITLE") till heading 6 ("###### Subtitle")
 
-                $arrHeading=array('##','###');
+                $arrHeading=array('##','###','####','#####','######');
                 foreach ($arrHeading as $head) {
                     $matches=array();
 
@@ -118,6 +120,15 @@ class SlideShow
                         } // for ($i)
                     } // if(count($matches)>0)
                 } // foreach ($arrHeading as $head)
+
+                // -------------------
+                // Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
+
+                $matches=array();
+                preg_match_all('/-{3,5}/', $markdown, $matches);
+                foreach ($matches[0] as $tmp) {
+                    $markdown=str_replace($tmp, '---', $markdown);
+                }
 
                 $slideshow=file_get_contents($this->_aeSettings->getTemplateFile('remark'));
 
@@ -166,6 +177,15 @@ class SlideShow
 
                     $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section data-transition="'.$transition.'">'.$tmp, $html);
                 } // foreach
+
+                // -------------------
+                // Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
+
+                $matches=array();
+                preg_match_all('/<hr *\/?>/', $html, $matches);
+                foreach ($matches[0] as $tmp) {
+                    $html=str_replace($tmp, '</section><section>', $html);
+                }
 
                 if (substr($html, 0, strlen('</section>'))=='</section>') {
                     $html=substr($html, strlen('</section>'), strlen($html));
