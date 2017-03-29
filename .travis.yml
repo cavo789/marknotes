@@ -2,4 +2,4 @@ language: php
 php:
   - '7.0'
   - '7.1'
-script: phpunit dist/index.php
+script: phpunit src/index.php
