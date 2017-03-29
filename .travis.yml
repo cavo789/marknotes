@@ -1,5 +1,10 @@
+before_script:
+  - phpenv config-rm xdebug.ini
+
 language: php
+
 php:
   - '7.0'
   - '7.1'
+
 script: phpunit src/index.php
