@@ -26,11 +26,13 @@ $aeDebug=\MarkNotes\Debug::getInstance();
 $folder=str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
 $folder=rtrim($folder, DS).DS;
 
-$aeSettings = \MarkNotes\Settings::getInstance($folder);
 $aeFiles = \MarkNotes\Files::getInstance();
 $aeFunctions = \MarkNotes\Functions::getInstance();
 
-$filename=$aeFunctions->getParam('file', 'string', '', false);
+$filename=utf8_decode($aeFunctions->getParam('file', 'string', '', false));
+
+$params=array('filename'=>$filename);
+$aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
 
 // Check the optional format parameter.  If equal to 'slides', the task will be 'slideshow', 'display' otherwise
 $format=$aeFunctions->getParam('format', 'string', 'html', false, 8);
@@ -85,7 +87,7 @@ if ($filename!=='') {
         } // switch
 
         // Get the absolute folder name where the web application resides (f.i. c:\websites\marknotes\)
-        $webRoot=$aeSettings->getFolderWebRoot(tue);
+        $webRoot=$aeSettings->getFolderWebRoot(true);
 
         // Build the full filename
         $filename=str_replace('/', DIRECTORY_SEPARATOR, $filename);

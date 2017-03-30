@@ -8,16 +8,22 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Markdown
 {
 
-    /**
-    * Class constructor : initialize a few private variables
-    *
-    * @return boolean
-    */
-    function __construct()
+    protected static $_instance = null;
+
+    public function __construct()
     {
         return true;
-    } // function __construct()
+    }
 
+    public static function getInstance()
+    {
+
+        if (self::$_instance === null) {
+            self::$_instance = new Markdown();
+        }
+
+        return self::$_instance;
+    }
     /**
     * Entry point of this class, run a task
     *

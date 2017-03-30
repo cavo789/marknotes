@@ -14,7 +14,7 @@ class Edit
         return true;
     } // function __construct()
 
-    public function getInstance()
+    public static function getInstance()
     {
 
         if (self::$_instance === null) {

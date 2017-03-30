@@ -13,7 +13,7 @@ class ClearCache
         return true;
     }
 
-    public function getInstance()
+    public static function getInstance()
     {
 
         if (self::$_instance === null) {

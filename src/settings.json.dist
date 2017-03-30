@@ -32,6 +32,8 @@
 	"templates": {
 		"html": "html",
 		"pdf": "pdf",
+		"remark": "remark",
+		"reveal": "reveal",
 		"screen": "screen",
 		"timeline": "timeline"
 	},

@@ -44,7 +44,7 @@ class Encrypt
         $this->iv= @\mcrypt_create_iv($iv_size, MCRYPT_RAND);
     }
 
-    public function getInstance(string $password, string $method)
+    public static function getInstance(string $password, string $method)
     {
 
         if (self::$_instance === null) {

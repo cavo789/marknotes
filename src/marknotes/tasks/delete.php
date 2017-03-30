@@ -10,6 +10,23 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Delete
 {
+    protected static $_instance = null;
+
+    public function __construct()
+    {
+        return true;
+    } // function __construct()
+
+    public static function getInstance()
+    {
+
+        if (self::$_instance === null) {
+            self::$_instance = new Delete();
+        }
+
+        return self::$_instance;
+    } // function getInstance()
+    
     public static function run(array $params)
     {
 

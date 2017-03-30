@@ -8,17 +8,8 @@ class SlideShow
 {
     protected static $_instance = null;
 
-    private $_aeSettings = null;
-
     public function __construct()
     {
-
-        if (!class_exists('Settings')) {
-            include_once dirname(__DIR__).DS.'settings.php';
-        }
-
-        $this->_aeSettings=\MarkNotes\Settings::getInstance();
-
         return true;
     } // function __construct()
 

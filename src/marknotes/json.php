@@ -102,6 +102,9 @@ class JSON
     {
 
         if (!file_exists($fname)) {
+            $fname=utf8_decode($fname);
+        }
+        if (!file_exists($fname)) {
             self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
         }
 

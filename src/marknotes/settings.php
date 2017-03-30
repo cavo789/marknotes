@@ -15,7 +15,7 @@ class Settings
 
     private $_json=array();
 
-    public function __construct(string $folder = '')
+    public function __construct(string $folder = '', array $params = null)
     {
 
         $this->setFolderAppRoot(dirname(dirname(__FILE__)));
@@ -25,47 +25,84 @@ class Settings
 
         $this->setFolderDocs(DOC_FOLDER);
 
-        self::readSettings();
+        self::readSettings($params);
         return true;
     } // function __construct()
 
-    public static function getInstance(string $folder = '')
+    public static function getInstance(string $folder = '', array $params = null)
     {
 
         if (self::$_instance === null) {
-            self::$_instance = new Settings($folder);
+            self::$_instance = new Settings($folder, $params);
         }
 
         return self::$_instance;
     } // function getInstance()
 
-  /**
-    * Read the user's settings i.e. the file "settings.json"
-    * Initialize class properties
-    * @return {bool [description]
-    */
-    private function readSettings() : bool
+    private function loadJSON(array $params = null) : array
     {
+        // Read settings.json in this order :
+        //   1. the settings.json.dist file to initialize all parameters
+        //   2. If present, the settings.json file i.e. the user settings for the application
+        //   3. If present, the settings.json file that can be found in the note folder
+        //       (so if the note /docs/marknotes/userguide.md if displayed, check if a file
+        //       /docs/marknotes/settings.json exists and if so, use it),
+        //   4. Finally, a very specific note.json file : if the note /docs/marknotes/userguide.md if displayed,
+        //      check if the file /docs/marknotes/userguide.json exists and if so, use it.
+        //
+        // In this order so the file loaded in step 4 will have the priority and can overwrite global settings
 
         $aeJSON = \MarkNotes\JSON::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
 
-        $this->_json=array();
+        $json=array();
 
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json.dist')) {
-            $this->_json=$aeJSON->json_decode($fname, true);
+            $json=$aeJSON->json_decode($fname, true);
         } else {
             if ($aeFiles->fileExists($fname = $this->getFolderAppRoot().'settings.json.dist')) {
-                $this->_json=$aeJSON->json_decode($fname, true);
+                $json=$aeJSON->json_decode($fname, true);
             }
         }
 
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
             $arr=$aeJSON->json_decode($fname, true);
             if (count($arr)>0) {
-                $this->_json=array_merge($this->_json, $aeJSON->json_decode($fname, true));
+                $json=array_merge($json, $aeJSON->json_decode($fname, true));
             }
         }
+
+        if (isset($params['filename'])) {
+            $noteFolder=$this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
+            $noteJSON=$noteFolder.DS.'settings.json';
+            if ($aeFiles->fileExists($noteJSON)) {
+                $json=array_merge($json, $aeJSON->json_decode($noteJSON, true));
+            }
+        }
+
+        if (isset($params['filename'])) {
+            $noteFolder=$this->getFolderWebRoot().str_replace('/', DS, $params['filename']);
+            $noteJSON=$aeFiles->replaceExtension($noteFolder, 'json');
+
+            if ($aeFiles->fileExists($noteJSON)) {
+                $json=array_merge($json, $aeJSON->json_decode($noteJSON, true));
+            }
+        }
+
+        return $json;
+    }
+
+   /**
+    * Read the user's settings i.e. the file "settings.json"
+    * Initialize class properties
+    * @return {bool [description]
+    */
+    private function readSettings(array $params = null) : bool
+    {
+
+        $aeFiles = \MarkNotes\Files::getInstance();
+
+        $this->_json=$this->loadJSON($params);
 
         $this->setLanguage(DEFAULT_LANGUAGE);
 
@@ -754,4 +791,4 @@ class Settings
         }
         return $bReturn;
     }
-} // class Settings
+}
