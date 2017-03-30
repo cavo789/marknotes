@@ -37,16 +37,3 @@ function customonChangeSearch($keywords) {
 	//if (markdown.settings.debug) console.info('Search for '+$keywords);
 	return true; // true : the search can be fired, false : the search will be cancelled
 }
-
-/**
- * Called once the search event has been fired and once the list has been restricted to display only
- * matched notes
- *
- * @param {string} $keywords  The searched pattern
- * @param {array} $data       Array with the list of files matching that
- *
- *  This function has no return value
- */
-function customafterSearch($keywords, $data) {
-	//if (markdown.settings.debug) console.log($data);
-}

@@ -133,8 +133,8 @@ class HTML
         }
 
         if (isset($params['filename'])) {
-            $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
-            $urlHTML=$url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
+            $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+            $urlHTML=$url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
             $template=str_replace('%VERSION_PDF%', $urlHTML.'?format=pdf', $template);
             $template=str_replace('%VERSION_HTML%', $urlHTML.'?format=html', $template);
