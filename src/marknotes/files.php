@@ -1,10 +1,27 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
 
-namespace AeSecure;
+namespace MarkNotes;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class Files
 {
+    protected static $_instance = null;
+
+    public function __construct()
+    {
+        return true;
+    }
+
+    public static function getInstance()
+    {
+
+        if (self::$_instance === null) {
+            self::$_instance = new Files();
+        }
+        return self::$_instance;
+    }
 
     /**
     * Check if a file exists and return FALSE if not.  Disable temporarily errors to avoid warnings f.i. when the file
@@ -27,7 +44,7 @@ class Files
         error_reporting($errorlevel);
 
         return $wReturn;
-    } // function fileExists()
+    }
 
     /**
     * Check if a file exists and return FALSE if not.  Disable temporarily errors to avoid warnings f.i. when the file
@@ -51,7 +68,7 @@ class Files
         error_reporting($errorlevel);
 
         return $wReturn;
-    } // function folderExists()
+    }
 
     /**
     * Recursive glob : retrieve all files that are under $path (if empty, $path is the root folder of the website)
@@ -98,12 +115,12 @@ class Files
         } // if (($arrSkipFolder!=null) && (count($arrSkipFolder)>0))
 
         $paths=glob($path.'*', GLOB_MARK|GLOB_ONLYDIR);
-        $files=glob(rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$pattern, $flags);
+        $files=glob(rtrim($path, DS).DS.$pattern, $flags);
 
         foreach ($paths as $path) {
             if (self::folderExists($path)) {
                 // Avoid recursive loop when the folder is a symbolic link
-                if (rtrim(str_replace('/', DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR)==realpath($path)) {
+                if (rtrim(str_replace('/', DS, $path), DS)==realpath($path)) {
                     $arr=self::rglob($pattern, $path, $flags, $arrSkipFolder);
                     if (($arr!=null) && (count($arr)>0)) {
                         $files=array_merge($files, $arr);
@@ -123,7 +140,7 @@ class Files
         @sort($files);
 
         return $files;
-    } // function rglob()
+    }
 
     /**
     * Replace file's extension
@@ -135,8 +152,8 @@ class Files
     public static function replaceExtension(string $filename, string $new_extension) : string
     {
         $info = pathinfo($filename);
-        return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'].'.'.$new_extension;
-    } // function replaceExtension
+        return $info['dirname'].DS.$info['filename'].'.'.$new_extension;
+    }
 
     /**
     * Remove file's extension
@@ -147,8 +164,8 @@ class Files
     public static function removeExtension(string $filename) : string
     {
         $info = pathinfo($filename);
-        return $info['dirname'].DIRECTORY_SEPARATOR.$info['filename'];
-    } // function removeExtension
+        return $info['dirname'].DS.$info['filename'];
+    }
 
     /**
     * Be sure that the filename isn't something like f.i. ../../../../dangerous.file
@@ -183,7 +200,7 @@ class Files
         $filename=ltrim($filename, '\\\/');
 
         return $filename;
-    } // function sanitizeFileName
+    }
 
     /**
     * Rewrite an existing file.  The function will first take a backup of the file (with new .old suffix).
@@ -216,7 +233,7 @@ class Files
         } // if (file_exists($filename))
 
         return $bReturn;
-    } // function rewriteFile()
+    }
 
     public static function createFile(string $filename, string $content, int $chmod = 644) : bool
     {
@@ -236,5 +253,5 @@ class Files
         }
 
         return $bReturn;
-    } // function createFile()
-} // class Files
+    }
+} 

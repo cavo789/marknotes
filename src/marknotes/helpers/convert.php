@@ -1,6 +1,8 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
-namespace AeSecure\Helpers;
+namespace MarkNotes\Helpers;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 include 'libs/autoload.php';
 
@@ -17,7 +19,7 @@ class Convert
             include_once dirname(__DIR__).DS.'settings.php';
         }
 
-        $this->_aeSettings=\AeSecure\Settings::getInstance();
+        $this->_aeSettings=\MarkNotes\Settings::getInstance();
 
         return true;
     } // function __construct()
@@ -97,7 +99,7 @@ class Convert
 
         // LazyLoad images ?
         if ($this->_aeSettings->getOptimisationLazyLoad()) {
-            $root=rtrim(\AeSecure\Functions::getCurrentURL(true, false), '/');
+            $root=rtrim(\MarkNotes\Functions::getCurrentURL(true, false), '/');
 
             $html=str_replace(
                 '<img src="',

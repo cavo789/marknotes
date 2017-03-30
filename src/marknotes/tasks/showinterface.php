@@ -5,48 +5,52 @@
 * @return string  html content
 */
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class ShowInterface
 {
+    protected static $_instance = null;
 
-    public static function run()
+    public function __construct()
+    {
+        return true;
+    }
+
+    public function getInstance()
     {
 
-        $aeSettings=\AeSecure\Settings::getInstance();
+        if (self::$_instance === null) {
+            self::$_instance = new ShowInterface();
+        }
+
+        return self::$_instance;
+    }
+
+    public function run()
+    {
+
+        $aeSettings=\MarkNotes\Settings::getInstance();
 
         if (!class_exists('Debug')) {
             include_once dirname(dirname(__FILE__)).'/debug.php';
         }
 
-        $aeDebug=\AeSecure\Debug::getInstance();
+        $aeDebug=\MarkNotes\Debug::getInstance();
+        $aeFunctions=\MarkNotes\Functions::getInstance();
+        $aeHTML=\MarkNotes\FileType\HTML::getInstance();
 
-        $html=file_get_contents($aeSettings->getTemplateFile('screen'));
+        $template=file_get_contents($aeSettings->getTemplateFile('screen'));
+        $html=$aeHTML->replaceVariables($template, '', null);
 
         // replace variables
 
-        if ($aeSettings->getOptimisationUseCache()) {
-            // Define metadata for the cache
-            $cache='<meta http-equiv="cache-control" content="max-age=0" /><meta http-equiv="cache-control" content="no-cache" /><meta http-equiv="expires" content="0" />'.
-              '<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" /><meta http-equiv="pragma" content="no-cache" />';
-            $html=str_replace('<!--%META_CACHE%-->', $cache, $html);
-        } else {
-            $html=str_replace('<!--%META_CACHE%-->', '', $html);
-        }
-
-        $html=str_replace('%APP_NAME%', $aeSettings->getAppName(), $html);
-        $html=str_replace('%APP_VERSION%', $aeSettings->getAppName(true), $html);
-
-        $html=str_replace('%APP_WEBSITE%', $aeSettings->getAppHomepage(), $html);
-        $html=str_replace('%APP_NAME_64%', base64_encode($aeSettings->getAppName()), $html);
-        $html=str_replace('%IMG_MAXWIDTH%', $aeSettings->getPageImgMaxWidth(), $html);
         $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
         $html=str_replace('%EDT_SEARCH_MAXLENGTH%', $aeSettings->getSearchMaxLength(), $html);
 
-        $html=str_replace('%ROOT%', \AeSecure\Functions::getCurrentURL(true, false), $html);
-
         // Define the global markdown variable.  Used by the assets/js/markdown.js script
-        $JS=
+        $javascript=
         "\nvar markdown = {};\n".
         "markdown.autoload=1;\n".
         "markdown.message={};\n".
@@ -79,7 +83,7 @@ class ShowInterface
         "markdown.message.tree_new_note='".$aeSettings->getText('tree_new_note', 'Create a new note', true)."';\n".
         "markdown.message.tree_new_note_name='".$aeSettings->getText('tree_new_note_name', 'New note', true)."';\n".
         "markdown.url='index.php';\n".
-        "markdown.webroot='".rtrim(\AeSecure\Functions::getCurrentURL(true, false), '/')."/';\n".
+        "markdown.webroot='".rtrim($aeFunctions->getCurrentURL(true, false), '/')."/';\n".
         "markdown.settings={};\n".
         "markdown.settings.auto_tags='".$aeSettings->getTagsAutoSelect()."';\n".
         "markdown.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
@@ -88,29 +92,26 @@ class ShowInterface
         "markdown.settings.language='".$aeSettings->getLanguage()."';\n".
         "markdown.settings.lazyload=".($aeSettings->getOptimisationLazyLoad()?1:0).";\n".
         "markdown.settings.locale='".$aeSettings->getLocale()."';\n".
-        "markdown.settings.prefix_tag='".$aeSettings->getPrefixTag()."';\n".
+        "markdown.settings.prefix_tag='".$aeSettings->getTagPrefix()."';\n".
         "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
         "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
 
-        $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
-
-        // if any, output the code for the Google Font (see settings.json)
-        $html=str_replace('<!--%FONT%-->', $aeSettings->getPageGoogleFont(true), $html);
+        $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 
         // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
-        $html=str_replace('<!--%CUSTOM_CSS%-->', \AeSecure\Functions::addStylesheet('custom.css'), $html);
+        $html=str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet('custom.css'), $html);
 
         // Additionnal javascript, depends on user's settings
-        $AdditionnalJS='';
+        $additionnalJS='';
         if ($aeSettings->getOptimisationLazyLoad()) {
-            $AdditionnalJS='<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
+            $additionnalJS='<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
         }
 
-        $html=str_replace('<!--%ADDITIONNAL_JS%-->', $AdditionnalJS, $html);
+        $html=str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $html);
 
         // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
-        $html=str_replace('<!--%CUSTOM_JS%-->', \AeSecure\Functions::addJavascript('custom.js'), $html);
+        $html=str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript('custom.js'), $html);
 
         return $html;
-    } // function Run()
-} // class ShowInterface
+    }
+}

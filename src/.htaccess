@@ -11,8 +11,7 @@ DirectoryIndex index.php
     Options +FollowSymlinks
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} \.(htm|html)$ [OR]
-    RewriteCond %{REQUEST_FILENAME} sitemap\.xml$
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
 
     # Block access to hidden files / folders but allow .files, .images or .well)-known
@@ -24,9 +23,9 @@ DirectoryIndex index.php
     RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
     RewriteCond %{SCRIPT_FILENAME} -f
     RewriteRule .* - [R=403,NC,L]
-	
+
 	RewriteCond %{REQUEST_FILENAME} !(index|router)\.php
-    RewriteCond %{REQUEST_FILENAME} \.(php)$ 
+    RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 
 </IfModule>

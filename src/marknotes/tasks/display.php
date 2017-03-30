@@ -1,7 +1,10 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
 
+defined('_MARKNOTES') or die('No direct access allowed');
+
+// For third parties libraries
 include 'libs/autoload.php';
 
 /**
@@ -11,21 +14,12 @@ class Display
 {
     protected static $_instance = null;
 
-    private $_aeSettings = null;
-
     public function __construct()
     {
-
-        if (!class_exists('Settings')) {
-            include_once dirname(__DIR__).DS.'settings.php';
-        }
-
-        $this->_aeSettings=\AeSecure\Settings::getInstance();
-
         return true;
     } // function __construct()
 
-    public static function getInstance()
+    public function getInstance()
     {
 
         if (self::$_instance === null) {
@@ -45,41 +39,47 @@ class Display
     private function showHTML(string $html, array $params = null)
     {
 
-        include_once dirname(__DIR__).'/filetype/html.php';
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeHTML=\MarkNotes\FileType\HTML::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
 
-        $aeHTML=\AeSecure\FileType\HTML::getInstance();
-
-        // Add h2 and h3 id and go to top
-        $html=$aeHTML->addHeadingsID($html, true);
+        // Add h2 and h3 id and don't add the "go to top" icon
+        $html=$aeHTML->addHeadingsID($html, false);
 
         // Add css to bullets
         $html=$aeHTML->setBulletsStyle($html);
 
         // Check if a template has been specified in the parameters
         // and if so, check that this file exists
+
+        // Default is html
+        $template=$aeSettings->getTemplateFile('html');
+
         if (isset($params['template'])) {
-            $template=$this->_aeSettings->getTemplateFile($params['template']);
-            if (!\AeSecure\Files::fileExists($template)) {
-                $template=$this->_aeSettings->getTemplateFile('html');
+            $template=$aeSettings->getTemplateFile($params['template']);
+            if (!$aeFiles->fileExists($template)) {
+                $template=$aeSettings->getTemplateFile('html');
             }
-        } else {
-            // Default is html
-            $template=$this->_aeSettings->getTemplateFile('html');
         }
 
         // Don't keep the § (tags prefix) for slideshow
-        $html=str_replace('§', '', $html);
-        $html=str_replace('&sect;', '', $html);  // &sect; = §
+        $html=str_replace($aeSettings->getTagPrefix(), '', $html);
+        $html=str_replace(htmlentities($aeSettings->getTagPrefix()), '', $html);  // &sect; = §
 
-        if (\AeSecure\Files::fileExists($template)) {
+        if ($aeFiles->fileExists($template)) {
             $html=$aeHTML->replaceVariables(file_get_contents($template), $html);
-        } // \AeSecure\Files::fileExists($template)
+        }
 
         return $html;
-    }  // function showHTML()
+    }
 
     public function run(array $params)
     {
+
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeFunctions=\MarkNotes\Functions::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeMD=\MarkNotes\FileType\Markdown::getInstance();
 
         // If the filename doesn't mention the file's extension, add it.
         if (substr($params['filename'], -3)!='.md') {
@@ -89,15 +89,13 @@ class Display
         $fullname=str_replace(
             '/',
             DIRECTORY_SEPARATOR,
-            utf8_decode(
-                $this->_aeSettings->getFolderDocs(true).
+            $aeSettings->getFolderDocs(true).
                 ltrim($params['filename'], DS)
-            )
         );
 
-        if (!file_exists($fullname)) {
+        if (!$aeFiles->fileExists($fullname)) {
             /*<!-- build:debug -->*/
-            if ($this->_aeSettings->getDebugMode()) {
+            if ($aeSettings->getDebugMode()) {
                 echo __FILE__.' - '.__LINE__.'<br/>';
             }
             /*<!-- endbuild -->*/
@@ -105,35 +103,29 @@ class Display
             echo str_replace(
                 '%s',
                 '<strong>'.$fullname.'</strong>',
-                $this->_aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+                $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
             );
             return false;
         }
 
-        include_once dirname(__DIR__).'/filetype/markdown.php';
-
         // Read the markdown file
-        $aeMD=\AeSecure\FileType\Markdown::getInstance();
         $markdown=$aeMD->read($fullname, $params);
 
-        $fnameHTML=\AeSecure\Files::replaceExtension($fullname, 'html');
+        $fnameHTML=$aeFiles->replaceExtension($fullname, 'html');
 
-        $fnameHTMLrel=str_replace(str_replace('/', DS, $this->_aeSettings->getFolderWebRoot()), '', $fnameHTML);
+        $fnameHTMLrel=str_replace(str_replace('/', DS, $aeSettings->getFolderWebRoot()), '', $fnameHTML);
 
         // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-        $urlHTML = rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
+        $urlHTML = rtrim($aeFunctions->getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
 
         // Convert the Markdown text into an HTML text
-
-        include_once dirname(__DIR__).'/helpers/convert.php';
-
-        $aeConvert=\AeSecure\Helpers\Convert::getInstance();
+        $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
         $html=$aeConvert->getHTML($markdown, $params);
 
         // Check if the .html version of the markdown file already exists; if not, create it
-        if (!\AeSecure\Functions::isAjaxRequest()) {
+        if (!$aeFunctions->isAjaxRequest()) {
             return self::showHTML($html, $params);
-        } else { // if (!\AeSecure\Functions::isAjaxRequest())
+        } else { // if (!\MarkNotes\Functions::isAjaxRequest())
             // -----------------------------------------------------------------------
             // Once the .html file has been written on disk, not before !
             //
@@ -141,9 +133,9 @@ class Display
             // contains a word (f.i. "javascript") that is in the tags.json (so it's a known tag) and that
             // word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix
 
-            if (\AeSecure\Files::fileExists($fname = $this->_aeSettings->getFolderWebRoot().'tags.json')) {
+            if ($aeFiles->fileExists($fname = $aeSettings->getFolderWebRoot().'tags.json')) {
                 if (filesize($fname)>0) {
-                    $aeJSON=\AeSecure\JSON::getInstance();
+                    $aeJSON=\MarkNotes\JSON::getInstance();
 
                     $arrTags=$aeJSON->json_decode($fname);
 
@@ -171,7 +163,7 @@ class Display
                                 // $matches[3] : the tag                                  " Start a SSH, then ..."  => SSH
                                 // $matches[4] : what was just after the tag              " Start a SSH, then ..."  => the comma after SSH
 
-                                $sLine=str_ireplace($matches[2].$matches[3].$matches[4], $matches[2].$this->_aeSettings->getPrefixTag().$matches[3].$matches[4], $matches[0]);
+                                $sLine=str_ireplace($matches[2].$matches[3].$matches[4], $matches[2].$aeSettings->getTagPrefix().$matches[3].$matches[4], $matches[0]);
 
                                 // And now, replace the original line ($matches[0]) by the new one in the document.
 
@@ -180,21 +172,21 @@ class Display
                         } // foreach ($matches[0] as $match)
                     } // foreach
                 } // if(filesize($fname)>0)
-            } // if (\AeSecure\Files::fileExists($fname=$this->_rootFolder.'tags.json'))
+            } // if ($aeFiles->fileExists($fname=$this->_rootFolder.'tags.json'))
 
             //
             // -----------------------------------------------------------------------
 
             // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-            $fnameHTML = str_replace('\\', '/', rtrim(\AeSecure\Functions::getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
+            $fnameHTML = str_replace('\\', '/', rtrim($aeFunctions->getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
 
             include_once dirname(__DIR__)."/view/toolbar.php";
-            $aeToolbar=\AeSecure\View\Toolbar::getInstance();
+            $aeToolbar=\MarkNotes\View\Toolbar::getInstance();
 
             $html=$aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
 
             $html='<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
-        } // if (!\AeSecure\Functions::isAjaxRequest())
+        } // if (!\MarkNotes\Functions::isAjaxRequest())
         return $html;
     } // function Run()
 } // class Display

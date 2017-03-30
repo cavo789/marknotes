@@ -1,28 +1,30 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
-namespace AeSecure\FileType;
+namespace MarkNotes\FileType;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-    protected static $instance = null;
+    protected static $_instance = null;
     private $_aeSettings = null;
 
     public function __construct()
     {
-        $this->_aeSettings=\AeSecure\Settings::getInstance();
+        $this->_aeSettings=\MarkNotes\Settings::getInstance();
 
         return true;
-    } // function __construct()
+    }
 
     public static function getInstance()
     {
 
-        if (self::$instance === null) {
-            self::$instance = new HTML();
+        if (self::$_instance === null) {
+            self::$_instance = new HTML();
         }
 
-        return self::$instance;
-    } // function getInstance()
+        return self::$_instance;
+    }
 
     public function getHeadingText(string $html, string $heading = 'h1') : string
     {
@@ -39,7 +41,7 @@ class HTML
         }
 
         return $title;
-    } // function getHeadingText()
+    }
 
     /**
      * Scan the $html string and add an id to each h2 and h3 tags.
@@ -48,7 +50,7 @@ class HTML
      * If $addGoTop is set on true, add also an icon for going back to the top
      * of the page
      */
-    public function addHeadingsID(string $html, bool $addGoTop = true) : string
+    public function addHeadingsID(string $html, bool $addGoTop = false) : string
     {
         /*
          * Create a table of content.  Loop each h2 and h3 and add an "id" like "h2_1", "h2_2", ... that will then
@@ -76,7 +78,7 @@ class HTML
         } // foreach
 
         return $html;
-    } // function addHeadingsID()
+    }
 
     /**
      * Set the ul/li style to use Font-Awesome
@@ -89,36 +91,59 @@ class HTML
         $html=str_replace('<li>', '<li><i class="fa-li fa fa-check"></i>', $html);
 
         return $html;
-    } // function setBulletsStyle()
+    }
 
     /**
      * Return variables from the template file and append the html content
      */
     public function replaceVariables(string $template, string $html, array $params = null) : string
     {
+
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeFunctions=\MarkNotes\Functions::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
+
         // Write the file but first replace variables
         $template=str_replace('%TITLE%', $this->getHeadingText($html), $template);
         $template=str_replace('%CONTENT%', $html, $template);
-        $template=str_replace('%SITE_NAME%', $this->_aeSettings->getSiteName(), $template);
-        $template=str_replace('%ROBOTS%', $this->_aeSettings->getPageRobots(), $template);
-        $template=str_replace('%ROOT%', rtrim(\AeSecure\Functions::getCurrentURL(true, false), '/'), $template);
-        $template=str_replace('%URL%', rtrim(\AeSecure\Functions::getCurrentURL(false, false), '/'), $template);
+        $template=str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $template);
+        $template=str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $template);
+        $template=str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(true, false), '/'), $template);
+        $template=str_replace('%URL%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $template);
+
+        $template=str_replace('%APP_NAME%', $aeSettings->getAppName(), $template);
+        $template=str_replace('%APP_VERSION%', $aeSettings->getAppName(true), $template);
+
+        $template=str_replace('%APP_WEBSITE%', $aeSettings->getAppHomepage(), $template);
+        $template=str_replace('%APP_NAME_64%', base64_encode($aeSettings->getAppName()), $template);
+        $template=str_replace('%IMG_MAXWIDTH%', $aeSettings->getPageImgMaxWidth(), $template);
+
+        if (strpos($template, '<!--%META_CACHE%-->')!==false) {
+            $cache='';
+            if ($aeSettings->getOptimisationUseBrowserCache()) {
+                // Define metadata for the cache
+                $cache=
+                '<meta http-equiv="cache-control" content="max-age=0" />'.PHP_EOL.
+                '<meta http-equiv="cache-control" content="no-cache" />'.PHP_EOL.
+                '<meta http-equiv="expires" content="0" />'.PHP_EOL.
+                '<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />'.PHP_EOL.
+                '<meta http-equiv="pragma" content="no-cache" />';
+            }
+            $template=str_replace('<!--%META_CACHE%-->', $cache, $template);
+        }
 
         if (isset($params['filename'])) {
-            $url=rtrim(\AeSecure\Functions::getCurrentURL(false, false), '/').'/'.rtrim($this->_aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
-            $urlHTML=$url.str_replace(DIRECTORY_SEPARATOR, '/', \AeSecure\Files::replaceExtension($params['filename'], 'html'));
+            $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
+            $urlHTML=$url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
             $template=str_replace('%VERSION_PDF%', $urlHTML.'?format=pdf', $template);
             $template=str_replace('%VERSION_HTML%', $urlHTML.'?format=html', $template);
-
-
             $template=str_replace('%URL_PAGE%', $urlHTML, $template);
         } // if (isset($params['filename']))
 
-        // Perhaps a Google font should be used.
-
         if (strpos($template, '<!--%FONT%-->')!==false) {
-            $sFont=$this->_aeSettings->getPageGoogleFont(true);
+            // Perhaps a Google font should be used.
+            $sFont=$aeSettings->getPageGoogleFont(true);
             $template=str_replace('<!--%FONT%-->', $sFont, $template);
         }
 
@@ -126,16 +151,17 @@ class HTML
 
         if (strpos($template, '%URL_IMG%')!==false) {
             // Retrieve the first image in the html
+            $urlImg='';
             $match=array();
             if (preg_match('/<img *src *= *[\'|"]([^\'|"]*)/', $html, $match)) {
                 if (count($match)>0) {
                     $urlImg=$match[1];
                 }
-
-                $template=str_replace('%URL_IMG%', $urlImg, $template);
             } // if (preg_match)
-        } // if (strpos)
+
+            $template=str_replace('%URL_IMG%', $urlImg, $template);
+        } //if (strpos($template, '%URL_IMG%')!==false)
 
         return $template;
-    } // function replaceVariables()
-} // class Functions
+    }
+}

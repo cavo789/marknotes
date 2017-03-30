@@ -1,23 +1,16 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class PDF
 {
 
     protected static $_instance = null;
 
-    private $_aeSettings = null;
-
     public function __construct()
     {
-
-        if (!class_exists('Settings')) {
-            include_once dirname(__DIR__).DS.'settings.php';
-        }
-
-        $this->_aeSettings=\AeSecure\Settings::getInstance();
-
         return true;
     } // function __construct()
 
@@ -39,32 +32,34 @@ class PDF
             $params['filename'].='.md';
         }
 
-        $fullname=\AeSecure\Files::replaceExtension(
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $fullname=$aeFiles->replaceExtension(
             str_replace(
                 '/',
                 DIRECTORY_SEPARATOR,
                 utf8_decode(
-                    $this->_aeSettings->getFolderDocs(true).
+                    $aeSettings->getFolderDocs(true).
                     ltrim($params['filename'], DS)
                 )
             ),
             'html'
         );
 
-        if (\AeSecure\Files::fileExists($fullname)) {
+        if ($aeFiles->fileExists($fullname)) {
             echo str_replace(
                 '%s',
                 '<strong>'.$fullname.'</strong>',
-                $this->_aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+                $eSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
             );
 
             return false;
         } else {
-            if (is_dir($this->_aeSettings->getFolderLibs()."dompdf")) {
+            if (is_dir($aeSettings->getFolderLibs()."dompdf")) {
                 // Get the HTML rendering of the note
 
-                include_once TASKS.'display.php';
-                $aeTask=\AeSecure\Tasks\Display::getInstance();
+                $aeTask=\MarkNotes\Tasks\Display::getInstance();
 
                 // Use the pdf template and not the "html" one
                 $params['template']='pdf';
@@ -76,11 +71,10 @@ class PDF
                 foreach ($matches[2] as $match) {
                     switch (basename($match)) {
                         case 'bootstrap.min.css':
-                            $html=str_replace($matches[2], $this->_aeSettings->getFolderLibs().'bootstrap'.DS.'css'.DS.'bootstrap.min.css', $html);
+                            $html=str_replace($matches[2], $aeSettings->getFolderLibs().'bootstrap'.DS.'css'.DS.'bootstrap.min.css', $html);
                             break;
                     } // switch
                 } // foreach
-
 
                 $dompdf = new \Dompdf\Dompdf();
 
@@ -88,7 +82,7 @@ class PDF
                 $dompdf->loadHtml($html);
                 $dompdf->setPaper('A4', 'portrait');
                 $dompdf->render();
-                $dompdf->stream(basename(\AeSecure\Files::removeExtension($fullname)));
+                $dompdf->stream(basename($aeFiles->removeExtension($fullname)));
             } // if (file_exists($fullname))
         } // if (file_exists($fullname))
 

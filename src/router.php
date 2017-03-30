@@ -1,12 +1,39 @@
 <?php
+/* REQUIRES PHP 7.x AT LEAST */
 
-require_once __DIR__.'/classes/files.php';
-require_once __DIR__.'/classes/functions.php';
+/**
+ * Author : AVONTURE Christophe - https://www.aesecure.com
+ *
+ * Documentation : https://github.com/cavo789/marknotes/wiki
+ * Demo : https://marknotes.cavo789.com
+ * History : https://github.com/cavo789/marknotes/blob/master/changelog.md
+ */
 
-$filename=\AeSecure\Functions::getParam('file', 'string', '', false);
+define('_MARKNOTES', 1);
+
+include_once 'marknotes/constants.php';
+
+include_once 'autoloader.php';
+use \MarkNotes\Autoloader;
+
+\MarkNotes\Autoloader::register();
+
+/*<!-- build:debug -->*/
+$aeDebug=\MarkNotes\Debug::getInstance();
+/*<!-- endbuild -->*/
+
+// Application root folder.
+$folder=str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
+$folder=rtrim($folder, DS).DS;
+
+$aeSettings = \MarkNotes\Settings::getInstance($folder);
+$aeFiles = \MarkNotes\Files::getInstance();
+$aeFunctions = \MarkNotes\Functions::getInstance();
+
+$filename=$aeFunctions->getParam('file', 'string', '', false);
 
 // Check the optional format parameter.  If equal to 'slides', the task will be 'slideshow', 'display' otherwise
-$format=\AeSecure\Functions::getParam('format', 'string', 'html', false, 8);
+$format=$aeFunctions->getParam('format', 'string', 'html', false, 8);
 
 // Only these format are recognized.  Default : html
 if (!(in_array($format, array('htm','html','pdf','slides')))) {
@@ -16,9 +43,11 @@ if (!(in_array($format, array('htm','html','pdf','slides')))) {
 $params=array();
 
 if ($filename!=='') {
-    require_once __DIR__.'/classes/markdown.php';
+    $fileMD='';
 
     if (in_array($filename, array('timeline.html', 'sitemap.xml'))) {
+        // Specific files
+
         switch ($filename) {
             case 'timeline.html':
                 $task='timeline';
@@ -39,7 +68,7 @@ if ($filename!=='') {
             case 'slides':
                 // Check on the URL if the user has forced a type i.e. "remark" or "reveal", the supported slideshow framework
 
-                $type=\AeSecure\Functions::getParam('type', 'string', '', false, 10);
+                $type=$aeFunctions->getParam('type', 'string', '', false, 10);
                 if (!(in_array($type, array('remark','reveal')))) {
                     $type='';
                 }
@@ -55,11 +84,37 @@ if ($filename!=='') {
                 break;
         } // switch
 
-        $filename = str_replace('/', DIRECTORY_SEPARATOR, str_replace('docs/', '', \AeSecure\Files::removeExtension($filename))).'.md';
+        // Get the absolute folder name where the web application resides (f.i. c:\websites\marknotes\)
+        $webRoot=$aeSettings->getFolderWebRoot(tue);
+
+        // Build the full filename
+        $filename=str_replace('/', DIRECTORY_SEPARATOR, $filename);
+
+        $fileMD=$aeFiles->removeExtension($filename).'.md';
+
+        if (!$aeFiles->fileExists($webRoot.$fileMD)) {
+            $fileMD=utf8_decode($fileMD);
+        }
+
+        if (!$aeFiles->fileExists($webRoot.$fileMD)) {
+            header("HTTP/1.0 404 Not Found");
+
+            /*<!-- build:debug -->*/
+            if ($aeDebug->enable()) {
+                echo __FILE__.' - '.__LINE__.' - ';
+            }
+            /*<!-- endbuild -->*/
+
+            die('File '. $aeFiles->sanitizeFileName($fileMD).' not found');
+        }
     } // if (in_array($filename, array('timeline.html', 'sitemap.xml')))
 
+
     // Create an instance of the class and initialize the rootFolder variable (type string)
-    $aeSMarkDown = new \AeSecure\Markdown();
-    $aeSMarkDown->process($task, $filename, $params);
+
+    $aeSMarkDown = new \MarkNotes\Markdown();
+
+    // $fileMD filename should be relative ()
+    $aeSMarkDown->process($task, $fileMD, $params);
     unset($aeSMarkDown);
 }

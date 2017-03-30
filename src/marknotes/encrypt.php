@@ -1,7 +1,9 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
 
-namespace AeSecure;
+namespace MarkNotes;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 /**
  * Encryption class.  Use SSL for the encryption.
@@ -14,6 +16,8 @@ class Encrypt
     private $method='';
     private $password='';
     private $iv='';
+
+    protected static $_instance = null;
 
     /**
     * Initialize the class
@@ -38,7 +42,17 @@ class Encrypt
 
         $iv_size = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
         $this->iv= @\mcrypt_create_iv($iv_size, MCRYPT_RAND);
-    } // function __construct()
+    }
+
+    public function getInstance(string $password, string $method)
+    {
+
+        if (self::$_instance === null) {
+            self::$_instance = new Encrypt($password, $method);
+        }
+
+        return self::$_instance;
+    }
 
     /**
     * Encrypt a string by using SSL
@@ -66,7 +80,7 @@ class Encrypt
                 )
             );
         }
-    } // function sslEncrypt()
+    }
 
     /**
     * Decrypt a SSL encrypted string
@@ -99,7 +113,7 @@ class Encrypt
                 )
             );
         }
-    } // function sslDecrypt()
+    }
 
     /**
     * This function will scan the $markdown variable and search if there are <encrypt> tags in it.
@@ -119,7 +133,7 @@ class Encrypt
     public function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : string
     {
 
-        $aeSettings=\AeSecure\Settings::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
 
         $bReturn=false;
 
@@ -191,7 +205,7 @@ class Encrypt
             } // for($i;$i<$j;$i++)
 
             if ($rewriteFile===true) {
-                $bReturn=\AeSecure\Files::rewriteFile($filename, $markdown);
+                $bReturn=\MarkNotes\Files::rewriteFile($filename, $markdown);
             }
 
             // --------------------------------------------------------------------------------------------
@@ -235,5 +249,5 @@ class Encrypt
         } // if (count($matches[1])>0)
 
         return $markdown;
-    } // function HandleEncryption()
-} // class Encrypt
+    }
+}

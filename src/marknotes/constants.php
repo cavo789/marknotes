@@ -1,7 +1,13 @@
 <?php
+
+defined('_MARKNOTES') or die('No direct access allowed');
+
 // -------------------------------------------------------------------------------------------------------------------------
 //
 // Can be overwritten in settings.json
+
+// Application name
+define('APP_NAME', 'Notes management');
 
 // Folder in this application where .md files are stored
 // Can be override : settings.json->folder (string, name of the folder)

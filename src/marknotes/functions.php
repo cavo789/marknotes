@@ -1,9 +1,27 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
-namespace AeSecure;
+namespace MarkNotes;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class Functions
 {
+
+    protected static $_instance = null;
+
+    public function __construct()
+    {
+        return true;
+    }
+
+    public static function getInstance()
+    {
+
+        if (self::$_instance === null) {
+            self::$_instance = new Functions();
+        }
+        return self::$_instance;
+    }
 
     /**
     * Return the current URL
@@ -17,18 +35,18 @@ class Functions
     public static function getCurrentURL(bool $useSELF = true, bool $useURI = false) : string
     {
         $ssl      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
-        $sp       = strtolower($_SERVER['SERVER_PROTOCOL']);
-        $protocol = substr($sp, 0, strpos($sp, '/')) . (($ssl)?'s':'');
+        $spt       = strtolower($_SERVER['SERVER_PROTOCOL']);
+        $protocol = substr($spt, 0, strpos($spt, '/')) . (($ssl)?'s':'');
         $port     = $_SERVER['SERVER_PORT'];
         $port     = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
         $host     =
             (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
             (($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');
 
-        $host     = isset($host) ? rtrim(str_replace(DIRECTORY_SEPARATOR, '/', $host), '/') : $_SERVER['SERVER_NAME'].$port;
+        $host     = isset($host) ? rtrim(str_replace(DS, '/', $host), '/') : $_SERVER['SERVER_NAME'].$port;
 
         return $protocol.'://'.$host.($useURI ? dirname($_SERVER['REQUEST_URI']) : dirname($_SERVER['PHP_SELF'])).'/';
-    } // function getCurrentURL
+    }
 
     /**
     * Safely read posted variables
@@ -38,7 +56,7 @@ class Functions
     * @param  type $default f.i. "default"
     * @return type
     */
-    public static function getParam(
+    public function getParam(
         string $name,
         string $type = 'string',
         $default = '',
@@ -95,7 +113,7 @@ class Functions
         }
 
         return $return;
-    } // function getParam()
+    }
 
     /**
     * Generic function for adding a js in the HTML response
@@ -123,7 +141,7 @@ class Functions
         }
 
         return $return;
-    } // function addJavascript()
+    }
 
     /**
     * Generic function for adding a css in the HTML response
@@ -149,7 +167,7 @@ class Functions
         }
 
         return $return;
-    } // function addStylesheet()
+    }
 
     /**
     * Wrapper for array_unique but for insensitive comparaison  (Images or images should be considered as one value)
@@ -172,5 +190,5 @@ class Functions
     {
         $bAjax=(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
         return $bAjax;
-    } // function isAjaxRequest()
-} // class Functions
+    }
+}

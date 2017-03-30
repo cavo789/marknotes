@@ -47,7 +47,6 @@ h3:target {
     from {
         background: yellow;
     }
-
     to {
         background: white;
     }
@@ -60,7 +59,6 @@ h3:target {
 
 .fullimg {
     max-width: 660px;
-    border: 2px solid #5091cd;
 }
 
 h1 {

@@ -1,6 +1,8 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 /**
  * Get the list of .md files.  This list will be used in the "table of contents"
@@ -9,47 +11,76 @@ namespace AeSecure\Tasks;
 class ListFiles
 {
 
+    protected static $_instance = null;
+
+    public function __construct()
+    {
+        return true;
+    } // function __construct()
+
+    public static function getInstance()
+    {
+
+        if (self::$_instance === null) {
+            self::$_instance = new ListFiles();
+        }
+
+        return self::$_instance;
+    } // function getInstance()
+
     public static function run()
     {
 
-        $aeSettings=\AeSecure\Settings::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $i=0;
+        $sReturn='';
 
-        $arrFiles=\AeSecure\Functions::array_iunique(\AeSecure\Files::rglob('*.md', $aeSettings->getFolderDocs(true)));
+        if ($aeSettings->getOptimisationUseServerSession()) {
+            // Get the list of files/folders from the session object if possible
+            $aeSession = \MarkNotes\Session::getInstance();
+            $sReturn=$aeSession->get('ListFiles', '');
+        }
 
-        // Be carefull, folders / filenames perhaps contains accentuated characters
-        $arrFiles=array_map('utf8_encode', $arrFiles);
+        if ($sReturn==='') {
+            $i=0;
 
-        // Sort, case insensitve
-        natcasesort($arrFiles);
+            $arrFiles=$aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
 
-        $return['settings']['root']=$aeSettings->getFolderDocs(true);
+            // Be carefull, folders / filenames perhaps contains accentuated characters
+            $arrFiles=array_map('utf8_encode', $arrFiles);
 
-        // Get the number of files
-        $return['count']=count($arrFiles);
+            // Sort, case insensitve
+            natcasesort($arrFiles);
 
-        // --------------------------------------------------------------------------------------
-        // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
+            $return['settings']['root']=$aeSettings->getFolderDocs(true);
 
-        $folder=str_replace('/', DS, $aeSettings->getFolderDocs(true));
+            // Get the number of files
+            $return['count']=count($arrFiles);
 
-        // $arr is an array with arrays that contains arrays ...
-        // i.e. the root folder that contains subfolders and subfolders can contains subfolders...
-        $arrTreeFoldersAutoOpen=$aeSettings->getTreeFoldersAutoOpen();
-        $arr=self::dir_to_jstree_array($folder, 'a', array('md'), $arrTreeFoldersAutoOpen);
+            // --------------------------------------------------------------------------------------
+            // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
 
-        // Now, there are subfolders (arrays) where there was no .md files : don't display that folders
-        // on the jsTree DOM elemen.  The "jstree_hide_emptyFolder" will add a "hidden" state for these
-        // empty folders
-        //self::jstree_hide_emptyFolder($arr);
+            $folder=str_replace('/', DS, $aeSettings->getFolderDocs(true));
 
-        // The array is now ready
-        $return['tree']=$arr;
+            // $arr is an array with arrays that contains arrays ...
+            // i.e. the root folder that contains subfolders and subfolders can contains subfolders...
+            $arr=self::dir_to_jstree_array($folder, 'a', array('md'), $aeSettings->getTreeAutoOpen());
 
-        header('Content-Type: application/json');
-        echo json_encode($return, JSON_PRETTY_PRINT);
-    } // function Run()
+            // The array is now ready
+            $return['tree']=$arr;
+
+            $sReturn = json_encode($return, JSON_PRETTY_PRINT);
+
+            if ($aeSettings->getOptimisationUseServerSession()) {
+                // Remember for the next call
+                $aeSession->set('ListFiles', $sReturn);
+            }
+        } // if (count($arr)>0)
+
+        return $sReturn;
+    }
 
     /**
     * Called by ListFiles().  Populate an array with the list of .md files.
@@ -67,11 +98,11 @@ class ListFiles
         string $dir,
         string $order = "a",
         array $ext = array(),
-        array $arrTreeFoldersAutoOpen
+        array $arrTreeAutoOpen
     ) : array {
 
 
-        $aeSettings=\AeSecure\Settings::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
         $root=str_replace('/', DS, $aeSettings->getFolderDocs(true));
         $rootNode=$aeSettings->getFolderDocs(false);
 
@@ -87,7 +118,7 @@ class ListFiles
         // if $this->_settingsFoldersAutoOpen if not empty, check if that folder is currently processing
 
         if ($opened==false) {
-            if (in_array(rtrim(utf8_encode($dir), DS), $arrTreeFoldersAutoOpen)) {
+            if (in_array(rtrim(utf8_encode($dir), DS), $arrTreeAutoOpen)) {
                 $opened=true;
             }
         }
@@ -137,7 +168,7 @@ class ListFiles
             }
 
             foreach ($dirs as $d) {
-                $listDir['children'][]=self::dir_to_jstree_array($d, $order, $ext, $arrTreeFoldersAutoOpen);
+                $listDir['children'][]=self::dir_to_jstree_array($d, $order, $ext, $arrTreeAutoOpen);
             }
 
             if ($order === "a") {
@@ -154,5 +185,5 @@ class ListFiles
         } // if($handler = opendir($dir))
 
         return $listDir;
-    } // function dir_to_jstree_array()
-} // class ListFiles
+    }
+}

@@ -1,31 +1,33 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
 
-namespace AeSecure;
+namespace MarkNotes;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 define('JSON_FILE_NOT_FOUND', 'The file [%s] doesn\'t exists (anymore)');
 
 class JSON
 {
 
-    protected static $instance = null;
+    protected static $_instance = null;
 
-    private static $debug=false;
+    private static $_debug=false;
 
     public function __construct()
     {
 
-        self::$debug=false;
+        self::$_debug=false;
         return true;
     } // function __construct()
 
     public static function getInstance()
     {
-        if (self::$instance === null) {
-            self::$instance = new JSON();
+        if (self::$_instance === null) {
+            self::$_instance = new JSON();
         }
-        return self::$instance;
-    } // function getInstance()
+        return self::$_instance;
+    }
 
     private static function showError(string $param, bool $die = true) : bool
     {
@@ -63,7 +65,7 @@ class JSON
                 break;
         } // switch (json_last_error())
 
-        if (self::$debug==true) {
+        if (self::$_debug==true) {
             $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.
                debug_backtrace()[1]['line'].', '.debug_backtrace()[2]['class'].'::'.debug_backtrace()[2]['function'].
                ', line '.debug_backtrace()[2]['line'].')</em>';
@@ -77,7 +79,7 @@ class JSON
             echo $msg;
             return true;
         }
-    } // function showError()
+    }
 
     /**
     * Enable or not the debug mode i.e. display additionnal infos in case of errors
@@ -86,8 +88,8 @@ class JSON
     */
     public function debug(bool $bState)
     {
-        self::$debug=$bState;
-    } // function debug()
+        self::$_debug=$bState;
+    }
 
     /**
     * json_decode with error handling.  Show error message in case of problem
@@ -104,21 +106,21 @@ class JSON
         }
 
         try {
-            $arr=json_decode(file_get_contents($fname), $assoc);
+            // Trim() so we're sure there is no whitespace before the JSON content
+            $arr=json_decode(trim(file_get_contents($fname)), $assoc);
 
-            if (json_last_error()!==JSON_ERROR_NONE) {
+            if (json_last_error()!=JSON_ERROR_NONE) {
                 self::showError($fname, false);
-                if (self::$debug) {
+                if (self::$_debug) {
                     echo '<pre>'.file_get_contents($fname).'</pre>';
                 }
-                die();
             } // if (json_last_error()!==JSON_ERROR_NONE)
         } catch (Exception $ex) {
             self::showError($ex->getMessage(), true);
         }
 
         return $arr;
-    } // function json_decode()
+    }
 
     public static function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
     {
@@ -140,7 +142,7 @@ class JSON
         }
 
         return $return;
-    } // function json_encode()
+    }
 
     /**
      * Convert an array into a JSON string.  Append debugging informations.
@@ -168,5 +170,5 @@ class JSON
         if ($die) {
             die();
         }
-    } // function json_return_info()
+    }
 } // class JSON

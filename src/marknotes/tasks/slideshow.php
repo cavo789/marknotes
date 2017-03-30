@@ -1,6 +1,8 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class SlideShow
 {
@@ -15,7 +17,7 @@ class SlideShow
             include_once dirname(__DIR__).DS.'settings.php';
         }
 
-        $this->_aeSettings=\AeSecure\Settings::getInstance();
+        $this->_aeSettings=\MarkNotes\Settings::getInstance();
 
         return true;
     } // function __construct()
@@ -32,33 +34,31 @@ class SlideShow
 
     public function run(array $params)
     {
-        $aeSettings=\AeSecure\Settings::getInstance();
+
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
 
         if ($params['filename']!=="") {
-            $fullname=utf8_decode($aeSettings->getFolderDocs(true).$params['filename']);
+            $fullname=$aeSettings->getFolderDocs(true).$params['filename'];
 
-            if (!\AeSecure\Files::fileExists($fullname)) {
+            if (!$aeFiles->fileExists($fullname)) {
                 echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
                 return;
             }
 
-            include_once dirname(__DIR__).'/filetype/markdown.php';
-
             // Read the markdown file
-            $aeMD=\AeSecure\FileType\Markdown::getInstance();
+            $aeMarkDown=\MarkNotes\FileType\Markdown::getInstance();
 
             // Keep encrypted datas and show them unencrypted
             $params['removeConfidential']='0';
 
-            $markdown=$aeMD->read($fullname, $params);
-/* FIXME: remove debugging */echo "<pre style='background-color:yellow; word-spacing:15px; line-height:1.5; font-size:18px;'>";
-            var_dump();
-            echo"</pre>";
+            $markdown=$aeMarkDown->read($fullname, $params);
+
             // Don't keep the § (tags prefix) for slideshow
-            $markdown=str_replace('§', '', $markdown);
+            $markdown=str_replace($aeSettings->getTagPrefix(), '', $markdown);
 
             // Try to retrieve the heading 1
-            $pageTitle=$aeMD->getHeadingText($markdown, '#');
+            $pageTitle=$aeMarkDown->getHeadingText($markdown, '#');
 
             // Check if the params array contains a "type" entry and if so, check if that type is valid i.e.
             // mention the name of an existing templates.  "remark" or "reveal" are supported in the version 1.0.7
@@ -67,18 +67,16 @@ class SlideShow
             $type='';
 
             if (isset($params['type'])) {
-                include_once dirname(dirname(__FILE__)).'/files.php';
-
                 // $type will be initiealized to an empty string if the file wasn't found in the /templates folder
-                $type=\AeSecure\Files::sanitizeFileName($params['type']);
-                if ($this->_aeSettings->getTemplateFile($type)==='') {
+                $type=$aeFiles->sanitizeFileName($params['type']);
+                if ($aeSettings->getTemplateFile($type)==='') {
                     $type='';
                 }
             }
 
             if ($type==='') {
                 // Get the type from the settings.json file
-                $type=$this->_aeSettings->getSlideshow();
+                $type=$aeSettings->getSlideshow();
             }
 
             if ($type==='remark') {
@@ -130,20 +128,17 @@ class SlideShow
                     $markdown=str_replace($tmp, '---', $markdown);
                 }
 
-                $slideshow=file_get_contents($this->_aeSettings->getTemplateFile('remark'));
+                $slideshow=file_get_contents($aeSettings->getTemplateFile('remark'));
 
                 // Remarks use markdown and not HTML;
                 $slides=$markdown;
             } else { // if ($aeSettings->getSlideshow()==='remark')
 
                 // Convert the Markdown text into an HTML text
-                include_once dirname(__DIR__).'/helpers/convert.php';
-
-                $aeConvert=\AeSecure\Helpers\Convert::getInstance();
+                $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
                 $html=$aeConvert->getHTML($markdown);
 
-                include_once dirname(__DIR__).'/filetype/html.php';
-                $aeHTML=\AeSecure\FileType\HTML::getInstance();
+                $aeHTML=\MarkNotes\FileType\HTML::getInstance();
                 $html=$aeHTML->setBulletsStyle($html);
 
                 // Add the fragment class to any li items
@@ -201,9 +196,7 @@ class SlideShow
         // $slideshow contains the template : it's an html file with (from the /templates folder)
         // and that file contains variables => convert them
 
-        include_once dirname(__DIR__).'/filetype/html.php';
-        $aeHTML=\AeSecure\FileType\HTML::getInstance();
-
+        $aeHTML=\MarkNotes\FileType\HTML::getInstance();
         return $aeHTML->replaceVariables($slideshow, $slides, $params);
-    } // function run()
-} // class SlideShow
+    }
+}

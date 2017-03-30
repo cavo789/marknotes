@@ -1,6 +1,8 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
-namespace AeSecure\FileType;
+namespace MarkNotes\FileType;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 class Markdown
 {
@@ -9,7 +11,7 @@ class Markdown
 
     public function __construct()
     {
-        $this->_aeSettings=\AeSecure\Settings::getInstance();
+        $this->_aeSettings=\MarkNotes\Settings::getInstance();
 
         return true;
     } // function __construct()
@@ -55,7 +57,7 @@ class Markdown
         preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
 
         // Remove the tag prefix
-        $prefix=$this->_aeSettings->getPrefixTag();
+        $prefix=$this->_aeSettings->getTagPrefix();
         $markdown=str_replace($prefix, '', $markdown);
 
         // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
@@ -82,7 +84,9 @@ class Markdown
     public function read(string $filename, array $params = null) : string
     {
         if (mb_detect_encoding($filename)) {
-            $filename=utf8_decode($filename);
+            if (!file_exists($filename)) {
+                $filename=utf8_decode($filename);
+            }
         }
 
         $markdown=file_get_contents($filename);
@@ -119,7 +123,7 @@ class Markdown
         $markdown=str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
 
         // Initialize the encryption class
-        $aesEncrypt=new \AeSecure\Encrypt($this->_aeSettings->getEncryptionPassword(), $this->_aeSettings->getEncryptionMethod());
+        $aesEncrypt=new \MarkNotes\Encrypt($this->_aeSettings->getEncryptionPassword(), $this->_aeSettings->getEncryptionMethod());
         $markdown=$aesEncrypt->HandleEncryption($filename, $markdown);
 
         if (isset($params['removeConfidential'])) {

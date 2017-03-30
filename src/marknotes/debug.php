@@ -1,32 +1,35 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
-namespace aeSecure;
+namespace MarkNotes;
+
+defined('_MARKNOTES') or die('No direct access allowed');
+
 
 class Debug
 {
 
-    protected static $instance = null;
+    protected static $_instance = null;
 
-    private static $enable=false;
+    private static $_enable=false;
 
     public function __construct()
     {
-        self::$enable=false;
+        self::$_enable=false;
         return true;
-    } // function __construct()
+    }
 
     public static function getInstance()
     {
-        if (self::$instance === null) {
-            self::$instance = new Debug();
+        if (self::$_instance === null) {
+            self::$_instance = new Debug();
         }
-        return self::$instance;
-    } // function getInstance()
+        return self::$_instance;
+    }
 
     public function enable()
     {
 
-        self::$enable=true;
+        self::$_enable=true;
 
         ini_set("display_errors", "1");
         ini_set("display_startup_errors", "1");
@@ -41,7 +44,7 @@ class Debug
         error_reporting(E_ALL);
 
         return true;
-    } // function enable()
+    }
 
     /**
     * Return the current URL
@@ -51,28 +54,25 @@ class Debug
     *                               but no script name (f.i. remove index.php and parameters if any)
     * @return type string
     */
-    public static function log(string $line, bool $return = false) : string
+    public function log(string $line, bool $return = false) : string
     {
 
         $line.=' ('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
            ', line '.debug_backtrace()[0]['line'].')';
 
-        if ($return==true) {
-            return $line;
-        } else {
-            if (self::$enable) {
-                echo $line;
-            }
-            return '';
+        if (($return!==true) && (self::$_enable)) {
+            echo $line;
         }
-    } // function log()
+
+        return $line;
+    }
 
     /**
      * Example : $this->aeDebug->here();  will display something like
-     *   "aeSecureDebug::here called by aeSecure::Setup() in C:\Christophe\Sites\aefc\aesecure\helpers\aesecure.php line 769"
+     *   "aeSecureDebug::here called by aeSecure::Setup() in C:\Christophe\Sites\aefc\MarkNotes\helpers\aesecure.php line 769"
      * @return boolean
      */
-    public static function here($msg = null, $deep = 3)
+    public function here($msg = null, $deep = 3) : string
     {
 
       /*<!-- build:debug -->*/
@@ -112,4 +112,4 @@ class Debug
         /*<!-- endbuild -->*/
         return true;
     }
-} // class Debug
+}

@@ -1,4 +1,4 @@
-/* global markdown, custominiFiles, customafterDisplay, customafterSearch */
+/* global markdown, custominiFiles, customafterDisplay */
 
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
 var QueryString = function () {
@@ -91,7 +91,6 @@ $(document)
 					.height() - 10);
 			//$('#CONTENT').css('width', $('#CONTENT').width()-5);
 
-			// When the user will exit the field, call the onChangeSearch function to fire the search
 			$('#search')
 				.change(function (e) {
 					$('#TOC')
@@ -100,10 +99,9 @@ $(document)
 					$('#TOC')
 						.jstree('search', $(this)
 							.val());
-					//     onChangeSearch();
 				});
 		} // if (markdown.autoload === 1)
-	}); // $( document ).ready()
+	});
 
 /**
  * Run an ajax query
@@ -224,7 +222,7 @@ function ajaxify($params) {
 		/* jshint ignore:end */
 	}
 
-} // function ajaxify()
+}
 
 /**
  * Add a new entry in the search box (append and not replace)
@@ -256,7 +254,7 @@ function addSearchEntry($entry) {
 
 	return true;
 
-} // function addSearchEntry()
+}
 
 /**
  * The ajax request has returned the list of files.  Build the table and initialize the #TOC DOM object
@@ -317,7 +315,8 @@ function initFiles($data) {
 				searchIn: 'name',
 				data: 'index.php?task=tags',
 				focusFirstResult: true,
-				noResultsText: markdown.message.search_no_result
+				noResultsText: markdown.message.search_no_result,
+				requestType: (markdown.settings.debug ? 'get' : 'post')
 			});
 
 		// Add automatic filtering if defined in the settings.json file
@@ -364,7 +363,7 @@ function initFiles($data) {
 
 	return true;
 
-} // iniFiles()
+}
 
 /**
  * Initialize each action buttons of the displayed note.
@@ -388,8 +387,8 @@ function initializeTasks() {
 
 	// Get all DOM objects having a data-task attribute
 	$("[data-task]")
-		.click(function () {
-
+		.click(function (event) {
+			event.preventDefault();
 			var $task = $(this)
 				.data('task');
 
@@ -407,20 +406,26 @@ function initializeTasks() {
 				$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
 			}
 
+			/*<!-- build:debug -->*/
+			if (markdown.settings.debug) {
+				console.log('Running task [' + $task + '] for [' + $fname + ']');
+			}
+			/*<!-- endbuild -->*/
+
 			switch ($task) {
 
 			case 'clear':
-				cleanCache();
+
+				ajaxify({
+					task: $task,
+					callback: 'cleanCache();',
+					target: 'CONTENT'
+				});
 				break;
 
 			case 'clipboard':
 
 				// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Clipboard -> copy the link of the current note in the clipboard');
-				}
-				/*<!-- endbuild -->*/
 
 				if (typeof Clipboard === 'function') {
 					var clipboard = new Clipboard('*[data-task="clipboard"]');
@@ -440,11 +445,7 @@ function initializeTasks() {
 			case 'display':
 
 				// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Display -> show note [' + $fname + ']');
-				}
-				/*<!-- endbuild -->*/
+
 				ajaxify({
 					task: $task,
 					param: $fname,
@@ -454,12 +455,6 @@ function initializeTasks() {
 				break;
 
 			case 'edit':
-
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Edit -> show the editor and the source markdown file)');
-				}
-				/*<!-- endbuild -->*/
 
 				ajaxify({
 					task: $task,
@@ -479,11 +474,6 @@ function initializeTasks() {
 			case 'link_note':
 
 				// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-				/*<!-- build:debug -->*/
-				if (markdown.settings.debug) {
-					console.log('Clipboard -> copy the link of the current note in the clipboard');
-				}
-				/*<!-- endbuild -->*/
 
 				if (typeof Clipboard === 'function') {
 					new Clipboard('*[data-task="link_note"]');
@@ -503,9 +493,6 @@ function initializeTasks() {
 				break;
 
 			case 'printer':
-				/*<!-- build:debug -->*/
-				//if (markdown.settings.debug) console.log('Print -> start the print preview plugin');
-				/*<!-- endbuild -->*/
 				break;
 
 			case 'slideshow':
@@ -517,7 +504,7 @@ function initializeTasks() {
 
 				/*<!-- build:debug -->*/
 				if (markdown.settings.debug) {
-					console.log('Tag -> filter on [' + $tag + ']');
+					console.log('... filter on [' + $tag + ']');
 				}
 				/*<!-- endbuild -->*/
 
@@ -528,6 +515,7 @@ function initializeTasks() {
 				break;
 
 			case 'timeline':
+
 				window.open(markdown.webroot + 'timeline.html');
 				break;
 
@@ -539,14 +527,18 @@ function initializeTasks() {
 			default:
 
 				console.warn('Sorry, unknown task [' + $task + ']');
+
 			} // switch($task)
 
 		}); // $("[data-task]").click(function()
 
 	return true;
 
-} // function initializeTasks()
+}
 
+/**
+ * Empty the localStorage cache and the session on the server; reload then the page
+ */
 function cleanCache() {
 
 	// Empty the localStorage too
@@ -558,6 +550,8 @@ function cleanCache() {
 		}
 	}
 
+	location.reload();
+
 	Noty({
 		message: markdown.message.settings_clean_done,
 		type: 'success'
@@ -565,7 +559,7 @@ function cleanCache() {
 
 	return;
 
-} // function afterClean
+}
 
 /**
  * If a note contains a link to an another note, use ajax and not normal links
@@ -614,7 +608,7 @@ function replaceLinksToOtherNotes() {
 
 	return;
 
-} // replaceLinksToOtherNotes()
+}
 
 /**
  * Try to find tags i.ex. §some_tag  (the tag is prefixed by the § character because # is meaningfull in markdown
@@ -683,7 +677,7 @@ function addLinksToTags() {
 	}
 
 	return;
-} // function addLinksToTags()
+}
 
 /**
  * Force links that points on the same server (localhost) to be opened in a new window
@@ -705,7 +699,7 @@ function forceNewWindow() {
 
 	return true;
 
-} // function forceNewWindow()
+}
 
 /**
  * Add icons to .pdf, .xls, .doc, ... hyperlinks and for some extensions (like log, md, pdf, txt, ...) force to open in a new window
@@ -774,7 +768,7 @@ function addIcons() {
 
 	return true;
 
-} // function addIcons()
+}
 
 /**
  * Add the "table" class to any <table>
@@ -822,7 +816,7 @@ function NiceTable() {
 
 	return true;
 
-} // function NiceTable()
+}
 
 /**
  * Called after the ajax "display" request, the file is almost displayed
@@ -936,7 +930,7 @@ function afterDisplay($fname) {
 
 	return true;
 
-} // function afterDisplay()
+}
 
 /**
  * EDIT MODE - Render the textarea in a nice editor
@@ -1008,7 +1002,7 @@ function afterEdit($fname) {
 
 	return true;
 
-} // function afterEdit()
+}
 
 /**
  * EDIT MODE - Save the new content.  Called by the "Save" button of the simplemde editor, initialized in the afterEdit function)
@@ -1040,7 +1034,7 @@ function buttonSave($fname, $markdown) {
 
 	return true;
 
-} // function buttonSave()
+}
 
 /**
  * EDIT MODE - Encrypt the selection.  Add the <encrypt> tag
@@ -1057,224 +1051,7 @@ function buttonEncrypt(editor) {
 	output = '<encrypt>' + text + '</encrypt>';
 	cm.replaceSelection(output);
 
-} // function buttonEncrypt()
-
-/**
- *
- * @returns {undefined}
- */
-function onChangeSearch() {
-
-	/*<!-- build:debug -->*/
-	if (markdown.settings.debug) {
-		console.log('In function onChangeSearch()');
-	}
-	/*<!-- endbuild -->*/
-
-	try {
-		// Get the searched keywords.  Apply the restriction on the size.
-		var $searchKeywords = $('#search')
-			.val()
-			.substr(0, markdown.settings.search_max_width)
-			.trim();
-
-		var $bContinue = true;
-		// See if the customonChangeSearch() function has been defined and if so, call it
-		if (typeof customonChangeSearch !== 'undefined' && $.isFunction(customonChangeSearch)) {
-			$bContinue = customonChangeSearch($searchKeywords);
-		}
-
-		if ($bContinue === true) {
-			if ($searchKeywords !== '') {
-				$msg = markdown.message.apply_filter;
-				Noty({
-					message: $msg.replace('%s', $searchKeywords),
-					type: 'notification'
-				});
-			}
-
-			// On page entry, get the list of .md files on the server
-			ajaxify({
-				task: 'search',
-				param: window.btoa(encodeURIComponent($searchKeywords)),
-				callback: 'afterSearch("' + $searchKeywords + '",data)'
-			});
-		} else {
-			/*<!-- build:debug -->*/
-			if (markdown.settings.debug) {
-				console.log('cancel the search');
-			}
-			/*<!-- endbuild -->*/
-		}
-	} catch (err) {
-		console.warn(err.message);
-	}
-
-	return true;
-
-} // onChangeSearch()
-
-/*
- * Called when the ajax request "onChangeSearch" has been successfully fired.
- * Process the result of the search : the returned data is a json string that represent an
- * array of files that matched the searched pattern.
- */
-function afterSearch($keywords, $data) {
-
-	/*<!-- build:debug -->*/
-	if (markdown.settings.debug) {
-		console.log('In function afterSearch()');
-	}
-	/*<!-- endbuild -->*/
-
-	try {
-		// Check if we've at least one file
-		if (Object.keys($data)
-			.length > 0) {
-			if ($.isFunction($.fn.jstree)) {
-				// Get the list of files returned by the search : these files have matched th keyword
-				$files = $data.files;
-
-				// Use jsTree : iterate and get every node full path which is, in fact, a filename
-				// For instance /aesecure/todo/a_note.md
-
-				$filename = '';
-
-				$('#TOC')
-					.jstree('open_all');
-				$.each(
-					$("#TOC")
-					.jstree('full')
-					.find("li"),
-					function (index, element) {
-
-						$filename = $("#TOC")
-							.jstree(true)
-							.get_path(element, markdown.settings.DS); // DIRECTORY_SEPARATOR
-
-						// It's a file, not a folder : hide it
-						if ($(element)
-							.hasClass('jstree-leaf')) {
-							$(element)
-								.hide();
-						}
-
-						// Get the node associated filename
-
-						if ($filename !== '') {
-							// Now, check if the file is mentionned in the result, if yes, show the row back
-
-							$.each($files, function ($key, $value) {
-
-								if ($(element)
-									.hasClass('jstree-leaf')) {
-									if ($value === $filename + '.md') {
-										$(element)
-											.addClass('highlight')
-											.show();
-
-										// Automatically open the node (and parents if needed) and select the node
-										$('#TOC')
-											.jstree('select_node', element);
-									}
-									// return false;  // break
-								}
-
-							}); // $.each($files)
-						} // if ($filename!=='')
-
-					}
-				); // $.each($("#TOC").jstree('full')
-
-				// -------------------------------------------------
-				// PROBABLY NOT EFFICIENT
-				//
-				// The idea is to close every parent node in the treeview when they don't have a child (=a file)
-				// that was selected by the search engine here above.
-				//
-				// Idea is to keep the treeview the most compact as possible (if a root node contains 20 children,
-				// with children too, ... and no files have been selected so just close the rood node immediatly)
-
-				$.each(
-					$("#TOC")
-					.jstree('full')
-					.find("li"),
-					function (index, element) {
-						// If the node was not selected (i.e. has the "highlight" class), close the node
-						if (!$(element)
-							.hasClass('highlight')) {
-							$('#TOC')
-								.jstree('hide_node', element);
-						}
-					}
-				);
-
-				$.each(
-					$("#TOC")
-					.jstree('full')
-					.find("li"),
-					function (index, element) {
-
-						// Now, for each node with the "highlight" class, be sure that each parents are opened
-						if ($(element)
-							.hasClass('highlight')) {
-							$("#TOC")
-								.jstree('open_node', element, function (e, d) {
-									for (var i = 0; i < e.parents.length; i++) {
-										$("#TOC")
-											.jstree('show_node', e.parents[i]);
-									}
-								});
-						} // if($(element).hasClass('highlight'))
-					}
-				);
-
-			} // if ($.isFunction($.fn.jstree)){
-		} else { // if (Object.keys($data['files']).length>0)
-
-			if ($keywords !== '') {
-				noty({
-					message: markdown.message.search_no_result,
-					type: 'success'
-				});
-			} else { // if ($keywords!=='')
-
-				// show everything back
-
-				if ($.isFunction($.fn.jstree)) {
-					// jsTree plugin
-					$.each(
-						$('#TOC')
-						.jstree('full')
-						.find("li"),
-						function (index, element) {
-							$(element)
-								.removeClass('highlight')
-								.show();
-						}
-					); // $.each($("#TOC").jstree('full')
-
-					// And show the entire tree
-					$('#TOC')
-						.jstree('open_all');
-
-				} //  if ($.isFunction($.fn.jstree))
-			} // if ($keywords!=='')
-		} // if (Object.keys($data).length>0)
-
-		// See if the customafterSearch() function has been defined and if so, call it
-		try {
-			if (typeof customafterSearch !== 'undefined' && $.isFunction(customafterSearch)) {
-				customafterSearch($keywords, $data);
-			}
-		} catch (err) {
-			console.warn(err.message);
-		}
-	} catch (err) {
-		console.warn(err.message);
-	}
-
-} // function afterSearch()
+}
 
 /**
  *
@@ -1303,4 +1080,4 @@ function Noty($params) {
 		}); // noty()
 	}
 
-} // function Noty()
+}

@@ -1,6 +1,8 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 /**
 * Search for "$keywords" in the filename or in the file content.  Stop on the first occurence to speed up
@@ -11,10 +13,30 @@ namespace AeSecure\Tasks;
 
 class Search
 {
-    public static function run(array $params)
+    protected static $_instance = null;
+
+    public function __construct()
+    {
+        return true;
+    }
+
+    public function getInstance()
     {
 
-        $aeSettings=\AeSecure\Settings::getInstance();
+        if (self::$_instance === null) {
+            self::$_instance = new Search();
+        }
+
+        return self::$_instance;
+    }
+
+    public function run(array $params)
+    {
+
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeFunctions=\MarkNotes\Functions::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
 
         $return=array();
         if (trim($params['pattern'])=='') {
@@ -25,23 +47,38 @@ class Search
         // Search for these three keywords (AND)
         $keywords=explode(',', rtrim($params['pattern'], ','));
 
-        $arrFiles=array_unique(\AeSecure\Files::rglob('*.md', $aeSettings->getFolderDocs(true)));
+        $arrFiles=array();
+        if ($aeSettings->getOptimisationUseServerSession()) {
+            // Get the list of files/folders from the session object if possible
+            $arrFiles=json_decode($aeSession->get('SearchFileList', ''));
+            if (!is_array($arrFiles)) {
+                $arrFiles=array();
+            }
+        }
+
+        if (count($arrFiles)==0) {
+            $arrFiles=$aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
+
+            // Sort, case insensitve
+            natcasesort($arrFiles);
+
+            // Be carefull, folders / filenames perhaps contains accentuated characters
+            $arrFiles=array_map('utf8_encode', $arrFiles);
+
+            if ($aeSettings->getOptimisationUseServerSession()) {
+                // Remember for the next call
+                $aeSession->set('SearchFileList', json_encode($arrFiles, JSON_PRETTY_PRINT));
+            }
+        }
 
         if (count($arrFiles)==0) {
             return null;
         }
 
-        // Be carefull, folders / filenames perhaps contains accentuated characters
-        $arrFiles=array_map('utf8_encode', $arrFiles);
-
-        // Sort, case insensitve
-        natcasesort($arrFiles);
-
-        // Initialize the encryption class
-        $aesEncrypt=new \AeSecure\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
-
         // docs should be relative so $aeSettings->getFolderDocs(false) and not $aeSettings->getFolderDocs(true)
         $docs=str_replace('/', DS, $aeSettings->getFolderDocs(false));
+
+        $aeEncrypt=\MarkNotes\Encrypt::getInstance($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
 
         foreach ($arrFiles as $file) {
             // Don't mention the full path, should be relative for security reason
@@ -65,7 +102,6 @@ class Search
             } else { // if ($bFound)
 
                 // Open the file and check against its content (plain and encrypted)
-
                 $fullname=utf8_decode($aeSettings->getFolderDocs(true).$file);
                 $content=file_get_contents($fullname);
 
@@ -96,7 +132,7 @@ class Search
                         if (count($tmp)>0) {
                             // Only when data-encrypt="true" is found, consider the content has an encrypted one.
                             $isEncrypted=(strcasecmp(rtrim($tmp[1]), 'true')===0?true:false);
-                            $decrypt=$aesEncrypt->sslDecrypt($matches[2][$i], null);
+                            $decrypt=$aeEncrypt->sslDecrypt($matches[2][$i], null);
                             $content=str_replace($matches[2][$i], $decrypt, $content);
                         }
                     } // for($i;$i<$j;$i++)
@@ -119,11 +155,6 @@ class Search
             } // if ($bFound) {
         } // foreach ($arrFiles as $file)
 
-        unset($aesEncrypt);
-
-        header('Content-Type: application/json');
-        echo json_encode($return, JSON_PRETTY_PRINT);
-
-        die();
-    } // function Run()
-} // class Search
+        return json_encode($return, JSON_PRETTY_PRINT);
+    }
+}

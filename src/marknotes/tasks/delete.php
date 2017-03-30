@@ -1,6 +1,8 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 /**
 * Kill a note or an entire directory
@@ -17,8 +19,8 @@ class Delete
             include_once dirname(dirname(__FILE__)).'/debug.php';
         }
 
-        $aeDebug=\AeSecure\Debug::getInstance();
-        $aeSettings=\AeSecure\Settings::getInstance();
+        $aeDebug=\MarkNotes\Debug::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
 
         $fullname=str_replace(
             '/',
@@ -39,7 +41,7 @@ class Delete
         if ($params['type']==='folder') {
             // It's a folder
 
-            if (!\AeSecure\Files::folderExists(utf8_decode($fullname))) {
+            if (!\MarkNotes\Files::folderExists(utf8_decode($fullname))) {
                 echo str_replace(
                     '%s',
                     '<strong>'.$fullname.'</strong>',
@@ -47,7 +49,7 @@ class Delete
                 );
 
                 return;
-            } else { // if (!\AeSecure\Files::folderExists($fullname))
+            } else { // if (!\MarkNotes\Files::folderExists($fullname))
 
                 if (is_writable(utf8_decode($fullname))) {
                     try {
@@ -73,7 +75,7 @@ class Delete
                                 if ($file->isDir()) {
                                     rmdir($file->getRealPath());
 
-                                    if (!\AeSecure\Files::folderExists($file->getRealPath())) {
+                                    if (!\MarkNotes\Files::folderExists($file->getRealPath())) {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
                                             $arrDebug['debug'][]=$aeDebug->log('Kill folder '.utf8_encode($file->getRealPath()), true);
@@ -90,7 +92,7 @@ class Delete
 
                                     unlink($file->getRealPath());
 
-                                    if (!\AeSecure\Files::fileExists($file->getRealPath())) {
+                                    if (!\MarkNotes\Files::fileExists($file->getRealPath())) {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
                                             $arrDebug['debug'][]=$aeDebug->log('Kill file '.utf8_encode($file->getRealPath()), true);
@@ -121,7 +123,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \AeSecure\JSON::json_return_info(
+                            echo \MarkNotes\JSON::json_return_info(
                                 array(
                                 'status'=>1,
                                 'action'=>'delete',
@@ -136,7 +138,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \AeSecure\JSON::json_return_info(
+                            echo \MarkNotes\JSON::json_return_info(
                                 array(
                                 'status'=>0,
                                 'action'=>'delete',
@@ -147,7 +149,7 @@ class Delete
                             );
                         }
                     } catch (Exception $ex) {
-                        echo \AeSecure\JSON::json_return_info(
+                        echo \MarkNotes\JSON::json_return_info(
                             array(
                             'status'=>0,
                             'action'=>'delete',
@@ -166,7 +168,7 @@ class Delete
                         $params['filename']
                     );
 
-                    echo \AeSecure\JSON::json_return_info(
+                    echo \MarkNotes\JSON::json_return_info(
                         array(
                         'status'=>0,
                         'action'=>'delete',
@@ -176,7 +178,7 @@ class Delete
                         $arrDebug
                     );
                 } // if(is_writable($fullname))
-            } // if (!\AeSecure\Files::folderExists($fullname))
+            } // if (!\MarkNotes\Files::folderExists($fullname))
         } else { // if($params['type']==='folder')
 
             // It's a file
@@ -186,7 +188,7 @@ class Delete
                 $params['filename'].='.md';
             }
 
-            if (!\AeSecure\Files::fileExists($fullname)) {
+            if (!\MarkNotes\Files::fileExists($fullname)) {
                 echo str_replace(
                     '%s',
                     '<strong>'.$fullname.'</strong>',
@@ -194,21 +196,21 @@ class Delete
                 );
 
                 die();
-            } else { // if (!\AeSecure\Files::fileExists($fullname))
+            } else { // if (!\MarkNotes\Files::fileExists($fullname))
 
                 if (is_writable($fullname)) {
                     try {
                         unlink($fullname);
 
-                        if (!\AeSecure\Files::fileExists($fullname)) {
+                        if (!\MarkNotes\Files::fileExists($fullname)) {
                             // The note was successfully deleted
 
                             // Check if there were .html versions of the note and if so, delete them
-                            if (\AeSecure\Files::fileExists($fnameHTML = str_replace('.md', '.html', $fullname))) {
+                            if (\MarkNotes\Files::fileExists($fnameHTML = str_replace('.md', '.html', $fullname))) {
                                 unlink($fnameHTML);
                             }
 
-                            if (\AeSecure\Files::fileExists($fnameHTML = str_replace('.md', '_slideshow.html', $fullname))) {
+                            if (\MarkNotes\Files::fileExists($fnameHTML = str_replace('.md', '_slideshow.html', $fullname))) {
                                 unlink($fnameHTML);
                             }
 
@@ -217,7 +219,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \AeSecure\JSON::json_return_info(
+                            echo \MarkNotes\JSON::json_return_info(
                                 array(
                                 'status'=>1,
                                 'action'=>'delete',
@@ -226,7 +228,7 @@ class Delete
                                 ),
                                 $arrDebug
                             );
-                        } else { // if (!\AeSecure\Files::fileExists($fullname))
+                        } else { // if (!\MarkNotes\Files::fileExists($fullname))
 
                             // A problem has occured
 
@@ -235,7 +237,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \AeSecure\JSON::json_return_info(
+                            echo \MarkNotes\JSON::json_return_info(
                                 array(
                                 'status'=>0,
                                 'action'=>'delete',
@@ -244,9 +246,9 @@ class Delete
                                 ),
                                 $arrDebug
                             );
-                        } // if (!\AeSecure\Files::fileExists($fullname))
+                        } // if (!\MarkNotes\Files::fileExists($fullname))
                     } catch (Exception $ex) {
-                        echo \AeSecure\JSON::json_return_info(
+                        echo \MarkNotes\JSON::json_return_info(
                             array(
                             'status'=>0,
                             'action'=>'delete',
@@ -265,7 +267,7 @@ class Delete
                         $params['filename']
                     );
 
-                    echo \AeSecure\JSON::json_return_info(
+                    echo \MarkNotes\JSON::json_return_info(
                         array(
                         'status'=>0,
                         'action'=>'delete',
@@ -275,7 +277,7 @@ class Delete
                         $arrDebug
                     );
                 } // if(is_writable($fullname))
-            } // // if (!\AeSecure\Files::fileExists($fullname))
+            } // // if (!\MarkNotes\Files::fileExists($fullname))
         } // if($params['type']==='folder')
 
         return;

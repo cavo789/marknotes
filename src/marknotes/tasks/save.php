@@ -1,6 +1,8 @@
 <?php
 
-namespace AeSecure\Tasks;
+namespace MarkNotes\Tasks;
+
+defined('_MARKNOTES') or die('No direct access allowed');
 
 /**
 * Save the new content of the file.   This function is called by the "Save" button available in the JS editor
@@ -8,10 +10,29 @@ namespace AeSecure\Tasks;
 
 class Save
 {
-    public static function run(array $params)
+
+    protected static $_instance = null;
+
+    public function __construct()
+    {
+        return true;
+    }
+
+    public function getInstance()
     {
 
-        $aeSettings=\AeSecure\Settings::getInstance();
+        if (self::$_instance === null) {
+            self::$_instance = new Save();
+        }
+
+        return self::$_instance;
+    }
+
+    public function run(array $params)
+    {
+
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
 
         $return=array();
 
@@ -27,7 +48,7 @@ class Save
             $fullname=str_replace('/', DIRECTORY_SEPARATOR, $aeSettings->getFolderDocs(true).utf8_decode(ltrim($params['filename'], DS)));
 
             // Initialize the encryption class
-            $aesEncrypt=new \AeSecure\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
+            $aesEncrypt=new \MarkNotes\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
 
             // bReturn will be set on TRUE when the file has been rewritten (when <encrypt> content has been found)
             // $markdown will contains the new content (once encryption has been done)
@@ -36,12 +57,12 @@ class Save
 
             // $bReturn is on FALSE when HandleEncryption hasn't found any <encrypt> tag => save the new content (otherwise already done by HandleEncryption)
             if (!$bReturn) {
-                $bReturn=\AeSecure\Files::rewriteFile($fullname, $params['markdown']);
+                $bReturn=$aeFiles->rewriteFile($fullname, $params['markdown']);
             }
 
             if ($bReturn===true) {
                 // The new content has been created, check if the .html version exists and if so, remove that old file
-                if (file_exists($fnameHTML = \AeSecure\Files::replaceExtension($fullname, 'html'))) {
+                if (file_exists($fnameHTML = $aeFiles->replaceExtension($fullname, 'html'))) {
                     @unlink($fnameHTML);
                 }
                 if (file_exists($fnameHTML = str_replace('.html', '_slideshow.html', $fnameHTML))) {
@@ -59,8 +80,6 @@ class Save
             $return['filename']=$fullname;
         } // if (!$aeSettings->getEditAllowed())
 
-        header('Content-Type: application/json');
-        echo json_encode($return, JSON_PRETTY_PRINT);
-        die();
-    } // function Run()
-} // class Save
+        return json_encode($return, JSON_PRETTY_PRINT);
+    }
+}
