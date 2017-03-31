@@ -16,10 +16,9 @@ class JSON
 
     public function __construct()
     {
-
         self::$_debug=false;
         return true;
-    } // function __construct()
+    }
 
     public static function getInstance()
     {
@@ -174,4 +173,4 @@ class JSON
             die();
         }
     }
-} // class JSON
+}

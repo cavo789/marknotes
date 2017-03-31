@@ -10,19 +10,10 @@ class Convert
 {
     protected static $_instance = null;
 
-    private $_aeSettings = null;
-
     public function __construct()
     {
-
-        if (!class_exists('Settings')) {
-            include_once dirname(__DIR__).DS.'settings.php';
-        }
-
-        $this->_aeSettings=\MarkNotes\Settings::getInstance();
-
         return true;
-    } // function __construct()
+    }
 
     public static function getInstance()
     {
@@ -32,7 +23,7 @@ class Convert
         }
 
         return self::$_instance;
-    } // function getInstance()
+    }
 
     /**
      * If the JoliTypo settings is enabled in the settings.json file, use that library to solve somes typography issues
@@ -41,10 +32,12 @@ class Convert
     private function useJoliTypo(string $html) : string
     {
 
+        $aeSettings=\MarkNotes\Settings::getInstance();
+
         // Can we solve somes common typo issues ?
-        if ($this->_aeSettings->getUseJoliTypo()) {
-            if (is_dir($this->_aeSettings->getFolderLibs()."jolicode")) {
-                $locale=$this->_aeSettings->getLocale();
+        if ($aeSettings->getUseJoliTypo()) {
+            if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
+                $locale=$aeSettings->getLocale();
 
 
                 // See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale
@@ -66,10 +59,10 @@ class Convert
 
                 $html=$fixer->fix($html);
             }
-        } // if($this->_aeSettings->getUseJolyTypo())
+        }
 
         return $html;
-    } // function useJoliTypo()
+    }
 
     /**
      *  Convert the Markdown string into a HTML one
@@ -77,14 +70,17 @@ class Convert
     public function getHTML(string $markdown, array $params = null) : string
     {
 
+        $aeFunctions=\MarkNotes\Functions::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
+
         // Call the Markdown parser (https://github.com/erusev/parsedown)
-        $lib=$this->_aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+        $lib=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
         if (!file_exists($lib)) {
             self::ShowError(
                 str_replace(
                     '%s',
                     '<strong>'.$lib.'</strong>',
-                    $this->_aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+                    $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
                 ),
                 true
             );
@@ -98,8 +94,8 @@ class Convert
         $html=$this->useJoliTypo($html);
 
         // LazyLoad images ?
-        if ($this->_aeSettings->getOptimisationLazyLoad()) {
-            $root=rtrim(\MarkNotes\Functions::getCurrentURL(true, false), '/');
+        if ($aeSettings->getOptimisationLazyLoad()) {
+            $root=rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
             $html=str_replace(
                 '<img src="',
@@ -109,5 +105,5 @@ class Convert
         }
 
         return $html;
-    } // function getHTML()
-} // class Functions
+    }
+}

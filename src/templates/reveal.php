@@ -80,8 +80,8 @@
                 display: none;
             }
 
-            #footer{position:absolute;z-index:10;font-size:1.8em;color:white;right:0;bottom:0;left:0;padding:3px;background-color:rgba(90, 145, 199, 0.16);}
-            #footer a {color:blue;font-size:18px;}
+            #footer{position:absolute;z-index:10;color:white;right:0;bottom:0;left:0;padding:10px;background-color:rgba(90, 145, 199, 0.16);}
+            #footer a {color:green;font-size:24px;margin-right:10px;}
 
             strong {background-color:green;color:white;}
             .blink {animation: blink 1s steps(5, start) infinite; -webkit-animation: blink 1s steps(5, start) infinite;} @keyframes blink {to {visibility: hidden;}} @-webkit-keyframes blink {to {visibility: hidden;}}
@@ -107,7 +107,10 @@ section>.frame{margin:25px;padding:25px;background-color:#5bc0de;border:4px dash
             </div>
         </div>
 
-        <div id="footer"><a href="%VERSION_PDF%">Version PDF</a> | <a href="%VERSION_HTML%">Version HTML</a> </div>
+        <div id="footer">
+            <a href="%VERSION_PDF%" title="%VERSION_PDF_TITLE%"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+            <a href="%VERSION_HTML%" title="%VERSION_HTML_TITLE%"><i class="fa fa-book" aria-hidden="true"></i></a>
+        </div>
 
         <aside class="controls">
             <a class="left" href="#">&#x25C4;</a>

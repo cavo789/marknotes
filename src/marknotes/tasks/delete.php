@@ -15,7 +15,7 @@ class Delete
     public function __construct()
     {
         return true;
-    } // function __construct()
+    }
 
     public static function getInstance()
     {
@@ -25,8 +25,8 @@ class Delete
         }
 
         return self::$_instance;
-    } // function getInstance()
-    
+    }
+
     public static function run(array $params)
     {
 
@@ -37,6 +37,8 @@ class Delete
         }
 
         $aeDebug=\MarkNotes\Debug::getInstance();
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeJSON=\MarkNotes\JSON::getInstance();
         $aeSettings=\MarkNotes\Settings::getInstance();
 
         $fullname=str_replace(
@@ -58,7 +60,7 @@ class Delete
         if ($params['type']==='folder') {
             // It's a folder
 
-            if (!\MarkNotes\Files::folderExists(utf8_decode($fullname))) {
+            if (!$aeFiles->folderExists(utf8_decode($fullname))) {
                 echo str_replace(
                     '%s',
                     '<strong>'.$fullname.'</strong>',
@@ -92,7 +94,7 @@ class Delete
                                 if ($file->isDir()) {
                                     rmdir($file->getRealPath());
 
-                                    if (!\MarkNotes\Files::folderExists($file->getRealPath())) {
+                                    if (!$aeFiles->folderExists($file->getRealPath())) {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
                                             $arrDebug['debug'][]=$aeDebug->log('Kill folder '.utf8_encode($file->getRealPath()), true);
@@ -109,7 +111,7 @@ class Delete
 
                                     unlink($file->getRealPath());
 
-                                    if (!\MarkNotes\Files::fileExists($file->getRealPath())) {
+                                    if (!$aeFiles->fileExists($file->getRealPath())) {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
                                             $arrDebug['debug'][]=$aeDebug->log('Kill file '.utf8_encode($file->getRealPath()), true);
@@ -140,7 +142,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \MarkNotes\JSON::json_return_info(
+                            echo $aeJSON->json_return_info(
                                 array(
                                 'status'=>1,
                                 'action'=>'delete',
@@ -155,7 +157,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \MarkNotes\JSON::json_return_info(
+                            echo $aeJSON->json_return_info(
                                 array(
                                 'status'=>0,
                                 'action'=>'delete',
@@ -166,7 +168,7 @@ class Delete
                             );
                         }
                     } catch (Exception $ex) {
-                        echo \MarkNotes\JSON::json_return_info(
+                        echo $aeJSON->json_return_info(
                             array(
                             'status'=>0,
                             'action'=>'delete',
@@ -185,7 +187,7 @@ class Delete
                         $params['filename']
                     );
 
-                    echo \MarkNotes\JSON::json_return_info(
+                    echo $aeJSON->json_return_info(
                         array(
                         'status'=>0,
                         'action'=>'delete',
@@ -205,7 +207,7 @@ class Delete
                 $params['filename'].='.md';
             }
 
-            if (!\MarkNotes\Files::fileExists($fullname)) {
+            if (!$aeFiles->fileExists($fullname)) {
                 echo str_replace(
                     '%s',
                     '<strong>'.$fullname.'</strong>',
@@ -219,15 +221,15 @@ class Delete
                     try {
                         unlink($fullname);
 
-                        if (!\MarkNotes\Files::fileExists($fullname)) {
+                        if (!$aeFiles->fileExists($fullname)) {
                             // The note was successfully deleted
 
                             // Check if there were .html versions of the note and if so, delete them
-                            if (\MarkNotes\Files::fileExists($fnameHTML = str_replace('.md', '.html', $fullname))) {
+                            if ($aeFiles->fileExists($fnameHTML = str_replace('.md', '.html', $fullname))) {
                                 unlink($fnameHTML);
                             }
 
-                            if (\MarkNotes\Files::fileExists($fnameHTML = str_replace('.md', '_slideshow.html', $fullname))) {
+                            if ($aeFiles->fileExists($fnameHTML = str_replace('.md', '_slideshow.html', $fullname))) {
                                 unlink($fnameHTML);
                             }
 
@@ -236,7 +238,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \MarkNotes\JSON::json_return_info(
+                            echo $aeJSON->json_return_info(
                                 array(
                                 'status'=>1,
                                 'action'=>'delete',
@@ -254,7 +256,7 @@ class Delete
                                 $params['filename']
                             );
 
-                            echo \MarkNotes\JSON::json_return_info(
+                            echo $aeJSON->json_return_info(
                                 array(
                                 'status'=>0,
                                 'action'=>'delete',
@@ -265,7 +267,7 @@ class Delete
                             );
                         } // if (!\MarkNotes\Files::fileExists($fullname))
                     } catch (Exception $ex) {
-                        echo \MarkNotes\JSON::json_return_info(
+                        echo $aeJSON->json_return_info(
                             array(
                             'status'=>0,
                             'action'=>'delete',
@@ -284,7 +286,7 @@ class Delete
                         $params['filename']
                     );
 
-                    echo \MarkNotes\JSON::json_return_info(
+                    echo $aeJSON->json_return_info(
                         array(
                         'status'=>0,
                         'action'=>'delete',
@@ -298,5 +300,5 @@ class Delete
         } // if($params['type']==='folder')
 
         return;
-    } // function Run()
-} // class Display
+    }
+}

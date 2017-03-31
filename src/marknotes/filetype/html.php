@@ -136,8 +136,12 @@ class HTML
             $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
             $urlHTML=$url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
-            $template=str_replace('%VERSION_PDF%', $urlHTML.'?format=pdf', $template);
-            $template=str_replace('%VERSION_HTML%', $urlHTML.'?format=html', $template);
+            $template=str_replace('%VERSION_PDF%', utf8_encode($urlHTML.'?format=pdf'), $template);
+            $template=str_replace('%VERSION_PDF_TITLE%', $aeSettings->getText('slideshow_download', 'Download this slideshow'), $template);
+
+            $template=str_replace('%VERSION_HTML%', utf8_encode($urlHTML.'?format=html'), $template);
+            $template=str_replace('%VERSION_HTML_TITLE%', $aeSettings->getText('slideshow_html', 'View this slideshow like an article'), $template);
+
             $template=str_replace('%URL_PAGE%', $urlHTML, $template);
         } // if (isset($params['filename']))
 
