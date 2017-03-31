@@ -10,3 +10,5 @@ settings.json
 composer.log
 gulpfile.js
 build.bat
+src/templates/jugtoulouse_reveal.php
+src/templates/jugwallonie.php

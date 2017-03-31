@@ -64,8 +64,24 @@
                 list-style: none;
             }
 
-            #footer{position:absolute;z-index:10;font-size:0.8em;color:white;right:0;bottom:0;left:0;padding:3px;background-color:rgba(90, 145, 199, 0.16);}
-            #footer a {color:blue;font-size:8px;}
+            #logo {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                height: auto;
+                max-width: 150px;
+                display: none;
+            }
+
+            #logo2 {
+                position: absolute;
+                top: 10px;
+                right: 0px;
+                display: none;
+            }
+
+            #footer{position:absolute;z-index:10;font-size:1.8em;color:white;right:0;bottom:0;left:0;padding:3px;background-color:rgba(90, 145, 199, 0.16);}
+            #footer a {color:blue;font-size:18px;}
 
             strong {background-color:green;color:white;}
             .blink {animation: blink 1s steps(5, start) infinite; -webkit-animation: blink 1s steps(5, start) infinite;} @keyframes blink {to {visibility: hidden;}} @-webkit-keyframes blink {to {visibility: hidden;}}
@@ -106,40 +122,14 @@ section>.frame{margin:25px;padding:25px;background-color:#5bc0de;border:4px dash
         <script>
             // More info https://github.com/hakimel/reveal.js#configuration
             Reveal.initialize({
-
-                // Push each slide change to the browser history
                 history: true,
-
-                // Display controls in the bottom right corner
                 controls: true,
-
-                // Display a presentation progress bar
                 progress: true,
-
-                // Display the page number of the current slide
                 slideNumber: true,
-
-                // Enable slide navigation via mouse wheel
                 mouseWheel: true,
-
-                // Transition style
-                transition: 'convex', // none/fade/slide/convex/concave/zoom
-
-                // Transition style for full page slide backgrounds
-                backgroundTransition: 'concave', // none/fade/slide/convex/concave/zoom
-
-                // Parallax background image
-                //parallaxBackgroundImage: 'img/background.png',
-                //parallaxBackgroundSize: '1917px 1080px',
-
-                // Number of pixels to move the parallax background per slide
-                // - Calculated automatically unless specified
-                // - Set to 0 to disable movement along an axis
-                //parallaxBackgroundHorizontal: 0,
-                //parallaxBackgroundVertical: 0,
-
+                transition: 'convex',
+                backgroundTransition: 'concave',
                 // More info https://github.com/hakimel/reveal.js#dependencies
-
 				dependencies: [
 					{ src: '%ROOT%/libs/reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
 					{ src: '%ROOT%/libs/reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
@@ -148,16 +138,18 @@ section>.frame{margin:25px;padding:25px;background-color:#5bc0de;border:4px dash
 					{ src: '%ROOT%/libs/reveal/plugin/zoom-js/zoom.js', async: true },
 					{ src: '%ROOT%/libs/reveal/plugin/notes/notes.js', async: true }
 				]
-
-
             });
 
             Reveal.addEventListener('ready', function(event) {
                 var isMobileDevice = /(iphone|ipod|ipad|android)/gi.test(navigator.userAgent);
 
                 if (!isMobileDevice) {
-                    document.getElementById('logo').style.display = 'inline';
-                    document.getElementById('menu').style.display = 'inline';
+                    var $objDOM = document.getElementById('logo');
+                    if ($objDOM !== null) $objDOM.style.display='inline';
+                    $objDOM = document.getElementById('logo2');
+                    if ($objDOM !== null) $objDOM.style.display='inline';
+                    $objDOM = document.getElementById('menu');
+                    if ($objDOM !== null) $objDOM.style.display='inline';
                 }
 
             });

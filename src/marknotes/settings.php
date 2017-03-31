@@ -88,7 +88,6 @@ class Settings
                 $json=array_merge($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
-
         return $json;
     }
 

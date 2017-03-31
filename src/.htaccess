@@ -24,7 +24,7 @@ DirectoryIndex index.php
     RewriteCond %{SCRIPT_FILENAME} -f
     RewriteRule .* - [R=403,NC,L]
 
-	RewriteCond %{REQUEST_FILENAME} !(index|router)\.php
+	RewriteCond %{REQUEST_FILENAME} !(deploy|index|router)\.php
     RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 

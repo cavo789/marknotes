@@ -152,14 +152,15 @@ class HTML
         if (strpos($template, '%URL_IMG%')!==false) {
             // Retrieve the first image in the html
             $urlImg='';
-            $match=array();
-            if (preg_match('/<img *src *= *[\'|"]([^\'|"]*)/', $html, $match)) {
-                if (count($match)>0) {
-                    $urlImg=$match[1];
+            $matches=array();
+            if (preg_match_all('/<img.*data-src *= *[\'|"]([^\'|"]*)/', $html, $matches)) {
+                foreach ($matches as $val) {
+                    if (strpos($val[0], '/blank.png')===false) {
+                        $template=str_replace('%URL_IMG%', $val[0], $template);
+                        break;
+                    }
                 }
             } // if (preg_match)
-
-            $template=str_replace('%URL_IMG%', $urlImg, $template);
         } //if (strpos($template, '%URL_IMG%')!==false)
 
         return $template;
