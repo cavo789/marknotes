@@ -26,7 +26,10 @@
 		"robots": "noindex, nofollow"
 	},
 	"site_name": "MarkNotes | An Open Source notes management tool",
-	"slideshow": "reveal",
+	"slideshow": {
+		"type" : "reveal",
+		"bullet" : "animated"
+	},
 	"tag_prefix": "§",
 	"tags": [],
 	"templates": {

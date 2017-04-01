@@ -66,7 +66,7 @@ class SlideShow
 
             if ($type==='') {
                 // Get the type from the settings.json file
-                $type=$aeSettings->getSlideshow();
+                $type=$aeSettings->getSlideshowType();
             }
 
             if (!isset($params['type'])) {
@@ -126,7 +126,7 @@ class SlideShow
 
                 // Remarks use markdown and not HTML;
                 $slides=$markdown;
-            } else { // if ($aeSettings->getSlideshow()==='remark')
+            } else { // if ($aeSettings->getSlideshowType()==='remark')
 
                 // Convert the Markdown text into an HTML text
                 $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
@@ -135,12 +135,15 @@ class SlideShow
                 $aeHTML=\MarkNotes\FileType\HTML::getInstance();
                 $html=$aeHTML->setBulletsStyle($html);
 
-                // Add the fragment class to any li items
-                $matches=array();
-                preg_match_all('/<li[^>]*(.*)<\/li>/', $html, $matches);
+                // Add the fragment class to any li items when the type for bullet is animated
 
-                foreach ($matches[1] as $tmp) {
-                    $html=str_replace($tmp, ' class="fragment"'.$tmp, $html);
+                if ($aeSettings->getSlideshowBullet()==='animated') {
+                    $matches=array();
+                    preg_match_all('/<li[^>]*(.*)<\/li>/', $html, $matches);
+
+                    foreach ($matches[1] as $tmp) {
+                        $html=str_replace($tmp, ' class="fragment"'.$tmp, $html);
+                    }
                 }
 
                 // Add a data-transition based on the heading : zoom for h1, concave for h2, ...
@@ -167,6 +170,9 @@ class SlideShow
                     $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section data-transition="'.$transition.'">'.$tmp, $html);
                 } // foreach
 
+                // Be sure there is no empty slide
+                $html=preg_replace('/<section data-transition=".*"\\>\\<\\/section\\>/', '', $html);
+
                 // -------------------
                 // Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
 
@@ -184,7 +190,7 @@ class SlideShow
                 // The slideshow functionnality will be reveal.js
                 $slideshow=file_get_contents($aeSettings->getTemplateFile('reveal'));
                 $slides=$html;
-            } // if ($aeSettings->getSlideshow()==='remark')
+            } // if ($aeSettings->getSlideshowType()==='remark')
         } // if ($filename!="")
 
         // $slideshow contains the template : it's an html file with (from the /templates folder)

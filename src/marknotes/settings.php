@@ -572,18 +572,37 @@ class Settings
         return $sReturn;
     }
 
-    /**
-     * Return the type of slideshow to use : reveal or remark
-     *
-     * @return string
-     */
-    public function getSlideshow() : string
+        /**
+         * Return the type of slideshow to use : reveal or remark
+         *
+         * @return string
+         */
+    public function getSlideshowType()
     {
 
         $sReturn='reveal';
-
         if (isset($this->_json['slideshow'])) {
-            $sReturn=trim($this->_json['slideshow']);
+            if (isset($this->_json['slideshow']['type'])) {
+                $sReturn=trim($this->_json['slideshow']['type']);
+            }
+        }
+
+        return $sReturn;
+    }
+
+    /**
+     * Return the type of animation for bullets : normal (no animation) or animated (fragrent for reveal)
+     *
+     * @return string
+     */
+    public function getSlideshowBullet()
+    {
+
+        $sReturn='animated';
+        if (isset($this->_json['slideshow'])) {
+            if (isset($this->_json['slideshow']['bullet'])) {
+                $sReturn=trim($this->_json['slideshow']['bullet']);
+            }
         }
 
         return $sReturn;
