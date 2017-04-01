@@ -86,6 +86,19 @@ class Convert
             );
         }
 
+        // When the task isn't slideshow, the --- (or -----) shouldn't be considered as an horizontal break (<hr>).
+        // --- (or ------) is used in slideshows to create a new slide so, before converting the markdown note in html
+        // thanks for Parsedown, remove them from the source
+
+        if (isset($params['task'])) {
+            if ($params['task']!=='slideshow') {
+                // Except when outputting as a slideshow, remove the --- (or -----) if these characters are preceded and
+                // followed by an empty line and --- (or -----) are the only characters on the line
+                // (==> so it's a "section break")
+                $markdown=preg_replace('/(\n^-{3,5}$\n\n)/m', '', $markdown);
+            }
+        }
+
         include_once $lib;
         $parsedown=new \Parsedown();
         $html=$parsedown->text($markdown);

@@ -75,7 +75,6 @@ class Display
 
     public function run(array $params)
     {
-
         $aeFiles=\MarkNotes\Files::getInstance();
         $aeFunctions=\MarkNotes\Functions::getInstance();
         $aeSettings=\MarkNotes\Settings::getInstance();

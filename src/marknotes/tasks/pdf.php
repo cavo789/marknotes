@@ -62,6 +62,7 @@ class PDF
                 $aeTask=\MarkNotes\Tasks\Display::getInstance();
 
                 // Use the pdf template and not the "html" one
+                $params['task']='pdf';
                 $params['template']='pdf';
                 $html= $aeTask->run($params);
 

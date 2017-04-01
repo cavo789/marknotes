@@ -63,6 +63,10 @@ class Markdown
             $params['filename']=$filename;
         }
 
+        if (!isset($params['task'])) {
+            $params['task']=$task;
+        }
+
         switch ($task) {
             case 'clear':
                 // Clear the session object
@@ -82,7 +86,7 @@ class Markdown
                 // Display the HTML rendering of a note
                 $aeTask=\MarkNotes\Tasks\Display::getInstance();
                 header('Content-Type: text/html; charset=utf-8');
-                echo $aeTask->run(array('filename'=>$filename));
+                echo $aeTask->run($params);
                 break;
 
             case 'edit':

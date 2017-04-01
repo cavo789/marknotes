@@ -25,7 +25,6 @@ class SlideShow
 
     public function run(array $params)
     {
-
         $aeFiles=\MarkNotes\Files::getInstance();
         $aeSettings=\MarkNotes\Settings::getInstance();
 
@@ -68,6 +67,10 @@ class SlideShow
             if ($type==='') {
                 // Get the type from the settings.json file
                 $type=$aeSettings->getSlideshow();
+            }
+
+            if (!isset($params['type'])) {
+                $params['type']=$type;
             }
 
             if ($type==='remark') {
@@ -127,7 +130,7 @@ class SlideShow
 
                 // Convert the Markdown text into an HTML text
                 $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
-                $html=$aeConvert->getHTML($markdown);
+                $html=$aeConvert->getHTML($markdown, $params);
 
                 $aeHTML=\MarkNotes\FileType\HTML::getInstance();
                 $html=$aeHTML->setBulletsStyle($html);
