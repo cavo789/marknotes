@@ -143,10 +143,9 @@ class SlideShow
                 if (preg_match_all('/'.$newSlide.$imgTag.$newSlide.'/m', $markdown, $matches)) {
                     $j=count($matches);
                     for ($i=0; $i<=$j; $i++) {
-                        $markdown=str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'---'.PHP_EOL.'<section data-background-image="'.$matches[1][$i].'"></section>'. PHP_EOL.'---'.PHP_EOL, $markdown);
+                        $markdown=str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'###### '.base64_encode($matches[1][$i]).PHP_EOL.'---'.PHP_EOL, $markdown);
                     }
                 }
-
                 // Convert the Markdown text into an HTML text
                 $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
                 $html=$aeConvert->getHTML($markdown, $params);
@@ -173,6 +172,8 @@ class SlideShow
 
                 foreach ($matches[0] as $tmp) {
                     $head=substr($tmp, 0, 4);
+                    $image='';
+                    $new=$tmp;
 
                     switch ($head) {
                         case '<h1>':
@@ -181,16 +182,20 @@ class SlideShow
                         case '<h2>':
                             $transition='concave';
                             break;
+                        case '<h6>':
+                            $image='data-background-image="'.base64_decode(str_replace('</h6>', '', str_replace('<h6>', '', $tmp))).'" ';
+                            $new='';
+                            break;
                         default:
                             $transition='slide-in fade-out';
                             break;
                     } // switch
 
-                    $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section data-transition="'.$transition.'">'.$tmp, $html);
+                    $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section '.$image.'data-transition="'.$transition.'">'.rtrim($new), $html);
                 } // foreach
 
                 // Be sure there is no empty slide
-                $html=preg_replace('/<section data-transition=".*"\\>\\<\\/section\\>/', '', $html);
+                $html=str_replace('<section data-transition="slide-in fade-out"></section>', '', $html);
 
                 // -------------------
                 // Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
@@ -205,7 +210,6 @@ class SlideShow
                     $html=substr($html, strlen('</section>'), strlen($html));
                 }
                 $html.='</section>'.PHP_EOL.PHP_EOL;
-
                 // The slideshow functionnality will be reveal.js
                 $slideshow=file_get_contents($aeSettings->getTemplateFile('reveal'));
                 $slides=$html;
