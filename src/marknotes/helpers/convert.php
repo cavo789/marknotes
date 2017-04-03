@@ -115,7 +115,7 @@ class Convert
 
             $html=str_replace(
                 '<img src="',
-                '<img src="'.$root.'/assets/blank.png" class="lazyload" data-src="'.$root.'/',
+                '<img src="'.$root.'/assets/blank.png" class="lazyload" data-src="',
                 $html
             );
         }

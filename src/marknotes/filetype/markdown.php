@@ -100,8 +100,12 @@ class Markdown
             if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
                 $j=count($matches);
                 for ($i=0; $i<=$j; $i++) {
-                    if ($aeFiles->fileExists($folderNote.$matches[2][$i])) {
-                        $markdown=str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
+                    if (isset($matches[2][$i])) {
+                        if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
+                            $markdown=str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
+                        } else {
+                            echo $folderNote.$matches[2][$i].' NOT FOUND<hr/>';
+                        }
                     }
                 }
             } // if (preg_match_all('/'.$imgTag.'/'

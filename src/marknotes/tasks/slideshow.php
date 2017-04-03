@@ -146,6 +146,7 @@ class SlideShow
                         $markdown=str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'###### '.base64_encode($matches[1][$i]).PHP_EOL.'---'.PHP_EOL, $markdown);
                     }
                 }
+
                 // Convert the Markdown text into an HTML text
                 $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
                 $html=$aeConvert->getHTML($markdown, $params);
@@ -195,7 +196,7 @@ class SlideShow
                 } // foreach
 
                 // Be sure there is no empty slide
-                $html=str_replace('<section data-transition="slide-in fade-out"></section>', '', $html);
+                //$html=str_replace('<section data-transition="slide-in fade-out"></section>', '', $html);
 
                 // -------------------
                 // Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
