@@ -128,6 +128,30 @@ class SlideShow
                 $slides=$markdown;
             } else { // if ($aeSettings->getSlideshowType()==='remark')
 
+                // A manual section break (i.e. a new slide) can be manually created in MarkNotes by just creating, in the
+                // note a new line with --- (or -----).  Only these characters on the beginning of the line.
+                $newSlide='\n+^-{3,5}$\n+';
+                $imgTag='\!\[(.*)\]\((.*)\)';
+
+                // Replace a slide with only an image (like below illustrated) by a section with a background image
+                //    ---
+                //    ![](.images/image.jpg)
+                //    ---
+                //$markdown=preg_replace('/'.$newSlide.'^\!\[\]\((.*)\)$\n^-{3,5}$\n/m', '******', $markdown);
+
+                $matches=array();
+                if (preg_match_all('/'.$newSlide.$imgTag.'\n*'.$newSlide.'/m', $markdown, $matches)) {
+                    foreach ($matches as $match) {
+                        echo '<pre>'.print_r($match, true).'</pre>';
+                        die();
+                        $markdown=str_replace($match, '<section data-background-image="'.$match[1].'">&nbsp;</section>', $markdown);
+                    }
+                }
+                echo $markdown;
+                die();
+                //die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($markdown, true)."</pre>");
+
+
                 // Convert the Markdown text into an HTML text
                 $aeConvert=\MarkNotes\Helpers\Convert::getInstance();
                 $html=$aeConvert->getHTML($markdown, $params);

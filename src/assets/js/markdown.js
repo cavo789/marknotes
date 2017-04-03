@@ -389,7 +389,7 @@ function initializeTasks() {
 	$("[data-task]")
 		.click(function (event) {
 			event.preventDefault();
-			event.stopPropagation()();
+			event.stopPropagation();
 
 			var $task = $(this)
 				.data('task');

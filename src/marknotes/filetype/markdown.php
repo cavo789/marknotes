@@ -7,12 +7,9 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Markdown
 {
     protected static $_instance = null;
-    private $_aeSettings = null;
 
     public function __construct()
     {
-        $this->_aeSettings=\MarkNotes\Settings::getInstance();
-
         return true;
     } // function __construct()
 
@@ -57,7 +54,8 @@ class Markdown
         preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
 
         // Remove the tag prefix
-        $prefix=$this->_aeSettings->getTagPrefix();
+        $aeSettings=\MarkNotes\Settings::getInstance();
+        $prefix=$aeSettings->getTagPrefix();
         $markdown=str_replace($prefix, '', $markdown);
 
         // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
@@ -67,7 +65,7 @@ class Markdown
             $i=0;
 
             for ($i; $i<$j; $i++) {
-                $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$this->_aeSettings->getText('confidential', 'confidential').'</strong>', $markdown);
+                $markdown=str_replace($matches[0][$i], '<strong class="confidential">'.$aeSettings->getText('confidential', 'confidential').'</strong>', $markdown);
             }
         }
 
@@ -112,7 +110,13 @@ class Markdown
             }
         }
 
-        $noteFolder=rtrim($this->_aeSettings->getFolderDocs(false), DS).'/'.str_replace(DS, '/', dirname($params['filename'])).'/';
+        $aeFiles=\MarkNotes\Files::getInstance();
+        $aeFunctions=\MarkNotes\Functions::getInstance();
+        $aeSettings=\MarkNotes\Settings::getInstance();
+
+        // Get the full path to this note
+        $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+        $noteFolder=$url.str_replace(DS, '/', dirname($params['filename'])).'/';
 
         // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
         // Be sure to have the correct relative path i.e. pointing to the folder of the note
@@ -123,7 +127,9 @@ class Markdown
         $markdown=str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
 
         // Initialize the encryption class
-        $aesEncrypt=new \MarkNotes\Encrypt($this->_aeSettings->getEncryptionPassword(), $this->_aeSettings->getEncryptionMethod());
+
+        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aesEncrypt=new \MarkNotes\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
         $markdown=$aesEncrypt->HandleEncryption($filename, $markdown);
 
         if (isset($params['removeConfidential'])) {

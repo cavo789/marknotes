@@ -92,13 +92,16 @@ class Convert
 
         if (isset($params['task'])) {
             if ($params['task']!=='slideshow') {
+                // A manual section break (i.e. a new slide) can be manually created in MarkNotes by just creating, in the
+                // note a new line with --- (or -----).  Only these characters on the beginning of the line.
+                $newSlide='\n+^-{3,5}$\n+';
+
                 // Except when outputting as a slideshow, remove the --- (or -----) if these characters are preceded and
                 // followed by an empty line and --- (or -----) are the only characters on the line
                 // (==> so it's a "section break")
-                $markdown=preg_replace('/(\n^-{3,5}$\n\n)/m', '', $markdown);
+                $markdown=preg_replace('/('.$newSlide.')/m', '', $markdown);
             }
         }
-
         include_once $lib;
         $parsedown=new \Parsedown();
         $html=$parsedown->text($markdown);
