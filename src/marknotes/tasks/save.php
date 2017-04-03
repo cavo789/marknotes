@@ -52,8 +52,7 @@ class Save
 
             // bReturn will be set on TRUE when the file has been rewritten (when <encrypt> content has been found)
             // $markdown will contains the new content (once encryption has been done)
-            list($bReturn, $params['markdown'])=$aesEncrypt->HandleEncryption($fullname, $params['markdown']);
-
+            $params['markdown']=$aesEncrypt->HandleEncryption($fullname, $params['markdown']);
 
             // $bReturn is on FALSE when HandleEncryption hasn't found any <encrypt> tag => save the new content (otherwise already done by HandleEncryption)
             if (!$bReturn) {

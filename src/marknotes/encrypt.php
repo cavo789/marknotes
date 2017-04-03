@@ -132,7 +132,6 @@ class Encrypt
     */
     public function HandleEncryption(string $filename, string $markdown, bool $bEditMode = false) : string
     {
-
         $aeSettings=\MarkNotes\Settings::getInstance();
 
         $bReturn=false;
@@ -205,7 +204,8 @@ class Encrypt
             } // for($i;$i<$j;$i++)
 
             if ($rewriteFile===true) {
-                $bReturn=\MarkNotes\Files::rewriteFile($filename, $markdown);
+                $aeFiles=\MarkNotes\Files::getInstance();
+                $bReturn=$aeFiles->rewriteFile($filename, $markdown);
             }
 
             // --------------------------------------------------------------------------------------------

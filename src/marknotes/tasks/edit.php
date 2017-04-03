@@ -51,7 +51,7 @@ class Edit
         // Initialize the encryption class
         $aeEncrypt=new \MarkNotes\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
 
-        list($bReturn, $markdown)=$aeEncrypt->HandleEncryption($fullname, $markdown, true);
+        $markdown=$aeEncrypt->HandleEncryption($fullname, $markdown, true);
 
         $sReturn='<div class="editor-wrapper"><strong class="filename">'.utf8_encode($fullname).'</strong><textarea id="sourceMarkDown">'.$markdown.'</textarea></div>';
 

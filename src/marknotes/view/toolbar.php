@@ -45,42 +45,42 @@ class Toolbar
         $urlHTML=$url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
         $icons=
-          '<a title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'" href="#">'.
-            '<i id="icon_fullscreen" data-task="fullscreen" class="fa fa-arrows-alt" aria-hidden="true"></i>'.
+          '<a id="icon_fullscreen" data-task="fullscreen" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'" href="#">'.
+            '<i class="fa fa-arrows-alt" aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('timeline', 'Display notes in a timeline view', true).'" href="#">'.
-            '<i id="icon_timeline" data-task="timeline" class="fa fa-calendar" aria-hidden="true"></i>'.
+          '<a id="icon_timeline" data-task="timeline" title="'.$aeSettings->getText('timeline', 'Display notes in a timeline view', true).'" href="#">'.
+            '<i class="fa fa-calendar" aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('refresh', 'Refresh', true).'" href="#">'.
-            '<i id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" class="fa fa-refresh" aria-hidden="true"></i>'.
+          '<a id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" title="'.$aeSettings->getText('refresh', 'Refresh', true).'" href="#">'.
+            '<i class="fa fa-refresh" aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'" href="#">'.
-            '<i id="icon_clipboard" data-task="clipboard" class="fa fa-clipboard" data-clipboard-target="#note_content" aria-hidden="true"></i>'.
+          '<a id="icon_clipboard" data-task="clipboard" data-clipboard-target="#note_content" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'" href="#">'.
+            '<i class="fa fa-clipboard"aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('print_preview', 'Print preview', true).'" href="#">'.
-            '<i id="icon_printer" data-task="printer" class="fa fa-print" aria-hidden="true"></i>'.
+          '<a id="icon_printer" data-task="printer" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'" href="#">'.
+            '<i class="fa fa-print" aria-hidden="true"></i>'.
           '</a>'.
-          '<a h title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'" ref="#">'.
-            '<i id="icon_pdf" data-task="pdf" data-file="'.utf8_encode($urlHTML).'?format=pdf" class="fa fa-file-pdf-o" aria-hidden="true"></i>'.
+          '<a id="icon_pdf" data-task="pdf" data-file="'.utf8_encode($urlHTML).'?format=pdf" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'" href="#">'.
+            '<i class="fa fa-file-pdf-o" aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'" href="#">'.
-            '<i id="icon_link_note" data-task="link_note" class="fa fa-link" data-clipboard-text="'.$thisNote.'" aria-hidden="true"></i>'.
+          '<a id="icon_link_note" data-task="link_note" data-clipboard-text="'.$thisNote.'" title="'.$aeSettings->getText('copy_link', 'Copy the link to this note in the clipboard', true).'" href="#">'.
+            '<i class="fa fa-link" aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('slideshow', 'slideshow', true).'" href="#">'.
-            '<i id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($urlHTML).'?format=slides" class="fa fa-desktop" aria-hidden="true"></i>'.
+          '<a id="icon_slideshow" data-task="slideshow" data-file="'.utf8_encode($urlHTML).'?format=slides" title="'.$aeSettings->getText('slideshow', 'slideshow', true).'" href="#">'.
+            '<i class="fa fa-desktop" aria-hidden="true"></i>'.
           '</a>'.
-          '<a title="'.$aeSettings->getText('open_html', 'Open in a new window').'" href="#">'.
-            '<i id="icon_window" data-task="window" data-file="'.utf8_encode($urlHTML).'" class="fa fa-external-link" aria-hidden="true"></i>'.
+          '<a id="icon_window" data-task="window" data-file="'.utf8_encode($urlHTML).'" title="'.$aeSettings->getText('open_html', 'Open in a new window').'" href="#">'.
+            '<i class="fa fa-external-link" aria-hidden="true"></i>'.
           '</a>'.
           (
               $aeSettings->getEditAllowed()
-              ?'<a title="'.$aeSettings->getText('edit_file', 'Edit').'" data-file="'.$params['filename'].'" href="#">'.
-                  '<i id="icon_edit" data-task="edit" class="fa fa-pencil-square-o" aria-hidden="true"></i>'.
+              ?'<a id="icon_edit" data-task="edit" title="'.$aeSettings->getText('edit_file', 'Edit').'" data-file="'.$params['filename'].'" href="#">'.
+                  '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'.
                 '</a>'
               :''
           ).
-          '<a title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'" href="#">'.
-            '<i id="icon_settings_clear" data-task="clear" class="fa fa-eraser" aria-hidden="true"></i>'.
+          '<a id="icon_settings_clear" data-task="clear" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'" href="#">'.
+            '<i class="fa fa-eraser" aria-hidden="true"></i>'.
           '</a>';
 
         $toolbar='<div id="icons" class="onlyscreen fa-1x">'.$icons.'</div>';
