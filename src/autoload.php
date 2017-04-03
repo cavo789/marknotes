@@ -3,7 +3,7 @@ namespace MarkNotes;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Autoloader
+class Autoload
 {
 
     public static function register()
@@ -30,7 +30,7 @@ class Autoloader
             $filepath = dirname(__FILE__).DS.strtolower($path.DS.$file);
 
             if (!file_exists($filepath)) {
-                echo '<strong>autoloader - The file '.$filepath.' is missing!</strong>';
+                echo '<strong>autoload - The file '.$filepath.' is missing!</strong>';
 
                 /*<!-- build:debug -->*/
                 if (class_exists("\MarkNotes\Debug")) {

@@ -15,10 +15,10 @@ define('_MARKNOTES', 1);
 
 include_once 'marknotes/constants.php';
 
-include_once 'autoloader.php';
-use \MarkNotes\Autoloader;
+include_once 'autoload.php';
+use \MarkNotes\Autoload;
 
-\MarkNotes\Autoloader::register();
+\MarkNotes\Autoload::register();
 
 /*<!-- build:debug -->*/
 $aeDebug=\MarkNotes\Debug::getInstance();

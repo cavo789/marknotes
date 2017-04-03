@@ -15,7 +15,6 @@ class SlideShow
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new SlideShow();
         }
@@ -130,8 +129,9 @@ class SlideShow
 
                 // A manual section break (i.e. a new slide) can be manually created in MarkNotes by just creating, in the
                 // note a new line with --- (or -----).  Only these characters on the beginning of the line.
+
                 $newSlide='\n+^-{3,5}$\n+';
-                $imgTag='\!\[(.*)\]\((.*)\)';
+                $imgTag='\!\[.*\]\((.*)\)';
 
                 // Replace a slide with only an image (like below illustrated) by a section with a background image
                 //    ---
@@ -140,17 +140,12 @@ class SlideShow
                 //$markdown=preg_replace('/'.$newSlide.'^\!\[\]\((.*)\)$\n^-{3,5}$\n/m', '******', $markdown);
 
                 $matches=array();
-                if (preg_match_all('/'.$newSlide.$imgTag.'\n*'.$newSlide.'/m', $markdown, $matches)) {
-                    foreach ($matches as $match) {
-                        echo '<pre>'.print_r($match, true).'</pre>';
-                        die();
-                        $markdown=str_replace($match, '<section data-background-image="'.$match[1].'">&nbsp;</section>', $markdown);
+                if (preg_match_all('/'.$newSlide.$imgTag.$newSlide.'/m', $markdown, $matches)) {
+                    $j=count($matches);
+                    for ($i=0; $i<=$j; $i++) {
+                        $markdown=str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'---'.PHP_EOL.'<section data-background-image="'.$matches[1][$i].'"></section>'. PHP_EOL.'---'.PHP_EOL, $markdown);
                     }
                 }
-                echo $markdown;
-                die();
-                //die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($markdown, true)."</pre>");
-
 
                 // Convert the Markdown text into an HTML text
                 $aeConvert=\MarkNotes\Helpers\Convert::getInstance();

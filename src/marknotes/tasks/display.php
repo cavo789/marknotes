@@ -126,8 +126,6 @@ class Display
             return self::showHTML($html, $params);
         } else { // if (!\MarkNotes\Functions::isAjaxRequest())
             // -----------------------------------------------------------------------
-            // Once the .html file has been written on disk, not before !
-            //
             // Check if the file contains words present in the tags.json file : if the file being displayed
             // contains a word (f.i. "javascript") that is in the tags.json (so it's a known tag) and that
             // word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix

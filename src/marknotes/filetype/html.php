@@ -66,7 +66,8 @@ class HTML
                 if (count($matches[1])>0) {
                     $i=0;
 
-                    $goTop=($addGoTop ? '<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>' : '');
+                    // Only for headings 2
+                    $goTop=(($addGoTop && ($head==='h2'))? '<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>' : '');
 
                     foreach ($matches[1] as $key => $value) {
                         $i+=1;
