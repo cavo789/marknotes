@@ -8,9 +8,13 @@
 ### 2017-xx-xx
 
 ```diff
++ Improve performance by using the session object on the server side (and no more only localStorage on the client site)
++ Add deckTape support (on Windows server) (https://github.com/astefanutti/decktape)
++ Add custom settings for a given note or its parent folder (https://github.com/cavo789/marknotes/wiki/5.6-Settings-override)
 + Add the support of reveal.js and no more only remark.js
 + Code review (refactoring, new classes, reduce number of PHPMD warnings, ...)
-+ Add a timeline task (?task=timeline) (based on [https://github.com/Albejr](https://github.com/Albejr))
++ Add a timeline task (?task=timeline) (based on [https://github.com/Albejr](https://github.com/Albejr)) (https://github.com/cavo789/marknotes/wiki/5.3-routing)
++ Add a dynamic sitemap (https://github.com/cavo789/marknotes/wiki/5.3-routing)
 + Add the support of jquery-toolbar (https://github.com/paulkinzett/toolbar)
 ```
 

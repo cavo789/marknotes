@@ -62,27 +62,32 @@ if ($filename!=='') {
 
         $filename='';
     } else {
+        $layout=$aeFunctions->getParam('layout', 'string', '', false, 10);
+        if (!(in_array($layout, array('remark','reveal')))) {
+            $layout='';
+        }
+
+        if ($layout!=='') {
+            $params['layout']=$layout;
+        }
+
         switch ($format) {
             case 'pdf':
                 $task='pdf';
                 break;
 
             case 'slides':
-                // Check on the URL if the user has forced a type i.e. "remark" or "reveal", the supported slideshow framework
+                // Check on the URL if the user has forced a layout i.e. "remark" or "reveal", the supported slideshow framework
 
-                $type=$aeFunctions->getParam('type', 'string', '', false, 10);
-                if (!(in_array($type, array('remark','reveal')))) {
-                    $type='';
-                }
-
-                if ($type!=='') {
-                    $params['type']=$type;
-                }
                 $task='slideshow';
+
                 break;
 
             default:                  // htm or html
                 $task='display';
+                if (!isset($params['layout'])) {
+                    $params['layout']='html';
+                }
                 break;
         } // switch
 
@@ -100,13 +105,6 @@ if ($filename!=='') {
 
         if (!$aeFiles->fileExists($webRoot.$fileMD)) {
             header("HTTP/1.0 404 Not Found");
-
-            /*<!-- build:debug -->*/
-            if ($aeDebug->enable()) {
-                echo __FILE__.' - '.__LINE__.' - ';
-            }
-            /*<!-- endbuild -->*/
-
             die('File '. $aeFiles->sanitizeFileName($fileMD).' not found');
         }
     } // if (in_array($filename, array('timeline.html', 'sitemap.xml')))

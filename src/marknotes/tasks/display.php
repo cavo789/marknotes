@@ -67,8 +67,15 @@ class Display
         $html=str_replace(htmlentities($aeSettings->getTagPrefix()), '', $html);  // &sect; = §
 
         if ($aeFiles->fileExists($template)) {
-            $html=$aeHTML->replaceVariables(file_get_contents($template), $html);
+            $html=$aeHTML->replaceVariables(file_get_contents($template), $html, $params);
         }
+
+        $javascript=
+        "\nvar markdown = {};\n".
+        "markdown.message={};\n".
+        "markdown.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';\n";
+
+        $html=str_replace('<!--%ADDITIONNAL_JS%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 
         return $html;
     }

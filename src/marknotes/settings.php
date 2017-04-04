@@ -57,6 +57,7 @@ class Settings
 
         $json=array();
 
+        // 1. Get the settings.json.dist global file, shipped with each releases of MarkNotes
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json.dist')) {
             $json=$aeJSON->json_decode($fname, true);
         } else {
@@ -65,30 +66,35 @@ class Settings
             }
         }
 
+            // 2. Get the settings.json user's file
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
+            echo '<h1>'.$fname.'</h1>';
             $arr=$aeJSON->json_decode($fname, true);
             if (count($arr)>0) {
-                $json=array_merge($json, $aeJSON->json_decode($fname, true));
+                $json=array_replace_recursive($json, $aeJSON->json_decode($fname, true));
             }
         }
 
+            // 3. Get the settings.json file that is, perhaps, present in the folder of the note
         if (isset($params['filename'])) {
             $noteFolder=$this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
             $noteJSON=$noteFolder.DS.'settings.json';
             if ($aeFiles->fileExists($noteJSON)) {
-                $json=array_merge($json, $aeJSON->json_decode($noteJSON, true));
+                $json=array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
 
+            // 4. Get the note_name.json file that is, perhaps, present in the folder of the note.  note_name is the note filename
+            // with the .json extension of .md
         if (isset($params['filename'])) {
             $noteFolder=$this->getFolderWebRoot().str_replace('/', DS, $params['filename']);
             $noteJSON=$aeFiles->replaceExtension($noteFolder, 'json');
 
             if ($aeFiles->fileExists($noteJSON)) {
-                $json=array_merge($json, $aeJSON->json_decode($noteJSON, true));
+                $json=array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
-        return $json;
+            return $json;
     }
 
    /**
@@ -120,16 +126,16 @@ class Settings
 
         /*
 
-                if (!in_array($this->getFolderDocs(), $this->settingsFoldersAutoOpen)) {
-                    array_push($this->settingsFoldersAutoOpen, $this->getFolderDocs());
-                }
+        if (!in_array($this->getFolderDocs(), $this->settingsFoldersAutoOpen)) {
+            array_push($this->settingsFoldersAutoOpen, $this->getFolderDocs());
+        }
 
-                asort($this->settingsFoldersAutoOpen);
+        asort($this->settingsFoldersAutoOpen);
 
-                // Retrieve the password if mentionned
-                if (isset($this->_json['password'])) {
-                    $this->settingsPassword=$this->_json['password'];
-                }
+        // Retrieve the password if mentionned
+        if (isset($this->_json['password'])) {
+            $this->settingsPassword=$this->_json['password'];
+        }
         */
 
         return true;
@@ -423,7 +429,7 @@ class Settings
             $fname=$this->getFolderTemplates().$tmpl.'.php';
         } // if ($tmpl!=='')
 
-        return $fname;
+            return $fname;
     } // function getTemplateFile()
 
         /**
@@ -572,11 +578,11 @@ class Settings
         return $sReturn;
     }
 
-        /**
-         * Return the type of slideshow to use : reveal or remark
-         *
-         * @return string
-         */
+    /**
+     * Return the type of slideshow to use : reveal or remark
+     *
+     * @return string
+     */
     public function getSlideshowType()
     {
 
@@ -591,17 +597,66 @@ class Settings
     }
 
     /**
+     * Reveal allows to foreseen animations between slides.  The animations will be read from the settings.json files
+     * under the slideshow->reveal->animation entry
+     */
+    public function getSlideshowAnimations(string $sType = 'reveal') : array
+    {
+
+        $sType='reveal';
+        $arr=array('h1'=>'zoom','h2'=>'concave','h3'=>'slide-in','h4'=>'fade','h5'=>'fade','h6'=>'fade');
+
+        if (isset($this->_json['slideshow'])) {
+            if (isset($this->_json['slideshow'][$sType])) {
+                if (isset($this->_json['slideshow'][$sType]['animation'])) {
+                    $arr=$this->_json['slideshow'][$sType]['animation'];
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    /**
+     * With reveal, when an image is used as background for the slide, check if a maximum size (like 800px 600px) has
+     * been specified in the settings.json and if so, return that definition
+     */
+    public function getSlideshowExtraImgAttributes(string $sType = 'reveal') : string
+    {
+
+        $sType='reveal';
+        $sReturn='';
+
+        if (isset($this->_json['slideshow'])) {
+            if (isset($this->_json['slideshow'][$sType])) {
+                if (isset($this->_json['slideshow'][$sType]['section'])) {
+                    if (isset($this->_json['slideshow'][$sType]['section']['extra_data_img_attr'])) {
+                        $sReturn=$this->_json['slideshow'][$sType]['section']['extra_data_img_attr'];
+                    }
+                }
+            }
+        }
+
+        return $sReturn;
+    }
+
+    /**
      * Return the type of animation for bullets : normal (no animation) or animated (fragrent for reveal)
+     * under the slideshow->reveal->animation->bullet entry
      *
      * @return string
      */
-    public function getSlideshowBullet()
+    public function getSlideshowBullet(string $sType = 'reveal')
     {
 
         $sReturn='animated';
         if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow']['bullet'])) {
-                $sReturn=trim($this->_json['slideshow']['bullet']);
+            if (isset($this->_json['slideshow'][$sType])) {
+                if (isset($this->_json['slideshow'][$sType]['animation'])) {
+                    if (isset($this->_json['slideshow'][$sType]['animation']['bullet'])) {
+                        $sReturn=$this->_json['slideshow'][$sType]['animation']['bullet'];
+                    }
+                }
             }
         }
 
@@ -618,6 +673,28 @@ class Settings
         return SEARCH_MAX_LENGTH;
     }
 
+    /**
+     * Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
+     */
+    public function getTools(string $sTool) : string
+    {
+
+        $aeFiles=\MarkNotes\Files::getInstance();
+
+        $sType='reveal';
+        $sReturn='';
+
+        if (isset($this->_json['tools'])) {
+            if (isset($this->_json['tools'][$sTool])) {
+                $sTool = $this->_json['tools'][$sTool];
+                if ($aeFiles->fileExists($sTool)) {
+                    $sReturn = $sTool;
+                }
+            }
+        }
+
+        return $sReturn;
+    }
     /**
      * Tags to automatically select when displaying the page
      *

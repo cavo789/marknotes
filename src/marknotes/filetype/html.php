@@ -137,11 +137,16 @@ class HTML
             $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
             $urlHTML=$url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
-            $template=str_replace('%VERSION_PDF%', utf8_encode($urlHTML.'?format=pdf'), $template);
-            $template=str_replace('%VERSION_PDF_TITLE%', $aeSettings->getText('slideshow_download', 'Download this slideshow'), $template);
-
             $template=str_replace('%VERSION_HTML%', utf8_encode($urlHTML.'?format=html'), $template);
-            $template=str_replace('%VERSION_HTML_TITLE%', $aeSettings->getText('slideshow_html', 'View this slideshow like an article'), $template);
+            $template=str_replace('%VERSION_HTML_TITLE%', $aeSettings->getText('action_html', 'View this slideshow like an article'), $template);
+
+            $sLayout='&amp;layout='.(isset($params['layout']) ? $params['layout'] : 'html');
+
+            $template=str_replace('%VERSION_PDF%', utf8_encode($urlHTML).'?format=pdf'.$sLayout, $template);
+            $template=str_replace('%VERSION_PDF_TITLE%', $aeSettings->getText('action_download', 'Download this file'), $template);
+
+            $template=str_replace('%VERSION_SLIDESHOW%', utf8_encode($urlHTML.'?format=slides'), $template);
+            $template=str_replace('%VERSION_SLIDESHOW_TITLE%', $aeSettings->getText('action_slideshow', 'View this article like a slideshow'), $template);
 
             $template=str_replace('%URL_PAGE%', $urlHTML, $template);
         } // if (isset($params['filename']))

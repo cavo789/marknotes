@@ -114,15 +114,15 @@ class Markdown
                 // Generate a PDF
                 $aeTask=\MarkNotes\Tasks\PDF::getInstance();
 
-                header('Content-Type: application/pdf');
+                $fPDF=$aeTask->run($params);
 
-                if ($aeSettings->getOptimisationUseBrowserCache()) {
-                    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-                    header("Cache-Control: post-check=0, pre-check=0", false);
-                    header("Pragma: no-cache");
+                // Send the pdf to the browser ... only if successfully created
+                if (($fPDF!=='') && $aeFiles->fileExists($fPDF)) {
+                    $aeTask->download($fPDF);
+                } else {
+                    header("HTTP/1.0 404 Not Found");
+                    echo "Error during the creation of the PDF.\n";
                 }
-
-                echo $aeTask->run(array('filename'=>$filename));
 
                 break;
 

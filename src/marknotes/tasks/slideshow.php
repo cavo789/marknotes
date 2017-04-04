@@ -53,26 +53,26 @@ class SlideShow
             // mention the name of an existing templates.  "remark" or "reveal" are supported in the version 1.0.7
             // of MarkNotes.
 
-            $type='';
+            $layout='';
 
-            if (isset($params['type'])) {
-                // $type will be initiealized to an empty string if the file wasn't found in the /templates folder
-                $type=$aeFiles->sanitizeFileName($params['type']);
-                if ($aeSettings->getTemplateFile($type)==='') {
-                    $type='';
+            if (isset($params['layout'])) {
+                // $type will be initialized to an empty string if the file wasn't found in the /templates folder
+                $layout=$aeFiles->sanitizeFileName($params['layout']);
+                if ($aeSettings->getTemplateFile($layout)==='') {
+                    $layout='';
                 }
             }
 
-            if ($type==='') {
+            if ($layout==='') {
                 // Get the type from the settings.json file
-                $type=$aeSettings->getSlideshowType();
+                $layout=$aeSettings->getSlideshowType();
             }
 
-            if (!isset($params['type'])) {
-                $params['type']=$type;
+            if (!isset($params['layout'])) {
+                $params['layout']=$layout;
             }
 
-            if ($type==='remark') {
+            if ($layout==='remark') {
                 // The slideshow functionnality will be remark
 
                 // Consider that every Headings 2 and 3 should start in a new slide
@@ -140,10 +140,10 @@ class SlideShow
                 //$markdown=preg_replace('/'.$newSlide.'^\!\[\]\((.*)\)$\n^-{3,5}$\n/m', '******', $markdown);
 
                 $matches=array();
-                if (preg_match_all('/'.$newSlide.$imgTag.$newSlide.'/m', $markdown, $matches)) {
+                if (preg_match_all('/'.$newSlide.$imgTag.'/m', $markdown, $matches)) {
                     $j=count($matches);
                     for ($i=0; $i<=$j; $i++) {
-                        $markdown=str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'###### '.base64_encode($matches[1][$i]).PHP_EOL.'---'.PHP_EOL, $markdown);
+                        $markdown=str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'@@@@'.base64_encode($matches[1][$i]).PHP_EOL.'---'.PHP_EOL, $markdown);
                     }
                 }
 
@@ -171,28 +171,25 @@ class SlideShow
                 $matches=array();
                 preg_match_all('|<h[^>]+>(.*)</h[^>]+>|iU', $html, $matches);
 
+                // Retrieve the animations between slides in the settings.json
+                $arrAnimations=$aeSettings->getSlideshowAnimations();
+
+                // $matches contains the list of titles (including the tag so f.i. "<h2>Title</h2>"
                 foreach ($matches[0] as $tmp) {
-                    $head=substr($tmp, 0, 4);
-                    $image='';
-                    $new=$tmp;
+                    // The tag (like h2)
+                    $head=substr($tmp, 1, 2);
 
-                    switch ($head) {
-                        case '<h1>':
-                            $transition='zoom';
-                            break;
-                        case '<h2>':
-                            $transition='concave';
-                            break;
-                        case '<h6>':
-                            $image='data-background-image="'.base64_decode(str_replace('</h6>', '', str_replace('<h6>', '', $tmp))).'" ';
-                            $new='';
-                            break;
-                        default:
-                            $transition='slide-in fade-out';
-                            break;
-                    } // switch
+                    // Retrieve the animation between slides (sections)
+                    $transition=(isset($arrAnimations[$head]) ? $arrAnimations[$head] : 'slide-in');
 
-                    $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section '.$image.'data-transition="'.$transition.'">'.rtrim($new), $html);
+                    if (substr($tmp, 0, 8)==='<h2>@@@@') {
+                        $extraAttributes=$aeSettings->getSlideshowExtraImgAttributes();
+                        // Very special tag : create a new section with an image background
+                        $image=$extraAttributes.' data-background-image="'.base64_decode(str_replace('</h2>', '', str_replace('<h2>', '', $tmp))).'"';
+                        $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section '.$image.'data-transition="'.$transition.'">', $html);
+                    } else {
+                        $html=str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section data-transition="'.$transition.'">'.$tmp, $html);
+                    } // if (substr($tmp, 0, 8)==='<h2>@@@@')
                 } // foreach
 
                 // Be sure there is no empty slide

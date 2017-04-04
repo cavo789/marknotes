@@ -24,6 +24,22 @@ class Functions
     }
 
     /**
+     * Check if a specific function (like exec or shell_execute) is disabled or not
+     */
+    public static function ifDisabled(string $fctname) : bool
+    {
+
+        $bReturn = false;
+
+        if ($fctname!=='') {
+            $disabled = explode(',', ini_get('disable_functions'));
+            $bReturn = in_array($fctname, $disabled);
+        }
+
+        return $bReturn;
+    }
+
+    /**
     * Return the current URL
     *
     * @param  type $useURI        If true, use $_SERVER['REQUEST_URI'] otherwise use $_SERVER[PHP_SELF]

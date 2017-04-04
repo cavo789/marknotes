@@ -27,8 +27,21 @@
 	},
 	"site_name": "MarkNotes | An Open Source notes management tool",
 	"slideshow": {
-		"type" : "reveal",
-		"bullet" : "animated"
+		"type": "reveal",
+		"reveal": {
+			"animation": {
+				"bullet": "animated",
+				"h1": "zoom",
+				"h2": "concave",
+				"h3": "slide-in",
+				"h4": "fade",
+				"h5": "fade",
+				"h6": "fade"
+			},
+			"section": {
+				"extra_data_img_attr": "data-state='img-top-left'"
+			}
+		}
 	},
 	"tag_prefix": "§",
 	"tags": [],
@@ -40,8 +53,14 @@
 		"screen": "screen",
 		"timeline": "timeline"
 	},
+	"tools": {
+		"decktape": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
+	},
 	"languages": {
 		"en": {
+			"action_download": "Download this file",
+			"action_html": "View this slideshow like an article",
+			"action_slideshow": "View this article like a slideshow",
 			"allow_popup_please": "The new window has been blocked by your browser, please allow popups for your domain",
 			"apply_filter": "Filtering to [%s]",
 			"apply_filter_tag": "Display notes containing this tag",
@@ -83,6 +102,7 @@
 			"json_error": "The [%s] task has returned an invalid JSON result",
 			"loading_tree": "Loading the list of notes, please wait...",
 			"no_save_allowed": "Error, saving notes isn&#39;t allowed.",
+			"on_this_page": "On this page",
 			"open_html": "Open in a new window",
 			"OK": "Ok",
 			"please_wait": "Please wait...",
@@ -93,8 +113,6 @@
 			"settings_clean": "Clear cache",
 			"settings_clean_done": "The application's cache has been cleared",
 			"slideshow": "slideshow",
-			"slideshow_download": "Download this slideshow",
-			"slideshow_html" : "View this slideshow like an article",
 			"timeline": "Display notes in a timeline view",
 			"tree_delete_file": "Delete the note [%s]",
 			"tree_delete_folder": "Remove the folder [%s] and everything in that folder",
@@ -107,6 +125,9 @@
 			"tree_new_note_name": "New note"
 		},
 		"fr": {
+			"action_download": "T&eacute;l&eacute;charger ce fichier",
+			"action_html": "Afficher la pr&eacute;sentation comme un article",
+			"action_slideshow": "Voir cet article sous le format pr&eacute;sentation",
 			"allow_popup_please": "La nouvelle fen&#234;tre a &#233;t&#233; bloqu&#233;e par votre navigateur, veuillez s'il vous pla&#238;t autoriser les 'popups' pour votre domaine",
 			"apply_filter": "Limite la liste des notes à [%s]",
 			"apply_filter_tag": "Affiche les notes reprennant ce mot",
@@ -148,6 +169,7 @@
 			"json_error": "La t&acirc;che [%s] a retourn&eacute; une r&eacute;ponse JSON incorrecte",
 			"loading_tree": "Chargement de la liste des notes, merci de patienter...",
 			"no_save_allowed": "Erreur, l&#39;&eacute;dition des notes n&#39;est pas autoris&eacute;e.",
+			"on_this_page": "Sur cette page",
 			"open_html": "Ouvrir dans une nouvelle fen&ecirc;tre",
 			"OK": "Oui",
 			"please_wait": "Un peu de patience s&#x27;il vous pla&#xEE;t...",
@@ -158,8 +180,6 @@
 			"settings_clean": "Nettoie le cache de l&#39;application",
 			"settings_clean_done": "Le cache de l&#39;application a &eacute;t&eacute; nettoy&eacute;",
 			"slideshow": "Affiche le document au format &#39;pr&eacute;sentation&#39;",
-			"slideshow_download": "T&eacute;l&eacute;charger cette pr&eacute;sentation",
-			"slideshow_html" : "Afficher la pr&eacute;sentation comme un article",
 			"timeline": "Affiche la liste des notes, par ordre chronologique invers&eacute;",
 			"tree_delete_file": "Supprimer la note [%s]",
 			"tree_delete_folder": "Supprimer l&#39;int&eacute;gralit&eacute; du dossier [%s]",

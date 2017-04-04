@@ -1,3 +1,26 @@
+@media print {
+    .hidden-print {
+        display: none !important;
+    }
+}
+
+#footer {
+    position: fixed;
+    z-index: 10;
+    color: white;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background-color: rgba(90, 145, 199, 0.16);
+}
+
+#footer a {
+    color: green;
+    font-size: 24px;
+    margin-right: 10px;
+}
+
 body {
     background: #eee;
     padding: 20px;
@@ -33,6 +56,10 @@ article {
 
 .table-of-contents a:hover, .table-of-contents a:active {
     text-decoration: underline;
+}
+
+nav.table-of-contents strong {
+    font-size: 1.6em;
 }
 
 h2:target {
@@ -81,5 +108,9 @@ footer img {
 }
 
 footer>ul.list-inline li {
+    margin-right: 40px;
+}
+
+>ul.list-inline li {
     margin-right: 40px;
 }
