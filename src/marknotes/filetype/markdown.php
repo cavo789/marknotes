@@ -118,9 +118,11 @@ class Markdown
                 $j=count($matches);
                 for ($i=0; $i<=$j; $i++) {
                     // Derive the image fullname ($folderNote.str_replace('/',DS,$matches[1][$i]))) and check if the file exists
-                    if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
-                        $img=$folder.$matches[2][$i];
-                        $markdown=str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
+                    if (isset($matches[2][$i])) {
+                        if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
+                            $img=$folder.$matches[2][$i];
+                            $markdown=str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
+                        }
                     }
                 }
             } // if (preg_match_all('/'.$imgTag.'/'

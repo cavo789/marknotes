@@ -51,10 +51,20 @@ class Functions
     public static function getCurrentURL(bool $useSELF = true, bool $useURI = false) : string
     {
         $ssl      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
-        $spt       = strtolower($_SERVER['SERVER_PROTOCOL']);
-        $protocol = substr($spt, 0, strpos($spt, '/')) . (($ssl)?'s':'');
-        $port     = $_SERVER['SERVER_PORT'];
-        $port     = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
+        $protocol = 'http';
+        // SERVER_PROTOCOL isn't set when the script is fired through a php-cli
+        if (isset($_SERVER['SERVER_PROTOCOL'])) {
+            $spt       = strtolower($_SERVER['SERVER_PROTOCOL']);
+            $protocol = substr($spt, 0, strpos($spt, '/')) . (($ssl)?'s':'');
+        }
+
+        $port='80';
+        // SERVER_PORT isn't set when the script is fired through a php-cli
+        if (isset($_SERVER['SERVER_PORT'])) {
+            $port     = $_SERVER['SERVER_PORT'];
+            $port     = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
+        }
+
         $host     =
             (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
             (($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');

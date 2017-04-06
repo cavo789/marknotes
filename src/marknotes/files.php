@@ -160,16 +160,29 @@ class Files
         return $sResult;
     }
 
-    /**
-    * Remove file's extension
-     *
-    * @param  string $filename The filename ("test.md")
-    * @return string                The new filename (test)
-    */
+        /**
+        * Remove file's extension
+         *
+        * @param  string $filename The filename ("test.md")
+        * @return string                The new filename (test)
+        */
     public static function removeExtension(string $filename) : string
     {
         $info = pathinfo($filename);
         return $info['dirname'].DS.$info['filename'];
+    }
+
+            /**
+            * Get file's extension
+             *
+            * @param  string $filename The filename ("test.md")
+            * @return string                The new filename (test)
+            */
+    public static function getExtension(string $filename) : string
+    {
+        $info = pathinfo($filename);
+        $sResult=isset($info['extension']) ? $info['extension'] : '';
+        return $sResult;
     }
 
     /**

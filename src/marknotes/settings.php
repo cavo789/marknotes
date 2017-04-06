@@ -65,7 +65,6 @@ class Settings
 
             // 2. Get the settings.json user's file
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
-            echo '<h1>'.$fname.'</h1>';
             $arr = $aeJSON->json_decode($fname, true);
             if (count($arr) > 0) {
                 $json = array_replace_recursive($json, $aeJSON->json_decode($fname, true));

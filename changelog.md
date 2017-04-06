@@ -16,6 +16,8 @@
 + Add a timeline task (?task=timeline) (based on [https://github.com/Albejr](https://github.com/Albejr)) (https://github.com/cavo789/marknotes/wiki/5.3-routing)
 + Add a dynamic sitemap (https://github.com/cavo789/marknotes/wiki/5.3-routing)
 + Add the support of jquery-toolbar (https://github.com/paulkinzett/toolbar)
++ Routeur add support to /a-note.pdf i.e. support the extension
++ Add new settings in settings.json.dist for the animation part
 ```
 
 ## 1.0.6

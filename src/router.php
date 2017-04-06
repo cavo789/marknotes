@@ -34,14 +34,20 @@ $filename=utf8_decode($aeFunctions->getParam('file', 'string', '', false));
 $params=array('filename'=>$filename);
 $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
 
-// Check the optional format parameter.  If equal to 'slides', the task will be 'slideshow', 'display' otherwise
-$format=$aeFunctions->getParam('format', 'string', 'html', false, 8);
+// Retrieve the asked extension i.e. if the user try to access the /note.html or /note.pdf file,
+// extract the extension (html or pdf)
+$format='';
+if ($filename!=='') {
+    $format=$aeFiles->getExtension($filename);
+}
+
+// Take a look on the format parameter, if mentionned use that format
+$format=$aeFunctions->getParam('format', 'string', $format, false, 8);
 
 // Only these format are recognized.  Default : html
 if (!(in_array($format, array('htm','html','pdf','slides')))) {
     $format='html';
 }
-
 $params=array();
 
 if ($filename!=='') {
