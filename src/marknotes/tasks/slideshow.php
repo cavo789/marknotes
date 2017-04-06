@@ -107,7 +107,9 @@ class SlideShow
         if (preg_match_all('/'.$newSlide.$imgTag.'/m', $markdown, $matches)) {
             $j = count($matches[0]);
             for ($i = 0; $i <= $j; $i++) {
-                $markdown = str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'###### @@@@'.base64_encode($matches[1][$i]).PHP_EOL.PHP_EOL, $markdown);
+                if (isset($matches[0][$i])) {
+                    $markdown = str_replace($matches[0][$i], PHP_EOL.PHP_EOL.'###### @@@@'.base64_encode($matches[1][$i]).PHP_EOL.PHP_EOL, $markdown);
+                }
             }
         }
 

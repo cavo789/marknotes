@@ -28,8 +28,8 @@
 	"site_name": "MarkNotes | An Open Source notes management tool",
 	"slideshow": {
 		"bullet": {
-			"fontawesome": "joomla fa-spin",
-			"extra_attribute": "style='color:#142849;'"
+			"fontawesome": "check",
+			"extra_attribute": ""
 		},
 		"type": "reveal",
 		"reveal": {
