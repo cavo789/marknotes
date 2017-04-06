@@ -16,7 +16,6 @@ class Files
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new Files();
         }
@@ -32,11 +31,11 @@ class Files
     */
     public static function fileExists(string $filename) : bool
     {
-        if ($filename=='') {
+        if ($filename == '') {
             return false;
         }
 
-        $errorlevel=error_reporting();
+        $errorlevel = error_reporting();
         error_reporting(0);
 
         $wReturn = is_file(utf8_decode($filename));
@@ -55,12 +54,11 @@ class Files
     */
     public static function folderExists(string $folderName) : bool
     {
-
-        if ($folderName=='') {
+        if ($folderName == '') {
             return false;
         }
 
-        $errorlevel=error_reporting();
+        $errorlevel = error_reporting();
         error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
 
         $wReturn = is_dir($folderName);
@@ -86,27 +84,26 @@ class Files
     */
     public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array
     {
-
-        static $adjustCase=false;
+        static $adjustCase = false;
 
         // glob() is case sensitive so, search for PHP isn't searching for php.
         // Here, the pattern will be changed to be case insensitive.
         // "*.php" will be changed to "*.[pP][hH][pP]"
 
-        if (($pattern!='') && ($adjustCase==false)) {
+        if (($pattern != '') && ($adjustCase == false)) {
             $length = strlen($pattern);
-            $tmp=$pattern;
-            $pattern='';
-            for ($i=0; $i<$length; $i++) {
-                $pattern.=(ctype_alpha($tmp[$i]) ? '['.strtolower($tmp[$i]).strtoupper($tmp[$i]).']' : $tmp[$i]);
+            $tmp = $pattern;
+            $pattern = '';
+            for ($i = 0; $i < $length; $i++) {
+                $pattern .= (ctype_alpha($tmp[$i]) ? '['.strtolower($tmp[$i]).strtoupper($tmp[$i]).']' : $tmp[$i]);
             }
             // Do this only once
-            $adjustCase=true;
+            $adjustCase = true;
         }
 
         // If the "$path" is one of the folder to skip, ... skip it.
 
-        if (($arrSkipFolder!=null) && (count($arrSkipFolder)>0)) {
+        if (($arrSkipFolder != null) && (count($arrSkipFolder) > 0)) {
             foreach ($arrSkipFolder as $folder) {
                 if (self::startsWith($path, $folder)) {
                     return null;
@@ -114,16 +111,16 @@ class Files
             } // foreach
         } // if (($arrSkipFolder!=null) && (count($arrSkipFolder)>0))
 
-        $paths=glob($path.'*', GLOB_MARK|GLOB_ONLYDIR);
-        $files=glob(rtrim($path, DS).DS.$pattern, $flags);
+        $paths = glob($path.'*', GLOB_MARK | GLOB_ONLYDIR);
+        $files = glob(rtrim($path, DS).DS.$pattern, $flags);
 
         foreach ($paths as $path) {
             if (self::folderExists($path)) {
                 // Avoid recursive loop when the folder is a symbolic link
-                if (rtrim(str_replace('/', DS, $path), DS)==realpath($path)) {
-                    $arr=self::rglob($pattern, $path, $flags, $arrSkipFolder);
-                    if (($arr!=null) && (count($arr)>0)) {
-                        $files=array_merge($files, $arr);
+                if (rtrim(str_replace('/', DS, $path), DS) == realpath($path)) {
+                    $arr = self::rglob($pattern, $path, $flags, $arrSkipFolder);
+                    if (($arr != null) && (count($arr) > 0)) {
+                        $files = array_merge($files, $arr);
                     }
                 } else {
                     // $path is a symbolic link.  Doing a glob on a symbolic link will create a recursive
@@ -134,7 +131,7 @@ class Files
 
         // Don't use the / notation but well the correct directory separator
         foreach ($files as $key => $value) {
-            $files[$key]=$value;
+            $files[$key] = $value;
         }
 
         @sort($files);
@@ -152,7 +149,15 @@ class Files
     public static function replaceExtension(string $filename, string $new_extension) : string
     {
         $info = pathinfo($filename);
-        return $info['dirname'].DS.$info['filename'].'.'.$new_extension;
+
+        $sResult = $info['filename'].'.'.$new_extension;
+
+        // Append the folder name when $filename wasn't just a file without path
+        if ($filename !== basename($filename)) {
+            $sResult = $info['dirname'].DS.$sResult;
+        }
+
+        return $sResult;
     }
 
     /**
@@ -197,7 +202,7 @@ class Files
         // the preg_replace has change it to '/////'.$filename so remove leading /
         // Remove directory separator for Unix and Windows
 
-        $filename=ltrim($filename, '\\\/');
+        $filename = ltrim($filename, '\\\/');
 
         return $filename;
     }
@@ -212,8 +217,7 @@ class Files
     */
     public static function rewriteFile(string $filename, string $new_content) : bool
     {
-
-        $bReturn=false;
+        $bReturn = false;
 
         if (file_exists($filename)) {
             rename($filename, $filename.'.old');
@@ -223,9 +227,9 @@ class Files
                     fwrite($handle, $new_content);
                     fclose($handle);
 
-                    if (filesize($filename)>0) {
+                    if (filesize($filename) > 0) {
                         unlink($filename.'.old');
-                        $bReturn=true;
+                        $bReturn = true;
                     }
                 }
             } catch (Exception $ex) {
@@ -237,16 +241,16 @@ class Files
 
     public static function createFile(string $filename, string $content, int $chmod = 644) : bool
     {
-        $bReturn=false;
+        $bReturn = false;
 
         try {
             if ($handle = fopen($filename, 'w')) {
                 fwrite($handle, $content);
                 fclose($handle);
 
-                if (filesize($filename)>0) {
+                if (filesize($filename) > 0) {
                     chmod($filename, $chmod);
-                    $bReturn=true;
+                    $bReturn = true;
                 }
             }
         } catch (Exception $ex) {
@@ -254,4 +258,4 @@ class Files
 
         return $bReturn;
     }
-} 
+}

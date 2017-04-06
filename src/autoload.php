@@ -1,7 +1,7 @@
 <?php
 namespace MarkNotes;
 
-defined('_MARKNOTES') or die('No direct access allowed');
+//defined('_MARKNOTES') or die('No direct access allowed');
 
 class Autoload
 {

@@ -6,23 +6,21 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class PDF
 {
-
     protected static $_instance = null;
 
     public function __construct()
     {
         return true;
-    } // function __construct()
+    }
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new PDF();
         }
 
         return self::$_instance;
-    } // function getInstance()
+    }
 
     /**
      * Taking the name of the note, provide the name of the .pdf to create
@@ -30,11 +28,10 @@ class PDF
      */
     private function getPDFFileName(string $fname) : string
     {
-
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $fname=$aeFiles->replaceExtension(
+        $fname = $aeFiles->replaceExtension(
             str_replace(
                 '/',
                 DS,
@@ -55,28 +52,15 @@ class PDF
      */
     private function getTempNames(array $params) : array
     {
-        $tmpHTML='';
-        $tmpPDF='';
+        $tmpHTML = '';
+        $tmpPDF = '';
 
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        // Retrieve the folder of the note
-        $folder=dirname(utf8_decode(
-            $aeSettings->getFolderDocs(true).
-            ltrim($params['filename'], DS)
-        ));
-
-        // Generate an unique filename and create that file
-        $tmp = tempnam($folder, "mn_");
-
-        if ($tmp!=='') {
-            unlink($tmp);
-
-            // Should be .html otherwise Decktape won't find the file
-            $tmpHTML=$aeFiles->replaceExtension($tmp, 'html');
-            $tmpPDF=$aeFiles->replaceExtension($tmp, 'pdf');
-        }
+        $tmp = $aeSettings->getFolderTmp();
+        $tmpHTML = $tmp.$aeFiles->replaceExtension(basename($params['filename']), 'html');
+        $tmpPDF = $tmp.$aeFiles->replaceExtension(basename($params['filename']), 'pdf');
 
         return array($tmpHTML, $tmpPDF);
     }
@@ -86,7 +70,6 @@ class PDF
      */
     private function renamePDF(string $old, string $new) : bool
     {
-
         $aeFiles = \MarkNotes\Files::getInstance();
         // Remove the old version if already there
         if ($aeFiles->fileExists($new)) {
@@ -101,7 +84,6 @@ class PDF
 
     public function download(string $fname) : bool
     {
-
         $bReturn = false;
         ;
 
@@ -137,15 +119,14 @@ class PDF
      */
     private function domPDF(array $params) : string
     {
-
         $finalPDF = $this->getPDFFileName($params['filename']);
 
         // Use the pdf template and not the "html" one
-        $params['task']='pdf';
-        $params['template']='pdf';
+        $params['task'] = 'pdf';
+        $params['template'] = 'pdf';
 
-        $aeTask=\MarkNotes\Tasks\Display::getInstance();
-        $html= $aeTask->run($params);
+        $aeTask = \MarkNotes\Tasks\Display::getInstance();
+        $html = $aeTask->run($params);
 
         $dompdf = new \Dompdf\Dompdf();
 
@@ -168,20 +149,17 @@ class PDF
      */
     private function deckTape(string $sDecktape, array $params) : string
     {
-
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Get the temporary name for the HTML and PDF files
-        list($tmpHTML, $tmpPDF)= $this->getTempNames($params);
+        list($tmpHTML, $tmpPDF) = $this->getTempNames($params);
 
         // Get the HTML version of the note
-
-        $layout=$params['layout'];
+        $layout = $params['layout'];
 
         // Depending on the layout (html (i.e. article) or slideshow), call the correct task
-
-        if ($layout==='html') {
+        if ($layout === 'html') {
             $aeTask = \MarkNotes\Tasks\Display::getInstance();
         } else {
             $aeTask = \MarkNotes\Tasks\Slideshow::getInstance();
@@ -193,23 +171,23 @@ class PDF
         file_put_contents($tmpHTML, $html);
 
         // Get the type of slideshow (reveal or remark)
-        $type=$aeSettings->getSlideshowType();
+        $type = $aeSettings->getSlideshowType();
 
         // Create a script on the disk
         // Phantomjs (used by the Decktape conversion) should be started from the folder where the
         // HTML file to convert stay so use the Windows PUSH instruction to change the default directory
         // the time needed to run the script
 
-        $sProgram=
+        $sProgram =
             'pushd "'.dirname($tmpHTML).'"'.PHP_EOL.
             $sDecktape.' '.dirname($sDecktape).DS.'decktape.js '.$type.' '.basename($tmpHTML).' '.basename($tmpPDF);
 
-        $fscript=dirname($tmpHTML).DS.'mn_convert.bat';
+        $fscript = dirname($tmpHTML).DS.$aeFiles->replaceExtension(basename($params['filename']), 'bat');
         file_put_contents($fscript, $sProgram);
 
         // Run the script. This part can be long depending on the number of slides in the HTML file to convert
-        $output=array();
-        $finalPDF='';
+        $output = array();
+        $finalPDF = '';
 
         exec($fscript, $output);
 
@@ -218,7 +196,7 @@ class PDF
             // $output is an array and contains the result of the script. If at least one line of the output start with
             // Error:, show the debug information and stop the code
             foreach ($output as $line) {
-                if (substr($line, 0, 6)==='Error:') {
+                if (substr($line, 0, 6) === 'Error:') {
                     die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the deckTape script<br/><br/>".print_r($output, true)."</pre>");
                 }
             }
@@ -226,9 +204,17 @@ class PDF
         /*<!-- endbuild -->*/
 
         try {
-            // Release temporary files
-            unlink($tmpHTML);
-            unlink($fscript);
+
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                // Do nothing i.e. keep the temporary files
+            } else {
+                /*<!-- endbuild -->*/
+                unlink($tmpHTML);
+                unlink($fscript);
+                /*<!-- build:debug -->*/
+            }
+            /*<!-- endbuild -->*/
 
             if ($aeFiles->fileExists($tmpPDF)) {
                 // Success the PDF exists
@@ -238,7 +224,7 @@ class PDF
                 $this->renamePDF($tmpPDF, $finalPDF);
             }
         } catch (Exception $e) {
-            $finalPDF='';
+            $finalPDF = '';
         }
 
         return $finalPDF;
@@ -248,32 +234,32 @@ class PDF
     {
 
         // If the filename doesn't mention the file's extension, add it.
-        if (substr($params['filename'], -3)!='.md') {
-            $params['filename'].='.md';
+        if (substr($params['filename'], -3) != '.md') {
+            $params['filename'] .= '.md';
         }
 
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $fPDF='';
+        $fPDF = '';
         $layout = isset($params['layout']) ? $params['layout'] : '';
 
         // Retrieve the fullname of the PDF
-        $fPDF=$aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'pdf');
+        $fPDF = $aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'pdf');
 
         // And check if the PDF file already exists => faster than creating the PDF on-the-fly
         if ($aeFiles->fileExists($fPDF)) {
-            $fMD=$aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'md');
+            $fMD = $aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'md');
             if (filemtime($fPDF) < filemtime($fMD)) {
                 // The note has been modified after the generation of the .pdf => no more up-to-date
-                $fPDF='';
+                $fPDF = '';
             }
         }
 
         // Doesn't exists yet ? Create it
-        if (($fPDF==='')  || (!$aeFiles->fileExists($fPDF))) {
+        if (($fPDF === '') || (!$aeFiles->fileExists($fPDF))) {
             // Check if, by luck, decktape is installed but only under Windows OS
-            $sDecktape='';
+            $sDecktape = '';
 
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                 // deckTape is only for slideshow view and not for HTML view
@@ -282,12 +268,12 @@ class PDF
 
                     // The exec() function should be enabled to use deckTape
                     if (!$aeFunctions->ifDisabled('exec')) {
-                        $sDecktape=$aeSettings->getTools('decktape');
+                        $sDecktape = $aeSettings->getTools('decktape');
                     }
                 }
             } // if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
 
-            if ($sDecktape!=='') {
+            if ($sDecktape !== '') {
                 // YES ! Decktape is there, use it
                 $fname = $this->deckTape($sDecktape, $params);
             } else {

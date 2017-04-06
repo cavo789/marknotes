@@ -98,7 +98,7 @@ class Markdown
 
             $matches=array();
             if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-                $j=count($matches);
+                $j=count($matches[0]);
                 for ($i=0; $i<=$j; $i++) {
                     if (isset($matches[2][$i])) {
                         if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
@@ -145,6 +145,10 @@ class Markdown
         }
 
         $markdown=file_get_contents($filename);
+
+        // Be sure to have content with LF and not CRLF in order to be able to use
+        // generic regex expression (match \n for new lines)
+        $markdown=str_replace("\r\n", "\n", $markdown);
 
         // -----------------------------------------------------------------------
         // URL Cleaner : Make a few cleaning like replacing space char in URL or in image source

@@ -27,6 +27,10 @@
 	},
 	"site_name": "MarkNotes | An Open Source notes management tool",
 	"slideshow": {
+		"bullet": {
+			"fontawesome": "joomla fa-spin",
+			"extra_attribute": "style='color:#142849;'"
+		},
 		"type": "reveal",
 		"reveal": {
 			"animation": {
@@ -39,7 +43,7 @@
 				"h6": "fade"
 			},
 			"section": {
-				"extra_data_img_attr": "data-state='img-top-left'"
+				"extra_data_img_attr": "data-background-size='contain'"
 			}
 		}
 	},

@@ -1,9 +1,3 @@
-<?php
-// @codingStandardsIgnoreFile
-?>
-<!--
-   based on reveal.js : https://github.com/hakimel/reveal.js
--->
 <!DOCTYPE HTML>
 <html lang="fr-fr" dir="ltr">
 
@@ -32,8 +26,8 @@
         <title>%TITLE%</title>
 
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/reveal.css" media="screen" />
-    		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/theme/beige.css" id="theme" media="screen" />
-    		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/theme/beige.css" id="theme" media="screen" />
+		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
 
         <!-- Theme used for syntax highlighting of code -->
         <link rel="stylesheet" href="%ROOT%/libs/reveal/lib/css/zenburn.css">
@@ -44,6 +38,9 @@
                 border-right-color: #B9312C;
             }
 
+            html.img-top-left div.slide-background.present {
+                background-position: 0 0;
+            }
             .reveal .controls .navigate-right,
             .reveal .controls .navigate-right.enabled {
                 border-left-color: #B9312C;
@@ -88,15 +85,6 @@
 section>.frame{margin:25px;padding:25px;background-color:#5bc0de;border:4px dashed #204d74;color:white;font-size:1.1em;font-weight:bolder;border-radius: 100px;}
         </style>
 
-        <!-- Printing and PDF exports -->
-        <script>
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = window.location.search.match('/print-pdf/gi') ? '%ROOT%/libs/reveal/css/print/pdf.css' : '%ROOT%/libs/reveal/css/print/paper.css';
-            document.getElementsByTagName('head')[0].appendChild(link);
-
-        </script>
     </head>
 
     <body>

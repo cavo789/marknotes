@@ -6,20 +6,18 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Settings
 {
-
     protected static $_instance = null;
 
-    private $_folderDocs='';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
-    private $_folderAppRoot='';
-    private $_folderWebRoot='';
+    private $_folderDocs = '';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
+    private $_folderAppRoot = '';
+    private $_folderWebRoot = '';
 
-    private $_json=array();
+    private $_json = array();
 
     public function __construct(string $folder = '', array $params = null)
     {
-
         $this->setFolderAppRoot(dirname(dirname(__FILE__)));
-        if ($folder!=='') {
+        if ($folder !== '') {
             $this->setFolderWebRoot($folder);
         }
 
@@ -31,7 +29,6 @@ class Settings
 
     public static function getInstance(string $folder = '', array $params = null)
     {
-
         if (self::$_instance === null) {
             self::$_instance = new Settings($folder, $params);
         }
@@ -55,46 +52,46 @@ class Settings
         $aeJSON = \MarkNotes\JSON::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
 
-        $json=array();
+        $json = array();
 
         // 1. Get the settings.json.dist global file, shipped with each releases of MarkNotes
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json.dist')) {
-            $json=$aeJSON->json_decode($fname, true);
+            $json = $aeJSON->json_decode($fname, true);
         } else {
             if ($aeFiles->fileExists($fname = $this->getFolderAppRoot().'settings.json.dist')) {
-                $json=$aeJSON->json_decode($fname, true);
+                $json = $aeJSON->json_decode($fname, true);
             }
         }
 
             // 2. Get the settings.json user's file
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
             echo '<h1>'.$fname.'</h1>';
-            $arr=$aeJSON->json_decode($fname, true);
-            if (count($arr)>0) {
-                $json=array_replace_recursive($json, $aeJSON->json_decode($fname, true));
+            $arr = $aeJSON->json_decode($fname, true);
+            if (count($arr) > 0) {
+                $json = array_replace_recursive($json, $aeJSON->json_decode($fname, true));
             }
         }
 
             // 3. Get the settings.json file that is, perhaps, present in the folder of the note
         if (isset($params['filename'])) {
-            $noteFolder=$this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
-            $noteJSON=$noteFolder.DS.'settings.json';
+            $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
+            $noteJSON = $noteFolder.DS.'settings.json';
             if ($aeFiles->fileExists($noteJSON)) {
-                $json=array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
+                $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
 
             // 4. Get the note_name.json file that is, perhaps, present in the folder of the note.  note_name is the note filename
             // with the .json extension of .md
         if (isset($params['filename'])) {
-            $noteFolder=$this->getFolderWebRoot().str_replace('/', DS, $params['filename']);
-            $noteJSON=$aeFiles->replaceExtension($noteFolder, 'json');
+            $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, $params['filename']);
+            $noteJSON = $aeFiles->replaceExtension($noteFolder, 'json');
 
             if ($aeFiles->fileExists($noteJSON)) {
-                $json=array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
+                $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
-            return $json;
+        return $json;
     }
 
    /**
@@ -104,10 +101,9 @@ class Settings
     */
     private function readSettings(array $params = null) : bool
     {
-
         $aeFiles = \MarkNotes\Files::getInstance();
 
-        $this->_json=$this->loadJSON($params);
+        $this->_json = $this->loadJSON($params);
 
         $this->setLanguage(DEFAULT_LANGUAGE);
 
@@ -117,10 +113,10 @@ class Settings
 
         /*<!-- build:debug -->*/
         if (isset($this->_json['debug'])) {
-            $this->setDebugMode($this->_json['debug']==1?true:false); // Debug mode enabled or not
+            $this->setDebugMode($this->_json['debug'] == 1?true:false); // Debug mode enabled or not
         }
         if (isset($this->_json['development'])) {
-            $this->setDevMode($this->_json['development']==1?true:false); // Developer mode enabled or not
+            $this->setDevMode($this->_json['development'] == 1?true:false); // Developer mode enabled or not
         }
         /*<!-- endbuild -->*/
 
@@ -148,26 +144,25 @@ class Settings
     */
     public function getText(string $variable, string $default = '', bool $jsProtect = false) : string
     {
+        $lang = &$this->_json['languages'][$this->getLanguage()];
 
-        $lang=&$this->_json['languages'][$this->getLanguage()];
+        $return = isset($lang[$variable]) ? $lang[$variable] : '';
 
-        $return=isset($lang[$variable]) ? $lang[$variable] : '';
-
-        if ($return=='') {
-            $lang=&$this->_json['languages'][DEFAULT_LANGUAGE];
-            $return=isset($lang[$variable]) ? $lang[$variable] : '';
+        if ($return == '') {
+            $lang = &$this->_json['languages'][DEFAULT_LANGUAGE];
+            $return = isset($lang[$variable]) ? $lang[$variable] : '';
         }
 
-        if ($return=='') {
-            $return=(trim($default)!=='' ? constant($default) : '');
+        if ($return == '') {
+            $return = (trim($default) !== '' ? constant($default) : '');
         }
 
         if ($jsProtect) {
-            $return=str_replace("'", "\'", html_entity_decode($return));
+            $return = str_replace("'", "\'", html_entity_decode($return));
         }
 
         // In case of null (i.e. the translation wasn't found, return at least the name of the variable)
-        return ($return===null?$variable:$return);
+        return ($return === null?$variable:$return);
     }
 
     /**
@@ -179,13 +174,12 @@ class Settings
      */
     private function sanitizeFileName(string $fname) : string
     {
+        $fname = trim($fname);
 
-        $fname=trim($fname);
-
-        if ($fname!=='') {
+        if ($fname !== '') {
             // should only contains letters, figures or dot/minus/underscore
             if (!preg_match('/^[A-Za-z0-9-_\.]+$/', $fname)) {
-                $fname='';
+                $fname = '';
             }
         } // if ($fname!=='')
 
@@ -199,11 +193,10 @@ class Settings
     */
     private function getPackageInfo(string $info = 'version') : string
     {
-
-        $aeFiles=\MarkNotes\Files::getInstance();
-        $aeJSON=\MarkNotes\JSON::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeJSON = \MarkNotes\JSON::getInstance();
         if ($aeFiles->fileExists($fname = $this->getFolderAppRoot().'package.json')) {
-            $json=$aeJSON->json_decode($fname, true);
+            $json = $aeJSON->json_decode($fname, true);
             return $json[$info];
         } else {
             return '';
@@ -218,9 +211,9 @@ class Settings
      */
     public function getAppName(bool $addVersionNumber = false) : string
     {
-        $name=APP_NAME;
+        $name = APP_NAME;
         if ($addVersionNumber) {
-            $name.=' v.'.self::getPackageInfo('version');
+            $name .= ' v.'.self::getPackageInfo('version');
         }
         return $name;
     } // function getAppName()
@@ -242,13 +235,12 @@ class Settings
 
     public function setLanguage(string $lang)
     {
-
         if (isset($this->_json['languages'][$lang])) {
             // The language should exists in the settings.json languages node
             // If not, use the default one
-            $this->language=$lang;
+            $this->language = $lang;
         } else {
-            $this->language=DEFAULT_LANGUAGE;
+            $this->language = DEFAULT_LANGUAGE;
         }
     }
 
@@ -259,13 +251,12 @@ class Settings
 
     public function setDebugMode(bool $onOff)
     {
-
-        $this->debugmode=false;
+        $this->debugmode = false;
         error_reporting(0);
 
         /*<!-- build:debug -->*/
         if ($onOff) {
-            $this->debugmode=$onOff; // Debug mode enabled or not
+            $this->debugmode = $onOff; // Debug mode enabled or not
 
             error_reporting(E_ALL);
 
@@ -290,8 +281,7 @@ class Settings
      */
     public function setDevMode(bool $onOff)
     {
-
-        $this->devmode=$onOff;
+        $this->devmode = $onOff;
 
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -332,12 +322,12 @@ class Settings
     {
 
         // Respect OS directory separator
-        $folder=str_replace('/', DS, $folder);
+        $folder = str_replace('/', DS, $folder);
 
         // Be sure that there is a slash at the end
-        $folder=rtrim($folder, DS).DS;
+        $folder = rtrim($folder, DS).DS;
 
-        $this->_folderAppRoot= $folder;
+        $this->_folderAppRoot = $folder;
     }
 
     /**
@@ -356,13 +346,36 @@ class Settings
     {
 
         // Respect OS directory separator
-        $folder=str_replace('/', DS, $folder);
+        $folder = str_replace('/', DS, $folder);
 
         // Be sure that there is a slash at the end
-        $folder=rtrim($folder, DS).DS;
+        $folder = rtrim($folder, DS).DS;
 
         $this->_folderDocs = $folder;
     } // function setFolderDocs
+
+    /**
+     * Return the path to the tmp folder at the webroot. If the folder doesn't exist yet, create it
+     *
+     * @return string
+     */
+    public function getFolderTmp() : string
+    {
+        $folder = $this->_folderWebRoot.'tmp'.DS;
+
+        if (!is_dir($folder)) {
+            mkdir($folder, 0755);
+        }
+
+        if (!file_exists($fname = $folder.'.gitignore')) {
+            file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+        }
+
+        if (!file_exists($fname = $folder.'.htaccess')) {
+            file_put_contents($fname, 'deny from all');
+        }
+        return $folder;
+    }
 
     /**
      * Return the root folder of the website (f.i. 'C:\Repository\notes\')
@@ -376,7 +389,7 @@ class Settings
 
     public function setFolderWebRoot(string $folder)
     {
-        $this->_folderWebRoot=rtrim($folder, DS).DS;
+        $this->_folderWebRoot = rtrim($folder, DS).DS;
     } // function setFolderWebRoot()
 
     public function getFolderLibs() : string
@@ -403,16 +416,15 @@ class Settings
      */
     public function getTemplateFile(string $default = 'screen') : string
     {
-
-        $tmpl=$default;
+        $tmpl = $default;
         if (isset($this->_json['templates'])) {
             if (isset($this->_json['templates'][$default])) {
-                $tmpl=$this->sanitizeFileName($this->_json['templates'][$default]);
+                $tmpl = $this->sanitizeFileName($this->_json['templates'][$default]);
             }
         }
 
-        if ($tmpl!=='') {
-            $fname=$tmpl;
+        if ($tmpl !== '') {
+            $fname = $tmpl;
 
             $aeFiles = \MarkNotes\Files::getInstance();
 
@@ -422,11 +434,11 @@ class Settings
                     echo '<span style="font-size:0.8em;">Debug | '.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
                 }
                 echo '<strong><em>Template ['.$fname.'] not found, please review your settings.json file.</em></strong>';
-                $fname='';
+                $fname = '';
             }
         } else { // if ($tmpl!=='')
 
-            $fname=$this->getFolderTemplates().$tmpl.'.php';
+            $fname = $this->getFolderTemplates().$tmpl.'.php';
         } // if ($tmpl!=='')
 
             return $fname;
@@ -439,12 +451,12 @@ class Settings
          */
     public function getOptimisationUseBrowserCache() : bool
     {
-        $bReturn=false;
+        $bReturn = false;
 
         if (isset($this->_json['optimisation'])) {
-            $tmp=$this->_json['optimisation'];
+            $tmp = $this->_json['optimisation'];
             if (isset($tmp['browser_cache'])) {
-                $bReturn=(($tmp['browser_cache']==1)?true:false);
+                $bReturn = (($tmp['browser_cache'] == 1)?true:false);
             }
         }
         return $bReturn;
@@ -457,12 +469,12 @@ class Settings
      */
     public function getOptimisationUseServerSession() : bool
     {
-        $bReturn=false;
+        $bReturn = false;
 
         if (isset($this->_json['optimisation'])) {
-            $tmp=$this->_json['optimisation'];
+            $tmp = $this->_json['optimisation'];
             if (isset($tmp['server_session'])) {
-                $bReturn=(($tmp['server_session']==1)?true:false);
+                $bReturn = (($tmp['server_session'] == 1)?true:false);
             }
         }
         return $bReturn;
@@ -475,12 +487,12 @@ class Settings
      */
     public function getOptimisationLazyLoad() : bool
     {
-        $bReturn=false;
+        $bReturn = false;
 
         if (isset($this->_json['optimisation'])) {
-            $tmp=$this->_json['optimisation'];
+            $tmp = $this->_json['optimisation'];
             if (isset($tmp['lazyload'])) {
-                $bReturn=(($tmp['lazyload']==1)?true:false);
+                $bReturn = (($tmp['lazyload'] == 1)?true:false);
             }
         }
 
@@ -495,24 +507,23 @@ class Settings
      */
     public function getPageGoogleFont(bool $css = true) : string
     {
-
-        $return='';
+        $return = '';
 
         if (isset($this->_json['page'])) {
             if (isset($this->_json['page']['google_font'])) {
-                $font=str_replace(' ', '+', $this->_json['page']['google_font']);
+                $font = str_replace(' ', '+', $this->_json['page']['google_font']);
 
-                if ($css===true) {
-                    if ($font!=='') {
-                        $result='<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
+                if ($css === true) {
+                    if ($font !== '') {
+                        $result = '<link href="https://fonts.googleapis.com/css?family='.$font.'" rel="stylesheet">';
 
-                        $i=0;
-                        $return='<style>';
-                        $sFontName=str_replace('+', ' ', $font);
-                        for ($i=1; $i<7; $i++) {
-                            $return.='page h'.$i.'{font-family:"'.$sFontName.'";}';
+                        $i = 0;
+                        $return = '<style>';
+                        $sFontName = str_replace('+', ' ', $font);
+                        for ($i = 1; $i < 7; $i++) {
+                            $return .= 'page h'.$i.'{font-family:"'.$sFontName.'";}';
                         }
-                        $return.='</style>';
+                        $return .= '</style>';
                     } // if ($font!=='')
                 } else { // if ($css===true)
                     $return = $font;
@@ -530,12 +541,11 @@ class Settings
      */
     public function getPageImgMaxWidth() : string
     {
-
-        $return=IMG_MAX_WIDTH;
+        $return = IMG_MAX_WIDTH;
 
         if (isset($this->_json['page'])) {
             if (isset($this->_json['page']['img_maxwidth'])) {
-                $return=trim($this->_json['page']['img_maxwidth']);
+                $return = trim($this->_json['page']['img_maxwidth']);
             }
         }
 
@@ -549,12 +559,11 @@ class Settings
      */
     public function getPageRobots() : string
     {
-
-        $return='index, follow';
+        $return = 'index, follow';
 
         if (isset($this->_json['page'])) {
             if (isset($this->_json['page']['robots'])) {
-                $return=trim($this->_json['page']['robots']);
+                $return = trim($this->_json['page']['robots']);
             }
         }
 
@@ -568,11 +577,10 @@ class Settings
      */
     public function getSiteName() : string
     {
-
-        $sReturn='';
+        $sReturn = '';
 
         if (isset($this->_json['site_name'])) {
-            $sReturn=trim($this->_json['site_name']);
+            $sReturn = trim($this->_json['site_name']);
         }
 
         return $sReturn;
@@ -583,13 +591,12 @@ class Settings
      *
      * @return string
      */
-    public function getSlideshowType()
+    public function getSlideshowType(string $sDefault = 'reveal') : string
     {
-
-        $sReturn='reveal';
+        $sReturn = $sDefault;
         if (isset($this->_json['slideshow'])) {
             if (isset($this->_json['slideshow']['type'])) {
-                $sReturn=trim($this->_json['slideshow']['type']);
+                $sReturn = trim($this->_json['slideshow']['type']);
             }
         }
 
@@ -602,14 +609,13 @@ class Settings
      */
     public function getSlideshowAnimations(string $sType = 'reveal') : array
     {
-
-        $sType='reveal';
-        $arr=array('h1'=>'zoom','h2'=>'concave','h3'=>'slide-in','h4'=>'fade','h5'=>'fade','h6'=>'fade');
+        $sType = 'reveal';
+        $arr = array('h1' => 'zoom','h2' => 'concave','h3' => 'slide-in','h4' => 'fade','h5' => 'fade','h6' => 'fade');
 
         if (isset($this->_json['slideshow'])) {
             if (isset($this->_json['slideshow'][$sType])) {
                 if (isset($this->_json['slideshow'][$sType]['animation'])) {
-                    $arr=$this->_json['slideshow'][$sType]['animation'];
+                    $arr = $this->_json['slideshow'][$sType]['animation'];
                 }
             }
         }
@@ -618,20 +624,57 @@ class Settings
     }
 
     /**
+     * Return the bullet to use for slideshow lists (f.i. "check" (will be used as fa-check)
+     * with Font-Awesome)
+     */
+    public function getSlideshowListBullet(string $sDefault = 'check') : string
+    {
+        $sReturn = $sDefault;
+
+        if (isset($this->_json['slideshow'])) {
+            if (isset($this->_json['slideshow']['bullet'])) {
+                if (isset($this->_json['slideshow']['bullet']['fontawesome'])) {
+                    $sReturn = $this->_json['slideshow']['bullet']['fontawesome'];
+                }
+            }
+        }
+
+        return $sReturn;
+    }
+
+    /**
+     * Return the bullet to use for slideshow lists (f.i. "check" (will be used as fa-check)
+     * with Font-Awesome)
+     */
+    public function getSlideshowListBulletExtra(string $sDefault = '') : string
+    {
+        $sReturn = $sDefault;
+
+        if (isset($this->_json['slideshow'])) {
+            if (isset($this->_json['slideshow']['bullet'])) {
+                if (isset($this->_json['slideshow']['bullet']['extra_attribute'])) {
+                    $sReturn = $this->_json['slideshow']['bullet']['extra_attribute'];
+                }
+            }
+        }
+
+        return $sReturn;
+    }
+
+    /**
      * With reveal, when an image is used as background for the slide, check if a maximum size (like 800px 600px) has
      * been specified in the settings.json and if so, return that definition
      */
     public function getSlideshowExtraImgAttributes(string $sType = 'reveal') : string
     {
-
-        $sType='reveal';
-        $sReturn='';
+        $sType = 'reveal';
+        $sReturn = '';
 
         if (isset($this->_json['slideshow'])) {
             if (isset($this->_json['slideshow'][$sType])) {
                 if (isset($this->_json['slideshow'][$sType]['section'])) {
                     if (isset($this->_json['slideshow'][$sType]['section']['extra_data_img_attr'])) {
-                        $sReturn=$this->_json['slideshow'][$sType]['section']['extra_data_img_attr'];
+                        $sReturn = $this->_json['slideshow'][$sType]['section']['extra_data_img_attr'];
                     }
                 }
             }
@@ -646,15 +689,14 @@ class Settings
      *
      * @return string
      */
-    public function getSlideshowBullet(string $sType = 'reveal')
+    public function getSlideshowBullet(string $sType = 'reveal') : string
     {
-
-        $sReturn='animated';
+        $sReturn = 'animated';
         if (isset($this->_json['slideshow'])) {
             if (isset($this->_json['slideshow'][$sType])) {
                 if (isset($this->_json['slideshow'][$sType]['animation'])) {
                     if (isset($this->_json['slideshow'][$sType]['animation']['bullet'])) {
-                        $sReturn=$this->_json['slideshow'][$sType]['animation']['bullet'];
+                        $sReturn = $this->_json['slideshow'][$sType]['animation']['bullet'];
                     }
                 }
             }
@@ -678,11 +720,10 @@ class Settings
      */
     public function getTools(string $sTool) : string
     {
+        $aeFiles = \MarkNotes\Files::getInstance();
 
-        $aeFiles=\MarkNotes\Files::getInstance();
-
-        $sType='reveal';
-        $sReturn='';
+        $sType = 'reveal';
+        $sReturn = '';
 
         if (isset($this->_json['tools'])) {
             if (isset($this->_json['tools'][$sTool])) {
@@ -702,7 +743,6 @@ class Settings
      */
     public function getTagsAutoSelect() : string
     {
-
         $sReturn = '';
         if (isset($this->_json['tags'])) {
             $sReturn = implode($this->_json['tags'], ",");
@@ -717,10 +757,9 @@ class Settings
      */
     public function getTagPrefix() : string
     {
-
-        $sReturn =PREFIX_TAG;
+        $sReturn = PREFIX_TAG;
         if (isset($this->_json['tag_prefix'])) {
-            $sReturn=trim($this->_json['tag_prefix']);
+            $sReturn = trim($this->_json['tag_prefix']);
         }
 
         return $sReturn;
@@ -733,12 +772,11 @@ class Settings
      */
     public function getTreeOpened() : bool
     {
-
-        $bReturn=false;
+        $bReturn = false;
 
         if (isset($this->_json['list'])) {
             if (isset($this->_json['list']['opened'])) {
-                $bReturn=($this->_json['list']['opened']==1?true:false);
+                $bReturn = ($this->_json['list']['opened'] == 1?true:false);
             }
         }
 
@@ -752,16 +790,15 @@ class Settings
      */
     public function getTreeAutoOpen() : array
     {
-
-        $arr=array();
+        $arr = array();
 
         if (isset($this->_json['list'])) {
             if (isset($this->_json['list']['auto_open'])) {
                 foreach ($this->_json['list']['auto_open'] as $folder) {
                     // Respect OS directory separator
-                    $folder=rtrim(str_replace('/', DS, $folder), DS);
+                    $folder = rtrim(str_replace('/', DS, $folder), DS);
                     // List of folders that should be immediatly opened
-                    $arr[]=$this->getFolderDocs(true).$folder;
+                    $arr[] = $this->getFolderDocs(true).$folder;
                 }
             }
         } // if(isset($this->_json['list']))
@@ -776,12 +813,11 @@ class Settings
      */
     public function getEncryptionPassword() : string
     {
-
-        $sReturn='';
+        $sReturn = '';
 
         if (isset($this->_json['encryption'])) {
             if (isset($this->_json['encryption']['password'])) {
-                $sReturn=trim($this->_json['encryption']['password']);
+                $sReturn = trim($this->_json['encryption']['password']);
             }
         }
 
@@ -795,14 +831,13 @@ class Settings
      */
     public function getEncryptionMethod() : string
     {
-
-        $sReturn='aes-256-ctr';
+        $sReturn = 'aes-256-ctr';
 
         if (isset($this->_json['encryption'])) {
             if (isset($this->_json['encryption']['method'])) {
-                $sReturn=trim($this->_json['encryption']['method']);
-                if ($sReturn==='') {
-                    $sReturn='aes-256-ctr';
+                $sReturn = trim($this->_json['encryption']['method']);
+                if ($sReturn === '') {
+                    $sReturn = 'aes-256-ctr';
                 }
             }
         }
@@ -817,12 +852,11 @@ class Settings
      */
     public function getLocale() : string
     {
-
-        $sReturn='en_GB';
+        $sReturn = 'en_GB';
 
         if (isset($this->_json['locale'])) {
             // Be sure to have en-US (minus) and not en_US (underscore)
-            $sReturn=str_replace('_', '-', trim($this->_json['locale']));
+            $sReturn = str_replace('_', '-', trim($this->_json['locale']));
         }
 
         return $sReturn;
@@ -834,11 +868,10 @@ class Settings
      */
     public function getEditAllowed() : bool
     {
-
-        $bReturn=EDITOR;
+        $bReturn = EDITOR;
 
         if (isset($this->_json['editor'])) {
-            $bReturn=($this->_json['editor']==1?true:false);
+            $bReturn = ($this->_json['editor'] == 1?true:false);
         }
 
         return $bReturn;
@@ -846,7 +879,7 @@ class Settings
 
     public function getchmod(string $type = 'folder') : int
     {
-        return ($type==='folder' ? CHMOD_FOLDER : CHMOD_FILE);
+        return ($type === 'folder' ? CHMOD_FOLDER : CHMOD_FILE);
     } // function getchmod()
 
     /**
@@ -857,12 +890,12 @@ class Settings
      */
     public function getUseJoliTypo() : bool
     {
-        $bReturn=true;
+        $bReturn = true;
 
         if (isset($this->_json['page'])) {
-            $tmp=$this->_json['page'];
+            $tmp = $this->_json['page'];
             if (isset($tmp['jolitypo'])) {
-                $bReturn=(($tmp['jolitypo']==1)?true:false);
+                $bReturn = (($tmp['jolitypo'] == 1)?true:false);
             }
         }
         return $bReturn;
@@ -876,12 +909,12 @@ class Settings
      */
     public function getUseLocalCache() : bool
     {
-        $bReturn=true;
+        $bReturn = true;
 
         if (isset($this->_json['optimisation'])) {
-            $tmp=$this->_json['optimisation'];
+            $tmp = $this->_json['optimisation'];
             if (isset($tmp['localStorage'])) {
-                $bReturn=(($tmp['localStorage']==1)?true:false);
+                $bReturn = (($tmp['localStorage'] == 1)?true:false);
             }
         }
         return $bReturn;
