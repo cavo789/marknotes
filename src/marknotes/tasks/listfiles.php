@@ -122,7 +122,7 @@ class ListFiles
          'id' => utf8_encode(str_replace($root, '', $dir).DS),
          'type' => 'folder',
          'icon' => 'folder',
-         'text' => basename(rawurlencode($dir)),
+         'text' => basename(utf8_encode($dir)),
          'state' => array('opened' => $opened,'disabled' => 1),
          'children' => array());
 
@@ -138,14 +138,14 @@ class ListFiles
                             $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
                             if (in_array($extension, $ext)) {
                                 $files[] = array(
-                                  'id' => md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
-                                  'icon' => 'file file-md',
-                                  'text' => str_replace('.'.$extension, '', utf8_encode($sub)), // Don't display the extension
+                                    'id' => md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
+                                    'icon' => 'file file-md',
+                                    'text' => utf8_encode(str_replace('.'.$extension, '', $sub)), // Don't display the extension
 
-                                  // Populate the data attribute with the task to fire and the filename of the note
-                                  'data' => array(
-                                 'task' => 'display',
-                                 'file' => utf8_encode(str_replace($root, '', $dir.DS.$sub))
+                                    // Populate the data attribute with the task to fire and the filename of the note
+                                    'data' => array(
+                                    'task' => 'display',
+                                    'file' => rawurlencode(utf8_decode(str_replace($root, '', $dir.DS.$sub)))
                                    )
                                 );
                             }

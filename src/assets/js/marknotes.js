@@ -394,9 +394,8 @@ function initializeTasks() {
 			var $task = $(this)
 				.data('task');
 
-			var $fname = ($(this)
-				.attr('data-file') ? $(this)
-				.data('file') : '');
+			var $fname = $(this).attr('data-file') ? decodeURIComponent($(this).data('file')) : '';
+
 			var $tag = ($(this)
 				.attr('data-tag') ? $(this)
 				.data('tag')
@@ -522,7 +521,6 @@ function initializeTasks() {
 				break;
 
 			case 'window':
-
 				window.open($fname);
 				break;
 

@@ -43,7 +43,7 @@
 
         <script src="%ROOT%/libs/jquery/jquery.min.js"></script>
         <script src="%ROOT%/libs/store/store.everything.min.js"></script>
-        <script src="%ROOT%/assets/js/markdown.js"></script>
+        <script src="%ROOT%/assets/js/marknotes.js"></script>
         <script src="%ROOT%/libs/jquery-albe-timeline/jquery-albe-timeline-2.0.0.min.js"></script>
 
         <!--%MARKDOWN_GLOBAL_VARIABLES%-->

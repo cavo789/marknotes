@@ -15,7 +15,6 @@ class Timeline
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new Timeline();
         }
@@ -25,95 +24,94 @@ class Timeline
 
     public function getJSON()
     {
-
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeJSON = \MarkNotes\JSON::getInstance();
         $aeMarkDown = \MarkNotes\FileType\MarkDown::getInstance();
 
-        $sReturn='';
+        $sReturn = '';
 
         if ($aeSettings->getOptimisationUseServerSession()) {
             // Get the list of files/folders from the session object if possible
             $aeSession = \MarkNotes\Session::getInstance();
-            $sReturn=$aeSession->get('TimeLine', '');
+            $sReturn = $aeSession->get('TimeLine', '');
         }
 
-        if ($sReturn==='') {
-            $json=array();
+        if ($sReturn === '') {
+            $json = array();
 
-            $folder=str_replace('/', DS, $aeSettings->getFolderDocs(true));
+            $folder = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 
-            $arrFiles=$aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
+            $arrFiles = $aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
 
         // -------------------------------------------------------
         // Based on https://github.com/Albejr/jquery-albe-timeline
         // -------------------------------------------------------
 
             foreach ($arrFiles as $file) {
-                $content=$aeMarkDown->read($file);
+                $content = $aeMarkDown->read($file);
 
-                $relFileName=utf8_encode(str_replace($folder, '', $file));
+                $relFileName = utf8_encode(str_replace($folder, '', $file));
 
-                $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
-                $urlHTML=$url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
+                $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
+                $urlHTML = $url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
-                $json[]=
+                $json[] =
                   array(
-                'fmtime'=>filectime($file),
-                'time'=>date("Y-m-d", filectime($file)),
-                'header'=> $aeMarkDown->getHeadingText($content),
-                'body'=>array(
+                'fmtime' => filectime($file),
+                'time' => date("Y-m-d", filectime($file)),
+                'header' => $aeMarkDown->getHeadingText($content),
+                'body' => array(
                   array(
-                    'tag'=>'a',
-                    'content'=> $relFileName,
-                    'attr'=> array(
-                      'href'=>$urlHTML,
-                      'target'=> '_blank',
-                      'title'=>$relFileName
+                    'tag' => 'a',
+                    'content' => $relFileName,
+                    'attr' => array(
+                      'href' => $urlHTML,
+                      'target' => '_blank',
+                      'title' => $relFileName
                     ) // attr
                   ),
                   array(
-                    'tag'=>'span',
-                    'content'=> ' ('
+                    'tag' => 'span',
+                    'content' => ' ('
                   ),
                   array(
-                  'tag'=>'a',
-                  'content'=> 'slide',
-                  'attr'=> array(
-                    'href'=>$urlHTML.'?format=slides',
-                    'target'=> '_blank',
-                    'title'=>$relFileName
+                  'tag' => 'a',
+                  'content' => 'slide',
+                  'attr' => array(
+                    'href' => $urlHTML.'?format=slides',
+                    'target' => '_blank',
+                    'title' => $relFileName
                     ) // attr
                   ),
                   array(
-                    'tag'=>'span',
-                    'content'=> ' - '
+                    'tag' => 'span',
+                    'content' => ' - '
                   ),
                   array(
-                  'tag'=>'a',
-                  'content'=> 'pdf',
-                  'attr'=> array(
-                    'href'=>$urlHTML.'?format=pdf',
-                    'target'=> '_blank',
-                    'title'=>$relFileName
+                  'tag' => 'a',
+                  'content' => 'pdf',
+                  'attr' => array(
+                    'href' => $urlHTML.'?format=pdf',
+                    'target' => '_blank',
+                    'title' => $relFileName
                     ) // attr
                   ),
                   array(
-                    'tag'=>'span',
-                    'content'=> ')'
+                    'tag' => 'span',
+                    'content' => ')'
                   )
                   ) // body
                       ); //
             } // foreach
 
             usort($json, function ($a, $b) {
-                   //return strtotime($a['start_date']) - strtotime($b['start_date']);
+                //return strtotime($a['start_date']) - strtotime($b['start_date']);
                 return strcmp($b['fmtime'], $a['fmtime']);
             });
 
-            $sReturn=$aeJSON->json_encode($json, JSON_PRETTY_PRINT);
+            $sReturn = $aeJSON->json_encode($json, JSON_PRETTY_PRINT);
 
             if ($aeSettings->getOptimisationUseServerSession()) {
                 // Remember for the next call
@@ -126,12 +124,11 @@ class Timeline
 
     public function run(array $params)
     {
-
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
-        // Define the global markdown variable.  Used by the assets/js/markdown.js script
-        $JS=
+        // Define the global markdown variable.  Used by the assets/js/marknotes.js script
+        $JS =
           "\nvar markdown = {};\n".
           "markdown.autoload=0;\n".
           "markdown.url='index.php';\n".
@@ -140,9 +137,9 @@ class Timeline
           "markdown.settings.locale='".$aeSettings->getLocale()."';\n".
           "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
 
-          $html=file_get_contents($aeSettings->getTemplateFile('timeline'));
-          $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
+        $html = file_get_contents($aeSettings->getTemplateFile('timeline'));
+        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
 
-          return $aeHTML->replaceVariables($html, '', $params);
+        return $aeHTML->replaceVariables($html, '', $params);
     }
 }

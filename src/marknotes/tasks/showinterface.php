@@ -20,7 +20,6 @@ class ShowInterface
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new ShowInterface();
         }
@@ -30,27 +29,26 @@ class ShowInterface
 
     public function run()
     {
-
-        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         if (!class_exists('Debug')) {
             include_once dirname(dirname(__FILE__)).'/debug.php';
         }
 
-        $aeDebug=\MarkNotes\Debug::getInstance();
-        $aeFunctions=\MarkNotes\Functions::getInstance();
-        $aeHTML=\MarkNotes\FileType\HTML::getInstance();
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
-        $template=file_get_contents($aeSettings->getTemplateFile('screen'));
-        $html=$aeHTML->replaceVariables($template, '', null);
+        $template = file_get_contents($aeSettings->getTemplateFile('screen'));
+        $html = $aeHTML->replaceVariables($template, '', null);
 
         // replace variables
 
-        $html=str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
-        $html=str_replace('%EDT_SEARCH_MAXLENGTH%', $aeSettings->getSearchMaxLength(), $html);
+        $html = str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
+        $html = str_replace('%EDT_SEARCH_MAXLENGTH%', $aeSettings->getSearchMaxLength(), $html);
 
-        // Define the global markdown variable.  Used by the assets/js/markdown.js script
-        $javascript=
+        // Define the global markdown variable.  Used by the assets/js/marknotes.js script
+        $javascript =
         "\nvar markdown = {};\n".
         "markdown.autoload=1;\n".
         "markdown.message={};\n".
@@ -96,21 +94,21 @@ class ShowInterface
         "markdown.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
         "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
 
-        $html=str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
+        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 
         // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
-        $html=str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet('custom.css'), $html);
+        $html = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet('custom.css'), $html);
 
         // Additionnal javascript, depends on user's settings
-        $additionnalJS='';
+        $additionnalJS = '';
         if ($aeSettings->getOptimisationLazyLoad()) {
-            $additionnalJS='<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
+            $additionnalJS = '<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
         }
 
-        $html=str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $html);
+        $html = str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $html);
 
         // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
-        $html=str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript('custom.js'), $html);
+        $html = str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript('custom.js'), $html);
 
         return $html;
     }

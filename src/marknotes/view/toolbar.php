@@ -17,7 +17,6 @@ class Toolbar
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new Toolbar();
         }
@@ -33,18 +32,17 @@ class Toolbar
      */
     public function getToolbar(array $params = null)
     {
-
-        $aeFiles=\MarkNotes\Files::getInstance();
-        $aeFunctions=\MarkNotes\Functions::getInstance();
-        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Retrieve the URL to this note
         $thisNote = 'index.php?task=display&param='.$_REQUEST['param'];
 
-        $url=rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-        $urlHTML=$url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
+        $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+        $urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
-        $icons=
+        $icons =
           '<a id="icon_fullscreen" data-task="fullscreen" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'" href="#">'.
             '<i class="fa fa-arrows-alt" aria-hidden="true"></i>'.
           '</a>'.
@@ -83,14 +81,14 @@ class Toolbar
             '<i class="fa fa-eraser" aria-hidden="true"></i>'.
           '</a>';
 
-        $toolbar='<div id="icons" class="onlyscreen fa-1x">'.$icons.'</div>';
+        $toolbar = '<div id="icons" class="onlyscreen fa-1x">'.$icons.'</div>';
 
-        $toolbar='<div id="toolbar-button" data-toolbar="style-option" class="onlyscreen btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>';
-        $toolbar.='<div id="toolbar-options" class="hidden btn-toolbar-warning">'.$icons.'</div>';
+        $toolbar = '<div id="toolbar-button" data-toolbar="style-option" class="onlyscreen btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>';
+        $toolbar .= '<div id="toolbar-options" class="hidden btn-toolbar-warning">'.$icons.'</div>';
 
         // Attach the JS code to the toolbar (see https://github.com/paulkinzett/toolbar)
-        // @TODO : Should be put in markdown.js, in the afterDisplay() function but doesn't work, don't know why
-        $toolbar.='<script>'.
+        // @TODO : Should be put in marknotes.js, in the afterDisplay() function but doesn't work, don't know why
+        $toolbar .= '<script>'.
           'if ($.isFunction($.fn.toolbar)) {'.
             '$(\'#toolbar-button\').toolbar({'.
               'content: \'#toolbar-options\','.
