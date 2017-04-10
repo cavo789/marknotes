@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class SlideShow
 {
-    protected static $_instance = null;
+    protected static $_Instance = null;
 
     public function __construct()
     {
@@ -15,11 +15,11 @@ class SlideShow
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new SlideShow();
+        if (self::$_Instance === null) {
+            self::$_Instance = new SlideShow();
         }
 
-        return self::$_instance;
+        return self::$_Instance;
     } // function getInstance()
 
     /**
@@ -124,13 +124,13 @@ class SlideShow
 
         if ($aeSettings->getSlideshowBullet() === 'animated') {
             $matches = array();
-            preg_match_all('/<li[^>]*(.*)<\/li>/', $html, $matches);
+            preg_match_all('/<li([^>])*(.*)<\/li>/', $html, $matches);
 
-            foreach ($matches[1] as $tmp) {
-                $html = str_replace($tmp, ' class="fragment"'.$tmp, $html);
+            $j = count($matches[0]);
+            for ($i = 0; $i < $j; $i++) {
+                $html = str_replace($matches[0][$i], '<li '.$matches[1][$i].' class="fragment"'.$matches[2][$i], $html);
             }
         }
-
         // Add a data-transition based on the heading : zoom for h1, concave for h2, ...
         // Every heading will be put in a section (i.e. a slide)
 
@@ -167,7 +167,6 @@ class SlideShow
         foreach ($arrAnimations as $animation) {
             $html = preg_replace('/<section data-transition="'.$animation.'">[\s\n\r]*<\/section>/m', '', $html);
         }
-
         // -------------------
         // Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
 
@@ -188,6 +187,7 @@ class SlideShow
     public function run(array $params)
     {
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         if ($params['filename'] !== "") {
@@ -245,7 +245,7 @@ class SlideShow
 
         // Get the remark template
         $slideshow = file_get_contents($aeSettings->getTemplateFile($params['layout']));
-
+        
         // $slideshow contains the template : it's an html file with (from the /templates folder)
         // and that file contains variables => convert them
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();

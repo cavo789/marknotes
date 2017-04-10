@@ -1,0 +1,31 @@
+.reveal .controls .navigate-left,
+.reveal .controls .navigate-left.enabled {
+    border-right-color: #B9312C;
+}
+
+.reveal .controls .navigate-right,
+.reveal .controls .navigate-right.enabled {
+    border-left-color: #B9312C;
+}
+
+.reveal .controls .navigate-up,
+.reveal .controls .navigate-up.enabled {
+    border-bottom-color: #B9312C;
+}
+
+.reveal .controls .navigate-down,
+.reveal .controls .navigate-down.enabled {
+    border-top-color: #B9312C;
+}
+
+.reveal section img {
+    border: none;
+    box-shadow: none;
+}
+
+
+/* The bullet will be added thanks to Fontawesome */
+
+.reveal ul {
+    list-style: none;
+}

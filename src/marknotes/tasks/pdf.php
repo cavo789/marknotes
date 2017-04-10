@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class PDF
 {
-    protected static $_instance = null;
+    protected static $_Instance = null;
 
     public function __construct()
     {
@@ -15,11 +15,11 @@ class PDF
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new PDF();
+        if (self::$_Instance === null) {
+            self::$_Instance = new PDF();
         }
 
-        return self::$_instance;
+        return self::$_Instance;
     }
 
     /**
@@ -56,11 +56,14 @@ class PDF
         $tmpPDF = '';
 
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         $tmp = $aeSettings->getFolderTmp();
-        $tmpHTML = $tmp.$aeFiles->replaceExtension(basename($params['filename']), 'html');
-        $tmpPDF = $tmp.$aeFiles->replaceExtension(basename($params['filename']), 'pdf');
+        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+
+        $tmpHTML = $tmp.$slug.'.html';
+        $tmpPDF = $tmp.$slug.'.pdf';
 
         return array($tmpHTML, $tmpPDF);
     }
@@ -85,19 +88,20 @@ class PDF
     public function download(string $fname) : bool
     {
         $bReturn = false;
-        ;
 
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($fname))).'.pdf';
 
         if ($aeFiles->fileExists($fname)) {
             // And send the file to the browser
             header('Content-Type: application/pdf');
-            header('Content-Disposition: download; filename="'.basename($fname).'"');
-            header('Content-Length: '.filesize($fname));
+            header('Content-Disposition: download; filename="'.$slug.'"');
+            header('Content-Length: '.filesize(utf8_decode($fname)));
             header('Content-Transfer-Encoding: binary');
             header('Accept-Ranges: bytes');
 
-            @readfile($fname);
+            @readfile(utf8_decode($fname));
 
             $bReturn = true;
         } else { // if ($content!=='')
@@ -150,10 +154,14 @@ class PDF
     private function deckTape(string $sDecktape, array $params) : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Get the temporary name for the HTML and PDF files
         list($tmpHTML, $tmpPDF) = $this->getTempNames($params);
+
+        // Success the PDF exists
+        $finalPDF = $this->getPDFFileName($params['filename']);
 
         // Get the HTML version of the note
         $layout = $params['layout'];
@@ -178,18 +186,24 @@ class PDF
         // HTML file to convert stay so use the Windows PUSH instruction to change the default directory
         // the time needed to run the script
 
+        // Be carefull : decktape don't like accentuated characters
+        // names below (to the html and pdf file) shouldn't contains any accentuated charcters
         $sProgram =
             'pushd "'.dirname($tmpHTML).'"'.PHP_EOL.
-            $sDecktape.' '.dirname($sDecktape).DS.'decktape.js '.$type.' '.basename($tmpHTML).' '.basename($tmpPDF);
+            $sDecktape.' '.dirname($sDecktape).DS.'decktape.js '.$type.' "'.basename($tmpHTML).'"'.
+            ' "'.basename($tmpPDF).'"'.PHP_EOL.
+            'copy "'.basename($tmpPDF).'" "'.$finalPDF.'"';
 
-        $fscript = dirname($tmpHTML).DS.$aeFiles->replaceExtension(basename($params['filename']), 'bat');
-        file_put_contents($fscript, $sProgram);
+        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+
+        $fScriptFile = dirname($tmpHTML).DS.$slug.'.bat';
+
+        $aeFiles->fwriteANSI($fScriptFile, $sProgram);
 
         // Run the script. This part can be long depending on the number of slides in the HTML file to convert
         $output = array();
-        $finalPDF = '';
 
-        exec($fscript, $output);
+        exec($fScriptFile, $output);
 
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
@@ -217,10 +231,8 @@ class PDF
             /*<!-- endbuild -->*/
 
             if ($aeFiles->fileExists($tmpPDF)) {
-                // Success the PDF exists
-                $finalPDF = $this->getPDFFileName($params['filename']);
-
                 // Remane the temporary with its final name
+                // Note : the PDF file was perhaps already moved
                 $this->renamePDF($tmpPDF, $finalPDF);
             }
         } catch (Exception $e) {

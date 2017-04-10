@@ -4,11 +4,13 @@ logs/
 node_modules/
 src/templates/bosa/
 src/templates/bosa.php
-src/templates/jugtoulouse_reveal.php
-src/templates/jugwallonie.php
+src/templates/jug_toulouse.php
+src/templates/jug_toulouse/
+src/templates/jug_wallonie.php
 vendor/
 vendor/**/.git
 settings.json
 composer.log
 gulpfile.js
 build.bat
+src/assets/aesecure.png

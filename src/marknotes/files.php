@@ -7,7 +7,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Files
 {
-    protected static $_instance = null;
+    protected static $_Instance = null;
 
     public function __construct()
     {
@@ -16,10 +16,10 @@ class Files
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new Files();
+        if (self::$_Instance === null) {
+            self::$_Instance = new Files();
         }
-        return self::$_instance;
+        return self::$_Instance;
     }
 
     /**
@@ -66,6 +66,29 @@ class Files
         error_reporting($errorlevel);
 
         return $wReturn;
+    }
+
+    /**
+     * Write a content into a UTF8-BOM file
+     */
+    public static function fwriteUTF8BOM(string $sFileName, string $sContent)
+    {
+        $f = fopen($sFileName, "wb");
+        fputs($f, "\xEF\xBB\xBF".$sContent);
+        fclose($f);
+    }
+
+    /**
+     * Under Windows, create a text file with the support of UTF8 in his content.
+     * Without the 'chcp 65001' command, accentuated characters won't be correctly understand if
+     * the file should be executable (like a .bat file)
+     *
+     * see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
+     */
+    public static function fwriteANSI(string $sFileName, string $sContent)
+    {
+        file_put_contents($sFileName, 'chcp 65001'.PHP_EOL.utf8_encode($sContent));
+        return true;
     }
 
     /**
@@ -181,7 +204,7 @@ class Files
     public static function getExtension(string $filename) : string
     {
         $info = pathinfo($filename);
-        $sResult=isset($info['extension']) ? $info['extension'] : '';
+        $sResult = isset($info['extension']) ? $info['extension'] : '';
         return $sResult;
     }
 

@@ -1,0 +1,101 @@
+/* Add a youtube icon (thanks to FontAwesome) before every links containing ".youtube." in his URL */
+
+a[href*="youtube."]:before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    content: '\f167';
+    padding-right: 10px;
+    margin: 0;
+}
+
+a[href*="facebook."]:before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    content: '\f230';
+    padding-right: 10px;
+    margin: 0;
+}
+
+a[href*="twitter."]:before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    content: '\f099';
+    padding-right: 10px;
+    margin: 0;
+}
+
+.slides .smaller {
+    font-size: 0.8em;
+}
+
+#logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    height: auto;
+    max-width: 150px;
+    display: none;
+}
+
+#logo2 {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    display: none;
+}
+
+#footer {
+    position: absolute;
+    z-index: 10;
+    color: white;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background-color: rgba(90, 145, 199, 0.16);
+}
+
+#footer a {
+    color: green;
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+strong {
+    background-color: green;
+    color: white;
+}
+
+.blink {
+    animation: blink 1s steps(5, start) infinite;
+    -webkit-animation: blink 1s steps(5, start) infinite;
+}
+
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+@-webkit-keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+section>.frame {
+    margin: 25px;
+    padding: 25px;
+    background-color: #5bc0de;
+    border: 4px dashed #204d74;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bolder;
+    border-radius: 100px;
+}

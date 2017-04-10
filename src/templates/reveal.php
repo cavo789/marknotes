@@ -28,62 +28,9 @@
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/reveal.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/theme/beige.css" id="theme" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
-
-        <!-- Theme used for syntax highlighting of code -->
-        <link rel="stylesheet" href="%ROOT%/libs/reveal/lib/css/zenburn.css">
-
-        <style>
-            .reveal .controls .navigate-left,
-            .reveal .controls .navigate-left.enabled {
-                border-right-color: #B9312C;
-            }
-
-            html.img-top-left div.slide-background.present {
-                background-position: 0 0;
-            }
-            .reveal .controls .navigate-right,
-            .reveal .controls .navigate-right.enabled {
-                border-left-color: #B9312C;
-            }
-
-            .reveal .controls .navigate-up,
-            .reveal .controls .navigate-up.enabled {
-                border-bottom-color: #B9312C;
-            }
-
-            .reveal .controls .navigate-down,
-            .reveal .controls .navigate-down.enabled {
-                border-top-color: #B9312C;
-            }
-
-            /* The bullet will be added thanks to Fontawesome */
-            .reveal ul {
-                list-style: none;
-            }
-
-            #logo {
-                position: absolute;
-                top: 10px;
-                left: 10px;
-                height: auto;
-                max-width: 150px;
-                display: none;
-            }
-
-            #logo2 {
-                position: absolute;
-                top: 10px;
-                right: 0px;
-                display: none;
-            }
-
-            #footer{position:absolute;z-index:10;color:white;right:0;bottom:0;left:0;padding:10px;background-color:rgba(90, 145, 199, 0.16);}
-            #footer a {color:green;font-size:24px;margin-right:10px;}
-
-            strong {background-color:green;color:white;}
-            .blink {animation: blink 1s steps(5, start) infinite; -webkit-animation: blink 1s steps(5, start) infinite;} @keyframes blink {to {visibility: hidden;}} @-webkit-keyframes blink {to {visibility: hidden;}}
-section>.frame{margin:25px;padding:25px;background-color:#5bc0de;border:4px dashed #204d74;color:white;font-size:1.1em;font-weight:bolder;border-radius: 100px;}
-        </style>
+        <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/reveal.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/marknotes.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/lib/css/zenburn.css" media="screen" >
 
     </head>
 
@@ -107,45 +54,15 @@ section>.frame{margin:25px;padding:25px;background-color:#5bc0de;border:4px dash
             <a class="down" href="#">&#x25BC;</a>
         </aside>
 
-		<script src="%ROOT%/libs/reveal/lib/js/head.min.js"></script>
-        <script src="%ROOT%/libs/reveal/js/reveal.js"></script>
-
         <script>
-            // More info https://github.com/hakimel/reveal.js#configuration
-            Reveal.initialize({
-                history: true,
-                controls: true,
-                progress: true,
-                slideNumber: true,
-                mouseWheel: true,
-                transition: 'convex',
-                backgroundTransition: 'concave',
-                // More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: '%ROOT%/libs/reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: '%ROOT%/libs/reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: '%ROOT%/libs/reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: '%ROOT%/libs/reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: '%ROOT%/libs/reveal/plugin/zoom-js/zoom.js', async: true },
-					{ src: '%ROOT%/libs/reveal/plugin/notes/notes.js', async: true }
-				]
-            });
-
-            Reveal.addEventListener('ready', function(event) {
-                var isMobileDevice = /(iphone|ipod|ipad|android)/gi.test(navigator.userAgent);
-
-                if (!isMobileDevice) {
-                    var $objDOM = document.getElementById('logo');
-                    if ($objDOM !== null) $objDOM.style.display='inline';
-                    $objDOM = document.getElementById('logo2');
-                    if ($objDOM !== null) $objDOM.style.display='inline';
-                    $objDOM = document.getElementById('menu');
-                    if ($objDOM !== null) $objDOM.style.display='inline';
-                }
-
-            });
-
+            var marknotes={};
+            marknotes.root='%ROOT%/';
         </script>
+
+		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
+        <script src="%ROOT%/libs/reveal/js/reveal.js"></script>
+        <script src="%ROOT%/libs/reveal/lib/js/head.min.js"></script>
+        <script src="%ROOT%/templates/assets/marknotes.js"></script>
 
     </body>
 
