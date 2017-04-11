@@ -22,7 +22,7 @@ function addTOC() {
 		.length > 0) {
 		var ToC =
 			"<nav role='navigation' class='table-of-contents hidden-xs hidden-sm hidden-print'>" +
-			"<strong>" + markdown.message.on_this_page + ":</strong>" +
+			"<strong>" + marknotes.message.on_this_page + ":</strong>" +
 			"<ul>";
 
 		var newLine, el, title, link;

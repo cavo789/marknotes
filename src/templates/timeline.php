@@ -19,7 +19,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="%ROOT%/assets/notes.jpg" />
+        <meta property="og:image" content="%ROOT%/assets/images/notes.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="800" />
         <meta property="og:title" content="MarkNotes | Notes management" />
@@ -57,7 +57,7 @@
                     task: 'getTimeline',
                     dataType: 'json',
                     callback: 'ShowTimeline(data)',
-                    useStore: markdown.settings.use_localcache
+                    useStore: marknotes.settings.use_localcache
                 });
 
 
@@ -84,7 +84,7 @@
               'effect': 'zoomIn',
               'showMenu': true,
               //sortDesc: true,
-              'language': markdown.settings.locale
+              'language': marknotes.settings.locale
             });
           }
 

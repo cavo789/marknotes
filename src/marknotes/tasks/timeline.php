@@ -127,15 +127,15 @@ class Timeline
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
-        // Define the global markdown variable.  Used by the assets/js/marknotes.js script
+        // Define the global marknotes variable.  Used by the assets/js/marknotes.js script
         $JS =
-          "\nvar markdown = {};\n".
-          "markdown.autoload=0;\n".
-          "markdown.url='index.php';\n".
-          "markdown.settings={};\n".
-          "markdown.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
-          "markdown.settings.locale='".$aeSettings->getLocale()."';\n".
-          "markdown.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
+          "\nvar marknotes = {};\n".
+          "marknotes.autoload=0;\n".
+          "marknotes.url='index.php';\n".
+          "marknotes.settings={};\n".
+          "marknotes.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
+          "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
+          "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
 
         $html = file_get_contents($aeSettings->getTemplateFile('timeline'));
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);

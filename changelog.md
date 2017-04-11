@@ -18,6 +18,9 @@
 + Add the support of jquery-toolbar (https://github.com/paulkinzett/toolbar)
 + Routeur add support to /a-note.pdf i.e. support the extension
 + Add new settings in settings.json.dist for the animation part
++ Add a menu toolbar in the treeview side and move there application's actions like clearing the cache
++ Add a button for the sitemap
++ Update libraries (folder libs)
 ```
 
 ## 1.0.6

@@ -95,9 +95,9 @@ class JoliTypoTest extends \PHPUnit_Framework_TestCase
 
     public function testProtectedTags()
     {
-        $fixer          = new Fixer(array('Ellipsis'));
+        $fixer = new Fixer(array('Ellipsis'));
         $fixer->setProtectedTags(array('pre', 'a'));
-        $fixed_content  = $fixer->fix('<p>Fixed...</p> <pre>Not fixed...</pre> <p>Fixed... <a>Not Fixed...</a>.</p>');
+        $fixed_content = $fixer->fix('<p>Fixed...</p> <pre>Not fixed...</pre> <p>Fixed... <a>Not Fixed...</a>.</p>');
 
         $this->assertEquals('<p>Fixed&hellip;</p> <pre>Not fixed...</pre> <p>Fixed&hellip; <a>Not Fixed...</a>.</p>', $fixed_content);
     }
@@ -179,6 +179,14 @@ NOT_HTML;
         $this->assertEquals($fixed, $fixer->fix($toFix));
         $this->assertEquals(html_entity_decode($fixed, null, 'UTF-8'), $fixer->fixString($toFix));
         $this->assertEquals('Here is a “protip©”!', $fixer->fixString('Here is a "protip(c)"!'));
+    }
+
+    public function testDeprecatedFixer()
+    {
+        $fixer = new Fixer(array('Numeric'));
+        $this->assertInstanceOf('JoliTypo\Fixer', $fixer);
+
+        $this->assertEquals('3'.Fixer::NO_BREAK_SPACE.'€', $fixer->fixString('3 €'));
     }
 }
 

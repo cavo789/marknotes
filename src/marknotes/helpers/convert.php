@@ -17,7 +17,6 @@ class Convert
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new Convert();
         }
@@ -31,13 +30,12 @@ class Convert
      */
     private function useJoliTypo(string $html) : string
     {
-
-        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Can we solve somes common typo issues ?
         if ($aeSettings->getUseJoliTypo()) {
             if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
-                $locale=$aeSettings->getLocale();
+                $locale = $aeSettings->getLocale();
 
 
                 // See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale
@@ -45,7 +43,7 @@ class Convert
                     case 'fr-FR':
                         // Those rules apply most of the recommendations of "Abrégé du code typographique à l'usage de la presse", ISBN: 9782351130667.
                         // Remove Hypen because need a library (Hyphenator) of 12MB,
-                        $fixer=new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'FrenchNoBreakSpace', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
+                        $fixer = new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'FrenchNoBreakSpace', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
                         break;
 
                     default:
@@ -57,7 +55,7 @@ class Convert
                 // Set the locale (en_GB, fr_FR, ...) preferences
                 $fixer->setLocale($locale);
 
-                $html=$fixer->fix($html);
+                $html = $fixer->fix($html);
             }
         }
 
@@ -69,12 +67,11 @@ class Convert
      */
     public function getHTML(string $markdown, array $params = null) : string
     {
-
-        $aeFunctions=\MarkNotes\Functions::getInstance();
-        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Call the Markdown parser (https://github.com/erusev/parsedown)
-        $lib=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+        $lib = $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
         if (!file_exists($lib)) {
             self::ShowError(
                 str_replace(
@@ -91,31 +88,31 @@ class Convert
         // thanks for Parsedown, remove them from the source
 
         if (isset($params['task'])) {
-            if ($params['task']!=='slideshow') {
+            if ($params['task'] !== 'slideshow') {
                 // A manual section break (i.e. a new slide) can be manually created in MarkNotes by just creating, in the
                 // note a new line with --- (or -----).  Only these characters on the beginning of the line.
-                $newSlide='\n+^-{3,5}$\n+';
+                $newSlide = '\n+^-{3,5}$\n+';
 
                 // Except when outputting as a slideshow, remove the --- (or -----) if these characters are preceded and
                 // followed by an empty line and --- (or -----) are the only characters on the line
                 // (==> so it's a "section break")
-                $markdown=preg_replace('/('.$newSlide.')/m', '', $markdown);
+                $markdown = preg_replace('/('.$newSlide.')/m', '', $markdown);
             }
         }
         include_once $lib;
-        $parsedown=new \Parsedown();
-        $html=$parsedown->text($markdown);
+        $parsedown = new \Parsedown();
+        $html = $parsedown->text($markdown);
 
         // Solve typo issues
-        $html=$this->useJoliTypo($html);
+        $html = $this->useJoliTypo($html);
 
         // LazyLoad images ?
         if ($aeSettings->getOptimisationLazyLoad()) {
-            $root=rtrim($aeFunctions->getCurrentURL(true, false), '/');
+            $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-            $html=str_replace(
+            $html = str_replace(
                 '<img src="',
-                '<img src="'.$root.'/assets/blank.png" class="lazyload" data-src="',
+                '<img src="'.$root.'/assets/images/blank.png" class="lazyload" data-src="',
                 $html
             );
         }

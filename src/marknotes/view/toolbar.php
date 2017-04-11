@@ -46,9 +46,6 @@ class Toolbar
           '<a id="icon_fullscreen" data-task="fullscreen" title="'.$aeSettings->getText('fullscreen', 'Display the note in fullscreen', true).'" href="#">'.
             '<i class="fa fa-arrows-alt" aria-hidden="true"></i>'.
           '</a>'.
-          '<a id="icon_timeline" data-task="timeline" title="'.$aeSettings->getText('timeline', 'Display notes in a timeline view', true).'" href="#">'.
-            '<i class="fa fa-calendar" aria-hidden="true"></i>'.
-          '</a>'.
           '<a id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" title="'.$aeSettings->getText('refresh', 'Refresh', true).'" href="#">'.
             '<i class="fa fa-refresh" aria-hidden="true"></i>'.
           '</a>'.
@@ -76,10 +73,7 @@ class Toolbar
                   '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'.
                 '</a>'
               :''
-          ).
-          '<a id="icon_settings_clear" data-task="clear" title="'.$aeSettings->getText('settings_clean', 'Clear cache', true).'" href="#">'.
-            '<i class="fa fa-eraser" aria-hidden="true"></i>'.
-          '</a>';
+          );
 
         $toolbar = '<div id="icons" class="onlyscreen fa-1x">'.$icons.'</div>';
 

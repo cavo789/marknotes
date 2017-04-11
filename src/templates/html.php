@@ -29,7 +29,7 @@
 
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/bootstrap/css/bootstrap.min.css" />
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" />
-		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/assets/css/markdown_html.css" />
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/assets/css/marknotes_html.css" />
 
 	</head>
 
@@ -48,7 +48,7 @@
 
 		<script type="text/javascript" src="%ROOT%/libs/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="%ROOT%/libs/lazysizes/lazysizes.min.js"></script>
-		<script type="text/javascript" src="%ROOT%/assets/js/markdown_html.js"></script>
+		<script type="text/javascript" src="%ROOT%/assets/js/marknotes_html.js"></script>
 
 	</body>
 

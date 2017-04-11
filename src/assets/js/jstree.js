@@ -32,7 +32,7 @@ function jstree_init($data) {
 						// Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
 						// and objNode.text the name of the file (f.i. jsTree.md)
 						/*<!-- build:debug -->*/
-						if (markdown.settings.debug) {
+						if (marknotes.settings.debug) {
 							console.log('Tree - Selected item : ' + objNode.parent + objNode.text);
 						}
 						/*<!-- endbuild -->*/
@@ -139,14 +139,14 @@ function jstree_init($data) {
 						ajax: {
 							url: 'index.php?task=search', // This request will be fired with the '&str=SEARCH_TERM' parameter
 							dataType: 'json',
-							type: (markdown.settings.debug ? 'GET' : 'POST'),
+							type: (marknotes.settings.debug ? 'GET' : 'POST'),
 							success: function (data) {
 
 								// data is a JSON string, store it in the jsTree_Search_Result variable
 								// used by the callback : jsTree_ajax_search
 								jsTree_Search_Result = data;
 								/*<!-- build:debug -->*/
-								if (markdown.settings.debug) {
+								if (marknotes.settings.debug) {
 									console.log('jsTree - Search - success, list of IDs returned :');
 									console.log(data);
 								}
@@ -163,7 +163,7 @@ function jstree_init($data) {
 	} catch (err) {
 		console.warn(err.message);
 		/*<!-- build:debug -->*/
-		if (markdown.settings.debug) {
+		if (marknotes.settings.debug) {
 			Noty({
 				message: err.message,
 				type: 'error'
@@ -190,11 +190,11 @@ function jstree_context_menu(node) {
 		Add_Folder: {
 			separator_before: false,
 			separator_after: false,
-			label: markdown.message.tree_new_folder,
+			label: marknotes.message.tree_new_folder,
 			icon: 'fa fa-folder-open-o',
 			action: function () {
 				var $node = tree.create_node(node, {
-					text: markdown.message.tree_new_folder_name,
+					text: marknotes.message.tree_new_folder_name,
 					icon: "folder"
 				});
 				tree.edit($node);
@@ -203,13 +203,13 @@ function jstree_context_menu(node) {
 		Add_Item: {
 			separator_before: false,
 			separator_after: false,
-			label: markdown.message.tree_new_note,
+			label: marknotes.message.tree_new_note,
 			icon: 'fa fa-file-text-o',
 			action: function () {
 				// When the user has right-clicked on a folder, add the note within that folder
 				// When it was a note, add the new note in the same folder i.e. the parent of the note
 				var $node = tree.create_node((node.icon === 'folder' ? node : node.parent), {
-					text: markdown.message.tree_new_note_name,
+					text: marknotes.message.tree_new_note_name,
 					icon: "file file-md",
 					data: {
 						task: "display"
@@ -221,7 +221,7 @@ function jstree_context_menu(node) {
 		Rename: {
 			separator_before: false,
 			separator_after: false,
-			label: markdown.message.tree_rename,
+			label: marknotes.message.tree_rename,
 			icon: 'fa fa-pencil',
 			action: function () {
 				tree.edit(node);
@@ -230,7 +230,7 @@ function jstree_context_menu(node) {
 		Remove: {
 			separator_before: true,
 			separator_after: false,
-			label: (node.icon === 'folder' ? markdown.message.tree_delete_folder.replace('%s', node.text) : markdown.message.tree_delete_file.replace('%s', node.text)),
+			label: (node.icon === 'folder' ? marknotes.message.tree_delete_folder.replace('%s', node.text) : marknotes.message.tree_delete_file.replace('%s', node.text)),
 			icon: 'fa fa-trash',
 			action: function () {
 				noty({
@@ -238,10 +238,10 @@ function jstree_context_menu(node) {
 					timeout: 0,
 					layout: 'center',
 					type: 'warning',
-					text: '<strong>' + (node.icon === 'folder' ? markdown.message.tree_delete_folder_confirm.replace('%s', node.text) : markdown.message.tree_delete_file_confirm.replace('%s', node.text)) + '</strong>',
+					text: '<strong>' + (node.icon === 'folder' ? marknotes.message.tree_delete_folder_confirm.replace('%s', node.text) : marknotes.message.tree_delete_file_confirm.replace('%s', node.text)) + '</strong>',
 					buttons: [{
 							addClass: 'btn btn-primary',
-							text: markdown.message.ok,
+							text: marknotes.message.ok,
 							onClick: function ($noty) {
 								$noty.close();
 								tree.delete_node(node);
@@ -249,7 +249,7 @@ function jstree_context_menu(node) {
 						},
 						{
 							addClass: 'btn btn-danger',
-							text: markdown.message.cancel,
+							text: marknotes.message.cancel,
 							onClick: function ($noty) {
 								$noty.close();
 							}
@@ -280,7 +280,7 @@ function jstree_context_menu(node) {
 function jstree_create_node(e, data) {
 
 	/*<!-- build:debug -->*/
-	if (markdown.settings.debug) {
+	if (marknotes.settings.debug) {
 		console.log('jstree_create_node');
 	}
 	/*<!-- endbuild -->*/
@@ -299,7 +299,7 @@ function jstree_create_node(e, data) {
 function jstree_CRUD_node(e, data, $task) {
 
 	/*<!-- build:debug -->*/
-	if (markdown.settings.debug) {
+	if (marknotes.settings.debug) {
 		console.log('jstree_CRUD_node, task=' + $task);
 	}
 	/*<!-- endbuild -->*/
@@ -321,8 +321,8 @@ function jstree_CRUD_node(e, data, $task) {
 				.jstree(true)
 				.get_node(data.node.parent);
 
-			$oldname = $parentNode.parent + $parentNode.text + markdown.settings.DS + data.old;
-			$newname = $parentNode.parent + $parentNode.text + markdown.settings.DS + data.node.text;
+			$oldname = $parentNode.parent + $parentNode.text + marknotes.settings.DS + data.old;
+			$newname = $parentNode.parent + $parentNode.text + marknotes.settings.DS + data.node.text;
 		}
 
 		$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));
@@ -382,7 +382,7 @@ function jstree_show_status($data) {
 					useStore: false // After a creation, don't use the localStorage, we need to get the new list
 				});
 				Noty({
-					message: markdown.message.loading_tree,
+					message: marknotes.message.loading_tree,
 					type: 'info'
 				});
 
@@ -408,7 +408,7 @@ function jstree_show_status($data) {
 function jstree_rename_node(e, data) {
 
 	/*<!-- build:debug -->*/
-	if (markdown.settings.debug) {
+	if (marknotes.settings.debug) {
 		console.log('jstree_rename_node');
 	}
 	/*<!-- endbuild -->*/
@@ -430,7 +430,7 @@ function jstree_rename_node(e, data) {
 function jstree_remove_node(e, data) {
 
 	/*<!-- build:debug -->*/
-	if (markdown.settings.debug) {
+	if (marknotes.settings.debug) {
 		console.log('jstree_remove_node');
 	}
 	/*<!-- endbuild -->*/

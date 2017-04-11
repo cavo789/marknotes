@@ -8,6 +8,5 @@
   RewriteCond %{REQUEST_FILENAME} !\.css(.gz)?(\?.*)?$ [NC]
   RewriteCond %{REQUEST_FILENAME} !\.js(.gz)?(\?.*)?$ [NC]
   RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf|woff2?)(\?.*)?$ [NC]
-  RewriteCond %{REQUEST_FILENAME} !markdown_(screen|print)\.php [NC]
   RewriteRule .* - [R=403,NC,L]
 </IfModule>

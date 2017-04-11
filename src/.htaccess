@@ -28,4 +28,18 @@ DirectoryIndex index.php
     RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 
+    # Redirect old temporary domain to the final marknotes.fr
+    RewriteCond %{HTTP_HOST} ^marknotes\.cavo789\.com [NC]
+    RewriteRule ^(.*)$ https\:\/\/www\.marknotes\.fr%{REQUEST_URI}?%{QUERY_STRING} [R=301,L]
+
+    # Force https:
+    RewriteCond %{HTTP_HOST} (www\.)?marknotes\.fr [NC]
+    RewriteCond %{SERVER_PORT} 80
+    RewriteRule ^(.*)$ https://www.marknotes.fr/$1 [R=301,L]
+
+    # Force the www. prefix
+    RewriteCond %{HTTP_HOST} marknotes\.fr [NC]
+    RewriteCond %{HTTP_HOST} !^www\.
+    RewriteRule ^(.*)$ https://www.marknotes.fr/$1 [R=301,L]
+
 </IfModule>
