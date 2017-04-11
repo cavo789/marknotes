@@ -25,16 +25,52 @@ class AddOrRename
 
         return self::$_instance;
     }
-    
-    private function doIt(array $params) : string
-    {
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeJSON = \MarkNotes\JSON::getInstance();
 
+    private static function createFile(array &$params) : bool
+    {
+
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $params['newname'] = $aeFiles->removeExtension($aeFiles->sanitizeFileName($params['newname'])).'.md';
+
+        // Define the content : get the filename without the extension and set the content as heading 1
+        $content = '# '.basename($aeFiles->removeExtension($params['newname'])).PHP_EOL;
+
+        return $aeFiles->createFile($params['newname'], $content, $aeSettings->getchmod('file'));
+    }
+
+    private static function cleanUp(array &$params)
+    {
+
+        // Be sure that filenames doesn't already start with the /docs folder (otherwise will
+        // be mentionned twice)
+
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $docs=$aeSettings->getFolderDocs(false);
+
+        if (substr($params['newname'], 0, strlen($docs))==$docs) {
+            $params['newname']=substr($params['newname'], strlen($docs));
+        }
+        if (substr($params['oldname'], 0, strlen($docs))==$docs) {
+            $params['oldname']=substr($params['oldname'], strlen($docs));
+        }
 
         $params['oldname'] = $aeSettings->getFolderDocs(true).$params['oldname'];
         $params['newname'] = $aeSettings->getFolderDocs(true).$params['newname'];
+    }
+
+    private static function doIt(array $params) : string
+    {
+
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeJSON = \MarkNotes\JSON::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
         $arrDebug = array();
         /*<!-- build:debug -->*/
@@ -168,13 +204,8 @@ class AddOrRename
             $params['newname'] = $aeFiles->removeExtension($params['newname']).'.md';
 
             if (!$aeFiles->fileExists(utf8_decode($params['oldname']))) {
+                self::createFile($params);
                 // Define the filename
-                $params['newname'] = $aeFiles->removeExtension($aeFiles->sanitizeFileName($params['newname'])).'.md';
-
-                // Define the content : get the filename without the extension and set the content as heading 1
-                $content = '# '.basename($aeFiles->removeExtension($params['newname'])).PHP_EOL;
-
-                $aeFiles->createFile(utf8_decode($params['newname']), $content, $aeSettings->getchmod('file'));
 
                 if ($aeFiles->fileExists(utf8_decode($params['newname']))) {
                     $msg = str_replace(
@@ -264,16 +295,15 @@ class AddOrRename
 
     public static function run(array $params)
     {
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
 
         // Only when the user is connected
         if ($aeSession->get('authenticated', 0) === 1) {
             $sReturn = self::doIt($params);
         } else {
-            $sReturn = $aeFunctions->showError('not_authenticated', 'You need first to authenticate');
+            $arr=array('status'=>0,'msg'=>$aeFunctions->showError('not_authenticated', 'You need first to authenticate', false));
+            $sReturn = json_encode($arr);
         }
 
         return $sReturn;

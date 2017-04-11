@@ -277,8 +277,11 @@ class Files
 
     public static function createFile(string $filename, string $content, int $chmod = 644) : bool
     {
-        $bReturn = false;
 
+        $errorlevel = error_reporting();
+        error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
+
+        $bReturn = false;
         try {
             if ($handle = fopen($filename, 'w')) {
                 fwrite($handle, $content);
@@ -290,7 +293,14 @@ class Files
                 }
             }
         } catch (Exception $ex) {
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                echo __FILE__."-".__LINE__." - <hr/>";
+                echo $ex->getMessage();
+            }
+            /*<!-- endbuild -->*/
         }
+        error_reporting($errorlevel);
 
         return $bReturn;
     }

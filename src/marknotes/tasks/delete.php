@@ -26,11 +26,12 @@ class Delete
         return self::$_instance;
     }
 
-    private function doIt(array $params) : string
+    private static function doIt(array $params) : string
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeJSON = \MarkNotes\JSON::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         $fullname = str_replace('/', DS, $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS));
 
@@ -178,6 +179,8 @@ class Delete
         } else { // if($params['type']==='folder')
 
             // It's a file
+            // Be sure we've the .md extension
+            $fullname= $aeFiles->removeExtension($aeFiles->sanitizeFileName($fullname)).'.md';
 
             // If the filename doesn't mention the file's extension, add it.
             if (substr($params['filename'], -3) != '.md') {
@@ -221,8 +224,7 @@ class Delete
                                 'action' => 'delete',
                                 'type' => $params['type'],
                                 'msg' => $msg
-                                ),
-                                $arrDebug
+                                )
                             );
                         } else { // if (!\MarkNotes\Files::fileExists($fullname))
 
@@ -239,8 +241,7 @@ class Delete
                                 'action' => 'delete',
                                 'type' => $params['type'],
                                 'msg' => $msg
-                                ),
-                                $arrDebug
+                                )
                             );
                         } // if (!\MarkNotes\Files::fileExists($fullname))
                     } catch (Exception $ex) {

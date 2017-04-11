@@ -187,5 +187,7 @@
 
       <!--%CUSTOM_JS%-->
 
+      <script>initializeTasks();</script>
+
    </body>
 </html>

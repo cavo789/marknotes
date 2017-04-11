@@ -15,11 +15,9 @@ function jstree_init($data) {
 
 	try {
 		if ($.isFunction($.fn.jstree)) {
-			$('#TOC')
-				.jstree("destroy")
-				.empty();
-			$('#TOC')
-				.jstree("true");
+
+			$('#TOC').jstree("destroy").empty();
+			$('#TOC').jstree("true");
 
 			// Use jsTree for the display
 
@@ -53,9 +51,7 @@ function jstree_init($data) {
 				.on('click', '.jstree-anchor', function (e) {
 
 					// By clicking (single-click) on a folder, open / close it
-					$(this)
-						.jstree(true)
-						.toggle_node(e.target);
+					$(this).jstree(true).toggle_node(e.target);
 
 				})
 				.on('keydown.jstree', '.jstree-anchor', function (e) {
@@ -63,9 +59,7 @@ function jstree_init($data) {
 					// @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
 					// If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
 					// Not found a solution...
-					var objNode = $('#TOC')
-						.jstree(true)
-						.get_node(e.currentTarget);
+					var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
 
 					if (objNode.data) {
 						console.log('changed.jstree - ' + objNode.data.file);
@@ -183,8 +177,7 @@ function jstree_init($data) {
  */
 function jstree_context_menu(node) {
 
-	var tree = $('#TOC')
-		.jstree(true);
+	var tree = $('#TOC').jstree(true);
 
 	var items = {
 		Add_Folder: {
@@ -312,17 +305,23 @@ function jstree_CRUD_node(e, data, $task) {
 		var $newname = '';
 
 		if ($type === 'folder') {
+
 			$oldname = data.node.parent + data.old;
 			$newname = data.node.parent + data.node.text;
+
 		} else { // if($type==='folder')
 
 			// Working on a note : retrieve the parent and append the note's name
-			var $parentNode = $('#TOC')
-				.jstree(true)
-				.get_node(data.node.parent);
+			var $parentNode = $('#TOC').jstree(true).get_node(data.node.parent);
 
-			$oldname = $parentNode.parent + $parentNode.text + marknotes.settings.DS + data.old;
-			$newname = $parentNode.parent + $parentNode.text + marknotes.settings.DS + data.node.text;
+			var $root = '';
+
+			// $parentNode.text is equal to '#' on the root node
+			if ($parentNode.text !== '#') $root = $parentNode.text;
+			$root += marknotes.settings.DS;
+
+			$oldname = $root + data.old;
+			$newname = $root + data.node.text;
 		}
 
 		$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));

@@ -35,6 +35,9 @@ class Markdown
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+        $aeSession = \MarkNotes\Session::getInstance();
+        $aeSession->extend();
+
         if ($filename === '') {
             $filename = json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true)));
         }

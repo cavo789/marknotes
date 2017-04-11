@@ -14,3 +14,5 @@ composer.log
 gulpfile.js
 build.bat
 src/assets/aesecure.png
+src/templates/jugwallonie.php
+src/templates/jugtoulouse_reveal.php
