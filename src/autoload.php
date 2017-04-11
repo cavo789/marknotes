@@ -2,10 +2,10 @@
 namespace MarkNotes;
 
 //defined('_MARKNOTES') or die('No direct access allowed');
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 class Autoload
 {
-
     public static function register()
     {
         spl_autoload_register(array(__CLASS__, 'autoload'));
@@ -15,7 +15,7 @@ class Autoload
     {
 
         // Only for MarkNotes classes and not third parties libraries f.i.
-        if (substr($class, 0, 10)==='MarkNotes\\') {
+        if (substr($class, 0, 10) === 'MarkNotes\\') {
             $parts = preg_split('#\\\#', $class);
 
             // on extrait le dernier element
@@ -34,7 +34,7 @@ class Autoload
 
                 /*<!-- build:debug -->*/
                 if (class_exists("\MarkNotes\Debug")) {
-                    $aeDebug=\MarkNotes\Debug::getInstance();
+                    $aeDebug = \MarkNotes\Debug::getInstance();
                     if ($aeDebug->enable()) {
                         echo '<pre>'.print_r(debug_backtrace(3), true).'</pre>';
                     }

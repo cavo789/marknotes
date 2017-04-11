@@ -19,35 +19,34 @@ class AddOrRename
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new AddOrRename();
         }
 
         return self::$_instance;
     }
-
-    public static function run(array $params)
+    
+    private function doIt(array $params) : string
     {
-        $aeDebug=\MarkNotes\Debug::getInstance();
-        $aeFiles=\MarkNotes\Files::getInstance();
-        $aeJSON=\MarkNotes\JSON::getInstance();
-        $aeSettings=\MarkNotes\Settings::getInstance();
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeJSON = \MarkNotes\JSON::getInstance();
 
-        $params['oldname']=$aeSettings->getFolderDocs(true).$params['oldname'];
-        $params['newname']=$aeSettings->getFolderDocs(true).$params['newname'];
 
-        $arrDebug=array();
+        $params['oldname'] = $aeSettings->getFolderDocs(true).$params['oldname'];
+        $params['newname'] = $aeSettings->getFolderDocs(true).$params['newname'];
+
+        $arrDebug = array();
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
-            $arrDebug['debug'][]=$aeDebug->log(__METHOD__, true);
-            $arrDebug['debug'][]=$aeDebug->log('Oldname '.utf8_encode($params['oldname']), true);
-            $arrDebug['debug'][]=$aeDebug->log('Newname '.utf8_encode($params['newname']), true);
-            $arrDebug['debug'][]=$aeDebug->log('Type '.$params['type'], true);
+            $arrDebug['debug'][] = $aeDebug->log(__METHOD__, true);
+            $arrDebug['debug'][] = $aeDebug->log('Oldname '.utf8_encode($params['oldname']), true);
+            $arrDebug['debug'][] = $aeDebug->log('Newname '.utf8_encode($params['newname']), true);
+            $arrDebug['debug'][] = $aeDebug->log('Type '.$params['type'], true);
         }
         /*<!-- endbuild -->*/
 
-        $sReturn='';
+        $sReturn = '';
 
         try {
             // use utf8_decode since the name can contains accentuated characters
@@ -58,13 +57,13 @@ class AddOrRename
                     utf8_encode(dirname($params['oldname'])),
                     $aeSettings->getText('folder_read_only', 'Sorry but the folder [%s] is read-only, no new folder or note can&#39;t be added there')
                 );
-                $sReturn = $aeJSON->json_return_info(array('status'=>0,'msg'=>$msg), $arrDebug);
+                $sReturn = $aeJSON->json_return_info(array('status' => 0,'msg' => $msg), $arrDebug);
             }
         } catch (Exception $ex) {
-            $sReturn = $aeJSON->json_return_info(array('status'=>0,'msg'=>utf8_encode($ex->getMessage())), $arrDebug);
+            $sReturn = $aeJSON->json_return_info(array('status' => 0,'msg' => utf8_encode($ex->getMessage())), $arrDebug);
         } // try
 
-        if ($params['type']==='folder') {
+        if ($params['type'] === 'folder') {
             // Operation on a folder : create or rename
 
             if (!$aeFiles->folderExists(utf8_decode($params['oldname']))) {
@@ -76,7 +75,7 @@ class AddOrRename
                     mkdir(utf8_decode($params['newname']), $aeSettings->getchmod('folder'));
 
                     if ($aeFiles->folderExists(utf8_decode($params['newname']))) {
-                        $msg=str_replace(
+                        $msg = str_replace(
                             '%s',
                             str_replace($aeSettings->getFolderDocs(true), '', $params['newname']),
                             $aeSettings->getText('folder_created', 'The folder [%s] has been created on the disk')
@@ -84,10 +83,10 @@ class AddOrRename
 
                         $sReturn = $aeJSON->json_return_info(
                             array(
-                                'status'=>1,
-                                'action'=>'create',
-                                'type'=>$params['type'],
-                                'msg'=>$msg
+                                'status' => 1,
+                                'action' => 'create',
+                                'type' => $params['type'],
+                                'msg' => $msg
                             ),
                             $arrDebug
                         );
@@ -101,10 +100,10 @@ class AddOrRename
 
                         $sReturn = $aeJSON->json_return_info(
                             array(
-                                'status'=>0,
-                                'action'=>'create',
-                                'type'=>$params['type'],
-                                'msg'=>$msg
+                                'status' => 0,
+                                'action' => 'create',
+                                'type' => $params['type'],
+                                'msg' => $msg
                             ),
                             $arrDebug
                         );
@@ -112,10 +111,10 @@ class AddOrRename
                 } catch (Exception $ex) {
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>0,
-                            'action'=>'create',
-                            'type'=>$params['type'],
-                            'msg'=>$ex->getMessage()
+                            'status' => 0,
+                            'action' => 'create',
+                            'type' => $params['type'],
+                            'msg' => $ex->getMessage()
                         ),
                         $arrDebug
                     );
@@ -126,7 +125,7 @@ class AddOrRename
                 rename(utf8_decode($params['oldname']), utf8_decode($params['newname']));
 
                 if ($aeFiles->folderExists(utf8_decode($params['newname']))) {
-                    $msg=sprintf(
+                    $msg = sprintf(
                         $aeSettings->getText('folder_renamed', 'The folder [%s] has been renamed into [%s]'),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['oldname']),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['newname'])
@@ -134,16 +133,16 @@ class AddOrRename
 
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>1,
-                            'action'=>'rename',
-                            'type'=>$params['type'],
-                            'msg'=>$msg
+                            'status' => 1,
+                            'action' => 'rename',
+                            'type' => $params['type'],
+                            'msg' => $msg
                         ),
                         $arrDebug
                     );
                 } else { // if (is_dir($params['newname']))
 
-                    $msg=sprintf(
+                    $msg = sprintf(
                         $aeSettings->getText('error_rename_folder', 'An error has occured when trying to rename the folder [%s] into [%s]'),
                         str_replace($params['folder'], '', $params['oldname']),
                         str_replace($params['folder'], '', $params['newname'])
@@ -151,10 +150,10 @@ class AddOrRename
 
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>0,
-                            'action'=>'rename',
-                            'type'=>$params['type'],
-                            'msg'=>$msg
+                            'status' => 0,
+                            'action' => 'rename',
+                            'type' => $params['type'],
+                            'msg' => $msg
                         ),
                         $arrDebug
                     );
@@ -165,20 +164,20 @@ class AddOrRename
             // Operation on a file : create or rename
 
             // It's a file, be sure to have the .md extension
-            $params['oldname']=$aeFiles->removeExtension($params['oldname']).'.md';
-            $params['newname']=$aeFiles->removeExtension($params['newname']).'.md';
+            $params['oldname'] = $aeFiles->removeExtension($params['oldname']).'.md';
+            $params['newname'] = $aeFiles->removeExtension($params['newname']).'.md';
 
             if (!$aeFiles->fileExists(utf8_decode($params['oldname']))) {
                 // Define the filename
-                $params['newname']=$aeFiles->removeExtension($aeFiles->sanitizeFileName($params['newname'])).'.md';
+                $params['newname'] = $aeFiles->removeExtension($aeFiles->sanitizeFileName($params['newname'])).'.md';
 
                 // Define the content : get the filename without the extension and set the content as heading 1
-                $content='# '.basename($aeFiles->removeExtension($params['newname'])).PHP_EOL;
+                $content = '# '.basename($aeFiles->removeExtension($params['newname'])).PHP_EOL;
 
                 $aeFiles->createFile(utf8_decode($params['newname']), $content, $aeSettings->getchmod('file'));
 
                 if ($aeFiles->fileExists(utf8_decode($params['newname']))) {
-                    $msg=str_replace(
+                    $msg = str_replace(
                         '%s',
                         str_replace($aeSettings->getFolderDocs(true), '', $params['newname']),
                         $aeSettings->getText('file_created', 'The note [%s] has been successfully created on the disk')
@@ -186,17 +185,17 @@ class AddOrRename
 
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>1,
-                            'action'=>'create',
-                            'type'=>$params['type'],
-                            'msg'=>$msg,
-                            'filename'=>str_replace($aeSettings->getFolderDocs(true), '', $params['newname'])
+                            'status' => 1,
+                            'action' => 'create',
+                            'type' => $params['type'],
+                            'msg' => $msg,
+                            'filename' => str_replace($aeSettings->getFolderDocs(true), '', $params['newname'])
                         ),
                         $arrDebug
                     );
                 } else { // if ($aeFiles->fileExists($params['newname']))
 
-                    $msg=str_replace(
+                    $msg = str_replace(
                         '%s',
                         $params['newname'],
                         $aeSettings->getText('error_create_file', 'An error has occured during the creation of the note [%s]')
@@ -204,10 +203,10 @@ class AddOrRename
 
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>0,
-                            'action'=>'create',
-                            'type'=>$params['type'],
-                            'msg'=>$msg
+                            'status' => 0,
+                            'action' => 'create',
+                            'type' => $params['type'],
+                            'msg' => $msg
                         ),
                         $arrDebug
                     );
@@ -224,7 +223,7 @@ class AddOrRename
                         unlink(utf8_decode($fnameHTML));
                     }
 
-                    $msg=sprintf(
+                    $msg = sprintf(
                         $aeSettings->getText('file_renamed', 'The note [%s] has been renamed into [%s]'),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['oldname']),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['newname'])
@@ -232,16 +231,16 @@ class AddOrRename
 
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>1,
-                            'action'=>'rename',
-                            'type'=>$params['type'],
-                            'msg'=>$msg
+                            'status' => 1,
+                            'action' => 'rename',
+                            'type' => $params['type'],
+                            'msg' => $msg
                         ),
                         $arrDebug
                     );
                 } else { // if (is_dir($params['newname']))
 
-                    $msg=sprintf(
+                    $msg = sprintf(
                         $aeSettings->getText('error_rename_file', 'An error has occured when trying to rename the note [%s] into [%s]'),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['oldname']),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['newname'])
@@ -249,10 +248,10 @@ class AddOrRename
 
                     $sReturn = $aeJSON->json_return_info(
                         array(
-                            'status'=>0,
-                            'action'=>'rename',
-                            'type'=>$params['type'],
-                            'msg'=>$msg
+                            'status' => 0,
+                            'action' => 'rename',
+                            'type' => $params['type'],
+                            'msg' => $msg
                         ),
                         $arrDebug
                     );
@@ -261,5 +260,22 @@ class AddOrRename
         } // if ($params['type']==='folder')
 
         return $sReturn;
-    } // function Run()
-} // class AddOrRename
+    }
+
+    public static function run(array $params)
+    {
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
+
+        // Only when the user is connected
+        if ($aeSession->get('authenticated', 0) === 1) {
+            $sReturn = self::doIt($params);
+        } else {
+            $sReturn = $aeFunctions->showError('not_authenticated', 'You need first to authenticate');
+        }
+
+        return $sReturn;
+    }
+}
