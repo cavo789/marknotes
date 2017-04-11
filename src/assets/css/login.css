@@ -109,3 +109,8 @@ form.signin input::-webkit-input-placeholder {
 .button:hover {
     background: #ddd;
 }
+
+.errorLogin  {
+	border : 2px solid red !important;
+	box-shadow :0 0 3px red !important;
+}

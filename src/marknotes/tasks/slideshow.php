@@ -89,7 +89,7 @@ class SlideShow
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        // A manual section break (i.e. a new slide) can be manually created in MarkNotes by just creating, in the
+        // A manual section break (i.e. a new slide) can be manually created in marknotes by just creating, in the
         // note a new line with --- (or -----).  Only these characters on the beginning of the line.
         //
         // WARNING : the string should be with LF (linefeed) only and not CRLF
@@ -245,7 +245,7 @@ class SlideShow
 
         // Get the remark template
         $slideshow = file_get_contents($aeSettings->getTemplateFile($params['layout']));
-        
+
         // $slideshow contains the template : it's an html file with (from the /templates folder)
         // and that file contains variables => convert them
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();

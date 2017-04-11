@@ -15,7 +15,6 @@ class ClearCache
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new ClearCache();
         }
@@ -28,6 +27,6 @@ class ClearCache
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSession->destroy();
 
-        return json_encode(array('statut'=>'1'), JSON_PRETTY_PRINT);
+        return json_encode(array('status' => '1'), JSON_PRETTY_PRINT);
     }
 }

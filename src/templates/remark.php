@@ -1,172 +1,53 @@
-<?php
-// @codingStandardsIgnoreFile
-?>
-<!--
-   based on remark : https://github.com/gnab/remark
-   Tutorial : https://github.com/gnab/remark/wiki/Markdown
--->
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
-    		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    		<meta name="robots" content="%ROBOTS%" />
-    		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
-    		<meta name="author" content="MarkNotes | Notes management" />
-    		<meta name="designer" content="MarkNotes | Notes management" />
-    		<meta name="keywords" content="%TITLE%" />
-    		<meta name="description" content="%TITLE%" />
-    		<meta name="apple-mobile-web-app-capable" content="yes" />
-    		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    		<meta property="og:url" content="%URL_PAGE%" />
-    		<meta property="og:type" content="article" />
-    		<meta property="og:image" content="%URL_IMG%" />
-    		<meta property="og:image:width" content="1200" />
-    		<meta property="og:image:height" content="522" />
-    		<meta property="og:title" content="%TITLE%" />
-    		<meta property="og:site_name" content="%SITE_NAME%" />
-    		<meta property="og:description" content="%TITLE%" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="%ROBOTS%" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
+		<meta name="author" content="marknotes | Notes management" />
+		<meta name="designer" content="marknotes | Notes management" />
+		<meta name="keywords" content="%TITLE%" />
+		<meta name="description" content="%TITLE%" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta property="og:url" content="%URL_PAGE%" />
+		<meta property="og:type" content="article" />
+		<meta property="og:image" content="%URL_IMG%" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="522" />
+		<meta property="og:title" content="%TITLE%" />
+		<meta property="og:site_name" content="%SITE_NAME%" />
+		<meta property="og:description" content="%TITLE%" />
 
-        <title>%TITLE%</title>
+    	<title>%TITLE%</title>
 
-    		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
+		<link rel="apple-touch-icon" sizes="57x57" href="%ROOT%/assets/images/favicons/apple-touch-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="%ROOT%/assets/images/favicons/apple-touch-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="%ROOT%/assets/images/favicons/apple-touch-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="%ROOT%/assets/images/favicons/apple-touch-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="%ROOT%/assets/images/favicons/apple-touch-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="%ROOT%/assets/images/favicons/apple-touch-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="%ROOT%/assets/images/favicons/apple-touch-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="%ROOT%/assets/images/favicons/apple-touch-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="%ROOT%/assets/images/favicons/apple-touch-icon-180x180.png">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-36x36.png" sizes="36x36">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-48x48.png" sizes="48x48">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-72x72.png" sizes="72x72">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-96x96.png" sizes="96x96">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-144x144.png" sizes="144x144">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-192x192.png" sizes="192x192">
+		<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="%ROOT%/assets/images/favicons/manifest.json">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="msapplication-TileImage" content="%ROOT%/assets/images/favicons/mstile-144x144.png">
+		<meta name="theme-color" content="#ffffff">
 
-        <style>
+		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/remark.css" media="screen" />
 
-            #source{display:none;}
-
-            body {
-                font-family: 'Droid Serif';
-            }
-            h1, h2, h3 {
-                font-family: 'Yanone Kaffeesatz';
-                font-weight: 400;
-                margin-bottom: 0;
-            }
-
-            img {
-                max-width:800px;
-            }
-
-            .remark-slide-content h1 {
-                font-size: 3em;
-            }
-            .remark-slide-content h2 {
-                font-size: 2em;
-            }
-            .remark-slide-content h3 {
-                font-size: 1.6em;
-            }
-            .footnote {
-                position: absolute;
-                bottom: 1em;
-            }
-            li p {
-                line-height: 1.25em;
-            }
-            .italic {
-                font-style:italic;
-            }
-            .red {
-                color: #fa0000;
-             }
-            .large {
-                font-size: 2em;
-            }
-            a, a > code {
-                color: rgb(249, 38, 114);
-                text-decoration: none;
-            }
-            code {
-                background: #e7e8e2;
-                border-radius: 5px;
-            }
-            .remark-code, .remark-inline-code {
-                font-family: 'Ubuntu Mono';
-            }
-            .remark-code-line-highlighted {
-                background-color: #373832;
-            }
-            .pull-left {
-                float: left;
-                width: 47%;
-            }
-            .pull-right {
-                float: right;
-                width: 47%;
-            }
-            .pull-right ~ p {
-                clear: both;
-            }
-            #slideshow .slide .content code {
-                font-size: 0.8em;
-            }
-            #slideshow .slide .content pre code {
-                font-size: 0.9em;
-                padding: 15px;
-            }
-            .inverse {
-                background: #272822;
-                color: #777872;
-                text-shadow: 0 0 20px #333;
-            }
-            .inverse h1, .inverse h2 {
-                color: #f3f3f3;
-                line-height: 0.8em;
-            }
-
-            /* Slide-specific styling */
-            #slide-inverse .footnote {
-                bottom: 12px;
-                left: 20px;
-            }
-            #slide-how .slides {
-                font-size: 0.9em;
-                position: absolute;
-                top:  151px;
-                right: 140px;
-            }
-            #slide-how .slides h3 {
-                margin-top: 0.2em;
-            }
-            #slide-how .slides .first, #slide-how .slides .second {
-                padding: 1px 20px;
-                height: 90px;
-                width: 120px;
-                -moz-box-shadow: 0 0 10px #777;
-                -webkit-box-shadow: 0 0 10px #777;
-                box-shadow: 0 0 10px #777;
-            }
-            #slide-how .slides .first {
-                background: #fff;
-                position: absolute;
-                top: 20%;
-                left: 20%;
-                z-index: 1;
-            }
-            #slide-how .slides .second {
-                position: relative;
-                background: #fff;
-                z-index: 0;
-            }
-
-            /* Two-column layout */
-            .left-column {
-                color: #777;
-                width: 20%;
-                height: 92%;
-                float: left;
-            }
-            .left-column h2:last-of-type, .left-column h3:last-child {
-                color: #000;
-            }
-            .right-column {
-                width: 75%;
-                float: right;
-                padding-top: 1em;
-            }
-        </style>
     </head>
     <body>
 
@@ -174,12 +55,13 @@
 
         <script src="%URL%/libs/remark/remark-latest.min.js"></script>
 
-        <script type="text/javascript">
-            var hljs = remark.highlighter.engine;
-            var slideshow = remark.create({
-                highlightStyle: 'monokai'
-            });
-        </script>
+		<script type="text/javascript">
+			var hljs = remark.highlighter.engine
+
+			var slideshow = remark.create({
+				highlightStyle: 'monokai'
+			});
+		</script>
 
     </body>
 

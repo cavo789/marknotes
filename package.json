@@ -1,7 +1,7 @@
 {
 	"name": "marknotes",
 	"version": "1.0.7",
-	"description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
+	"description": "Script that will transform your notes taken in the markdown format (.md files) into a rich website",
 	"main": "index.php",
 	"devDependencies": {
 		"csslint-stylish": "0.0.5",

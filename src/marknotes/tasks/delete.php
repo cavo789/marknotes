@@ -19,7 +19,6 @@ class Delete
 
     public static function getInstance()
     {
-
         if (self::$_instance === null) {
             self::$_instance = new Delete();
         }
@@ -27,37 +26,15 @@ class Delete
         return self::$_instance;
     }
 
-    public static function run(array $params)
+    private function doIt(array $params) : string
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeJSON = \MarkNotes\JSON::getInstance();
 
-        header('Content-Type: text/html; charset=utf-8');
+        $fullname = str_replace('/', DS, $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS));
 
-        if (!class_exists('Debug')) {
-            include_once dirname(dirname(__FILE__)).'/debug.php';
-        }
-
-        $aeDebug=\MarkNotes\Debug::getInstance();
-        $aeFiles=\MarkNotes\Files::getInstance();
-        $aeJSON=\MarkNotes\JSON::getInstance();
-        $aeSettings=\MarkNotes\Settings::getInstance();
-
-        $fullname=str_replace(
-            '/',
-            DIRECTORY_SEPARATOR,
-            $aeSettings->getFolderDocs(true).
-            ltrim($params['filename'], DS)
-        );
-
-        $arrDebug=array();
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDebugMode()) {
-            $arrDebug['debug'][]=$aeDebug->log(__METHOD__, true);
-            $arrDebug['debug'][]=$aeDebug->log('Filename '.$params['filename'], true);
-            $arrDebug['debug'][]=$aeDebug->log('Type '.$params['type'], true);
-        }
-        /*<!-- endbuild -->*/
-
-        if ($params['type']==='folder') {
+        if ($params['type'] === 'folder') {
             // It's a folder
 
             if (!$aeFiles->folderExists(utf8_decode($fullname))) {
@@ -77,14 +54,14 @@ class Delete
 
                         // $docs will be something like c:\websites\notes\docs\
 
-                        $docs=$aeSettings->getFolderDocs(true);
+                        $docs = $aeSettings->getFolderDocs(true);
 
                         // $fullname will be something like c:\websites\notes\docs\folder\folder_to_kill
                         // So be really sure that the $fullname absolute path is well within the $docs
                         // folder (strcmp should strictly give 0).  if so, continue and allow the deletion
                         // If not, stop and return an error.
 
-                        if (strcmp($docs, substr($fullname, 0, strlen($docs)))===0) {
+                        if (strcmp($docs, substr($fullname, 0, strlen($docs))) === 0) {
                             // Ok, recursively kill the folder and its content
 
                             $it = new \RecursiveDirectoryIterator(utf8_decode($fullname), \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -97,13 +74,13 @@ class Delete
                                     if (!$aeFiles->folderExists($file->getRealPath())) {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
-                                            $arrDebug['debug'][]=$aeDebug->log('Kill folder '.utf8_encode($file->getRealPath()), true);
+                                            $arrDebug['debug'][] = $aeDebug->log('Kill folder '.utf8_encode($file->getRealPath()), true);
                                         }
                                         /*<!-- endbuild -->*/
                                     } else {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
-                                            $arrDebug['debug'][]=$aeDebug->log('Folder is read-only and can\'t be removed : '.utf8_encode($file->getRealPath()), true);
+                                            $arrDebug['debug'][] = $aeDebug->log('Folder is read-only and can\'t be removed : '.utf8_encode($file->getRealPath()), true);
                                         }
                                         /*<!-- endbuild -->*/
                                     }
@@ -114,13 +91,13 @@ class Delete
                                     if (!$aeFiles->fileExists($file->getRealPath())) {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
-                                            $arrDebug['debug'][]=$aeDebug->log('Kill file '.utf8_encode($file->getRealPath()), true);
+                                            $arrDebug['debug'][] = $aeDebug->log('Kill file '.utf8_encode($file->getRealPath()), true);
                                         }
                                         /*<!-- endbuild -->*/
                                     } else {
                                         /*<!-- build:debug -->*/
                                         if ($aeSettings->getDebugMode()) {
-                                            $arrDebug['debug'][]=$aeDebug->log('File is read-only and can\'t be removed '.utf8_encode($file->getRealPath()), true);
+                                            $arrDebug['debug'][] = $aeDebug->log('File is read-only and can\'t be removed '.utf8_encode($file->getRealPath()), true);
                                         }
                                         /*<!-- endbuild -->*/
                                     }
@@ -133,36 +110,36 @@ class Delete
 
                             /*<!-- build:debug -->*/
                             if ($aeSettings->getDebugMode()) {
-                                $arrDebug['debug'][]=$aeDebug->log('Kill folder '.$fullname, true);
+                                $arrDebug['debug'][] = $aeDebug->log('Kill folder '.$fullname, true);
                             }
                             /*<!-- endbuild -->*/
 
-                            $msg=sprintf(
+                            $msg = sprintf(
                                 $aeSettings->getText('folder_deleted', 'The folder [%s] and its content has been deleted'),
                                 $params['filename']
                             );
 
                             echo $aeJSON->json_return_info(
                                 array(
-                                'status'=>1,
-                                'action'=>'delete',
-                                'type'=>$params['type'],
-                                'msg'=>$msg
+                                'status' => 1,
+                                'action' => 'delete',
+                                'type' => $params['type'],
+                                'msg' => $msg
                                 ),
                                 $arrDebug
                             );
                         } else {
-                            $msg=sprintf(
+                            $msg = sprintf(
                                 $aeSettings->getText('folder_not_deleted', 'The folder [%s] is outside your documentation root folder and therefore will not be deleted'),
                                 $params['filename']
                             );
 
                             echo $aeJSON->json_return_info(
                                 array(
-                                'status'=>0,
-                                'action'=>'delete',
-                                'type'=>$params['type'],
-                                'msg'=>$msg
+                                'status' => 0,
+                                'action' => 'delete',
+                                'type' => $params['type'],
+                                'msg' => $msg
                                 ),
                                 $arrDebug
                             );
@@ -170,10 +147,10 @@ class Delete
                     } catch (Exception $ex) {
                         echo $aeJSON->json_return_info(
                             array(
-                            'status'=>0,
-                            'action'=>'delete',
-                            'type'=>$params['type'],
-                            'msg'=>$ex->getMessage()
+                            'status' => 0,
+                            'action' => 'delete',
+                            'type' => $params['type'],
+                            'msg' => $ex->getMessage()
                             ),
                             $arrDebug
                         );
@@ -182,17 +159,17 @@ class Delete
 
                     // The folder is readonly, can't delete it
 
-                    $msg=sprintf(
+                    $msg = sprintf(
                         $aeSettings->getText('folder_read_only', 'Sorry but the folder [%s] is read-only'),
                         $params['filename']
                     );
 
                     echo $aeJSON->json_return_info(
                         array(
-                        'status'=>0,
-                        'action'=>'delete',
-                        'type'=>$params['type'],
-                        'msg'=>$msg
+                        'status' => 0,
+                        'action' => 'delete',
+                        'type' => $params['type'],
+                        'msg' => $msg
                         ),
                         $arrDebug
                     );
@@ -203,8 +180,8 @@ class Delete
             // It's a file
 
             // If the filename doesn't mention the file's extension, add it.
-            if (substr($params['filename'], -3)!='.md') {
-                $params['filename'].='.md';
+            if (substr($params['filename'], -3) != '.md') {
+                $params['filename'] .= '.md';
             }
 
             if (!$aeFiles->fileExists($fullname)) {
@@ -233,17 +210,17 @@ class Delete
                                 unlink($fnameHTML);
                             }
 
-                            $msg=sprintf(
+                            $msg = sprintf(
                                 $aeSettings->getText('file_deleted', 'The note [%s] has been successfully deleted'),
                                 $params['filename']
                             );
 
                             echo $aeJSON->json_return_info(
                                 array(
-                                'status'=>1,
-                                'action'=>'delete',
-                                'type'=>$params['type'],
-                                'msg'=>$msg
+                                'status' => 1,
+                                'action' => 'delete',
+                                'type' => $params['type'],
+                                'msg' => $msg
                                 ),
                                 $arrDebug
                             );
@@ -251,17 +228,17 @@ class Delete
 
                             // A problem has occured
 
-                            $msg=sprintf(
+                            $msg = sprintf(
                                 $aeSettings->getText('error_delete_file', 'An error has occured during the deletion of the note [%s]'),
                                 $params['filename']
                             );
 
                             echo $aeJSON->json_return_info(
                                 array(
-                                'status'=>0,
-                                'action'=>'delete',
-                                'type'=>$params['type'],
-                                'msg'=>$msg
+                                'status' => 0,
+                                'action' => 'delete',
+                                'type' => $params['type'],
+                                'msg' => $msg
                                 ),
                                 $arrDebug
                             );
@@ -269,10 +246,10 @@ class Delete
                     } catch (Exception $ex) {
                         echo $aeJSON->json_return_info(
                             array(
-                            'status'=>0,
-                            'action'=>'delete',
-                            'type'=>$params['type'],
-                            'msg'=>$ex->getMessage()
+                            'status' => 0,
+                            'action' => 'delete',
+                            'type' => $params['type'],
+                            'msg' => $ex->getMessage()
                             ),
                             $arrDebug
                         );
@@ -281,24 +258,53 @@ class Delete
 
                     // The file is readonly, can't delete it
 
-                    $msg=sprintf(
+                    $msg = sprintf(
                         $aeSettings->getText('file_read_only', 'The note [%s] is read-only, it\\&#39;s then impossible to delete it'),
                         $params['filename']
                     );
 
                     echo $aeJSON->json_return_info(
                         array(
-                        'status'=>0,
-                        'action'=>'delete',
-                        'type'=>$params['type'],
-                        'msg'=>$msg
+                        'status' => 0,
+                        'action' => 'delete',
+                        'type' => $params['type'],
+                        'msg' => $msg
                         ),
                         $arrDebug
                     );
                 } // if(is_writable($fullname))
             } // // if (!\MarkNotes\Files::fileExists($fullname))
         } // if($params['type']==='folder')
+    }
 
-        return;
+    public static function run(array $params) : string
+    {
+        if (!class_exists('Debug')) {
+            include_once dirname(dirname(__FILE__)).'/debug.php';
+        }
+
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
+
+        $arrDebug = array();
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $arrDebug['debug'][] = $aeDebug->log(__METHOD__, true);
+            $arrDebug['debug'][] = $aeDebug->log('Is authenticated? '.$aeSession->get('authenticated', 0), true);
+            $arrDebug['debug'][] = $aeDebug->log('Filename '.$params['filename'], true);
+            $arrDebug['debug'][] = $aeDebug->log('Type '.$params['type'], true);
+        }
+        /*<!-- endbuild -->*/
+
+        // Only when the user is connected
+        if ($aeSession->get('authenticated', 0) === 1) {
+            $sReturn = self::doIt($params);
+        } else {
+            $sReturn = $aeFunctions->showError('not_authenticated', 'You need first to authenticate');
+        }
+
+        return $sReturn;
     }
 }

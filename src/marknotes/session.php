@@ -6,12 +6,10 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Session
 {
-
-    protected static $_instance = null;
+    protected static $_Instance = null;
 
     public function __construct()
     {
-
         self::init();
 
         return true;
@@ -19,32 +17,33 @@ class Session
 
     public static function getInstance()
     {
-
-        if (self::$_instance === null) {
-            self::$_instance = new Session();
+        if (self::$_Instance === null) {
+            self::$_Instance = new Session();
         }
 
-        return self::$_instance;
+        return self::$_Instance;
     }
 
     private function init()
     {
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
         if (!isset($_SESSION)) {
-             //session_save_path will cause a white page on a few hosting company.
-            //@session_save_path(aeSecureFct::getTmpPath());
+            //session_save_path will cause a white page on a few hosting company.
+            @session_save_path($aeSettings->getFolderTmp());
             try {
-                if (session_id()=='') {
+                if (session_id() == '') {
                     session_start();
                 }
             } catch (Exception $e) {
-               // On some hoster the path where to store session is incorrectly set and this gives a fatal error
+                // On some hoster the path where to store session is incorrectly set and this gives a fatal error
                // Handle this and use the /tmp folder in this case.
                 @session_destroy();
                 session_save_path(sys_get_temp_dir());
                 session_start();
             } // try
 
-            self::set('MarkNotes', 0);
+            self::set('marknotes', 1);
         }
 
         return;
@@ -66,7 +65,7 @@ class Session
     */
     public function set(string $name, $value)
     {
-        $_SESSION['MN_'.$name]=$value;
+        $_SESSION['MN_'.$name] = $value;
         return true;
     }
 
@@ -80,7 +79,7 @@ class Session
     */
     public function get(string $name = null, $default = null)
     {
-        $return=isset($_SESSION) ? ( $name==null ? $_SESSION : (isset($_SESSION['MN_'.$name])?$_SESSION['MN_'.$name]:$default) ) : null;
+        $return = isset($_SESSION) ? ($name == null ? $_SESSION : (isset($_SESSION['MN_'.$name])?$_SESSION['MN_'.$name]:$default)) : null;
         return $return;
     }
 

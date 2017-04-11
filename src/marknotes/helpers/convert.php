@@ -89,7 +89,7 @@ class Convert
 
         if (isset($params['task'])) {
             if ($params['task'] !== 'slideshow') {
-                // A manual section break (i.e. a new slide) can be manually created in MarkNotes by just creating, in the
+                // A manual section break (i.e. a new slide) can be manually created in marknotes by just creating, in the
                 // note a new line with --- (or -----).  Only these characters on the beginning of the line.
                 $newSlide = '\n+^-{3,5}$\n+';
 

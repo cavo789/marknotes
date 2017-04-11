@@ -1,6 +1,3 @@
-<?php
-// @codingStandardsIgnoreFile
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +9,8 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
 
-        <meta name="author" content="MarkNotes | Notes management" />
-        <meta name="designer" content="MarkNotes | Notes management" />
+        <meta name="author" content="marknotes | Notes management" />
+        <meta name="designer" content="marknotes | Notes management" />
         <meta name="keywords" content="markdown, marknotes, html, slideshow, knowledge management" />
         <meta name="description" content="" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -22,9 +19,9 @@
         <meta property="og:image" content="%ROOT%/assets/images/notes.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="800" />
-        <meta property="og:title" content="MarkNotes | Notes management" />
-        <meta property="og:site_name" content="MarkNotes | Notes management" />
-        <meta property="og:description" content="MarkNotes | Notes management" />
+        <meta property="og:title" content="marknotes | Notes management" />
+        <meta property="og:site_name" content="marknotes | Notes management" />
+        <meta property="og:description" content="marknotes | Notes management" />
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/animatecss/3.5.2/animate.min.css" />
         <link rel="stylesheet" href="%ROOT%/libs/jquery-albe-timeline/style-albe-timeline.css" />

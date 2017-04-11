@@ -1,4 +1,4 @@
-# MarkNotes v1
+# marknotes v1
 
 ![Build Status](https://travis-ci.org/cavo789/marknotes.svg?branch=master) ![License MIT](https://marknotes.cavo789.com/docs/license.png) ![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/marknotes/master/badge.svg)
 

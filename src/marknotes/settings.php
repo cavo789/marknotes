@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Settings
 {
-    protected static $_instance = null;
+    protected static $_Instance = null;
 
     private $_folderDocs = '';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
     private $_folderAppRoot = '';
@@ -29,11 +29,11 @@ class Settings
 
     public static function getInstance(string $folder = '', array $params = null)
     {
-        if (self::$_instance === null) {
-            self::$_instance = new Settings($folder, $params);
+        if (self::$_Instance === null) {
+            self::$_Instance = new Settings($folder, $params);
         }
 
-        return self::$_instance;
+        return self::$_Instance;
     } // function getInstance()
 
     private function loadJSON(array $params = null) : array
@@ -71,7 +71,7 @@ class Settings
             }
         }
 
-            // 3. Get the settings.json file that is, perhaps, present in the folder of the note
+        // 3. Get the settings.json file that is, perhaps, present in the folder of the note
         if (isset($params['filename'])) {
             $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
             $noteJSON = $noteFolder.DS.'settings.json';
@@ -917,5 +917,14 @@ class Settings
             }
         }
         return $bReturn;
+    }
+
+    public function getAdminInfos() : array
+    {
+        $arr = array();
+        if (isset($this->_json['admin'])) {
+            $arr = $this->_json['admin'];
+        }
+        return $arr;
     }
 }

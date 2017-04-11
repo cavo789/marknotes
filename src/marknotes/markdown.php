@@ -76,7 +76,8 @@ class Markdown
                 // Delete a note or a folder : retrieve the type
                 $type = $aeFunctions->getParam('param3', 'string', '', false);
                 $aeTask = \MarkNotes\Tasks\Delete::getInstance();
-                $aeTask->run(array('filename' => $filename,'type' => $type));
+                header('Content-Type: text/html; charset=utf-8');
+                echo $aeTask->run(array('filename' => $filename,'type' => $type));
                 break;
 
             case 'display':
@@ -89,7 +90,6 @@ class Markdown
             case 'edit':
                 // Edit an existing file
                 $aeTask = \MarkNotes\Tasks\Edit::getInstance();
-                header('Content-Type: text/plain; charset=utf-8');
                 echo $aeTask->run(array('filename' => $filename));
                 break;
 
@@ -105,6 +105,13 @@ class Markdown
                 $aeTask = \MarkNotes\Tasks\ListFiles::getInstance();
                 header('Content-Type: application/json');
                 echo \MarkNotes\Tasks\ListFiles::run();
+                break;
+
+            case 'login':
+                // Login
+                $aeTask = \MarkNotes\Tasks\Login::getInstance();
+                header('Content-Type: application/json');
+                echo $aeTask->run();
                 break;
 
             case 'pdf':

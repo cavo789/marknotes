@@ -54,13 +54,13 @@ RegExp.quote = function (str) {
 $(document).ready(function () {
 
 	if (marknotes.autoload === 1) {
-
 		if ($.isFunction($.fn.toolbar)) {
+
 			$("#toolbar-app").toolbar({
 				content: "#toolbar-app-options",
 				position: "bottom",
-				style: "default",
 				event: "click",
+				style: "default",
 				hideOnClick: true
 			});
 		}
@@ -373,8 +373,7 @@ function initializeTasks() {
 		event.stopPropagation();
 		event.stopImmediatePropagation();
 
-		var $task = $(this)
-			.data('task');
+		var $task = $(this).data('task');
 
 		var $fname = $(this).attr('data-file') ? decodeURIComponent($(this).data('file')) : '';
 
@@ -533,29 +532,85 @@ function initializeTasks() {
  */
 function showLoginForm() {
 
-    //Fade in the Popup
-    $('#login-box').fadeIn(300);
+	//Fade in the Popup
+	$('#login-box').fadeIn(300);
+	$('#username').focus();
 
-    //Set the center alignment padding + border see css style
-    var popMargTop = ($('#login-box').height() + 24) / 2;
-    var popMargLeft = ($('#login-box').width() + 24) / 2;
+	//Set the center alignment padding + border see css style
+	var popMargTop = ($('#login-box').height() + 24) / 2;
+	var popMargLeft = ($('#login-box').width() + 24) / 2;
 
-    $('#login-box').css({
-        'margin-top' : -popMargTop,
-        'margin-left' : -popMargLeft
-    });
+	$('#login-box').css({
+		'margin-top': -popMargTop,
+		'margin-left': -popMargLeft
+	});
 
-    // Add the mask to body
-    $('body').append('<div id="mask"></div>');
-    $('#mask').fadeIn(300);
+	// Add the mask to body
+	$('body').append('<div id="mask"></div>');
+	$('#mask').fadeIn(300);
 
-	$('a.close, #mask').click(function() {
-		$('#mask , .login-popup').fadeOut(300 , function() {
+	$('a.close, #mask').click(function () {
+		$('#mask , .login-popup').fadeOut(300, function () {
 			$('#mask').remove();
 		});
 	});
 
-    return false;
+	$('#login-box .submit').click(function () {
+		var $login = $('#username').val();
+		var $password = $('#password').val();
+
+		if (($login == null) || ($login == '') || ($password == null) || ($password == '')) {
+
+			Noty({
+				message: marknotes.message.incorrect_login,
+				type: 'error'
+			});
+
+			$('#username').addClass("errorLogin");
+			$('#password').addClass("errorLogin");
+
+		} else {
+
+			// Ok, try to connect
+			$login = window.btoa(encodeURIComponent(JSON.stringify($login.trim())));
+			$password = window.btoa(encodeURIComponent(JSON.stringify($password.trim())));
+
+			$.post("index.php", {
+					task: 'login',
+					'username': $login,
+					'password': $password
+				},
+
+				function (data) {
+
+					var $status = false;
+
+					if (data.hasOwnProperty('status')) {
+						$status = (data.status === 1 ? true : false)
+					}
+
+					if ($status) {
+						Noty({
+							message: marknotes.message.login_success,
+							type: 'success'
+						});
+					} else {
+
+						Noty({
+							message: marknotes.message.incorrect_login,
+							type: 'error'
+						});
+						$('#username').addClass("errorLogin");
+						$('#password').addClass("errorLogin");
+
+					}
+				}
+			);
+		}
+
+	});
+
+	return false;
 }
 /**
  * Empty the localStorage cache and the session on the server; reload then the page

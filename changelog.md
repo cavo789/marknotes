@@ -1,6 +1,6 @@
-# Changelog - Markdown
+# Changelog - marknotes
 
-[https://github.com/cavo789/markdown](https://github.com/cavo789/markdown)
+[https://github.com/cavo789/marknotes](https://github.com/cavo789/marknotes)
 
 
 ## 1.0.7
@@ -8,6 +8,7 @@
 ### 2017-xx-xx
 
 ```diff
++ Add a login screen before being able to add, delete or edit notes
 + Improve performance by using the session object on the server side (and no more only localStorage on the client site)
 + Add deckTape support (on Windows server) (https://github.com/astefanutti/decktape)
 + Add custom settings for a given note or its parent folder (https://github.com/cavo789/marknotes/wiki/5.6-Settings-override)

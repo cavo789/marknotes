@@ -1,6 +1,3 @@
-<?php
-// @codingStandardsIgnoreFile
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,19 +9,19 @@
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
 
-        <meta name="author" content="MarkNotes | Notes management" />
-        <meta name="designer" content="MarkNotes | Notes management" />
+        <meta name="author" content="marknotes | Notes management" />
+        <meta name="designer" content="marknotes | Notes management" />
         <meta name="keywords" content="markdown, markotes, html, slideshow, knowledge management" />
-        <meta name="description" content="MarkNotes is a knowledge management tool.  Notes are written in the Markdown language and then displayed as full functionnal html page.  Can be displayed as a slideshow also." />
+        <meta name="description" content="marknotes is a knowledge management tool. Notes are written in the markdown language and then displayed as full functionnal html page. Can be displayed as a slideshow also." />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="%ROOT%/assets/images/notes.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="800" />
-        <meta property="og:title" content="MarkNotes | Notes management" />
-        <meta property="og:site_name" content="MarkNotes | Notes management" />
-        <meta property="og:description" content="MarkNotes | Notes management" />
+        <meta property="og:title" content="marknotes | Notes management" />
+        <meta property="og:site_name" content="marknotes | Notes management" />
+        <meta property="og:description" content="marknotes | Notes management" />
 
         <!--%META_CACHE%-->
 
@@ -76,7 +73,7 @@
 
         <div id="login-box" class="login-popup">
             <a href="#" class="close"><img src="assets/images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>
-            <form method="post" class="signin" action="index.php?action=login">
+            <form method="post" class="signin" action="#">
                 <fieldset class="textbox">
                     <label class="username">
                     <span>%LOGIN%</span>

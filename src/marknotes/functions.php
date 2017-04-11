@@ -18,7 +18,32 @@ class Functions
         if (self::$_Instance === null) {
             self::$_Instance = new Functions();
         }
+
         return self::$_Instance;
+    }
+
+    /**
+     * Display an error message and, if the debug mode is enabled, gives info about the caller
+     */
+    public static function showError(string $code, string $default, bool $bHTML = true) : string
+    {
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $caller = '';
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $caller = ' (called by '.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
+               ', line '.debug_backtrace()[0]['line'].')';
+        }
+        /*<!-- endbuild -->*/
+
+        $sReturn = $aeSettings->getText($code, $default).$caller;
+
+        if ($bHTML) {
+            $sReturn = '<div class="text-danger">'.$sReturn.'</div>';
+        }
+
+        return $sReturn;
     }
 
     /**
@@ -84,7 +109,11 @@ class Functions
                         if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
                             $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
                         } else {
-                            echo $folderNote.$matches[2][$i].' NOT FOUND<hr/>';
+                            /*<!-- build:debug -->*/
+                            if ($aeSettings->getDebugMode()) {
+                                echo $folderNote.$matches[2][$i].' NOT FOUND<hr/>';
+                            }
+                            /*<!-- endbuild -->*/
                         }
                     }
                 }

@@ -3,6 +3,7 @@
   <description>MarkNotes specific PHP-CS rules</description>
   <arg name="tab-width" value="4"></arg>
   <rule ref="rulesets/controversial.xml">
+    <exclude name="CamelCasePropertyName"></exclude>
     <exclude name="CamelCaseMethodName"></exclude>
   </rule>
   <rule ref="rulesets/unusedcode.xml/UnusedPrivateField" />

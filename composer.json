@@ -1,8 +1,8 @@
 {
-	"name": "MarkNotes",
+	"name": "marknotes",
 	"description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
 	"keywords": ["markdown", "marknotes", "notes", "documentations", "evernote-like"],
-	"homepage": "https://github.com/cavo789/Marknotes",
+	"homepage": "https://github.com/cavo789/marknotes",
 	"type": "project",
 	"license": "MIT",
 	"require": {

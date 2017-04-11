@@ -1,4 +1,8 @@
 {
+	"admin": {
+		"login": "admin",
+		"password": "marknotes"
+	},
 	"debug": 0,
 	"development": 0,
 	"editor": 1,
@@ -106,8 +110,11 @@
 			"json_error": "The [%s] task has returned an invalid JSON result",
 			"loading_tree": "Loading the list of notes, please wait...",
 			"login": "Username",
+			"login_error": "Incorrect login, please try again",
+			"login_success": "Login successfull",
 			"loginform": "Login form",
 			"no_save_allowed": "Error, saving notes isn&#39;t allowed.",
+			"not_authenticated": "You need first to authenticate",
 			"on_this_page": "On this page",
 			"open_html": "Open in a new window",
 			"OK": "Ok",
@@ -178,8 +185,11 @@
 			"json_error": "La t&acirc;che [%s] a retourn&eacute; une r&eacute;ponse JSON incorrecte",
 			"loading_tree": "Chargement de la liste des notes, merci de patienter...",
 			"login": "Nom d&#39;utilisateur",
+			"login_error": "Erreur de connexion, veuillez r&#233;essayer s'il vous pla&#238;t",
+			"login_success": "Connexion r&#233;ussie",
 			"loginform": "Formulaire de connexion",
 			"no_save_allowed": "Erreur, l&#39;&eacute;dition des notes n&#39;est pas autoris&eacute;e.",
+			"not_authenticated": "Vous devez d&#x27;abord vous authentifier",
 			"on_this_page": "Sur cette page",
 			"open_html": "Ouvrir dans une nouvelle fen&ecirc;tre",
 			"OK": "Oui",
