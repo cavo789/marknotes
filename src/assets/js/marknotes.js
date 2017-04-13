@@ -370,11 +370,13 @@ function initializeTasks() {
 	$("[data-task]").click(function (event) {
 		event.preventDefault();
 
-		// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
-		//event.stopPropagation();
-		//event.stopImmediatePropagation();
-
 		var $task = $(this).data('task');
+
+		if ($task!=='clipboard') {
+			// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}
 
 		var $fname = $(this).attr('data-file') ? decodeURIComponent($(this).data('file')) : '';
 
@@ -383,7 +385,7 @@ function initializeTasks() {
 			.data('tag')
 			.replace('\\', '/') : '');
 
-		var $arrNoCrypt = ['pdf', 'slideshow', 'window'];
+		var $arrNoCrypt = ['docx', 'pdf', 'slideshow', 'window'];
 		if (($fname !== '') && (jQuery.inArray($task, $arrNoCrypt) === -1)) {
 			// Don't base64 the filename when the tasks are 'slideshow' or 'window'
 			$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
@@ -458,6 +460,11 @@ function initializeTasks() {
 			});
 			break;
 
+		case 'docx':
+
+			window.open($fname);
+			break;
+			
 		case 'edit':
 
 			ajaxify({

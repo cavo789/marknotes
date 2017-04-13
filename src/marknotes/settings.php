@@ -716,24 +716,33 @@ class Settings
 
     /**
      * Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
+     *
+     * The json "convert" entry looks like this :
+     *     "convert": {
+     *         "pandoc": {
+     *             "script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
+     *             "options" : "--latex-engine=xelatex -V geometry:margin=1in -o"
+     *         }
+     *
+     * This function will return an array with every entries below the name of the converting tool but
+     * only if the tool is found i.e. if the "script" file exists on the disk
+     *
      */
-    public function getTools(string $sTool) : string
+    public function getConvert(string $sTool) : array
     {
         $aeFiles = \MarkNotes\Files::getInstance();
 
-        $sType = 'reveal';
-        $sReturn = '';
+        $arr = array();
 
-        if (isset($this->_json['tools'])) {
-            if (isset($this->_json['tools'][$sTool])) {
-                $sTool = $this->_json['tools'][$sTool];
-                if ($aeFiles->fileExists($sTool)) {
-                    $sReturn = $sTool;
+        if (isset($this->_json['convert'])) {
+            if (isset($this->_json['convert'][$sTool])) {
+                if ($aeFiles->fileExists($this->_json['convert'][$sTool]['script'])) {
+                    $arr = $this->_json['convert'][$sTool];
                 }
             }
         }
 
-        return $sReturn;
+        return $arr;
     }
     /**
      * Tags to automatically select when displaying the page

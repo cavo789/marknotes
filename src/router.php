@@ -45,7 +45,7 @@ if ($filename !== '') {
 $format = $aeFunctions->getParam('format', 'string', $format, false, 8);
 
 // Only these format are recognized.  Default : html
-if (!(in_array($format, array('htm','html','pdf','slides')))) {
+if (!(in_array($format, array('docx','htm','html','pdf','slides', 'txt')))) {
     $format = 'html';
 }
 $params = array();
@@ -78,8 +78,17 @@ if ($filename !== '') {
         }
 
         switch ($format) {
+
+            case 'docx':
+                $task = 'docx';
+                break;
+
             case 'pdf':
                 $task = 'pdf';
+                break;
+
+            case 'txt':
+                $task = 'txt';
                 break;
 
             case 'slides':
@@ -114,7 +123,6 @@ if ($filename !== '') {
             die('File '. $aeFiles->sanitizeFileName($fileMD).' not found');
         }
     } // if (in_array($filename, array('timeline.html', 'sitemap.xml')))
-
 
     // Create an instance of the class and initialize the rootFolder variable (type string)
 

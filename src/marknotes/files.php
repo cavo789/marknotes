@@ -23,6 +23,25 @@ class Files
     }
 
     /**
+     * Rename will first remove the existing "new" file if the file already exists
+     */
+    public function renameFile(string $oldname, string $newname) : bool
+    {
+        if ((self::fileExists($oldname)) && ($oldname!==$newname)) {
+
+            // Remove the old version if already there
+            if (self::fileExists($newname)) {
+                unset($newname);
+            }
+
+            // And rename the temporary PDF to its final name
+            rename($oldname, $newname);
+        }
+
+        return self::fileExists($newname);
+    }
+
+    /**
     * Check if a file exists and return FALSE if not.  Disable temporarily errors to avoid warnings f.i. when the file
     * isn't reachable due to open_basedir restrictions
     *

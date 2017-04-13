@@ -88,7 +88,7 @@ class Markdown
                 $aeTask = \MarkNotes\Tasks\Display::getInstance();
                 header('Content-Type: text/html; charset=utf-8');
                 echo $aeTask->run($params);
-                
+
                 break;
 
             case 'edit':
@@ -118,19 +118,31 @@ class Markdown
                 echo $aeTask->run();
                 break;
 
+            case 'docx':
             case 'pdf':
-                // Generate a PDF
+            case 'txt':
+
+                // Generate a PDF or another format
                 $aeTask = \MarkNotes\Tasks\PDF::getInstance();
 
-                $fPDF = $aeTask->run($params);
+                $output = $aeTask->run($params);
 
                 // Send the pdf to the browser ... only if successfully created
-                if (($fPDF !== '') && $aeFiles->fileExists($fPDF)) {
-                    $aeTask->download($fPDF);
+                if (($output !== '') && ($aeFiles->fileExists($output))) {
+
+                    $aeDownload = \MarkNotes\Tasks\Download::getInstance();
+                    $aeDownload->run($output, $params['task']);
                 } else {
                     header("HTTP/1.0 404 Not Found");
-                    echo "Error during the creation of the PDF.".PHP_EOL.
-                        "File [".$fPDF."] is missing";
+
+                    echo "Error during the creation of the PDF<br/>".
+                        "File [".$output."] is missing";
+
+                    /*<!-- build:debug -->*/
+                    if ($aeSettings->getDebugMode()) {
+                        echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__."</pre>";
+                    }
+                    /*<!-- endbuild -->*/
                 }
 
                 break;

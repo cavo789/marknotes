@@ -3,6 +3,17 @@
 		"login": "admin",
 		"password": "marknotes"
 	},
+	"convert": {
+		"decktape": {
+			"script" : "c:\\christophe\\tools\\decktape\\phantomjs.exe"
+		},
+		"pandoc": {
+			"script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
+			"options" : {
+				"pdf" : "--latex-engine=xelatex -V geometry:margin=1in"
+			}
+		}
+	},
 	"debug": 0,
 	"development": 0,
 	"editor": 1,
@@ -61,9 +72,6 @@
 		"screen": "screen",
 		"timeline": "timeline"
 	},
-	"tools": {
-		"decktape": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
-	},
 	"languages": {
 		"en": {
 			"action_download": "Download this file",
@@ -91,6 +99,7 @@
 			"error_delete_file": "An error has occured during the deletion of the note [%s]",
 			"error_rename_file": "An error has occured when trying to rename the note [%s] into [%s]",
 			"error_rename_folder": "An error has occured when trying to rename the folder [%s] into [%s]",
+			"export_docx": "Export the note as a DOCX document",
 			"export_pdf": "Export the note as a PDF document",
 			"file_created": "The note [%s] has been successfully created on the disk",
 			"file_deleted": "The note [%s] has been successfully deleted",
@@ -166,6 +175,7 @@
 			"error_delete_file": "Une erreur a &#233;t&#233; rencontr&#233;e lors de la suppression du fichier [%s]",
 			"error_rename_file": "Une erreur a &#233;t&#233; rencontr&#233;e lors de la tentative de renommer le fichier [%s] en [%s]",
 			"error_rename_folder": "Une erreur a &#233;t&#233; rencontr&#233;e lors de la tentative de renommer le dossier [%s] en [%s]",
+			"export_docx": "Exporter cette note au format docx",
 			"export_pdf": "Exporter cette note au format pdf",
 			"file_created": "Le fichier [%s] a &#233;t&#233; cr&#233;&#233; sur le disque",
 			"file_deleted": "La note [%s] a &#233;t&#233; supprim&#233;e sur le disque",
