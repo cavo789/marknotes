@@ -5,7 +5,7 @@
 
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="robots" content="noindex, nofollow" />
+        <meta name="robots" content="%ROBOTS%" />
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
 
@@ -70,7 +70,6 @@
    </head>
 
    <body>
-
         <div id="login-box" class="login-popup">
             <a href="#" class="close"><img src="assets/images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>
             <form method="post" class="signin" action="#">

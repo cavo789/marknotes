@@ -360,8 +360,7 @@ function initializeTasks() {
 	// Initialise print preview plugin, should be done before clicking on the button
 	if ($.isFunction($.fn.printPreview)) {
 		try {
-			$('[data-task="printer"]')
-				.printPreview();
+			$('[data-task="printer"]').printPreview();
 		} catch (err) {
 			console.warn(err.message);
 		}
@@ -370,8 +369,10 @@ function initializeTasks() {
 	// Get all DOM objects having a data-task attribute
 	$("[data-task]").click(function (event) {
 		event.preventDefault();
-		event.stopPropagation();
-		event.stopImmediatePropagation();
+
+		// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
+		//event.stopPropagation();
+		//event.stopImmediatePropagation();
 
 		var $task = $(this).data('task');
 
@@ -410,18 +411,39 @@ function initializeTasks() {
 			// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
 
 			if (typeof Clipboard === 'function') {
-				var clipboard = new Clipboard('*[data-task="clipboard"]');
-				clipboard.on('success', function (e) {
-					e.clearSelection();
-				});
-				Noty({
-					message: marknotes.message.copy_clipboard_done,
-					type: 'success'
-				});
-			} else {
-				$(this)
-					.remove();
+
+				if (Clipboard.isSupported()) {
+
+					var clipboard = new Clipboard('#icon_clipboard');
+
+					clipboard.on('success', function (e) {
+						/*<!-- build:debug -->*/
+						if (marknotes.settings.debug) {
+							console.info('Action:', e.action);
+							console.info('Text:', e.text);
+							console.info('Trigger:', e.trigger);
+						}
+						/*<!-- endbuild -->*/
+
+						Noty({
+							message: marknotes.message.copy_clipboard_done,
+							type: 'success'
+						});
+
+						e.clearSelection();
+					});
+
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						clipboard.on('error', function (e) {
+							console.error('Action:', e.action);
+							console.error('Trigger:', e.trigger);
+						});
+					}
+					/*<!-- endbuild -->*/
+				} // if (Clipboard.isSupported())
 			}
+
 			break;
 
 		case 'display':
@@ -458,15 +480,14 @@ function initializeTasks() {
 			// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
 
 			if (typeof Clipboard === 'function') {
-				new Clipboard('*[data-task="link_note"]');
-				Noty({
-					message: marknotes.message.copy_link_done,
-					type: 'success'
-				});
-			} else {
-				$(this)
-					.remove();
-			}
+				if (Clipboard.isSupported()) {
+					new Clipboard('#icon_link_note');
+					Noty({
+						message: marknotes.message.copy_link_done,
+						type: 'success'
+					});
+				} // if (Clipboard.isSupported())
+			} // if (typeof Clipboard === 'function')
 			break;
 
 		case 'login':
@@ -559,7 +580,7 @@ function showLoginForm() {
 		var $login = $('#username').val();
 		var $password = $('#password').val();
 
-		if (($login == null) || ($login == '') || ($password == null) || ($password == '')) {
+		if (($login === null) || ($login === '') || ($password === null) || ($password === '')) {
 
 			Noty({
 				message: marknotes.message.incorrect_login,
@@ -586,7 +607,7 @@ function showLoginForm() {
 					var $status = false;
 
 					if (data.hasOwnProperty('status')) {
-						$status = (data.status === 1 ? true : false)
+						$status = (data.status === 1 ? true : false);
 					}
 
 					if ($status) {

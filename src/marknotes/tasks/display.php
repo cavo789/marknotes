@@ -71,7 +71,7 @@ class Display
         $javascript =
         "\nvar marknotes = {};\n".
         "marknotes.message={};\n".
-        "marknote.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';\n";
+        "marknotes.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';\n";
 
         $html = str_replace('<!--%ADDITIONNAL_JS%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 
@@ -186,9 +186,9 @@ class Display
             $aeToolbar = \MarkNotes\View\Toolbar::getInstance();
 
             $html = $aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
-
+            
             $html = '<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
         } // if (!\MarkNotes\Functions::isAjaxRequest())
         return $html;
-    } // function Run()
-} // class Display
+    }
+}

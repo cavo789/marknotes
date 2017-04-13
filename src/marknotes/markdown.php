@@ -88,6 +88,7 @@ class Markdown
                 $aeTask = \MarkNotes\Tasks\Display::getInstance();
                 header('Content-Type: text/html; charset=utf-8');
                 echo $aeTask->run($params);
+                
                 break;
 
             case 'edit':

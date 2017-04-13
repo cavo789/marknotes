@@ -49,8 +49,8 @@ class Toolbar
           '<a id="icon_refresh" data-task="display" data-file="'.$params['filename'].'" title="'.$aeSettings->getText('refresh', 'Refresh', true).'" href="#">'.
             '<i class="fa fa-refresh" aria-hidden="true"></i>'.
           '</a>'.
-          '<a id="icon_clipboard" data-task="clipboard" data-clipboard-target="#note_content" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'" href="#">'.
-            '<i class="fa fa-clipboard"aria-hidden="true"></i>'.
+          '<a id="icon_clipboard" data-task="clipboard" aria-hidden="true" data-clipboard-action="copy" data-clipboard-target="#CONTENT" title="'.$aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true).'" href="#">'.
+            '<i class="fa fa-clipboard" aria-hidden="true"></i>'.
           '</a>'.
           '<a id="icon_printer" data-task="printer" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'" href="#">'.
             '<i class="fa fa-print" aria-hidden="true"></i>'.
