@@ -28,7 +28,6 @@ class AddOrRename
 
     private static function createFile(array &$params) : bool
     {
-
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -48,13 +47,13 @@ class AddOrRename
 
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $docs=$aeSettings->getFolderDocs(false);
+        $docs = $aeSettings->getFolderDocs(false);
 
-        if (substr($params['newname'], 0, strlen($docs))==$docs) {
-            $params['newname']=substr($params['newname'], strlen($docs));
+        if (substr($params['newname'], 0, strlen($docs)) == $docs) {
+            $params['newname'] = substr($params['newname'], strlen($docs));
         }
-        if (substr($params['oldname'], 0, strlen($docs))==$docs) {
-            $params['oldname']=substr($params['oldname'], strlen($docs));
+        if (substr($params['oldname'], 0, strlen($docs)) == $docs) {
+            $params['oldname'] = substr($params['oldname'], strlen($docs));
         }
 
         $params['oldname'] = $aeSettings->getFolderDocs(true).$params['oldname'];
@@ -63,7 +62,6 @@ class AddOrRename
 
     private static function doIt(array $params) : string
     {
-
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -302,7 +300,7 @@ class AddOrRename
         if ($aeSession->get('authenticated', 0) === 1) {
             $sReturn = self::doIt($params);
         } else {
-            $arr=array('status'=>0,'msg'=>$aeFunctions->showError('not_authenticated', 'You need first to authenticate', false));
+            $arr = array('status' => 0,'msg' => $aeFunctions->showError('not_authenticated', 'You need first to authenticate', false));
             $sReturn = json_encode($arr);
         }
 
