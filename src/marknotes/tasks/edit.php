@@ -44,12 +44,10 @@ class Edit
             die();
         }
 
-        $markdown = file_get_contents($fullname);
+        $params['editMode']=1;
 
-        // Initialize the encryption class
-        $aeEncrypt = new \MarkNotes\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
-
-        $markdown = $aeEncrypt->HandleEncryption($fullname, $markdown, true);
+        $aeMD = \MarkNotes\FileType\Markdown::getInstance();
+        $markdown = $aeMD->read($fullname, $params);
 
         $sReturn = '<div class="editor-wrapper"><strong class="filename">'.utf8_encode($fullname).'</strong><textarea id="sourceMarkDown">'.$markdown.'</textarea></div>';
 

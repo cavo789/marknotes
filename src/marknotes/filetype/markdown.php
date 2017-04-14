@@ -131,9 +131,15 @@ class Markdown
 
         // Initialize the encryption class
 
+        if(!isset($params['editMode'])) {
+            // editMode = 1 when the encrypt module should display back the <encrypt>INFO</encrypt>
+            // tag. This is the case in the edit window
+            $params['editMode']=0;
+        }
+
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aesEncrypt = new \MarkNotes\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
-        $markdown = $aesEncrypt->HandleEncryption($filename, $markdown);
+        $markdown = $aesEncrypt->HandleEncryption($filename, $markdown, $params['editMode']);
 
         if (isset($params['removeConfidential'])) {
             if ($params['removeConfidential'] === '1') {
