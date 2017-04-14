@@ -119,12 +119,12 @@ class Markdown
                 break;
 
             case 'docx':
+            case 'html':
             case 'pdf':
             case 'txt':
 
                 // Generate a PDF or another format
-                $aeTask = \MarkNotes\Tasks\PDF::getInstance();
-
+                $aeTask = \MarkNotes\Tasks\Convert::getInstance();
                 $output = $aeTask->run($params);
 
                 // Send the pdf to the browser ... only if successfully created
@@ -132,15 +132,18 @@ class Markdown
 
                     $aeDownload = \MarkNotes\Tasks\Download::getInstance();
                     $aeDownload->run($output, $params['task']);
+
                 } else {
+
                     header("HTTP/1.0 404 Not Found");
 
-                    echo "Error during the creation of the PDF<br/>".
+                    echo "Error during the creation of the ".$params['task']."<br/>".
                         "File [".$output."] is missing";
 
                     /*<!-- build:debug -->*/
                     if ($aeSettings->getDebugMode()) {
-                        echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__."</pre>";
+                        $aeDebug = \MarkNotes\Debug::getInstance();
+                        $aeDebug->here('Requested format : '.$params['task']);
                     }
                     /*<!-- endbuild -->*/
                 }

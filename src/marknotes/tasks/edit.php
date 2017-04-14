@@ -22,7 +22,7 @@ class Edit
         return self::$_instance;
     } // function getInstance()
 
-    private function doIt(array $params) : string
+    private static function doIt(array $params) : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();

@@ -35,21 +35,30 @@ class Pandoc
         $arrPandoc = $aeSettings->getConvert('pandoc');
         $sScriptName= $arrPandoc['script'];
 
-        $aeTask = \MarkNotes\Tasks\PDF::getInstance();
+        $aeTask = \MarkNotes\Tasks\Convert::getInstance();
 
         $final = $aeTask->getFileName($params['filename'],$params['task']);
+
+        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
 
         // $params['task'] is the output format (f.i. pdf), check if there are options to use
         // for that format
         $options = isset($arrPandoc['options'][$params['task']]) ? $arrPandoc['options'][$params['task']] : '';
 
         // Create a script on the disk
-        $sProgram =
-            'pushd "'.dirname($aeSettings->getFolderDocs(true).$params['filename']).'"'.PHP_EOL.
-            $sScriptName.' -s '. $options . ' -o "'.$final.'" '.
-            '"'.$aeSettings->getFolderDocs(true).$params['filename'].'"'.PHP_EOL;
+        // Use 'chcp 65001' command, accentuated characters won't be correctly understand if
+        // the file should be executable (like a .bat file)
+        // see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
 
-        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+        $debugFile=$aeSettings->getFolderTmp().$slug.'_debug.log';
+
+        $sProgram =
+            '@ECHO OFF'.PHP_EOL.
+            'chcp 65001'.PHP_EOL.
+            'pushd "'.dirname($aeSettings->getFolderDocs(true).$params['filename']).'"'.PHP_EOL.
+            '"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
+            '"'.basename($params['filename']).'" > '.$debugFile.' 2>&1'.PHP_EOL.
+            'popd'.PHP_EOL;
 
         $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 
@@ -59,35 +68,15 @@ class Pandoc
 
         // Run the script. This part can be long depending on the number of slides in the HTML file to convert
         $output = array();
+        exec("start cmd /c ".$fScriptFile, $output);
 
-        exec($fScriptFile, $output);
-
-        /*<!-- build:debug -->*/
-        /*if ($aeSettings->getDebugMode()) {
-            // $output is an array and contains the result of the script. If at least one line of the output start with
-            // Error:, show the debug information and stop the code
-            foreach ($output as $line) {
-                if (substr($line, 0, 6) === 'Error:') {
-                    die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the pandoc script<br/><br/>".print_r($output, true)."</pre>");
-                }
+        // $output is an array and contains the result of the script. If at least one line of the output start with
+        // Error:, show the debug information and stop the code
+        /*foreach ($output as $line) {
+            if (substr($line, 0, 6) === 'Error:') {
+                die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the pandoc script<br/><br/>".print_r($output, true)."</pre>");
             }
         }*/
-        /*<!-- endbuild -->*/
-
-        try {
-
-            /*<!-- build:debug -->*/
-            if ($aeSettings->getDebugMode()) {
-                // Do nothing i.e. keep the temporary files
-            } else {
-                /*<!-- endbuild -->*/
-                unlink($fscript);
-                /*<!-- build:debug -->*/
-            }
-            /*<!-- endbuild -->*/
-
-        } catch (Exception $e) {
-        }
 
         return $final;
 

@@ -3,7 +3,6 @@ body {
     font-size       : 14px;
     line-height     : 1.42857143;
     color           : #333;
-    background-color: #F7F2E9;
     overflow        : hidden;
     background-color: #eeeeee;
 }
@@ -245,4 +244,12 @@ div.editor-wrapper .editor-toolbar a {
 .jstree-closed > .jstree-anchor,
 .jstree-open > .jstree-anchor {
     font-style: italic;
+}
+
+.xdebug-error {
+    font-size:2em;
+}
+
+.debug {
+    background-color:yellow;
 }

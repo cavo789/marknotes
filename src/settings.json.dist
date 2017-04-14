@@ -10,7 +10,8 @@
 		"pandoc": {
 			"script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
 			"options" : {
-				"pdf" : "--latex-engine=xelatex -V geometry:margin=1in"
+				"docx" : "-S --toc",
+				"pdf" : "-S --toc --latex-engine=c:\\Christophe\\tools\\pandoc\\miktex\\miktex\\bin\\x64\\xelatex.exe -V geometry:margin=1in"
 			}
 		}
 	},
@@ -139,10 +140,12 @@
 			"sitemap": "Get the sitemap",
 			"slideshow": "slideshow",
 			"timeline": "Display notes in a timeline view",
+			"tree_collapse" : "Collapse all",
 			"tree_delete_file": "Delete the note [%s]",
 			"tree_delete_folder": "Remove the folder [%s] and everything in that folder",
 			"tree_delete_file_confirm": "Are you really sure you want to delete the note [%s] ?",
 			"tree_delete_folder_confirm": "Are your really sure you want to kill everything in the folder [%s] and the folder itself ?",
+			"tree_expand" : "Expand all",
 			"tree_rename": "Rename",
 			"tree_new_folder": "Create a new folder",
 			"tree_new_folder_name": "New folder",
@@ -215,10 +218,12 @@
 			"sitemap": "Afficher la carte du site",
 			"slideshow": "Affiche le document au format &#39;pr&eacute;sentation&#39;",
 			"timeline": "Affiche la liste des notes, par ordre chronologique invers&eacute;",
+			"tree_collapse" : "Fermer l&#x27;arbre",
 			"tree_delete_file": "Supprimer la note [%s]",
 			"tree_delete_folder": "Supprimer l&#39;int&eacute;gralit&eacute; du dossier [%s]",
 			"tree_delete_file_confirm": "&#202;tes-vous certain de vouloir supprimer la note [%s] ?",
 			"tree_delete_folder_confirm": "&#202;tes-vous certain de vouloir supprimer le dossier [%s] et tout ce qu&#39;il contient ?",
+			"tree_expand" : "Déplier l&#x27;arbre",
 			"tree_rename": "Renommer",
 			"tree_new_folder": "Cr&eacute;er un nouveau dossier",
 			"tree_new_folder_name": "Nouveau dossier",

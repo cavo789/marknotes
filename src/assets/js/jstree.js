@@ -180,6 +180,24 @@ function jstree_context_menu(node) {
 	var tree = $('#TOC').jstree(true);
 
 	var items = {
+		Collapse: {
+			separator_before: false,
+			separator_after: false,
+			label: marknotes.message.tree_collapse,
+			icon: 'fa fa-plus-square-o',
+			action: function () {
+				$('#TOC').jstree('close_all');
+			}
+		},
+			Expand: {
+				separator_before: false,
+				separator_after: true,
+				label: marknotes.message.tree_expand,
+				icon: 'fa fa-minus-square-o',
+				action: function () {
+					$('#TOC').jstree('open_all');
+				}
+			},
 		Add_Folder: {
 			separator_before: false,
 			separator_after: false,

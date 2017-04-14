@@ -8,7 +8,9 @@
 ### 2017-xx-xx
 
 ```diff
-+ Add a login screen before being able to add, delete or edit notes
++ Add Expand All / Collapse All options in the treeview menu
++ Add support of Pandoc on Windows system and allow to convert to .docx and .pdf with this converter
++ Add a login screen before being able to add, delete or edit notes, when the settings.json doesn't provide a login / password, no login will then be asked (usefull on a localhost system)
 + Improve performance by using the session object on the server side (and no more only localStorage on the client site)
 + Add deckTape support (on Windows server) (https://github.com/astefanutti/decktape)
 + Add custom settings for a given note or its parent folder (https://github.com/cavo789/marknotes/wiki/5.6-Settings-override)

@@ -55,9 +55,13 @@ class Toolbar
           '<a id="icon_printer" data-task="printer" title="'.$aeSettings->getText('print_preview', 'Print preview', true).'" href="#">'.
             '<i class="fa fa-print" aria-hidden="true"></i>'.
           '</a>'.
-          '<a id="icon_docx" data-task="docx" data-file="'.utf8_encode($urlHTML).'?format=docx" title="'.$aeSettings->getText('export_docx', 'Export the note as a Word document', true).'" href="#">'.
-            '<i class="fa fa-file-word-o" aria-hidden="true"></i>'.
-          '</a>'.
+          (
+              stristr(PHP_OS, 'WIN')   // Only on Windows OS since it requires an executable
+              ? '<a id="icon_docx" data-task="docx" data-file="'.utf8_encode($urlHTML).'?format=docx" title="'.$aeSettings->getText('export_docx', 'Export the note as a Word document', true).'" href="#">'.
+                '<i class="fa fa-file-word-o" aria-hidden="true"></i>'.
+              '</a>'
+              : ''
+          ).
           '<a id="icon_pdf" data-task="pdf" data-file="'.utf8_encode($urlHTML).'?format=pdf" title="'.$aeSettings->getText('export_pdf', 'Export the note as a PDF document', true).'" href="#">'.
             '<i class="fa fa-file-pdf-o" aria-hidden="true"></i>'.
           '</a>'.

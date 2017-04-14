@@ -35,13 +35,13 @@ class Decktape
         $arrDecktape = $aeSettings->getConvert('decktape');
         $sScriptName= $arrDecktape['script'];
 
-        $aeTask = \MarkNotes\Tasks\PDF::getInstance();
+        $aeTask = \MarkNotes\Tasks\Convert::getInstance();
 
         // Get the temporary name for the HTML and PDF files
         list($tmpHTML, $tmpPDF) = $aeTask->getTempNames($params);
 
-        // Success the PDF exists
-        $finalPDF = $aeTask->getPDFFileName($params['filename']);
+        // Derive the resulting filename
+        $finalPDF = $aeTask->getFileName($params['filename'], $params['task']);
 
         // Get the HTML version of the note
         $layout = $params['layout'];
@@ -59,13 +59,18 @@ class Decktape
         // Phantomjs (used by the Decktape conversion) should be started from the folder where the
         // HTML file to convert stay so use the Windows PUSH instruction to change the default directory
         // the time needed to run the script
-
         // Be carefull : decktape don't like accentuated characters
         // names below (to the html and pdf file) shouldn't contains any accentuated charcters
+        // Use 'chcp 65001' command, accentuated characters won't be correctly understand if
+        // the file should be executable (like a .bat file)
+        // see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
         $sProgram =
+            '@ECHO OFF'.PHP_EOL.
+            'chcp 65001'.PHP_EOL.
             'pushd "'.dirname($tmpHTML).'"'.PHP_EOL.
-            $sScriptName.' '.dirname($sScriptName).DS.'decktape.js '.$type.' "'.basename($tmpHTML).'"'.
-            ' "'.basename($tmpPDF).'"'.PHP_EOL;
+            '"'.$sScriptName.'" "'.dirname($sScriptName).DS.'decktape.js" '.$type.' "'.basename($tmpHTML).'"'.
+            ' "'.basename($tmpPDF).'"'.PHP_EOL.
+            'popd';
 
         $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
 
@@ -78,36 +83,22 @@ class Decktape
 
         exec($fScriptFile, $output);
 
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDebugMode()) {
-            // $output is an array and contains the result of the script. If at least one line of the output start with
-            // Error:, show the debug information and stop the code
-            foreach ($output as $line) {
-                if (substr($line, 0, 6) === 'Error:') {
-                    die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the deckTape script<br/><br/>".print_r($output, true)."</pre>");
-                }
+        // $output is an array and contains the result of the script. If at least one line of the output start with
+        // Error:, show the debug information and stop the code
+        /*foreach ($output as $line) {
+            if (substr($line, 0, 6) === 'Error:') {
+                die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the deckTape script<br/><br/>".print_r($output, true)."</pre>");
             }
-        }
-        /*<!-- endbuild -->*/
+        }*/
 
         try {
-
-            /*<!-- build:debug -->*/
-            if ($aeSettings->getDebugMode()) {
-                // Do nothing i.e. keep the temporary files
-            } else {
-                /*<!-- endbuild -->*/
-                unlink($tmpHTML);
-                unlink($fscript);
-                /*<!-- build:debug -->*/
-            }
-            /*<!-- endbuild -->*/
 
             if ($aeFiles->fileExists($tmpPDF)) {
                 // Remane the temporary with its final name
                 // Note : the PDF file was perhaps already moved by the convert script
                 $aeFiles->renameFile($tmpPDF, $finalPDF);
             }
+            
         } catch (Exception $e) {
             $finalPDF = '';
         }

@@ -98,15 +98,11 @@ class Files
     }
 
     /**
-     * Under Windows, create a text file with the support of UTF8 in his content.
-     * Without the 'chcp 65001' command, accentuated characters won't be correctly understand if
-     * the file should be executable (like a .bat file)
-     *
-     * see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
+     * Under Windows, create a text file with the support of UTF8 in his content.    
      */
     public static function fwriteANSI(string $sFileName, string $sContent)
     {
-        file_put_contents($sFileName, 'chcp 65001'.PHP_EOL.utf8_encode($sContent));
+        file_put_contents($sFileName, utf8_encode($sContent));
         return true;
     }
 

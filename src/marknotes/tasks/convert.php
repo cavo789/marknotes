@@ -4,7 +4,7 @@ namespace MarkNotes\Tasks;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class PDF
+class Convert
 {
     protected static $_Instance = null;
 
@@ -16,7 +16,7 @@ class PDF
     public static function getInstance()
     {
         if (self::$_Instance === null) {
-            self::$_Instance = new PDF();
+            self::$_Instance = new Convert();
         }
 
         return self::$_Instance;
@@ -26,7 +26,7 @@ class PDF
      * Taking the name of the note, provide the name of the .pdf to create
      * F.i. for c:\sites\marknotes\docs\so nice app.md returns  c:\sites\marknotes\docs\so_nice_app.pdf
      */
-    public function getFileName(string $fname, string $extension) : string
+    public function getFileName(string $fname, string $extension = 'pdf') : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();

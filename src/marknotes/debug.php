@@ -64,7 +64,7 @@ class Debug
         return $line;
     }
 
-    public function here($msg = null, $deep = 3) : string
+    public function here($msg = null, $deep = 3, $return = false) : string
     {
 
         /*<!-- build:debug -->*/
@@ -94,13 +94,13 @@ class Debug
             }
         } // for
 
-        $txt = '<pre>'.__METHOD__.' called by '.($deep > 1?'<ol>':'').$txt.($deep > 1?'</ol>':'').
+        $txt = '<pre style="background-color:yellow;padding:10px">'.__METHOD__.' called by '.($deep > 1?'<ol>':'').$txt.($deep > 1?'</ol>':'').
             ($msg != null?'<div style="padding:10px;border:1px dotted;">'.print_r($msg, true).'</div>':'').
             '</pre>';
 
         echo $txt;
-
         /*<!-- endbuild -->*/
+
         return true;
     }
 }
