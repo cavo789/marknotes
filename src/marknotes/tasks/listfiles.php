@@ -63,7 +63,7 @@ class ListFiles
 
             // $arr is an array with arrays that contains arrays ...
             // i.e. the root folder that contains subfolders and subfolders can contains subfolders...
-            $arr = self::dir_to_jstree_array($folder, 'a', array('md'), $aeSettings->getTreeAutoOpen());
+            $arr = self::dir_to_jstree_array($folder, array('md'), $aeSettings->getTreeAutoOpen());
 
             // The array is now ready
             $return['tree'] = $arr;
@@ -93,7 +93,6 @@ class ListFiles
     */
     private static function dir_to_jstree_array(
         string $dir,
-        string $order = "a",
         array $ext = array(),
         array $arrTreeAutoOpen
     ) : array {
@@ -156,21 +155,13 @@ class ListFiles
                 }
             } // while
 
-            if ($order === "a") {
-                asort($dirs);
-            } else {
-                arsort($dirs);
-            }
+            asort($dirs);
 
             foreach ($dirs as $d) {
-                $listDir['children'][] = self::dir_to_jstree_array($d, $order, $ext, $arrTreeAutoOpen);
+                $listDir['children'][] = self::dir_to_jstree_array($d, $ext, $arrTreeAutoOpen);
             }
 
-            if ($order === "a") {
-                asort($files);
-            } else {
-                arsort($files);
-            }
+            asort($files);
 
             foreach ($files as $file) {
                 $listDir['children'][] = $file;

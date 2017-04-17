@@ -78,10 +78,8 @@ class Display
 
         // Check if the .html version of the markdown file already exists; if not, create it
         if (!$aeFunctions->isAjaxRequest()) {
-
             $aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
             return $aeConvert->run($html, $params);
-
         } else { // if (!\MarkNotes\Functions::isAjaxRequest())
             // -----------------------------------------------------------------------
             // Check if the file contains words present in the tags.json file : if the file being displayed

@@ -91,8 +91,10 @@ function jstree_init($data) {
 					}
 				})
 				.jstree({
+					plugins: ['contextmenu', 'state', 'sort', 'types', 'dnd', 'search', 'types', 'unique', 'wholerow'],
 					core: {
 						animation: 1,
+						progressive_render: true,
 						data: $data.tree,
 						check_callback: function (operation, node, node_parent, node_position, more) {
 
@@ -106,7 +108,7 @@ function jstree_init($data) {
 						multiple: false,
 						initially_open: ['phtml_1'], // Automatically open the root node
 						sort: function (a, b) {
-							return this.get_type(a) === this.get_type(b) ? (this.get_text(a) > this.get_text(b) ? 1 : -1) : (this.get_type(a) >= this.get_type(b) ? 1 : -1);
+							return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
 						},
 						themes: {
 							responsive: 1,
@@ -125,7 +127,6 @@ function jstree_init($data) {
 							}
 						}
 					},
-					plugins: ['contextmenu', 'state', 'dnd', 'search', 'types', 'unique', 'wholerow'],
 					search: {
 						case_insensitive: true,
 						show_only_matches: true, // Hide unmatched, show only matched records
@@ -189,15 +190,15 @@ function jstree_context_menu(node) {
 				$('#TOC').jstree('close_all');
 			}
 		},
-			Expand: {
-				separator_before: false,
-				separator_after: true,
-				label: marknotes.message.tree_expand,
-				icon: 'fa fa-minus-square-o',
-				action: function () {
-					$('#TOC').jstree('open_all');
-				}
-			},
+		Expand: {
+			separator_before: false,
+			separator_after: true,
+			label: marknotes.message.tree_expand,
+			icon: 'fa fa-minus-square-o',
+			action: function () {
+				$('#TOC').jstree('open_all');
+			}
+		},
 		Add_Folder: {
 			separator_before: false,
 			separator_after: false,

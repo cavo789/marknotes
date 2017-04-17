@@ -3,7 +3,7 @@
 		"login": "admin",
 		"password": "marknotes"
 	},
-	"convert": {
+	"WWWWconvert": {
 		"decktape": {
 			"script" : "c:\\christophe\\tools\\decktape\\phantomjs.exe"
 		},

@@ -372,7 +372,7 @@ function initializeTasks() {
 
 		var $task = $(this).data('task');
 
-		if ($task!=='clipboard') {
+		if ($task !== 'clipboard') {
 			// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
 			event.stopPropagation();
 			event.stopImmediatePropagation();
@@ -464,7 +464,7 @@ function initializeTasks() {
 
 			window.open($fname);
 			break;
-			
+
 		case 'edit':
 
 			ajaxify({
@@ -583,6 +583,12 @@ function showLoginForm() {
 		});
 	});
 
+	$("#password").keyup(function (event) {
+		if (event.keyCode == 13) {
+			$("#login-box .submit").click();
+		}
+	});
+
 	$('#login-box .submit').click(function () {
 		var $login = $('#username').val();
 		var $password = $('#password').val();
@@ -618,6 +624,9 @@ function showLoginForm() {
 					}
 
 					if ($status) {
+						$('#mask , .login-popup').fadeOut(300, function () {
+							$('#mask').remove();
+						});
 						Noty({
 							message: marknotes.message.login_success,
 							type: 'success'
@@ -864,35 +873,31 @@ function NiceTable() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log(' ... NiceTable : set style to Bootstrap and use the DataTable jQuery Plugin (function NiceTable())');
+		console.log(' ... NiceTable : use the DataTable jQuery Plugin (function NiceTable())');
 	}
 	/*<!-- endbuild -->*/
 
 	try {
-		$("table")
-			.each(function () {
-				$(this)
-					.addClass('table table-striped table-hover table-bordered');
-
-				if ($.isFunction($.fn.DataTable)) {
-					$(this).addClass('display');
-					$(this).DataTable({
-						scrollY: "50vh", // 50%
-						scrollCollapse: true,
-						info: true,
-						//order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
-						lengthMenu: [
-							[10, 25, 50, -1],
-							[10, 25, 50, "All"]
-						],
-						language: {
-							decimal: '.',
-							thousands: ',',
-							url: 'libs/DataTables/' + marknotes.settings.language + '.json'
-						}
-					});
-				}
+		if ($.isFunction($.fn.DataTable)) {
+			$("table").each(function () {
+				$(this).addClass('display');
+				$(this).DataTable({
+					scrollY: "50vh", // 50%
+					scrollCollapse: true,
+					info: true,
+					//order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
+					lengthMenu: [
+						[10, 25, 50, -1],
+						[10, 25, 50, "All"]
+					],
+					language: {
+						decimal: '.',
+						thousands: ',',
+						url: 'libs/DataTables/' + marknotes.settings.language + '.json'
+					}
+				});
 			});
+		}
 	} catch (err) {
 		console.warn(err.message);
 	}

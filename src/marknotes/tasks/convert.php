@@ -99,7 +99,7 @@ class Convert
         if (($final === '') || (!$aeFiles->fileExists($final))) {
 
             // Try to use the best Converter
-            $converter='';
+            $converter = '';
 
             // The exec() function should be enabled to use deckTape
             $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -108,15 +108,13 @@ class Convert
                     if (in_array($layout, array('reveal', 'remark'))) {
 
                         // deckTape is only for slideshow view and not for HTML view
-                        $converter = ($aeSettings->getConvert('decktape')!=='' ? 'decktape' : '');
-
+                        $converter = ($aeSettings->getConvert('decktape') !== array() ? 'decktape' : '');
                     } else { // if (in_array($layout, array('reveal', 'remark')))
 
                         // Check for pandoc
-                        $converter = ($aeSettings->getConvert('pandoc')!=='' ? 'pandoc' : '');
+                        $converter = ($aeSettings->getConvert('pandoc') !== array() ? 'pandoc' : '');
                     }
                 } // if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-
             } // if (!$aeFunctions->ifDisabled('exec'))
 
             switch ($converter) {
@@ -134,7 +132,6 @@ class Convert
             }
 
             $final = $aeConvert->run($params);
-
         }
 
         // Return the fullname of the file

@@ -27,8 +27,8 @@ class Dompdf
      */
     public function run(array $params) : string
     {
-        $aeTask = \MarkNotes\Tasks\PDF::getInstance();
-        $finalPDF = $aeTask->getPDFFileName($params['filename']);
+        $aeTask = \MarkNotes\Tasks\Convert::getInstance();
+        $finalPDF = $aeTask->getFileName($params['filename']);
 
         // Use the pdf template and not the "html" one
         $params['task'] = 'pdf';

@@ -2,10 +2,19 @@
 
 [https://github.com/cavo789/marknotes](https://github.com/cavo789/marknotes)
 
+## 1.0.8
+
+### 2017-04-17
+
+```diff
++ Add stylisation for tables in the html View
++ Autoclose the login popup after submitting and simulate click on the login button when pressing the Enter key on the password field
+- Remove a bug with dompdf when rendering pdf layout
+```
 
 ## 1.0.7
 
-### 2017-xx-xx
+### 2017-04-15
 
 ```diff
 + Add Expand All / Collapse All options in the treeview menu

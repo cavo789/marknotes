@@ -117,6 +117,10 @@ class Convert
             );
         }
 
+        // Add bootstrap to tables
+        $html = str_replace('<table>', '<div class="table-responsive"><table class="table table-striped table-bordered table-hover">', $html);
+        $html = str_replace('</table>', '</table></div>', $html);
+
         return $html;
     }
 }
