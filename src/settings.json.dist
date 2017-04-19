@@ -42,7 +42,7 @@
 	},
 	"plugins": {
 		"content": {
-			"html": ["ganalytics", "jolitypo", "share", "replace"]
+			"html": ["ganalytics", "gtranslate", "jolitypo", "share", "replace"]
 		},
 		"options": {
 			"ganalytics": "UA-xxxxxxxx-xx"
