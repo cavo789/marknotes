@@ -62,7 +62,7 @@ class Events
         self::$arrEvents[$event][] = $func;
     }
 
-    private function getNameSpaceAndClassName($file)
+    private static function getNameSpaceAndClassName($file)
     {
         $sReturn = null;
 
