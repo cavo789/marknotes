@@ -34,8 +34,6 @@ class JoliTypo
             $fixer->setLocale($locale);
 
             $html = $fixer->fix($html);
-
-            $html = str_replace('Wallonie', 'KLJLJKJ', $html);
         }
 
         return true;
