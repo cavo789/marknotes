@@ -13,6 +13,7 @@ class Share
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         $url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+        $urlHTML = '';
         if (isset($_REQUEST['file'])) {
             $urlHTML = $url.'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
             $urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($_REQUEST['file'], 'html'));
