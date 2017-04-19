@@ -4,6 +4,8 @@ namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+include 'libs/autoload.php';
+
 class JoliTypo
 {
     public static function doIt(&$html = null)
@@ -14,7 +16,6 @@ class JoliTypo
 
         if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
             $locale = $aeSettings->getLocale();
-
 
             // See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale
             switch ($locale) {
