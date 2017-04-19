@@ -104,7 +104,9 @@ class ShowInterface
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
         "marknotes.settings.prefix_tag='".$aeSettings->getTagPrefix()."';\n".
         "marknotes.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
-        "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
+        "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n".
+        "marknotes.treeview={};\n".
+        "marknotes.treeview.defaultNode='".trim(str_replace("'", "\'", $aeSettings->getTreeviewDefaultNode('')))."';\n";
 
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 

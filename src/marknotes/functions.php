@@ -273,6 +273,10 @@ class Functions
         if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
             $return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'">'.
                '</script>';
+        } elseif (is_file($localfile)) {
+            // It's a full, local, filename
+               $localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
+            $return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
         } else {
             if ($weblocation != '') {
                 $return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$weblocation.'">'.
@@ -298,10 +302,15 @@ class Functions
         // real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
 
         if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
-            $return = '<link href="'.$localfile.'" rel="stylesheet" />';
+            // It's a relative filename
+            $return = '<link media="screen" rel="stylesheet" type="text/css" href="'.$localfile.'" />';
+        } elseif (is_file($localfile)) {
+            // It's a full, local, filename
+            $localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
+            $return = '<link media="screen" rel="stylesheet" type="text/css" href="'.$localfile.'" />';
         } else {
             if ($weblocation != '') {
-                $return = '<link href="'.$weblocation.'" rel="stylesheet" />';
+                $return = '<link media="screen" rel="stylesheet" type="text/css" href="'.$weblocation.'" />';
             }
         }
 

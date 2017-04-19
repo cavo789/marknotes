@@ -167,6 +167,20 @@ class HTML
             $template = str_replace('<!--%FONT%-->', $sFont, $template);
         }
 
+        // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
+        $template = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet($aeSettings->getFolderWebRoot().'custom.css'), $template);
+
+        // Additionnal javascript, depends on user's settings
+        $additionnalJS = '';
+        if ($aeSettings->getOptimisationLazyLoad()) {
+            $additionnalJS = '<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
+        }
+
+        $template = str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $template);
+
+        // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
+        $template = str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript($aeSettings->getFolderWebRoot().'custom.js'), $template);
+
         // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
 
         if (strpos($template, '%URL_IMG%') !== false) {
@@ -182,6 +196,15 @@ class HTML
                 }
             } // if (preg_match)
         } //if (strpos($template, '%URL_IMG%')!==false)
+
+        // --------------------------------
+        // Call content plugins
+        $aeEvents = \MarkNotes\Events::getInstance();
+        $aeEvents->loadPlugins('content', 'html');
+        $args = array(&$template);
+        $aeEvents->trigger('display.html', $args);
+        $template = $args[0];
+        // --------------------------------
 
         return $template;
     }

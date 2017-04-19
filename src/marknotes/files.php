@@ -27,7 +27,7 @@ class Files
      */
     public function renameFile(string $oldname, string $newname) : bool
     {
-        if ((self::fileExists($oldname)) && ($oldname!==$newname)) {
+        if ((self::fileExists($oldname)) && ($oldname !== $newname)) {
 
             // Remove the old version if already there
             if (self::fileExists($newname)) {
@@ -98,7 +98,7 @@ class Files
     }
 
     /**
-     * Under Windows, create a text file with the support of UTF8 in his content.    
+     * Under Windows, create a text file with the support of UTF8 in his content.
      */
     public static function fwriteANSI(string $sFileName, string $sContent)
     {
@@ -150,7 +150,14 @@ class Files
         } // if (($arrSkipFolder!=null) && (count($arrSkipFolder)>0))
 
         $paths = glob($path.'*', GLOB_MARK | GLOB_ONLYDIR);
+
+        // Sort, case insensitive
+        usort($paths, 'strnatcasecmp');
+
         $files = glob(rtrim($path, DS).DS.$pattern, $flags);
+
+        // Sort, case insensitive
+        usort($files, 'strnatcasecmp');
 
         foreach ($paths as $path) {
             if (self::folderExists($path)) {
@@ -171,8 +178,6 @@ class Files
         foreach ($files as $key => $value) {
             $files[$key] = $value;
         }
-
-        @sort($files);
 
         return $files;
     }
@@ -292,7 +297,6 @@ class Files
 
     public static function createFile(string $filename, string $content, int $chmod = 644) : bool
     {
-
         $errorlevel = error_reporting();
         error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
 

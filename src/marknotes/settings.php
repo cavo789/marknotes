@@ -774,6 +774,24 @@ class Settings
     }
 
     /**
+     * Is there a node to automatically select after the load of the treeview ?
+     * Usefull when the user wish to immediatly show a specific note.
+     *
+     * @return string
+     */
+    public function getTreeviewDefaultNode(string $defaultNode = '') : string
+    {
+        $sReturn = $defaultNode;
+        if (isset($this->_json['treeview'])) {
+            if (isset($this->_json['treeview']['default'])) {
+                $sReturn = str_replace('/', DS, trim($this->_json['treeview']['default']));
+            }
+        }
+
+        return $sReturn;
+    }
+
+    /**
      * Should nodes of the treeview be opened at loading time ?
      *
      * @return bool
@@ -891,26 +909,6 @@ class Settings
     } // function getchmod()
 
     /**
-     * JoliTypo is Web Microtypography fixer (https://github.com/jolicode/JoliTypo)
-     * and can solve common typo issues.
-     *
-     * @return bool
-     */
-    public function getUseJoliTypo() : bool
-    {
-        $bReturn = true;
-
-        if (isset($this->_json['page'])) {
-            $tmp = $this->_json['page'];
-            if (isset($tmp['jolitypo'])) {
-                $bReturn = (($tmp['jolitypo'] == 1)?true:false);
-            }
-        }
-        return $bReturn;
-    }
-
-
-    /**
      * Can we use the navigator localStorage cache system ?
      *
      * @return bool
@@ -928,6 +926,24 @@ class Settings
         return $bReturn;
     }
 
+    public function getPlugins(string $type = '', string $layout = '') : array
+    {
+        $arr = array();
+        if (isset($this->_json['plugins'])) {
+            if ($type !== '') {
+                if (isset($this->_json['plugins'][$type])) {
+                    if (($layout !== '') && (isset($this->_json['plugins'][$type][$layout]))) {
+                        $arr = $this->_json['plugins'][$type][$layout];
+                    } else {
+                        $arr = $this->_json['plugins'][$type];
+                    }
+                }
+            } else {
+                $arr = $this->_json['plugins'];
+            }
+        }
+        return $arr;
+    }
     public function getAdminInfos() : array
     {
         $arr = array();

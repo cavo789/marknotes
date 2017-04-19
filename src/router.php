@@ -33,6 +33,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 
     $aeFiles = \MarkNotes\Files::getInstance();
     $aeFunctions = \MarkNotes\Functions::getInstance();
+    $aeEvents = \MarkNotes\Events::getInstance();
 
     $filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
 

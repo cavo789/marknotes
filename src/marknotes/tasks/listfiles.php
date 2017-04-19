@@ -48,9 +48,6 @@ class ListFiles
             // Be carefull, folders / filenames perhaps contains accentuated characters
             $arrFiles = array_map('utf8_encode', $arrFiles);
 
-            // Sort, case insensitve
-            natcasesort($arrFiles);
-
             $return['settings']['root'] = $aeSettings->getFolderDocs(true);
 
             // Get the number of files
@@ -104,6 +101,19 @@ class ListFiles
             $ext = array("md");
         }
 
+        // Is there a default node to select after the load of the treeview ?
+        $defaultNode = $aeSettings->getTreeviewDefaultNode('');
+        if ($defaultNode !== '') {
+            // Should be an absolute filename like C:\notes\docs\marknotes\readme.md
+            $defaultNode = $aeSettings->getFolderDocs(true).trim($defaultNode);
+
+            if (substr($defaultNode, -3) !== '.md') {
+
+                // And the extension should also be mentionned
+                $defaultNode .= '.md';
+            }
+        }
+
         // The first note, root node, will always be opened (first level)
         // As from the second level, pay attention to the _settingsTreeOpened flag.  If not set, nodes will be
         // set in a closed state (user will need to click on the node to see items)
@@ -116,6 +126,7 @@ class ListFiles
                 $opened = true;
             }
         }
+
         // Entry for the folder
         $listDir = array(
          'id' => utf8_encode(str_replace($root, '', $dir).DS),
@@ -134,6 +145,10 @@ class ListFiles
                     // Don't take files/folders starting with a dot
                     if (substr($sub, 0, 1) !== '.') {
                         if (is_file($dir.DS.$sub)) {
+                            $opened = 0;
+                            if ($dir.DS.$sub === $defaultNode) {
+                                $opened = 1;
+                            }
                             $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
                             if (in_array($extension, $ext)) {
                                 $files[] = array(
@@ -143,9 +158,14 @@ class ListFiles
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(
-                                    'task' => 'display',
-                                    'file' => rawurlencode(utf8_decode(str_replace($root, '', $dir.DS.$sub)))
-                                   )
+                                        'task' => 'display',
+                                        'file' => rawurlencode(utf8_decode(str_replace($root, '', $dir.DS.$sub)))
+                                    ),
+                                    'state' => array(
+
+                                            'opened' => $opened,
+                                            'selected' => $opened
+                                        )
                                 );
                             }
                         } elseif (is_dir($dir.DS.$sub)) {
@@ -155,13 +175,9 @@ class ListFiles
                 }
             } // while
 
-            asort($dirs);
-
             foreach ($dirs as $d) {
                 $listDir['children'][] = self::dir_to_jstree_array($d, $ext, $arrTreeAutoOpen);
             }
-
-            asort($files);
 
             foreach ($files as $file) {
                 $listDir['children'][] = $file;

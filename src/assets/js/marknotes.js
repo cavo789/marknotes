@@ -961,8 +961,7 @@ function afterDisplay($fname) {
 		initializeTasks();
 
 		// Retrieve the heading 1 from the loaded file
-		var $title = $('#CONTENT h1')
-			.text();
+		var $title = $('#CONTENT h1').text();
 		if ($title !== '') {
 			$('title').text($title);
 		}

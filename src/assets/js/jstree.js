@@ -19,13 +19,32 @@ function jstree_init($data) {
 			$('#TOC').jstree("destroy").empty();
 			$('#TOC').jstree("true");
 
+			var $arrPlugins = ['contextmenu', 'types', 'search', 'types', 'unique', 'wholerow'];
+
+			if (marknotes.treeview.defaultNode === '') {
+				$arrPlugins.push('state');
+			}
+
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log('jsTree - List of plugins loaded');
+				console.log($arrPlugins);
+			}
+			/*<!-- endbuild -->*/
+
 			// Use jsTree for the display
 
 			$('#TOC')
+				.on('loaded.jstree', function () {
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						console.log('Tree has been successfully loaded');
+					}
+					/*<!-- endbuild -->*/
+					//	$("#TOC").jstree("select_node", "#e4dd128f135e34986b483208539e9c6c"); // JUG W
+				})
 				.on('changed.jstree', function (e, data) {
-
 					var objNode = data.instance.get_node(data.selected);
-
 					if (typeof (objNode.parent) !== "undefined") {
 						// Get the filename : objNode.parent mention the relative parent folder (f.. /development/jquery/)
 						// and objNode.text the name of the file (f.i. jsTree.md)
@@ -82,16 +101,13 @@ function jstree_init($data) {
 				.on('search.jstree', function (nodes, str, res) {
 					if (str.nodes.length === 0) {
 						// No nodes found, hide all
-						$('#TOC')
-							.jstree(true)
-							.hide_all();
+						$('#TOC').jstree(true).hide_all();
 						// except the first node (show it)
-						$("#TOC")
-							.jstree("show_node", "ul > li:first");
+						$("#TOC").jstree("show_node", "ul > li:first");
 					}
 				})
 				.jstree({
-					plugins: ['contextmenu', 'state', 'sort', 'types', 'dnd', 'search', 'types', 'unique', 'wholerow'],
+					plugins: $arrPlugins,
 					core: {
 						animation: 1,
 						progressive_render: true,
@@ -107,9 +123,6 @@ function jstree_init($data) {
 						},
 						multiple: false,
 						initially_open: ['phtml_1'], // Automatically open the root node
-						sort: function (a, b) {
-							return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
-						},
 						themes: {
 							responsive: 1,
 							variant: 'small',
@@ -167,7 +180,7 @@ function jstree_init($data) {
 		/*<!-- endbuild -->*/
 	}
 
-} // function jstree_init()
+}
 
 /**
  * Context menu for the treeview.  This function will build the contextual menu
