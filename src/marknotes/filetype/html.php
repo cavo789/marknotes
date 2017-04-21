@@ -81,29 +81,6 @@ class HTML
     }
 
     /**
-     * Set the ul/li style to use Font-Awesome
-     */
-    public function setBulletsStyle(string $html) : string
-    {
-
-        // Replace <li></li> but only if they're part of a <ul></ul> i.e. don't modify <li> for <ol>
-        // http://stackoverflow.com/a/4835671
-        $sReturn = preg_replace_callback(
-           "/(<ul>.*<\/ul>)/Ums",
-           function ($ol) {
-               $aeSettings = \MarkNotes\Settings::getInstance();
-               $icon = 'check'; //$aeSettings->getSlideshowListBullet('check');
-               $extra = ''; //$aeSettings->getSlideshowListBulletExtra('');
-               return preg_replace("/(<li(|\s*\/)>)/", "<li><i class='fa-li fa fa-".$icon."' ".$extra."></i>", $ol[1]);
-           },
-           $html
-       );
-
-        $sReturn = str_replace('<ul>', '<ul class="fa-ul">', $sReturn);
-        return $sReturn;
-    }
-
-    /**
      * Return variables from the template file and append the html content
      */
     public function replaceVariables(string $template, string $html, array $params = null) : string
@@ -170,12 +147,6 @@ class HTML
 
         // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
         $template = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet($aeSettings->getFolderWebRoot().'custom.css'), $template);
-
-        // Additionnal javascript, depends on user's settings
-        /*$additionnalJS = '';
-        if ($aeSettings->getOptimisationLazyLoad()) {
-            $additionnalJS = '<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
-        }*/
 
         // --------------------------------
         // Call content plugins

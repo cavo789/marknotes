@@ -39,7 +39,7 @@ class HTML
         $html = $aeHTML->addHeadingsID($html, false);
 
         // Add css to bullets
-        $html = $aeHTML->setBulletsStyle($html);
+        //$html = $aeHTML->setBulletsStyle($html);
 
         // Check if a template has been specified in the parameters
         // and if so, check that this file exists

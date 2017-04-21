@@ -42,6 +42,10 @@
 			"txt": ["pandoc"]
 		},
 		"options": {
+			"bootstrap": {
+				"bullet": "check",
+				"extra_attribute": ""
+			},
 			"ganalytics": "",
 			"pandoc": {
 				"script": "c:\\christophe\\tools\\pandoc\\pandoc.exe",
@@ -59,10 +63,6 @@
 					"h4": "fade",
 					"h5": "fade",
 					"h6": "fade"
-				},
-				"bullet": {
-					"fontawesome": "check",
-					"extra_attribute": ""
 				},
 				"section": {
 					"extra_data_img_attr": "data-background-size='contain'"

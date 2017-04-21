@@ -67,15 +67,12 @@ class Reveal
             $aeConvert = \MarkNotes\Helpers\Convert::getInstance();
             $html = $aeConvert->getHTML($markdown, $params);
 
-            $aeHTML = \MarkNotes\FileType\HTML::getInstance();
-            $html = $aeHTML->setBulletsStyle($html);
-
             // Add the fragment class to any li items when the type for bullet is animated
 
-            $arrReveal = $aeSettings->getPlugins('options', 'reveal');
+            $arrSettings = $aeSettings->getPlugins('options', 'reveal');
 
             // PHP 7 Null coalescing operator  (like than isset($arr[...] ? $arr[...] : 'default')
-            $style = $arrReveal['animation']['bullet'] ?? 'animated';
+            $style = $arrSettings['animation']['bullet'] ?? 'animated';
 
             if ($style === 'animated') {
                 $matches = array();
@@ -108,13 +105,13 @@ class Reveal
                 $head = substr($tmp, 1, 2);
 
                 // Retrieve the animation between slides (sections)
-                $transition = $arrReveal['animation'][$head] ?? $transition;
+                $transition = $arrSettings['animation'][$head] ?? $transition;
 
                 if (substr($tmp, 0, 8) === '<h6>@@@@') {
 
                     // Very special tag : create a new section with an image background
 
-                    $extraAttributes = $arrReveal['section']['extra_data_img_attr'] ?? '';
+                    $extraAttributes = $arrSettings['section']['extra_data_img_attr'] ?? '';
 
                     // Add the slide background image
                     $image = $extraAttributes.' data-background-image="'.base64_decode(str_replace('</h6>', '', str_replace('<h6>', '', $tmp))).'" ';
