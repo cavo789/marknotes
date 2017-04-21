@@ -19,7 +19,6 @@ class Share
             $urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($_REQUEST['file'], 'html'));
         }
 
-
         if (file_exists($fname = __DIR__.'/share/template.html')) {
             $tmpl = str_replace('%URL%', $urlHTML, file_get_contents($fname));
             $tmpl = str_replace('%ROOT%', $url, $tmpl);
@@ -27,17 +26,18 @@ class Share
         }
         return true;
     }
+
     /**
      * Provide additionnal css
      */
     public static function addCSS(&$css = null)
     {
-        $css .=
-            "<style>".
-                "#SocialShare {".
-                "	position:fixed;top:10px;right:10px;".
-                "}".
-            "</style>";
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/share/share.css\" />\n";
+
         return true;
     }
 

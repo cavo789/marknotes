@@ -42,10 +42,10 @@ class Events
         $aeSettings = \MarkNotes\Settings::getInstance();
         /*<!-- build:debug -->*/
         /*if ($aeSettings->getDevMode()) {
-            if ($event === 'render.css') {
+            //if ($event === 'render.css') {
                 $aeDebug->here('###DevMode### - Event '.$event, 5);
-                echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r(self::$arrEvents[$event], true)."</pre>";
-            }
+        echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r(self::$arrEvents[$event], true)."</pre>";
+            //}
         }*/
         /*<!-- endbuild -->*/
 

@@ -88,6 +88,15 @@ class HTML
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeEvents = \MarkNotes\Events::getInstance();
+
+        // --------------------------------
+        // Call content plugins
+        $aeEvents->loadPlugins('content', 'html');
+        $args = array(&$html);
+        $aeEvents->trigger('render.content', $args);
+        $html = $args[0];
+        // --------------------------------
 
         // Write the file but first replace variables
         $template = str_replace('%LANGUAGE%', $aeSettings->getLanguage(), $template);
@@ -145,30 +154,20 @@ class HTML
             $template = str_replace('<!--%FONT%-->', $sFont, $template);
         }
 
-        // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
-        $template = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet($aeSettings->getFolderWebRoot().'custom.css'), $template);
-
         // --------------------------------
         // Call content plugins
-        $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->loadPlugins('content', 'html');
         $additionnalJS = '';
         $args = array(&$additionnalJS);
         $aeEvents->trigger('render.js', $args);
-        $additionnalJS = $args[0];
+        $template = str_replace('<!--%ADDITIONNAL_JS%-->', $args[0], $template);
 
         $css = '';
         $args = array(&$css);
         $aeEvents->trigger('render.css', $args);
-        $css = $args[0];
+        $template = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $template);
 
         // --------------------------------
-
-        $template = str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $template);
-        $template = str_replace('<!--%ADDITIONNAL_CSS%-->', $css, $template);
-
-        // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
-        $template = str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript($aeSettings->getFolderWebRoot().'custom.js'), $template);
 
         // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
 

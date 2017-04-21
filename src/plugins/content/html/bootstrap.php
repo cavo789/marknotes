@@ -8,6 +8,20 @@ class Bootstrap
 {
 
     /**
+     * Provide additionnal javascript
+     */
+    public static function addJS(&$js = null)
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $js .= "\n<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/bootstrap/bootstrap.js\"></script>\n";
+
+        return true;
+    }
+
+    /**
      * Set the ul/li style to use Font-Awesome
      */
     private static function setBullets(string $html) : string
@@ -36,16 +50,20 @@ class Bootstrap
      */
     private static function setTables(string $html) : string
     {
-
         // Add bootstrap to tables
-        $html = str_replace('<table>', '<div class="table-responsive"><table class="table table-striped table-bordered table-hover">', $html);
+        $html = str_replace('<table>', '<div class="table-responsive"><table>', $html);
         $html = str_replace('</table>', '</table></div>', $html);
 
         return $html;
     }
 
+
     public static function doIt(&$html = null)
     {
+        if (trim($html) === '') {
+            return true;
+        }
+
         $html = self::setBullets($html);
         $html = self::setTables($html);
 
@@ -58,7 +76,8 @@ class Bootstrap
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('display.html', __CLASS__.'::doIt');
+        $aeEvents->bind('render.js', __CLASS__.'::addJS');
+        $aeEvents->bind('render.content', __CLASS__.'::doIt');
         return true;
     }
 }

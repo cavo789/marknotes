@@ -4,21 +4,8 @@ namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Lazyload
+class Prism
 {
-    public static function doIt(&$html = null)
-    {
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-
-        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-
-        $html = str_replace(
-            '<img src="',
-            '<img src="'.$root.'/assets/images/blank.png" class="lazyload" data-src="',
-            $html
-        );
-        return true;
-    }
 
     /**
      * Provide additionnal javascript
@@ -26,10 +13,28 @@ class Lazyload
     public static function addJS(&$js = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $js .= "<script type=\"text/javascript\" src=\"".$root."/libs/lazysizes/lazysizes.min.js\"></script>\n";
+        $js .=
+            "<script type=\"text/javascript\" src=\"".$root."/libs/prism/prism.js\" data-manual></script>\n".
+            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/prism/prism.js\"></script>\n";
+
+        return true;
+    }
+
+    /**
+     * Provide additionnal stylesheets
+     */
+    public static function addCSS(&$css = null)
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $css .=
+            "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/libs/prism/prism.css\" />\n";
+
         return true;
     }
 
@@ -39,8 +44,8 @@ class Lazyload
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('display.html', __CLASS__.'::doIt');
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
+        $aeEvents->bind('render.css', __CLASS__.'::addCSS');
         return true;
     }
 }

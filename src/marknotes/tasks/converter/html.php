@@ -38,9 +38,6 @@ class HTML
         // Add h2 and h3 id and don't add the "go to top" icon
         $html = $aeHTML->addHeadingsID($html, false);
 
-        // Add css to bullets
-        //$html = $aeHTML->setBulletsStyle($html);
-
         // Check if a template has been specified in the parameters
         // and if so, check that this file exists
 
@@ -53,10 +50,6 @@ class HTML
                 $template = $aeSettings->getTemplateFile('html');
             }
         }
-
-        // Don't keep the § (tags prefix) for slideshow
-        $html = str_replace($aeSettings->getTagPrefix(), '', $html);
-        $html = str_replace(htmlentities($aeSettings->getTagPrefix()), '', $html);  // &sect; = §
 
         if ($aeFiles->fileExists($template)) {
             $html = $aeHTML->replaceVariables(file_get_contents($template), $html, $params);

@@ -8,10 +8,12 @@ include 'libs/autoload.php';
 
 class JoliTypo
 {
-    public static function doIt(&$html = null)
+    public static function doIt(&$content = null) : bool
     {
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
+        if (trim($content) === '') {
+            return true;
+        }
+
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
@@ -34,7 +36,7 @@ class JoliTypo
             // Set the locale (en_GB, fr_FR, ...) preferences
             $fixer->setLocale($locale);
 
-            $html = $fixer->fix($html);
+            $content = $fixer->fix($content);
         }
 
         return true;
@@ -43,10 +45,10 @@ class JoliTypo
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind() : bool
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('display.html', __CLASS__.'::doIt');
+        $aeEvents->bind('render.content', __CLASS__.'::doIt');
         return true;
     }
 }

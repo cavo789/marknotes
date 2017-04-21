@@ -644,34 +644,6 @@ class Settings
 
         return $arr;
     }
-    /**
-     * Tags to automatically select when displaying the page
-     *
-     * @return string
-     */
-    public function getTagsAutoSelect() : string
-    {
-        $sReturn = '';
-        if (isset($this->_json['tags'])) {
-            $sReturn = implode($this->_json['tags'], ",");
-        }
-        return $sReturn;
-    }
-
-    /**
-     * Prefix to use to indicate a word as a tag
-     *
-     * @return string
-     */
-    public function getTagPrefix() : string
-    {
-        $sReturn = PREFIX_TAG;
-        if (isset($this->_json['tag_prefix'])) {
-            $sReturn = trim($this->_json['tag_prefix']);
-        }
-
-        return $sReturn;
-    }
 
     /**
      * Is there a node to automatically select after the load of the treeview ?

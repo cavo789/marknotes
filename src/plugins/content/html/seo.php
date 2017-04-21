@@ -9,8 +9,12 @@ class SEO
     /**
      * Modify the HTML rendering of the note
      */
-    public static function doIt(&$args = null)
+    public static function doIt(&$content = null)
     {
+        if (trim($content) === '') {
+            return true;
+        }
+
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         $arr = $aeSettings->getPlugins();
@@ -36,9 +40,23 @@ class SEO
                 // attribute to enforce SEO on this word
                 $replacement = '<span class="SEOKeyword"><span itemscope itemtype="http://schema.org/Article"><span itemprop="keywords">'.$key.'</span></span></span>';
 
-                $args = preg_replace($pattern, $replacement, $args);
+                $content = preg_replace($pattern, $replacement, $content);
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Provide additionnal css
+     */
+    public static function addCSS(&$css = null)
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/seo/seo.css\" />\n";
 
         return true;
     }
@@ -49,7 +67,8 @@ class SEO
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('display.html', __CLASS__.'::doIt');
+        $aeEvents->bind('render.css', __CLASS__.'::addCSS');
+        $aeEvents->bind('render.content', __CLASS__.'::doIt');
         return true;
     }
 }

@@ -30,6 +30,7 @@ class Display
 
     public function run(array $params)
     {
+        $aeEvents = \MarkNotes\Events::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -81,54 +82,6 @@ class Display
             $aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
             return $aeConvert->run($html, $params);
         } else { // if (!\MarkNotes\Functions::isAjaxRequest())
-            // -----------------------------------------------------------------------
-            // Check if the file contains words present in the tags.json file : if the file being displayed
-            // contains a word (f.i. "javascript") that is in the tags.json (so it's a known tag) and that
-            // word is not prefixed by the "§" sign add it : transform the "plain text" word and add the "tag" prefix
-
-            if ($aeFiles->fileExists($fname = $aeSettings->getFolderWebRoot().'tags.json')) {
-                if (filesize($fname) > 0) {
-                    $aeJSON = \MarkNotes\JSON::getInstance();
-
-                    $arrTags = $aeJSON->json_decode($fname);
-
-                    foreach ($arrTags as $tag) {
-                        // For each tag, try to find the word in the markdown file
-
-                        // /( |\\n|\\r|\\t)+               Before the tag, allowed : space, carriage return, linefeed or tab
-                        // [^`\/\\#_\-§]?                  Before the tag, not allowed : `, /, \, #, -, _ and § (the PREFIX_TAG)
-                        // ('.preg_quote($tag).')          The tag term (f.i. "javascript"
-                        // (\\n|,|;|\\.|\\)|[[:blank:]]|$) After the tag, allowed : carriage return, comma, dot comma, dot, ending ), tag or space or end of line
-
-                        // Capture the full line (.* ---Full Regex--- .*)
-                        preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $markdown, $matches);
-
-                        foreach ($matches[0] as $match) {
-                            if (count($match) > 0) {
-                                preg_match('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$).*)/i', $match, $matches);
-
-                                // Replace, in the line, the word f.i.    (don't use a preg_replace because preg_replace will replace all occurences of the word)
-
-                                //   Line  : Start a SSH connexion     (original)
-                                //   By    : Start a §SSH connexion    (new line)
-
-                                // $matches[2] : what was just before the tag      f.i.   " Start a SSH, then ..."  => the space before SSH
-                                // $matches[3] : the tag                                  " Start a SSH, then ..."  => SSH
-                                // $matches[4] : what was just after the tag              " Start a SSH, then ..."  => the comma after SSH
-
-                                $sLine = str_ireplace($matches[2].$matches[3].$matches[4], $matches[2].$aeSettings->getTagPrefix().$matches[3].$matches[4], $matches[0]);
-
-                                // And now, replace the original line ($matches[0]) by the new one in the document.
-
-                                $markdown = str_replace($matches[0], $sLine, $markdown);
-                            } // if (count($match)>0)
-                        } // foreach ($matches[0] as $match)
-                    } // foreach
-                } // if(filesize($fname)>0)
-            } // if ($aeFiles->fileExists($fname=$this->_rootFolder.'tags.json'))
-
-            //
-            // -----------------------------------------------------------------------
 
             // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
             $fnameHTML = str_replace('\\', '/', rtrim($aeFunctions->getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
@@ -139,6 +92,14 @@ class Display
             $html = $aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
 
             $html = '<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
+
+            // --------------------------------
+            // Call content plugins
+            $aeEvents->loadPlugins('content', 'html');
+            $args = array(&$html);
+            $aeEvents->trigger('render.content', $args);
+            $html = $args[0];
+            // --------------------------------
         } // if (!\MarkNotes\Functions::isAjaxRequest())
         return $html;
     }

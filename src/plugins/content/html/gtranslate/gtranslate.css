@@ -1,0 +1,18 @@
+#google_translate_element {
+	z-index : 999;
+	position: fixed !important;
+	top     : 20;
+	left    : 0;
+}
+
+.goog-logo-link {
+	display: none !important;
+}
+
+.goog-te-gadget {
+	color: transparent !important;
+}
+
+.goog-te-combo {
+	color: black !important;
+}

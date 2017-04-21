@@ -306,13 +306,6 @@ function initFiles($data) {
 			noResultsText: marknotes.message.search_no_result,
 			requestType: (marknotes.settings.debug ? 'get' : 'post')
 		});
-
-		// Add automatic filtering if defined in the settings.json file
-		if (marknotes.settings.auto_tags !== '') {
-			addSearchEntry({
-				keyword: marknotes.settings.auto_tags
-			});
-		}
 	} // if ($.isFunction($.fn.flexdatalist))
 
 	$('#search').css('width', $('#TDM').width() - 5);
@@ -724,73 +717,6 @@ function replaceLinksToOtherNotes() {
 }
 
 /**
- * Try to find tags i.ex. §some_tag  (the tag is prefixed by the § character because # is meaningfull in markdown
- *
- * @returns {undefined}
- */
-function addLinksToTags() {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log(' ... add links to tags (function addLinksToTags())');
-	}
-	/*<!-- endbuild -->*/
-
-	var $text = $('#CONTENT').html();
-
-	// marknotes.settings.prefix_tag is set by marknotes.php and, by default, equal to §
-	// Every words prefixed by § will be considered as a tag just like "#word" in social network.
-	// The # character is used by markdown language so, use an another one.
-	try {
-		// Explanation of the regex
-		//
-		// ( |,|;|\\.|\\n|\\r|\\t)*       Before : Allowed characters before the tag : a space, comma, dot comma, dot, carriage return, linefeed or tab, one or more (f.i. a carriage return and a linefeed are matched)
-		// marknotes.settings.prefix_tag   Symbol : Match the § character
-		// ([a-zA-Z0-9]+)                 Tag    : a word composed of letters and figures, can also contains dot (like ".htaccess")
-		// ( |,|;|\\.|\\n|\\r|\\t|$)      Afeter : Allowed characters after the tag : space, comma, dot comma, dot, carriage return, linefeed or tab
-
-		var RegEx = new RegExp('( |,|;|\\.|\\n|\\r|\\t)*' + marknotes.settings.prefix_tag + '([(\\&amp;)\\.a-zA-Z0-9\\_\\-]+)( |,|;|\\.|\\n|\\r|\\t)*', 'i');
-
-		/*<!-- build:debug -->*/
-		if (marknotes.settings.debug) {
-			console.log('     RegEx for finding tags : ' + RegEx);
-		}
-		/*<!-- endbuild -->*/
-
-		var $tags = RegEx.exec($text);
-
-		while ($tags !== null) {
-			/*<!-- build:debug -->*/
-			if (marknotes.settings.debug) {
-				console.log("     Process tag " + $tags[0]);
-			}
-			/*<!-- endbuild -->*/
-
-			$sTags =
-				(($tags[1] !== undefined) ? $tags[1] : '') + // Before the span
-				'<span class="tag" title="' + marknotes.message.apply_filter_tag + '" data-task="tag" data-tag="' + $tags[2] + '">' + $tags[2] + '</span>' + // The span for tagging the word
-				(($tags[3] !== undefined) ? $tags[3] : ''); // After the span
-
-			try {
-				// The tag can, perhaps, contains special characters like an ending parenthese so quote the tag
-				$text = $text.replace(new RegExp(RegExp.quote($tags[0]), "g"), $sTags);
-				$tags = RegEx.exec($text);
-			} catch (err) {
-				$tags = null;
-				console.warn(err.lineNumber + '----' + err.message);
-			}
-		} // while
-
-		// Set the new page content
-		$('#CONTENT').html($text);
-	} catch (err) {
-		console.warn(err.message);
-	}
-
-	return;
-}
-
-/**
  * Force links that points on the same server (localhost) to be opened in a new window
  * @returns {Boolean}
  */
@@ -865,48 +791,6 @@ function addIcons() {
 }
 
 /**
- * Add the "table" class to any <table>
- *
- * @returns {undefined}
- */
-function NiceTable() {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log(' ... NiceTable : use the DataTable jQuery Plugin (function NiceTable())');
-	}
-	/*<!-- endbuild -->*/
-
-	try {
-		if ($.isFunction($.fn.DataTable)) {
-			$("table").each(function () {
-				$(this).addClass('display');
-				$(this).DataTable({
-					scrollY: "50vh", // 50%
-					scrollCollapse: true,
-					info: true,
-					//order: [[ 0, "asc" ],[ 1, "asc" ],[ 2, "asc" ],[ 3, "asc" ]],
-					lengthMenu: [
-						[10, 25, 50, -1],
-						[10, 25, 50, "All"]
-					],
-					language: {
-						decimal: '.',
-						thousands: ',',
-						url: 'libs/DataTables/' + marknotes.settings.language + '.json'
-					}
-				});
-			});
-		}
-	} catch (err) {
-		console.warn(err.message);
-	}
-
-	return true;
-
-}
-
-/**
  * Called after the ajax "display" request, the file is almost displayed
  */
 function afterDisplay($fname) {
@@ -928,34 +812,14 @@ function afterDisplay($fname) {
 			$('[data-task="printer"]').remove();
 		}
 
-		// Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
-		if ($.isFunction($.fn.linkify)) {
-			/*<!-- build:debug -->*/
-			if (marknotes.settings.debug) {
-				console.log(' ... linkify plain text (in function afterDisplay())');
-			}
-			/*<!-- endbuild -->*/
-			$('page').linkify();
-		}
-
-		if (typeof Prism === 'object') {
-			Prism.highlightAll();
-		}
-
 		// If a note contains a link to an another note, use ajax and not normal links
 		replaceLinksToOtherNotes();
-
-		// Add links to tags
-		addLinksToTags();
 
 		// Force links that points on the same server (localhost) to be opened in a new window
 		forceNewWindow();
 
 		// Add icons to .pdf, .xls, .doc, ... hyperlinks
 		addIcons();
-
-		// Make table nicer
-		NiceTable();
 
 		// Initialize each action buttons of the displayed note
 		initializeTasks();
@@ -999,131 +863,34 @@ function afterDisplay($fname) {
 		console.warn(err.message);
 	}
 
+	// Last part : the array $arrPluginsFct is a global array and will be initialized by
+	// the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
+	//
+	// For instance : the file /plugins/content/html/bootstrap/bootstrap.js contains this line :
+	// $arrPluginsFct.push("PluginBootstrap");
+	//
+	// This to tell to this code that the PluginBootstrap function should be fired once the note
+	// is displayd.  So, let's do it
+
+	try {
+		for (var i = 0, len = $arrPluginsFct.length; i < len; i++) {
+			// As explained here : https://www.sitepoint.com/call-javascript-function-string-without-using-eval/
+			fn = window[$arrPluginsFct[i]];
+
+			if (typeof fn === "function") fn();
+
+		}
+	} catch (err) {
+		console.warn(err.message);
+	}
+
 	// Just for esthetics purposes
 	$('#CONTENT').fadeOut(1).fadeIn(3);
 
 	return true;
 
 }
-
-/**
- * EDIT MODE - Render the textarea in a nice editor
- *
- * @param {type} $fname   Filename
- * @returns {Boolean}
- */
-function afterEdit($fname) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('In function afterEdit()');
-	}
-	/*<!-- endbuild -->*/
-
-	// Create the Simple Markdown Editor
-	// @link https://github.com/NextStepWebs/simplemde-markdown-editor
-
-	var simplemde = new SimpleMDE({
-		autoDownloadFontAwesome: false,
-		autofocus: true,
-		element: document.getElementById("sourceMarkDown"),
-		indentWithTabs: false,
-		codeSyntaxHighlighting: false,
-		toolbar: [{
-				// Add a custom button for saving
-				name: "Save",
-				action: function customFunction(editor) {
-					buttonSave($fname, simplemde.value());
-				},
-				className: "fa fa-floppy-o",
-				title: marknotes.message.button_save
-			},
-			{
-				// Encrypt
-				name: "Encrypt",
-				action: function customFunction(editor) {
-					buttonEncrypt(editor);
-				},
-				className: "fa fa-user-secret",
-				title: marknotes.message.button_encrypt
-			},
-			"|",
-			{
-				// Add a custom button for saving
-				name: "Exit",
-				action: function customFunction(editor) {
-					$('#sourceMarkDown').parent().hide();
-					ajaxify({
-						task: 'display',
-						param: $fname,
-						callback: 'afterDisplay($data.param)',
-						target: 'CONTENT'
-					});
-				},
-				className: "fa fa-sign-out",
-				title: marknotes.message.button_exit_edit_mode
-			},
-			"|", "preview", "side-by-side", "fullscreen", "|",
-			"bold", "italic", "strikethrough", "|", "heading", "heading-smaller", "heading-bigger", "|", "heading-1", "heading-2", "heading-3", "|",
-			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
-		] // toolbar
-	});
-
-	$('.editor-toolbar').addClass('fa-2x');
-
-	return true;
-
-}
-
-/**
- * EDIT MODE - Save the new content.  Called by the "Save" button of the simplemde editor, initialized in the afterEdit function)
- *
- * @param {type} $fname        Filename
- * @param {type} $markdown     The new content
- * @returns {boolean}
- */
-function buttonSave($fname, $markdown) {
-
-	var $data = {};
-	$data.task = 'save';
-	$data.param = $fname;
-	$data.markdown = window.btoa(encodeURIComponent(JSON.stringify($markdown)));
-
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: marknotes.url,
-		data: $data,
-		datatype: 'json',
-		success: function (data) {
-			Noty({
-				message: data.status.message,
-				type: (data.status.success == 1 ? 'success' : 'error')
-			});
-		}
-	}); // $.ajax()
-
-	return true;
-
-}
-
-/**
- * EDIT MODE - Encrypt the selection.  Add the <encrypt> tag
- *
- * @returns {boolean}
- */
-function buttonEncrypt(editor) {
-
-	var cm = editor.codemirror;
-	var output = '';
-	var selectedText = cm.getSelection();
-	var text = selectedText || 'your_confidential_info';
-
-	output = '<encrypt>' + text + '</encrypt>';
-	cm.replaceSelection(output);
-
-}
-
+7
 /**
  *
  * @param {json} $params

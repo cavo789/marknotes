@@ -1,0 +1,7 @@
+.SEOKeyword {
+	border-bottom   : 1px dotted;
+	font-weight     : bold;
+	background-color: cyan;
+	background-color: rgba(90, 145, 199, 0.16);
+	font-size       : 1.2em;
+}

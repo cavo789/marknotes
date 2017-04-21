@@ -68,6 +68,9 @@ class Markdown
             $params['task'] = $task;
         }
 
+        $aeSession->set('task', $task);
+        $aeSession->set('filename', $filename);
+
         switch ($task) {
             case 'clear':
                 // Clear the session object

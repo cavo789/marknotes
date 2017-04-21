@@ -34,7 +34,7 @@
 	},
 	"plugins": {
 		"content": {
-			"html": ["bootstrap", "lazyload", "ganalytics", "gtranslate", "jolitypo", "seo", "share", "tags"],
+			"html": ["bootstrap", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "prism", "seo", "share", "AAAtags", "custom"],
 			"docx": ["pandoc"],
 			"epub": ["pandoc"],
 			"pdf": ["pandoc", "dompdf"],
@@ -70,7 +70,7 @@
 			},
 			"seo": {
 				"keywords": [
-					"JoomlaDays", "JoomlaDagen", "JDay 2017 NL", "JDay 2017 FR", "#jd17nl", "#jd17fr", "JUG Wallonie"
+					"Open Source", "JoomlaDays", "JoomlaDagen", "JDay 2017 NL", "JDay 2017 FR", "#jd17nl", "#jd17fr", "JUG Wallonie"
 				]
 			},
 			"tags": {
@@ -80,7 +80,6 @@
 		}
 	},
 	"site_name": "marknotes | An Open Source notes management tool",
-	"tags_RENAMED_AUTO_SELECT": [],
 	"templates": {
 		"html": "html",
 		"pdf": "pdf",

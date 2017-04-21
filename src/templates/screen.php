@@ -57,17 +57,13 @@
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
         <link media="screen" rel="stylesheet" type="text/css" href="assets/css/marknotes_screen.css" />
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/DataTables/css/dataTables.bootstrap4.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/simplemde/simplemde.min.css" />
+
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-toolbar/jquery.toolbar.css" />
 
         <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/assets/css/login.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
         <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/marknotes_print.css">
 
         <!--%ADDITIONNAL_CSS%-->
-
-        <!--%CUSTOM_CSS%-->
 
    </head>
 
@@ -131,6 +127,8 @@
 
       <footer class="onlyprint">&nbsp;</footer>
 
+	  <script>var $arrPluginsFct = [];</script>
+
       <!-- Add libraries. Thank you to these developpers! -->
       <script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
       <script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
@@ -147,35 +145,14 @@
       <!-- For nice user alerts (informations, warning, ...) -->
       <script type="text/javascript" src="libs/noty/jquery.noty.packaged.min.js"></script>
 
-      <!-- For converting plain text (emails, urls, ...) into links -->
-      <script type="text/javascript" src="libs/linkify/linkify.min.js"></script>
-      <script type="text/javascript" src="libs/linkify/linkify-jquery.min.js"></script>
-
       <!-- For highligthing content in a note : after a search, the displayed note will have the search term highlighted -->
-
       <script type="text/javascript" src="libs/jquery.highlight.js/jquery.highlight.js"></script>
-
-      <!-- In notes, where there are lines of code (html, javascript, vb, ...), these lines will be colorized thanks to Prism -->
-      <script type="text/javascript" src="libs/prism/prism.js" data-manual></script>
-
-      <!-- Lazysizes (lazyload of images) -->
-      <script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script>
 
       <!-- jsTree -->
       <script type="text/javascript" src="libs/jsTree/jstree.min.js"></script>
 
       <!-- jquery-toolbar -->
       <script type="text/javascript" src="libs/jquery-toolbar/jquery.toolbar.min.js"></script>
-
-      <!-- dataTables -->
-      <script type="text/javascript" src="libs/DataTables/js/jquery.dataTables.min.js"></script>
-      <script type="text/javascript" src="libs/DataTables/js/dataTables.bootstrap4.min.js"></script>
-
-      <!-- jsPDF -->
-      <script type="text/javascript" src="libs/jsPDF/jspdf.debug.js"></script>
-
-      <!-- Simple Markup Editor -->
-      <script src="libs/simplemde/simplemde.min.js"></script>
 
       <!-- Store.js -->
       <script src="libs/store/store.everything.min.js"></script>
@@ -186,8 +163,6 @@
       <script type="text/javascript" src="assets/js/jstree.js"></script>
       <script type="text/javascript" src="assets/js/fullscreen.js"></script>
       <script type="text/javascript" src="assets/js/marknotes.js"></script>
-
-      <!--%CUSTOM_JS%-->
 
       <script>initializeTasks();</script>
 

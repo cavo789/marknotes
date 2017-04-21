@@ -74,10 +74,10 @@
 
 	</body>
 
+	<script>var $arrPluginsFct = [];</script>
+
 	<!--%ADDITIONNAL_JS%-->
 
 	<!--%MARKDOWN_GLOBAL_VARIABLES%-->
-
-	<!--%CUSTOM_JS%-->
 
 </html>

@@ -26,22 +26,15 @@ class GTranslate
      */
     public static function addCSS(&$css = null)
     {
-        $css .=
-            "<style>".
-                "#google_translate_element { z-index:999; position : fixed !important; top: 20; left : 0; } ".
-                ".goog-logo-link {".
-                "	display:none !important;".
-                "}".
-                ".goog-te-gadget {".
-                "	color: transparent !important;".
-                "}".
-                ".goog-te-combo {".
-                "	color: black !important;".
-                "}".
-            "</style>";
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/gtranslate/gtranslate.css\" />\n";
+
         return true;
     }
-
+    
     /**
      * Provide additionnal javascript
      */
@@ -54,10 +47,7 @@ class GTranslate
             "function googleTranslateElementInit() {\n".
             "   new google.translate.TranslateElement({pageLanguage: '".$aeSettings->getLanguage()."', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');\n".
             "}\n".
-            "$(\"#btnClose\").click(function() {\n".
-            "   $(this).parent().hide();\n".
-            "});\n".
-            "</script>";
+            "</script>\n";
 
         return true;
     }
