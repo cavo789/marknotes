@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="%LANGUAGE%">
 
 	<head>
 
@@ -51,7 +51,7 @@
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" />
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/html.css" />
 
-		<!--%CUSTOM_CSS%-->
+		<!--%ADDITIONNAL_CSS%-->
 
 	</head>
 
@@ -77,7 +77,7 @@
 	<!--%ADDITIONNAL_JS%-->
 
 	<!--%MARKDOWN_GLOBAL_VARIABLES%-->
-	
+
 	<!--%CUSTOM_JS%-->
 
 </html>

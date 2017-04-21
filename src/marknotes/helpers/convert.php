@@ -63,23 +63,7 @@ class Convert
         }
         include_once $lib;
         $parsedown = new \Parsedown();
-        $html = $parsedown->text($markdown);
 
-        // LazyLoad images ?
-        if ($aeSettings->getOptimisationLazyLoad()) {
-            $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-
-            $html = str_replace(
-                '<img src="',
-                '<img src="'.$root.'/assets/images/blank.png" class="lazyload" data-src="',
-                $html
-            );
-        }
-
-        // Add bootstrap to tables
-        $html = str_replace('<table>', '<div class="table-responsive"><table class="table table-striped table-bordered table-hover">', $html);
-        $html = str_replace('</table>', '</table></div>', $html);
-
-        return $html;
+        return $parsedown->text($markdown);
     }
 }

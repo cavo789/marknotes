@@ -38,12 +38,55 @@ class Events
      */
     public static function trigger(string $event = '', array &$args = null)
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        /*<!-- build:debug -->*/
+        /*if ($aeSettings->getDevMode()) {
+            if ($event === 'render.css') {
+                $aeDebug->here('###DevMode### - Event '.$event, 5);
+                echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r(self::$arrEvents[$event], true)."</pre>";
+            }
+        }*/
+        /*<!-- endbuild -->*/
+
         if (isset(self::$arrEvents[$event])) {
             if (count(self::$arrEvents[$event]) > 0) {
                 foreach (self::$arrEvents[$event] as $func) {
                     if (is_callable($func)) {
+
+                        /*<!-- build:debug -->*/
+                        /*if ($aeSettings->getDevMode()) {
+                            if ($event === 'export.slides') {
+                                $aeDebug->here('###DevMode### - Event '.$event.', call '.$func, 5);
+                            }
+                        }*/
+                        /*<!-- endbuild -->*/
+
                         call_user_func_array($func, $args);
+
+                        $bStopProcessing = false;
+                        //echo '<h1>'.$func.'---'.$event.'</h1>';
+                        if (isset($args['stop_processing']) && (substr($event, 0, 5) === 'export')) {
+
+                            // If the file (f.i. the pdf output) has been created, there is
+                            // no need to continue and use the second converter.
+                            //
+                            // For instance, see below, if "pandoc" which is called first
+                            // has successfully created the PDF there is no need to continue with
+                            // dompdf
+                            //
+                            // "plugins": {
+                            //		"content": {
+                            //			"pdf": ["pandoc", "dompdf"]
+
+                            $bStopProcessing = ($args['stop_processing'] == 1);
+                        }
+
+                        if ($bStopProcessing) {
+                            break;
+                        }
                     } else {
+
                         // OUCH ! The function isn't callable
                         // see the sample in /marknotes/plugins/content/html/replace.php
                         // The call should be something like this :
@@ -51,15 +94,28 @@ class Events
                         //    $aeEvents->bind('display.html', __CLASS__.'::doIt');
                         // The full qualified function name i.e. the name space, the class name and the
                         // function name without the parenthesis
+                        /*<!-- build:debug -->*/
+                        if ($aeSettings->getDevMode()) {
+                            $aeDebug->here('###DevMode### - Event '.$event.', '.$func.' is not callable, ERROR', 5);
+                        }
+                        /*<!-- endbuild -->*/
                     }
                 }
             }
         }
     }
 
+    /**
+     * Add a function (a "callable" one) into the list of listeners for a specific event,
+     * like 'display.html' or 'render.js'.
+     *
+     * Use !in_array to be sure that the same function is there only once
+     */
     public static function bind(string $event = '', string $func)
     {
-        self::$arrEvents[$event][] = $func;
+        if (!in_array($func, self::$arrEvents[$event])) {
+            self::$arrEvents[$event][] = $func;
+        }
     }
 
     private static function getNameSpaceAndClassName($file)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="%LANGUAGE%">
     <head>
         <meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,6 +48,8 @@
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/remark.css" media="screen" />
 
+		<!--%ADDITIONNAL_CSS%-->
+
     </head>
     <body>
 
@@ -62,6 +64,8 @@
 				highlightStyle: 'monokai'
 			});
 		</script>
+
+		<!--%ADDITIONNAL_JS%-->
 
     </body>
 

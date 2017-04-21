@@ -480,25 +480,6 @@ class Settings
     }
 
     /**
-     * Use lazyload or not depending on settings.json
-     *
-     * @return bool
-     */
-    public function getOptimisationLazyLoad() : bool
-    {
-        $bReturn = false;
-
-        if (isset($this->_json['optimisation'])) {
-            $tmp = $this->_json['optimisation'];
-            if (isset($tmp['lazyload'])) {
-                $bReturn = (($tmp['lazyload'] == 1)?true:false);
-            }
-        }
-
-        return $bReturn;
-    } // function getOptimisationLazyLoad()
-
-    /**
      * Return the Google font to use (from settings.json)
      *
      * @param  bool $css If true, return a css block for using the font(s).  If false, return the font(s) name
@@ -602,25 +583,6 @@ class Settings
         return $sReturn;
     }
 
-    /**
-     * Reveal allows to foreseen animations between slides.  The animations will be read from the settings.json files
-     * under the slideshow->reveal->animation entry
-     */
-    public function getSlideshowAnimations(string $sType = 'reveal') : array
-    {
-        $sType = 'reveal';
-        $arr = array('h1' => 'zoom','h2' => 'concave','h3' => 'slide-in','h4' => 'fade','h5' => 'fade','h6' => 'fade');
-
-        if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow'][$sType])) {
-                if (isset($this->_json['slideshow'][$sType]['animation'])) {
-                    $arr = $this->_json['slideshow'][$sType]['animation'];
-                }
-            }
-        }
-
-        return $arr;
-    }
 
     /**
      * Return the bullet to use for slideshow lists (f.i. "check" (will be used as fa-check)
@@ -641,68 +603,6 @@ class Settings
         return $sReturn;
     }
 
-    /**
-     * Return the bullet to use for slideshow lists (f.i. "check" (will be used as fa-check)
-     * with Font-Awesome)
-     */
-    public function getSlideshowListBulletExtra(string $sDefault = '') : string
-    {
-        $sReturn = $sDefault;
-
-        if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow']['bullet'])) {
-                if (isset($this->_json['slideshow']['bullet']['extra_attribute'])) {
-                    $sReturn = $this->_json['slideshow']['bullet']['extra_attribute'];
-                }
-            }
-        }
-
-        return $sReturn;
-    }
-
-    /**
-     * With reveal, when an image is used as background for the slide, check if a maximum size (like 800px 600px) has
-     * been specified in the settings.json and if so, return that definition
-     */
-    public function getSlideshowExtraImgAttributes(string $sType = 'reveal') : string
-    {
-        $sType = 'reveal';
-        $sReturn = '';
-
-        if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow'][$sType])) {
-                if (isset($this->_json['slideshow'][$sType]['section'])) {
-                    if (isset($this->_json['slideshow'][$sType]['section']['extra_data_img_attr'])) {
-                        $sReturn = $this->_json['slideshow'][$sType]['section']['extra_data_img_attr'];
-                    }
-                }
-            }
-        }
-
-        return $sReturn;
-    }
-
-    /**
-     * Return the type of animation for bullets : normal (no animation) or animated (fragrent for reveal)
-     * under the slideshow->reveal->animation->bullet entry
-     *
-     * @return string
-     */
-    public function getSlideshowBullet(string $sType = 'reveal') : string
-    {
-        $sReturn = 'animated';
-        if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow'][$sType])) {
-                if (isset($this->_json['slideshow'][$sType]['animation'])) {
-                    if (isset($this->_json['slideshow'][$sType]['animation']['bullet'])) {
-                        $sReturn = $this->_json['slideshow'][$sType]['animation']['bullet'];
-                    }
-                }
-            }
-        }
-
-        return $sReturn;
-    }
 
     /**
      * Max allowed size for the search string

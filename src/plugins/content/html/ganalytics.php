@@ -6,10 +6,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class GAnalytics
 {
-    public static function doIt(&$html = null)
+    /**
+     * Add new scripts in the <script> part of the page; add the Google Analytics script
+     */
+    public static function addJS(&$js = null)
     {
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         $arr = $aeSettings->getPlugins();
@@ -22,17 +23,19 @@ class GAnalytics
         }
 
         if ($analyticsCode !== '') {
-            $script = "<script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '".$analyticsCode."', 'auto'); ga('send', 'pageview'); </script>\n\n";
-
-            $html = str_replace('</body>', $script.'</body>', $html);
+            $js .= "<script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '".$analyticsCode."', 'auto'); ga('send', 'pageview');</script>\n\n";
         }
+
         return true;
     }
 
+    /**
+     * Attach the function and responds to events
+     */
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('display.html', __CLASS__.'::doIt');
+        $aeEvents->bind('render.js', __CLASS__.'::addJS');
         return true;
     }
 }

@@ -31,6 +31,7 @@ class Markdown
     */
     public function process(string $task, string $filename = '', array $params = null)
     {
+        $aeEvents = \MarkNotes\Events::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -119,34 +120,53 @@ class Markdown
                 break;
 
             case 'docx':
+            case 'epub':
             case 'html':
             case 'pdf':
+            case 'slides':
             case 'txt':
 
-                // Generate a PDF or another format
-                $aeTask = \MarkNotes\Tasks\Convert::getInstance();
-                $output = $aeTask->run($params);
+                // --------------------------------
+                // Call content plugins and run the export.xxx (f.i. export.docx) plugins
 
-                // Send the pdf to the browser ... only if successfully created
-                if (($output !== '') && ($aeFiles->fileExists($output))) {
+                $aeEvents->loadPlugins('content', $task);
+                $args = array(&$params);
+                $aeEvents->trigger('export.'.$task, $args);
 
-                    $aeDownload = \MarkNotes\Tasks\Download::getInstance();
-                    $aeDownload->run($output, $params['task']);
+                if (isset($params['html'])) {
+                    header('Content-Type: text/html; charset=utf-8');
+                    echo $params['html'];
+                    return;
+                } else { // if (isset($params['html']))
 
-                } else {
+                    $output = '';
 
-                    header("HTTP/1.0 404 Not Found");
-
-                    echo "Error during the creation of the ".$params['task']."<br/>".
-                        "File [".$output."] is missing";
-
-                    /*<!-- build:debug -->*/
-                    if ($aeSettings->getDebugMode()) {
-                        $aeDebug = \MarkNotes\Debug::getInstance();
-                        $aeDebug->here('Requested format : '.$params['task']);
+                    if (isset($params['output'])) {
+                        $output = $params['output'];
                     }
-                    /*<!-- endbuild -->*/
-                }
+
+                    // Generate a PDF or another format
+                    //$aeTask = \MarkNotes\Tasks\Convert::getInstance();
+                    //$output = $aeTask->run($params);
+
+                    // Send the pdf to the browser ... only if successfully created
+                    if (($output !== '') && ($aeFiles->fileExists($output))) {
+                        $aeDownload = \MarkNotes\Tasks\Download::getInstance();
+                        $aeDownload->run($output, $params['task']);
+                    } else {
+                        header("HTTP/1.0 404 Not Found");
+
+                        echo "Error during the creation of the ".$params['task']."<br/>".
+                            "File [".$output."] is missing";
+
+                        /*<!-- build:debug -->*/
+                        if ($aeSettings->getDebugMode()) {
+                            $aeDebug = \MarkNotes\Debug::getInstance();
+                            $aeDebug->here('Requested format : '.$params['task']);
+                        }
+                        /*<!-- endbuild -->*/
+                    }
+                } // if (isset($params['html']))
 
                 break;
 
@@ -199,10 +219,15 @@ class Markdown
                 break;
 
             case 'tags':
-                // Get the list of folders/tags
-                $aeTask = \MarkNotes\Tasks\Tags::getInstance();
+
+                $aeEvents->loadPlugins('content', 'html');
+
+                $params = array();
+                $args = array(&$params);
+                $aeEvents->trigger('tags.list', $args);
+
                 header('Content-Type: application/json');
-                echo $aeTask->run();
+                echo $args[0]['json'];
                 break;
 
             case 'timeline':

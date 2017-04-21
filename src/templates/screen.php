@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="%LANGUAGE%">
 
    <head>
 
@@ -65,6 +65,8 @@
         <link media="screen" rel="stylesheet" type="text/css" href="libs/prism/prism.css"/>
         <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/marknotes_print.css">
 
+        <!--%ADDITIONNAL_CSS%-->
+
         <!--%CUSTOM_CSS%-->
 
    </head>
@@ -90,6 +92,7 @@
       <div class="row">
 
         <div class="col-sm-3 onlyscreen" id="TDM">
+			<br/>
             <a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="assets/images/marknotes.png" class="logo onlyscreen" /></a>
 
             <div id="toolbar-app" data-toolbar="style-option" class="onlyscreen btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>

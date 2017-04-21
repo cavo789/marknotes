@@ -51,7 +51,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     $format = $aeFunctions->getParam('format', 'string', $format, false, 8);
 
     // Only these format are recognized.  Default : html
-    if (!(in_array($format, array('docx','htm','html','pdf','slides', 'txt')))) {
+    if (!(in_array($format, array('docx','epub','htm','html','pdf','slides', 'txt')))) {
         $format = 'html';
     }
     $params = array();
@@ -89,6 +89,10 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
                     $task = 'docx';
                     break;
 
+                case 'epub':
+                    $task = 'epub';
+                    break;
+
                 case 'pdf':
                     $task = 'pdf';
                     break;
@@ -100,7 +104,8 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
                 case 'slides':
                     // Check on the URL if the user has forced a layout i.e. "remark" or "reveal", the supported slideshow framework
 
-                    $task = 'slideshow';
+                    //$task = 'slideshow';
+                    $task = 'slides';
 
                     break;
 

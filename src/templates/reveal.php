@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="fr-fr" dir="ltr">
+<html lang="%LANGUAGE%">
 
     <head>
 
@@ -54,6 +54,8 @@
         <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/marknotes.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/lib/css/zenburn.css" media="screen" >
 
+		<!--%ADDITIONNAL_CSS%-->
+
     </head>
 
     <body>
@@ -85,6 +87,8 @@
         <script src="%ROOT%/libs/reveal/js/reveal.js"></script>
         <script src="%ROOT%/libs/reveal/lib/js/head.min.js"></script>
         <script src="%ROOT%/templates/assets/js/marknotes.js"></script>
+
+		<!--%ADDITIONNAL_JS%-->
 
     </body>
 

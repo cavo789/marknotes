@@ -92,8 +92,8 @@ class HTML
            "/(<ul>.*<\/ul>)/Ums",
            function ($ol) {
                $aeSettings = \MarkNotes\Settings::getInstance();
-               $icon = $aeSettings->getSlideshowListBullet('check');
-               $extra = $aeSettings->getSlideshowListBulletExtra('');
+               $icon = 'check'; //$aeSettings->getSlideshowListBullet('check');
+               $extra = ''; //$aeSettings->getSlideshowListBulletExtra('');
                return preg_replace("/(<li(|\s*\/)>)/", "<li><i class='fa-li fa fa-".$icon."' ".$extra."></i>", $ol[1]);
            },
            $html
@@ -113,6 +113,7 @@ class HTML
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Write the file but first replace variables
+        $template = str_replace('%LANGUAGE%', $aeSettings->getLanguage(), $template);
         $template = str_replace('%TITLE%', $this->getHeadingText($html), $template);
         $template = str_replace('%CONTENT%', $html, $template);
         $template = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $template);
@@ -171,12 +172,29 @@ class HTML
         $template = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet($aeSettings->getFolderWebRoot().'custom.css'), $template);
 
         // Additionnal javascript, depends on user's settings
-        $additionnalJS = '';
+        /*$additionnalJS = '';
         if ($aeSettings->getOptimisationLazyLoad()) {
             $additionnalJS = '<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
-        }
+        }*/
+
+        // --------------------------------
+        // Call content plugins
+        $aeEvents = \MarkNotes\Events::getInstance();
+        $aeEvents->loadPlugins('content', 'html');
+        $additionnalJS = '';
+        $args = array(&$additionnalJS);
+        $aeEvents->trigger('render.js', $args);
+        $additionnalJS = $args[0];
+
+        $css = '';
+        $args = array(&$css);
+        $aeEvents->trigger('render.css', $args);
+        $css = $args[0];
+
+        // --------------------------------
 
         $template = str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $template);
+        $template = str_replace('<!--%ADDITIONNAL_CSS%-->', $css, $template);
 
         // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
         $template = str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript($aeSettings->getFolderWebRoot().'custom.js'), $template);

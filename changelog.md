@@ -7,6 +7,8 @@
 ### 2017-04-17
 
 ```diff
++ Add content plugins : Google Analytics, Google Translate, JoliTypo (coded now as a plugin), Share on social networks and SEO
++ The "language" attribute in templates is now derived from the settings.json file (and no more "en" by default)
 + Add stylisation for tables in the html View
 + Autoclose the login popup after submitting and simulate click on the login button when pressing the Enter key on the password field
 - Remove a bug with dompdf when rendering pdf layout

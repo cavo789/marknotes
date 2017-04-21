@@ -39,7 +39,10 @@ class JoliTypo
 
         return true;
     }
-
+    
+    /**
+     * Attach the function and responds to events
+     */
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
