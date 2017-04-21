@@ -95,25 +95,17 @@ class ShowInterface
         "marknotes.url='index.php';\n".
         "marknotes.webroot='".rtrim($aeFunctions->getCurrentURL(true, false), '/')."/';\n".
         "marknotes.settings={};\n".
-        "marknotes.settings.auto_tags='".$aeSettings->getTagsAutoSelect()."';\n".
         "marknotes.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
         "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
         "marknotes.settings.language='".$aeSettings->getLanguage()."';\n".
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
-        "marknotes.settings.prefix_tag='".$aeSettings->getTagPrefix()."';\n".
         "marknotes.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
         "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n".
         "marknotes.treeview={};\n".
         "marknotes.treeview.defaultNode='".trim(str_replace("'", "\'", $aeSettings->getTreeviewDefaultNode('')))."';\n";
 
-        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
-
-        // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
-        $html = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet('custom.css'), $html);
-
-        // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
-        $html = str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript('custom.js'), $html);
+        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '\n<script type="text/javascript">'.$javascript.'</script>', $html);
 
         return $html;
     }
