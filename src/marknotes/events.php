@@ -113,7 +113,12 @@ class Events
      */
     public static function bind(string $event = '', string $func)
     {
-        if (!in_array($func, self::$arrEvents[$event])) {
+        if (isset(self::$arrEvents[$event])) {
+            if (!in_array($func, self::$arrEvents[$event])) {
+                self::$arrEvents[$event][] = $func;
+            }
+        } else {
+            // This event isn't yet known
             self::$arrEvents[$event][] = $func;
         }
     }
@@ -127,6 +132,7 @@ class Events
         if (preg_match('/^namespace (.*);$/m', $content, $matches)) {
             $sReturn = '\\'.$matches[1];
         }
+
         if (preg_match('/^class (.*)$/m', $content, $matches)) {
             $sReturn .= '\\'. $matches[1];
         }

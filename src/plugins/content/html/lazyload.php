@@ -27,7 +27,6 @@ class Lazyload
     {
         $aeSettings = \MarkNotes\Settings::getInstance();
         $js .= "<script type=\"text/javascript\" src=\"libs/lazysizes/lazysizes.min.js\"></script>";
-
         return true;
     }
 

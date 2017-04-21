@@ -39,7 +39,7 @@ class JoliTypo
 
         return true;
     }
-    
+
     /**
      * Attach the function and responds to events
      */

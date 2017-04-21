@@ -100,7 +100,6 @@ class ShowInterface
         "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
         "marknotes.settings.language='".$aeSettings->getLanguage()."';\n".
-        "marknotes.settings.lazyload=".($aeSettings->getOptimisationLazyLoad()?1:0).";\n".
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
         "marknotes.settings.prefix_tag='".$aeSettings->getTagPrefix()."';\n".
         "marknotes.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
@@ -112,14 +111,6 @@ class ShowInterface
 
         // if present, add your custom stylesheet if the custom.css file is present. That file should be present in the root folder; not in /assets/js
         $html = str_replace('<!--%CUSTOM_CSS%-->', $aeFunctions->addStylesheet('custom.css'), $html);
-
-        // Additionnal javascript, depends on user's settings
-        $additionnalJS = '';
-        if ($aeSettings->getOptimisationLazyLoad()) {
-            $additionnalJS = '<script type="text/javascript" src="libs/lazysizes/lazysizes.min.js"></script> ';
-        }
-
-        $html = str_replace('<!--%ADDITIONNAL_JS%-->', $additionnalJS, $html);
 
         // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
         $html = str_replace('<!--%CUSTOM_JS%-->', $aeFunctions->addJavascript('custom.js'), $html);
