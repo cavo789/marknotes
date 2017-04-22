@@ -705,45 +705,6 @@ class Settings
     }
 
     /**
-     * Return the password used for encryptions
-     *
-     * @return string
-     */
-    public function getEncryptionPassword() : string
-    {
-        $sReturn = '';
-
-        if (isset($this->_json['encryption'])) {
-            if (isset($this->_json['encryption']['password'])) {
-                $sReturn = trim($this->_json['encryption']['password']);
-            }
-        }
-
-        return $sReturn;
-    } // function getEncryptionPassword()
-
-    /**
-     * Return the method used for encryptions
-     *
-     * @return string
-     */
-    public function getEncryptionMethod() : string
-    {
-        $sReturn = 'aes-256-ctr';
-
-        if (isset($this->_json['encryption'])) {
-            if (isset($this->_json['encryption']['method'])) {
-                $sReturn = trim($this->_json['encryption']['method']);
-                if ($sReturn === '') {
-                    $sReturn = 'aes-256-ctr';
-                }
-            }
-        }
-
-        return $sReturn;
-    } // function getEncryptionMethod()
-
-    /**
      * Get locale
      *
      * @return bool

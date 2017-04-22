@@ -25,6 +25,7 @@ class Edit
     private static function doIt(array $params) : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         header('Content-Type: text/plain; charset=utf-8');
@@ -44,7 +45,7 @@ class Edit
             die();
         }
 
-        $params['editMode']=1;
+        $aeSession->set('editMode', 1);
 
         $aeMD = \MarkNotes\FileType\Markdown::getInstance();
         $markdown = $aeMD->read($fullname, $params);

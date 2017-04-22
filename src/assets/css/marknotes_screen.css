@@ -115,12 +115,6 @@ h2 {
 	padding-left: 5px;
 }
 
-.icon_encrypted {
-	padding-left : 5px;
-	padding-right: 5px;
-	color        : #abe0ab;
-}
-
 /* Content if the full page : contains the list of files and the content of the select note */
 
 #CONTENT {

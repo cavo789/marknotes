@@ -80,6 +80,8 @@ class Markdown
      */
     public function read(string $filename, array $params = null) : string
     {
+        $aeEvents = \MarkNotes\Events::getInstance();
+
         if (mb_detect_encoding($filename)) {
             if (!file_exists($filename)) {
                 $filename = utf8_decode($filename);
@@ -88,30 +90,13 @@ class Markdown
 
         $markdown = file_get_contents($filename);
 
-        // Be sure to have content with LF and not CRLF in order to be able to use
-        // generic regex expression (match \n for new lines)
-        $markdown = str_replace("\r\n", "\n", $markdown);
-
-        // -----------------------------------------------------------------------
-        // URL Cleaner : Make a few cleaning like replacing space char in URL or in image source
-        // Replace " " by "%20"
-
-        $matches = array();
-        if (preg_match_all('/<img *src *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
-            foreach ($matches[1] as $match) {
-                $sMatch = str_replace(' ', '%20', $match);
-                $markdown = str_replace($match, $sMatch, $markdown);
-            }
-        }
-
-        // And do the same for links
-        $matches = array();
-        if (preg_match_all('/<a *href *= *[\'|"]([^\'|"]*)/', $markdown, $matches)) {
-            foreach ($matches[1] as $match) {
-                $sMatch = str_replace(' ', '%20', $match);
-                $markdown = str_replace($match, $sMatch, $markdown);
-            }
-        }
+        // --------------------------------
+        // Call content plugins
+        $aeEvents->loadPlugins('markdown');
+        $args = array(&$markdown);
+        $aeEvents->trigger('markdown.read', $args);
+        $markdown = $args[0];
+        // --------------------------------
 
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -128,18 +113,6 @@ class Markdown
 
         // And do it too for links to the files folder
         $markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
-
-        // Initialize the encryption class
-
-        if(!isset($params['editMode'])) {
-            // editMode = 1 when the encrypt module should display back the <encrypt>INFO</encrypt>
-            // tag. This is the case in the edit window
-            $params['editMode']=0;
-        }
-
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $aesEncrypt = new \MarkNotes\Encrypt($aeSettings->getEncryptionPassword(), $aeSettings->getEncryptionMethod());
-        $markdown = $aesEncrypt->HandleEncryption($filename, $markdown, $params['editMode']);
 
         if (isset($params['removeConfidential'])) {
             if ($params['removeConfidential'] === '1') {

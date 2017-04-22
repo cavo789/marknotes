@@ -11,10 +11,6 @@
 	"debug": 0,
 	"development": 1,
 	"editor": 1,
-	"encryption": {
-		"password": "",
-		"method": "aes-256-ctr"
-	},
 	"folder": "docs",
 	"language": "en",
 	"list": {
@@ -34,17 +30,22 @@
 	},
 	"plugins": {
 		"content": {
-			"html": ["bootstrap", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "prism", "seo", "share", "AAAtags", "custom"],
+			"html": ["encrypt", "bootstrap", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "meta", "prism", "seo", "share", "AAAtags", "custom"],
 			"docx": ["pandoc"],
 			"epub": ["pandoc"],
 			"pdf": ["pandoc", "dompdf"],
 			"slides": ["remark", "reveal"],
 			"txt": ["pandoc"]
 		},
+		"markdown": ["read", "encrypt", "write"],
 		"options": {
 			"bootstrap": {
 				"bullet": "check",
 				"extra_attribute": ""
+			},
+			"encrypt": {
+				"password": "man1,clo",
+				"method": "aes-256-ctr"
 			},
 			"ganalytics": "",
 			"pandoc": {
