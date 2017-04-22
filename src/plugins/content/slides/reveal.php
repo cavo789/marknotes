@@ -32,7 +32,7 @@ class Reveal
             $markdown = $aeMarkDown->read($fullname, $params);
 
             // Don't keep the § (tags prefix) for slideshow
-            $markdown = str_replace($aeSettings->getTagPrefix(), '', $markdown);
+            //$markdown = str_replace($aeSettings->getTagPrefix(), '', $markdown);
 
             // Try to retrieve the heading 1
             $pageTitle = $aeMarkDown->getHeadingText($markdown, '#');

@@ -1,7 +1,7 @@
 	<meta name="author" content="marknotes | Notes management" />
 	<meta name="designer" content="marknotes | Notes management" />
 	<meta name="keywords" content="markdown, markotes, html, slideshow, knowledge management" />
-	<meta name="description" content="marknotes is a knowledge management tool. Notes are written in the markdown language and then displayed as full functionnal html page. Can be displayed as a slideshow also." />
+	<meta name="description" content="marknotes is a knowledge management tool. Notes are written in the markdown language and then displayed as full functionnal html page. Can be displayed as a slideshow also. This program is Open Source and available on https://github.com/cavo789/marknotes" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<meta property="og:type" content="article" />
@@ -29,6 +29,7 @@
 	<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-144x144.png" sizes="144x144">
 	<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/android-icon-192x192.png" sizes="192x192">
 	<link rel="icon" type="image/png" href="%ROOT%/assets/images/favicons/favicon-16x16.png" sizes="16x16">
+
 	<link rel="manifest" href="%ROOT%/assets/images/favicons/manifest.json">
 	<meta name="msapplication-TileColor" content="#da532c">
 	<meta name="msapplication-TileImage" content="%ROOT%/assets/images/favicons/mstile-144x144.png">
