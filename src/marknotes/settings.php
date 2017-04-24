@@ -112,10 +112,12 @@ class Settings
 
         /*<!-- build:debug -->*/
         if (isset($this->_json['debug'])) {
-            $this->setDebugMode($this->_json['debug'] == 1?true:false); // Debug mode enabled or not
+            // Debug mode enabled or not
+            $this->setDebugMode($this->_json['debug'] == 1?true:false);
         }
         if (isset($this->_json['development'])) {
-            $this->setDevMode($this->_json['development'] == 1?true:false); // Developer mode enabled or not
+            // Developer mode enabled or not
+            $this->setDevMode($this->_json['development'] == 1?true:false);
         }
         /*<!-- endbuild -->*/
 
@@ -288,6 +290,12 @@ class Settings
         /*<!-- build:debug -->*/
         // Only when the development mode is enabled, include php_error library to make life easier
         if ($onOff) {
+
+            // Enable the full debugging mode (i.e. enable the logger and the
+            // creation of the /tmp/debug.log file)
+            $aeDebug = \MarkNotes\Debug::getInstance();
+            $aeDebug->enable(true);
+
             if ($aeFiles->fileExists($lib = $this->getFolderLibs().'php_error'.DS.'php_error.php')) {
                 // Seems to not work correctly with ajax; the return JSON isn't correctly understand by JS
                 $options = array(
@@ -296,7 +304,7 @@ class Settings
                   // Don't allow to modify sources from php-error
                   'enable_saving' => 0,
                    // Capture everything
-                  'error_reporting_on' => 1
+                  'error_reporting_on' => -1
                 );
 
                 include $lib;
@@ -304,7 +312,9 @@ class Settings
             }
         } // if ($onOff)
         /*<!-- endbuild -->*/
-    } // function setDevMode()
+
+        return true;
+    }
 
     /**
      * The application root folder (due to the use of symbolic links, the .php source files can

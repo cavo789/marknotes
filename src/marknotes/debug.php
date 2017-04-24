@@ -4,12 +4,18 @@ namespace MarkNotes;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+use \Monolog\Logger;
+use \Monolog\Handler\StreamHandler;
+use \Monolog\Formatter\LineFormatter;
 
 class Debug
 {
-    protected static $_instance = null;
+    protected static $hInstance = null;
 
     private static $_enable = false;
+    private static $logger = null;
+
+    private static $sDebugFileName = '';
 
     public function __construct()
     {
@@ -19,13 +25,13 @@ class Debug
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new Debug();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Debug();
         }
-        return self::$_instance;
+        return self::$hInstance;
     }
 
-    public function enable()
+    public function enable(bool $devMode = false) : bool
     {
         self::$_enable = true;
 
@@ -41,27 +47,49 @@ class Debug
         ini_set("error_append_string", "</div>");
         error_reporting(E_ALL);
 
+        // Enable the logger (only when DevMode is set)
+        /*<!-- build:debug -->*/
+        if (($devMode) && (is_dir(dirname(dirname(__FILE__)).'/libs/monolog/monolog/src/'))) {
+            $folder = str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
+            $folder = rtrim($folder, DS).DS.'tmp'.DS;
+
+            self::$sDebugFileName = $folder.'debug.log';
+
+            $output = "[%datetime%] [%channel%] [%level_name%] %message% %context%\n";
+            $formatter = new LineFormatter($output, "Y-m-d H:i:s");
+
+            $streamHandler = new StreamHandler(self::$sDebugFileName, \Monolog\Logger::DEBUG);
+            $streamHandler->setFormatter($formatter);
+
+            self::$logger = new \Monolog\Logger('marknotes');
+            self::$logger->pushHandler($streamHandler);
+
+            self::log('marknotes - devmode - enabled');
+        }
+        /*<!-- endbuild -->*/
+
         return true;
     }
 
     /**
-    * Return the current URL
-    *
-    * @param  type $use_forwarded_host
-    * @param  type $bNoScriptName      If FALSE, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
-    *                               but no script name (f.i. remove index.php and parameters if any)
-    * @return type string
-    */
-    public function log(string $line, bool $return = false) : string
+     * Add an entry in the /tmp/debug.log file
+     */
+    public function log(string $msg = '', string $method = 'debug') : bool
     {
-        $line .= ' ('.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
-           ', line '.debug_backtrace()[0]['line'].')';
+        /*<!-- build:debug -->*/
+        if (self::$logger !== null) {
+            if (!in_array($method, array('debug','info','notice','warning','error','critical','alert','emergency'))) {
+                $method = 'debug';
+            }
+            $class = debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'];
+            $context['class'] = $class;
+            $context['line'] = debug_backtrace()[0]['line'];
 
-        if (($return !== true) && (self::$_enable)) {
-            echo $line;
+            self::$logger->$method($class.' - '.$msg, $context);
         }
+        /*<!-- endbuild -->*/
 
-        return $line;
+        return true;
     }
 
     public function here($msg = null, $deep = 3, $return = false) : string

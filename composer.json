@@ -16,7 +16,8 @@
 		"needim/noty": "^2.4",
 		"dompdf/dompdf": "^0.7.0",
 		"phenx/php-font-lib": "^0.4.0",
-		"jolicode/jolitypo": "^1.0"
+		"jolicode/jolitypo": "^1.0",
+		"monolog/monolog": "^1.22"
 	},
 	"config": {
 		"preferred-install": "dist"

@@ -4,8 +4,6 @@ namespace MarkNotes\Helpers;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-include 'libs/autoload.php';
-
 class Convert
 {
     protected static $_instance = null;

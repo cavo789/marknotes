@@ -42,21 +42,16 @@ class Events
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         /*<!-- build:debug -->*/
-        /*if ($aeSettings->getDevMode()) {
-            //$arr = array();
-            $arr = array('markdown.read','render.js','render.css');
-
-            // Only for a few events...
-            if (!in_array($event, $arr)) {
-                $aeDebug->here('###DevMode### - Trigger Event '.$event, 2);
-                if (count(self::$arrEvents[$event]) > 0) {
-                    //echo '<pre style="background-color:yellow;color:red;padding-left:50px;">'.__FILE__.' - '.
-                        __LINE__.' '.print_r(self::$arrEvents[$event], true).'</pre>';
-                } else {
-                    echo '<pre style="background-color:yellow;">No functions attached</pre>';
+        if ($aeSettings->getDevMode()) {
+            if (count(self::$arrEvents[$event]) > 0) {
+                $i = 0;
+                for ($i == 0;$i < count(self::$arrEvents[$event]);$i++) {
+                    $aeDebug->log('event='.$event.', attached code '.self::$arrEvents[$event][$i]);
                 }
+            } else {
+                $aeDebug->log('No functions attached', 'info');
             }
-        }*/
+        }
         /*<!-- endbuild -->*/
 
         if (isset(self::$arrEvents[$event])) {

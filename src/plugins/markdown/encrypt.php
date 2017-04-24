@@ -27,7 +27,7 @@ class Encrypt
     * @return type             The string, encrypted.  The first characters will
     *                          contains the "Initialization vector", required for the decryption
     */
-    private function sslEncrypt(string $data = '') : string
+    private static function sslEncrypt(string $data = '') : string
     {
         // Dynamically generate an "IV" i.eI and initialization vector that will ensure cypher to be unique
         // (http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
@@ -54,7 +54,7 @@ class Encrypt
     * @param  string $encrypted  The string to decrypt. The first characters contains the "Initialiation vector"
     * @return type               The string, decrypted
     */
-    public function sslDecrypt(string $encrypted = '') : string
+    public static function sslDecrypt(string $encrypted = '') : string
     {
         if (trim($encrypted) === '') {
             return '';
@@ -89,7 +89,7 @@ class Encrypt
         }
     }
 
-    private function encrypt(string $markdown, array $matches = array()) : string
+    private static function encrypt(string $markdown, array $matches = array()) : string
     {
         if ((trim($markdown) === '') || (count($matches) === 0)) {
             return $markdown;

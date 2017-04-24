@@ -4,8 +4,7 @@
 		"password": "marknotes"
 	},
 	"debug": 0,
-	"development": 1,
-	"editor": 1,
+	"development": 0,
 	"folder": "docs",
 	"language": "en",
 	"list": {

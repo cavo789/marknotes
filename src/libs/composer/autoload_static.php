@@ -30,6 +30,10 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         array (
             'Org\\Heigl\\Hyphenator\\' => 21,
         ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
         'D' => 
         array (
             'Dompdf\\' => 7,
@@ -76,6 +80,10 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         'Org\\Heigl\\Hyphenator\\' => 
         array (
             0 => __DIR__ . '/..' . '/org_heigl/hyphenator/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'Dompdf\\' => 
         array (

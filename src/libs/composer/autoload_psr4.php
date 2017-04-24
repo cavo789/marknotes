@@ -16,5 +16,6 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php/PDepend'),
     'Org\\Heigl\\Hyphenator\\' => array($vendorDir . '/org_heigl/hyphenator/src'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
 );

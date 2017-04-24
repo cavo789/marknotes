@@ -13,6 +13,10 @@ define('_MARKNOTES', 1);
 
 include_once 'marknotes/constants.php';
 
+// Load third parties
+include_once 'libs/autoload.php';
+
+// Load Marknotes classes
 include_once 'autoload.php';
 use \MarkNotes\Autoload;
 
@@ -100,7 +104,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
                 $layout = $arr[0];
                 $format = $arr[1];
             }
-            
+
             if ($layout !== '') {
                 $params['layout'] = $layout;
             }

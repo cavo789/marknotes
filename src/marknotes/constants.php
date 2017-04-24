@@ -31,9 +31,6 @@ define('FILE_NOT_FOUND', 'The file [%s] doesn\'t exists (anymore)');
 // Can be override : settings.json->page->img_maxwidth (integer)
 define('IMG_MAX_WIDTH', '800');
 
-// Prefix to use to indicate a word as a tag
-define('PREFIX_TAG', '§');
-
 define('CHMOD_FOLDER', 0755);
 define('CHMOD_FILE', 0644);
 
