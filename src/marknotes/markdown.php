@@ -7,7 +7,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Markdown
 {
-    protected static $_instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -16,11 +16,11 @@ class Markdown
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new Markdown();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Markdown();
         }
 
-        return self::$_instance;
+        return self::$hInstance;
     }
     /**
     * Entry point of this class, run a task
@@ -29,7 +29,7 @@ class Markdown
     * @param string $filename   Optional, if not mentionned, get this information from $_POST
     *
     */
-    public function process(string $task, string $filename = '', array $params = null)
+    public function process(string $task = '', string $filename = '', array $params = null)
     {
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -122,55 +122,9 @@ class Markdown
                 echo $aeTask->run();
                 break;
 
-            case 'docx':
-            case 'epub':
-            case 'html':
-            case 'pdf':
-            case 'slides':
-            case 'txt':
-
-                // --------------------------------
-                // Call content plugins and run the export.xxx (f.i. export.docx) plugins
-
-                $aeEvents->loadPlugins('content', $task);
-                $args = array(&$params);
-                $aeEvents->trigger('export.'.$task, $args);
-
-                if (isset($params['html'])) {
-                    header('Content-Type: text/html; charset=utf-8');
-                    echo $params['html'];
-                    return;
-                } else { // if (isset($params['html']))
-
-                    $output = '';
-
-                    if (isset($params['output'])) {
-                        $output = $params['output'];
-                    }
-
-                    // Generate a PDF or another format
-                    //$aeTask = \MarkNotes\Tasks\Convert::getInstance();
-                    //$output = $aeTask->run($params);
-
-                    // Send the pdf to the browser ... only if successfully created
-                    if (($output !== '') && ($aeFiles->fileExists($output))) {
-                        $aeDownload = \MarkNotes\Tasks\Download::getInstance();
-                        $aeDownload->run($output, $params['task']);
-                    } else {
-                        header("HTTP/1.0 404 Not Found");
-
-                        echo "Error during the creation of the ".$params['task']."<br/>".
-                            "File [".$output."] is missing";
-
-                        /*<!-- build:debug -->*/
-                        if ($aeSettings->getDebugMode()) {
-                            $aeDebug = \MarkNotes\Debug::getInstance();
-                            $aeDebug->here('Requested format : '.$params['task']);
-                        }
-                        /*<!-- endbuild -->*/
-                    }
-                } // if (isset($params['html']))
-
+            case 'main':
+                $aeTask = \MarkNotes\Tasks\ShowInterface::getInstance();
+                echo $aeTask->run();
                 break;
 
             case 'rename':
@@ -221,28 +175,15 @@ class Markdown
                 echo $aeTask->run($params);
                 break;
 
-            case 'tags':
-
-                $aeEvents->loadPlugins('content', 'html');
-
-                $params = array();
-                $args = array(&$params);
-                $aeEvents->trigger('tags.list', $args);
-
-                header('Content-Type: application/json');
-                echo $args[0]['json'];
-                break;
-
-            case 'timeline':
-                // Display a timeline of all articles
-                $aeTask = \MarkNotes\Tasks\Timeline::getInstance();
-                header('Content-Type: text/html; charset=utf-8');
-                echo $aeTask->run($params);
-                break;
-
             default:
-                $aeTask = \MarkNotes\Tasks\ShowInterface::getInstance();
-                echo $aeTask->run();
+
+                // --------------------------------
+                // Call content plugins
+                $aeEvents->loadPlugins('task', $task);
+                $args = array(&$params);
+                $aeEvents->trigger('run.task', $args);
+                // --------------------------------
+
                 break;
         } // switch ($task)
     }
