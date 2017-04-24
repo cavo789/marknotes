@@ -21,7 +21,8 @@
 
         <textarea id="source" readonly="readonly">%CONTENT%</textarea>
 
-        <script src="%URL%/libs/remark/remark-latest.min.js"></script>
+		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
+        <script src="%ROOT%/libs/remark/remark-latest.min.js"></script>
 
 		<script type="text/javascript">
 			var hljs = remark.highlighter.engine
@@ -29,6 +30,10 @@
 			var slideshow = remark.create({
 				highlightStyle: 'monokai'
 			});
+		</script>
+
+		<script type="text/javascript">
+			var $arrPluginsFct = [];
 		</script>
 
 		<!--%ADDITIONNAL_JS%-->

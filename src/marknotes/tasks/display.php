@@ -49,18 +49,7 @@ class Display
         );
 
         if (!$aeFiles->fileExists($fullname)) {
-            /*<!-- build:debug -->*/
-            if ($aeSettings->getDebugMode()) {
-                echo 'Debug mode '.__FILE__.' - '.__LINE__.'<br/>';
-            }
-            /*<!-- endbuild -->*/
-
-            echo str_replace(
-                '%s',
-                '<strong>'.$fullname.'</strong>',
-                $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
-            );
-            return false;
+            $aeFunctions->fileNotFound($fullname);
         }
 
         // Read the markdown file

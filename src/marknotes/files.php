@@ -33,8 +33,9 @@ class Files
             if (self::fileExists($newname)) {
                 unset($newname);
             }
-
             // And rename the temporary PDF to its final name
+            echo "<pre style='background-color:yellow;'>".__FILE__."-".__LINE__." - </pre>";
+            echo $newname;
             rename($oldname, $newname);
         }
 
@@ -193,38 +194,49 @@ class Files
     {
         $info = pathinfo($filename);
 
-        $sResult = $info['filename'].'.'.$new_extension;
-
-        // Append the folder name when $filename wasn't just a file without path
-        if ($filename !== basename($filename)) {
-            $sResult = $info['dirname'].DS.$sResult;
-        }
+        $sResult = self::removeExtension($filename).'.'.$new_extension;
 
         return $sResult;
     }
 
-        /**
-        * Remove file's extension
-         *
-        * @param  string $filename The filename ("test.md")
-        * @return string                The new filename (test)
-        */
+    /**
+    * Remove file's extension
+     *
+    * @param  string $filename The filename ("test.md")
+    * @return string                The new filename (test)
+    */
     public static function removeExtension(string $filename) : string
     {
-        $info = pathinfo($filename);
-        return $info['dirname'].DS.$info['filename'];
+        // Correctly handle double extension like docs\development\marknotes.reveal.pdf
+        $arr = explode('.', $filename);
+
+        $extension = '';
+        $name = $arr[0];
+        if (count($arr) > 0) {
+            unset($arr[0]);
+            $extension = implode($arr, '.');
+        }
+
+        return str_replace('.'.$extension, '', $filename);
     }
 
-            /**
-            * Get file's extension
-             *
-            * @param  string $filename The filename ("test.md")
-            * @return string                The new filename (test)
-            */
+    /**
+    * Get file's extension
+     *
+    * @param  string $filename The filename ("test.md")
+    * @return string                The new filename (test)
+    */
     public static function getExtension(string $filename) : string
     {
-        $info = pathinfo($filename);
-        $sResult = isset($info['extension']) ? $info['extension'] : '';
+        // Correctly handle double extension like docs\development\marknotes.reveal.pdf
+        $arr = explode('.', $filename);
+
+        $extension = '';
+        if (count($arr) > 0) {
+            unset($arr[0]);
+            $sResult = implode($arr, '.');
+        }
+
         return $sResult;
     }
 

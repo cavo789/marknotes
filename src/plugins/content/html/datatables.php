@@ -46,6 +46,16 @@ class DataTables
      */
     public function bind()
     {
+        $aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+        
+        // This plugin is not needed when the task is f.i. 'pdf'
+        // There is no need for interaction with the table when the output format is pdf
+
+        if (in_array($task, array('pdf'))) {
+            return true;
+        }
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');

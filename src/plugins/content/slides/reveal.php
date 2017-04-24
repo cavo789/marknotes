@@ -6,11 +6,20 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Reveal
 {
+    private static $layout = 'reveal';
+    
     /**
      *
      */
     public static function doIt(&$params = null)
     {
+        if (isset($params['layout'])) {
+            if ($params['layout'] !== static::$layout) {
+                $params['stop_processing'] = false;
+                return false;
+            }
+        }
+
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -19,8 +28,7 @@ class Reveal
             $fullname = $aeSettings->getFolderDocs(true).$params['filename'];
 
             if (!$aeFiles->fileExists($fullname)) {
-                echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
-                return;
+                $aeFunctions->fileNotFound($fullname);
             }
 
             // Read the markdown file
@@ -37,7 +45,7 @@ class Reveal
             // Try to retrieve the heading 1
             $pageTitle = $aeMarkDown->getHeadingText($markdown, '#');
 
-            $params['layout'] = 'reveal';
+            $params['layout'] = static::$layout;
 
             // A manual section break (i.e. a new slide) can be manually created in marknotes by just creating, in the
             // note a new line with --- (or -----).  Only these characters on the beginning of the line.
@@ -65,11 +73,12 @@ class Reveal
 
             // Convert the Markdown text into an HTML text
             $aeConvert = \MarkNotes\Helpers\Convert::getInstance();
+
             $html = $aeConvert->getHTML($markdown, $params);
 
             // Add the fragment class to any li items when the type for bullet is animated
 
-            $arrSettings = $aeSettings->getPlugins('options', 'reveal');
+            $arrSettings = $aeSettings->getPlugins('options', static::$layout);
 
             // PHP 7 Null coalescing operator  (like than isset($arr[...] ? $arr[...] : 'default')
             $style = $arrSettings['animation']['bullet'] ?? 'animated';
@@ -149,7 +158,6 @@ class Reveal
             // $slideshow contains the template : it's an html file with (from the /templates folder)
             // and that file contains variables => convert them
             $aeHTML = \MarkNotes\FileType\HTML::getInstance();
-
             $html = $aeHTML->replaceVariables($slideshow, $html, $params);
         } // if ($params['filename'] !== "")
 

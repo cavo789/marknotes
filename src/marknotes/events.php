@@ -36,16 +36,26 @@ class Events
     /**
      * Call an event and fires every attached functions if there are somes
      */
-    public static function trigger(string $event = '', array &$args = null)
+    public static function trigger(string $event = '', array &$args = null) : bool
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
         /*<!-- build:debug -->*/
         /*if ($aeSettings->getDevMode()) {
-            //if ($event === 'render.css') {
-                $aeDebug->here('###DevMode### - Event '.$event, 5);
-        echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r(self::$arrEvents[$event], true)."</pre>";
-            //}
+            //$arr = array();
+            $arr = array('markdown.read','render.js','render.css');
+
+            // Only for a few events...
+            if (!in_array($event, $arr)) {
+                $aeDebug->here('###DevMode### - Trigger Event '.$event, 2);
+                if (count(self::$arrEvents[$event]) > 0) {
+                    //echo '<pre style="background-color:yellow;color:red;padding-left:50px;">'.__FILE__.' - '.
+                        __LINE__.' '.print_r(self::$arrEvents[$event], true).'</pre>';
+                } else {
+                    echo '<pre style="background-color:yellow;">No functions attached</pre>';
+                }
+            }
         }*/
         /*<!-- endbuild -->*/
 
@@ -56,16 +66,16 @@ class Events
 
                         /*<!-- build:debug -->*/
                         /*if ($aeSettings->getDevMode()) {
-                            if ($event === 'export.slides') {
+                            //if ($event === 'export.slides') {
                                 $aeDebug->here('###DevMode### - Event '.$event.', call '.$func, 5);
-                            }
+                            //}
                         }*/
                         /*<!-- endbuild -->*/
 
                         call_user_func_array($func, $args);
 
                         $bStopProcessing = false;
-                        //echo '<h1>'.$func.'---'.$event.'</h1>';
+
                         if (isset($args['stop_processing']) && (substr($event, 0, 5) === 'export')) {
 
                             // If the file (f.i. the pdf output) has been created, there is
@@ -103,6 +113,8 @@ class Events
                 }
             }
         }
+
+        return true;
     }
 
     /**
@@ -113,6 +125,14 @@ class Events
      */
     public static function bind(string $event = '', string $func)
     {
+        /*<!-- build:debug -->*/
+        /*$aeSettings = \MarkNotes\Settings::getInstance();
+        if ($aeSettings->getDevMode()) {
+            $aeDebug = \MarkNotes\Debug::getInstance();
+            $aeDebug->here('###DevMode### - Bind Event '.$event, 3);
+        }*/
+        /*<!-- endbuild -->*/
+
         if (isset(self::$arrEvents[$event])) {
             if (!in_array($func, self::$arrEvents[$event])) {
                 self::$arrEvents[$event][] = $func;
@@ -129,12 +149,12 @@ class Events
 
         $content = file_get_contents($file);
 
-        if (preg_match('/^namespace (.*);$/m', $content, $matches)) {
-            $sReturn = '\\'.$matches[1];
+        if (preg_match('/^namespace (.*);/m', $content, $matches)) {
+            $sReturn = '\\'.trim($matches[1]);
         }
 
         if (preg_match('/^class (.*)$/m', $content, $matches)) {
-            $sReturn .= '\\'. $matches[1];
+            $sReturn .= '\\'. trim($matches[1]);
         }
 
         return $sReturn;
@@ -142,6 +162,7 @@ class Events
 
     public static function loadPlugins(string $type = 'content', string $layout = '')
     {
+        $aeSettings = \MarkNotes\Settings::getInstance();
         if ($type !== '') {
 
             // The plugins folder is at the root level and not under /marknotes
@@ -153,14 +174,20 @@ class Events
 
             if (is_dir($dir)) {
                 $aeFiles = \MarkNotes\Files::getInstance();
-                $aeSettings = \MarkNotes\Settings::getInstance();
 
                 // Get the list of plugins (f.i. of type 'content')
-                $plugins = $aeSettings->getPlugins($type, $layout);
-
+                if ($type !== 'task') {
+                    $plugins = $aeSettings->getPlugins($type, $layout);
+                } else {
+                    $plugins = str_replace($dir, '', array_filter(glob($dir.'*'), 'is_file'));
+                }
                 // And if the plugin exists on the filesystem, load it
                 foreach ($plugins as $plugin) {
-                    if ($aeFiles->fileExists($file = $dir.$plugin.'.php')) {
+                    if (substr($plugin, -4) !== '.php') {
+                        $plugin .= '.php';
+                    }
+
+                    if ($aeFiles->fileExists($file = $dir.$plugin)) {
 
                         // Load the plugin
                         require_once($file);
@@ -176,6 +203,16 @@ class Events
                         $plug->bind();
                     }
                 }
+            } else {
+
+                // Should be anormal
+
+                /*<!-- build:debug -->*/
+                if ($aeSettings->getDevMode()) {
+                    $aeDebug = \MarkNotes\Debug::getInstance();
+                    $aeDebug->here('###DevMode### - Folder '.$dir.' not found', 5);
+                }
+                /*<!-- endbuild -->*/
             }
         }
 

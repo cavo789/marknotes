@@ -72,6 +72,84 @@ class Markdown
     } // function ShowConfidential
 
     /**
+     * Convert any links like ![alt](image/file.png) or <img src='image/file.php' /> to
+     * an absolute link to the image
+     */
+    private function setImagesAbsolute(string $markdown, array $params = null) : string
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
+
+        if (isset($params['filename'])) {
+            $folderNote .= rtrim(dirname($params['filename']), DS).DS;
+
+            // Get the full path to this note
+            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+            $folder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+
+            $imgTag = '\!\[(.*)\]\((.*)\)';
+
+            // Get the list of images i.e. tags like :  ![My nice image](.images/local.jpg)
+            // and check if the file is local (in a subfolder of the note). If so, convert the relative
+            //     ![My nice image](.images/local.jpg) to an absolute path
+            //     ![My nice image](http://localhost/folder/subfolder/.images/local.jpg)
+
+            $matches = array();
+            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+                $j = count($matches[0]);
+                for ($i = 0; $i <= $j; $i++) {
+                    if (isset($matches[2][$i])) {
+                        // Add the fullpath only if the link to the image doesn't contains yet
+                        // an hyperlink
+                        if (strpos($matches[2][$i], '//') === false) {
+                            $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
+                            if ($aeFiles->fileExists($filename)) {
+                                $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
+                            } else {
+                                /*<!-- build:debug -->*/
+                                if ($aeSettings->getDebugMode()) {
+                                    $aeDebug = \MarkNotes\Debug::getInstance();
+                                    $aeDebug->here($filename.' NOT FOUND');
+                                }
+                                /*<!-- endbuild -->*/
+                            }
+                        }//if (strpos('//', $matches[2][$i])===FALSE)
+                    }
+                }
+            } // if (preg_match_all('/'.$imgTag.'/'
+
+            // And process <img> tags
+            $imgTag = '<img (.*)src *= *["\']([^"\']+["\']*)[\'|"]';
+
+            $matches = array();
+            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+                $j = count($matches);
+                for ($i = 0; $i <= $j; $i++) {
+                    // Derive the image fullname ($folderNote.str_replace('/',DS,$matches[1][$i]))) and check if the file exists
+                    if (isset($matches[2][$i])) {
+
+                        // Add the fullpath only if the link to the image doesn't contains yet
+                        // an hyperlink
+                        if (strpos($matches[2][$i], '//') === false) {
+                            $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
+
+                            if ($aeFiles->fileExists($filename)) {
+                                $img = $folder.$matches[2][$i];
+                                $markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
+                            }
+                        }
+                    }
+                }
+            } // if (preg_match_all('/'.$imgTag.'/'
+        } // if (isset($params['filename']))
+
+        return $markdown;
+    }
+
+    /**
      * Read a markdown file and return its content.
      * Correctly handle encrypted informations
      *
@@ -109,7 +187,7 @@ class Markdown
         // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
         // Be sure to have the correct relative path i.e. pointing to the folder of the note
         $matches = array();
-        $markdown = $aeFunctions->setImagesAbsolute($markdown, $params);
+        $markdown = self::setImagesAbsolute($markdown, $params);
 
         // And do it too for links to the files folder
         $markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);

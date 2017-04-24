@@ -31,18 +31,16 @@ class Convert
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+        // $fname should be an absolute filename; not a relative one
+        if (strpos($fname, $aeSettings->getFolderDocs(true)) === false) {
+            $fname = $aeSettings->getFolderDocs(true).ltrim($fname, DS);
+        }
+
         $fname = $aeFiles->replaceExtension(
-            str_replace(
-                '/',
-                DS,
-                utf8_decode(
-                    $aeSettings->getFolderDocs(true).
-                    ltrim($fname, DS)
-                )
-            ),
+            str_replace('/', DS, utf8_decode($fname)),
             $extension
         );
-
+        
         return $fname;
     }
 
@@ -64,8 +62,11 @@ class Convert
 
         $tmpHTML = $tmp.$slug.'.html';
 
+        // If present, layout can be 'reveal' or 'remark'
+        $layout = isset($params['layout']) ? '.' . $params['layout'] : '';
+
         // task contains the extension (docx, pdf, ...)
-        $tmpOutput = $tmp.$slug.'.'.$params['task'];
+        $tmpOutput = $tmp.$slug.$layout.'.'.$params['task'];
 
         return array($tmpHTML, $tmpOutput);
     }

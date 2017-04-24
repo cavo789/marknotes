@@ -3,11 +3,6 @@
 		"login": "admin",
 		"password": "marknotes"
 	},
-	"convert": {
-		"decktape": {
-			"script": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
-		}
-	},
 	"debug": 0,
 	"development": 1,
 	"editor": 1,
@@ -33,7 +28,8 @@
 			"html": ["encrypt", "bootstrap", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "meta", "prism", "seo", "share", "AAAtags", "custom"],
 			"docx": ["pandoc"],
 			"epub": ["pandoc"],
-			"pdf": ["pandoc", "dompdf"],
+			"odt": ["pandoc"],
+			"pdf": ["decktape", "pandoc", "dompdf"],
 			"slides": ["remark", "reveal"],
 			"txt": ["pandoc"]
 		},
@@ -42,6 +38,9 @@
 			"bootstrap": {
 				"bullet": "check",
 				"extra_attribute": ""
+			},
+			"decktape": {
+				"script": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
 			},
 			"encrypt": {
 				"password": "man1,clo",

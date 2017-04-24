@@ -40,6 +40,14 @@ class GAnalytics
             return true;
         }
 
+        $aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+        // The ganalytics plugin is not needed when the task is f.i. 'display' (i.e. when the note
+        // is displayed through the interface) or when exporting the note to pdf
+        if (in_array($task, array('display','pdf'))) {
+            return true;
+        }
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         return true;

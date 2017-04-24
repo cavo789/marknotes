@@ -12,7 +12,7 @@
 		<title>%SITE_NAME%</title>
 
 		<!--%META_DATA%-->
-		
+
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/reveal.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/theme/beige.css" id="theme" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
@@ -44,7 +44,9 @@
             <a class="down" href="#">&#x25BC;</a>
         </aside>
 
-        <script>
+        <script type="text/javascript">
+			var $arrPluginsFct = [];
+
             var marknotes={};
             marknotes.root='%ROOT%/';
         </script>

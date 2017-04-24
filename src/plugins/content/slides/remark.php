@@ -6,11 +6,19 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Remark
 {
+    private static $layout = 'remark';
     /**
      *
      */
     public static function doIt(&$params = null)
     {
+        if (isset($params['layout'])) {
+            if ($params['layout'] !== static::$layout) {
+                $params['stop_processing'] = false;
+                return false;
+            }
+        }
+
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -19,8 +27,7 @@ class Remark
             $fullname = $aeSettings->getFolderDocs(true).$params['filename'];
 
             if (!$aeFiles->fileExists($fullname)) {
-                echo str_replace('%s', '<strong>'.$fullname.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
-                return;
+                $aeFunctions->fileNotFound($fullname);
             }
 
             // Read the markdown file
@@ -33,29 +40,6 @@ class Remark
 
             // Try to retrieve the heading 1
             $pageTitle = $aeMarkDown->getHeadingText($markdown, '#');
-
-            // Check if the params array contains a "type" entry and if so, check if that type is valid i.e.
-            // mention the name of an existing templates.  "remark" or "reveal" are supported in the version 1.0.7
-            // of MarkNotes.
-
-            $layout = '';
-
-            if (isset($params['layout'])) {
-                // $type will be initialized to an empty string if the file wasn't found in the /templates folder
-                $layout = $aeFiles->sanitizeFileName($params['layout']);
-                if ($aeSettings->getTemplateFile($layout) === '') {
-                    $layout = '';
-                }
-            }
-
-            if ($layout === '') {
-                // Get the type from the settings.json file
-                $layout = $aeSettings->getSlideshowType();
-            }
-
-            if (!isset($params['layout'])) {
-                $params['layout'] = $layout;
-            }
 
             // The slideshow functionnality will be remark
 
@@ -118,7 +102,6 @@ class Remark
 
         // And return the HTML to the caller
         $params['html'] = $html;
-
         return true;
     }
 

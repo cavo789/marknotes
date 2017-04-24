@@ -22,6 +22,24 @@ class Functions
         return self::$_Instance;
     }
 
+    public function fileNotFound(string $file = '') : bool
+    {
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
+
+        header("HTTP/1.0 404 Not Found");
+
+        echo(str_replace('%s', '<strong>'.$file.'</strong>', $msg));
+
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug = \MarkNotes\Debug::getInstance();
+            $aeDebug->here('#DebugMode# - File '.$file.' not found', 5);
+        }
+        /*<!-- endbuild -->*/
+        die();
+    }
+
     /**
      * Display an error message and, if the debug mode is enabled, gives info about the caller
      */
@@ -75,69 +93,6 @@ class Functions
         }
 
         return $sReturn;
-    }
-    /**
-     * Convert any links like ![alt](image/file.png) or <img src='image/file.php' /> to
-     * an absolute link to the image
-     */
-    public function setImagesAbsolute(string $markdown, array $params = null) : string
-    {
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
-
-        $folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
-
-        if (isset($params['filename'])) {
-            $folderNote .= rtrim(dirname($params['filename']), DS).DS;
-
-            // Get the full path to this note
-            $url = rtrim(self::getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-            $folder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
-
-            $imgTag = '\!\[(.*)\]\((.*)\)';
-
-            // Get the list of images i.e. tags like :  ![My nice image](.images/local.jpg)
-            // and check if the file is local (in a subfolder of the note). If so, convert the relative
-            //     ![My nice image](.images/local.jpg) to an absolute path
-            //     ![My nice image](http://localhost/folder/subfolder/.images/local.jpg)
-
-            $matches = array();
-            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-                $j = count($matches[0]);
-                for ($i = 0; $i <= $j; $i++) {
-                    if (isset($matches[2][$i])) {
-                        if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
-                            $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
-                        } else {
-                            /*<!-- build:debug -->*/
-                            if ($aeSettings->getDebugMode()) {
-                                echo $folderNote.$matches[2][$i].' NOT FOUND<hr/>';
-                            }
-                            /*<!-- endbuild -->*/
-                        }
-                    }
-                }
-            } // if (preg_match_all('/'.$imgTag.'/'
-
-            // And process <img> tags
-            $imgTag = '<img (.*)src *= *["\']([^"\']+["\']*)[\'|"]';
-
-            $matches = array();
-            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-                $j = count($matches);
-                for ($i = 0; $i <= $j; $i++) {
-                    // Derive the image fullname ($folderNote.str_replace('/',DS,$matches[1][$i]))) and check if the file exists
-                    if (isset($matches[2][$i])) {
-                        if ($aeFiles->fileExists($folderNote.str_replace('/', DS, $matches[2][$i]))) {
-                            $img = $folder.$matches[2][$i];
-                            $markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
-                        }
-                    }
-                }
-            } // if (preg_match_all('/'.$imgTag.'/'
-        } // if (isset($params['filename']))
-
-        return $markdown;
     }
 
     /**

@@ -23,10 +23,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 } else {
     \MarkNotes\Autoload::register();
 
-    /*<!-- build:debug -->*/
-    $aeDebug = \MarkNotes\Debug::getInstance();
-    /*<!-- endbuild -->*/
-
     // Application root folder.
     $folder = str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
     $folder = rtrim($folder, DS).DS;
@@ -51,9 +47,10 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     $format = $aeFunctions->getParam('format', 'string', $format, false, 8);
 
     // Only these format are recognized.  Default : html
-    if (!(in_array($format, array('docx','epub','htm','html','pdf','slides', 'txt')))) {
-        $format = 'html';
-    }
+    //if (!(in_array($format, array('docx','epub','htm','html','pdf','slides', 'txt')))) {
+    //    $format = 'html';
+    //}
+
     $params = array();
 
     if ($filename !== '') {
@@ -74,48 +71,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 
             $filename = '';
         } else {
-            $layout = $aeFunctions->getParam('layout', 'string', '', false, 10);
-            if (!(in_array($layout, array('remark','reveal')))) {
-                $layout = '';
-            }
-
-            if ($layout !== '') {
-                $params['layout'] = $layout;
-            }
-
-            switch ($format) {
-
-                case 'docx':
-                    $task = 'docx';
-                    break;
-
-                case 'epub':
-                    $task = 'epub';
-                    break;
-
-                case 'pdf':
-                    $task = 'pdf';
-                    break;
-
-                case 'txt':
-                    $task = 'txt';
-                    break;
-
-                case 'slides':
-                    // Check on the URL if the user has forced a layout i.e. "remark" or "reveal", the supported slideshow framework
-
-                    //$task = 'slideshow';
-                    $task = 'slides';
-
-                    break;
-
-                default:                  // htm or html
-                    $task = 'display';
-                    if (!isset($params['layout'])) {
-                        $params['layout'] = 'html';
-                    }
-                    break;
-            } // switch
 
             // Get the absolute folder name where the web application resides (f.i. c:\websites\marknotes\)
             $webRoot = $aeSettings->getFolderWebRoot(true);
@@ -130,8 +85,24 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
             }
 
             if (!$aeFiles->fileExists($webRoot.$fileMD)) {
-                header("HTTP/1.0 404 Not Found");
-                die('File '. $aeFiles->sanitizeFileName($fileMD).' not found');
+                $aeFunctions = \MarkNotes\Functions::getInstance();
+                $aeFunctions->fileNotFound($aeFiles->sanitizeFileName($fileMD));
+            }
+
+            // Get the extension (f.i. "pdf")
+            // In case of double extension (f.i. "reveal.pdf"), the first part will
+            // be understand as a layout ("reveal")
+
+            $layout = '';
+            $fileExt = $aeFiles->getExtension($filename);
+            if (strpos($fileExt, ".") !== false) {
+                $arr = explode(".", $fileExt);
+                $layout = $arr[0];
+                $format = $arr[1];
+            }
+            
+            if ($layout !== '') {
+                $params['layout'] = $layout;
             }
         } // if (in_array($filename, array('timeline.html', 'sitemap.xml')))
 
@@ -140,7 +111,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
         $aeSMarkDown = new \MarkNotes\Markdown();
 
         // $fileMD filename should be relative ()
-        $aeSMarkDown->process($task, $fileMD, $params);
+        $aeSMarkDown->process($format, $fileMD, $params);
         unset($aeSMarkDown);
     }
 }

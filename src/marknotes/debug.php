@@ -80,6 +80,7 @@ class Debug
         $func = '';
         $txt = '';
 
+        $previous = '';
         for ($i = 0; $i < $deep; $i++) {
             if (isset($debugTrace[$pos + $i])) {
                 $file = isset($debugTrace[$pos + $i]['file']) ? $debugTrace[$pos + $i]['file'] : '';
@@ -89,7 +90,8 @@ class Debug
                 $class = isset($debugTrace[$pos + $i + 1]['class']) ? $debugTrace[$pos + $i + 1]['class'].'::' : '';
                 $func = isset($debugTrace[$pos + $i + 1]['function']) ? $debugTrace[$pos + $i + 1]['function'].'()' : '';
             }
-            if ($line != '') {
+            if (($line != '') && ($line !== $previous)) {
+                $previous = $line;
                 $txt .= ($deep > 1?'<li>':'').$class.$func.' in&nbsp;'.$file.' line&nbsp;'.$line.($deep > 1?'</li>':'');
             }
         } // for
