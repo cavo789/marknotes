@@ -20,13 +20,13 @@
 		"robots": "noindex, nofollow"
 	},
 	"plugins": {
-		"authentication" : [ "login" ],
+		"authentication": ["login"],
 		"buttons": {
-			"treeview": [ "login", "sitemap", "timeline" ],
-			"content" :  [ "refresh", "copylink", "fullscreen", "printer", "clipboard", "html", "reveal", "remark", "txt", "epub", "odt", "docx", "pdf", "editor" ]
+			"treeview": ["login", "sitemap", "timeline"],
+			"content": ["refresh", "copylink", "fullscreen", "printer", "clipboard", "html", "reveal", "remark", "txt", "epub", "odt", "docx", "pdf", "editor"]
 		},
 		"content": {
-			"html": ["AAAencrypt", "AAAbootstrap", "AAAdatatables", "AAAeditor", "AAAlazyload", "AAAlinkify", "AAAganalytics", "AAAgtranslate", "AAAjolitypo", "AAAmeta", "AAAprism", "AAAseo", "AAAshare", "smileys", "AAAtags", "AAAcustom"],
+			"html": ["encrypt", "bootstrap", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "meta", "prism", "seo", "share", "smileys", "tags", "TESTjoomla_doc", "custom"],
 			"docx": ["pandoc"],
 			"epub": ["pandoc"],
 			"odt": ["pandoc"],
@@ -123,11 +123,11 @@
 			"error_delete_file": "An error has occured during the deletion of the note [%s]",
 			"error_rename_file": "An error has occured when trying to rename the note [%s] into [%s]",
 			"error_rename_folder": "An error has occured when trying to rename the folder [%s] into [%s]",
-			"export_epub" : "Export the note as a EPUB document",
+			"export_epub": "Export the note as a EPUB document",
 			"export_docx": "Export the note as a DOCX document",
 			"export_odt": "Export the note as a ODT document",
 			"export_pdf": "Export the note as a PDF document",
-			"export_txt" : "Export the note as a TXT flatfile",
+			"export_txt": "Export the note as a TXT flatfile",
 			"file_created": "The note [%s] has been successfully created on the disk",
 			"file_deleted": "The note [%s] has been successfully deleted",
 			"file_not_found": "The note [%s] doesn\\&#39;t exists",
@@ -204,11 +204,11 @@
 			"error_delete_file": "Une erreur a &#233;t&#233; rencontr&#233;e lors de la suppression du fichier [%s]",
 			"error_rename_file": "Une erreur a &#233;t&#233; rencontr&#233;e lors de la tentative de renommer le fichier [%s] en [%s]",
 			"error_rename_folder": "Une erreur a &#233;t&#233; rencontr&#233;e lors de la tentative de renommer le dossier [%s] en [%s]",
-			"export_epub" : "Exporter cette note au format epub",
+			"export_epub": "Exporter cette note au format epub",
 			"export_docx": "Exporter cette note au format docx",
 			"export_odt": "Exporter cette note au format odt",
 			"export_pdf": "Exporter cette note au format pdf",
-			"export_txt" : "Exporter cette note au format txt",
+			"export_txt": "Exporter cette note au format txt",
 			"file_created": "Le fichier [%s] a &#233;t&#233; cr&#233;&#233; sur le disque",
 			"file_deleted": "La note [%s] a &#233;t&#233; supprim&#233;e sur le disque",
 			"file_not_found": "Le fichier [%s] n&#39;existe pas",
