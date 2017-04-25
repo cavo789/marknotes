@@ -46,13 +46,15 @@ class Session
             self::set('marknotes', 1);
         }
 
-        $arr=$aeSettings->getAdminInfos();
-        $login= isset($arr['login']) ? trim($arr['login']) : '';
-        $password= isset($arr['password']) ? trim($arr['password']) : '';
+        $arr = $aeSettings->getPlugins('options', 'login');
+        $login = isset($arr['username']) ? trim($arr['username']) : '';
+        $password = isset($arr['password']) ? trim($arr['password']) : '';
 
         // If both login and password are empty (will probably be the case on a localhost server),
         // consider the user already authenticated
-        if (($login==='') && ($password==='')) self::set('authenticated', 1);
+        if (($login === '') && ($password === '')) {
+            self::set('authenticated', 1);
+        }
 
         return;
     }

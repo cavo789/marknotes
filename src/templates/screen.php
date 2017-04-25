@@ -60,15 +60,7 @@
             <div id="toolbar-app" data-toolbar="style-option" class="onlyscreen btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>
             <div id="toolbar-app-options" class="hidden btn-toolbar-warning">
                 <div id="icons" class="onlyscreen fa-1x">
-                    <a id="icon_login" data-task="login" title="%LOGINFORM%" href="#">
-                        <i class="fa fa-user" aria-hidden="true"></i>
-                    </a>
-                    <a id="icon_sitemap" data-task="sitemap" title="%SITEMAP%" href="#">
-                        <i class="fa fa-sitemap" aria-hidden="true"></i>
-                    </a>
-                    <a id="icon_timeline" data-task="timeline" title="%TIMELINE%" href="#">
-                        <i class="fa fa-calendar" aria-hidden="true"></i>
-                    </a>
+					%ICONS%
                     <a id="icon_settings_clear" data-task="clear" title="%CLEAR_CACHE%" href="#">
                         <i class="fa fa-eraser" aria-hidden="true"></i>
                     </a>

@@ -6,9 +6,9 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Settings
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
-    private $_folderDocs = '';     // subfolder f.i. 'docs' where markdown files are stored (f.i. "Docs\")
+    private $_folderDocs = '';
     private $_folderAppRoot = '';
     private $_folderWebRoot = '';
 
@@ -24,16 +24,24 @@ class Settings
         $this->setFolderDocs(DOC_FOLDER);
 
         self::readSettings($params);
+
+        if (isset($this->_json['locale'])) {
+            setlocale(LC_ALL, str_replace('-', '_', $this->_json['locale']));
+        }
+        if (isset($this->_json['timezone'])) {
+            date_default_timezone_set($this->_json['timezone']);
+        }
+
         return true;
     } // function __construct()
 
     public static function getInstance(string $folder = '', array $params = null)
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Settings($folder, $params);
+        if (self::$hInstance === null) {
+            self::$hInstance = new Settings($folder, $params);
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     } // function getInstance()
 
     private function loadJSON(array $params = null) : array
@@ -117,7 +125,8 @@ class Settings
         }
         if (isset($this->_json['development'])) {
             // Developer mode enabled or not
-            $this->setDevMode($this->_json['development'] == 1?true:false);
+            $timezone = $this->_json['development'] ?? 'Europe/Paris';
+            $this->setDevMode(($this->_json['development'] == 1?true:false), $timezone);
         }
         /*<!-- endbuild -->*/
 
@@ -155,7 +164,7 @@ class Settings
         }
 
         if ($return == '') {
-            $return = (trim($default) !== '' ? constant($default) : '');
+            $return = (trim($default) !== '' ? $default : '');
         }
 
         if ($jsProtect) {
@@ -729,22 +738,23 @@ class Settings
         }
 
         return $sReturn;
-    } // function getEditAllowed()
+    }
+
     /**
-     * Allow editions ?
+     * Get timezone
      *
      * @return bool
      */
-    public function getEditAllowed() : bool
+    public function getTimezone() : string
     {
-        $bReturn = EDITOR;
+        $sReturn = 'Europe/Paris';
 
-        if (isset($this->_json['editor'])) {
-            $bReturn = ($this->_json['editor'] == 1?true:false);
+        if (isset($this->_json['timezone'])) {
+            $sReturn = $this->_json['timezone'];
         }
 
-        return $bReturn;
-    } // function getEditAllowed()
+        return $sReturn;
+    }
 
     public function getchmod(string $type = 'folder') : int
     {
@@ -784,14 +794,6 @@ class Settings
             } else {
                 $arr = $this->_json['plugins'];
             }
-        }
-        return $arr;
-    }
-    public function getAdminInfos() : array
-    {
-        $arr = array();
-        if (isset($this->_json['admin'])) {
-            $arr = $this->_json['admin'];
         }
         return $arr;
     }

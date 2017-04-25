@@ -12,6 +12,9 @@ namespace MarkNotes;
 
 define('_MARKNOTES', 1);
 
+// Load third parties
+include_once 'libs/autoload.php';
+
 include_once 'autoload.php';
 use \MarkNotes\Autoload;
 

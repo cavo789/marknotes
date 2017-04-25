@@ -39,7 +39,21 @@ class ShowInterface
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
+        // Read the template
         $template = file_get_contents($aeSettings->getTemplateFile('screen'));
+
+        if (strpos($template, '%ICONS%') !== false) {
+
+            // Call plugins that are responsible to add icons to the treeview toolbar
+            $aeEvents = \MarkNotes\Events::getInstance();
+            $aeEvents->loadPlugins('buttons', 'treeview');
+            $buttons = '';
+            $args = array(&$buttons);
+            $aeEvents->trigger('add.buttons', $args);
+
+            $template = str_replace('%ICONS%', $buttons, $template);
+        }
+
         $html = $aeHTML->replaceVariables($template, '', null);
 
         // replace variables
@@ -51,8 +65,6 @@ class ShowInterface
         $html = str_replace('%LOGIN%', $aeSettings->getText('login', 'Username'), $html);
         $html = str_replace('%PASSWORD%', $aeSettings->getText('password', 'Password'), $html);
         $html = str_replace('%SIGNIN%', $aeSettings->getText('signin', 'Sign in'), $html);
-        $html = str_replace('%SITEMAP%', $aeSettings->getText('sitemap', 'Get the sitemap'), $html);
-        $html = str_replace('%TIMELINE%', $aeSettings->getText('timeline', 'Display notes in a timeline view'), $html);
         $html = str_replace('%CLEAR_CACHE%', $aeSettings->getText('settings_clean', 'Clear cache'), $html);
 
         // Define the global markdown variable.  Used by the assets/js/marknotes.js script

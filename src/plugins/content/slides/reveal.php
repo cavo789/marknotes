@@ -7,7 +7,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Reveal
 {
     private static $layout = 'reveal';
-    
+
     /**
      *
      */
@@ -134,7 +134,7 @@ class Reveal
             } // foreach
 
             // Be sure there is no empty slide
-            foreach ($arrAnimations as $animation) {
+            foreach ($arr as $animation) {
                 $html = preg_replace('/<section data-transition="'.$animation.'">[\s\n\r]*<\/section>/m', '', $html);
             }
             // -------------------

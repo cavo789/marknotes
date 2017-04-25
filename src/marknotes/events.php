@@ -43,13 +43,17 @@ class Events
 
         /*<!-- build:debug -->*/
         if ($aeSettings->getDevMode()) {
-            if (count(self::$arrEvents[$event]) > 0) {
-                $i = 0;
-                for ($i == 0;$i < count(self::$arrEvents[$event]);$i++) {
-                    $aeDebug->log('event='.$event.', attached code '.self::$arrEvents[$event][$i]);
+            if (isset(self::$arrEvents[$event])) {
+                if (count(self::$arrEvents[$event]) > 0) {
+                    $i = 0;
+                    for ($i == 0;$i < count(self::$arrEvents[$event]);$i++) {
+                        $aeDebug->log('event='.$event.', attached code '.self::$arrEvents[$event][$i]);
+                    }
+                } else {
+                    $aeDebug->log('No functions attached', 'info');
                 }
             } else {
-                $aeDebug->log('No functions attached', 'info');
+                $aeDebug->log('There is no listener for the '.$event, 'info');
             }
         }
         /*<!-- endbuild -->*/
@@ -121,11 +125,11 @@ class Events
     public static function bind(string $event = '', string $func)
     {
         /*<!-- build:debug -->*/
-        /*$aeSettings = \MarkNotes\Settings::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
         if ($aeSettings->getDevMode()) {
             $aeDebug = \MarkNotes\Debug::getInstance();
-            $aeDebug->here('###DevMode### - Bind Event '.$event, 3);
-        }*/
+            $aeDebug->log('Add a listener for '.$event, 'info');
+        }
         /*<!-- endbuild -->*/
 
         if (isset(self::$arrEvents[$event])) {

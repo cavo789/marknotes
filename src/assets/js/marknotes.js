@@ -56,7 +56,8 @@ $(document).ready(function () {
 	if (marknotes.autoload === 1) {
 		if ($.isFunction($.fn.toolbar)) {
 
-			$("#toolbar-app").toolbar({
+			$("#toolbar-app")
+			.toolbar({
 				content: "#toolbar-app-options",
 				position: "bottom",
 				event: "click",
@@ -361,11 +362,11 @@ function initializeTasks() {
 
 	// Get all DOM objects having a data-task attribute
 	$("[data-task]").click(function (event) {
-		event.preventDefault();
+		//event.preventDefault();
 
 		var $task = $(this).data('task');
 
-		if ($task !== 'clipboard') {
+		if ($task.substring(0,9) !== 'clipboard') {
 			// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
 			event.stopPropagation();
 			event.stopImmediatePropagation();
@@ -378,9 +379,9 @@ function initializeTasks() {
 			.data('tag')
 			.replace('\\', '/') : '');
 
-		var $arrNoCrypt = ['docx', 'pdf', 'slideshow', 'window'];
-		if (($fname !== '') && (jQuery.inArray($task, $arrNoCrypt) === -1)) {
-			// Don't base64 the filename when the tasks are 'slideshow' or 'window'
+		if (($fname !== '') && ($task !== 'file')) {
+			// Don't base64 the filename when the task is 'file', the URL (file) should
+			// remains readable
 			$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
 		}
 
@@ -453,7 +454,7 @@ function initializeTasks() {
 			});
 			break;
 
-		case 'docx':
+		case 'file':
 
 			window.open($fname);
 			break;
@@ -475,7 +476,7 @@ function initializeTasks() {
 
 			break;
 
-		case 'link_note':
+		case 'clipboard_link_note':
 
 			// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
 
@@ -494,22 +495,12 @@ function initializeTasks() {
 			showLoginForm();
 			break;
 
-		case 'pdf':
-
-			window.open($fname);
-			break;
-
 		case 'printer':
 			break;
 
 		case 'sitemap':
 
 			window.open(marknotes.webroot + 'sitemap.xml');
-			break;
-
-		case 'slideshow':
-
-			window.open($fname); // $fname is something like folder/subfolder/hotes.html?format=slides i.e. with the ?format=slides parameter
 			break;
 
 		case 'tag':
@@ -529,10 +520,6 @@ function initializeTasks() {
 		case 'timeline':
 
 			window.open(marknotes.webroot + 'timeline.html');
-			break;
-
-		case 'window':
-			window.open($fname);
 			break;
 
 		default:
@@ -642,6 +629,7 @@ function showLoginForm() {
 
 	return false;
 }
+
 /**
  * Empty the localStorage cache and the session on the server; reload then the page
  */
@@ -819,7 +807,7 @@ function afterDisplay($fname) {
 		forceNewWindow();
 
 		// Add icons to .pdf, .xls, .doc, ... hyperlinks
-		addIcons();
+		//addIcons();
 
 		// Initialize each action buttons of the displayed note
 		initializeTasks();
@@ -890,7 +878,7 @@ function afterDisplay($fname) {
 	return true;
 
 }
-7
+
 /**
  *
  * @param {json} $params

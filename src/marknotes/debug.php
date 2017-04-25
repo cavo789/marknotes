@@ -31,7 +31,7 @@ class Debug
         return self::$hInstance;
     }
 
-    public function enable(bool $devMode = false) : bool
+    public function enable(bool $devMode = false, string $timezone = 'Europe/Paris') : bool
     {
         self::$_enable = true;
 
@@ -55,14 +55,25 @@ class Debug
 
             self::$sDebugFileName = $folder.'debug.log';
 
+            // Don't keep previous run
+            if (is_file(self::$sDebugFileName)) {
+                try {
+                    unlink(self::$sDebugFileName);
+                } catch (Exception $e) {
+                }
+            }
+
             $output = "[%datetime%] [%channel%] [%level_name%] %message% %context%\n";
             $formatter = new LineFormatter($output, "Y-m-d H:i:s");
 
+            // \Monolog\Logger::DEBUG =  The minimum logging level at which this
+            // handler will be triggered (debug is the lowest)
             $streamHandler = new StreamHandler(self::$sDebugFileName, \Monolog\Logger::DEBUG);
             $streamHandler->setFormatter($formatter);
 
             self::$logger = new \Monolog\Logger('marknotes');
             self::$logger->pushHandler($streamHandler);
+            self::$logger::setTimezone(new \DateTimeZone($timezone));
 
             self::log('marknotes - devmode - enabled');
         }
@@ -74,16 +85,31 @@ class Debug
     /**
      * Add an entry in the /tmp/debug.log file
      */
-    public function log(string $msg = '', string $method = 'debug') : bool
+    public function log(string $msg = '', string $method = 'debug', int $deep = 3) : bool
     {
         /*<!-- build:debug -->*/
         if (self::$logger !== null) {
             if (!in_array($method, array('debug','info','notice','warning','error','critical','alert','emergency'))) {
                 $method = 'debug';
             }
-            $class = debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'];
-            $context['class'] = $class;
-            $context['line'] = debug_backtrace()[0]['line'];
+
+
+            $class = $trace[1]['class'].'::'.$trace[1]['function'];
+            $context[]['caller'] = $class.' line '.$trace[0]['line'];
+
+            if ($deep > 1) {
+                // Add the previous caller
+                $parent = $trace[2]['class'].'::'.$trace[2]['function'];
+                $context[]['caller'] = $parent.' line '.$trace[1]['line'];
+            }
+
+            if ($deep > 2) {
+                if (isset($trace[3]['class'])) {
+                    // Add the previous caller
+                    $parent = $trace[3]['class'].'::'.$trace[3]['function'];
+                    $context[]['caller'] = $parent.' line '.$trace[2]['line'];
+                }
+            }
 
             self::$logger->$method($class.' - '.$msg, $context);
         }
