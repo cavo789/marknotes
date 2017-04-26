@@ -68,8 +68,10 @@ class Markdown
             $params['task'] = $task;
         }
 
+        // Remember somes variables into the server_session
         $aeSession->set('task', $task);
         $aeSession->set('filename', $filename);
+        $aeSession->set('layout', ($params['layout'] ?? ''));
 
         switch ($task) {
             case 'clear':
@@ -151,21 +153,6 @@ class Markdown
                 $aeTask = \MarkNotes\Tasks\Save::getInstance();
                 header('Content-Type: application/json');
                 echo $aeTask->run(array('filename' => $filename,'markdown' => $markdown));
-                break;
-
-            case 'search':
-                // Search for one or more keywords in notes
-                $pattern = $aeFunctions->getParam('str', 'string', '', false, $aeSettings->getSearchMaxLength());
-                header('Content-Type: application/json');
-                $aeTask = \MarkNotes\Tasks\Search::getInstance();
-                echo $aeTask->run(array('pattern' => $pattern));
-                break;
-
-            case 'sitemap':
-                // Display a sitemap
-                $aeTask = \MarkNotes\Tasks\Sitemap::getInstance();
-                header('Content-Type: application/xml; charset=utf-8');
-                echo $aeTask->run();
                 break;
 
             case 'slideshow':

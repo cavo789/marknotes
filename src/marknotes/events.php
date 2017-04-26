@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Events
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     private static $arrEvents = array();
 
@@ -18,10 +18,10 @@ class Events
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Events();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Events();
         }
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     /**
@@ -170,7 +170,7 @@ class Events
             if ($layout !== '') {
                 $dir = $dir.$layout.DS;
             }
-
+            
             if (is_dir($dir)) {
                 $aeFiles = \MarkNotes\Files::getInstance();
 
@@ -187,6 +187,14 @@ class Events
                     }
 
                     if ($aeFiles->fileExists($file = $dir.$plugin)) {
+
+                        /*<!-- build:debug -->*/
+                        $aeSettings = \MarkNotes\Settings::getInstance();
+                        if ($aeSettings->getDevMode()) {
+                            $aeDebug = \MarkNotes\Debug::getInstance();
+                            $aeDebug->log('Load plugin '.$file, 'info');
+                        }
+                        /*<!-- endbuild -->*/
 
                         // Load the plugin
                         require_once($file);

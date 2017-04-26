@@ -10,7 +10,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Timeline
 {
-    private function getJSON()
+    private static function getJSON() : bool
     {
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -23,7 +23,7 @@ class Timeline
         if ($aeSettings->getOptimisationUseServerSession()) {
             // Get the list of files/folders from the session object if possible
             $aeSession = \MarkNotes\Session::getInstance();
-            $sReturn = $aeSession->get('TimeLine', '');
+            $sReturn = $aeSession->get('timeline', '');
         }
 
         if ($sReturn === '') {
@@ -33,9 +33,9 @@ class Timeline
 
             $arrFiles = $aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
 
-        // -------------------------------------------------------
-        // Based on https://github.com/Albejr/jquery-albe-timeline
-        // -------------------------------------------------------
+            // -------------------------------------------------------
+            // Based on https://github.com/Albejr/jquery-albe-timeline
+            // -------------------------------------------------------
 
             foreach ($arrFiles as $file) {
                 $content = $aeMarkDown->read($file);
@@ -91,7 +91,7 @@ class Timeline
                     'content' => ')'
                   )
                   ) // body
-                      ); //
+              ); //
             } // foreach
 
             usort($json, function ($a, $b) {
@@ -103,35 +103,50 @@ class Timeline
 
             if ($aeSettings->getOptimisationUseServerSession()) {
                 // Remember for the next call
-                $aeSession->set('TimeLine', $sReturn);
+                $aeSession->set('timeline', $sReturn);
             }
         }
 
-        return $sReturn;
+        header('Content-Type: application/json');
+        echo $sReturn;
+
+        return true;
     }
 
-    public static function run(&$params = null)
+    private static function getHTML(array $params = array()) : bool
     {
-        echo "<pre style='background-color:yellow;'>".__FILE__."-".__LINE__." - </pre>";
-
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
         // Define the global marknotes variable.  Used by the assets/js/marknotes.js script
         $JS =
-          "\nvar marknotes = {};\n".
-          "marknotes.autoload=0;\n".
-          "marknotes.url='index.php';\n".
-          "marknotes.settings={};\n".
-          "marknotes.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
-          "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
-          "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
+            "\nvar marknotes = {};\n".
+            "marknotes.autoload=0;\n".
+            "marknotes.url='index.php';\n".
+            "marknotes.settings={};\n".
+            "marknotes.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
+            "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
+            "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
 
         $html = file_get_contents($aeSettings->getTemplateFile('timeline'));
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);
 
+        header('Content-Type: text/html; charset=utf-8');
         echo $aeHTML->replaceVariables($html, '', $params);
-        
+
+        return true;
+    }
+
+    public static function run(&$params = null)
+    {
+        $aeSession = \MarkNotes\Session::getInstance();
+
+        if ($aeSession->get('layout', 'html') === 'html') {
+            self::getHTML($params);
+        } else {
+            self::getJSON();
+        }
+
         return true;
     }
 

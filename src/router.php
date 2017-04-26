@@ -50,26 +50,28 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     // Take a look on the format parameter, if mentionned use that format
     $format = $aeFunctions->getParam('format', 'string', $format, false, 8);
 
-    // Only these format are recognized.  Default : html
-    //if (!(in_array($format, array('docx','epub','htm','html','pdf','slides', 'txt')))) {
-    //    $format = 'html';
-    //}
-
+    $layout = '';
     $params = array();
 
     if ($filename !== '') {
         $fileMD = '';
 
-        if (in_array($filename, array('timeline.html', 'sitemap.xml'))) {
+        if (in_array($filename, array('timeline.html', 'timeline.json', 'sitemap.xml'))) {
             // Specific files
+
+            $aeFiles = \MarkNotes\Files::getInstance();
+
+            // Remember the layout (json, html, ...)
+            $layout = $aeFiles->getExtension($filename);
 
             switch ($filename) {
                 case 'timeline.html':
-                    $task = 'timeline';
+                case 'timeline.json':
+                    $format = 'timeline';
                     break;
 
                 case 'sitemap.xml':
-                    $task = 'sitemap';
+                    $format = 'sitemap';
                     break;
             } // switch
 
@@ -104,17 +106,17 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
                 $layout = $arr[0];
                 $format = $arr[1];
             }
-
-            if ($layout !== '') {
-                $params['layout'] = $layout;
-            }
         } // if (in_array($filename, array('timeline.html', 'sitemap.xml')))
+
+        if ($layout !== '') {
+            $params['layout'] = $layout;
+        }
 
         // Create an instance of the class and initialize the rootFolder variable (type string)
 
         $aeSMarkDown = new \MarkNotes\Markdown();
 
-        // $fileMD filename should be relative ()
+        // $fileMD filename should be relative
         $aeSMarkDown->process($format, $fileMD, $params);
         unset($aeSMarkDown);
     }

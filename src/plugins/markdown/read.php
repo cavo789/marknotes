@@ -16,7 +16,7 @@ class Read
         if (trim($markdown) === '') {
             return true;
         }
-        
+
         // Be sure to have content with LF and not CRLF in order to be able to use
         // generic regex expression (match \n for new lines)
         $markdown = str_replace("\r\n", "\n", $markdown);

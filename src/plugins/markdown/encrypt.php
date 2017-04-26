@@ -161,7 +161,6 @@ class Encrypt
         if (trim($markdown) === '') {
             return true;
         }
-
         // Check if, in the markdown string, there is encrypt tags like <encrypt>SOMETHING</encrypt>
         // i.e. unencrypted content.
 
@@ -174,15 +173,14 @@ class Encrypt
             $markdown = self::encrypt($markdown, $matches);
         }
 
-        // editMode is set to true when the edit form is displayed
         $aeSession = \MarkNotes\Session::getInstance();
-        $bEditMode = ($aeSession->get('editMode') === 1);
 
-        if ($bEditMode) {
+        // The note should be unencrypted in case of editing or when the search is fired
+        // edit : the unencrypted version should be editable
+        // search : we also need to search in encrypted text
+        $bShowUnencrypt = in_array($aeSession->get('task'), array('edit','search'));
 
-            // Special case : by showing the edit form, encrypted data should be unencrypted so
-            // the user can change them
-
+        if ($bShowUnencrypt) {
             $matches = array();
 
             // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines

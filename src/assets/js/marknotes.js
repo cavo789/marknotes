@@ -57,13 +57,13 @@ $(document).ready(function () {
 		if ($.isFunction($.fn.toolbar)) {
 
 			$("#toolbar-app")
-			.toolbar({
-				content: "#toolbar-app-options",
-				position: "bottom",
-				event: "click",
-				style: "default",
-				hideOnClick: true
-			});
+				.toolbar({
+					content: "#toolbar-app-options",
+					position: "bottom",
+					event: "click",
+					style: "default",
+					hideOnClick: true
+				});
 		}
 
 		// On page entry, get the list of .md files on the server
@@ -109,12 +109,32 @@ $(document).ready(function () {
 function ajaxify($params) {
 
 	var $data = {};
+	$data.filename = (typeof $params.filename === 'undefined') ? '' : $params.filename;
 	$data.task = (typeof $params.task === 'undefined') ? '' : $params.task;
 	$data.param = (typeof $params.param === 'undefined') ? '' : $params.param;
 
+	if ($data.filename !== '') {
+
+		if ($data.task === '') {
+			// A filename has been specified (like f.i. timeline.json).
+			// So, the task in this case is "getFile" i.e. just access to a file
+			$data.task = 'getFile';
+		}
+
+		if (typeof $params.dataType === 'undefined') {
+
+			// Derive the data type based on the extension
+			// http://stackoverflow.com/a/680982
+
+			var re = /(?:\.([^.]+))?$/;
+			$params.dataType = re.exec($data.filename)[1];
+		}
+	} // if ($data.filename !== '')
+
+
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('ajaxify - Task=' + $data.task);
+		console.log('ajaxify - Task=' + $data.task + ' / Filename=' + $data.filename);
 		console.log($params);
 	}
 	/*<!-- endbuild -->*/
@@ -129,8 +149,9 @@ function ajaxify($params) {
 
 	var $bAjax = true;
 
-	// useStore should only be processed for specifics tasks like listFiles, display, ... but not all tasks
-	var $arrUseStore = ['display', 'listFiles'];
+	// useStore should only be processed for specifics tasks
+	// like listFiles, display, ... but not all tasks
+	var $arrUseStore = ['display', 'getFile', 'listFiles'];
 
 	if (($useStore) && (jQuery.inArray($data.task, $arrUseStore) !== -1)) {
 		// Using the cache system provided by store.js
@@ -173,8 +194,8 @@ function ajaxify($params) {
 			async: true,
 			cache: false,
 			type: (marknotes.settings.debug ? 'GET' : 'POST'),
-			url: marknotes.url,
-			data: $data,
+			url: ($data.filename !== '') ? $data.filename : marknotes.url,
+			data: ($data.filename !== '') ? '' : $data,
 			datatype: $params.dataType,
 			success: function (data) {
 
@@ -366,7 +387,7 @@ function initializeTasks() {
 
 		var $task = $(this).data('task');
 
-		if ($task.substring(0,9) !== 'clipboard') {
+		if ($task.substring(0, 9) !== 'clipboard') {
 			// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
 			event.stopPropagation();
 			event.stopImmediatePropagation();

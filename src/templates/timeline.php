@@ -31,7 +31,7 @@
         <script src="%ROOT%/libs/jquery/jquery.min.js"></script>
         <script src="%ROOT%/libs/store/store.everything.min.js"></script>
         <script src="%ROOT%/assets/js/marknotes.js"></script>
-        <script src="%ROOT%/libs/jquery-albe-timeline/jquery-albe-timeline-2.0.0.min.js"></script>
+        <script src="%ROOT%/libs/jquery-albe-timeline/jquery-albe-timeline.min.js"></script>
 
         <!--%MARKDOWN_GLOBAL_VARIABLES%-->
 
@@ -41,8 +41,7 @@
               .ready(function () {
 
                 ajaxify({
-                    task: 'getTimeline',
-                    dataType: 'json',
+                    filename: 'timeline.json',
                     callback: 'ShowTimeline(data)',
                     useStore: marknotes.settings.use_localcache
                 });
@@ -51,7 +50,6 @@
           }); // $( document ).ready()
 
           function ShowTimeline($data) {
-
             $.fn.albeTimeline.languages = [{
                 "en-US": {
                     days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],

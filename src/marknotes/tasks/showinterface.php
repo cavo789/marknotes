@@ -59,7 +59,7 @@ class ShowInterface
         // replace variables
 
         $html = str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
-        $html = str_replace('%EDT_SEARCH_MAXLENGTH%', $aeSettings->getSearchMaxLength(), $html);
+        $html = str_replace('%EDT_SEARCH_MAXLENGTH%', SEARCH_MAX_LENGTH, $html);
 
         $html = str_replace('%LOGINFORM%', $aeSettings->getText('loginform', 'Login form'), $html);
         $html = str_replace('%LOGIN%', $aeSettings->getText('login', 'Username'), $html);
@@ -107,7 +107,7 @@ class ShowInterface
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
         "marknotes.settings.language='".$aeSettings->getLanguage()."';\n".
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
-        "marknotes.settings.search_max_width=".$aeSettings->getSearchMaxLength().";\n".
+        "marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
         "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n".
         "marknotes.treeview={};\n".
         "marknotes.treeview.defaultNode='".trim(str_replace("'", "\'", $aeSettings->getTreeviewDefaultNode('')))."';\n";

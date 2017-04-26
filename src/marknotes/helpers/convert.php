@@ -62,6 +62,6 @@ class Convert
         include_once $lib;
         $parsedown = new \Parsedown();
 
-        return $parsedown->text($markdown);
+        return $parsedown->text(trim($markdown));
     }
 }

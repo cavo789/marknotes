@@ -12,7 +12,6 @@ class Tags
 {
     public static function run(&$params = null)
     {
-        echo "<pre style='background-color:yellow;'>".__FILE__."-".__LINE__." - </pre>";
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
 

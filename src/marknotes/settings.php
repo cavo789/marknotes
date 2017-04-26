@@ -622,17 +622,6 @@ class Settings
         return $sReturn;
     }
 
-
-    /**
-     * Max allowed size for the search string
-     *
-     * @return int
-     */
-    public function getSearchMaxLength() : int
-    {
-        return SEARCH_MAX_LENGTH;
-    }
-
     /**
      * Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
      *
