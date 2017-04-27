@@ -16,7 +16,8 @@ class SiteMap
         $title = $aeSettings->getText('sitemap', 'Get the sitemap', true);
 
         $buttons .=
-            '<a id="icon_sitemap" data-task="sitemap" title="'.$title.'" href="#">'.
+            '<a id="icon_sitemap" data-task="file" data-file="sitemap.xml" '.
+               'title="'.$title.'" href="#">'.
                 '<i class="fa fa-sitemap" aria-hidden="true"></i>'.
             '</a>';
 

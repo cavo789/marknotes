@@ -26,7 +26,6 @@
 
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-toolbar/jquery.toolbar.css" />
 
-        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/assets/css/login.css" />
         <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/marknotes_print.css">
 
         <!--%ADDITIONNAL_CSS%-->
@@ -34,22 +33,8 @@
    </head>
 
    <body>
-        <div id="login-box" class="login-popup">
-            <a href="#" class="close"><img src="assets/images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>
-            <form method="post" class="signin" action="#">
-                <fieldset class="textbox">
-                    <label class="username">
-                    <span>%LOGIN%</span>
-                    <input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">
-                </label>
-                <label class="password">
-                    <span>%PASSWORD%</span>
-                    <input id="password" name="password" value="" type="password" placeholder="Password">
-                </label>
-                <button class="submit button" type="button">%SIGNIN%</button>
-            </fieldset>
-            </form>
-        </div>
+
+	   <!--%LOGIN%-->
 
       <div class="row">
 
@@ -85,17 +70,12 @@
 
       <footer class="onlyprint">&nbsp;</footer>
 
-	  <script>var $arrPluginsFct = [];</script>
-
       <!-- Add libraries. Thank you to these developpers! -->
       <script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
       <script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
 
       <!-- Used by the search box, for auto-completion -->
       <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>
-
-      <!-- Needed for the "Copy note hyperlink" button, to make easier to copy the link of a note in an another one -->
-      <script type="text/javascript" src="libs/clipboard/clipboard.min.js"></script>
 
       <!-- For the Print preview button -->
       <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
@@ -114,6 +94,15 @@
 
       <!-- Store.js -->
       <script src="libs/store/store.everything.min.js"></script>
+
+      <script type="text/javascript">
+         var marknotes = {};
+		 marknotes.arrPluginsFct = [];
+         marknotes.message = {};
+         marknotes.plugins = {};
+         marknotes.settings = {};
+         marknotes.treeview = {};
+      </script>
 
       <!--%ADDITIONNAL_JS%-->
 

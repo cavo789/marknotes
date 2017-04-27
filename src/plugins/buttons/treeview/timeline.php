@@ -16,7 +16,8 @@ class Timeline
         $title = $aeSettings->getText('timeline', 'Display notes in a timeline view', true);
 
         $buttons .=
-            '<a id="icon_timeline" data-task="timeline" title="'.$title.'" href="#">'.
+            '<a id="icon_timeline" data-task="file" data-file="timeline.html" '.
+                'title="'.$title.'" href="#">'.
                 '<i class="fa fa-calendar" aria-hidden="true"></i>'.
             '</a>';
 

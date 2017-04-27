@@ -1,4 +1,4 @@
-$arrPluginsFct.push("fnPluginHTMLBootstrap");
+marknotes.arrPluginsFct.push("fnPluginHTMLBootstrap");
 
 function fnPluginHTMLBootstrap() {
 	try {

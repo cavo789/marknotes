@@ -70,7 +70,7 @@ class Tags
                             // $matches[3] : the tag                                  " Start a SSH, then ..."  => SSH
                             // $matches[4] : what was just after the tag              " Start a SSH, then ..."  => the comma after SSH
 
-                            $sLine = str_ireplace($matches[2].$matches[3].$matches[4], $matches[2].'<span class="tag" title="'.$msg.'" data-task="tag" data-tag="'.$matches[3].'">'.$matches[3].'</span>'.$matches[4], $matches[0]);
+                            $sLine = str_ireplace($matches[2].$matches[3].$matches[4], $matches[2].'<span class="tag" title="'.$msg.'" data-task="fnPluginContentTag" data-tag="'.$matches[3].'">'.$matches[3].'</span>'.$matches[4], $matches[0]);
 
                             // And now, replace the original line ($matches[0]) by the new one in the document.
 
@@ -119,8 +119,6 @@ class Tags
 
         $js .=
             "<script type=\"text/javascript\">\n".
-            "var marknotes = {};\n".
-            "marknotes.plugins = {};\n".
             "marknotes.plugins.tags = {};\n".
             "marknotes.plugins.tags.prefix='".$prefix."';\n".
             "marknotes.plugins.tags.auto_tags='".$tags."';\n".

@@ -40,7 +40,11 @@
 
 	</body>
 
-	<script>var $arrPluginsFct = [];</script>
+	<script>
+		var marknotes = {};
+		marknotes.arrPluginsFct = [];
+		marknotes.root='%ROOT%/';
+	</script>
 
 	<!--%ADDITIONNAL_JS%-->
 

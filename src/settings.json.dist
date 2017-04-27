@@ -23,10 +23,10 @@
 		"authentication": ["login"],
 		"buttons": {
 			"treeview": ["login", "sitemap", "timeline"],
-			"content": ["refresh", "copylink", "fullscreen", "printer", "clipboard", "html", "reveal", "remark", "txt", "epub", "odt", "docx", "pdf", "editor"]
+			"content": ["refresh", "fullscreen", "printer", "clipboard", "html", "reveal", "remark", "txt", "epub", "odt", "docx", "pdf", "editor"]
 		},
 		"content": {
-			"html": ["encrypt", "bootstrap", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "meta", "prism", "seo", "share", "smileys", "tags", "TESTjoomla_doc", "custom"],
+			"html": ["login", "encrypt", "bootstrap", "clipboard", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "meta", "prism", "seo", "share", "smileys", "tags", "TESTjoomla_doc", "security", "custom"],
 			"docx": ["pandoc"],
 			"epub": ["pandoc"],
 			"odt": ["pandoc"],

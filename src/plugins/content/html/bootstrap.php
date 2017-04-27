@@ -57,7 +57,6 @@ class Bootstrap
         return $html;
     }
 
-
     public static function doIt(&$html = null)
     {
         if (trim($html) === '') {

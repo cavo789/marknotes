@@ -31,9 +31,10 @@
 				highlightStyle: 'monokai'
 			});
 		</script>
-
+		
 		<script type="text/javascript">
-			var $arrPluginsFct = [];
+		   var marknotes = {};
+		   marknotes.arrPluginsFct = [];
 		</script>
 
 		<!--%ADDITIONNAL_JS%-->

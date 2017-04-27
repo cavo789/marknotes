@@ -15,8 +15,10 @@ class Login
         $aeSettings = \MarkNotes\Settings::getInstance();
         $title = $aeSettings->getText('loginform', 'Login form', true);
 
+        // fnPluginTaskLogin is a function defined in /plugins/task/login/assets/login.js
+        // data-task="fnPluginTaskLogin" means that marknotes.js will call that function
         $buttons .=
-            '<a id="icon_login" data-task="login" title="'.$title.'" href="#">'.
+            '<a id="icon_login" data-task="fnPluginTaskLogin" title="'.$title.'" href="#">'.
                 '<i class="fa fa-user" aria-hidden="true"></i>'.
             '</a>';
 

@@ -1,4 +1,19 @@
 /**
+ * $params is a JSON object initiliazed by the /assets/js/marknotes.js file.
+ */
+function fnPluginButtonEdit($params) {
+
+	ajaxify({
+		task: 'edit',
+		param: $params.fname,
+		callback: 'afterEdit($data.param)',
+		target: 'CONTENT'
+	});
+
+	return true;
+}
+
+/**
  * EDIT MODE - Render the textarea in an editor
  *
  * @param {type} $fname   Filename

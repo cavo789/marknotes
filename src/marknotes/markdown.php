@@ -97,19 +97,6 @@ class Markdown
 
                 break;
 
-            case 'edit':
-                // Edit an existing file
-                $aeTask = \MarkNotes\Tasks\Edit::getInstance();
-                echo $aeTask->run(array('filename' => $filename));
-                break;
-
-            case 'getTimeline':
-                // Get the list of notes
-                $aeTask = \MarkNotes\Tasks\Timeline::getInstance();
-                header('Content-Type: application/json');
-                echo $aeTask->getJSON($params);
-                break;
-
             case 'listFiles':
                 // Retrieve the list of .md files.
                 $aeTask = \MarkNotes\Tasks\ListFiles::getInstance();
@@ -117,14 +104,10 @@ class Markdown
                 echo \MarkNotes\Tasks\ListFiles::run();
                 break;
 
-            case 'login':
-                // Login
-                $aeTask = \MarkNotes\Tasks\Login::getInstance();
-                header('Content-Type: application/json');
-                echo $aeTask->run();
-                break;
-
             case 'main':
+
+                // Display the interface of marknotes, with the treeview
+                // and the selected note content
                 $aeTask = \MarkNotes\Tasks\ShowInterface::getInstance();
                 echo $aeTask->run();
                 break;
@@ -155,17 +138,10 @@ class Markdown
                 echo $aeTask->run(array('filename' => $filename,'markdown' => $markdown));
                 break;
 
-            case 'slideshow':
-                // Display the "slideshow" version of the note
-                $aeTask = \MarkNotes\Tasks\SlideShow::getInstance();
-                header('Content-Type: text/html; charset=utf-8');
-                echo $aeTask->run($params);
-                break;
-
             default:
 
                 // --------------------------------
-                // Call content plugins
+                // Call task plugins
                 $aeEvents->loadPlugins('task', $task);
                 $args = array(&$params);
                 $aeEvents->trigger('run.task', $args);

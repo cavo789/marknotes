@@ -86,7 +86,7 @@ class Search
                     $bFound = false;
                     break;
                 }
-            } // foreach($keywords as $keyword)
+            }
 
             if ($bFound) {
                 // Found in the filename => stop process of this file
@@ -100,11 +100,16 @@ class Search
                 // The read() method will fires any plugin linked to the markdown.read event
                 // so encrypted notes will be automatically unencrypted
                 $content = $aeMarkdown->read($fullname);
-
                 $bFound = true;
 
                 foreach ($keywords as $keyword) {
-                    if (stripos($content, $keyword) === false) {
+
+                    // Add "$file" which is the filename in the content, just for the search.
+                    // Because when f.i. search for two words; one can be in the filename and one in the content
+                    // By searching only in the content; that file won't appear while it should be the Collapse
+                    // so "fake" and add the filename in the content, just for the search_no_result
+
+                    if (stripos($file.'#@#§§@'.$content, $keyword) === false) {
                         // at least one term is not present in the content, stop
                         $bFound = false;
                         break;

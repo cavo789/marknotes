@@ -1,4 +1,4 @@
-$arrPluginsFct.push("fnPluginHTMLPrism");
+marknotes.arrPluginsFct.push("fnPluginHTMLPrism");
 
 function fnPluginHTMLPrism() {
 

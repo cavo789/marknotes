@@ -56,7 +56,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     if ($filename !== '') {
         $fileMD = '';
 
-        if (in_array($filename, array('timeline.html', 'timeline.json', 'sitemap.xml'))) {
+        if (in_array($filename, array('tag.json', 'timeline.html', 'timeline.json', 'sitemap.xml'))) {
             // Specific files
 
             $aeFiles = \MarkNotes\Files::getInstance();
@@ -65,6 +65,10 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
             $layout = $aeFiles->getExtension($filename);
 
             switch ($filename) {
+                case 'tag.json':
+                    $format = 'tags';
+                    break;
+
                 case 'timeline.html':
                 case 'timeline.json':
                     $format = 'timeline';

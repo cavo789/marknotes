@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-    protected static $_instance = null;
+    protected static $hInstance = null;
     private $_aeSettings = null;
 
     public function __construct()
@@ -18,11 +18,11 @@ class HTML
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new HTML();
+        if (self::$hInstance === null) {
+            self::$hInstance = new HTML();
         }
 
-        return self::$_instance;
+        return self::$hInstance;
     }
 
     public function getHeadingText(string $html, string $heading = 'h1') : string

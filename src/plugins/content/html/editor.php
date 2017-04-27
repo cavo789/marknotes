@@ -24,11 +24,12 @@ class Editor
         // Add text for the editor
         $aeSettings = \MarkNotes\Settings::getInstance();
         $js .=
-            "marknotes.message.button_encrypt='".$aeSettings->getText('button_encrypt', 'Add encryption for the selection', true)."';\n".
+            "<script type=\"text/javascript\">\n". "marknotes.message.button_encrypt='".$aeSettings->getText('button_encrypt', 'Add encryption for the selection', true)."';\n".
             "marknotes.message.button_exit_edit_mode='".$aeSettings->getText('button_exit_edit_mode', 'Exit the editing mode', true)."';\n".
             "marknotes.message.button_save='".$aeSettings->getText('button_save', 'Submit your changes', true)."';\n".
             "marknotes.message.button_save_done='".$aeSettings->getText('button_save_done', 'The file has been successfully saved', true)."';\n".
-            "marknotes.message.button_save_error='".$aeSettings->getText('button_save_error', 'There was an error while saving the file', true)."';\n";
+            "marknotes.message.button_save_error='".$aeSettings->getText('button_save_error', 'There was an error while saving the file', true)."';\n".
+            "</script>";
 
         return true;
     }
@@ -56,12 +57,12 @@ class Editor
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
 
-        // The editor plugin is only needed when the task is 'display' i.e. when the note
-        // is displayed through the interface
-        if ($task !== 'display') {
+        // This plugin is needed only for these tasks : main, display and html
+
+        if (!in_array($task, array('main', 'display'))) {
             return true;
         }
-        
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');

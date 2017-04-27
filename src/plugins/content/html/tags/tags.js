@@ -1,3 +1,21 @@
+function fnPluginContentTag() {
+	alert('TAGS');
+
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('... filter on [' + $tag + ']');
+	}
+	/*<!-- endbuild -->*/
+
+	addSearchEntry({
+		keyword: $tag,
+		reset: true
+	});
+
+	return true;
+}
+
 $(document).ready(function () {
 
 	if ($.isFunction($.fn.flexdatalist)) {

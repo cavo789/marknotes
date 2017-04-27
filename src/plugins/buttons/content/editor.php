@@ -19,7 +19,7 @@ class Editor
         $file = $aeSession->get('filename');
 
         $buttons .=
-            '<a id="icon_edit" data-task="edit" data-file="'.$file.'" '.
+            '<a id="icon_edit" data-task="fnPluginButtonEdit" data-file="'.$file.'" '.
                'title="'.$title.'" href="#">'.
                 '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'.
               '</a>';

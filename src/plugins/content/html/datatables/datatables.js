@@ -1,4 +1,4 @@
-$arrPluginsFct.push("fnPluginHTMLDataTable");
+marknotes.arrPluginsFct.push("fnPluginHTMLDataTable");
 
 /**
  * Add the "table" class to any <table>

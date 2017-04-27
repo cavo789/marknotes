@@ -1,28 +1,15 @@
 <?php
 
-namespace MarkNotes\Tasks;
+namespace MarkNotes\Plugins\Task;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class Edit
 {
-    protected static $_instance = null;
-
-    public function __construct()
-    {
-        return true;
-    } // function __construct()
-
-    public static function getInstance()
-    {
-        if (self::$_instance === null) {
-            self::$_instance = new Edit();
-        }
-
-        return self::$_instance;
-    } // function getInstance()
-
-    private static function doIt(array $params) : string
+    /**
+     * Return the code for showing the login form and respond to the login action
+     */
+    public static function getForm(array &$params = array()) : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
@@ -54,20 +41,52 @@ class Edit
 
         return $sReturn;
     }
-
-    public static function run(array $params)
+    
+    /**
+     * Provide additionnal javascript
+     */
+    public static function addJS(&$js = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $js .=
+            "<script type=\"text/javascript\">".
+            "marknotes.message.incorrect_login='".$aeSettings->getText('login_error', 'Incorrect login, please try again', true)."';\n".
+            "marknotes.message.login_success='".$aeSettings->getText('login_success', 'Login successfull', true)."';\n".
+            "</script>";
+
+        return true;
+    }
+
+    public static function run(&$params = null)
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
 
         // Only when the user is connected
         if ($aeSession->get('authenticated', 0) === 1) {
-            $sReturn = self::doIt($params);
+            $sReturn = self::getForm($params);
         } else {
             $sReturn = $aeFunctions->showError('not_authenticated', 'You need first to authenticate', true);
         }
 
-        return $sReturn;
+        echo $sReturn;
+
+        return true;
+    }
+    /**
+     * Attach the function and responds to events
+     */
+    public function bind()
+    {
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $arrSettings = $aeSettings->getPlugins('options', 'login');
+
+        $aeEvents = \MarkNotes\Events::getInstance();
+        $aeEvents->bind('run.task', __CLASS__.'::run');
+        return true;
     }
 }

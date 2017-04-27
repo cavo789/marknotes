@@ -109,11 +109,13 @@ $(document).ready(function () {
 function ajaxify($params) {
 
 	var $data = {};
-	$data.filename = (typeof $params.filename === 'undefined') ? '' : $params.filename;
 	$data.task = (typeof $params.task === 'undefined') ? '' : $params.task;
 	$data.param = (typeof $params.param === 'undefined') ? '' : $params.param;
 
-	if ($data.filename !== '') {
+	if (typeof $params.filename !== 'undefined') {
+
+		// Retrieve the filename that should be displayed (like sitemap.xml f.i.)
+		$data.filename = $params.filename;
 
 		if ($data.task === '') {
 			// A filename has been specified (like f.i. timeline.json).
@@ -194,8 +196,8 @@ function ajaxify($params) {
 			async: true,
 			cache: false,
 			type: (marknotes.settings.debug ? 'GET' : 'POST'),
-			url: ($data.filename !== '') ? $data.filename : marknotes.url,
-			data: ($data.filename !== '') ? '' : $data,
+			url: (typeof $data.filename !== 'undefined') ? $data.filename : marknotes.url,
+			data: (typeof $data.filename !== 'undefined') ? '' : $data,
 			datatype: $params.dataType,
 			success: function (data) {
 
@@ -321,9 +323,9 @@ function initFiles($data) {
 			minLength: 3,
 			valueProperty: 'id',
 			selectionRequired: false,
-			visibleProperties: ["name", "type"],
+			visibleProperties: ["name"],
 			searchIn: 'name',
-			data: 'index.php?task=tags',
+			data: 'tag.json',
 			focusFirstResult: true,
 			noResultsText: marknotes.message.search_no_result,
 			requestType: (marknotes.settings.debug ? 'get' : 'post')
@@ -386,8 +388,7 @@ function initializeTasks() {
 		//event.preventDefault();
 
 		var $task = $(this).data('task');
-
-		if ($task.substring(0, 9) !== 'clipboard') {
+		if ($task.substring(0, 23) !== 'fnPluginButtonClipboard') {
 			// DON't STOP PROPAGATION, WILL BREAK THE Clipboard PLUGIN
 			event.stopPropagation();
 			event.stopImmediatePropagation();
@@ -423,46 +424,6 @@ function initializeTasks() {
 			});
 			break;
 
-		case 'clipboard':
-
-			// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-
-			if (typeof Clipboard === 'function') {
-
-				if (Clipboard.isSupported()) {
-
-					var clipboard = new Clipboard('#icon_clipboard');
-
-					clipboard.on('success', function (e) {
-						/*<!-- build:debug -->*/
-						if (marknotes.settings.debug) {
-							console.info('Action:', e.action);
-							console.info('Text:', e.text);
-							console.info('Trigger:', e.trigger);
-						}
-						/*<!-- endbuild -->*/
-
-						Noty({
-							message: marknotes.message.copy_clipboard_done,
-							type: 'success'
-						});
-
-						e.clearSelection();
-					});
-
-					/*<!-- build:debug -->*/
-					if (marknotes.settings.debug) {
-						clipboard.on('error', function (e) {
-							console.error('Action:', e.action);
-							console.error('Trigger:', e.trigger);
-						});
-					}
-					/*<!-- endbuild -->*/
-				} // if (Clipboard.isSupported())
-			}
-
-			break;
-
 		case 'display':
 
 			// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
@@ -480,72 +441,48 @@ function initializeTasks() {
 			window.open($fname);
 			break;
 
-		case 'edit':
-
-			ajaxify({
-				task: $task,
-				param: $fname,
-				callback: 'afterEdit($data.param)',
-				target: 'CONTENT'
-			});
-
-			break;
-
 		case 'fullscreen':
 
 			toggleFullScreen();
 
 			break;
 
-		case 'clipboard_link_note':
-
-			// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
-
-			if (typeof Clipboard === 'function') {
-				if (Clipboard.isSupported()) {
-					new Clipboard('#icon_link_note');
-					Noty({
-						message: marknotes.message.copy_link_done,
-						type: 'success'
-					});
-				} // if (Clipboard.isSupported())
-			} // if (typeof Clipboard === 'function')
-			break;
-
-		case 'login':
-			showLoginForm();
-			break;
-
 		case 'printer':
-			break;
-
-		case 'sitemap':
-
-			window.open(marknotes.webroot + 'sitemap.xml');
-			break;
-
-		case 'tag':
-
-			/*<!-- build:debug -->*/
-			if (marknotes.settings.debug) {
-				console.log('... filter on [' + $tag + ']');
-			}
-			/*<!-- endbuild -->*/
-
-			addSearchEntry({
-				keyword: $tag,
-				reset: true
-			});
-			break;
-
-		case 'timeline':
-
-			window.open(marknotes.webroot + 'timeline.html');
 			break;
 
 		default:
 
-			console.warn('Sorry, unknown task [' + $task + ']');
+			// The task is perhaps a function that was added by a plugin
+			// For instance the login form is a plugin and the data-task is set to
+			// "fnPluginTaskLogin", defined in login.js => try and call this function
+
+			try {
+
+				var fn = window[$task];
+
+				// is object a function?
+				if (typeof fn === "function") {
+
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						console.log('Running the plugin function  [' + $task + ']');
+					}
+					/*<!-- endbuild -->*/
+
+					// $task is something like "fnPluginTaskLogin", we should add the ()
+					// so javascript know it's a function
+
+					// Give parameters to the function
+					var $params = {};
+					$params.fname = $fname; // give the filename to the function
+					fn($params);
+
+				} else {
+					console.warn('Sorry, unknown task [' + $task + ']');
+				}
+			} catch (e) {
+				console.warn('Problem when trying to evaluate [' + $task + '][' + e.message + ']');
+			}
 
 		} // switch($task)
 
@@ -553,102 +490,6 @@ function initializeTasks() {
 
 	return true;
 
-}
-
-/**
- * Open the login dialog box
- * @link http://www.alessioatzeni.com/blog/login-box-modal-dialog-window-with-css-and-jquery/
- */
-function showLoginForm() {
-
-	//Fade in the Popup
-	$('#login-box').fadeIn(300);
-	$('#username').focus();
-
-	//Set the center alignment padding + border see css style
-	var popMargTop = ($('#login-box').height() + 24) / 2;
-	var popMargLeft = ($('#login-box').width() + 24) / 2;
-
-	$('#login-box').css({
-		'margin-top': -popMargTop,
-		'margin-left': -popMargLeft
-	});
-
-	// Add the mask to body
-	$('body').append('<div id="mask"></div>');
-	$('#mask').fadeIn(300);
-
-	$('a.close, #mask').click(function () {
-		$('#mask , .login-popup').fadeOut(300, function () {
-			$('#mask').remove();
-		});
-	});
-
-	$("#password").keyup(function (event) {
-		if (event.keyCode == 13) {
-			$("#login-box .submit").click();
-		}
-	});
-
-	$('#login-box .submit').click(function () {
-		var $login = $('#username').val();
-		var $password = $('#password').val();
-
-		if (($login === null) || ($login === '') || ($password === null) || ($password === '')) {
-
-			Noty({
-				message: marknotes.message.incorrect_login,
-				type: 'error'
-			});
-
-			$('#username').addClass("errorLogin");
-			$('#password').addClass("errorLogin");
-
-		} else {
-
-			// Ok, try to connect
-			$login = window.btoa(encodeURIComponent(JSON.stringify($login.trim())));
-			$password = window.btoa(encodeURIComponent(JSON.stringify($password.trim())));
-
-			$.post("index.php", {
-					task: 'login',
-					'username': $login,
-					'password': $password
-				},
-
-				function (data) {
-
-					var $status = false;
-
-					if (data.hasOwnProperty('status')) {
-						$status = (data.status === 1 ? true : false);
-					}
-
-					if ($status) {
-						$('#mask , .login-popup').fadeOut(300, function () {
-							$('#mask').remove();
-						});
-						Noty({
-							message: marknotes.message.login_success,
-							type: 'success'
-						});
-					} else {
-
-						Noty({
-							message: marknotes.message.incorrect_login,
-							type: 'error'
-						});
-						$('#username').addClass("errorLogin");
-						$('#password').addClass("errorLogin");
-
-					}
-				}
-			);
-		}
-
-	});
-
-	return false;
 }
 
 /**
@@ -726,7 +567,7 @@ function replaceLinksToOtherNotes() {
 }
 
 /**
- * Force links that points on the same server (localhost) to be opened in a new window
+ * Force links that points on a another server to be opened in a new window
  * @returns {Boolean}
  */
 function forceNewWindow() {
@@ -872,19 +713,19 @@ function afterDisplay($fname) {
 		console.warn(err.message);
 	}
 
-	// Last part : the array $arrPluginsFct is a global array and will be initialized by
+	// Last part : the array marknotes.arrPluginsFct is a global array and will be initialized by
 	// the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
 	//
 	// For instance : the file /plugins/content/html/bootstrap/bootstrap.js contains this line :
-	// $arrPluginsFct.push("PluginBootstrap");
+	// marknotes.arrPluginsFct.push("PluginBootstrap");
 	//
 	// This to tell to this code that the PluginBootstrap function should be fired once the note
 	// is displayd.  So, let's do it
 
 	try {
-		for (var i = 0, len = $arrPluginsFct.length; i < len; i++) {
+		for (var i = 0, len = marknotes.arrPluginsFct.length; i < len; i++) {
 			// As explained here : https://www.sitepoint.com/call-javascript-function-string-without-using-eval/
-			fn = window[$arrPluginsFct[i]];
+			fn = window[marknotes.arrPluginsFct[i]];
 
 			if (typeof fn === "function") fn();
 

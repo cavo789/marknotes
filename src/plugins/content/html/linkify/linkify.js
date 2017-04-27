@@ -1,4 +1,4 @@
-$arrPluginsFct.push("fnPluginHTMLLinkify");
+marknotes.arrPluginsFct.push("fnPluginHTMLLinkify");
 
 function fnPluginHTMLLinkify() {
 

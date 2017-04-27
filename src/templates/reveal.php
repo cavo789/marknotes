@@ -45,9 +45,8 @@
         </aside>
 
         <script type="text/javascript">
-			var $arrPluginsFct = [];
-
-            var marknotes={};
+		    var marknotes = {};
+		    marknotes.arrPluginsFct = [];
             marknotes.root='%ROOT%/';
         </script>
 
