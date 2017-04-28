@@ -58,7 +58,7 @@ class Write
         } else {
             /*<!-- build:debug -->*/
             if ($aeSettings->getDevMode()) {
-                $aeDebug->here('###DevMode### - Event markdown.write - Session invalid, no filename found', 5);
+                $aeDebug->here('Event markdown.write - Session invalid, no filename found', 5);
             }
             /*<!-- endbuild -->*/
         }

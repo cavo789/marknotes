@@ -12,13 +12,6 @@ class Remark
      */
     public static function doIt(&$params = null)
     {
-        if (isset($params['layout'])) {
-            if ($params['layout'] !== static::$layout) {
-                $params['stop_processing'] = false;
-                return false;
-            }
-        }
-
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -110,6 +103,14 @@ class Remark
      */
     public function bind()
     {
+        $aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+
+        // Don't attach code if the task is reveal
+        if (in_array($task, array('reveal'))) {
+            return true;
+        }
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('export.slides', __CLASS__.'::doIt');
         return true;

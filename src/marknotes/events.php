@@ -42,18 +42,12 @@ class Events
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         /*<!-- build:debug -->*/
-        if ($aeSettings->getDevMode()) {
-            if (isset(self::$arrEvents[$event])) {
-                if (count(self::$arrEvents[$event]) > 0) {
-                    $i = 0;
-                    for ($i == 0;$i < count(self::$arrEvents[$event]);$i++) {
-                        $aeDebug->log('event='.$event.', attached code '.self::$arrEvents[$event][$i]);
-                    }
-                } else {
-                    $aeDebug->log('No functions attached', 'info');
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log('Trigger started for ['.$event.']', 'debug');
+            if ($aeSettings->getDevMode()) {
+                if (!isset(self::$arrEvents[$event])) {
+                    $aeDebug->log('There is no listener for the '.$event, 'debug');
                 }
-            } else {
-                $aeDebug->log('There is no listener for the '.$event, 'info');
             }
         }
         /*<!-- endbuild -->*/
@@ -64,13 +58,10 @@ class Events
                     if (is_callable($func)) {
 
                         /*<!-- build:debug -->*/
-                        /*if ($aeSettings->getDevMode()) {
-                            //if ($event === 'export.slides') {
-                                $aeDebug->here('###DevMode### - Event '.$event.', call '.$func, 5);
-                            //}
-                        }*/
+                        if ($aeSettings->getDebugMode()) {
+                            $aeDebug->log('   call ['.$func.']', 'debug');
+                        }
                         /*<!-- endbuild -->*/
-
                         call_user_func_array($func, $args);
 
                         $bStopProcessing = false;
@@ -105,7 +96,7 @@ class Events
                         // function name without the parenthesis
                         /*<!-- build:debug -->*/
                         if ($aeSettings->getDevMode()) {
-                            $aeDebug->here('###DevMode### - Event '.$event.', '.$func.' is not callable, ERROR', 5);
+                            $aeDebug->here('Event '.$event.', '.$func.' is not callable, ERROR', 5);
                         }
                         /*<!-- endbuild -->*/
                     }
@@ -128,7 +119,7 @@ class Events
         $aeSettings = \MarkNotes\Settings::getInstance();
         if ($aeSettings->getDevMode()) {
             $aeDebug = \MarkNotes\Debug::getInstance();
-            $aeDebug->log('Add a listener for '.$event, 'info');
+            $aeDebug->log('Add a listener for '.$event);
         }
         /*<!-- endbuild -->*/
 
@@ -170,7 +161,7 @@ class Events
             if ($layout !== '') {
                 $dir = $dir.$layout.DS;
             }
-            
+
             if (is_dir($dir)) {
                 $aeFiles = \MarkNotes\Files::getInstance();
 
@@ -192,7 +183,7 @@ class Events
                         $aeSettings = \MarkNotes\Settings::getInstance();
                         if ($aeSettings->getDevMode()) {
                             $aeDebug = \MarkNotes\Debug::getInstance();
-                            $aeDebug->log('Load plugin '.$file, 'info');
+                            $aeDebug->log('Load the plugin '.$file);
                         }
                         /*<!-- endbuild -->*/
 
@@ -217,7 +208,7 @@ class Events
                 /*<!-- build:debug -->*/
                 if ($aeSettings->getDevMode()) {
                     $aeDebug = \MarkNotes\Debug::getInstance();
-                    $aeDebug->here('###DevMode### - Folder '.$dir.' not found', 5);
+                    $aeDebug->here('Folder '.$dir.' not found', 5);
                 }
                 /*<!-- endbuild -->*/
             }

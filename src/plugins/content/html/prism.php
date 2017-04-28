@@ -43,6 +43,14 @@ class Prism
      */
     public function bind()
     {
+        $aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+
+        // Don't load Prism for slideshows since these frameworks already provide such mechanism
+        if (in_array($task, array('reveal','remark','slides'))) {
+            return true;
+        }
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');

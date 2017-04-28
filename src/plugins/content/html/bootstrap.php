@@ -26,7 +26,6 @@ class Bootstrap
      */
     private static function setBullets(string $html) : string
     {
-
         // Replace <li></li> but only if they're part of a <ul></ul> i.e. don't modify <li> for <ol>
         // http://stackoverflow.com/a/4835671
         $sReturn = preg_replace_callback(
@@ -40,7 +39,7 @@ class Bootstrap
                return preg_replace("/(<li(|\s*\/)>)/", "<li><i class='fa-li fa fa-".$icon."' ".$extra."></i>", $ol[1]);
            },
            $html
-       );
+        );
 
         return str_replace('<ul>', '<ul class="fa-ul">', $sReturn);
     }

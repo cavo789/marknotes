@@ -43,22 +43,14 @@ class Convert
             );
         }
 
-        // When the task isn't slideshow, the --- (or -----) shouldn't be considered as an horizontal break (<hr>).
-        // --- (or ------) is used in slideshows to create a new slide so, before converting the markdown note in html
-        // thanks for Parsedown, remove them from the source
+        // When the task isn't slides (or reveal/remark), the --- (or -----) shouldn't be taken into consideration
+        // Indeed, --- (or ------) are used in slideshows to create a new slide so ignore these characters
 
-        if (isset($params['task'])) {
-            if ($params['task'] !== 'slideshow') {
-                // A manual section break (i.e. a new slide) can be manually created in marknotes by just creating, in the
-                // note a new line with --- (or -----).  Only these characters on the beginning of the line.
-                $newSlide = '\n+^-{3,5}$\n+';
-
-                // Except when outputting as a slideshow, remove the --- (or -----) if these characters are preceded and
-                // followed by an empty line and --- (or -----) are the only characters on the line
-                // (==> so it's a "section break")
-                $markdown = preg_replace('/('.$newSlide.')/m', '', $markdown);
-            }
+        $task = $params['task'] ?? '';
+        if (!in_array($task, array('reveal','remark','slides'))) {
+            $markdown = preg_replace('/('.NEW_SLIDE.')/m', '', $markdown);
         }
+
         include_once $lib;
         $parsedown = new \Parsedown();
 

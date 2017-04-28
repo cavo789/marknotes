@@ -31,10 +31,17 @@ class Markdown
     */
     public function process(string $task = '', string $filename = '', array $params = null)
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log('Run ['.$task.'] filename ['.$filename.']', 'debug');
+        }
+        /*<!-- endbuild -->*/
 
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSession->extend();

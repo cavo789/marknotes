@@ -5,13 +5,13 @@
  * Author : AVONTURE Christophe - https://www.aesecure.com
  *
  * Documentation : https://github.com/cavo789/marknotes/wiki
- * Demo : https://marknotes.cavo789.com
+ * Demo : https://www.marknotes.fr
  * History : https://github.com/cavo789/marknotes/blob/master/changelog.md
  */
 
 define('_MARKNOTES', 1);
 
-include_once 'marknotes/constants.php';
+include_once 'marknotes/includes/constants.php';
 
 // Load third parties
 include_once 'libs/autoload.php';
@@ -27,9 +27,12 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 } else {
     \MarkNotes\Autoload::register();
 
+    $aeSession = \MarkNotes\Session::getInstance();
+
+    include_once 'marknotes/includes/debug.php';
+
     // Application root folder.
-    $folder = str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
-    $folder = rtrim($folder, DS).DS;
+    $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
     $aeFiles = \MarkNotes\Files::getInstance();
     $aeFunctions = \MarkNotes\Functions::getInstance();

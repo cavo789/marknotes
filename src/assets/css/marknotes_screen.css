@@ -95,6 +95,12 @@ h2 {
 	z-index : 1;
 }
 
+#TDM .flexdatalist-multiple li.input-container,
+.flexdatalist-multiple li.input-container input {
+
+	width: 212px;
+}
+
 #TDM .flexdatalist-multiple {
 	z-index     : 1;
 	display     : none;

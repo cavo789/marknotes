@@ -92,7 +92,9 @@ class Login
      */
     public function bind()
     {
+        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
         $arrSettings = $aeSettings->getPlugins('options', 'login');
 
         $login = $arrSettings['username'] ?? '';

@@ -112,7 +112,7 @@ class Markdown
                                 /*<!-- build:debug -->*/
                                 if ($aeSettings->getDebugMode()) {
                                     $aeDebug = \MarkNotes\Debug::getInstance();
-                                    $aeDebug->here($filename.' NOT FOUND');
+                                    $aeDebug->here('DEBUG MODE --- '.$filename.' NOT FOUND');
                                 }
                                 /*<!-- endbuild -->*/
                             }

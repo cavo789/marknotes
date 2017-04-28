@@ -48,10 +48,9 @@ class Share
     {
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
-        // This plugin is not needed when the task is f.i. 'pdf'
-        // There is no need for add share buttons when the output format is pdf
 
-        if (in_array($task, array('pdf'))) {
+        // Don't load the Share toolbar for slideshows and for pdf rendering
+        if (in_array($task, array('pdf' , 'reveal','remark','slides'))) {
             return true;
         }
 

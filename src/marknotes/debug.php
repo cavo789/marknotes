@@ -31,7 +31,7 @@ class Debug
         return self::$hInstance;
     }
 
-    public function enable(bool $devMode = false, string $timezone = 'Europe/Paris') : bool
+    public function enable(bool $devMode = false, string $timezone = 'Europe/London') : bool
     {
         self::$_enable = true;
 
@@ -47,9 +47,9 @@ class Debug
         ini_set("error_append_string", "</div>");
         error_reporting(E_ALL);
 
-        // Enable the logger (only when DevMode is set)
+        // Enable the logger
         /*<!-- build:debug -->*/
-        if (($devMode) && (is_dir(dirname(dirname(__FILE__)).'/libs/monolog/monolog/src/'))) {
+        if (is_dir(dirname(dirname(__FILE__)).'/libs/monolog/monolog/src/')) {
             $folder = str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
             $folder = rtrim($folder, DS).DS.'tmp'.DS;
 
@@ -58,7 +58,7 @@ class Debug
             // Don't keep previous run
             if (is_file(self::$sDebugFileName)) {
                 try {
-                    unlink(self::$sDebugFileName);
+                    @unlink(self::$sDebugFileName);
                 } catch (Exception $e) {
                 }
             }
@@ -74,8 +74,6 @@ class Debug
             self::$logger = new \Monolog\Logger('marknotes');
             self::$logger->pushHandler($streamHandler);
             self::$logger::setTimezone(new \DateTimeZone($timezone));
-
-            self::log('marknotes - devmode - enabled');
         }
         /*<!-- endbuild -->*/
 
@@ -89,25 +87,34 @@ class Debug
     {
         /*<!-- build:debug -->*/
         if (self::$logger !== null) {
+
+            // Try to keep the log file readable : remove the parent path if present so
+            // filenames will be relative
+            $folder = dirname(dirname(__FILE__)).DS;
+            $msg = str_ireplace($folder, '', $msg);
+
             if (!in_array($method, array('debug','info','notice','warning','error','critical','alert','emergency'))) {
                 $method = 'debug';
             }
 
             $trace = debug_backtrace();
 
-            $class = $trace[1]['class'].'::'.$trace[1]['function'];
+            $class = ($trace[1]['class'] ?? '').'::'.$trace[1]['function'];
             $context[]['caller'] = $class.' line '.$trace[0]['line'];
 
             if ($deep > 1) {
                 // Add the previous caller
-                $parent = $trace[2]['class'].'::'.$trace[2]['function'];
+                $file = str_ireplace($folder, '', $trace[1]['file']);
+                $parent = ($trace[2]['class'] ?? $file).'::'.($trace[2]['function'] ?? '');
                 $context[]['caller'] = $parent.' line '.$trace[1]['line'];
             }
 
             if ($deep > 2) {
                 if (isset($trace[3]['class'])) {
                     // Add the previous caller
-                    $parent = $trace[3]['class'].'::'.$trace[3]['function'];
+                    $file = str_ireplace($folder, '', $trace[2]['file']);
+
+                    $parent = ($trace[3]['class'] ?? $file).'::'.($trace[3]['function'] ?? '');
                     $context[]['caller'] = $parent.' line '.$trace[2]['line'];
                 }
             }

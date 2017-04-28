@@ -28,7 +28,7 @@ class Pandoc
         if (!$aeFiles->fileExists($sScriptName)) {
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
-                $aeDebug->here('###DevMode### - Pandoc, file '.$sScriptName.' didn\'t exists', 5);
+                $aeDebug->here('Pandoc, file '.$sScriptName.' didn\'t exists', 5);
             }
             /*<!-- endbuild -->*/
             return false;

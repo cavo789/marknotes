@@ -15,7 +15,7 @@ class DeckTape
         $aeSettings = \MarkNotes\Settings::getInstance();
         /*<!-- build:debug -->*/
         if ($aeSettings->getDevMode()) {
-            $aeDebug->here('###DevMode### - DeckTape called', 1);
+            $aeDebug->here('DeckTape called', 1);
         }
         /*<!-- endbuild -->*/
 
@@ -40,7 +40,7 @@ class DeckTape
         if (!$aeFiles->fileExists($sScriptName)) {
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
-                $aeDebug->here('###DevMode### - Decktape, file '.$sScriptName.' didn\'t exists', 5);
+                $aeDebug->here('Decktape, file '.$sScriptName.' didn\'t exists', 5);
             }
             /*<!-- endbuild -->*/
             return false;

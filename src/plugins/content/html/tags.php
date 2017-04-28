@@ -50,14 +50,19 @@ class Tags
                     // Capture the full line (.* ---Full Regex--- .*)
                     preg_match_all('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$)*)/i', $content, $matches);
 
+//@TODO : il y a un souci ave la regex qui ne devrait pas retrouver des
+//mots qui sont dans des attributs.  title="marknotes" ==> marknotes ne devrait
+//pas être matchés. Voir le plugin SEO qui fonctionne et qui exclu lui les
+//attributs.
+
                     foreach ($matches[0] as $match) {
                         if (count($match) > 0) {
-                            preg_match('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$).*)/i', $match, $matches);
+                            preg_match('/(.*( |\\n|\\r|\\t|\\*|\\#)+('.preg_quote($tag).')(?!([^<]+)?>)(\\n|,|;|\\.|\\)|\\t|\\*|\\#| |$).*)/i', $match, $matches);
 
                             // The found tag is : $matches[3]
                             /*<!-- build:debug -->*/
                             /*if ($aeSettings->getDevMode()) {
-                                $aeDebug->here('###DevMode### - Found tag '.$matches[3], 1);
+                                $aeDebug->here('Found tag '.$matches[3], 1);
                             }*/
                             /*<!-- endbuild -->*/
 
@@ -161,6 +166,17 @@ class Tags
      */
     public function bind() : bool
     {
+
+        /*<!-- build:debug -->*/
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        if ($aeSettings->getDevMode()) {
+            $aeDebug->log('Plugin tag disabled, the REGEX should be reviewed; see @TODO', 'warning');
+        }
+        return false;
+        /*<!-- endbuild -->*/
+
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
