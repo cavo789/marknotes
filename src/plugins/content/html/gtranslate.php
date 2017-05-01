@@ -63,7 +63,7 @@ class GTranslate
         // This plugin is not needed when the task is f.i. 'pdf'
         // There is no need for translation when the output format is pdf
 
-        if (in_array($task, array('pdf'))) {
+        if (in_array($task, array('edit','pdf'))) {
             return true;
         }
 

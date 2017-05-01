@@ -35,7 +35,7 @@ class Smileys
         if (in_array($task, array('pdf'))) {
             return true;
         }
-
+        
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         return true;

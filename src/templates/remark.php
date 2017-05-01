@@ -20,15 +20,17 @@
     </head>
     <body>
 
-        <textarea id="source" readonly="readonly">%CONTENT%</textarea>
+        <textarea id="note_content" readonly="readonly">%CONTENT%</textarea>
 
 		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
         <script src="%ROOT%/libs/remark/remark-latest.min.js"></script>
 
 		<script type="text/javascript">
+
 			var hljs = remark.highlighter.engine
 
 			var slideshow = remark.create({
+	  			source: $('#note_content').html(),
 				highlightStyle: 'monokai'
 			});
 		</script>

@@ -175,7 +175,7 @@ class Events
                         $plugins[] = array($plugin => 1);
                     }
                 }
-
+                
                 // And if the plugin exists on the filesystem, load it
                 foreach ($plugins as $plugin) {/* FIXME: remove debugging */
 

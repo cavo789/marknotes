@@ -28,7 +28,7 @@
     <body>
 
         <div class="reveal">
-            <div class="slides">
+            <div class="slides" id="note_content">
 			    %CONTENT%
             </div>
         </div>

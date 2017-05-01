@@ -12,6 +12,8 @@ namespace MarkNotes;
 
 define('_MARKNOTES', 1);
 
+include_once 'marknotes/includes/constants.php';
+
 // Load third parties
 include_once 'libs/autoload.php';
 
@@ -25,13 +27,13 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 } else {
     \MarkNotes\Autoload::register();
 
-    include_once 'marknotes/includes/constants.php';
-    include_once 'marknotes/includes/debug.php';
-
     // Application root folder.
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
     $aeSettings = \MarkNotes\Settings::getInstance($folder);
+
+    include_once 'marknotes/includes/debug.php';
+
     $aeFunctions = \MarkNotes\Functions::getInstance();
     $aeJSON = \MarkNotes\JSON::getInstance();
 

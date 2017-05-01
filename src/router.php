@@ -47,7 +47,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     $aeFiles = \MarkNotes\Files::getInstance();
     $aeEvents = \MarkNotes\Events::getInstance();
 
-
     // Retrieve the asked extension i.e. if the user try to access the /note.html or /note.pdf file,
     // extract the extension (html or pdf)
     $format = '';
