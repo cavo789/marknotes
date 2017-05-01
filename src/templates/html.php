@@ -12,6 +12,7 @@
 		<title>%SITE_NAME%</title>
 
 		<!--%META_DATA%-->
+		<!--%FAVICON%-->
 
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/bootstrap/css/bootstrap.min.css" />
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" />

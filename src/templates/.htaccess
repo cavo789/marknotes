@@ -2,7 +2,7 @@ RewriteEngine on
 RewriteOptions Inherit
 
 # Only allow ressources
-RewriteCond %{REQUEST_FILENAME} !\.(ico?n|img|gif|jpe?g|png|css|map)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !\.(icon?|img|gif|jpe?g|png|css|map)$ [NC]
 RewriteCond %{REQUEST_FILENAME} !\.js(\?.*)?$ [NC]
 RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf|woff2?)(\?.*)?$ [NC]
 RewriteRule . - [R=403,NC,L]

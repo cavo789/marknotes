@@ -2,8 +2,9 @@
 	"debug": 0,
 	"development": 1,
 	"folder": "docs",
-	"language": "en",
+	"language": "fr",
 	"list": {
+		"show_tree_allowed": 1,
 		"opened": 0,
 		"auto_open": []
 	},
@@ -22,19 +23,142 @@
 	"plugins": {
 		"authentication": ["login"],
 		"buttons": {
-			"treeview": ["login", "sitemap", "timeline"],
-			"content": ["refresh", "fullscreen", "printer", "clipboard", "html", "reveal", "remark", "txt", "epub", "odt", "docx", "pdf", "editor"]
+			"treeview": [
+				{
+					"login": 1
+				},
+				{
+					"sitemap": 1
+				},
+				{
+					"timeline": 1
+				}],
+			"content": [
+				{
+					"fullscreen": 1
+				}, {
+					"printer": 1
+				}, {
+					"clipboard": 1
+				}, {
+					"html": 1
+				}, {
+					"reveal": 1
+				}, {
+					"remark": 1
+				}, {
+					"txt": 1
+				}, {
+					"epub": 1
+				}, {
+					"odt": 1
+				}, {
+					"docx": 1
+				}, {
+					"pdf": 1
+				}, {
+					"editor": 1
+				},
+				{
+					"refresh": 1
+				}]
 		},
 		"content": {
-			"html": ["login", "encrypt", "bootstrap", "clipboard", "datatables", "editor", "lazyload", "linkify", "ganalytics", "gtranslate", "jolitypo", "meta", "prism", "seo", "share", "smileys", "tags", "TESTjoomla_doc", "security", "custom"],
-			"docx": ["pandoc"],
-			"epub": ["pandoc"],
-			"odt": ["pandoc"],
-			"pdf": ["decktape", "pandoc", "dompdf"],
-			"slides": ["remark", "reveal"],
-			"txt": ["pandoc"]
+			"html": [
+				{
+					"login": 1
+				},
+				{
+					"encrypt": 1
+				},
+				{
+					"bootstrap": 1
+				},
+				{
+					"clipboard": 1
+				},
+				{
+					"datatables": 1
+				},
+				{
+					"editor": 1
+				},
+				{
+					"lazyload": 1
+				},
+				{
+					"linkify": 1
+				},
+				{
+					"ganalytics": 1
+				},
+				{
+					"gtranslate": 1
+				},
+				{
+					"jolitypo": 1
+				},
+				{
+					"meta": 1
+				},
+				{
+					"prism": 1
+				},
+				{
+					"seo": 1
+				},
+				{
+					"share": 1
+				},
+				{
+					"smileys": 1
+				},
+				{
+					"tags": 1
+				},
+				{
+					"joomla_doc": 0
+				},
+				{
+					"security": 1
+				},
+				{
+					"custom": 1
+				}
+				],
+			"docx": [
+				{
+					"pandoc": 1
+				}],
+			"epub": [{
+				"pandoc": 1
+			}],
+			"odt": [{
+				"pandoc": 1
+			}],
+			"pdf": [{
+				"decktape": 1
+			}, {
+				"pandoc": 1
+			}, {
+				"dompdf": 1
+			}],
+			"slides": [{
+				"remark": 1
+			}, {
+				"reveal": 1
+			}],
+			"txt": [{
+				"pandoc": 1
+			}]
 		},
-		"markdown": ["read", "encrypt", "write"],
+		"markdown": [{
+			"read": 1
+		}, {
+			"encrypt": 1
+		}, {
+			"write": 1
+		}],
 		"options": {
 			"bootstrap": {
 				"bullet": "check",
@@ -162,6 +286,7 @@
 			"search_placeholder": "Search...",
 			"settings_clean": "Clear cache",
 			"settings_clean_done": "The application's cache has been cleared",
+			"show_tree_not_allowed": "Access to this screen has been disallowed, sorry",
 			"signin": "Sign in",
 			"sitemap": "Get the sitemap",
 			"slideshow": "slideshow",
@@ -243,6 +368,7 @@
 			"search_placeholder": "Recherchez...",
 			"settings_clean": "Nettoie le cache de l&#39;application",
 			"settings_clean_done": "Le cache de l&#39;application a &eacute;t&eacute; nettoy&eacute;",
+			"show_tree_not_allowed": "L&#39;acc&egrave;s a cet &eacute;cran a &eacute;t&eacute; d&eacute;sactiv&eacute;, d&eacute;sol&eacute;",
 			"signin": "Se connecter",
 			"sitemap": "Afficher la carte du site",
 			"slideshow": "Affiche le document au format &#39;pr&eacute;sentation&#39;",

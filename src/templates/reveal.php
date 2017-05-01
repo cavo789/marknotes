@@ -12,6 +12,7 @@
 		<title>%SITE_NAME%</title>
 
 		<!--%META_DATA%-->
+		<!--%FAVICON%-->
 
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/reveal.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/theme/beige.css" id="theme" media="screen" />

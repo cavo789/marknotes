@@ -12,6 +12,7 @@
 		<title>%APP_NAME%</title>
 
         <!--%META_DATA%-->
+		<!--%FAVICON%-->
 
         <!--%META_CACHE%-->
 

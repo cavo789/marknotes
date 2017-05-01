@@ -6,27 +6,27 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Session
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
-    public function __construct()
+    public function __construct(string $folder = '')
     {
-        self::init();
+        self::init($folder);
 
         return true;
     }
 
-    public static function getInstance()
+    public static function getInstance(string $folder = '')
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Session();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Session($folder);
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
-    private function init()
+    private function init(string $folder = '')
     {
-        $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance($folder);
 
         if (!isset($_SESSION)) {
             //session_save_path will cause a white page on a few hosting company.

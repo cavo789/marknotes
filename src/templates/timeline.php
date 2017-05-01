@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="%LANGUAGE%">
 
-   <head>
+	<head>
 
-	   <meta charset="utf-8"/>
-	   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	   <meta name="robots" content="%ROBOTS%" />
-	   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	   <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="%ROBOTS%" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
 
-	   <title>%SITE_NAME% | %APP_NAME%</title>
+		<title>%SITE_NAME% | %APP_NAME%</title>
 
-	   <!--%META_DATA%-->
+		<!--%META_DATA%-->
+		<!--%FAVICON%-->
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/animatecss/3.5.2/animate.min.css" />
-        <link rel="stylesheet" href="%ROOT%/libs/jquery-albe-timeline/style-albe-timeline.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/animatecss/3.5.2/animate.min.css" />
+		<link rel="stylesheet" href="%ROOT%/libs/jquery-albe-timeline/style-albe-timeline.css" />
 
-        <style>
-            h1 { position:fixed; }
-        </style>
+		<style>
+			h1 { position:fixed; }
+		</style>
 
-    </head>
+	</head>
 
     <body>
 

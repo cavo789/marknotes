@@ -31,8 +31,9 @@ class ShowInterface
     {
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        if (!class_exists('Debug')) {
-            include_once dirname(dirname(__FILE__)).'/debug.php';
+        if (!$aeSettings->getShowTreeAllowed()) {
+            echo $aeSettings->getText('show_tree_not_allowed', 'Access to this screen has been disallowed, sorry');
+            return false;
         }
 
         $aeDebug = \MarkNotes\Debug::getInstance();

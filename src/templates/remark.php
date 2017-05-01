@@ -10,6 +10,7 @@
 		<title>%SITE_NAME%</title>
 
 		<!--%META_DATA%-->
+		<!--%FAVICON%-->
 
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/remark.css" media="screen" />
@@ -31,7 +32,7 @@
 				highlightStyle: 'monokai'
 			});
 		</script>
-		
+
 		<script type="text/javascript">
 		   var marknotes = {};
 		   marknotes.arrPluginsFct = [];

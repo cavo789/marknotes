@@ -12,7 +12,16 @@ class Meta
             return true;
         }
 
-        if (strpos($html, '<!--%META_DATA%-->') === false) {
+        $arr = array('<!--%META_DATA%-->','<!--%FAVICON%-->');
+        $bFound = false;
+        foreach ($arr as $key) {
+            if (strpos($html, $key) !== false) {
+                $bFound = true;
+                break;
+            }
+        }
+
+        if ($bFound === false) {
             return false;
         }
 
@@ -20,23 +29,33 @@ class Meta
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $filename = __DIR__."/meta/meta.txt";
+        foreach ($arr as $key) {
+            switch ($key) {
+                case '<!--%META_DATA%-->':
+                    $filename = 'meta.txt';
+                    break;
+                case '<!--%FAVICON%-->':
+                    $filename = 'favicon.txt';
+                    break;
+            }
 
-        if (!$aeFiles->fileExists($filename)) {
-            $filename = __DIR__."/meta/meta.txt.dist";
+            if (!$aeFiles->fileExists($filename)) {
+                $filename = __DIR__.'/meta/'.$filename.'.dist';
+            }
+
+            if ($aeFiles->fileExists($filename)) {
+
+                // Read the meta file and inject its content in the HTML
+                $content = file_get_contents($filename);
+                $html = str_replace($key, $content, $html);
+
+                // Replace some variables
+                $aeFunctions = \MarkNotes\Functions::getInstance();
+
+                $html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $html);
+            }
         }
 
-        if ($aeFiles->fileExists($filename)) {
-
-            // Read the meta file and inject its content in the HTML
-            $content = file_get_contents($filename);
-            $html = str_replace('<!--%META_DATA%-->', $content, $html);
-
-            // Replace some variables
-            $aeFunctions = \MarkNotes\Functions::getInstance();
-
-            $html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $html);
-        }
 
         return true;
     }

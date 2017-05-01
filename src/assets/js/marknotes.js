@@ -577,7 +577,6 @@ function forceNewWindow() {
 		console.log(' ... force new window by clicking on links pointing to an another server (function forceNewWindow())');
 	}
 	/*<!-- endbuild -->*/
-
 	var $currentURL = location.protocol + '//' + location.host;
 
 	$('a[href^="http:"], a[href^="https:"]')

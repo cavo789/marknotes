@@ -71,7 +71,7 @@ class Settings
             }
         }
 
-            // 2. Get the settings.json user's file
+        // 2. Get the settings.json user's file
         if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
             $arr = $aeJSON->json_decode($fname, true);
             if (count($arr) > 0) {
@@ -83,13 +83,14 @@ class Settings
         if (isset($params['filename'])) {
             $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
             $noteJSON = $noteFolder.DS.'settings.json';
+
             if ($aeFiles->fileExists($noteJSON)) {
                 $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
 
-            // 4. Get the note_name.json file that is, perhaps, present in the folder of the note.  note_name is the note filename
-            // with the .json extension of .md
+        // 4. Get the note_name.json file that is, perhaps, present in the folder of the note.
+        // note_name is the note filename with the .json extension of .md
         if (isset($params['filename'])) {
             $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, $params['filename']);
             $noteJSON = $aeFiles->replaceExtension($noteFolder, 'json');
@@ -98,6 +99,7 @@ class Settings
                 $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
         }
+
         return $json;
     }
 
@@ -710,6 +712,12 @@ class Settings
         } // if(isset($this->_json['list']))
 
         return $arr;
+    }
+
+    public function getShowTreeAllowed() : bool
+    {
+        $bReturn = $this->_json['list']['show_tree_allowed'] ?? true;
+        return $bReturn;
     }
 
     /**

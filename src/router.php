@@ -27,21 +27,26 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 } else {
     \MarkNotes\Autoload::register();
 
-    $aeSession = \MarkNotes\Session::getInstance();
-
-    include_once 'marknotes/includes/debug.php';
-
     // Application root folder.
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
-    $aeFiles = \MarkNotes\Files::getInstance();
     $aeFunctions = \MarkNotes\Functions::getInstance();
-    $aeEvents = \MarkNotes\Events::getInstance();
-
     $filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
+
+    // Handle accentuated characters
+    if (!is_file($filename)) {
+        $filename = utf8_decode($filename);
+    }
 
     $params = array('filename' => $filename);
     $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
+
+    include_once 'marknotes/includes/debug.php';
+
+    $aeSession = \MarkNotes\Session::getInstance();
+    $aeFiles = \MarkNotes\Files::getInstance();
+    $aeEvents = \MarkNotes\Events::getInstance();
+
 
     // Retrieve the asked extension i.e. if the user try to access the /note.html or /note.pdf file,
     // extract the extension (html or pdf)
