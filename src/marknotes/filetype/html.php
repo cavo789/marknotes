@@ -98,7 +98,6 @@ class HTML
         $html = $args[0];
         // --------------------------------
 
-        // Write the file but first replace variables
         $template = str_replace('%LANGUAGE%', $aeSettings->getLanguage(), $template);
         $template = str_replace('%TITLE%', $this->getHeadingText($html), $template);
         $template = str_replace('%CONTENT%', $html, $template);
@@ -168,8 +167,8 @@ class HTML
         $template = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $template);
 
         // --------------------------------
-
-        // Check if the template contains then URL_IMG tag and if so, retrieve the first image in the HTML string
+        // Check if the template contains then URL_IMG tag and if so,
+        // retrieve the first image in the HTML string
 
         if (strpos($template, '%URL_IMG%') !== false) {
             // Retrieve the first image in the html

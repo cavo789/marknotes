@@ -381,20 +381,23 @@ class Settings
      */
     public function getFolderTmp() : string
     {
-        $folder = $this->_folderWebRoot.'tmp'.DS;
+        $folder = rtrim($this->_folderWebRoot, DS).DS.'tmp';
 
         if (!is_dir($folder)) {
             mkdir($folder, 0755);
         }
 
-        if (!file_exists($fname = $folder.'.gitignore')) {
-            file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
-        }
+        if (is_dir($folder)) {
+            if (!file_exists($fname = $folder.'.gitignore')) {
+                file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+            }
 
-        if (!file_exists($fname = $folder.'.htaccess')) {
-            file_put_contents($fname, 'deny from all');
+            if (!file_exists($fname = $folder.'.htaccess')) {
+                file_put_contents($fname, 'deny from all');
+            }
         }
-        return $folder;
+        
+        return $folder.DS;
     }
 
     /**

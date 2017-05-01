@@ -26,9 +26,6 @@ class Remark
             // Read the markdown file
             $aeMarkDown = \MarkNotes\FileType\Markdown::getInstance();
 
-            // Keep encrypted datas and show them unencrypted
-            $params['removeConfidential'] = '0';
-
             $markdown = $aeMarkDown->read($fullname, $params);
 
             // Try to retrieve the heading 1
@@ -84,10 +81,14 @@ class Remark
             // Get the remark template
             $slideshow = file_get_contents($aeSettings->getTemplateFile('remark'));
 
+            $html = str_replace('%CONTENT%', strip_tags($markdown), $slideshow);
+            $html = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $html);
+            $html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(true, false), '/'), $html);
+
             // $slideshow contains the template : it's an html file with (from the /templates folder)
             // and that file contains variables => convert them
-            $aeHTML = \MarkNotes\FileType\HTML::getInstance();
-            $html = $aeHTML->replaceVariables($slideshow, $markdown, $params);
+            //$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+            //$html = $aeHTML->replaceVariables($slideshow, $markdown, $params);
         } // if ($params['filename'] !== "")
 
         // The slideshow is now created, no need to process other slideshow plugins
