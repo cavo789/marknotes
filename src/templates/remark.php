@@ -36,8 +36,12 @@
 		</script>
 
 		<script type="text/javascript">
-		   var marknotes = {};
-		   marknotes.arrPluginsFct = [];
+		    var marknotes = {};
+			marknotes.settings = {};
+		    marknotes.arrPluginsFct = [];
+            marknotes.root='%ROOT%/';
+	   		marknotes.settings.debug='%DEBUG%';
+	   		marknotes.settings.language='%LANGUAGE%';
 		</script>
 
 		<!--%ADDITIONNAL_JS%-->

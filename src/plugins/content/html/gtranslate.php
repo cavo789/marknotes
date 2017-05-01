@@ -40,14 +40,14 @@ class GTranslate
      */
     public static function addJS(&$js = null)
     {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
         $js .=
             "<script type=\"text/javascript\" src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\"></script>\n".
-            "<script type=\"text/javascript\">\n".
-            "function googleTranslateElementInit() {\n".
-            "   new google.translate.TranslateElement({pageLanguage: '".$aeSettings->getLanguage()."', layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL}, 'google_translate_element');\n".
-            "}\n".
-            "</script>\n";
+            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/gtranslate/gtranslate.js\"></script>\n";
 
         return true;
     }

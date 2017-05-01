@@ -100,10 +100,8 @@ class ShowInterface
         "marknotes.message.tree_new_note_name='".$aeSettings->getText('tree_new_note_name', 'New note', true)."';\n".
         "marknotes.url='index.php';\n".
         "marknotes.webroot='".rtrim($aeFunctions->getCurrentURL(true, false), '/')."/';\n".
-        "marknotes.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
         "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
-        "marknotes.settings.language='".$aeSettings->getLanguage()."';\n".
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
         "marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
         "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n".

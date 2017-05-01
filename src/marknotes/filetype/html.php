@@ -99,6 +99,7 @@ class HTML
         // --------------------------------
 
         $template = str_replace('%LANGUAGE%', $aeSettings->getLanguage(), $template);
+        $template = str_replace('%DEBUG%', $aeSettings->getDebugMode(), $template);
         $template = str_replace('%TITLE%', $this->getHeadingText($html), $template);
         $template = str_replace('%CONTENT%', $html, $template);
         $template = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $template);
@@ -131,17 +132,16 @@ class HTML
             $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
             $urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
 
-            $template = str_replace('%VERSION_HTML%', utf8_encode($urlHTML.'?format=html'), $template);
+            $template = str_replace('%VERSION_HTML%', $aeFiles->replaceExtension($urlHTML, 'html'), $template);
             $template = str_replace('%VERSION_HTML_TITLE%', $aeSettings->getText('action_html', 'View this slideshow like an article'), $template);
 
             // The PDF format of the note can be retrieved by replacing the .html extension
             // by .pdf
             $URLpdf = $aeFiles->replaceExtension($urlHTML, 'pdf');
-            $sLayout = '?layout='.(isset($params['layout']) ? $params['layout'] : 'html');
-            $template = str_replace('%VERSION_PDF%', utf8_encode($URLpdf).$sLayout, $template);
+            $template = str_replace('%VERSION_PDF%', utf8_encode($URLpdf), $template);
             $template = str_replace('%VERSION_PDF_TITLE%', $aeSettings->getText('action_download', 'Download this file'), $template);
 
-            $template = str_replace('%VERSION_SLIDESHOW%', utf8_encode($urlHTML.'?format=slides'), $template);
+            $template = str_replace('%VERSION_SLIDESHOW%', $aeFiles->replaceExtension($urlHTML, 'slides'), $template);
             $template = str_replace('%VERSION_SLIDESHOW_TITLE%', $aeSettings->getText('action_slideshow', 'View this article like a slideshow'), $template);
 
             $template = str_replace('%URL_PAGE%', $urlHTML, $template);
