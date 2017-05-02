@@ -9,6 +9,7 @@ ECHO Copy - Start at %DATE% - %TIME%
 ECHO.
 
 SET VENDOR=%cd%\vendor\
+SET NODE=%cd%\node_modules\
 SET LIBS=%cd%\src\libs\
 
 ECHO Copy files from %VENDOR% to %LIBS% >> %LOG%
@@ -116,14 +117,6 @@ IF EXIST %VENDOR%monolog\%LIB% (
 )
 
 REM ----------------------------------------------------------------------
-SET LIB=monolog\
-IF EXIST %VENDOR%monolog\%LIB% (
-   ECHO  === %LIB% === >> %LOG%
-   ECHO  === %LIB% ===
-   XCOPY %VENDOR%%LIB%\src\*.* %LIBS%%LIB%\src\*.* /E /Y >> %LOG%
-)
-
-REM ----------------------------------------------------------------------
 SET LIB=parsedown\
 IF EXIST %VENDOR%erusev\%LIB% (
    ECHO  === %LIB% === >> %LOG%
@@ -137,4 +130,13 @@ IF EXIST %VENDOR%%LIB% (
    ECHO  === %LIB% === >> %LOG%
    ECHO  === %LIB% ===
    XCOPY %VENDOR%%LIB%*.* %LIBS%%LIB%*.* /E /Y >> %LOG%
+)
+
+REM ----------------------------------------------------------------------
+SET LIB=reveal.js-menu\
+
+IF EXIST %NODE%%LIB% (
+   ECHO  === %LIB% === >> %LOG%
+   ECHO  === %LIB% ===
+   XCOPY %NODE%%LIB%*.* %LIBS%reveal\plugin\%LIB%*.* /E /Y >> %LOG%
 )

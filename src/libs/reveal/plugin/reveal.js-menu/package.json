@@ -1,0 +1,87 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "reveal.js-menu",
+        "scope": null,
+        "escapedName": "reveal.js-menu",
+        "name": "reveal.js-menu",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "c:\\Christophe\\Repository\\markdown"
+    ]
+  ],
+  "_from": "reveal.js-menu@latest",
+  "_id": "reveal.js-menu@0.7.0",
+  "_inCache": true,
+  "_location": "/reveal.js-menu",
+  "_nodeVersion": "5.5.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/reveal.js-menu-0.7.0.tgz_1470482883454_0.5317925915587693"
+  },
+  "_npmUser": {
+    "name": "denehyg",
+    "email": "greg@inclose.com.au"
+  },
+  "_npmVersion": "3.5.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "reveal.js-menu",
+    "scope": null,
+    "escapedName": "reveal.js-menu",
+    "name": "reveal.js-menu",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/reveal.js-menu/-/reveal.js-menu-0.7.0.tgz",
+  "_shasum": "345a5dfb90171afa36097670a41a8ff44f50d9d2",
+  "_shrinkwrap": null,
+  "_spec": "reveal.js-menu",
+  "_where": "c:\\Christophe\\Repository\\markdown",
+  "author": {
+    "name": "Greg Denehy"
+  },
+  "bugs": {
+    "url": "https://github.com/denehyg/reveal.js-menu/issues"
+  },
+  "dependencies": {},
+  "description": "A slideout menu for navigating reveal.js presentations",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "345a5dfb90171afa36097670a41a8ff44f50d9d2",
+    "tarball": "https://registry.npmjs.org/reveal.js-menu/-/reveal.js-menu-0.7.0.tgz"
+  },
+  "gitHead": "fa7249f44b9cf6c574d4d554019f48d389b59ad0",
+  "homepage": "https://github.com/denehyg/reveal.js-menu#readme",
+  "keywords": [
+    "reveal",
+    "menu"
+  ],
+  "license": "MIT, Copyright (C) 2016 Greg Denehy",
+  "maintainers": [
+    {
+      "name": "denehyg",
+      "email": "greg@inclose.com.au"
+    }
+  ],
+  "name": "reveal.js-menu",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denehyg/reveal.js-menu.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.7.0"
+}
