@@ -212,7 +212,7 @@
 	"slideshow": {
 		"duration": {
 			"minutes": 60,
-			"bar_height": 30
+			"bar_height": 10
 		}
 	},
 	"templates": {
