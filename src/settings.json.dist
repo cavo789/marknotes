@@ -168,7 +168,7 @@
 				"script": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
 			},
 			"encrypt": {
-				"password": "man1,clo",
+				"password": "",
 				"method": "aes-256-ctr"
 			},
 			"ganalytics": "",
