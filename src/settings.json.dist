@@ -1,6 +1,6 @@
 {
 	"debug": 0,
-	"development": 1,
+	"development": 0,
 	"folder": "docs",
 	"language": "fr",
 	"list": {
