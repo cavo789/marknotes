@@ -21,6 +21,7 @@
         <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/reveal.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/marknotes.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/lib/css/zenburn.css" media="screen" >
+		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/plugin/title-footer/title-footer.css" media="screen">
 
 		<!--%ADDITIONNAL_CSS%-->
 
@@ -49,10 +50,13 @@
         <script type="text/javascript">
 		    var marknotes = {};
 			marknotes.settings = {};
+			marknotes.slideshow = {};
 		    marknotes.arrPluginsFct = [];
             marknotes.root='%ROOT%/';
 	   		marknotes.settings.debug='%DEBUG%';
 	   		marknotes.settings.language='%LANGUAGE%';
+			marknotes.slideshow.durationMinutes='%DURATION%';
+			marknotes.slideshow.durationBarHeight='%DURATION_BARHEIGHT%';
         </script>
 
 		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>

@@ -40,6 +40,20 @@ Reveal.initialize({
 	transition: 'convex',
 	backgroundTransition: 'concave',
 
+	// your allotted time for presentation
+	allottedTime: marknotes.slideshow.durationMinutes * 60 * 1000,
+	progressBarHeight: marknotes.slideshow.durationBarHeight,
+	keyboard: {
+		// By pressing the Enter key, the ElapsedTimeBar will be paused
+		13: () => {
+			ElapsedTimeBar.isPaused ? ElapsedTimeBar.resume() : ElapsedTimeBar.pause();
+		},
+		// By pressing the "r" key, the ElapsedTimeBar will be resetted
+		82: () => {
+			ElapsedTimeBar.reset();
+		}
+	},
+
 	// Parallax background image
 	//parallaxBackgroundImage: 'img/background.png',
 	//parallaxBackgroundSize: '1917px 1080px',
@@ -87,6 +101,16 @@ Reveal.initialize({
 		},
 		{
 			src: marknotes.root + 'libs/reveal/plugin/reveal.js-menu/menu.js'
+		},
+		{
+			src: marknotes.root + 'libs/reveal/plugin/title-footer/title-footer.js',
+			async: true,
+			callback: function () {
+				title_footer.initialize();
+			}
+		},
+		{
+			src: marknotes.root + 'libs/reveal/plugin/elapsed-time-bar/elapsed-time-bar.js'
 		}
 	]
 

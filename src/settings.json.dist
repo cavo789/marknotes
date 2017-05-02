@@ -209,6 +209,12 @@
 		}
 	},
 	"site_name": "marknotes | An Open Source notes management tool",
+	"slideshow": {
+		"duration": {
+			"minutes": 60,
+			"bar_height": 30
+		}
+	},
 	"templates": {
 		"html": "html",
 		"pdf": "pdf",

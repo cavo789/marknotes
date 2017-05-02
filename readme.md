@@ -25,6 +25,7 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
     - Contributors of [simplemde-markdown-editor](https://github.com/NextStepWebs/simplemde-markdown-editor)
     - Damien Alexandre for [JolyTypo library](https://github.com/jolicode/JoliTypo) - Web Microtypography fixer
     - Emanuil Rusev (erusev) for the [Parsedown](https://github.com/erusev/parsedown) class ([http://erusev.com](http://erusev.com))
+	- Greg Denehy (denehyg) for the reveal.js-menu plugin ([https://github.com/denehyg/reveal.js-menu[(https://github.com/denehyg/reveal.js-menu))
     - Ivan Bozhanov (vakata) for [jsTree](https://github.com/vakata/jstree)
     - Joseph Lenton for [PHP-error](https://github.com/JosephLenton/PHP-Error)
     - Marcus Westin for [store.js](https://github.com/marcuswestin/store.js)

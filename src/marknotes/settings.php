@@ -396,7 +396,7 @@ class Settings
                 file_put_contents($fname, 'deny from all');
             }
         }
-        
+
         return $folder.DS;
     }
 
@@ -467,11 +467,21 @@ class Settings
             return $fname;
     } // function getTemplateFile()
 
-        /**
-         * Use browser's cache or not depending on settings.json
-         *
-         * @return bool
-         */
+    public function getSlideshowDuration(int $default = 60) : int
+    {
+        $wReturn = $this->_json['slideshow']['duration']['minutes'] ?? $default;
+        return $wReturn;
+    }
+    public function getSlideshowDurationBarHeight(int $default = 3) : int
+    {
+        $wReturn = $this->_json['slideshow']['duration']['bar_height'] ?? $default;
+        return $wReturn;
+    }
+    /**
+     * Use browser's cache or not depending on settings.json
+     *
+     * @return bool
+     */
     public function getOptimisationUseBrowserCache() : bool
     {
         $bReturn = false;
