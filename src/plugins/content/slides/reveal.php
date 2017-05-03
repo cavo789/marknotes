@@ -182,10 +182,16 @@ class Reveal
      */
     private static function addTemplate($html, array $params = array()) : string
     {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $slideshow = file_get_contents($aeSettings->getTemplateFile(static::$layout));
+        $template = $aeSettings->getTemplateFile(static::$layout);
+        if ($template === '') {
+            $aeFunctions->fileNotFound($template);
+        }
+
+        $slideshow = file_get_contents($template);
 
         return $aeHTML->replaceVariables($slideshow, $html, $params);
     }

@@ -22,14 +22,16 @@ class Functions
         return self::$_Instance;
     }
 
-    public function fileNotFound(string $file = '') : bool
+    public function fileNotFound(string $file = '', bool $die = true) : bool
     {
         $aeSettings = \MarkNotes\Settings::getInstance();
         $msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
 
         header("HTTP/1.0 404 Not Found");
 
-        echo(str_replace('%s', '<strong>'.$file.'</strong>', $msg));
+        if ($file !== '') {
+            echo(str_replace('%s', '<strong>'.$file.'</strong>', $msg));
+        }
 
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
@@ -37,7 +39,10 @@ class Functions
             $aeDebug->here('#DebugMode# - File '.$file.' not found', 5);
         }
         /*<!-- endbuild -->*/
-        die();
+
+        if ($die) {
+            die();
+        }
     }
 
     /**
