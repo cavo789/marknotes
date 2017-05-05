@@ -38,15 +38,14 @@
 
 	   <!--%LOGIN%-->
 
-      <div class="row">
+      <div>
 
-        <div class="col-sm-3 onlyscreen" id="TDM">
-			<br/>
-            <a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="assets/images/marknotes.png" class="logo onlyscreen" /></a>
+        <div class="onlyscreen" id="TDM">
+            <a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="assets/images/marknotes.png" class="logo" /></a>
 
-            <div id="toolbar-app" data-toolbar="style-option" class="onlyscreen btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>
+            <div id="toolbar-app" data-toolbar="style-option" class="btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>
             <div id="toolbar-app-options" class="hidden btn-toolbar-warning">
-                <div id="icons" class="onlyscreen fa-1x">
+                <div id="icons" class="fa-1x">
 					%ICONS%
                     <a id="icon_settings_clear" data-task="clear" title="%CLEAR_CACHE%" href="#">
                         <i class="fa fa-eraser" aria-hidden="true"></i>
@@ -58,14 +57,14 @@
                alt=""accesskey=""accept=""maxlength='%EDT_SEARCH_MAXLENGTH%' data-data='index.php?task=tags' data-search-in='name'
                data-visible-properties='["name","type"]' multiple='multiple' />
 
-            <div id="TOC" class="onlyscreen">&nbsp;</div>
+            <div id="TOC">&nbsp;</div>
 
             <div class="app_version"><a href="%APP_WEBSITE%" target="_blank" title="%APP_NAME% | Download a newer version">%APP_VERSION%</a></div>
 
          </div>
 
-         <div class="col-sm-9">
-            <page size="A4" layout="portrait" class="container col-md-8" id="CONTENT">&nbsp;</page>
+         <div class="content">
+            <page size="A4" layout="portrait" class="" id="CONTENT">&nbsp;</page>
          </div>
 
       </div>

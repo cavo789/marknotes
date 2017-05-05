@@ -3,7 +3,7 @@ body {
 	font-size       : 14px;
 	line-height     : 1.42857143;
 	color           : #333;
-	overflow        : hidden;
+	/*overflow        : hidden;*/
 	background-color: #eeeeee;
 }
 
@@ -131,21 +131,37 @@ h2 {
 	overflow-x : auto;
 	width      : 100%;
 	left       : -15px;
+	padding    : 10px;
 	height     : calc(100vh - 12px);
 }
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
 
 #TDM {
-	left      : 5px;
-	top       : 5px !important;
+	left    : 5px;
+	/*top       : 5px !important;
 	overflow-y: auto;
-	overflow-x: auto;
+	overflow-x: auto;*/
+	width   : 280px;
+	position: fixed;
+	left    : 0;
+	top     : 0;
+	bottom  : 0;
+	overflow: auto;
+	padding : 10px;
+}
+
+.content {
+	margin-left: 270px;
+	padding    : 10px;
+	box-sizing : border-box;
+	width      : calc(100% - 280px);
 }
 
 #TOC {
-	position: inherit;
-	top     : 35px;
+	/*position: inherit;
+    top     : 35px;*/
+	margin-top: 10px;
 }
 
 #TOC .folder {
@@ -185,12 +201,17 @@ page {
 }
 
 .app_version {
-	font-size : xx-small;
-	height    : 20px;
-	position  : fixed;
-	bottom    : 0;
-	width     : 100%;
-	font-style: italic;
+	font-size     : xx-small;
+	height        : 20px;
+	position      : fixed;
+	bottom        : 0;
+	width         : 100%;
+	font-style    : italic;
+	pointer-events: none;
+}
+
+.app_version a {
+	pointer-events: all;
 }
 
 #icon_separator {
