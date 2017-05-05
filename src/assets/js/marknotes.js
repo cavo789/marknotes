@@ -712,14 +712,33 @@ function afterDisplay($fname) {
 		console.warn(err.message);
 	}
 
-	// Last part : the array marknotes.arrPluginsFct is a global array and will be initialized by
-	// the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
-	//
-	// For instance : the file /plugins/content/html/bootstrap/bootstrap.js contains this line :
-	// marknotes.arrPluginsFct.push("PluginBootstrap");
-	//
-	// This to tell to this code that the PluginBootstrap function should be fired once the note
-	// is displayd.  So, let's do it
+	runPluginsFunctions();
+
+	// Just for esthetics purposes
+	$('#CONTENT').fadeOut(1).fadeIn(3);
+
+	return true;
+
+}
+
+/**
+ * The array marknotes.arrPluginsFct is a global array and will be initialized by
+ * the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
+ *
+ * For instance : the file /plugins/content/html/bootstrap/bootstrap.js contains this line :
+ *    marknotes.arrPluginsFct.push("PluginBootstrap");
+ *
+ * This to tell to this code that the PluginBootstrap function should be fired once the note
+ * is displayed.  So, let's do it
+ */
+function runPluginsFunctions() {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.debug('Running plugins functions...');
+		console.log(marknotes.arrPluginsFct);
+	}
+	/*<!-- endbuild -->*/
 
 	try {
 		for (var i = 0, len = marknotes.arrPluginsFct.length; i < len; i++) {
@@ -732,9 +751,6 @@ function afterDisplay($fname) {
 	} catch (err) {
 		console.warn(err.message);
 	}
-
-	// Just for esthetics purposes
-	$('#CONTENT').fadeOut(1).fadeIn(3);
 
 	return true;
 

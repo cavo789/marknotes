@@ -131,6 +131,7 @@ h2 {
 	overflow-x : auto;
 	width      : 100%;
 	left       : -15px;
+	height     : calc(100vh - 12px);
 }
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */

@@ -21,17 +21,18 @@ function fnPluginHTMLDataTable() {
 
 				$(this).addClass('display');
 				$(this).DataTable({
-					scrollY: "50vh", // 50%
-					scrollCollapse: true,
-					info: true,
-					lengthMenu: [
+					"scrollY": "50vh", // 50%
+					"scrollCollapse": true,
+					"info": true,
+					"order": [], // No ordering by default
+					"lengthMenu": [
 						[10, 25, 50, -1],
 						[10, 25, 50, "All"]
 					],
-					language: {
-						decimal: '.',
-						thousands: ',',
-						url: marknotes.webroot + 'libs/DataTables/' + marknotes.settings.language + '.json'
+					"language": {
+						"decimal": '.',
+						"thousands": ',',
+						"url": marknotes.webroot + 'libs/DataTables/' + marknotes.settings.language + '.json'
 					}
 				});
 			});

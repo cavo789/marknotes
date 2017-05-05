@@ -80,6 +80,12 @@ function escapeRegExp(str) {
 
 function fnPluginHTMLSmileys() {
 
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('Plugin html - Smileys - Convert Smileys code into emoticons');
+	}
+	/*<!-- endbuild -->*/
+
 	var $html = $('#note_content').html();
 	var $patterns = [];
 	var $metachars = /[[\]{}()*+?.\\|^$\-,&#\s]/g

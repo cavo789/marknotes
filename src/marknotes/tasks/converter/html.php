@@ -56,9 +56,7 @@ class HTML
         }
 
         $javascript =
-        "\nvar marknotes = {};\n".
-        "marknotes.message={};\n".
-        "marknotes.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';\n";
+        "marknotes.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';";
 
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 

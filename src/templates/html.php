@@ -39,20 +39,29 @@
 		<script type="text/javascript" src="%ROOT%/libs/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="%ROOT%/libs/lazysizes/lazysizes.min.js"></script>
 		<script type="text/javascript" src="%ROOT%/templates/assets/js/html.js"></script>
+        <script type="text/javascript" src="%ROOT%/assets/js/marknotes.js"></script>
 
 	</body>
 
-	<script>
+	<script type="text/javascript" >
 		var marknotes = {};
-		marknotes.settings = {};
 		marknotes.arrPluginsFct = [];
-		marknotes.root='%ROOT%/';
+		marknotes.message = {};
+		marknotes.plugins = {};
+		marknotes.settings = {};
 		marknotes.settings.debug='%DEBUG%';
 		marknotes.settings.language='%LANGUAGE%';
+		marknotes.webroot='%ROOT%/';
 	</script>
 
 	<!--%ADDITIONNAL_JS%-->
 
 	<!--%MARKDOWN_GLOBAL_VARIABLES%-->
+
+	<script type="text/javascript" >
+		$(document).ready(function () {
+			runPluginsFunctions();
+		});
+	</script>
 
 </html>

@@ -1,6 +1,6 @@
-# marknotes v1
+# marknotes v1.1
 
-![Build Status](https://travis-ci.org/cavo789/marknotes.svg?branch=master) ![License MIT](https://marknotes.cavo789.com/docs/license.png) ![PHP 7 ready](http://php7ready.timesplinter.ch/cavo789/marknotes/master/badge.svg)
+![License MIT](https://marknotes.cavo789.com/docs/license.png)
 
 ## Documentation
 
@@ -8,11 +8,15 @@ You can find the documentation on the wiki here : [https://github.com/cavo789/ma
 
 ![Main interface](https://marknotes.cavo789.com/docs/interface.png)
 
+## Demo site
+
+The demo is available on [https://www.marknotes.fr](https://www.marknotes.fr)
+
 ## Credits
 
 Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
-### Thank you to
+### Thank you to, not exhaustive,
 
     - Alberto Júnior for [jquery-albe-timeline](https://github.com/Albejr/jquery-albe-timeline)
     - Alexander Farkas for [lazysizes](https://github.com/aFarkas/lazysizes)
