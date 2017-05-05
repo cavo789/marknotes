@@ -150,7 +150,7 @@ class Events
         return $sReturn;
     }
 
-    public static function loadPlugins(string $type = 'content', string $layout = '')
+    public static function loadPlugins(string $type = 'content', string $subtask = '')
     {
         $aeSettings = \MarkNotes\Settings::getInstance();
         if ($type !== '') {
@@ -158,8 +158,12 @@ class Events
             // The plugins folder is at the root level and not under /marknotes
             $dir = rtrim(dirname(__DIR__), DS).DS.'plugins'.DS.$type.DS;
 
-            if ($layout !== '') {
-                $dir = $dir.$layout.DS;
+            if ($subtask !== '') {
+                // can be edit.save => retrieve the first part : edit
+                if (($wPos = strpos($subtask, '.')) !== false) {
+                    $subtask = substr($subtask, 0, $wPos);
+                }
+                $dir = $dir.$subtask.DS;
             }
 
             if (is_dir($dir)) {
@@ -167,7 +171,7 @@ class Events
 
                 // Get the list of plugins (f.i. of type 'content')
                 if ($type !== 'task') {
-                    $plugins = $aeSettings->getPlugins($type, $layout);
+                    $plugins = $aeSettings->getPlugins($type, $subtask);
                 } else {
                     $tmp = str_replace($dir, '', array_filter(glob($dir.'*'), 'is_file'));
                     $plugins = array();
@@ -175,7 +179,7 @@ class Events
                         $plugins[] = array($plugin => 1);
                     }
                 }
-                
+
                 // And if the plugin exists on the filesystem, load it
                 foreach ($plugins as $plugin) {/* FIXME: remove debugging */
 

@@ -41,7 +41,7 @@ class Edit
 
         return $sReturn;
     }
-    
+
     /**
      * Provide additionnal javascript
      */
@@ -61,6 +61,40 @@ class Edit
         return true;
     }
 
+    /*
+     * Save new content (after edition by the user)
+     * Called by the editor, responds to the save button.
+     */
+    private static function save(&$params = null)
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        // If the filename doesn't mention the file's extension, add it.
+        if (substr($params['filename'], -3) != '.md') {
+            $params['filename'] .= '.md';
+        }
+
+        $fullname = str_replace('/', DIRECTORY_SEPARATOR, $aeSettings->getFolderDocs(true).utf8_decode(ltrim($params['filename'], DS)));
+
+        // Call content plugins
+        $markdown = json_decode(urldecode($aeFunctions->getParam('markdown', 'string', '', true)));
+        $aeEvents = \MarkNotes\Events::getInstance();
+        $aeEvents->loadPlugins('markdown');
+        $args = array(&$markdown);
+        $aeEvents->trigger('markdown.write', $args);
+        $params['markdown'] = $args[0];
+
+        $status = array('success' => 1,'message' => $aeSettings->getText('button_save_done', 'The file has been successfully saved'));
+
+        $return = array();
+        $return['status'] = $status;
+        $return['filename'] = $fullname;
+
+        return json_encode($return, JSON_PRETTY_PRINT);
+    }
+
     public static function run(&$params = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -68,7 +102,18 @@ class Edit
 
         // Only when the user is connected
         if ($aeSession->get('authenticated', 0) === 1) {
-            $sReturn = self::getForm($params);
+            $task = $params['task'] ?? '';
+
+            $sReturn = '';
+            switch ($task) {
+                case 'edit.form':
+                    $sReturn = self::getForm($params);
+                    break;
+                case 'edit.save':
+                    $sReturn = self::save($params);
+                    header('Content-Type: application/json');
+                    break;
+            } // switch
         } else {
             $sReturn = $aeFunctions->showError('not_authenticated', 'You need first to authenticate', true);
         }

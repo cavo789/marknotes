@@ -4,7 +4,7 @@
 function fnPluginButtonEdit($params) {
 
 	ajaxify({
-		task: 'edit',
+		task: 'edit.form',
 		param: $params.fname,
 		callback: 'afterEdit($data.param)',
 		target: 'CONTENT'
@@ -92,7 +92,7 @@ function afterEdit($fname) {
 function buttonSave($fname, $markdown) {
 
 	var $data = {};
-	$data.task = 'save';
+	$data.task = 'edit.save';
 	$data.param = $fname;
 	$data.markdown = window.btoa(encodeURIComponent(JSON.stringify($markdown)));
 

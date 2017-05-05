@@ -80,6 +80,7 @@ class Markdown
         $aeSession->set('filename', $filename);
         $aeSession->set('layout', ($params['layout'] ?? ''));
 
+        // Process "core" tasks i.e. not part of a plugin
         switch ($task) {
             case 'clear':
                 // Clear the session object
@@ -101,7 +102,6 @@ class Markdown
                 $aeTask = \MarkNotes\Tasks\Display::getInstance();
                 header('Content-Type: text/html; charset=utf-8');
                 echo $aeTask->run($params);
-
                 break;
 
             case 'listFiles':
@@ -133,16 +133,6 @@ class Markdown
 
                 header('Content-Type: application/json');
                 echo $aeTask->run(array('oldname' => $filename,'newname' => $newname,'type' => $type));
-                break;
-
-            case 'save':
-                // Save new content (after edition by the user)
-
-                $markdown = json_decode(urldecode($aeFunctions->getParam('markdown', 'string', '', true)));
-
-                $aeTask = \MarkNotes\Tasks\Save::getInstance();
-                header('Content-Type: application/json');
-                echo $aeTask->run(array('filename' => $filename,'markdown' => $markdown));
                 break;
 
             default:
