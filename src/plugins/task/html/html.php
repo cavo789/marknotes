@@ -17,8 +17,9 @@ class HTML
      *
      * This way, a nice table of contents can be proposed f.i.
      */
-    private function addIdToHeadings(string $html) : string
+    private static function addIdToHeadings(string $html) : string
     {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
 
         // Retrieve headings
         $matches = array();

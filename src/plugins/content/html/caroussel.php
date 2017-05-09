@@ -65,7 +65,7 @@ class Caroussel
 
                     $images = '';
                     foreach ($arrFiles as $file) {
-                        $ext = $aeFiles->getExtension($file);
+                        $ext = strtolower($aeFiles->getExtension($file));
 
                         if (in_array($ext, array('gif','jpg','jpeg','png','svg','webp'))) {
                             $file = utf8_encode($file);
