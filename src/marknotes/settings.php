@@ -467,16 +467,14 @@ class Settings
             return $fname;
     } // function getTemplateFile()
 
-    public function getSlideshowDuration(int $default = 60) : int
+    /**
+     * Return the slideshow entry of the settings.json file
+     */
+    public function getSlideShow() : array
     {
-        $wReturn = $this->_json['slideshow']['duration']['minutes'] ?? $default;
-        return $wReturn;
+        return $this->_json['slideshow'] ?? array();
     }
-    public function getSlideshowDurationBarHeight(int $default = 3) : int
-    {
-        $wReturn = $this->_json['slideshow']['duration']['bar_height'] ?? $default;
-        return $wReturn;
-    }
+
     /**
      * Use browser's cache or not depending on settings.json
      *

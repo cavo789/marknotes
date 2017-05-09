@@ -1,12 +1,12 @@
 # marknotes v1.1
 
-![License MIT](https://marknotes.cavo789.com/docs/license.png)
+![License MIT](.images/license.png)
 
 ## Documentation
 
 You can find the documentation on the wiki here : [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki)
 
-![Main interface](https://marknotes.cavo789.com/docs/interface.png)
+![Main interface](.images/interface.png)
 
 ## Demo site
 

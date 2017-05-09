@@ -107,10 +107,6 @@ class HTML
         $template = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(true, false), '/'), $template);
         $template = str_replace('%URL%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $template);
 
-        // Duration foreseen for the slideshow
-        $template = str_replace('%DURATION%', $aeSettings->getSlideShowDuration(), $template);
-        $template = str_replace('%DURATION_BARHEIGHT%', $aeSettings->getSlideshowDurationBarHeight(), $template);
-
         $template = str_replace('%APP_NAME%', $aeSettings->getAppName(), $template);
         $template = str_replace('%APP_VERSION%', $aeSettings->getAppName(true), $template);
 

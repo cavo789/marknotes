@@ -97,6 +97,7 @@ class Reveal
      */
     private static function addSlideAnimation(string $html) : string
     {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
         $arrSettings = $aeSettings->getPlugins('options', static::$layout);
 
@@ -115,6 +116,9 @@ class Reveal
             'h5' => 'fade',
             'h6' => 'fade');
 
+        // Transitions supported by reveal.js
+        $arrTransitions = array('slide', 'none', 'fade','slide','convex','concave','zoom');
+
         // $matches contains the list of titles (including the tag so f.i. "<h2>Title</h2>"
         foreach ($matches[0] as $tmp) {
 
@@ -123,6 +127,11 @@ class Reveal
 
             // Retrieve the animation between slides (sections)
             $transition = $arrSettings['animation'][$head] ?? $transition;
+
+            if ($transition === 'random') {
+                // Random => take one transition, randon
+                $transition = $arrTransitions[array_rand($arrTransitions, 1)];
+            }
 
             if (substr($tmp, 0, 8) === '<h6>@@@@') {
 
@@ -136,8 +145,16 @@ class Reveal
                 $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section '.$image.'data-transition="'.$transition.'">', $html);
             } else {
 
+                // In order to have nice URLs, extract the title (stored in $tmp)
+                // $tmp is equal, f.i., to <h2>My slide title</h2>
+                $id = $aeFunctions->slugify(strip_tags($tmp));
+
+                // The ID can't start with a figure, remove it if any
+                // Remove also . - , ; if present at the beginning of the id
+                $id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
+
                 // No background
-                $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section data-transition="'.$transition.'">'.$tmp, $html);
+                $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section id="'.$id.'"  data-transition="'.$transition.'">'.$tmp, $html);
             } // if (substr($tmp, 0, 8)==='<h2>@@@@')
         } // foreach
 
@@ -245,6 +262,38 @@ class Reveal
     }
 
     /**
+     * Provide additionnal javascript
+     */
+    public static function addJS(&$js = null)
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
+        $js .=
+            "<script type=\"text/javascript\" src=\"".$root."/libs/clipboard/clipboard.min.js\"></script>\n".
+            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/clipboard/clipboard.js\"></script>\n";
+
+        $arr = $aeSettings->getSlideShow();
+
+        // Get settings
+        $minutes = intval($arr['duration']['minutes']) ?? 60;
+        $barHeight = intval($arr['duration']['bar_height']) ?? 3;
+        $hideUnnecessaryThings = intval($arr['HideUnnecessaryThings']) ?? 0;
+
+        $js .=
+            "<script type=\"text/javascript\">".
+            "marknotes.slideshow = {};\n".
+            "marknotes.slideshow.durationMinutes=".$minutes.";\n".
+            "marknotes.slideshow.durationBarHeight=".$barHeight.";\n".
+            "marknotes.slideshow.hideunnecessarythings=".($arr['HideUnnecessaryThings'] ?? 0).";\n".
+            "</script>";
+
+        return true;
+    }
+
+    /**
      * Attach the function and responds to events
      */
     public function bind()
@@ -259,6 +308,7 @@ class Reveal
 
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('export.slides', __CLASS__.'::doIt');
+        $aeEvents->bind('render.js', __CLASS__.'::addJS');
         return true;
     }
 }

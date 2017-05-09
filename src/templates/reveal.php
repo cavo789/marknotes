@@ -55,16 +55,14 @@
             marknotes.root='%ROOT%/';
 	   		marknotes.settings.debug='%DEBUG%';
 	   		marknotes.settings.language='%LANGUAGE%';
-			marknotes.slideshow.durationMinutes='%DURATION%';
-			marknotes.slideshow.durationBarHeight='%DURATION_BARHEIGHT%';
         </script>
+
+		<!--%ADDITIONNAL_JS%-->
 
 		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
         <script src="%ROOT%/libs/reveal/js/reveal.js"></script>
         <script src="%ROOT%/libs/reveal/lib/js/head.min.js"></script>
         <script src="%ROOT%/templates/assets/js/marknotes.js"></script>
-
-		<!--%ADDITIONNAL_JS%-->
 
     </body>
 

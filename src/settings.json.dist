@@ -187,11 +187,11 @@
 				"animation": {
 					"bullet": "animated",
 					"h1": "zoom",
-					"h2": "concave",
-					"h3": "slide-in",
-					"h4": "fade",
+					"h2": "random",
+					"h3": "random",
+					"h4": "slide-in",
 					"h5": "fade",
-					"h6": "fade"
+					"h6": "convex"
 				},
 				"section": {
 					"extra_data_img_attr": "data-background-size='contain'"
@@ -212,8 +212,9 @@
 	"slideshow": {
 		"duration": {
 			"minutes": 60,
-			"bar_height": 10
-		}
+			"bar_height": 30
+		},
+		"HideUnnecessaryThings": 1
 	},
 	"templates": {
 		"html": "html",

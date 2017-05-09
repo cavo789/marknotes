@@ -24,6 +24,7 @@ DirectoryIndex index.php
     RewriteCond %{SCRIPT_FILENAME} -f
     RewriteRule .* - [R=403,NC,L]
 
+	# Only deploy.php, index.php or router.php are allowed; whatever the script location
 	RewriteCond %{REQUEST_FILENAME} !(deploy|index|router)\.php
     RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
