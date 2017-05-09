@@ -51,7 +51,7 @@ class Linkify
         // This plugin is not needed when the task is f.i. 'pdf'
         // There is no need for converting to links with the table when the output format is pdf
 
-        if (in_array($task, array('pdf'))) {
+        if (in_array($task, array('pdf','reveal','remark'))) {
             return true;
         }
 

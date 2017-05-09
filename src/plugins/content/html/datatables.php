@@ -48,11 +48,11 @@ class DataTables
     {
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
-        
+
         // This plugin is not needed when the task is f.i. 'pdf'
         // There is no need for interaction with the table when the output format is pdf
 
-        if (in_array($task, array('pdf'))) {
+        if (in_array($task, array('pdf','reveal','remark'))) {
             return true;
         }
 
