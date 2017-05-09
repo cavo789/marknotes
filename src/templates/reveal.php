@@ -23,8 +23,6 @@
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/lib/css/zenburn.css" media="screen" >
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/plugin/title-footer/title-footer.css" media="screen">
 
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" media="screen">
-
 		<!--%ADDITIONNAL_CSS%-->
 
     </head>

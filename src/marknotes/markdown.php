@@ -121,10 +121,11 @@ class Markdown
 
             case 'md':
 
-                $content = file_get_contents($aeSettings->getFolderDocs(true).$filename);
-                $filename = utf8_encode($filename);
+                $filename = utf8_decode($aeSettings->getFolderDocs(true).$filename);
                 $content = file_get_contents($filename);
 
+                header('Content-Type: text/markdown');
+                header('Content-Transfer-Encoding: ascii');
                 echo $content;
 
                 break;
