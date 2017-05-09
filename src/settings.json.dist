@@ -152,13 +152,20 @@
 				"pandoc": 1
 			}]
 		},
-		"markdown": [{
-			"read": 1
-		}, {
-			"encrypt": 1
-		}, {
-			"write": 1
-		}],
+		"markdown": [
+			{
+				"caroussel": 1
+			},
+			{
+				"read": 1
+			},
+			{
+				"encrypt": 1
+			},
+			{
+				"write": 1
+			}
+		],
 		"options": {
 			"bootstrap": {
 				"bullet": "check",

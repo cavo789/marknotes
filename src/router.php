@@ -123,8 +123,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
             $params['layout'] = $layout;
         }
 
-        // Create an instance of the class and initialize the rootFolder variable (type string)
-
         $aeSMarkDown = new \MarkNotes\Markdown();
 
         // $fileMD filename should be relative

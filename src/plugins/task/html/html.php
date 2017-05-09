@@ -10,14 +10,15 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-    public static function run(&$params = null)
-    {
-        $aeFunctions = \MarkNotes\Functions::getInstance();
 
-        // Display the HTML rendering of a note
-        $aeTask = \MarkNotes\Tasks\Display::getInstance();
-        header('Content-Type: text/html; charset=utf-8');
-        $html = $aeTask->run($params);
+    /**
+     * Get the list of headings (h1, h2, h3, ...), extract the text (f.i. <h2>Title</h2> => get Title),
+     * and derived an "id" thanks to slugify function. Add then <h2 id="title">Title</h2>
+     *
+     * This way, a nice table of contents can be proposed f.i.
+     */
+    private function addIdToHeadings(string $html) : string
+    {
 
         // Retrieve headings
         $matches = array();
@@ -39,6 +40,20 @@ class HTML
 
             $html = str_replace($tmp, '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
         }
+
+        return $html;
+    }
+
+    public static function run(&$params = null)
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+
+        // Display the HTML rendering of a note
+        $aeTask = \MarkNotes\Tasks\Display::getInstance();
+        header('Content-Type: text/html; charset=utf-8');
+        $html = $aeTask->run($params);
+
+        $html = self::addIdToHeadings($html);
 
         echo $html;
 

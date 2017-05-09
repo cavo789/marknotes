@@ -142,7 +142,7 @@ class Reveal
                 // Add the slide background image
                 $image = $extraAttributes.' data-background-image="'.base64_decode(str_replace('</h6>', '', str_replace('<h6>', '', $tmp))).'" ';
 
-                $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section '.$image.'data-transition="'.$transition.'">', $html);
+                $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section '.$image.' data-background-transition="'.$transition.'">', $html);
             } else {
 
                 // In order to have nice URLs, extract the title (stored in $tmp)
@@ -154,7 +154,8 @@ class Reveal
                 $id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
 
                 // No background
-                $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section id="'.$id.'"  data-transition="'.$transition.'">'.$tmp, $html);
+                $html = str_replace($tmp, '</section>'.PHP_EOL.PHP_EOL.'<section id="'.$id.'"  data-transition="'.$transition.'">'.
+                '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
             } // if (substr($tmp, 0, 8)==='<h2>@@@@')
         } // foreach
 

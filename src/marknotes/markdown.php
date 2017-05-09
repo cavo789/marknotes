@@ -119,6 +119,16 @@ class Markdown
                 echo $aeTask->run();
                 break;
 
+            case 'md':
+
+                $content = file_get_contents($aeSettings->getFolderDocs(true).$filename);
+                $filename = utf8_encode($filename);
+                $content = file_get_contents($filename);
+
+                echo $content;
+
+                break;
+
             case 'rename':
                 // Add/rename file/folder
 

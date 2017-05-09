@@ -166,6 +166,7 @@ class Events
                 $dir = $dir.$subtask.DS;
             }
 
+
             if (is_dir($dir)) {
                 $aeFiles = \MarkNotes\Files::getInstance();
 
@@ -181,12 +182,12 @@ class Events
                 }
 
                 // And if the plugin exists on the filesystem, load it
-                foreach ($plugins as $plugin) {
+                if (count($plugins) > 0) {
+                    foreach ($plugins as $plugin) {
 
                     // plugins is an array with two entries : the name of the plugin (f.i. gtranslate)
                     // and a boolean 1/0 for "is this plugin enabled or not".
 
-                    if (count($plugin) > 0) {
                         foreach ($plugin as $name => $enabled) {
                             if (substr($name, -4) !== '.php') {
                                 $name .= '.php';
@@ -216,8 +217,8 @@ class Events
                                 $plug->bind();
                             } // foreach ($plugin as $name => $enabled)
                         } // foreach
-                    } // if(count($plugin)>0)
-                } // foreach ($plugins as $plugin)
+                    } // foreach ($plugins as $plugin)
+                } // if(count($plugins)>0)
             } else {
 
                 // Should be anormal

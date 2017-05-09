@@ -228,6 +228,8 @@ class Files
     */
     public static function getExtension(string $filename) : string
     {
+        $filename = basename($filename);
+        
         // Correctly handle double extension like docs\development\marknotes.reveal.pdf
         $arr = explode('.', $filename);
 
