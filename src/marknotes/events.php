@@ -181,41 +181,43 @@ class Events
                 }
 
                 // And if the plugin exists on the filesystem, load it
-                foreach ($plugins as $plugin) {/* FIXME: remove debugging */
+                foreach ($plugins as $plugin) {
 
                     // plugins is an array with two entries : the name of the plugin (f.i. gtranslate)
                     // and a boolean 1/0 for "is this plugin enabled or not".
 
-                    foreach ($plugin as $name => $enabled) {
-                        if (substr($name, -4) !== '.php') {
-                            $name .= '.php';
-                        }
-
-                        if (($enabled === 1) && ($aeFiles->fileExists($file = $dir.$name))) {
-
-                            /*<!-- build:debug -->*/
-                            $aeSettings = \MarkNotes\Settings::getInstance();
-                            if ($aeSettings->getDevMode()) {
-                                $aeDebug = \MarkNotes\Debug::getInstance();
-                                $aeDebug->log('Load the plugin '.$file);
+                    if (count($plugin) > 0) {
+                        foreach ($plugin as $name => $enabled) {
+                            if (substr($name, -4) !== '.php') {
+                                $name .= '.php';
                             }
-                            /*<!-- endbuild -->*/
 
-                            // Load the plugin
-                            require_once($file);
+                            if (($enabled === 1) && ($aeFiles->fileExists($file = $dir.$name))) {
 
-                            // And retrieve its namespace and class name
-                            // f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
-                            $class = self::getNameSpaceAndClassName($file);
+                                /*<!-- build:debug -->*/
+                                $aeSettings = \MarkNotes\Settings::getInstance();
+                                if ($aeSettings->getDevMode()) {
+                                    $aeDebug = \MarkNotes\Debug::getInstance();
+                                    $aeDebug->log('Load the plugin '.$file);
+                                }
+                                /*<!-- endbuild -->*/
 
-                            // Instanciate the class (plugin)
-                            $plug = new $class;
+                                // Load the plugin
+                                require_once($file);
 
-                            // and run the bind() function
-                            $plug->bind();
-                        }
-                    }
-                }
+                                // And retrieve its namespace and class name
+                                // f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
+                                $class = self::getNameSpaceAndClassName($file);
+
+                                // Instanciate the class (plugin)
+                                $plug = new $class;
+
+                                // and run the bind() function
+                                $plug->bind();
+                            } // foreach ($plugin as $name => $enabled)
+                        } // foreach
+                    } // if(count($plugin)>0)
+                } // foreach ($plugins as $plugin)
             } else {
 
                 // Should be anormal
