@@ -75,6 +75,8 @@ class Functions
      */
     public static function slugify(string $text) : string
     {
+        // remove &quote; &amp; and so on; keep only text
+        $text = html_entity_decode($text);
 
         // replace non letter or digits by -
         $sReturn = preg_replace('~[^\pL\d]+~u', '-', $text);
