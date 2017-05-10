@@ -764,6 +764,14 @@ class Settings
         return $sReturn;
     }
 
+    /**
+     * Return the 'task' entry of the settings.json file
+     */
+    public function getTask() : array
+    {
+        return $this->_json['task'] ?? array();
+    }
+
     public function getchmod(string $type = 'folder') : int
     {
         return ($type === 'folder' ? CHMOD_FOLDER : CHMOD_FILE);

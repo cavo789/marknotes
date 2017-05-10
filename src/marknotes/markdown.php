@@ -37,6 +37,15 @@ class Markdown
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+        // No task has been mentionned, get the default one
+        // this is the case when the user reach an URL like
+        //   http://localhost/marknotes/docs/CMS/document
+        // (where document is a .md file; the default task will be 'reveal')
+
+        if (trim($task) === '') {
+            $task = $aeSettings->getTask()['default'] ?? 'reveal';
+        }
+
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
             $aeDebug->log('Run ['.$task.'] filename ['.$filename.']', 'debug');

@@ -223,6 +223,9 @@
 		},
 		"HideUnnecessaryThings": 1
 	},
+	"task": {
+		"default": "reveal"
+	},
 	"templates": {
 		"html": "html",
 		"pdf": "pdf",

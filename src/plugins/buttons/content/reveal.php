@@ -25,6 +25,13 @@ class Reveal
         $file = $aeSession->get('filename');
         $file = str_replace(DS, '/', $aeFiles->replaceExtension($file, self::$ext));
 
+        // Get the default extension, as specified in the settings.json file
+        $default = $aeSettings->getTask()['default'] ?? 'reveal';
+        if ($default === self::$ext) {
+            // The default extension is reveal ==> no need to mention the extension
+            $file = $aeFiles->removeExtension($file);
+        }
+
         $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
         $buttons .=

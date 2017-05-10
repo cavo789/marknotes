@@ -109,7 +109,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
             // Get the extension (f.i. "pdf")
             // In case of double extension (f.i. "reveal.pdf"), the first part will
             // be understand as a layout ("reveal")
-
             $layout = '';
             $fileExt = $aeFiles->getExtension($filename);
             if (strpos($fileExt, ".") !== false) {
