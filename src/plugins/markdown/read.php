@@ -6,7 +6,12 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Read
 {
-
+    private static function replaceVariables(string $markdown) : string
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $markdown = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $markdown);
+        return $markdown;
+    }
     /**
      * The markdown file has been read, this function will get the content of the .md file and
      * make some processing like data cleansing
@@ -41,6 +46,8 @@ class Read
                 $markdown = str_replace($match, $sMatch, $markdown);
             }
         }
+
+        $markdown = self::replaceVariables($markdown);
 
         return true;
     }
