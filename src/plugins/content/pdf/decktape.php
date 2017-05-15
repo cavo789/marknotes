@@ -13,11 +13,6 @@ class DeckTape
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDevMode()) {
-            $aeDebug->here('DeckTape called', 1);
-        }
-        /*<!-- endbuild -->*/
 
         // DeckTape is only for slides : reveal or remark and not for "normal" html rendering
 

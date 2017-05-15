@@ -49,16 +49,6 @@ Reveal.initialize({
 
 	// Height of the ElapsedTimeBar (3 pixels). This can be changed in the settings.json file
 	progressBarHeight: ((typeof marknotes.slideshow === 'undefined') ? 3 : marknotes.slideshow.durationBarHeight),
-	keyboard: {
-		// By pressing the Enter key, the ElapsedTimeBar will be paused
-		13: () => {
-			ElapsedTimeBar.isPaused ? ElapsedTimeBar.resume() : ElapsedTimeBar.pause();
-		},
-		// By pressing the "r" key, the ElapsedTimeBar will be resetted
-		82: () => {
-			ElapsedTimeBar.reset();
-		}
-	},
 
 	// See https://github.com/denehyg/reveal.js-menu for options
 	menu: {
@@ -245,6 +235,11 @@ Reveal.addEventListener('slidechanged', function (evt) {
 				$('#google_translate_element').hide();
 			}
 
+			// Hide the Google translate top menu bar
+			if ($('.skiptranslate').length > 0) {
+				$('.skiptranslate').hide();
+			}
+
 		} else {
 
 			// The very first slide is displayed background
@@ -267,6 +262,11 @@ Reveal.addEventListener('slidechanged', function (evt) {
 			// Restore the google translate plugin
 			if ($('#google_translate_element').length > 0) {
 				$('#google_translate_element').show();
+			}
+
+			// Restore the Google translate top menu bar
+			if ($('.skiptranslate').length > 0) {
+				$('.skiptranslate').show();
 			}
 		}
 	} // if ($hide===1)

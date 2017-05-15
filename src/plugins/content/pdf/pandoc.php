@@ -65,8 +65,12 @@ class Pandoc
 
         //echo '<pre>'.$sProgram.'</pre>';
 
+        // No timeout
+        set_time_limit(0);
+
         // Run the script. This part can be long depending on the number of slides in the HTML file to convert
         $output = array();
+
         exec("start cmd /c ".$fScriptFile, $output);
 
         // $output is an array and contains the result of the script. If at least one line of the output start with
