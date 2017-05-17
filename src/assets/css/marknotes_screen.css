@@ -15,7 +15,6 @@ h1 {
 }
 
 h2 {
-	display              : block;
 	-webkit-margin-before: .83em;
 	-webkit-margin-after : .83em;
 	-webkit-margin-start : 0;
@@ -23,14 +22,12 @@ h2 {
 }
 
 .logo {
-	top           : 0;
-	left          : 0;
-	margin        : auto;
 	padding-bottom: 10px;
 }
 
 #CONTENT img {
-	max-width: 800px;
+	max-width: 100%;
+	height   : auto;
 	padding  : 25px 5px;
 	display  : block;
 }
@@ -62,8 +59,6 @@ h2 {
 	font-style : italic;
 	font-weight: bold;
 	color      : #dfdfe0;
-	top        : 15px;
-	position   : inherit;
 }
 
 #toolbar-app {
@@ -88,12 +83,12 @@ h2 {
 
 /* The search area.  The width will be initialized by javascript */
 
-#search {
-	position: fixed !important;
+/*#search {
+	position: fixed;
 	left    : 5px;
 	top     : 5px;
 	z-index : 1;
-}
+}*/
 
 #TDM .flexdatalist-multiple li.input-container,
 .flexdatalist-multiple li.input-container input {
@@ -102,10 +97,10 @@ h2 {
 }
 
 #TDM .flexdatalist-multiple {
-	z-index     : 1;
-	display     : none;
-	border-width: 1px !important;
-	height      : 37px;
+	/*z-index     : 1;*/
+	display: none;
+	/*border-width: 1px !important;
+	height      : 37px;*/
 }
 
 #search-flexdatalist {
@@ -125,14 +120,8 @@ h2 {
 
 #CONTENT {
 	margin-left: 10px;
-	top        : 5px !important;
-	max-height : 960px;
-	overflow-y : auto;
-	overflow-x : auto;
-	width      : 100%;
-	left       : -15px;
 	padding    : 10px;
-	height     : calc(100vh - 12px);
+	min-height : calc(100vh - 12px);
 }
 
 /* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
@@ -249,11 +238,10 @@ div.editor-wrapper .editor-toolbar a {
 }
 
 .fullwidth {
-	min-width    : 100%;
-	max-width    : 100%;
+	margin-left  : 0;
 	padding-left : 15px;
 	padding-right: 15px;
-	width        : 100%;
+	width        : auto;
 }
 
 /* Display folders in the treeview in italic */

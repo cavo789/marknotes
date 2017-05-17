@@ -88,11 +88,11 @@ $(document).ready(function () {
 		});
 
 		// Size correctly depending on screen resolution
-		$('#TDM').css('max-height', $(window).height() - 30);
-		$('#TDM').css('min-height', $(window).height() - 30);
+		//$('#TDM').css('max-height', $(window).height() - 30);
+		//$('#TDM').css('min-height', $(window).height() - 30);
 
-		$('#CONTENT').css('max-height', $(window).height() - 10);
-		$('#CONTENT').css('min-height', $(window).height() - 10);
+		//$('#CONTENT').css('max-height', $(window).height() - 10);
+		//$('#CONTENT').css('min-height', $(window).height() - 10);
 
 	} // if (marknotes.autoload === 1)
 });

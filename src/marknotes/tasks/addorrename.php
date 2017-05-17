@@ -10,7 +10,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class AddOrRename
 {
-    protected static $_instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -19,11 +19,11 @@ class AddOrRename
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new AddOrRename();
+        if (self::$hInstance === null) {
+            self::$hInstance = new AddOrRename();
         }
 
-        return self::$_instance;
+        return self::$hInstance;
     }
 
     private static function createFile(array &$params) : bool
@@ -70,35 +70,44 @@ class AddOrRename
 
         self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
-        $arrDebug = array();
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
-            $arrDebug['debug'][] = $aeDebug->log(__METHOD__, true);
-            $arrDebug['debug'][] = $aeDebug->log('Oldname '.utf8_encode($params['oldname']), true);
-            $arrDebug['debug'][] = $aeDebug->log('Newname '.utf8_encode($params['newname']), true);
-            $arrDebug['debug'][] = $aeDebug->log('Type '.$params['type'], true);
+            $aeDebug->log(__METHOD__, 'debug');
+            $aeDebug->log('Oldname '.utf8_encode($params['oldname']), 'debug');
+            $aeDebug->log('Newname '.utf8_encode($params['newname']), 'debug');
+            $aeDebug->log('Type '.$params['type'], 'debug');
         }
         /*<!-- endbuild -->*/
 
         $sReturn = '';
 
         try {
+            $old = $params['oldname'];
+            if (mb_detect_encoding($old)) {
+                if (!file_exists($old)) {
+                    $old = utf8_decode($old);
+                }
+            }
+            
             // use utf8_decode since the name can contains accentuated characters
-            if (!is_writable(utf8_decode(dirname($params['oldname'])))) {
+            if (!is_writable(dirname($old))) {
+                $aeDebug->log('The folder ['. dirname($old). '] is read-only', 'error');
+
                 // The folder is read-only, we can't add new folder / notes
                 $msg = str_replace(
                     '%s',
                     utf8_encode(dirname($params['oldname'])),
                     $aeSettings->getText('folder_read_only', 'Sorry but the folder [%s] is read-only, no new folder or note can&#39;t be added there')
                 );
-                $sReturn = $aeJSON->json_return_info(array('status' => 0,'msg' => $msg), $arrDebug);
+                $sReturn = $aeJSON->json_return_info(array('status' => 0,'msg' => $msg), array());
             }
         } catch (Exception $ex) {
-            $sReturn = $aeJSON->json_return_info(array('status' => 0,'msg' => utf8_encode($ex->getMessage())), $arrDebug);
+            $sReturn = $aeJSON->json_return_info(array('status' => 0,'msg' => utf8_encode($ex->getMessage())), array());
         } // try
 
         if ($params['type'] === 'folder') {
-            // Operation on a folder : create or rename
+
+             // Operation on a folder : create or rename
 
             if (!$aeFiles->folderExists(utf8_decode($params['oldname']))) {
                 // create a new folder (oldname is perhaps "c:\sites\notes\docs\new folder" while
@@ -122,7 +131,7 @@ class AddOrRename
                                 'type' => $params['type'],
                                 'msg' => $msg
                             ),
-                            $arrDebug
+                            array()
                         );
                     } else { // if (is_dir($params['newname']))
 
@@ -139,7 +148,7 @@ class AddOrRename
                                 'type' => $params['type'],
                                 'msg' => $msg
                             ),
-                            $arrDebug
+                            array()
                         );
                     } // if (is_dir($params['newname']))
                 } catch (Exception $ex) {
@@ -150,7 +159,7 @@ class AddOrRename
                             'type' => $params['type'],
                             'msg' => $ex->getMessage()
                         ),
-                        $arrDebug
+                        array()
                     );
                 } // try
             } elseif ($aeFiles->folderExists(utf8_decode($params['oldname']))) {
@@ -172,7 +181,7 @@ class AddOrRename
                             'type' => $params['type'],
                             'msg' => $msg
                         ),
-                        $arrDebug
+                        array()
                     );
                 } else { // if (is_dir($params['newname']))
 
@@ -189,13 +198,15 @@ class AddOrRename
                             'type' => $params['type'],
                             'msg' => $msg
                         ),
-                        $arrDebug
+                        array()
                     );
                 } // if (is_dir($params['newname']))
             }
         } else { // if ($params['type']==='folder')
 
             // Operation on a file : create or rename
+
+            $aeDebug->log(__METHOD__, true);
 
             // It's a file, be sure to have the .md extension
             $params['oldname'] = $aeFiles->removeExtension($params['oldname']).'.md';
@@ -220,7 +231,7 @@ class AddOrRename
                             'msg' => $msg,
                             'filename' => str_replace($aeSettings->getFolderDocs(true), '', $params['newname'])
                         ),
-                        $arrDebug
+                        array()
                     );
                 } else { // if ($aeFiles->fileExists($params['newname']))
 
@@ -237,7 +248,7 @@ class AddOrRename
                             'type' => $params['type'],
                             'msg' => $msg
                         ),
-                        $arrDebug
+                        array()
                     );
                 } // if ($aeFiles->fileExists($params['newname']))
             } elseif ($aeFiles->fileExists(utf8_decode($params['oldname']))) {
@@ -265,7 +276,7 @@ class AddOrRename
                             'type' => $params['type'],
                             'msg' => $msg
                         ),
-                        $arrDebug
+                        array()
                     );
                 } else { // if (is_dir($params['newname']))
 
@@ -282,7 +293,7 @@ class AddOrRename
                             'type' => $params['type'],
                             'msg' => $msg
                         ),
-                        $arrDebug
+                        array()
                     );
                 } // if (is_dir($params['newname']))
             }
