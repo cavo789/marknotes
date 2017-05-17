@@ -98,14 +98,6 @@ class Markdown
                 echo $aeTask->run();
                 break;
 
-            case 'delete':
-                // Delete a note or a folder : retrieve the type
-                $type = $aeFunctions->getParam('param3', 'string', '', false);
-                $aeTask = \MarkNotes\Tasks\Delete::getInstance();
-                header('Content-Type: text/html; charset=utf-8');
-                echo $aeTask->run(array('filename' => $filename,'type' => $type));
-                break;
-
             case 'display':
                 // Display the HTML rendering of a note
                 $aeTask = \MarkNotes\Tasks\Display::getInstance();
@@ -124,11 +116,14 @@ class Markdown
 
                 // Display the interface of marknotes, with the treeview
                 // and the selected note content
+
                 $aeTask = \MarkNotes\Tasks\ShowInterface::getInstance();
                 echo $aeTask->run();
                 break;
 
             case 'md':
+
+                // Display a .md file, just output his content
 
                 $filename = utf8_decode($aeSettings->getFolderDocs(true).$filename);
                 $content = file_get_contents($filename);
@@ -137,22 +132,6 @@ class Markdown
                 header('Content-Transfer-Encoding: ascii');
                 echo $content;
 
-                break;
-
-            case 'rename':
-                // Add/rename file/folder
-
-                $newname = json_decode(urldecode($aeFunctions->getParam('param2', 'string', '', true)));
-                if ($newname != '') {
-                    $newname = $aeFiles->sanitizeFileName(trim($newname));
-                }
-                $type = $aeFunctions->getParam('param3', 'string', '', false);
-
-                // Remove html files.  These files aren't needed, only .md files are important
-                $aeTask = \MarkNotes\Tasks\AddOrRename::getInstance();
-
-                header('Content-Type: application/json');
-                echo $aeTask->run(array('oldname' => $filename,'newname' => $newname,'type' => $type));
                 break;
 
             default:

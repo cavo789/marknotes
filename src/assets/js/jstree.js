@@ -306,7 +306,8 @@ function jstree_create_node(e, data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('jstree_create_node');
+		console.log('jstree_create_node event called');
+		console.log(data);
 	}
 	/*<!-- endbuild -->*/
 
@@ -444,7 +445,7 @@ function jstree_rename_node(e, data) {
 	}
 	/*<!-- endbuild -->*/
 
-	jstree_CRUD_node(e, data, 'rename');
+	jstree_CRUD_node(e, data, 'files.rename');
 
 	return;
 
@@ -466,7 +467,7 @@ function jstree_remove_node(e, data) {
 	}
 	/*<!-- endbuild -->*/
 
-	jstree_CRUD_node(e, data, 'delete');
+	jstree_CRUD_node(e, data, 'files.delete');
 
 	return;
 
