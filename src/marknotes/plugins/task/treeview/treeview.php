@@ -25,7 +25,7 @@ class Treeview
             $js = '';
         }
 
-        $js .= "\n<script type=\"text/javascript\" ". "src=\"".$root."/plugins/task/treeview/assets/treeview.js\"></script>\n";
+        $js .= "\n<script type=\"text/javascript\" ". "src=\"".$root."/marknotes/plugins/task/treeview/assets/treeview.js\"></script>\n";
 
         $js .=
             "<script type=\"text/javascript\">".

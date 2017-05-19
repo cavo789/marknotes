@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Functions
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -15,11 +15,11 @@ class Functions
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Functions();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Functions();
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     public function fileNotFound(string $file = '', bool $die = true) : bool
@@ -175,10 +175,10 @@ class Functions
                 $return = filter_input(INPUT_POST, $name, FILTER_SANITIZE_NUMBER_INT);
             } elseif ($type === 'boolean') {
                 // false = 5 characters
-                $tmp = substr(filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING), 0, 5);
+                $tmp = trim(substr(filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING), 0, 5));
                 $return = (in_array(strtolower($tmp), array('on','true')))?true:false;
             } elseif ($type === 'string') {
-                $return = filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING);
+                $return = trim(filter_input(INPUT_POST, $name, FILTER_SANITIZE_STRING));
                 if ($base64 === true) {
                     $return = base64_decode($return);
                 }
@@ -195,10 +195,10 @@ class Functions
                     $return = filter_input(INPUT_GET, $name, FILTER_SANITIZE_NUMBER_INT);
                 } elseif ($type == 'boolean') {
                     // false = 5 characters
-                    $tmp = substr(filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING), 0, 5);
+                    $tmp = trim(substr(filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING), 0, 5));
                     $return = (in_array(strtolower($tmp), array('on','true')))?true:false;
                 } elseif ($type === 'string') {
-                    $return = filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);
+                    $return = trim(filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING));
                     if ($base64 === true) {
                         $return = base64_decode($return);
                     }

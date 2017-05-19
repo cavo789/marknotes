@@ -17,18 +17,18 @@ class Prism
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
         $js .=
             "\n<script type=\"text/javascript\" src=\"".$root."/libs/prism/prism.js\" data-manual></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/prism/prism.js\"></script>\n";
+            "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/prism/prism.js\"></script>\n";
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
         return true;
     }
 
@@ -56,7 +56,7 @@ class Prism
         $task = $aeSession->get('task', '');
 
         // Don't load Prism for slideshows since these frameworks already provide such mechanism
-        if (in_array($task, array('reveal','remark','slides'))) {
+        if (in_array($task, array('main','reveal','remark','slides'))) {
             return true;
         }
 

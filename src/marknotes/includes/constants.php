@@ -47,3 +47,8 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 define('LIBS', dirname(__DIR__).DS.'libs'.DS);
 define('TASKS', dirname(__DIR__).DS.'classes'.DS.'tasks'.DS);
 define('TEMPLATES', dirname(__DIR__).DS.'templates'.DS);
+
+// Use when accessing to files / folders
+define('ALREADY_EXISTS', -1);
+define('FILE_ERROR', 0);
+define('CREATE_SUCCESS', 1);

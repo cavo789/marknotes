@@ -17,13 +17,13 @@ class Editor
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
         $js .=
             "\n<script type=\"text/javascript\" src=\"".$root."/libs/simplemde/simplemde.min.js\"></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/editor/editor.js\"></script>";
+            "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/editor/editor.js\"></script>";
 
 
         // Add text for the editor
@@ -36,10 +36,10 @@ class Editor
             "marknotes.message.button_save_error='".$aeSettings->getText('button_save_error', 'There was an error while saving the file', true)."';\n".
             "</script>\n";
 
-			
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
         return true;
     }
 

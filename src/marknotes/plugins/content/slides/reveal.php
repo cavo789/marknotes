@@ -274,7 +274,7 @@ class Reveal
 
         $js .=
             "<script type=\"text/javascript\" src=\"".$root."/libs/clipboard/clipboard.min.js\"></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/clipboard/clipboard.js\"></script>\n";
+            "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/clipboard/clipboard.js\"></script>\n";
 
         $arr = $aeSettings->getSlideShow();
 

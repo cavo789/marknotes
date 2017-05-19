@@ -84,20 +84,7 @@ function jstree_init($data) {
 						console.log('changed.jstree - ' + objNode.data.file);
 					}
 
-				})
-				.on('create_node.jstree', function (e, data) {
-					// The user has just click on "Create..." (folder or note)
-					// This event is fired before i.e. immediatly when the node is being created
-					jstree_create_node(e, data);
-				})
-				.on('rename_node.jstree', function (e, data) {
-					// The user has just click on "Create..." (folder or note)
-					jstree_rename_node(e, data);
-				})
-				.on('delete_node.jstree', function (e, data) {
-					// The user has just click on "Remove..." (folder or note)
-					jstree_remove_node(e, data);
-				})
+				})				
 				.on('search.jstree', function (nodes, str, res) {
 					if (str.nodes.length === 0) {
 						// No nodes found, hide all
@@ -186,6 +173,8 @@ function jstree_init($data) {
  * Context menu for the treeview.  This function will build the contextual menu
  * and return the list of entries of that menu
  *
+ * This function will ask call the Task-Treeview plugin for populating the menu
+ *
  * @param {type} node             The node on which the user has right-clicked
  * @returns {context_menu.items}
  */
@@ -214,6 +203,8 @@ function jstree_context_menu(node) {
 		}
 	};
 
+	// ------------------------------------------------------------------------
+	// Plugin Task-Treeview
 	// The fnPluginTaskTreeViewContextMenu() is defined in the plugins task/treeview
 	// Check if that plugin has loaded the function and if so, get extra items for the context menu
 	var fn = window['fnPluginTaskTreeViewContextMenu'];
@@ -229,13 +220,13 @@ function jstree_context_menu(node) {
 
 		// Give parameters to the function
 		var $params = {};
-		$params.node = node;
-		$extraItems = fn($params);
+		$extraItems = fn(node);
 
 		if (Object.keys($extraItems).length > 0) {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
+				console.log('Returned items by fnPluginTaskTreeViewContextMenu()');
 				console.log($extraItems);
 			}
 			/*<!-- endbuild -->*/
@@ -250,191 +241,8 @@ function jstree_context_menu(node) {
 		}
 
 	}
-
-	// Create a new folder : not if the user has right-clicked on a note.
-	if (node.icon !== 'folder') {
-		delete $items.Add_Folder;
-	}
+	// ------------------------------------------------------------------------
 
 	return $items;
 
-} // function context_menu()
-
-/**
- * The user has just click on "Create..." (folder or note)
- * This event is fired before i.e. immediatly when the node is being created
- *
- * @param {type} e
- * @param {type} data
- * @returns {undefined}
- */
-function jstree_create_node(e, data) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('jstree_create_node event called');
-		console.log(data);
-	}
-	/*<!-- endbuild -->*/
-
-	return;
 }
-
-/**
- * A node has been added, renamed or deleted.  Can be a folder or a note
- *
- * @param {type} e
- * @param {type} data
- * @param {string} $task    'rename' or 'delete'
- * @returns {undefined}
- */
-function jstree_CRUD_node(e, data, $task) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('jstree_CRUD_node, task=' + $task);
-	}
-	/*<!-- endbuild -->*/
-
-	try {
-		// The user has just click on "Create..." (folder or note)
-
-		var $type = (data.node.icon === "folder" ? "folder" : "file");
-		var $oldname = '';
-		var $newname = '';
-
-		if ($type === 'folder') {
-
-			$oldname = data.node.parent + data.old;
-			$newname = data.node.parent + data.node.text;
-
-		} else { // if($type==='folder')
-
-			// Working on a note : retrieve the parent and append the note's name
-			var $parentNode = $('#TOC').jstree(true).get_node(data.node.parent);
-
-			var $root = '';
-
-			// $parentNode.text is equal to '#' on the root node
-			if ($parentNode.text !== '#') $root = $parentNode.text;
-			$root += marknotes.settings.DS;
-
-			$oldname = $root + data.old;
-			$newname = $root + data.node.text;
-		}
-
-		$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));
-		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
-
-		if ($task !== 'rename') {
-			ajaxify({
-				task: $task,
-				param: $newname,
-				param3: $type,
-				callback: 'jstree_show_status(data)'
-			});
-		} else {
-			// Only for rename action : we need the old name and the new one
-			ajaxify({
-				task: $task,
-				param: $oldname,
-				param2: $newname,
-				param3: $type,
-				callback: 'jstree_show_status(data)'
-			});
-		}
-	} catch (err) {
-		console.warn(err.message);
-	}
-} // function jstree_CRUD_node()
-
-/**
- * A CRUD (create, update or delete -no read-) operation has been made on a node
- * This function is called once the ajax request has been fired and terminated.
- *
- * @param {type} $data       JSON string returned by the ajax request (can be index.php?task=rename or ?task=delete)
- * @returns {undefined}
- */
-function jstree_show_status($data) {
-	console.log('jstree_show_status');
-	console.log($data);
-	if ($data.hasOwnProperty('status')) {
-		$status = $data.status;
-		if ($status == 1) {
-			Noty({
-				message: $data.msg,
-				type: 'success'
-			});
-
-			if (($data.type === "folder") && (($data.action === "rename") || ($data.action === "create"))) {
-				$('#TOC li')
-					.each(function () {
-						$("#TOC")
-							.jstree()
-							.disable_node(this.id);
-					});
-
-				ajaxify({
-					task: 'listFiles',
-					callback: 'initFiles(data)',
-					useStore: false // After a creation, don't use the localStorage, we need to get the new list
-				});
-				Noty({
-					message: marknotes.message.loading_tree,
-					type: 'info'
-				});
-
-				//  $('#TOC').jstree('refresh');
-			}
-		} else {
-			Noty({
-				message: $data.msg,
-				type: 'error'
-			});
-		}
-	}
-
-} // function jstree_show_status()
-
-/**
- * A note has been renamed OR inserted
- *
- * @param {type} e
- * @param {type} data
- * @returns {undefined}
- */
-function jstree_rename_node(e, data) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('jstree_rename_node');
-	}
-	/*<!-- endbuild -->*/
-
-	jstree_CRUD_node(e, data, 'files.rename');
-
-	return;
-
-} // function jstree_rename_node()
-
-/**
- * Removing an entire folder or just a note
- * This function is fired after the confirmation of the user
- *
- * @param {type} e
- * @param {type} data
- * @returns {undefined}
- */
-function jstree_remove_node(e, data) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('jstree_remove_node');
-	}
-	/*<!-- endbuild -->*/
-
-	jstree_CRUD_node(e, data, 'files.delete');
-
-	return;
-
-} // function jstree_remove_node()

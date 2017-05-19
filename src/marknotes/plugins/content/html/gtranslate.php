@@ -30,7 +30,7 @@ class GTranslate
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/gtranslate/gtranslate.css\" />\n";
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/content/html/gtranslate/gtranslate.css\" />\n";
 
         return true;
     }
@@ -45,18 +45,18 @@ class GTranslate
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
         $js .=
             "\n<script type=\"text/javascript\" src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\"></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/gtranslate/gtranslate.js\"></script>\n";
+            "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/gtranslate/gtranslate.js\"></script>\n";
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
         return true;
     }
 

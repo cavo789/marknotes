@@ -21,23 +21,23 @@ class Clipboard
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
         $js .=
             "\n<script type=\"text/javascript\" src=\"".$root."/libs/clipboard/clipboard.min.js\"></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/clipboard/clipboard.js\"></script>\n";
+            "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/clipboard/clipboard.js\"></script>\n";
 
         $js .=
             "<script type=\"text/javascript\">".
             "marknotes.message.copy_clipboard_done='".$aeSettings->getText('copy_clipboard_done', 'The note&#39;s content has been copied.  You can now paste the clipboard in your application.', true)."';\n".
             "marknotes.message.copy_link_done='".$aeSettings->getText('copy_link_done', 'The URL of this note has been copied into the clipboard', true)."';\n".
             "</script>\n";
-			
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
 
         return true;
     }

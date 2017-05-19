@@ -1,87 +1,80 @@
 body {
-    background: #FFF;
-    color: #000;
-    font-family: Georgia, serif;
-    line-height: 1.2;
+	background : #FFF;
+	color      : #000;
+	font-family: Georgia, serif;
+	line-height: 1.2;
 }
 
-#CONTENT p, table, ul, ol, dl, blockquote, pre, code, form {
-    margin: 0 0 1em;
+#CONTENT p,
+blockquote,
+code,
+dl,
+form,
+ol,
+pre,
+table,
+ul {
+	margin: 0 0 1em;
 }
-
 
 /* Put the href of the link in the content, juste after the link */
-
-
 /* So <a href="www.google.be">Google</a> will be printed like */
-
-
 /* Google (www.google.be) */
-
 a:link:after {
-    content: " (" attr(href) ") ";
-    font-size: 80%;
-    text-decoration: none;
+	content        : ' (' attr(href) ') ';
+	font-size      : 80%;
+	text-decoration: none;
 }
 
 #CONTENT h1 {
-    font-size: 2em;
-    margin: 2em 0 0.25em;
+	font-size: 2em;
+	margin   : 2em 0 .25em;
 }
 
 #CONTENT h2 {
-    font-size: 1.7em;
+	font-size: 1.7em;
 }
 
 #CONTENT h3 {
-    font-size: 1.5em;
+	font-size: 1.5em;
 }
 
 #CONTENT h4 {
-    font-size: 1.2em;
+	font-size: 1.2em;
 }
 
 #CONTENT h5 {
-    font-size: 1em;
+	font-size: 1em;
 }
 
-#CONTENT ul, li {
-    display: block;
-    page-break-inside: avoid;
+#CONTENT ul,
+li {
+	display          : block;
+	page-break-inside: avoid;
 }
-
 
 /* Don't print objects that only should be displayed on screen */
 
 .onlyscreen {
-    display: none;
+	display: none;
 }
-
 
 /* Don't print the left part */
 
 #TDM {
-    display: none;
+	display: none;
 }
 
-
 /*body, page{box-shadow:0;}*/
-
-
 /* Make text a little larger on print */
-
-
 /*page{font-size:larger;}*/
 
 footer {
-    position: fixed;
-    display: block;
-    bottom: 0;
-    border-top: 1px solid #cecece;
-    font-size: 0.83em;
-    margin: 2em 0 0;
-    padding: 1em 0 0;
-}
-
-: 1em 0 0;
+	position  : fixed;
+	display   : block;
+	bottom    : 0;
+	border-top: 1px solid #cecece;
+	font-size : .83em;
+	margin    : 2em 0 0;
+	padding   : 1em 0 0;
 }

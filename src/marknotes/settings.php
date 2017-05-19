@@ -772,11 +772,6 @@ class Settings
         return $this->_json['task'] ?? array();
     }
 
-    public function getchmod(string $type = 'folder') : int
-    {
-        return ($type === 'folder' ? CHMOD_FOLDER : CHMOD_FILE);
-    } // function getchmod()
-
     /**
      * Can we use the navigator localStorage cache system ?
      *

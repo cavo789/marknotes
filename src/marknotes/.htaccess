@@ -1,1 +1,6 @@
-deny from all
+# Only allow access to assets; nothing else
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !\.(ico?n|img|gif|jpe?g|png|css|map)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !\.js(\?.*)?$ [NC]
+RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf2?|woff2?)(\?.*)?$ [NC]
+RewriteRule .* - [R=403,L]

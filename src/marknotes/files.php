@@ -7,7 +7,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Files
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -16,10 +16,10 @@ class Files
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Files();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Files();
         }
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     /**
@@ -229,7 +229,7 @@ class Files
     public static function getExtension(string $filename) : string
     {
         $filename = basename($filename);
-        
+
         // Correctly handle double extension like docs\development\marknotes.reveal.pdf
         $arr = explode('.', $filename);
 
@@ -328,8 +328,9 @@ class Files
         } catch (Exception $ex) {
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
-                echo __FILE__."-".__LINE__." - <hr/>";
                 echo $ex->getMessage();
+                $aeDebug = \MarkNotes\Debug::getInstance();
+                $aeDebug->here("", 99);
             }
             /*<!-- endbuild -->*/
         }

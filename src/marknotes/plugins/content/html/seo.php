@@ -56,7 +56,7 @@ class SEO
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/seo/seo.css\" />\n";
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/content/html/seo/seo.css\" />\n";
 
         return true;
     }

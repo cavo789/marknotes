@@ -155,8 +155,8 @@ class Events
         $aeSettings = \MarkNotes\Settings::getInstance();
         if ($type !== '') {
 
-            // The plugins folder is at the root level and not under /marknotes
-            $dir = rtrim(dirname(__DIR__), DS).DS.'plugins'.DS.$type.DS;
+            // The plugins folder is under /marknotes
+            $dir = rtrim(dirname(__DIR__), DS).'/marknotes/plugins/'.$type.DS;
 
             if ($subtask !== '') {
                 // can be edit.save => retrieve the first part : edit

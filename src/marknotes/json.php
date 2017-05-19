@@ -149,15 +149,9 @@ class JSON
      * @param array $arrDebug Array with debugging info, can be empty
      * @param bool  $die      Display and die (true) or return to the calling code (false)
      */
-    public static function json_return_info(array $arrInfos, array $arrDebug, bool $die = true)
+    public static function json_return_info(array $arrInfos, bool $die = true)
     {
         header('Content-Type: application/json');
-
-        /*<!-- build:debug -->*/
-        if (count($arrDebug) > 0) {
-            $arrInfos = array_merge($arrInfos, $arrDebug);
-        }
-        /*<!-- endbuild -->*/
 
         if ($die) {
             header('Content-Type: application/json');

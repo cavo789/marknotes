@@ -57,7 +57,7 @@ class Encrypt
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/encrypt/encrypt.css\" />\n";
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/content/html/encrypt/encrypt.css\" />\n";
 
         return true;
     }

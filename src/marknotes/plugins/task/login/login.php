@@ -33,8 +33,8 @@ class Login
             $form = str_replace('%CLEAR_CACHE%', $aeSettings->getText('settings_clean', 'Clear cache'), $form);
 
             $form .=
-                "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/task/login/assets/login.css\">\n".
-                "<script type=\"text/javascript\" src=\"".$root."/plugins/task/login/assets/login.js\"></script>\n";
+                "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/task/login/assets/login.css\">\n".
+                "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/task/login/assets/login.js\"></script>\n";
 
             // Return the form
             $html = $form;

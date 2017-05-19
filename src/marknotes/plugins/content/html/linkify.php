@@ -19,18 +19,18 @@ class Linkify
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
         $js .=
             "\n<script type=\"text/javascript\" src=\"".$root."/libs/linkify/linkify.min.js\"></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/libs/linkify/linkify-jquery.min.js\"></script>\n". "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/linkify/linkify.js\"></script>\n";
+            "<script type=\"text/javascript\" src=\"".$root."/libs/linkify/linkify-jquery.min.js\"></script>\n". "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/linkify/linkify.js\"></script>\n";
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
         return true;
     }
 
@@ -57,10 +57,8 @@ class Linkify
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
 
-        // This plugin is not needed when the task is f.i. 'pdf'
-        // There is no need for converting to links with the table when the output format is pdf
-
-        if (in_array($task, array('pdf','reveal','remark'))) {
+        // This plugin is not needed when the task is one of the mentionned below
+        if (in_array($task, array('main','pdf','reveal','remark'))) {
             return true;
         }
 

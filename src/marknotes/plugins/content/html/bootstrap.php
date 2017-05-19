@@ -13,20 +13,20 @@ class Bootstrap
     public static function addJS(&$js = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-		
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
         if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
-        $js .= "\n<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/bootstrap/bootstrap.js\"></script>\n";
-		
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
-		
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
+        $js .= "\n<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/bootstrap/bootstrap.js\"></script>\n";
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
         return true;
     }
 

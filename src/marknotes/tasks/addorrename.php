@@ -25,7 +25,7 @@ class AddOrRename
 
         return self::$hInstance;
     }
-
+/*
     private static function createFile(array &$params) : bool
     {
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -37,8 +37,8 @@ class AddOrRename
         $content = '# '.basename($aeFiles->removeExtension($params['newname'])).PHP_EOL;
 
         return $aeFiles->createFile($params['newname'], $content, $aeSettings->getchmod('file'));
-    }
-
+    }*/
+/*
     private static function cleanUp(array &$params)
     {
 
@@ -59,9 +59,10 @@ class AddOrRename
         $params['oldname'] = $aeSettings->getFolderDocs(true).$params['oldname'];
         $params['newname'] = $aeSettings->getFolderDocs(true).$params['newname'];
     }
-
+*/
     private static function doIt(array $params) : string
     {
+        /*
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -70,25 +71,26 @@ class AddOrRename
 
         self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
-        /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
             $aeDebug->log(__METHOD__, 'debug');
             $aeDebug->log('Oldname '.utf8_encode($params['oldname']), 'debug');
             $aeDebug->log('Newname '.utf8_encode($params['newname']), 'debug');
             $aeDebug->log('Type '.$params['type'], 'debug');
-        }
-        /*<!-- endbuild -->*/
+        }*/
 
         $sReturn = '';
 
         try {
+
+            /*
             $old = $params['oldname'];
             if (mb_detect_encoding($old)) {
                 if (!file_exists($old)) {
                     $old = utf8_decode($old);
                 }
             }
-            
+       	*/
+
             // use utf8_decode since the name can contains accentuated characters
             if (!is_writable(dirname($old))) {
                 $aeDebug->log('The folder ['. dirname($old). '] is read-only', 'error');
@@ -115,7 +117,7 @@ class AddOrRename
                 // frontend interface
 
                 try {
-                    mkdir(utf8_decode($params['newname']), $aeSettings->getchmod('folder'));
+                    mkdir(utf8_decode($params['newname']), CHMOD_FOLDER);
 
                     if ($aeFiles->folderExists(utf8_decode($params['newname']))) {
                         $msg = str_replace(
@@ -255,14 +257,6 @@ class AddOrRename
                 rename(utf8_decode($params['oldname']), utf8_decode($params['newname']));
 
                 if ($aeFiles->fileExists(utf8_decode($params['newname']))) {
-                    // Check if there were .html versions of the note and if so, kill them (will be recreated)
-                    if ($aeFiles->fileExists(utf8_decode($fnameHTML = str_replace('.md', '.html', $params['oldname'])))) {
-                        unlink(utf8_decode($fnameHTML));
-                    }
-                    if ($aeFiles->fileExists(utf8_decode($fnameHTML = str_replace('.md', '_slideshow.html', $params['oldname'])))) {
-                        unlink(utf8_decode($fnameHTML));
-                    }
-
                     $msg = sprintf(
                         $aeSettings->getText('file_renamed', 'The note [%s] has been renamed into [%s]'),
                         str_replace($aeSettings->getFolderDocs(true), '', $params['oldname']),

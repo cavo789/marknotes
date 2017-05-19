@@ -176,11 +176,12 @@ function ajaxify($params) {
 	if ($bAjax) {
 		$params.dataType = (typeof $params.dataType === 'undefined') ? 'html' : $params.dataType;
 
-		if (typeof $params.param2 !== 'undefined') {
-			$data.param2 = $params.param2;
+		// Info : the oldname and the type parameters are set by the Files plugins 
+		if (typeof $params.oldname !== 'undefined') {
+			$data.oldname = $params.oldname;
 		}
-		if (typeof $params.param3 !== 'undefined') {
-			$data.param3 = $params.param3;
+		if (typeof $params.type !== 'undefined') {
+			$data.type = $params.type;
 		}
 
 		var $target = '#' + (($params.target === 'undefined') ? 'TDM' : $params.target);
@@ -359,6 +360,9 @@ function initFiles($data) {
 		}
 		/*<!-- endbuild -->*/
 	}
+
+	// Call javascript functions there were added by plugins
+	runPluginsFunctions();
 
 	return true;
 
@@ -712,6 +716,7 @@ function afterDisplay($fname) {
 		console.warn(err.message);
 	}
 
+	// Call javascript functions there were added by plugins
 	runPluginsFunctions();
 
 	// Just for esthetics purposes
@@ -725,7 +730,7 @@ function afterDisplay($fname) {
  * The array marknotes.arrPluginsFct is a global array and will be initialized by
  * the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
  *
- * For instance : the file /plugins/content/html/bootstrap/bootstrap.js contains this line :
+ * For instance : the file /marknotes/plugins/content/html/bootstrap/bootstrap.js contains this line :
  *    marknotes.arrPluginsFct.push("PluginBootstrap");
  *
  * This to tell to this code that the PluginBootstrap function should be fired once the note

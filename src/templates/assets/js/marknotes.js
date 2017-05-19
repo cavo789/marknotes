@@ -12,7 +12,7 @@ $(document).ready(function () {
 	// Last part : the array marknotes.arrPluginsFct is a global array and will be initialized by
 	// the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
 	//
-	// For instance : the file /plugins/content/html/bootstrap/bootstrap.js contains this line :
+	// For instance : the file /marknotes/plugins/content/html/bootstrap/bootstrap.js contains this line :
 	// marknotes.arrPluginsFct.push("PluginBootstrap");
 	//
 	// This to tell to this code that the PluginBootstrap function should be fired once the note

@@ -98,7 +98,7 @@ class Tags
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/tags/tags.css\" />\n";
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/content/html/tags/tags.css\" />\n";
 
         return true;
     }
@@ -122,10 +122,10 @@ class Tags
             $tags = implode($arrSettings['auto_select'], ",");
         }
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
         $js .=
             "\n<script type=\"text/javascript\">\n".
             "marknotes.plugins.tags = {};\n".
@@ -133,12 +133,12 @@ class Tags
             "marknotes.plugins.tags.auto_tags='".$tags."';\n".
             "</script>\n";
 
-        $js .= "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/tags/tags.js\"></script>\n";
+        $js .= "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/tags/tags.js\"></script>\n";
 
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
-		
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
         return true;
     }
 

@@ -1,116 +1,118 @@
 @media print {
-    .hidden-print {
-        display: none !important;
-    }
+	.hidden-print {
+		display: none !important;
+	}
 }
 
 #footer {
-    position: fixed;
-    z-index: 10;
-    color: white;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 10px;
-    background-color: rgba(90, 145, 199, 0.16);
+	position        : fixed;
+	z-index         : 10;
+	color           : white;
+	right           : 0;
+	bottom          : 0;
+	left            : 0;
+	padding         : 10px;
+	background-color: rgba(90, 145, 199, 0.16);
 }
 
 #footer a {
-    color: green;
-    font-size: 24px;
-    margin-right: 10px;
+	color       : green;
+	font-size   : 24px;
+	margin-right: 10px;
 }
 
 body {
-    background: #eee;
-    padding: 20px;
+	background: #eee;
+	padding   : 20px;
 }
 
 article {
-    max-width: 50em;
-    background: white;
-    padding: 2em;
-    margin: 1em auto;
+	max-width : 50em;
+	background: white;
+	padding   : 2em;
+	margin    : 1em auto;
 }
 
 .table-of-contents {
-    float: right;
-    width: 40%;
-    background: #eee;
-    font-size: 0.8em;
-    padding: 1em 2em;
-    margin: 0 0 0.5em 0.5em;
+	float     : right;
+	width     : 40%;
+	background: #eee;
+	font-size : .8em;
+	padding   : 1em 2em;
+	margin    : 0 0 .5em .5em;
 }
 
 .table-of-contents ul {
-    padding: 0;
+	padding: 0;
 }
 
 .table-of-contents li {
-    margin: 0 0 0.25em 0;
+	margin: 0 0 .25em;
 }
 
 .table-of-contents a {
-    text-decoration: none;
+	text-decoration: none;
 }
 
-.table-of-contents a:hover, .table-of-contents a:active {
-    text-decoration: underline;
+.table-of-contents a:active,
+.table-of-contents a:hover {
+	text-decoration: underline;
 }
 
 nav.table-of-contents strong {
-    font-size: 1.6em;
+	font-size: 1.6em;
 }
 
 h2:target {
-    animation: highlight 1s ease;
+	animation: highlight 1s ease;
 }
 
 h3:target {
-    animation: highlight 1s ease;
+	animation: highlight 1s ease;
 }
-
 @keyframes highlight {
-    from {
-        background: yellow;
-    }
-    to {
-        background: white;
-    }
+	from {
+		background: yellow;
+	}
+
+	to {
+		background: white;
+	}
 }
 
 .btnTop {
-    float: right;
-    margin-top: 14px;
+	float     : right;
+	margin-top: 14px;
 }
 
 .fullimg {
-    max-width: 660px;
+	max-width: 100%;
+	height   : auto;
 }
 
 h1 {
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid #5091cd;
+	margin-bottom : 15px;
+	padding-bottom: 5px;
+	border-bottom : 2px solid #5091cd;
 }
 
 footer {
-    margin-top: 25px;
-    width: 100%;
-    display: table;
-    background-color: rgba(87, 138, 213, 0.2);
-    border: 2px solid #5091cd;
+	margin-top      : 25px;
+	width           : 100%;
+	display         : table;
+	background-color: rgba(87, 138, 213, 0.2);
+	border          : 2px solid #5091cd;
 }
 
 footer img {
-    margin: 25px auto 25px auto;
-    display: block;
+	margin : 25px auto;
+	display: block;
 }
 
-footer>ul.list-inline li {
-    margin-right: 40px;
+footer > ul.list-inline li {
+	margin-right: 40px;
 }
 
->ul.list-inline li {
-    margin-right: 40px;
+> ul.list-inline li {
+	margin-right: 40px;
 }

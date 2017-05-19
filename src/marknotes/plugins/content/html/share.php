@@ -36,7 +36,7 @@ class Share
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
-        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/plugins/content/html/share/share.css\" />\n";
+        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/content/html/share/assets/share.css\" />\n";
 
         return true;
     }
