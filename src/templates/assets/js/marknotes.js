@@ -73,10 +73,10 @@ Reveal.initialize({
 			}
 		],
 		themes: [
-			/*{
-				name: 'JD17FR_Contrast',
-				theme: marknotes.root + 'templates/assets/jd17fr/jd17fr_contrast.css'
-			},*/
+			{
+				name: 'Contrast',
+				theme: marknotes.root + 'templates/assets/css/contrast.css'
+			},
 			{
 				name: 'Black',
 				theme: marknotes.root + 'libs/reveal/css/theme/black.css'
