@@ -45,10 +45,18 @@ class GTranslate
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+		}
+		
         $js .=
-            "<script type=\"text/javascript\" src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\"></script>\n".
+            "\n<script type=\"text/javascript\" src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\"></script>\n".
             "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/gtranslate/gtranslate.js\"></script>\n";
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "<!-- End for ".__FILE__."-->";
+		}
+		
         return true;
     }
 

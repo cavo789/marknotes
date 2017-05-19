@@ -122,8 +122,12 @@ class Tags
             $tags = implode($arrSettings['auto_select'], ",");
         }
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+		}
+		
         $js .=
-            "<script type=\"text/javascript\">\n".
+            "\n<script type=\"text/javascript\">\n".
             "marknotes.plugins.tags = {};\n".
             "marknotes.plugins.tags.prefix='".$prefix."';\n".
             "marknotes.plugins.tags.auto_tags='".$tags."';\n".
@@ -131,6 +135,10 @@ class Tags
 
         $js .= "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/tags/tags.js\"></script>\n";
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "<!-- End for ".__FILE__."-->";
+		}
+		
         return true;
     }
 

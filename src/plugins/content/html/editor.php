@@ -13,24 +13,33 @@ class Editor
     public static function addJS(&$js = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+		}
+		
         $js .=
-            "<script type=\"text/javascript\" src=\"".$root."/libs/simplemde/simplemde.min.js\"></script>\n".
-            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/editor/editor.js\"></script>\n";
+            "\n<script type=\"text/javascript\" src=\"".$root."/libs/simplemde/simplemde.min.js\"></script>\n".
+            "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/editor/editor.js\"></script>";
 
 
         // Add text for the editor
         $aeSettings = \MarkNotes\Settings::getInstance();
         $js .=
-            "<script type=\"text/javascript\">\n". "marknotes.message.button_encrypt='".$aeSettings->getText('button_encrypt', 'Add encryption for the selection', true)."';\n".
+            "\n<script type=\"text/javascript\">\n". "marknotes.message.button_encrypt='".$aeSettings->getText('button_encrypt', 'Add encryption for the selection', true)."';\n".
             "marknotes.message.button_exit_edit_mode='".$aeSettings->getText('button_exit_edit_mode', 'Exit the editing mode', true)."';\n".
             "marknotes.message.button_save='".$aeSettings->getText('button_save', 'Submit your changes', true)."';\n".
             "marknotes.message.button_save_done='".$aeSettings->getText('button_save_done', 'The file has been successfully saved', true)."';\n".
             "marknotes.message.button_save_error='".$aeSettings->getText('button_save_error', 'There was an error while saving the file', true)."';\n".
-            "</script>";
+            "</script>\n";
 
+			
+		if ($aeSettings->getDebugMode()) {
+			$js .= "<!-- End for ".__FILE__."-->";
+		}
         return true;
     }
 

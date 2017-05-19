@@ -76,18 +76,22 @@ class Files
 
         return true;
     }
+
     /**
      * Attach the function and responds to events
      */
     public function bind()
     {
         $aeSession = \MarkNotes\Session::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $arrSettings = $aeSettings->getPlugins('options', 'files');
+        // Only when the user is connected
+        if ($aeSession->get('authenticated', 0) === 1) {
+            $aeEvents = \MarkNotes\Events::getInstance();
+            $aeEvents->bind('run.task', __CLASS__.'::run');
+        //} else {
+        //    $sReturn = $aeFunctions->showError('not_authenticated', 'You need first to authenticate');
+        }
 
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('run.task', __CLASS__.'::run');
         return true;
     }
 }

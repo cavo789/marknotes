@@ -23,7 +23,17 @@ class GAnalytics
         }
 
         if ($analyticsCode !== '') {
-            $js .= "<script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '".$analyticsCode."', 'auto'); ga('send', 'pageview');</script>\n";
+			
+			if ($aeSettings->getDebugMode()) {
+				$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+			}
+			
+            $js .= "\n<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '".$analyticsCode."', 'auto'); ga('send', 'pageview');</script>\n";
+			
+			if ($aeSettings->getDebugMode()) {
+				$js .= "<!-- End for ".__FILE__."-->";
+			}
+			
         }
 
         return true;

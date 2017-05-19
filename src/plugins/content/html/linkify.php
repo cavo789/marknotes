@@ -15,13 +15,22 @@ class Linkify
     public static function addJS(&$js = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+		}
+		
         $js .=
-            "<script type=\"text/javascript\" src=\"".$root."/libs/linkify/linkify.min.js\"></script>\n".
+            "\n<script type=\"text/javascript\" src=\"".$root."/libs/linkify/linkify.min.js\"></script>\n".
             "<script type=\"text/javascript\" src=\"".$root."/libs/linkify/linkify-jquery.min.js\"></script>\n". "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/linkify/linkify.js\"></script>\n";
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "<!-- End for ".__FILE__."-->";
+		}
+		
         return true;
     }
 

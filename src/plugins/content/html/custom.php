@@ -19,7 +19,17 @@ class Custom
         if ($aeFiles->fileExists($aeSettings->getFolderWebRoot()."custom.js")) {
             // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
             $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-            $js .= "\n<script type=\"text/javascript\" src=\"".$root."/custom.js\"></script>";
+			
+			if ($aeSettings->getDebugMode()) {
+				$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+			}
+		
+            $js .= "\n<script type=\"text/javascript\" src=\"".$root."/custom.js\"></script>\n";
+			
+			if ($aeSettings->getDebugMode()) {
+				$js .= "<!-- End for ".__FILE__."-->";
+			}
+			
         }
 
         return true;

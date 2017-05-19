@@ -17,11 +17,19 @@ class DataTables
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+		}
+			
         $js .=
-            "<script type=\"text/javascript\" src=\"".$root."/libs/DataTables/js/jquery.dataTables.min.js\"></script>\n".
+            "\n<script type=\"text/javascript\" src=\"".$root."/libs/DataTables/js/jquery.dataTables.min.js\"></script>\n".
             "<script type=\"text/javascript\" src=\"".$root."/libs/DataTables/js/dataTables.bootstrap4.min.js\"></script>\n".
             "<script type=\"text/javascript\" src=\"".$root."/plugins/content/html/datatables/datatables.js\"></script>\n";
 
+		if ($aeSettings->getDebugMode()) {
+			$js .= "<!-- End for ".__FILE__."-->";
+		}
+		
         return true;
     }
 

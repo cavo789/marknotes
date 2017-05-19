@@ -193,7 +193,7 @@ function jstree_context_menu(node) {
 
 	var tree = $('#TOC').jstree(true);
 
-	var items = {
+	var $items = {
 		Collapse: {
 			separator_before: false,
 			separator_after: false,
@@ -211,86 +211,52 @@ function jstree_context_menu(node) {
 			action: function () {
 				$('#TOC').jstree('open_all');
 			}
-		},
-		Add_Folder: {
-			separator_before: false,
-			separator_after: false,
-			label: marknotes.message.tree_new_folder,
-			icon: 'fa fa-folder-open-o',
-			action: function () {
-				var $node = tree.create_node(node, {
-					text: marknotes.message.tree_new_folder_name,
-					icon: "folder"
-				});
-				tree.edit($node);
-			}
-		}, // Add_Folder
-		Add_Item: {
-			separator_before: false,
-			separator_after: false,
-			label: marknotes.message.tree_new_note,
-			icon: 'fa fa-file-text-o',
-			action: function () {
-				// When the user has right-clicked on a folder, add the note within that folder
-				// When it was a note, add the new note in the same folder i.e. the parent of the note
-				var $node = tree.create_node((node.icon === 'folder' ? node : node.parent), {
-					text: marknotes.message.tree_new_note_name,
-					icon: "file file-md",
-					data: {
-						task: "display"
-					}
-				});
-				tree.edit($node);
-			}
-		}, // Add_Item
-		Rename: {
-			separator_before: false,
-			separator_after: false,
-			label: marknotes.message.tree_rename,
-			icon: 'fa fa-pencil',
-			action: function () {
-				tree.edit(node);
-			}
-		}, // Rename
-		Remove: {
-			separator_before: true,
-			separator_after: false,
-			label: (node.icon === 'folder' ? marknotes.message.tree_delete_folder.replace('%s', node.text) : marknotes.message.tree_delete_file.replace('%s', node.text)),
-			icon: 'fa fa-trash',
-			action: function () {
-				noty({
-					theme: 'relax',
-					timeout: 0,
-					layout: 'center',
-					type: 'warning',
-					text: '<strong>' + (node.icon === 'folder' ? marknotes.message.tree_delete_folder_confirm.replace('%s', node.text) : marknotes.message.tree_delete_file_confirm.replace('%s', node.text)) + '</strong>',
-					buttons: [{
-							addClass: 'btn btn-primary',
-							text: marknotes.message.ok,
-							onClick: function ($noty) {
-								$noty.close();
-								tree.delete_node(node);
-							}
-						},
-						{
-							addClass: 'btn btn-danger',
-							text: marknotes.message.cancel,
-							onClick: function ($noty) {
-								$noty.close();
-							}
-						}
-					]
-				}); // noty()
-			} // action()
-		} // Remove
+		}
 	};
+
+	// The fnPluginTaskTreeViewContextMenu() is defined in the plugins task/treeview
+	// Check if that plugin has loaded the function and if so, get extra items for the context menu
+	var fn = window['fnPluginTaskTreeViewContextMenu'];
+
+	// is object a function?
+	if (typeof fn === "function") {
+
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.log('Run fnPluginTaskTreeViewContextMenu()');
+		}
+		/*<!-- endbuild -->*/
+
+		// Give parameters to the function
+		var $params = {};
+		$params.node = node;
+		$extraItems = fn($params);
+
+		if (Object.keys($extraItems).length > 0) {
+
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log($extraItems);
+			}
+			/*<!-- endbuild -->*/
+
+			// $extraItems is a JSON object
+			// Loop and add any entries (i.e. actions) into the $item JSON object
+
+			jQuery.each($extraItems, function ($action, $node) {
+				$items[$action] = $node;
+			});
+
+		}
+
+	}
 
 	// Create a new folder : not if the user has right-clicked on a note.
 	if (node.icon !== 'folder') {
-		delete items.Add_Folder;
+		delete $items.Add_Folder;
 	}
 
-	return items;
+	return $items;
 
 } // function context_menu()
 
