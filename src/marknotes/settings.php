@@ -384,15 +384,15 @@ class Settings
         $folder = rtrim($this->_folderWebRoot, DS).DS.'tmp';
 
         if (!is_dir($folder)) {
-            mkdir($folder, 0755);
+            mkdir($folder, CHMOD_FOLDER);
         }
 
         if (is_dir($folder)) {
-            if (!file_exists($fname = $folder.'.gitignore')) {
+            if (!file_exists($fname = $folder.'/.gitignore')) {
                 file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
             }
 
-            if (!file_exists($fname = $folder.'.htaccess')) {
+            if (!file_exists($fname = $folder.'/.htaccess')) {
                 file_put_contents($fname, 'deny from all');
             }
         }
