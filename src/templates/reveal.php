@@ -63,7 +63,6 @@
         <script src="%ROOT%/libs/reveal/js/reveal.js"></script>
         <script src="%ROOT%/libs/reveal/lib/js/head.min.js"></script>
         <script src="%ROOT%/templates/assets/js/marknotes.js"></script>
-        <script src="%ROOT%/templates/assets/js/reveal.js"></script>
 
 		<!--%ADDITIONNAL_JS%-->
 
