@@ -1,31 +1,88 @@
-.reveal .controls .navigate-left,
-.reveal .controls .navigate-left.enabled {
-    border-right-color: #B9312C;
+body {
+	max-width       : none !important;
+	padding         : 0 !important;
+	background      : none;
+	background-color: #58bbfa;
 }
 
-.reveal .controls .navigate-right,
-.reveal .controls .navigate-right.enabled {
-    border-left-color: #B9312C;
+.reveal h1 {
+	font-size: 3.2em;
+	color    : white;
 }
 
-.reveal .controls .navigate-up,
-.reveal .controls .navigate-up.enabled {
-    border-bottom-color: #B9312C;
+.reveal h2 {
+	font-size: 2.6em;
+	color    : #f6a542;
+	/*text-shadow: .01em .02em .05em white;*/
 }
 
-.reveal .controls .navigate-down,
-.reveal .controls .navigate-down.enabled {
-    border-top-color: #B9312C;
+.reveal h3 {
+	font-size  : 2em;
+	color      : #7dbb48;
+	text-shadow: .1em .1em .05em #333;
 }
 
-.reveal section img {
-    border: none;
-    box-shadow: none;
+.reveal h4 {
+	font-size  : 1.4em;
+	color      : #7dbb48;
+	text-shadow: .1em .1em .05em #333;
 }
 
+.reveal strong {
+	background-color: #91d2fc;
+	/*#7dbb48;*/
+	color           : #5695cf;
+	display         : inline-block;
+	border-radius   : 10px;
+	padding         : 5px;
+}
 
-/* The bullet will be added thanks to Fontawesome */
-
+.reveal dl,
+.reveal ol,
 .reveal ul {
-    list-style: none;
+	margin: 0 0 0 2em;
+}
+
+div.reveal ul {
+	list-style-type: none;
+	margin-left    : none;
+}
+
+div.reveal .warning {
+	background-color: yellow;
+	color           : red;
+	border-radius   : 10px;
+	display         : inline-block;
+	padding         : 0 10px;
+	margin-top      : 15px;
+	border          : dotted;
+}
+
+section:not([data-background-image]) {
+	color           : #c3d9ee;
+	background-color: rgba(0,0,0,0.4);
+	padding         : 25px !important;
+	/*top             : -20px !important;*/
+	width           : 125% !important;
+	left            : -140px !important;
+}
+
+div.reveal section a {
+	color           : white;
+	background-color: #7dbb48;
+	border-radius   : 10px;
+	padding         : 0 10px;
+}
+
+div.reveal section a:hover {
+	color: red;
+}
+
+.reveal section em {
+	font-size: .8em;
+	color    : lightgray;
+}
+
+.big {
+	font-size: 1.4em !important;
 }

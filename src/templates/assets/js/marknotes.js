@@ -73,10 +73,10 @@ Reveal.initialize({
 			}
 		],
 		themes: [
-			{
+			/*{
 				name: 'JD17FR_Contrast',
 				theme: marknotes.root + 'templates/assets/jd17fr/jd17fr_contrast.css'
-			},
+			},*/
 			{
 				name: 'Black',
 				theme: marknotes.root + 'libs/reveal/css/theme/black.css'
@@ -165,13 +165,13 @@ Reveal.initialize({
 		{ // Add a bottom left menu icon to let the user to access to a table-of-contents
 			src: marknotes.root + 'libs/reveal/plugin/reveal.js-menu/menu.js'
 		},
-		{ // Add a footer on any slide and display the presentation H1 title
+		/*{ // Add a footer on any slide and display the presentation H1 title
 			src: marknotes.root + 'libs/reveal/plugin/title-footer/title-footer.js',
 			async: true,
 			callback: function () {
 				title_footer.initialize();
 			}
-		},
+		},*/
 		{ // Add an ElapsedTimeBar on the bottom (by default a red line)
 			src: marknotes.root + 'libs/reveal/plugin/elapsed-time-bar/elapsed-time-bar.js'
 		}
@@ -212,7 +212,7 @@ Reveal.addEventListener('slidechanged', function (evt) {
 		if (evt.indexh > 0) {
 
 			// Remove the background image during the presentation but not on the very first slide
-			$('body').css('background-image', 'none');
+			//$('body').css('background-image', 'none');
 
 			// Logos should be visible only on the first slide
 			if ($('.logo').length > 0) {
@@ -245,7 +245,7 @@ Reveal.addEventListener('slidechanged', function (evt) {
 			// The very first slide is displayed background
 
 			// Restore the background image and the height of the menu
-			$('body').css('background-image', $oldBackground);
+			//$('body').css('background-image', $oldBackground);
 
 			if ($('.logo').length > 0) {
 				$('.logo').show();
