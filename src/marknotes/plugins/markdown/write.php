@@ -41,6 +41,7 @@ class Write
             }
         }
 
+        $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -56,8 +57,9 @@ class Write
             $aeFiles = \MarkNotes\Files::getInstance();
             $aeFiles->rewriteFile($filename, $markdown);
         } else {
+
             /*<!-- build:debug -->*/
-            if ($aeSettings->getDevMode()) {
+            if ($aeSettings->getDebugMode()) {
                 $aeDebug->here('Event markdown.write - Session invalid, no filename found', 5);
             }
             /*<!-- endbuild -->*/

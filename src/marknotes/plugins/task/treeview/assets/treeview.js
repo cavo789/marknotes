@@ -58,7 +58,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		// Give the ability to create a new folder but only when the user right-click on a
 		// folder : don't allow to create a folder if he click on a note
 
-		var $type = (node.icon.substr(0,6).toLowerCase() === "folder" ? "folder" : "file");
+		var $type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
 
 		if ($type === 'folder') {
 			$items['Add_Folder'] = {
@@ -88,8 +88,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 				// When it was a note, add the new note in the same folder i.e. the parent of the note
 				var $node = tree.create_node(
 					//($type === 'folder' ? node : node.parent),
-					node,
-					{
+					node, {
 						text: marknotes.message.tree_new_note_name,
 						icon: "file file-md",
 						data: {
@@ -172,7 +171,7 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('Running task=' + $task);
+		console.log('Running task = ' + $task);
 	}
 	/*<!-- endbuild -->*/
 
@@ -180,8 +179,8 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 		// The user has just click on "Create..." (folder or note)
 
-		var $type = (data.node.icon.substr(0,6).toLowerCase() === "folder" ? "folder" : "file");
-		var $root=data.node.parent;
+		var $type = (data.node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
+		var $root = data.node.parent;
 
 		// In case of the creation of a new note, the "oldname" is something like
 		// "new note" (and "new folder" for a folder) i.e. the default name suggested by jsTree.
@@ -200,29 +199,40 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 			$oldname = $oldname.substr(1);
 		}
 
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.log('    old name = ' + $oldname);
+			console.log('    new name = ' + $newname);
+		}
+		/*<!-- endbuild -->*/
+
 		// Encode the name in base64 so no problem with f.i. slashes and accentuated characters
 		$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));
 		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
 
-		if ($task !== 'files.rename') {
-			// For instance 'files.delete' : just the current name of the note/folder is needed
-			// This info is stored in the $newname variable
+		switch ($task) {
+		case 'files.create':
+		case 'files.delete':
+
+			// create or delete : we need the task, node name and type
 			ajaxify({
-				task: $task,			// f.i. 'files.delete'
-				param: $newname,		// name of the file to remove
-				type: $type,       		// 'file' or 'folder'
+				task: $task, // f.i. 'files.delete'
+				param: $newname, // name of the file to create or remove
+				type: $type, // 'file' or 'folder'
 				callback: 'fnPluginTaskTreeView_showStatus(data)'
 			});
-		} else {
-			// Only for files.rename action : we need the old name and the new one
+			break;
+		case 'files.rename':
 			ajaxify({
-				task: $task,			// 'files.rename'
-				param: $newname,		// The new name, name of the file/folder to create/rename
-				oldname: $oldname,		// The old name, previous note name
-				type: $type, 			// 'file' or 'folder'
+				task: $task, // 'files.rename'
+				param: $newname, // The new name, name of the file/folder to create/rename
+				oldname: $oldname, // The old name, previous note name
+				type: $type, // 'file' or 'folder'
 				callback: 'fnPluginTaskTreeView_showStatus(data)'
 			});
+			break;
 		}
+
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -237,8 +247,14 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
  * @returns {undefined}
  */
 function fnPluginTaskTreeView_showStatus($data) {
-	console.log('fnPluginTaskTreeView_showStatus');
-	console.log($data);
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('fnPluginTaskTreeView_showStatus');
+		console.log($data);
+	}
+	/*<!-- endbuild -->*/
+
 	if ($data.hasOwnProperty('status')) {
 		$status = $data.status;
 		if ($status == 1) {
@@ -292,7 +308,21 @@ function fnPluginTaskTreeView_renameNode(e, data) {
 	}
 	/*<!-- endbuild -->*/
 
-	fnPluginTaskTreeView_CRUD(e, data, 'files.rename');
+	// data.old is the current name of the node.
+	// This name will ne "New note" or "New folder" in case of new addition.
+	// So in that case, the action should be "files.create"; "files.rename" otherwise
+
+	var $task = '';
+	if (
+		(data.old === marknotes.message.tree_new_note_name) ||
+		(data.old === marknotes.message.tree_new_folder_name)
+	) {
+		$task = 'files.create';
+	} else {
+		$task = 'files.rename';
+	}
+
+	fnPluginTaskTreeView_CRUD(e, data, $task);
 
 	return;
 

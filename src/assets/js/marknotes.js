@@ -133,10 +133,9 @@ function ajaxify($params) {
 		}
 	} // if ($data.filename !== '')
 
-
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('ajaxify - Task=' + $data.task + ' / Filename=' + $data.filename);
+		console.log('ajaxify - Task=' + $data.task + ' / Param=' + $data.param);
 		console.log($params);
 	}
 	/*<!-- endbuild -->*/
@@ -176,7 +175,7 @@ function ajaxify($params) {
 	if ($bAjax) {
 		$params.dataType = (typeof $params.dataType === 'undefined') ? 'html' : $params.dataType;
 
-		// Info : the oldname and the type parameters are set by the Files plugins 
+		// Info : the oldname and the type parameters are set by the Files plugins
 		if (typeof $params.oldname !== 'undefined') {
 			$data.oldname = $params.oldname;
 		}

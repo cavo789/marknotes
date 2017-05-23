@@ -104,9 +104,9 @@ class Debug
 
             if ($deep > 1) {
                 // Add the previous caller
-                $file = str_ireplace($folder, '', $trace[1]['file']);
+                $file = str_ireplace($folder, '', $trace[1]['file'] ?? '');
                 $parent = ($trace[2]['class'] ?? $file).'::'.($trace[2]['function'] ?? '');
-                $context[]['caller'] = $parent.' line '.$trace[1]['line'];
+                $context[]['caller'] = $parent.' line '.($trace[1]['line'] ?? '');
             }
 
             if ($deep > 2) {

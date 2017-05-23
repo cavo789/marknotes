@@ -29,7 +29,6 @@ define('NEW_SLIDE', '\n+^-{3,5}$\n+');
 // Default text, english
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
 define('ERROR', 'Error');
-define('FILE_NOT_FOUND', 'The file [%s] doesn\'t exists (anymore)');
 
 // When images are too big, force a resize by css to a max-width of ...
 // Can be override : settings.json->page->img_maxwidth (integer)
@@ -49,6 +48,16 @@ define('TASKS', dirname(__DIR__).DS.'classes'.DS.'tasks'.DS);
 define('TEMPLATES', dirname(__DIR__).DS.'templates'.DS);
 
 // Use when accessing to files / folders
+define('FILE_IS_READONLY', -6);
+define('FILE_NOT_FOUND', -5);
+define('FOLDER_NOT_DELETED', -4);
+define('FOLDER_IS_READONLY', -3);
+define('FOLDER_NOT_FOUND', -2);
 define('ALREADY_EXISTS', -1);
 define('FILE_ERROR', 0);
 define('CREATE_SUCCESS', 1);
+define('RENAME_SUCCESS', 2);
+define('KILL_SUCCESS', 3);
+
+// Force LF and not PHP_EOL when writting files on the filesystem
+defined('PHP_LF') or define('PHP_LF', "\n");

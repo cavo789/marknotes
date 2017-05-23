@@ -46,6 +46,182 @@ class Files
     }
 
     /**
+     * Create a folder on the disk
+     */
+    private static function createFolder(string $foldername) : string
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $foldername = $aeFiles->sanitizeFileName($foldername);
+
+        // Try to create a file called "$filename.md" on the disk
+        $wReturn = $aeFilesystem->createFolder($foldername);
+
+        switch ($wReturn) {
+            case CREATE_SUCCESS:
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', utf8_encode($foldername)),
+                    $aeSettings->getText('folder_created')
+                );
+
+                break;
+            case FOLDER_NOT_FOUND:
+
+                // The parent folder seems to be missing (renamed outside marknotes?)
+
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', dirname($foldername)),
+                    $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists')
+                );
+
+                break;
+            case ALREADY_EXISTS:
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', utf8_encode($foldername)),
+                    $aeSettings->getText('file_already_exists')
+                );
+
+                break;
+            default:
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', utf8_encode($foldername)),
+                    $aeSettings->getText('error_create_folder')
+                );
+
+                break;
+        }
+
+        $arr = array(
+            'status' => (($wReturn === CREATE_SUCCESS) ? 1 : 0),
+            'action' => 'create',
+            'type' => 'folder',
+            'msg' => $msg,
+            'foldername' => utf8_encode($foldername)
+        );
+
+        $return = self::returnInfo($arr);
+    }
+
+    /**
+     * Rename a folder on the disk
+     */
+    private static function renameFolder(string $oldname, string $newname) : string
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        $oldname = $aeFiles->sanitizeFileName($oldname);
+        $newname = $aeFiles->sanitizeFileName($newname);
+
+        $wReturn = $aeFilesystem->renameFolder($oldname, $newname);
+
+        switch ($wReturn) {
+            case RENAME_SUCCESS:
+
+                $msg = sprintf(
+                    $aeSettings->getText('folder_renamed', 'The folder [%s] has been renamed into [%s]'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $oldname),
+                    str_replace($aeSettings->getFolderDocs(true), '', $newname)
+                );
+
+                break;
+            case FOLDER_NOT_FOUND:
+
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', $oldname),
+                    $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists')
+                );
+
+                break;
+            default:
+
+                $msg = sprintf(
+                    $aeSettings->getText('error_rename_folder', 'An error has occured when trying to rename the folder [%s] into [%s]'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $oldname),
+                    str_replace($aeSettings->getFolderDocs(true), '', $newname)
+                );
+
+                break;
+        }
+
+        $arr = array(
+            'status' => (($wReturn === RENAME_SUCCESS) ? 1 : 0),
+            'action' => 'rename',
+            'type' => 'folder',
+            'msg' => $msg,
+            'foldername' => utf8_encode($newname)
+        );
+
+        $return = self::returnInfo($arr);
+    }
+
+    /**
+     * Kill a folder on the disk
+     */
+    private static function deleteFolder(string $foldername) : string
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+
+        $wReturn = $aeFilesystem->deleteFolder($foldername);
+
+        switch ($wReturn) {
+            case KILL_SUCCESS:
+
+                $msg = sprintf($aeSettings->getText('folder_deleted',
+                    'The folder [%s] and its content has been deleted'), $foldername);
+                break;
+            case FOLDER_NOT_DELETED:
+
+                $msg = sprintf($aeSettings->getText('folder_not_deleted',
+                    'The folder [%s] is outside your documentation root folder '.
+                    'and therefore will not be deleted'), $foldername);
+                break;
+            case FOLDER_NOT_FOUND:
+
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', $foldername),
+                    $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists')
+                );
+
+                break;
+            case FOLDER_IS_READONLY:
+
+                $msg = sprintf($aeSettings->getText('folder_read_only', 'Sorry but '.
+                    'the folder [%s] is read-only'), $foldername);
+                break;
+            default:
+                $msg = str_replace(
+                    '%s',
+                    str_replace($aeSettings->getFolderDocs(true), '', $foldername),
+                    $aeSettings->getText('error_delete_folder', 'An error has occured during the deletion of the folder [%s] (this is the case when the folder contains readonly subfolders or notes)')
+                );
+                break;
+        }
+
+        $arr = array(
+            'status' => (($wReturn === KILL_SUCCESS) ? 1 : 0),
+            'action' => 'delete',
+            'type' => 'folder',
+            'msg' => $msg,
+            'foldername' => utf8_encode($foldername)
+        );
+
+        $return = self::returnInfo($arr);
+    }
+
+    /**
      * Create a note on the disk
      */
     private static function createFile(string $filename) : string
@@ -54,7 +230,7 @@ class Files
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        // Sanitize
+        // Be sure to have the .md extension
         $filename = $aeFiles->removeExtension($filename).'.md';
 
         // Try to create a file called "$filename.md" on the disk
@@ -74,7 +250,7 @@ class Files
 
         $msg = str_replace(
             '%s',
-            str_replace($aeSettings->getFolderDocs(true), '', $filename),
+            str_replace($aeSettings->getFolderDocs(true), '', utf8_encode($filename)),
             $aeSettings->getText($code)
         );
 
@@ -83,16 +259,109 @@ class Files
             'action' => 'create',
             'type' => 'file',
             'msg' => $msg,
-            'filename' => $filename
+            'filename' => utf8_encode($filename)
         );
 
         $return = self::returnInfo($arr);
     }
 
     /**
-     * Create or Rename a file / folder
+     * Rename a note on the disk
      */
-    private static function createRename(array &$params = null) : string
+    private static function renameFile(string $oldname, string $newname) : string
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        // Be sure to have the .md extension
+        $oldname = $aeFiles->removeExtension($oldname).'.md';
+        $newname = $aeFiles->removeExtension($newname).'.md';
+
+        // Try to create a file called "$filename.md" on the disk
+        $wReturn = $aeFilesystem->renameFile($oldname, $newname);
+
+        switch ($wReturn) {
+            case RENAME_SUCCESS:
+                $msg = sprintf(
+                    $aeSettings->getText('file_renamed', 'The note [%s] has been renamed into [%s]'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $oldname),
+                    str_replace($aeSettings->getFolderDocs(true), '', $newname)
+                );
+
+                break;
+            default:
+
+                $msg = sprintf(
+                    $aeSettings->getText('error_rename_file', 'An error has occured when trying to rename the note [%s] into [%s]'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $oldname),
+                    str_replace($aeSettings->getFolderDocs(true), '', $newname)
+                );
+
+                break;
+        }
+
+        $arr = array(
+            'status' => (($wReturn === RENAME_SUCCESS) ? 1 : 0),
+            'action' => 'rename',
+            'type' => 'file',
+            'msg' => $msg,
+            'filename' => utf8_encode($newname)
+        );
+
+        $return = self::returnInfo($arr);
+    }
+
+    /**
+     * Kill a note on the disk
+     */
+    private static function deleteFile(string $filename) : string
+    {
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        // Be sure to have the .md extension
+        $filename = $aeFiles->removeExtension($filename).'.md';
+
+        // Try to create a file called "$filename.md" on the disk
+        $wReturn = $aeFilesystem->deleteFile($filename);
+
+        switch ($wReturn) {
+            case KILL_SUCCESS:
+                $msg = sprintf($aeSettings->getText('file_deleted', 'The note [%s] has '.
+                    'been successfully deleted'), $filename);
+
+                break;
+            case FILE_NOT_FOUND:
+                $msg = sprintf($aeSettings->getText('file_not_found', 'The note [%s] doesn\\&#39;t exists'), $filename);
+
+                break;
+            case FILE_IS_READONLY:
+                $msg = sprintf($aeSettings->getText('file_read_only', 'The note [%s] is read-only, it\\&#39;s then impossible to delete it'), $filename);
+
+                break;
+            default:
+                $msg = sprintf($aeSettings->getText('error_delete_file', 'An error has occured during the deletion of the note [%s]'), $filename);
+                break;
+        }
+
+        $arr = array(
+            'status' => (($wReturn === RENAME_SUCCESS) ? 1 : 0),
+            'action' => 'delete',
+            'type' => 'file',
+            'msg' => $msg,
+            'filename' => utf8_encode($filename)
+        );
+
+        $return = self::returnInfo($arr);
+    }
+
+
+    /**
+     * Create a file / folder
+     */
+    private static function create(array &$params = null) : string
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -106,9 +375,65 @@ class Files
         $newname = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
+            if (mb_detect_encoding($newname)) {
+                if (!file_exists($newname)) {
+                    $newname = utf8_decode($newname);
+                }
+            }
         }
 
-        //$oldname = utf8_encode($params['oldname']);
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log(__METHOD__, 'debug');
+            $aeDebug->log('Newname=['.$newname.']', 'debug');
+            $aeDebug->log('Type=['.$type.']', 'debug');
+        }
+        /*<!-- endbuild -->*/
+
+        if ((trim($type) === '') || (trim($newname) === '')) {
+            echo $aeFunctions->showError('unknown_error', 'An error has occured, please try again', false);
+            return false;
+        }
+
+        $return = '';
+
+        if ($type === 'folder') {
+
+            // it's a folder
+            $return = self::createFolder($newname);
+        } else {
+
+            // it's a file
+            $return = self::createFile($newname);
+        }
+
+        return $return;
+    }
+
+    /**
+     * Rename a file / folder
+     */
+    private static function rename(array &$params = null) : string
+    {
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        // file or folder
+        $type = $aeFunctions->getParam('type', 'string', '', false);
+
+        $newname = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
+        if ($newname != '') {
+            $newname = $aeFiles->sanitizeFileName(trim($newname));
+            if (mb_detect_encoding($newname)) {
+                if (!file_exists($newname)) {
+                    $newname = utf8_decode($newname);
+                }
+            }
+        }
+
         $oldname = trim(json_decode(urldecode($aeFunctions->getParam('oldname', 'string', '', true))));
         if ($oldname != '') {
             $oldname = $aeFiles->sanitizeFileName(trim($oldname));
@@ -137,42 +462,16 @@ class Files
         $return = '';
 
         if ($type === 'folder') {
+
             // it's a folder
-
-            $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
-
-            if ($oldname === '') {
-                die("NEW FOLDER - Died in ".__FILE__.", line ".__LINE__);
-            } else {
-                die("RENAME FOLDER - Died in ".__FILE__.", line ".__LINE__);
-            }
+            $return = self::renameFolder($oldname, $newname);
         } else {
-            
+
             // it's a file
-
-            if ($oldname === '') {
-                $return = self::createFile($newname);
-            } else {
-                die("RENAME FILE [".$oldname."] - Died in ".__FILE__.", line ".__LINE__);
-            }
-
-            if ($return === false) {
-                $return = str_replace(
-                    '%s',
-                    $newname,
-                    $aeSettings->getText('error_create_file', 'An error has occured during the creation of the note [%s]')
-                );
-            }
+            $return = self::renameFile($oldname, $newname);
         }
 
-        //header('Content-Type: text/html; charset=utf-8');
-        //echo __FILE__.'---'.__LINE__.'<br/>';
-        //echo print_r($return, true);
-
         return $return;
-
-        //$aeTask = \MarkNotes\Tasks\AddOrRename::getInstance();
-        //$return = $aeTask->run(array('oldname' => $filename,'newname' => $newname,'type' => $type));
     }
 
     /**
@@ -181,18 +480,41 @@ class Files
     private static function delete(array &$params = array()) : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $filename = $aeSession->get('filename');
-
+        // file or folder
         $type = $aeFunctions->getParam('type', 'string', '', false);
 
-        $return = __FILE__.' - '.__LINE__.' - Kill '.$filename. ' type='.$type;
+        $name = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
 
-        //$aeTask = \MarkNotes\Tasks\Delete::getInstance();
-        //$return = $aeTask->run(array('filename' => $filename,'type' => $type));
+        if ($name != '') {
+            $name = $aeFiles->sanitizeFileName(trim($name));
+        }
+
+        if (mb_detect_encoding($name)) {
+            if (!file_exists($name)) {
+                $name = utf8_decode($name);
+            }
+        }
+
+        // Get the fullname of the folder/file name
+        $name = $aeSettings->getFolderDocs(true).$name;
+        $name = $aeFiles->sanitizeFileName($name);
+
+        $return = '';
+
+        if ($type === 'folder') {
+
+            // it's a folder
+            $return = self::deleteFolder($name);
+        } else {
+
+            // it's a file
+            $return = self::deleteFile($name);
+        }
 
         return $return;
     }
@@ -209,10 +531,19 @@ class Files
         $return = '';
 
         switch ($task) {
-            case 'files.rename':
-                $return = self::createRename($params);
+
+            case 'files.create':
+                // Add a new file/folder
+                $return = self::create($params);
                 break;
+
+            case 'files.rename':
+                // Rename an existing one
+                $return = self::rename($params);
+                break;
+
             case 'files.delete':
+                // Remove an existing file/folder
                 $return = self::delete($params);
                 break;
         }

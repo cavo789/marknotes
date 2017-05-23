@@ -33,9 +33,8 @@ class Files
             if (self::fileExists($newname)) {
                 unset($newname);
             }
+
             // And rename the temporary PDF to its final name
-            echo "<pre style='background-color:yellow;'>".__FILE__."-".__LINE__." - </pre>";
-            echo $newname;
             rename($oldname, $newname);
         }
 
@@ -289,6 +288,21 @@ class Files
     {
         $bReturn = false;
 
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
+
+        if (mb_detect_encoding($filename)) {
+            if (!file_exists($filename)) {
+                $filename = utf8_decode($filename);
+            }
+        }
+
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log('Rewriting file ['.$filename.']', 'debug');
+        }
+        /*<!-- endbuild -->*/
+
         if (file_exists($filename)) {
             rename($filename, $filename.'.old');
 
@@ -303,7 +317,20 @@ class Files
                     }
                 }
             } catch (Exception $ex) {
+
+                /*<!-- build:debug -->*/
+                if ($aeSettings->getDebugMode()) {
+                    $aeDebug->log($e->getMessage(), 'error');
+                }
+                /*<!-- endbuild -->*/
             }
+        } else { // if (file_exists($filename))
+
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                $aeDebug->log('Oups, file not found', 'error');
+            }
+            /*<!-- endbuild -->*/
         } // if (file_exists($filename))
 
         return $bReturn;

@@ -29,8 +29,17 @@ class Session
         $aeSettings = \MarkNotes\Settings::getInstance($folder);
 
         if (!isset($_SESSION)) {
+
+            // Store session informations in the /tmp/sessions/ folder
+            // Create that folder if needed
+
+            $folder = $aeSettings->getFolderTmp().DS.'sessions'.DS;
+            if (!is_dir($folder)) {
+                mkdir($folder, CHMOD_FOLDER);
+            }
+
             //session_save_path will cause a white page on a few hosting company.
-            @session_save_path($aeSettings->getFolderTmp());
+            @session_save_path($folder);
             try {
                 if (session_id() == '') {
                     session_start();

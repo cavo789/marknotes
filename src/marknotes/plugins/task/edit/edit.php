@@ -67,9 +67,16 @@ class Edit
      */
     private static function save(&$params = null)
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log('Saving the note\'s content', 'debug');
+        }
+        /*<!-- endbuild -->*/
 
         // If the filename doesn't mention the file's extension, add it.
         if (substr($params['filename'], -3) != '.md') {

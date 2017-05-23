@@ -84,7 +84,7 @@ function jstree_init($data) {
 						console.log('changed.jstree - ' + objNode.data.file);
 					}
 
-				})				
+				})
 				.on('search.jstree', function (nodes, str, res) {
 					if (str.nodes.length === 0) {
 						// No nodes found, hide all
@@ -214,7 +214,7 @@ function jstree_context_menu(node) {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('Run fnPluginTaskTreeViewContextMenu()');
+			console.log('Run fnPluginTaskTreeViewContextMenu(), retrieve what should appears in the contextual menu');
 		}
 		/*<!-- endbuild -->*/
 
@@ -226,7 +226,7 @@ function jstree_context_menu(node) {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('Returned items by fnPluginTaskTreeViewContextMenu()');
+				console.log('Below items returned by fnPluginTaskTreeViewContextMenu()');
 				console.log($extraItems);
 			}
 			/*<!-- endbuild -->*/
