@@ -36,7 +36,7 @@ class Events
     /**
      * Call an event and fires every attached functions if there are somes
      */
-    public static function trigger(string $event = '', array &$args = null) : bool
+    public static function trigger(string $event = '', array &$args = array()) : bool
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -62,6 +62,7 @@ class Events
                             $aeDebug->log('   call ['.$func.']', 'debug');
                         }
                         /*<!-- endbuild -->*/
+
                         call_user_func_array($func, $args);
 
                         $bStopProcessing = false;

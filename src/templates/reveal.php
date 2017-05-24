@@ -19,10 +19,11 @@
         <link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/reveal.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/css/theme/beige.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/reveal.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/marknotes.css" media="screen" />
+
+
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/lib/css/zenburn.css" media="screen" >
-		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/lib/css/zenburn.css" media="screen" >
+
 		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/reveal/plugin/title-footer/title-footer.css" media="screen">
 		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/reveal.css" media="screen" id="theme">
 

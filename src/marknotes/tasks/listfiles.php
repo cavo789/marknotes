@@ -10,7 +10,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class ListFiles
 {
-    protected static $_instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -19,11 +19,11 @@ class ListFiles
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new ListFiles();
+        if (self::$hInstance === null) {
+            self::$hInstance = new ListFiles();
         }
 
-        return self::$_instance;
+        return self::$hInstance;
     } // function getInstance()
 
     public static function run()
@@ -41,8 +41,6 @@ class ListFiles
         }
 
         if ($sReturn === '') {
-            $i = 0;
-
             $arrFiles = $aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
 
             // Be carefull, folders / filenames perhaps contains accentuated characters
@@ -132,7 +130,7 @@ class ListFiles
          'id' => utf8_encode(str_replace($root, '', $dir).DS),
          'type' => 'folder',
          'icon' => 'folder',
-         'text' => basename(utf8_encode($dir)),
+         'text' => basename($dir),
          'state' => array('opened' => $opened,'disabled' => 1),
          'children' => array());
 
@@ -151,15 +149,20 @@ class ListFiles
                             }
                             $extension = pathinfo($dir.DS.$sub, PATHINFO_EXTENSION);
                             if (in_array($extension, $ext)) {
+
+                                // Filename but without the extension (and no path)
+                                $filename = str_replace('.'.$extension, '', $sub);
+
                                 $files[] = array(
                                     'id' => md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
                                     'icon' => 'file file-md',
-                                    'text' => utf8_encode(str_replace('.'.$extension, '', $sub)), // Don't display the extension
+                                    'text' => $filename,
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(
                                         'task' => 'display',
-                                        'file' => rawurlencode(utf8_decode(str_replace($root, '', $dir.DS.$sub)))
+                                        'file' => utf8_encode(str_replace($root, '', $dir.DS.$sub)),
+                                        'url' => str_replace(DS, '/', utf8_encode(str_replace($root, '', $dir.DS.$filename)))
                                     ),
                                     'state' => array(
 

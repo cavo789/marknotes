@@ -56,7 +56,8 @@ class Prism
         $task = $aeSession->get('task', '');
 
         // Don't load Prism for slideshows since these frameworks already provide such mechanism
-        if (in_array($task, array('main','reveal','remark','slides'))) {
+        // But well for reveal slideshows
+        if (in_array($task, array('main','remark'))) {
             return true;
         }
 

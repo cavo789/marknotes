@@ -138,28 +138,6 @@ class JSON
         } catch (Exception $ex) {
             self::showError($ex->getMessage(), true);
         }
-
         return $return;
-    }
-
-    /**
-     * Convert an array into a JSON string.  Append debugging informations.
-     *
-     * @param array $arrInfos Array with informations, will be converted into a JSON string
-     * @param array $arrDebug Array with debugging info, can be empty
-     * @param bool  $die      Display and die (true) or return to the calling code (false)
-     */
-    public static function json_return_info(array $arrInfos, bool $die = true)
-    {
-        header('Content-Type: application/json');
-
-        if ($die) {
-            header('Content-Type: application/json');
-        }
-        echo self::json_encode($arrInfos);
-
-        if ($die) {
-            die();
-        }
     }
 }

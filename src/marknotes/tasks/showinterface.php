@@ -37,8 +37,6 @@ class ShowInterface
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
 
@@ -84,6 +82,7 @@ class ShowInterface
         "marknotes.message.json_error='".$aeSettings->getText('json_error', 'The [%s] task has returned an invalid JSON result', true)."';\n".
         "marknotes.message.loading_tree='".$aeSettings->getText('loading_tree', 'Loading the list of notes, please wait...', true)."';\n".
         "marknotes.message.ok='".$aeSettings->getText('OK', 'Ok', true)."';\n".
+        "marknotes.message.open_html='".$aeSettings->getText('open_html', 'Open in a new window', true)."';\n".
         "marknotes.message.pleasewait='".$aeSettings->getText('please_wait', 'Please wait...', true)."';\n".
         "marknotes.message.search_no_result='".$aeSettings->getText('search_no_result', 'Sorry, the search is not successfull', true)."';\n".
         "marknotes.message.settings_clean_done='".$aeSettings->getText('settings_clean_done', 'The application\'s cache has been cleared', true)."';\n".
@@ -102,17 +101,13 @@ class ShowInterface
         // --------------------------------
         // Call task plugins
         $aeEvents->loadPlugins('task', 'treeview');
-        $form = '';
+        $form = array('js' => '');
         $args = array(&$form);
         $aeEvents->trigger('display', $args);
-        $extraJS = '';
-        if (isset($args[0]['js'])) {
-            $extraJS = $args[0]['js'];
-        }
+        $extraJS = $args[0]['js'] ?? '';
         // --------------------------------
 
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>'.$extraJS, $html);
-
 
         return $html;
     }

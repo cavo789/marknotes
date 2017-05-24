@@ -38,6 +38,7 @@ class Security
 
          return $content;
      }
+
     /**
      * Modify the HTML rendering of the note
      */

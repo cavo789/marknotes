@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Encrypt / Decrypt part of the .md file included between <encrypt> tags.
+ * Use php_openssl so that extension should be loaded in php.ini.
+ *
+ *    1. Check that extension=php_openssl.dll is present in your php.ini file
+ *    2. Verify that the extension_dir variable is correctly initialized
+ */
+
 namespace MarkNotes\Plugins\Markdown;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -33,14 +41,14 @@ class Encrypt
         // (http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
         // And concatenate that "IV" to the encrypted texte
 
-        $iv_size = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        $iv = @\mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $ivSize = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = @\mcrypt_create_iv($ivSize, MCRYPT_RAND);
 
         if (function_exists('openssl_encrypt')) {
             return urlencode($iv.\openssl_encrypt(urlencode($data), self::$method, static::$password, 0, $iv));
         } else {
             return urlencode(
-                $iv.exec(
+                exec(
                     "echo \"".urlencode($data)."\" | openssl enc -".urlencode(self::$method).
                     " -base64 -nosalt -K ".bin2hex(static::$password)." -iv ".bin2hex($iv)
                 )
@@ -62,14 +70,14 @@ class Encrypt
 
         $tmp = urldecode($encrypted);
 
-        $iv_size = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        $iv = substr($tmp, 0, $iv_size);
+        $ivSize = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = substr($tmp, 0, $ivSize);
 
         if (function_exists('openssl_decrypt')) {
             return trim(
                 urldecode(
                     \openssl_decrypt(
-                        substr($tmp, $iv_size),
+                        substr($tmp, $ivSize),
                         static::$method,
                         static::$password,
                         0,
@@ -123,20 +131,38 @@ class Encrypt
             $words = $matches[2][$i];
 
             if (!$isEncrypted) {
+
                 // At least one <encrypt> tag found without attribute data-encrypt="true" => the content
                 // should be encrypted and the file should be override with encrypted data
                 $encrypted = self::sslEncrypt($words);
 
-                $markdown = str_replace(
-                    $matches[0][$i],
-                    utf8_encode(
-                        '<encrypt data-encrypt="true">'.
-                        $encrypted.'</encrypt>'
-                    ),
-                    $markdown
-                );
+                // Just to be sure that encryption is successfull
+                $decrypt = self::sslDecrypt($encrypted);
 
-                $rewriteFile = true;
+                if ($words !== $decrypt) {
+
+                    /*<!-- build:debug -->*/
+                    $aeSettings = \MarkNotes\Settings::getInstance();
+                    if ($aeSettings->getDebugMode()) {
+                        $aeDebug = \MarkNotes\Debug::getInstance();
+                        $aeDebug->log('The encryption has failed !!!', 'error');
+                        $aeDebug->log('*    1. Check that extension=php_openssl.dll is present in your php.ini file', 'error');
+                        $aeDebug->log('*    2. Verify that the extension_dir variable is correctly initialized', 'error');
+                    }
+                    /*<!-- endbuild -->*/
+                } else {
+                    // OK, it's fine, encryption is a success
+                    $markdown = str_replace(
+                        $matches[0][$i],
+                        utf8_encode(
+                            '<encrypt data-encrypt="true">'.
+                            $encrypted.'</encrypt>'
+                        ),
+                        $markdown
+                    );
+
+                    $rewriteFile = true;
+                }
             } // if (!$isEncrypted)
         } // for($i;$i<$j;$i++)
 

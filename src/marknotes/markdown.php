@@ -108,7 +108,7 @@ class Markdown
             case 'listFiles':
                 // Retrieve the list of .md files.
                 $aeTask = \MarkNotes\Tasks\ListFiles::getInstance();
-                header('Content-Type: application/json');
+                header('Content-Type: application/json; charset=UTF-8');
                 echo \MarkNotes\Tasks\ListFiles::run();
                 break;
 

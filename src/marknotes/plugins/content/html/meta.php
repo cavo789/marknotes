@@ -56,7 +56,6 @@ class Meta
             }
         }
 
-
         return true;
     }
 

@@ -10,13 +10,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Treeview
 {
-    public static function display(&$params = null)
+    public static function display(array &$params) : bool
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        $task = $aeSession->get('task');
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
         if ($aeSettings->getDebugMode()) {

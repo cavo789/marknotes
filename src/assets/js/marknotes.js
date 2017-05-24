@@ -87,14 +87,8 @@ $(document).ready(function () {
 			$('#TOC').jstree('search', $(this).val());
 		});
 
-		// Size correctly depending on screen resolution
-		//$('#TDM').css('max-height', $(window).height() - 30);
-		//$('#TDM').css('min-height', $(window).height() - 30);
-
-		//$('#CONTENT').css('max-height', $(window).height() - 10);
-		//$('#CONTENT').css('min-height', $(window).height() - 10);
-
 	} // if (marknotes.autoload === 1)
+
 });
 
 /**
@@ -397,7 +391,7 @@ function initializeTasks() {
 			event.stopImmediatePropagation();
 		}
 
-		var $fname = $(this).attr('data-file') ? decodeURIComponent($(this).data('file')) : '';
+		var $fname = $(this).attr('data-file') ? $(this).data('file') : '';
 
 		var $tag = ($(this)
 			.attr('data-tag') ? $(this)
@@ -429,7 +423,8 @@ function initializeTasks() {
 
 		case 'display':
 
-			// Display the file by calling the Ajax function. Display its content in the CONTENT DOM element
+			// Display the file by calling the Ajax function.
+			// Display its content in the CONTENT DOM element
 
 			ajaxify({
 				task: $task,

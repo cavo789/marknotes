@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Use https://github.com/jolicode/JoliTypo for automatically solved some typography errors
+ */
+
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -36,7 +40,22 @@ class JoliTypo
             // Set the locale (en_GB, fr_FR, ...) preferences
             $fixer->setLocale($locale);
 
-            $content = $fixer->fix($content);
+            $errorlevel = error_reporting();
+            error_reporting(0);
+
+            try {
+                $content = $fixer->fix($content);
+            } catch (Exception $e) {
+
+                /*<!-- build:debug -->*/
+                if ($aeSettings->getDebugMode()) {
+                    $aeDebug = \MarkNotes\Debug::getInstance();
+                    $aeDebug->log($e->getMessage(), 'debug');
+                }
+                /*<!-- endbuild -->*/
+            }
+
+            error_reporting($errorlevel);
         }
 
         return true;

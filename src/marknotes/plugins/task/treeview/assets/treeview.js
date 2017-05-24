@@ -61,7 +61,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		var $type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
 
 		if ($type === 'folder') {
-			$items['Add_Folder'] = {
+			$items.Add_Folder = {
 				separator_before: false,
 				separator_after: false,
 				label: marknotes.message.tree_new_folder,
@@ -77,7 +77,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		}
 
 		// And a new note too
-		$items['Add_Item'] = {
+		$items.Add_Item = {
 			separator_before: false,
 			separator_after: false,
 			label: marknotes.message.tree_new_note,
@@ -101,7 +101,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		};
 
 		// Rename an existing note or folder
-		$items['Rename'] = {
+		$items.Rename = {
 			separator_before: false,
 			separator_after: false,
 			label: marknotes.message.tree_rename,
@@ -112,7 +112,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		};
 
 		// Kill a note or folder
-		$items['Remove'] = {
+		$items.Remove = {
 			separator_before: true,
 			separator_after: false,
 			label: ($type === 'folder' ? marknotes.message.tree_delete_folder.replace('%s', node.text) : marknotes.message.tree_delete_file.replace('%s', node.text)),
@@ -201,20 +201,35 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('    old name = ' + $oldname);
+			if ($task !== 'files.create') {
+				console.log('    old name = ' + $oldname);
+			}
 			console.log('    new name = ' + $newname);
 		}
 		/*<!-- endbuild -->*/
 
 		// Encode the name in base64 so no problem with f.i. slashes and accentuated characters
-		$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));
+		if ($task !== 'files.create') {
+			$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));
+		}
 		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
 
 		switch ($task) {
 		case 'files.create':
+
+			// create : we need the task, node name and type
+			// after the creation, reload the treeview
+			ajaxify({
+				task: $task, // f.i. 'files.delete'
+				param: $newname, // name of the file to create or remove
+				type: $type, // 'file' or 'folder'
+				callback: 'fnPluginTaskTreeView_reload(data)'
+			});
+			break;
+
 		case 'files.delete':
 
-			// create or delete : we need the task, node name and type
+			// delete : we need the task, node name and type
 			ajaxify({
 				task: $task, // f.i. 'files.delete'
 				param: $newname, // name of the file to create or remove
@@ -236,6 +251,28 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 	} catch (err) {
 		console.warn(err.message);
 	}
+
+}
+
+/**
+ * Reload the treeview
+ */
+function fnPluginTaskTreeView_reload(data) {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('Reload the treeview after a creation or a rename');
+	}
+	/*<!-- endbuild -->*/
+
+	ajaxify({
+		task: 'listFiles',
+		dataType: 'json',
+		callback: 'initFiles(data)',
+		useStore: false
+	});
+
+	return true;
 
 }
 

@@ -100,6 +100,8 @@ class HTML
 
         $template = str_replace('%LANGUAGE%', $aeSettings->getLanguage(), $template);
         $template = str_replace('%DEBUG%', $aeSettings->getDebugMode(), $template);
+        $template = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $template);
+
         $template = str_replace('%TITLE%', $this->getHeadingText($html), $template);
         $template = str_replace('%CONTENT%', $html, $template);
         $template = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $template);

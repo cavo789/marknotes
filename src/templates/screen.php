@@ -105,6 +105,7 @@
 		 marknotes.settings.debug='%DEBUG%';
 		 marknotes.settings.language='%LANGUAGE%';
 		 marknotes.treeview = {};
+		 marknotes.docs='%DOCS%';
 		 marknotes.webroot='%ROOT%/';
       </script>
 

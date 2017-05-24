@@ -97,8 +97,10 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 
             $fileMD = $aeFiles->removeExtension($filename).'.md';
 
-            if (!$aeFiles->fileExists($webRoot.$fileMD)) {
-                $fileMD = utf8_decode($fileMD);
+            if (mb_detect_encoding($fileMD)) {
+                if (!file_exists($webRoot.$fileMD)) {
+                    $fileMD = utf8_decode($fileMD);
+                }
             }
 
             if (!$aeFiles->fileExists($webRoot.$fileMD)) {

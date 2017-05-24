@@ -144,13 +144,6 @@ Reveal.initialize({
 			}
 		},
 		{
-			src: marknotes.root + 'libs/reveal/plugin/highlight/highlight.js',
-			async: true,
-			callback: function () {
-				hljs.initHighlightingOnLoad();
-			}
-		},
-		{
 			src: marknotes.root + 'libs/reveal/plugin/zoom-js/zoom.js',
 			async: true
 		},

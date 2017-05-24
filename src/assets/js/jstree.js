@@ -54,8 +54,8 @@ function jstree_init($data) {
 						}
 						/*<!-- endbuild -->*/
 
-						var $fname = objNode.parent + objNode.text + '.md';
-
+						//var $fname = objNode.parent + objNode.text + '.md';
+						var $fname = objNode.data.url;
 						$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
 						ajaxify({
 							task: objNode.data.task,
@@ -180,28 +180,43 @@ function jstree_init($data) {
  */
 function jstree_context_menu(node) {
 
-	var tree = $('#TOC').jstree(true);
+	var $tree = $('#TOC').jstree(true);
 
-	var $items = {
-		Collapse: {
-			separator_before: false,
-			separator_after: false,
-			label: marknotes.message.tree_collapse,
-			icon: 'fa fa-plus-square-o',
-			action: function () {
-				$('#TOC').jstree('close_all');
-			}
-		},
-		Expand: {
-			separator_before: false,
-			separator_after: true,
-			label: marknotes.message.tree_expand,
-			icon: 'fa fa-minus-square-o',
-			action: function () {
-				$('#TOC').jstree('open_all');
-			}
+	var $type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
+
+	var $items = {};
+
+	$items.Collapse = {
+		separator_before: false,
+		separator_after: false,
+		label: marknotes.message.tree_collapse,
+		icon: 'fa fa-plus-square-o',
+		action: function () {
+			$('#TOC').jstree('close_all');
 		}
 	};
+
+	$items.Expand = {
+		separator_before: false,
+		separator_after: true,
+		label: marknotes.message.tree_expand,
+		icon: 'fa fa-minus-square-o',
+		action: function () {
+			$('#TOC').jstree('open_all');
+		}
+	};
+
+	if ($type === 'file') {
+		$items.Open_NewWindow = {
+			separator_before: false,
+			separator_after: true,
+			label: marknotes.message.open_html,
+			icon: 'fa fa-external-link',
+			action: function () {
+				contextMenuNewWindow(node);
+			}
+		};
+	}
 
 	// ------------------------------------------------------------------------
 	// Plugin Task-Treeview
@@ -245,4 +260,21 @@ function jstree_context_menu(node) {
 
 	return $items;
 
+}
+
+/**
+ * The treeview context menu - Open in a new window function has been clicked
+ */
+function contextMenuNewWindow(node) {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('Context menu - Open in a new window');
+		console.log(node);
+	}
+	/*<!-- endbuild -->*/
+	var url = node.data.url;
+
+	// Open the html version of the note
+	window.open(marknotes.webroot + marknotes.docs + '/' + url + '.html');
 }

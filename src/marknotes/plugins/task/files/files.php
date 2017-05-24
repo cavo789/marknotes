@@ -42,7 +42,7 @@ class Files
     private static function returnInfo(array $arr) : string
     {
         $aeJSON = \MarkNotes\JSON::getInstance();
-        return $aeJSON->json_return_info($arr, false);
+        return $aeJSON->json_encode($arr);
     }
 
     /**
@@ -105,7 +105,7 @@ class Files
             'foldername' => utf8_encode($foldername)
         );
 
-        $return = self::returnInfo($arr);
+        return self::returnInfo($arr);
     }
 
     /**
@@ -160,7 +160,7 @@ class Files
             'foldername' => utf8_encode($newname)
         );
 
-        $return = self::returnInfo($arr);
+        return self::returnInfo($arr);
     }
 
     /**
@@ -172,14 +172,14 @@ class Files
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-
         $wReturn = $aeFilesystem->deleteFolder($foldername);
 
         switch ($wReturn) {
             case KILL_SUCCESS:
 
                 $msg = sprintf($aeSettings->getText('folder_deleted',
-                    'The folder [%s] and its content has been deleted'), $foldername);
+                    'The folder [%s] and its content has been deleted'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $foldername));
                 break;
             case FOLDER_NOT_DELETED:
 
@@ -189,17 +189,16 @@ class Files
                 break;
             case FOLDER_NOT_FOUND:
 
-                $msg = str_replace(
-                    '%s',
-                    str_replace($aeSettings->getFolderDocs(true), '', $foldername),
-                    $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists')
-                );
+                $msg = sprintf($aeSettings->getText('folder_not_found',
+                    'The folder [%s] doesn\\&#39;t exists'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $foldername));
 
                 break;
             case FOLDER_IS_READONLY:
 
                 $msg = sprintf($aeSettings->getText('folder_read_only', 'Sorry but '.
-                    'the folder [%s] is read-only'), $foldername);
+                    'the folder [%s] is read-only'),
+                    str_replace($aeSettings->getFolderDocs(true), '', $foldername));
                 break;
             default:
                 $msg = str_replace(
@@ -218,7 +217,7 @@ class Files
             'foldername' => utf8_encode($foldername)
         );
 
-        $return = self::returnInfo($arr);
+        return self::returnInfo($arr);
     }
 
     /**
@@ -262,7 +261,7 @@ class Files
             'filename' => utf8_encode($filename)
         );
 
-        $return = self::returnInfo($arr);
+        return self::returnInfo($arr);
     }
 
     /**
@@ -309,7 +308,7 @@ class Files
             'filename' => utf8_encode($newname)
         );
 
-        $return = self::returnInfo($arr);
+        return self::returnInfo($arr);
     }
 
     /**
@@ -347,16 +346,15 @@ class Files
         }
 
         $arr = array(
-            'status' => (($wReturn === RENAME_SUCCESS) ? 1 : 0),
+            'status' => (($wReturn === KILL_SUCCESS) ? 1 : 0),
             'action' => 'delete',
             'type' => 'file',
             'msg' => $msg,
             'filename' => utf8_encode($filename)
         );
 
-        $return = self::returnInfo($arr);
+        return self::returnInfo($arr);
     }
-
 
     /**
      * Create a file / folder
@@ -366,7 +364,6 @@ class Files
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // file or folder
@@ -376,9 +373,7 @@ class Files
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
             if (mb_detect_encoding($newname)) {
-                if (!file_exists($newname)) {
-                    $newname = utf8_decode($newname);
-                }
+                $newname = utf8_decode($newname);
             }
         }
 
@@ -391,20 +386,22 @@ class Files
         /*<!-- endbuild -->*/
 
         if ((trim($type) === '') || (trim($newname) === '')) {
-            echo $aeFunctions->showError('unknown_error', 'An error has occured, please try again', false);
-            return false;
-        }
-
-        $return = '';
-
-        if ($type === 'folder') {
+            $return = array(
+                'status' => 0,
+                'action' => 'create',
+                'type' => $type,
+                'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
+            );
+        } else {
+            if ($type === 'folder') {
 
             // it's a folder
             $return = self::createFolder($newname);
-        } else {
+            } else {
 
             // it's a file
             $return = self::createFile($newname);
+            }
         }
 
         return $return;
@@ -418,7 +415,6 @@ class Files
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // file or folder
@@ -455,20 +451,22 @@ class Files
         /*<!-- endbuild -->*/
 
         if ((trim($type) === '') || (trim($newname) === '')) {
-            echo $aeFunctions->showError('unknown_error', 'An error has occured, please try again', false);
-            return false;
-        }
-
-        $return = '';
-
-        if ($type === 'folder') {
-
-            // it's a folder
-            $return = self::renameFolder($oldname, $newname);
+            $return = array(
+                'status' => 0,
+                'action' => 'rename',
+                'type' => $type,
+                'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
+            );
         } else {
+            if ($type === 'folder') {
 
-            // it's a file
-            $return = self::renameFile($oldname, $newname);
+                // it's a folder
+                $return = self::renameFolder($oldname, $newname);
+            } else {
+
+                // it's a file
+                $return = self::renameFile($oldname, $newname);
+            }
         }
 
         return $return;
@@ -480,54 +478,56 @@ class Files
     private static function delete(array &$params = array()) : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // file or folder
         $type = $aeFunctions->getParam('type', 'string', '', false);
 
         $name = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
-
-        if ($name != '') {
-            $name = $aeFiles->sanitizeFileName(trim($name));
-        }
-
-        if (mb_detect_encoding($name)) {
-            if (!file_exists($name)) {
-                $name = utf8_decode($name);
-            }
-        }
-
-        // Get the fullname of the folder/file name
-        $name = $aeSettings->getFolderDocs(true).$name;
         $name = $aeFiles->sanitizeFileName($name);
 
-        $return = '';
-
-        if ($type === 'folder') {
-
-            // it's a folder
-            $return = self::deleteFolder($name);
+        if ($name === '') {
+            $return = array(
+                'status' => 0,
+                'action' => 'delete',
+                'type' => $type,
+                'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again'),
+                'filename' => $name
+            );
         } else {
+            if (mb_detect_encoding($name)) {
+                if (!file_exists($name)) {
+                    $name = utf8_decode($name);
+                }
+            }
 
-            // it's a file
-            $return = self::deleteFile($name);
-        }
+            // Get the fullname of the folder/file name
+            $name = $aeSettings->getFolderDocs(true).$name;
+            $name = $aeFiles->sanitizeFileName($name);
+
+            if ($type === 'folder') {
+
+                // it's a folder
+                $return = self::deleteFolder($name);
+            } else {
+
+                // it's a file
+                $return = self::deleteFile($name);
+            }
+        } // if ($name === '')
 
         return $return;
     }
 
     public static function run(&$params = null)
     {
-        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
-        $task = $aeSession->get('task');
+        $task = trim($aeSession->get('task'));
         $return = '';
 
         switch ($task) {
