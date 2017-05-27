@@ -11,9 +11,9 @@
 	"locale": "fr-FR",
 	"timezone": "Europe/Brussels",
 	"optimisation": {
-		"browser_cache": 0,
-		"localStorage": 0,
-		"server_session": 0
+		"browser_cache": 1,
+		"localStorage": 1,
+		"server_session": 1
 	},
 	"page": {
 		"google_font": "",

@@ -130,8 +130,8 @@ class JSON
 
             if (json_last_error() !== JSON_ERROR_NONE) {
                 self::showError('', false);
-                if (self::$debug) {
-                    echo '<pre>'.print_r($value, true).'</pre>';
+                if (self::$_debug) {
+                    echo '<pre style="background-color:yellow;">'.print_r($value, true).'</pre>';
                 }
                 die();
             } // if (json_last_error()!==JSON_ERROR_NONE)

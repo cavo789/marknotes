@@ -42,7 +42,7 @@ class Settings
         }
 
         return self::$hInstance;
-    } // function getInstance()
+    }
 
     private function loadJSON(array $params = null) : array
     {
@@ -196,7 +196,7 @@ class Settings
         } // if ($fname!=='')
 
         return $fname;
-    } // function sanitizeFileName()
+    }
 
     /**
     * Open the package.json file and retrieve an information like the version number from there
@@ -207,13 +207,15 @@ class Settings
     {
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeJSON = \MarkNotes\JSON::getInstance();
+        $sReturn = '';
+
         if ($aeFiles->fileExists($fname = $this->getFolderAppRoot().'package.json')) {
             $json = $aeJSON->json_decode($fname, true);
-            return $json[$info];
-        } else {
-            return '';
+            $sReturn = $json[$info];
         }
-    } // function getPackageInfo()
+
+        return $sReturn;
+    }
 
     /**
      * Return the name of the program, with or without its version number (from package.json)
@@ -228,7 +230,7 @@ class Settings
             $name .= ' v.'.self::getPackageInfo('version');
         }
         return $name;
-    } // function getAppName()
+    }
 
     /**
      * Return the homepage of the program (from package.json)
@@ -259,7 +261,7 @@ class Settings
     public function getDebugMode() : bool
     {
         return $this->debugmode ? true : false;
-    } // function getDebugMode()
+    }
 
     public function setDebugMode(bool $onOff)
     {
@@ -340,7 +342,6 @@ class Settings
 
     public function setFolderAppRoot($folder)
     {
-
         // Respect OS directory separator
         $folder = str_replace('/', DS, $folder);
 
@@ -413,7 +414,7 @@ class Settings
     public function setFolderWebRoot(string $folder)
     {
         $this->_folderWebRoot = rtrim($folder, DS).DS;
-    } // function setFolderWebRoot()
+    }
 
     public function getFolderLibs() : string
     {
@@ -464,7 +465,7 @@ class Settings
             $fname = $this->getFolderTemplates().$tmpl.'.php';
         } // if ($tmpl!=='')
 
-            return $fname;
+        return $fname;
     } // function getTemplateFile()
 
     /**
@@ -482,15 +483,7 @@ class Settings
      */
     public function getOptimisationUseBrowserCache() : bool
     {
-        $bReturn = false;
-
-        if (isset($this->_json['optimisation'])) {
-            $tmp = $this->_json['optimisation'];
-            if (isset($tmp['browser_cache'])) {
-                $bReturn = (($tmp['browser_cache'] == 1)?true:false);
-            }
-        }
-        return $bReturn;
+        return boolval($this->_json['optimisation']['browser_cache'] ?? false);
     }
 
     /**
@@ -500,15 +493,7 @@ class Settings
      */
     public function getOptimisationUseServerSession() : bool
     {
-        $bReturn = false;
-
-        if (isset($this->_json['optimisation'])) {
-            $tmp = $this->_json['optimisation'];
-            if (isset($tmp['server_session'])) {
-                $bReturn = (($tmp['server_session'] == 1)?true:false);
-            }
-        }
-        return $bReturn;
+        return boolval($this->_json['optimisation']['server_session'] ?? false);
     }
 
     /**
@@ -553,15 +538,7 @@ class Settings
      */
     public function getPageImgMaxWidth() : string
     {
-        $return = IMG_MAX_WIDTH;
-
-        if (isset($this->_json['page'])) {
-            if (isset($this->_json['page']['img_maxwidth'])) {
-                $return = trim($this->_json['page']['img_maxwidth']);
-            }
-        }
-
-        return $return;
+        return $this->_json['page']['img_maxwidth'] ?? IMG_MAX_WIDTH;
     } // function getPageImgMaxWidth()
 
     /**
@@ -571,15 +548,7 @@ class Settings
      */
     public function getPageRobots() : string
     {
-        $return = 'index, follow';
-
-        if (isset($this->_json['page'])) {
-            if (isset($this->_json['page']['robots'])) {
-                $return = trim($this->_json['page']['robots']);
-            }
-        }
-
-        return $return;
+        return $this->_json['page']['robots'] ?? 'index, follow';
     } // function getPageRobots()
 
     /**
@@ -589,13 +558,7 @@ class Settings
      */
     public function getSiteName() : string
     {
-        $sReturn = '';
-
-        if (isset($this->_json['site_name'])) {
-            $sReturn = trim($this->_json['site_name']);
-        }
-
-        return $sReturn;
+        return trim($this->_json['site_name'] ?? '');
     }
 
     /**
@@ -605,16 +568,8 @@ class Settings
      */
     public function getSlideshowType(string $sDefault = 'reveal') : string
     {
-        $sReturn = $sDefault;
-        if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow']['type'])) {
-                $sReturn = trim($this->_json['slideshow']['type']);
-            }
-        }
-
-        return $sReturn;
+        return trim($this->_json['slideshow']['type'] ?? $sDefault);
     }
-
 
     /**
      * Return the bullet to use for slideshow lists (f.i. "check" (will be used as fa-check)
@@ -622,17 +577,7 @@ class Settings
      */
     public function getSlideshowListBullet(string $sDefault = 'check') : string
     {
-        $sReturn = $sDefault;
-
-        if (isset($this->_json['slideshow'])) {
-            if (isset($this->_json['slideshow']['bullet'])) {
-                if (isset($this->_json['slideshow']['bullet']['fontawesome'])) {
-                    $sReturn = $this->_json['slideshow']['bullet']['fontawesome'];
-                }
-            }
-        }
-
-        return $sReturn;
+        return trim($this->_json['slideshow']['bullet']['fontawesome'] ?? $sDefault);
     }
 
     /**
@@ -691,15 +636,7 @@ class Settings
      */
     public function getTreeOpened() : bool
     {
-        $bReturn = false;
-
-        if (isset($this->_json['list'])) {
-            if (isset($this->_json['list']['opened'])) {
-                $bReturn = ($this->_json['list']['opened'] == 1?true:false);
-            }
-        }
-
-        return $bReturn ? true : false;
+        return boolval($this->_json['list']['opened'] ?? false);
     } // function getTreeOpened()
 
     /**
@@ -727,8 +664,7 @@ class Settings
 
     public function getShowTreeAllowed() : bool
     {
-        $bReturn = $this->_json['list']['show_tree_allowed'] ?? true;
-        return $bReturn;
+        return boolval($this->_json['list']['show_tree_allowed'] ?? true);
     }
 
     /**
@@ -738,7 +674,7 @@ class Settings
      */
     public function getLocale() : string
     {
-        $sReturn = 'en_GB';
+        $sReturn = 'en-GB';
 
         if (isset($this->_json['locale'])) {
             // Be sure to have en-US (minus) and not en_US (underscore)
@@ -755,13 +691,7 @@ class Settings
      */
     public function getTimezone() : string
     {
-        $sReturn = 'Europe/Paris';
-
-        if (isset($this->_json['timezone'])) {
-            $sReturn = $this->_json['timezone'];
-        }
-
-        return $sReturn;
+        return $this->_json['timezone'] ?? 'Europe/Paris';
     }
 
     /**
@@ -779,15 +709,7 @@ class Settings
      */
     public function getUseLocalCache() : bool
     {
-        $bReturn = true;
-
-        if (isset($this->_json['optimisation'])) {
-            $tmp = $this->_json['optimisation'];
-            if (isset($tmp['localStorage'])) {
-                $bReturn = (($tmp['localStorage'] == 1)?true:false);
-            }
-        }
-        return $bReturn;
+        return boolval($this->_json['optimisation']['localStorage'] ?? true);
     }
 
     public function getPlugins(string $type = '', string $layout = '') : array

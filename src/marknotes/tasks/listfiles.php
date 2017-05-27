@@ -28,6 +28,7 @@ class ListFiles
 
     public static function run()
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -41,6 +42,13 @@ class ListFiles
         }
 
         if ($sReturn === '') {
+
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                $aeDebug->log('Get list of files in ['.$aeSettings->getFolderDocs(true).']', 'debug');
+            }
+            /*<!-- endbuild -->*/
+
             $arrFiles = $aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
 
             // Be carefull, folders / filenames perhaps contains accentuated characters
@@ -50,6 +58,12 @@ class ListFiles
 
             // Get the number of files
             $return['count'] = count($arrFiles);
+
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                $aeDebug->log($return['count'].' files found', 'debug');
+            }
+            /*<!-- endbuild -->*/
 
             // --------------------------------------------------------------------------------------
             // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
@@ -63,7 +77,8 @@ class ListFiles
             // The array is now ready
             $return['tree'] = $arr;
 
-            $sReturn = json_encode($return, JSON_PRETTY_PRINT);
+            $aeJSON = \MarkNotes\JSON::getInstance();
+            $sReturn = $aeJSON->json_encode($return);
 
             if ($aeSettings->getOptimisationUseServerSession()) {
                 // Remember for the next call
@@ -130,7 +145,7 @@ class ListFiles
          'id' => utf8_encode(str_replace($root, '', $dir).DS),
          'type' => 'folder',
          'icon' => 'folder',
-         'text' => basename($dir),
+         'text' => utf8_encode(basename($dir)),
          'state' => array('opened' => $opened,'disabled' => 1),
          'children' => array());
 
@@ -156,7 +171,7 @@ class ListFiles
                                 $files[] = array(
                                     'id' => md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
                                     'icon' => 'file file-md',
-                                    'text' => $filename,
+                                    'text' => utf8_encode($filename),
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(
