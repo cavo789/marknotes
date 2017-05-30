@@ -114,7 +114,8 @@ class Index
         $list = '<ul class="fa-ul">';
 
         foreach ($arr as $entry) {
-            $list .= '<li><i class="fa-li fa fa-'.$icon.'" '.$extra.'></i><span class="index_date">'.$entry['time'].' - </span><a href="'.$entry['file'].'" class="index_file">'.$entry['text'].'</a></li>';
+            $list .= '<li><i class="fa-li fa fa-'.$icon.'" '.$extra.'></i><span class="index_date">'.$entry['time'].' - </span><a href="'.$entry['file'].'" class="index_file">'.$entry['text'].'</a> '.
+            '(<a href="'.$entry['file'].'.html" class="index_file">html</a>)</li>';
         }
 
         $list .= '</ul>';
