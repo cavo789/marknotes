@@ -42,11 +42,15 @@ class Write
         }
 
         $aeDebug = \MarkNotes\Debug::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Retrieve the filename from the session
         $filename = $aeSession->get('filename', '');
+
+        // Be sure to have the .md extension
+        $filename = $aeFiles->removeExtension($filename).'.md';
 
         if ($filename !== '') {
 

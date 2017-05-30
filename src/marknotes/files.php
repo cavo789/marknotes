@@ -291,6 +291,8 @@ class Files
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+        $filename = str_replace('/', DS, $filename);
+
         if (mb_detect_encoding($filename)) {
             if (!file_exists($filename)) {
                 $filename = utf8_decode($filename);
@@ -303,7 +305,7 @@ class Files
         }
         /*<!-- endbuild -->*/
 
-        if (file_exists($filename)) {
+        if (self::fileExists($filename)) {
             rename($filename, $filename.'.old');
 
             try {
@@ -328,7 +330,7 @@ class Files
 
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
-                $aeDebug->log('Oups, file not found', 'error');
+                $aeDebug->log('Oups, file ['.$filename.'] not found', 'error');
             }
             /*<!-- endbuild -->*/
         } // if (file_exists($filename))
