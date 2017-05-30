@@ -38,6 +38,15 @@ class Index
         $aeMD = \MarkNotes\FileType\Markdown::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+        $docRoot = str_replace(DS, '/', $aeSettings->getFolderDocs(false));
+
+        // The filename shouldn't mention the docs folders, just the filename
+        // So, $filename should not be docs/markdown.md but only markdown.md because the
+        // folder name will be added later on
+        if (substr($params['filename'], 0, strlen($docRoot)) === $docRoot) {
+            $params['filename'] = substr($params['filename'], strlen($docRoot));
+        }
+
         // If the filename doesn't mention the file's extension, add it.
         if (substr($params['filename'], -5) != '.html') {
             $params['filename'] .= '.html';
@@ -45,9 +54,9 @@ class Index
 
         $fullname = str_replace(
             '/',
-            DIRECTORY_SEPARATOR,
-            $aeSettings->getFolderWebRoot().
-                ltrim($params['filename'], DS)
+            DS,
+            $aeSettings->getFolderDocs(true).
+            ltrim($params['filename'], DS)
         );
 
         $folder = dirname($fullname);
@@ -65,8 +74,6 @@ class Index
         $files = glob($folder.DS."*.md");
 
         $arr = array();
-
-        $docs = $aeSettings->getFolderDocs(true);
 
         foreach ($files as $file) {
             $markdown = file_get_contents($file);
@@ -86,24 +93,24 @@ class Index
 
         // Build the list
 
-        // Read the template
-        $template = file_get_contents($aeSettings->getTemplateFile('index'));
-
         $list = '<ul class="fa-ul">';
 
         foreach ($arr as $entry) {
-            $list .= '<li cass="fa fa-check"><span class="index_date">'.$entry['time'].' - </span><a href="'.$entry['file'].'" class="index_file">'.$entry['text'].'</a></li>';
+            $list .= '<li><i class="fa-li fa fa-joomla fa-spin" style="color:#142849;"></i><span class="index_date">'.$entry['time'].' - </span><a href="'.$entry['file'].'" class="index_file">'.$entry['text'].'</a></li>';
         }
 
         $list .= '</ul>';
+
+        // Read the template
+        $template = file_get_contents($aeSettings->getTemplateFile('index'));
+
+        // And generate the output : template + list of files
 
         $html = str_replace('%CONTENT%', $list, $template);
 
         //}
         $html = $aeHTML->replaceVariables($html, '', null);
 
-
-/*
         // --------------------------------
         // Call content plugins
         $aeEvents->loadPlugins('content', 'html');
@@ -111,7 +118,7 @@ class Index
         $aeEvents->trigger('render.index', $args);
         $html = $args[0];
         // --------------------------------
-*/
+
         return $html;
     }
 }
