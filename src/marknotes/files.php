@@ -210,7 +210,6 @@ class Files
         $arr = explode('.', $filename);
 
         $extension = '';
-        $name = $arr[0];
         if (count($arr) > 0) {
             unset($arr[0]);
             $extension = implode($arr, '.');

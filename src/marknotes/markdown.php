@@ -105,6 +105,13 @@ class Markdown
                 echo $aeTask->run($params);
                 break;
 
+            case 'index':
+                // Displan a dynamic index page
+                $aeTask = \MarkNotes\Tasks\Index::getInstance();
+                header('Content-Type: text/html; charset=utf-8');
+                echo $aeTask->run($params);
+                break;
+
             case 'listFiles':
                 // Retrieve the list of .md files.
                 $aeTask = \MarkNotes\Tasks\ListFiles::getInstance();

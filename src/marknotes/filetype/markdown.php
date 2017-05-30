@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Markdown
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -15,10 +15,10 @@ class Markdown
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Markdown();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Markdown();
         }
-        return self::$_Instance;
+        return self::$hInstance;
     } // function getInstance()
 
     /**

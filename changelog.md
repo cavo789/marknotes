@@ -2,6 +2,14 @@
 
 [https://github.com/cavo789/marknotes](https://github.com/cavo789/marknotes)
 
+## 1.1
+
+```diff
++ Plugin Carrousel - Also for html rendering (and Reveal too)
++ Add support for the dynamic page 'index.html'
+```
+
+
 ## 1.0.8
 
 ### 2017-04-17

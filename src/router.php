@@ -53,7 +53,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     if ($filename !== '') {
         $format = $aeFiles->getExtension($filename);
     }
-
     // Take a look on the format parameter, if mentionned use that format
     $format = $aeFunctions->getParam('format', 'string', $format, false, 8);
 
@@ -63,9 +62,11 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     if ($filename !== '') {
         $fileMD = '';
 
-        if (in_array($filename, array('tag.json', 'timeline.html', 'timeline.json', 'sitemap.xml'))) {
+        if (basename($filename) === 'index.html') {
+            $format = 'index';
+            $fileMD = $filename;
+        } elseif (in_array($filename, array('tag.json', 'timeline.html', 'timeline.json', 'sitemap.xml'))) {
             // Specific files
-
             $aeFiles = \MarkNotes\Files::getInstance();
 
             // Remember the layout (json, html, ...)
@@ -86,7 +87,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
                     break;
             } // switch
 
-            $filename = '';
+            $fileMD = '';
         } else {
 
             // Get the absolute folder name where the web application resides (f.i. c:\websites\marknotes\)

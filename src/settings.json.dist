@@ -227,6 +227,7 @@
 		"default": "reveal"
 	},
 	"templates": {
+		"index": "index",
 		"html": "html",
 		"pdf": "pdf",
 		"remark": "remark",

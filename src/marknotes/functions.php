@@ -45,6 +45,29 @@ class Functions
         }
     }
 
+    public function folderNotFound(string $folder = '', bool $die = true) : bool
+    {
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $msg = $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists');
+
+        header("HTTP/1.0 404 Not Found");
+
+        if ($folder !== '') {
+            echo(str_replace('%s', '<strong>'.$folder.'</strong>', $msg));
+        }
+
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug = \MarkNotes\Debug::getInstance();
+            $aeDebug->here('#DebugMode# - Folder '.$folder.' not found', 5);
+        }
+        /*<!-- endbuild -->*/
+
+        if ($die) {
+            die();
+        }
+    }
+
     /**
      * Display an error message and, if the debug mode is enabled, gives info about the caller
      */

@@ -1,0 +1,14 @@
+body {
+	background: #fff;
+	padding   : 20px;
+	font-size : 2em;
+}
+
+.index_date {
+	color     : gray;
+	font-style: italic;
+}
+
+.index_file {
+	color: #428bca;
+}

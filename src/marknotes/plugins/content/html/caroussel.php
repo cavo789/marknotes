@@ -19,6 +19,9 @@ class Caroussel
             return true;
         }
 
+        $aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+
         $matches = array();
 
         // Check if the content contains things like '%CAROUSSEL .images/folder/demo%'
@@ -77,7 +80,6 @@ class Caroussel
                             $images .= '<hr/>'.$img;
                         }
                     }
-
                     $content = str_replace('<p>'.$arrTags[$i].'</p>', $images, $content);
                 }
             }
@@ -93,9 +95,9 @@ class Caroussel
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
 
-        // This plugin is only needed when the task is f.i. 'reveal'
+        // This plugin is only needed when the task is one of the following
 
-        if (!in_array($task, array('html'))) {
+        if (!in_array($task, array('html','reveal'))) {
             return true;
         }
 
