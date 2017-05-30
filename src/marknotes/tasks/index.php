@@ -1,7 +1,20 @@
 <?php
 
 /**
-* Return a dynamic index.html page
+ * Return a dynamic index.html page : the user will be able to address any folders just by
+ * typing the URL like http://site/docs/folder/subfolder and followed by index.html.
+ *
+ * That index.html file doesn't exists and will be generated (html rendering) by this
+ * class.
+ *
+ * The content of the /templates/index.php file will be taken (as template) and the list of
+ * .md files immediatly in the adressed folder (and not in subfolders) will be collected.
+ *
+ * This task will generate a <ul><li> list and append in into the template then return the
+ * html.
+ *
+ * Example : http://localhost/marknotes/docs/CMS/Joomla/index.html will display the list of .md
+ * notes of /docs/CMS/Joomla
 */
 
 namespace MarkNotes\Tasks;
@@ -86,17 +99,22 @@ class Index
             );
         }
 
-        // Sort the list of files,  descending
+        // Sort the list of files, descending (the most recent file first)
         usort($arr, function ($a, $b) {
             return strcmp($b['fmtime'], $a['fmtime']);
         });
 
-        // Build the list
+        // Retrieve the settings for the boostrap list items
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $arrSettings = $aeSettings->getPlugins('options', 'bootstrap');
+        $icon = $arrSettings['bullet'] ?? 'check';
+        $extra = $arrSettings['extra_attribute'] ?? '';
 
+        // Build the list
         $list = '<ul class="fa-ul">';
 
         foreach ($arr as $entry) {
-            $list .= '<li><i class="fa-li fa fa-joomla fa-spin" style="color:#142849;"></i><span class="index_date">'.$entry['time'].' - </span><a href="'.$entry['file'].'" class="index_file">'.$entry['text'].'</a></li>';
+            $list .= '<li><i class="fa-li fa fa-'.$icon.'" '.$extra.'></i><span class="index_date">'.$entry['time'].' - </span><a href="'.$entry['file'].'" class="index_file">'.$entry['text'].'</a></li>';
         }
 
         $list .= '</ul>';
@@ -105,10 +123,8 @@ class Index
         $template = file_get_contents($aeSettings->getTemplateFile('index'));
 
         // And generate the output : template + list of files
-
         $html = str_replace('%CONTENT%', $list, $template);
 
-        //}
         $html = $aeHTML->replaceVariables($html, '', null);
 
         // --------------------------------
