@@ -27,19 +27,19 @@ class Lazyload
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
-		
+
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-		
-		if ($aeSettings->getDebugMode()) {
-			$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-		}
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
 
         $js .= "\n<script type=\"text/javascript\" src=\"".$root."/libs/lazysizes/lazysizes.min.js\"></script>\n";
-		
-		if ($aeSettings->getDebugMode()) {
-			$js .= "<!-- End for ".__FILE__."-->";
-		}
-			
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
         return true;
     }
 
@@ -54,7 +54,7 @@ class Lazyload
         // This plugin is not needed when the task is f.i. 'pdf'
         // There is no need for lazyload images  when the output format is pdf
 
-        if (in_array($task, array('pdf'))) {
+        if (in_array($task, array('index','pdf'))) {
             return true;
         }
         $aeEvents = \MarkNotes\Events::getInstance();

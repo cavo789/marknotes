@@ -26,9 +26,13 @@
 	<body>
 		<div class="container">
 			<div class="page-header"><h1>%SITE_NAME%</h1></div>
-
 			%CONTENT%
-
 		</div>
+
+		<footer>
+			<hr/>
+			<a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="%ROOT%/templates/assets/images/logo-marknotes.svg" alt="marknotes" height="42" align="left" /></a>
+		</footer>
+
 	</body>
 </html>

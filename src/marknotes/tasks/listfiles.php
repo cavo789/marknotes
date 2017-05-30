@@ -142,12 +142,16 @@ class ListFiles
 
         // Entry for the folder
         $listDir = array(
-         'id' => utf8_encode(str_replace($root, '', $dir).DS),
-         'type' => 'folder',
-         'icon' => 'folder',
-         'text' => utf8_encode(basename($dir)),
-         'state' => array('opened' => $opened,'disabled' => 1),
-         'children' => array());
+            'id' => utf8_encode(str_replace($root, '', $dir).DS),
+            'type' => 'folder',
+            'icon' => 'folder',
+            'text' => utf8_encode(basename($dir)),
+            'state' => array('opened' => $opened,'disabled' => 1),
+            'data' => array(
+                'url' => str_replace(DS, '/', utf8_encode(str_replace($root, '', $dir)))
+            ),
+            'children' => array()
+        );
 
         $files = array();
         $dirs = array();

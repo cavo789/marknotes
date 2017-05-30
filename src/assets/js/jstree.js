@@ -206,17 +206,16 @@ function jstree_context_menu(node) {
 		}
 	};
 
-	if ($type === 'file') {
-		$items.Open_NewWindow = {
-			separator_before: false,
-			separator_after: true,
-			label: marknotes.message.open_html,
-			icon: 'fa fa-external-link',
-			action: function () {
-				contextMenuNewWindow(node);
-			}
-		};
-	}
+	// Open the note in a new window or, too, the folder (open then index.html)
+	$items.Open_NewWindow = {
+		separator_before: false,
+		separator_after: true,
+		label: marknotes.message.open_html,
+		icon: 'fa fa-external-link',
+		action: function () {
+			contextMenuNewWindow(node);
+		}
+	};
 
 	// ------------------------------------------------------------------------
 	// Plugin Task-Treeview
@@ -273,8 +272,13 @@ function contextMenuNewWindow(node) {
 		console.log(node);
 	}
 	/*<!-- endbuild -->*/
-	var url = node.data.url;
 
-	// Open the html version of the note
-	window.open(marknotes.webroot + marknotes.docs + '/' + url + '.html');
+	// Folder or file ?
+	var $type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
+
+	// If it's a folder, open the index.html file. Otherwise node.data.url point to the note;
+	// add the .html extension
+	$url = node.data.url + ($type === 'folder' ? '/index.html' : '.html');
+
+	window.open(marknotes.webroot + marknotes.docs + '/' + $url);
 }
