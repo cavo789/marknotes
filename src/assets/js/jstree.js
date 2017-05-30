@@ -278,7 +278,7 @@ function contextMenuNewWindow(node) {
 
 	// If it's a folder, open the index.html file. Otherwise node.data.url point to the note;
 	// add the .html extension
-	$url = node.data.url + ($type === 'folder' ? '/index.html' : '.html');
+	$url = node.data.url + ($type === 'folder' ? 'index.html' : '.html');
 
 	window.open(marknotes.webroot + marknotes.docs + '/' + $url);
 }
