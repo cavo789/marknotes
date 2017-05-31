@@ -70,10 +70,10 @@ class Files
         }
 
         // Sanitize filenames
-        $oldname = utf8_decode($aeFiles->sanitizeFileName($oldname));
+        $oldname = $aeFiles->sanitizeFileName($oldname);
         $oldname = $aeSettings->getFolderDocs().$oldname;
 
-        $newname = utf8_decode($aeFiles->sanitizeFileName($newname));
+        $newname = $aeFiles->sanitizeFileName($newname);
         $newname = $aeSettings->getFolderDocs().$newname;
 
         $wReturn = $aeFiles->renameFile($oldname, $newname);
@@ -111,6 +111,7 @@ class Files
 
                 /*<!-- build:debug -->*/
                 if ($aeSettings->getDebugMode()) {
+                    $aeDebug = \MarkNotes\Debug::getInstance();
                     $aeDebug->log($ex->getMessage(), 'error');
                 }
                 /*<!-- endbuild -->*/

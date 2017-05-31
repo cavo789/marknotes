@@ -30,7 +30,6 @@ class Login
             $form = str_replace('%LOGIN%', $aeSettings->getText('login', 'Username'), $form);
             $form = str_replace('%PASSWORD%', $aeSettings->getText('password', 'Password'), $form);
             $form = str_replace('%SIGNIN%', $aeSettings->getText('signin', 'Sign in'), $form);
-            $form = str_replace('%CLEAR_CACHE%', $aeSettings->getText('settings_clean', 'Clear cache'), $form);
 
             $form .=
                 "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/task/login/assets/login.css\">\n".

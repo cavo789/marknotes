@@ -47,9 +47,6 @@
             <div id="toolbar-app-options" class="hidden btn-toolbar-warning">
                 <div id="icons" class="fa-1x">
 					%ICONS%
-                    <a id="icon_settings_clear" data-task="clear" title="%CLEAR_CACHE%" href="#">
-                        <i class="fa fa-eraser" aria-hidden="true"></i>
-                    </a>
                 </div>
             </div>
 

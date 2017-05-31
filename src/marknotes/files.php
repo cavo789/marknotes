@@ -79,9 +79,7 @@ class Files
 
         $errorlevel = error_reporting();
         error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
-
         $wReturn = is_dir($folderName);
-
         error_reporting($errorlevel);
 
         return $wReturn;

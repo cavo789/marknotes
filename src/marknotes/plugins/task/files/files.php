@@ -11,7 +11,7 @@ class Files
      * Be sure that filenames doesn't already start with the /docs folder (otherwise will
      * be mentionned twice)
      */
-    private static function cleanUp(array &$params) : bool
+    private static function cleanUp() : bool
     {
         $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -64,7 +64,7 @@ class Files
                 $msg = str_replace(
                     '%s',
                     str_replace($aeSettings->getFolderDocs(true), '', utf8_encode($foldername)),
-                    $aeSettings->getText('folder_created')
+                    $aeSettings->getText('folder_created', 'The folder [%s] has been created on the disk')
                 );
 
                 break;
@@ -98,7 +98,7 @@ class Files
         }
 
         $arr = array(
-            'status' => (($wReturn === CREATE_SUCCESS) ? 1 : 0),
+            'status' => (($wReturn == CREATE_SUCCESS) ? 1 : 0),
             'action' => 'create',
             'type' => 'folder',
             'msg' => $msg,
@@ -153,7 +153,7 @@ class Files
         }
 
         $arr = array(
-            'status' => (($wReturn === RENAME_SUCCESS) ? 1 : 0),
+            'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
             'action' => 'rename',
             'type' => 'folder',
             'msg' => $msg,
@@ -168,7 +168,6 @@ class Files
      */
     private static function deleteFolder(string $foldername) : string
     {
-        $aeFiles = \MarkNotes\Files::getInstance();
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -210,7 +209,7 @@ class Files
         }
 
         $arr = array(
-            'status' => (($wReturn === KILL_SUCCESS) ? 1 : 0),
+            'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
             'action' => 'delete',
             'type' => 'folder',
             'msg' => $msg,
@@ -301,7 +300,7 @@ class Files
         }
 
         $arr = array(
-            'status' => (($wReturn === RENAME_SUCCESS) ? 1 : 0),
+            'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
             'action' => 'rename',
             'type' => 'file',
             'msg' => $msg,
@@ -346,7 +345,7 @@ class Files
         }
 
         $arr = array(
-            'status' => (($wReturn === KILL_SUCCESS) ? 1 : 0),
+            'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
             'action' => 'delete',
             'type' => 'file',
             'msg' => $msg,
@@ -359,7 +358,7 @@ class Files
     /**
      * Create a file / folder
      */
-    private static function create(array &$params = null) : string
+    private static function create() : string
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -372,9 +371,9 @@ class Files
         $newname = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
-            if (mb_detect_encoding($newname)) {
-                $newname = utf8_decode($newname);
-            }
+            //if (mb_detect_encoding($newname)) {
+            //    $newname = utf8_decode($newname);
+            //}
         }
 
         /*<!-- build:debug -->*/
@@ -395,12 +394,12 @@ class Files
         } else {
             if ($type === 'folder') {
 
-            // it's a folder
-            $return = self::createFolder($newname);
+                // it's a folder
+                $return = self::createFolder($newname);
             } else {
 
-            // it's a file
-            $return = self::createFile($newname);
+                // it's a file
+                $return = self::createFile($newname);
             }
         }
 
@@ -410,7 +409,7 @@ class Files
     /**
      * Rename a file / folder
      */
-    private static function rename(array &$params = null) : string
+    private static function rename() : string
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -423,22 +422,22 @@ class Files
         $newname = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
-            if (mb_detect_encoding($newname)) {
-                if (!file_exists($newname)) {
-                    $newname = utf8_decode($newname);
-                }
-            }
+            //if (mb_detect_encoding($newname)) {
+            //    if (!file_exists($newname)) {
+            //        $newname = utf8_decode($newname);
+            //    }
+            //}
         }
 
         $oldname = trim(json_decode(urldecode($aeFunctions->getParam('oldname', 'string', '', true))));
         if ($oldname != '') {
             $oldname = $aeFiles->sanitizeFileName(trim($oldname));
 
-            if (mb_detect_encoding($oldname)) {
-                if (!file_exists($oldname)) {
-                    $oldname = utf8_decode($oldname);
-                }
-            }
+            //if (mb_detect_encoding($oldname)) {
+            //    if (!file_exists($oldname)) {
+            //        $oldname = utf8_decode($oldname);
+            //    }
+            //}
         }
 
         /*<!-- build:debug -->*/
@@ -475,7 +474,7 @@ class Files
     /**
      * Delete a file / folder
      */
-    private static function delete(array &$params = array()) : string
+    private static function delete() : string
     {
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -496,11 +495,11 @@ class Files
                 'filename' => $name
             );
         } else {
-            if (mb_detect_encoding($name)) {
-                if (!file_exists($name)) {
-                    $name = utf8_decode($name);
-                }
-            }
+            //if (mb_detect_encoding($name)) {
+            //    if (!file_exists($name)) {
+            //        $name = utf8_decode($name);
+            //    }
+            //}
 
             // Get the fullname of the folder/file name
             $name = $aeSettings->getFolderDocs(true).$name;
@@ -520,7 +519,7 @@ class Files
         return $return;
     }
 
-    public static function run(&$params = null)
+    public static function run(array &$params = null)
     {
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -534,17 +533,17 @@ class Files
 
             case 'files.create':
                 // Add a new file/folder
-                $return = self::create($params);
+                $return = self::create();
                 break;
 
             case 'files.rename':
                 // Rename an existing one
-                $return = self::rename($params);
+                $return = self::rename();
                 break;
 
             case 'files.delete':
                 // Remove an existing file/folder
-                $return = self::delete($params);
+                $return = self::delete();
                 break;
         }
 

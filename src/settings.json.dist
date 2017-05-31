@@ -10,11 +10,6 @@
 	},
 	"locale": "fr-FR",
 	"timezone": "Europe/Brussels",
-	"optimisation": {
-		"browser_cache": 1,
-		"localStorage": 1,
-		"server_session": 1
-	},
 	"page": {
 		"google_font": "",
 		"img_maxwidth": 800,
@@ -32,6 +27,9 @@
 				},
 				{
 					"timeline": 1
+				},
+				{
+					"clear": 1
 				}],
 			"content": [
 				{
@@ -73,6 +71,9 @@
 				},
 				{
 					"bootstrap": 1
+				},
+				{
+					"clear": 1
 				},
 				{
 					"clipboard": 1
@@ -182,6 +183,11 @@
 			"login": {
 				"username": "admin",
 				"password": "marknotes"
+			},
+			"optimisation": {
+				"browser_cache": 1,
+				"localStorage": 1,
+				"server_session": 1
 			},
 			"pandoc": {
 				"script": "c:\\christophe\\tools\\pandoc\\pandoc.exe",

@@ -85,17 +85,15 @@ class ShowInterface
         "marknotes.message.open_html='".$aeSettings->getText('open_html', 'Open in a new window', true)."';\n".
         "marknotes.message.pleasewait='".$aeSettings->getText('please_wait', 'Please wait...', true)."';\n".
         "marknotes.message.search_no_result='".$aeSettings->getText('search_no_result', 'Sorry, the search is not successfull', true)."';\n".
-        "marknotes.message.settings_clean_done='".$aeSettings->getText('settings_clean_done', 'The application\'s cache has been cleared', true)."';\n".
+
         "marknotes.message.tree_collapse='".$aeSettings->getText('tree_collapse', 'Collapse all', true)."';\n".
         "marknotes.message.tree_expand='".$aeSettings->getText('tree_expand', 'Expand all', true)."';\n".
-        "marknotes.message.tree_rename='".$aeSettings->getText('tree_rename', 'Rename', true)."';\n".
         "marknotes.url='index.php';\n".
         "marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
         "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
         "marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
-        "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n".
         "marknotes.treeview.defaultNode='".trim(str_replace("'", "\'", $aeSettings->getTreeviewDefaultNode('')))."';\n";
 
         // --------------------------------

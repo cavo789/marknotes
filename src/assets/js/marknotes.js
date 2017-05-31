@@ -412,15 +412,6 @@ function initializeTasks() {
 
 		switch ($task) {
 
-		case 'clear':
-
-			ajaxify({
-				task: $task,
-				callback: 'cleanCache();',
-				target: 'CONTENT'
-			});
-			break;
-
 		case 'display':
 
 			// Display the file by calling the Ajax function.
@@ -487,31 +478,6 @@ function initializeTasks() {
 	}); // $("[data-task]").click(function()
 
 	return true;
-
-}
-
-/**
- * Empty the localStorage cache and the session on the server; reload then the page
- */
-function cleanCache() {
-
-	// Empty the localStorage too
-	if (marknotes.settings.use_localcache) {
-		try {
-			store.clearAll();
-		} catch (err) {
-			console.warn(err.message);
-		}
-	}
-
-	location.reload();
-
-	Noty({
-		message: marknotes.message.settings_clean_done,
-		type: 'success'
-	});
-
-	return;
 
 }
 

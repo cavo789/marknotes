@@ -91,12 +91,6 @@ class Markdown
 
         // Process "core" tasks i.e. not part of a plugin
         switch ($task) {
-            case 'clear':
-                // Clear the session object
-                $aeTask = \MarkNotes\Tasks\ClearCache::getInstance();
-                header('Content-Type: application/json');
-                echo $aeTask->run();
-                break;
 
             case 'display':
                 // Display the HTML rendering of a note

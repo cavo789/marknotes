@@ -221,7 +221,7 @@ function jstree_context_menu(node) {
 	// Plugin Task-Treeview
 	// The fnPluginTaskTreeViewContextMenu() is defined in the plugins task/treeview
 	// Check if that plugin has loaded the function and if so, get extra items for the context menu
-	var fn = window['fnPluginTaskTreeViewContextMenu'];
+	var fn = window.fnPluginTaskTreeViewContextMenu;
 
 	// is object a function?
 	if (typeof fn === "function") {
@@ -278,7 +278,12 @@ function contextMenuNewWindow(node) {
 
 	// If it's a folder, open the index.html file. Otherwise node.data.url point to the note;
 	// add the .html extension
-	$url = node.data.url + ($type === 'folder' ? 'index.html' : '.html');
+	$url = node.data.url;
+
+	// Be sure the URL is ending with / if it's a folder
+	if (($url.slice(-1) !== '/') && ($type === 'folder')) $url += '/';
+
+	$url += ($type === 'folder' ? 'index.html' : '.html');
 
 	window.open(marknotes.webroot + marknotes.docs + '/' + $url);
 }

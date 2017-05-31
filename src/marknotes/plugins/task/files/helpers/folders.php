@@ -47,7 +47,7 @@ class Folders
         }
 
         // Sanitize the foldername
-        $name = utf8_decode($aeFiles->sanitizeFileName($name));
+        $name = $aeFiles->sanitizeFileName($name);
         $name = $aeSettings->getFolderDocs().$name;
 
         if ($aeFiles->folderExists($name)) {
@@ -61,12 +61,12 @@ class Folders
             if (!$aeFiles->folderExists($name)) {
                 try {
                     mkdir($name, CHMOD_FOLDER);
-
                     return ($aeFiles->folderExists($name) ? CREATE_SUCCESS : FILE_ERROR);
                 } catch (Exception $ex) {
 
                     /*<!-- build:debug -->*/
                     if ($aeSettings->getDebugMode()) {
+                        $aeDebug = \MarkNotes\Debug::getInstance();
                         $aeDebug->log($ex->getMessage(), 'error');
                     }
                     /*<!-- endbuild -->*/
@@ -112,6 +112,7 @@ class Folders
 
                     /*<!-- build:debug -->*/
                     if ($aeSettings->getDebugMode()) {
+                        $aeDebug = \MarkNotes\Debug::getInstance();
                         $aeDebug->log($ex->getMessage(), 'error');
                     }
                     /*<!-- endbuild -->*/
@@ -136,7 +137,7 @@ class Folders
         }
 
         // Sanitize foldersname
-        $foldername = utf8_decode($aeFiles->sanitizeFileName($foldername));
+        $foldername = $aeFiles->sanitizeFileName($foldername);
 
         if (!$aeFiles->folderExists($foldername)) {
             // The "old" folder is not found
