@@ -89,23 +89,19 @@ class Files
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+
         if (trim($filename) === '') {
             return FILE_ERROR;
         }
-
         if (!$aeFiles->fileExists($filename)) {
             return FILE_NOT_FOUND;
-        } elseif (!is_writable($filename)) {
+        } elseif (!is_writable(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"))) {
             return FILE_IS_READONLY;
         } else {
             try {
-                if (file_exists($filename)) {
-                    unlink($filename);
-                    if (!file_exists($filename)) {
-                        return KILL_SUCCESS;
-                    }
-                } else {
-                    return FILE_ERROR;
+                unlink(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"));
+                if (!$aeFiles->fileExists($filename)) {
+                    return KILL_SUCCESS;
                 }
             } catch (Exception $ex) {
 

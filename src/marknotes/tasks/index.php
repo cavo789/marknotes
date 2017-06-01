@@ -84,7 +84,7 @@ class Index
             $aeFunctions->folderNotFound($folder);
         }
 
-        $files = glob($folder.DS."*.md");
+        $files = glob(mb_convert_encoding($folder, "ISO-8859-1", "UTF-8").DS."*.md");
 
         $arr = array();
 
@@ -94,7 +94,7 @@ class Index
             $arr[] = array(
                 'fmtime' => filectime($file),
                 'time' => date("Y-m-d", filectime($file)),
-                'file' => $aeFiles->removeExtension(basename($file)),
+                'file' => utf8_encode($aeFiles->removeExtension(basename($file))),
                 'text' => $aeMD->getHeadingText($markdown)
             );
         }

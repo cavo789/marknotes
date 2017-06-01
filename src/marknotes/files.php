@@ -31,11 +31,11 @@ class Files
 
             // Remove the old version if already there
             if (self::fileExists($newname)) {
-                unset($newname);
+                unlink($newname);
             }
 
             // And rename the temporary PDF to its final name
-            rename($oldname, $newname);
+            rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
         }
 
         return self::fileExists($newname);
@@ -57,7 +57,7 @@ class Files
         $errorlevel = error_reporting();
         error_reporting(0);
 
-        $wReturn = is_file(utf8_decode($filename));
+        $wReturn = is_file(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"));
 
         error_reporting($errorlevel);
 
@@ -79,7 +79,10 @@ class Files
 
         $errorlevel = error_reporting();
         error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
-        $wReturn = is_dir($folderName);
+
+        // mb_convert_encoding to support accentuated characters in name
+        $wReturn = is_dir(mb_convert_encoding($folderName, "ISO-8859-1", "UTF-8"));
+
         error_reporting($errorlevel);
 
         return $wReturn;

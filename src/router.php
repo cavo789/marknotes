@@ -33,11 +33,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     $aeFunctions = \MarkNotes\Functions::getInstance();
     $filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
 
-    // Handle accentuated characters
-    if (!is_file($filename)) {
-        $filename = utf8_decode($filename);
-    }
-
     $params = array('filename' => $filename);
     $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
 
@@ -98,11 +93,11 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 
             $fileMD = $aeFiles->removeExtension($filename).'.md';
 
-            if (mb_detect_encoding($fileMD)) {
+            /*if (mb_detect_encoding($fileMD)) {
                 if (!file_exists($webRoot.$fileMD)) {
                     $fileMD = utf8_decode($fileMD);
                 }
-            }
+            }*/
 
             if (!$aeFiles->fileExists($webRoot.$fileMD)) {
                 $aeFunctions = \MarkNotes\Functions::getInstance();

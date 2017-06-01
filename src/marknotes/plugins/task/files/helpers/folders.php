@@ -60,7 +60,7 @@ class Folders
         } else {
             if (!$aeFiles->folderExists($name)) {
                 try {
-                    mkdir($name, CHMOD_FOLDER);
+                    mkdir(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"), CHMOD_FOLDER);
                     return ($aeFiles->folderExists($name) ? CREATE_SUCCESS : FILE_ERROR);
                 } catch (Exception $ex) {
 
@@ -90,13 +90,14 @@ class Folders
         }
 
         // Sanitize foldersname
-        $oldname = utf8_decode($aeFiles->sanitizeFileName($oldname));
+        $oldname = $aeFiles->sanitizeFileName($oldname);
         $oldname = $aeSettings->getFolderDocs().$oldname;
 
-        $newname = utf8_decode($aeFiles->sanitizeFileName($newname));
+        $newname = $aeFiles->sanitizeFileName($newname);
         $newname = $aeSettings->getFolderDocs().$newname;
 
         if (!$aeFiles->folderExists($oldname)) {
+
             // The "old" folder is not found
             return FOLDER_NOT_FOUND;
         } else {
@@ -105,7 +106,7 @@ class Folders
                 return ALREADY_EXISTS;
             } else {
                 try {
-                    rename($oldname, $newname);
+                    rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
 
                     return ($aeFiles->folderExists($newname) ? RENAME_SUCCESS : FILE_ERROR);
                 } catch (Exception $ex) {
@@ -154,19 +155,18 @@ class Folders
             if (strcmp($docs, substr($foldername, 0, strlen($docs))) !== 0) {
                 // Outside the /docs folder, prohibited
                 return FOLDER_NOT_DELETED;
-            } elseif (!is_writable($foldername)) {
+            } elseif (!is_writable(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"))) {
                 // Don't start and kill files if the folder is read-only
                 return FOLDER_IS_READONLY;
             } else {
 
                 // Ok, recursively kill the folder and its content
 
-                $it = new \RecursiveDirectoryIterator($foldername.DS, \RecursiveDirectoryIterator::SKIP_DOTS);
+                $it = new \RecursiveDirectoryIterator(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8").DS, \RecursiveDirectoryIterator::SKIP_DOTS);
 
                 $files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-
                 foreach ($files as $file) {
-                    $name = $file->getRealPath();
+                    $name = utf8_encode($file->getRealPath());
 
                     if ($file->isDir()) {
 
@@ -175,8 +175,10 @@ class Folders
                             $aeDebug->log('Killing folder ['.utf8_encode($name).']', 'debug');
                         }
                         /*<!-- endbuild -->*/
+                        if (is_writable(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"))) {
 
-                        if (is_writable($name)) {
+                            /* FIXME: remove debugging */
+                            /* */die("Died in ".__FILE__.", line ".__LINE__);
                             try {
                                 if (self::is_dir_empty($name)) {
                                     @rmdir($name);
@@ -213,10 +215,8 @@ class Folders
                         }
                         /*<!-- endbuild -->*/
 
-                        if ((is_writable(dirname($name))) && (is_writable($name))) {
-                            // Kill the file only if the file isn't readonly and the parent
-                            // folder too
-                            unlink($file->getRealPath());
+                        if (is_writable(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"))) {
+                            unlink(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"));
                         }
 
                         if ($aeFiles->fileExists($name)) {
@@ -237,8 +237,8 @@ class Folders
 
                 // And kill the folder itself
                 try {
-                    if (self::is_dir_empty($foldername)) {
-                        rmdir($foldername);
+                    if (self::is_dir_empty(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"))) {
+                        rmdir(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"));
                     }
                 } catch (Exception $ex) {
                     /*<!-- build:debug -->*/
@@ -248,7 +248,7 @@ class Folders
                     /*<!-- endbuild -->*/
                 }
 
-                if ($aeFiles->folderExists($foldername)) {
+                if ($aeFiles->folderExists(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"))) {
                     // Still exists
 
                     /*<!-- build:debug -->*/

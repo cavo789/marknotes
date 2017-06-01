@@ -17,12 +17,16 @@ function fnPluginTaskTreeView_init() {
 
 			$('#TOC')
 				.on('rename_node.jstree', function (e, data) {
+					// Be sure this code is fired only once.
+					e.stopImmediatePropagation();
 					// The user has just click on "Create..." (folder or note)
 					// jsTree first add the node then, the user will give a name
 					// By giving a name, the rename_node event is fired
 					fnPluginTaskTreeView_renameNode(e, data);
 				})
 				.on('delete_node.jstree', function (e, data) {
+					// Be sure this code is fired only once.
+					e.stopImmediatePropagation();
 					// The user has just click on "Remove..." (folder or note)
 					fnPluginTaskTreeView_removeNode(e, data);
 				});

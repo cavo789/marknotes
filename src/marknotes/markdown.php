@@ -107,6 +107,7 @@ class Markdown
                 break;
 
             case 'listFiles':
+
                 // Retrieve the list of .md files.
                 $aeTask = \MarkNotes\Tasks\ListFiles::getInstance();
                 header('Content-Type: application/json; charset=UTF-8');
@@ -117,7 +118,6 @@ class Markdown
 
                 // Display the interface of marknotes, with the treeview
                 // and the selected note content
-
                 $aeTask = \MarkNotes\Tasks\ShowInterface::getInstance();
                 echo $aeTask->run();
                 break;
@@ -125,7 +125,6 @@ class Markdown
             case 'md':
 
                 // Display a .md file, just output his content
-
                 $filename = utf8_decode($aeSettings->getFolderDocs(true).$filename);
                 $content = file_get_contents($filename);
 

@@ -145,10 +145,10 @@ class ListFiles
             'id' => utf8_encode(str_replace($root, '', $dir).DS),
             'type' => 'folder',
             'icon' => 'folder',
-            'text' => basename($dir),
+            'text' => utf8_encode(basename($dir)),
             'state' => array('opened' => $opened,'disabled' => 1),
             'data' => array(
-                'url' => str_replace(DS, '/', str_replace($root, '', $dir))
+                'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir)))
             ),
             'children' => array()
         );
@@ -175,7 +175,7 @@ class ListFiles
                                 $files[] = array(
                                     'id' => md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
                                     'icon' => 'file file-md',
-                                    'text' => $filename,
+                                    'text' => utf8_encode($filename),
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(
@@ -184,10 +184,9 @@ class ListFiles
                                         'url' => str_replace(DS, '/', utf8_encode(str_replace($root, '', $dir.DS.$filename)))
                                     ),
                                     'state' => array(
-
-                                            'opened' => $opened,
-                                            'selected' => $opened
-                                        )
+                                        'opened' => $opened,
+                                        'selected' => $opened
+                                    )
                                 );
                             }
                         } elseif (is_dir($dir.DS.$sub)) {

@@ -282,10 +282,6 @@ function initFiles($data) {
 		return false;
 	}
 
-	/*<!-- build:debug -->*/
-	//if (marknotes.settings.debug) console.log($data.count);
-	/*<!-- endbuild -->*/
-
 	try {
 		if ($data.hasOwnProperty('count')) {
 			// Display the number of returned files

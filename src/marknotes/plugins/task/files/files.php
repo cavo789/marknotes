@@ -485,7 +485,6 @@ class Files
 
         $name = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
         $name = $aeFiles->sanitizeFileName($name);
-
         if ($name === '') {
             $return = array(
                 'status' => 0,
@@ -504,6 +503,7 @@ class Files
             // Get the fullname of the folder/file name
             $name = $aeSettings->getFolderDocs(true).$name;
             $name = $aeFiles->sanitizeFileName($name);
+
 
             if ($type === 'folder') {
 
