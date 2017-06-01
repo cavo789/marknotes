@@ -23,12 +23,12 @@ class TXT
         $aeFiles = \MarkNotes\Files::getInstance();
         $filename = $params['output'] ?? '';
 
-        if (!$aeFiles->fileExists($filename)) {
-            $filename = utf8_encode($filename);
-        }
+//        if (!$aeFiles->fileExists($filename)) {
+//            $filename = utf8_encode($filename);
+//        }
 
         if ($aeFiles->fileExists($filename)) {
-            $content = file_get_contents($filename);
+            $content = file_get_contents(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"));
             echo $content;
         } else {
             $aeFunctions = \MarkNotes\Functions::getInstance();

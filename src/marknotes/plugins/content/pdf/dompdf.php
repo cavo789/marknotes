@@ -35,7 +35,7 @@ class DomPDF
         $output = $dompdf->output();
         unset($dompdf);
 
-        file_put_contents($final, $output);
+        file_put_contents(mb_convert_encoding($final, "ISO-8859-1", "UTF-8"), $output);
 
         $params['output'] = $final;
 

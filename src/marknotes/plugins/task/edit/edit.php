@@ -83,7 +83,7 @@ class Edit
             $params['filename'] .= '.md';
         }
 
-        $fullname = str_replace('/', DIRECTORY_SEPARATOR, $aeSettings->getFolderDocs(true).utf8_decode(ltrim($params['filename'], DS)));
+        $fullname = str_replace('/', DIRECTORY_SEPARATOR, $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS));
 
         // Call content plugins
         $markdown = json_decode(urldecode($aeFunctions->getParam('markdown', 'string', '', true)));

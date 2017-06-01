@@ -56,7 +56,6 @@ class Write
 
             // Get the absolute filename on the disk
             $filename = $aeSettings->getFolderDocs(true).$filename;
-
             // And write the file
             $aeFiles = \MarkNotes\Files::getInstance();
             $aeFiles->rewriteFile($filename, $markdown);

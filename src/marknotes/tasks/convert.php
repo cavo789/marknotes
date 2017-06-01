@@ -37,10 +37,10 @@ class Convert
         }
 
         $fname = $aeFiles->replaceExtension(
-            str_replace('/', DS, utf8_decode($fname)),
+            str_replace('/', DS, $fname),
             $extension
         );
-        
+
         return $fname;
     }
 

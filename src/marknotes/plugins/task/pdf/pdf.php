@@ -27,7 +27,7 @@ class PDF
 
             // Read and show the pdf in the browser (inline), so don't force the download
             // of the file
-            $content = file_get_contents($filename);
+            $content = file_get_contents(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"));
             header('Content-Type: application/pdf');
             header('Content-Length: '.strlen($content));
             header('Content-disposition: inline; filename="' . basename($filename) . '"');
@@ -37,7 +37,7 @@ class PDF
             $aeFunctions = \MarkNotes\Functions::getInstance();
             $aeFunctions->fileNotFound($filename);
         }
-        
+
         return true;
     }
 

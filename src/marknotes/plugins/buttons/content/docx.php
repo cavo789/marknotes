@@ -35,7 +35,7 @@ class DOCX
         $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
         $buttons .=
-            '<a id="icon_'.self::$ext.'" data-task="file" data-file="'.utf8_encode($url.$file).'" '.
+            '<a id="icon_'.self::$ext.'" data-task="file" data-file="'.$url.$file.'" '.
                 'title="'.$title.'" href="#">'.
                 '<i class="fa fa-file-word-o" aria-hidden="true"></i>'.
             '</a>';

@@ -54,7 +54,7 @@ class Pandoc
         $sProgram =
             '@ECHO OFF'.PHP_EOL.
             'chcp 65001'.PHP_EOL.
-            'pushd "'.dirname($aeSettings->getFolderDocs(true).$params['filename']).'"'.PHP_EOL.
+            'pushd "'.dirname($aeSettings->getFolderDocs(true).mb_convert_encoding($params['filename'], "ISO-8859-1", "UTF-8")).'"'.PHP_EOL.
             '"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
             '"'.basename($params['filename']).'" > '.$debugFile.' 2>&1'.PHP_EOL.
             'popd'.PHP_EOL;

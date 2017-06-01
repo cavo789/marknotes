@@ -293,11 +293,11 @@ class Files
 
         $filename = str_replace('/', DS, $filename);
 
-        if (mb_detect_encoding($filename)) {
+        /*if (mb_detect_encoding($filename)) {
             if (!file_exists($filename)) {
                 $filename = utf8_decode($filename);
             }
-        }
+        }*/
 
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
@@ -306,6 +306,8 @@ class Files
         /*<!-- endbuild -->*/
 
         if (self::fileExists($filename)) {
+            $filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
+
             rename($filename, $filename.'.old');
 
             try {

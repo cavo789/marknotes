@@ -6,10 +6,16 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Read
 {
+    /**
+     * Notes written in .md can contains variables.  The function below will translate these variables.
+     */
     private static function replaceVariables(string $markdown) : string
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
         $markdown = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $markdown);
+        $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
+
         return $markdown;
     }
     /**

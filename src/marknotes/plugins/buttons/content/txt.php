@@ -31,11 +31,11 @@ class TXT
             // The default extension is txt ==> no need to mention the extension
             $file = $aeFiles->removeExtension($file);
         }
-        
+
         $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
         $buttons .=
-            '<a id="icon_'.self::$ext.'" data-task="file" data-file="'.utf8_encode($url.$file).'" '.
+            '<a id="icon_'.self::$ext.'" data-task="file" data-file="'.$url.$file.'" '.
                 'href="#" title="'.$title.'">'.
                 '<i class="fa fa-file-text-o" aria-hidden="true"></i>'.
             '</a>';
