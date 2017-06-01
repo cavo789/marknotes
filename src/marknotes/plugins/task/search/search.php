@@ -41,7 +41,6 @@ class Search
                 $aeSession->set('SearchFileList', json_encode($arrFiles, JSON_PRETTY_PRINT));
             }
         }
-
         if (count($arrFiles) == 0) {
             return null;
         }

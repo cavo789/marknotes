@@ -156,13 +156,11 @@ class Files
         usort($paths, 'strnatcasecmp');
 
         $files = glob(rtrim($path, DS).DS.$pattern, $flags);
-
         // Sort, case insensitive
         usort($files, 'strnatcasecmp');
 
         foreach ($paths as $path) {
-            if (self::folderExists($path)) {
-                // Avoid recursive loop when the folder is a symbolic link
+            // Avoid recursive loop when the folder is a symbolic link
                 if (rtrim(str_replace('/', DS, $path), DS) == realpath($path)) {
                     $arr = self::rglob($pattern, $path, $flags, $arrSkipFolder);
                     if (($arr != null) && (count($arr) > 0)) {
@@ -172,7 +170,6 @@ class Files
                     // $path is a symbolic link.  Doing a glob on a symbolic link will create a recursive
                     // call and will crash the script
                 }
-            } // if(!(is_link($path))) {
         } // foreach
 
         // Don't use the / notation but well the correct directory separator
