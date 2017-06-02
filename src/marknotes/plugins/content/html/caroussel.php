@@ -80,7 +80,7 @@ class Caroussel
                             $images .= '<hr/>'.$img;
                         }
                     }
-                    $content = str_replace('<p>'.$arrTags[$i].'</p>', $images, $content);
+                    $content = str_replace($arrTags[$i], $images, $content);
                 }
             }
         }
