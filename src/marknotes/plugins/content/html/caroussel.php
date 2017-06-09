@@ -21,6 +21,7 @@ class Caroussel
 
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
+        $layout = $aeSession->get('layout');
 
         $matches = array();
 
@@ -77,7 +78,14 @@ class Caroussel
                             $file = str_replace(DS, '/', $file);
 
                             $img = '<img src="'.$url.$file.'" alt="'.basename($file).'"/>';
-                            $images .= '<hr/>'.$img;
+
+                            if (($task === 'pdf') && ($layout === 'reveal')) {
+                                // Add the image in a section so this will create a new page in the
+                                // pdf document
+                                $images .= '<section>'.$img.'</section>';
+                            } else {
+                                $images .= '<hr/>'.$img;
+                            }
                         }
                     }
                     $content = str_replace($arrTags[$i], $images, $content);
@@ -96,7 +104,7 @@ class Caroussel
         $task = $aeSession->get('task', '');
 
         // This plugin is only needed when the task is one of the following
-        if (!in_array($task, array('display','html','reveal'))) {
+        if (!in_array($task, array('display','html','pdf','reveal'))) {
             return true;
         }
 
