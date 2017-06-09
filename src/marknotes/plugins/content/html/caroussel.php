@@ -96,8 +96,7 @@ class Caroussel
         $task = $aeSession->get('task', '');
 
         // This plugin is only needed when the task is one of the following
-
-        if (!in_array($task, array('html','reveal'))) {
+        if (!in_array($task, array('display','html','reveal'))) {
             return true;
         }
 
