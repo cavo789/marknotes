@@ -12,7 +12,7 @@ include 'libs/autoload.php';
 */
 class Display
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -21,11 +21,11 @@ class Display
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Display();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Display();
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     } // function getInstance()
 
     public function run(array $params)
@@ -34,6 +34,7 @@ class Display
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
         $aeMD = \MarkNotes\FileType\Markdown::getInstance();
 
         // If the filename doesn't mention the file's extension, add it.
@@ -69,7 +70,7 @@ class Display
         // Check if the .html version of the markdown file already exists; if not, create it
         if (!$aeFunctions->isAjaxRequest()) {
             $aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
-            return $aeConvert->run($html, $params);
+            $html = $aeConvert->run($html, $params);
         } else { // if (!\MarkNotes\Functions::isAjaxRequest())
 
             // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
@@ -90,6 +91,35 @@ class Display
             $html = $args[0];
             // --------------------------------
         } // if (!\MarkNotes\Functions::isAjaxRequest())
-        return $html;
+
+        // ----------------------------------------------
+        //
+        // Add JS
+
+        $urlHTML = '';
+
+        $filename = $aeSession->get('filename', '');
+        if ($filename !== '') {
+            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+            $urlHTML = $url.'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+            $urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($filename, 'html'));
+        }
+
+        $js = "";
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
+        }
+
+        $js .= "<script type=\"text/javascript\">\n".
+            "marknotes.note = {};\n".
+            "marknotes.note.url = '".$urlHTML."';\n".
+            "</script>\n";
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
+        }
+
+        return $html.$js;
     }
 }

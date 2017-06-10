@@ -31,7 +31,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
     $aeFunctions = \MarkNotes\Functions::getInstance();
-    $filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
+    $filename = rtrim(rawurldecode($aeFunctions->getParam('file', 'string', '', false)), '/');
 
     $params = array('filename' => $filename);
     $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);

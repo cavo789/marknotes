@@ -1,5 +1,7 @@
-#SocialShare {
-	position: fixed;
-	top     : 14px;
-	right   : 70px;
+#toolbar-share {
+	position        : fixed;
+	top             : 10px;
+	right           : 70px;
+	background-color: rgba(5, 58, 74, 0.12);
+	float           : right;
 }
