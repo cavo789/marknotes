@@ -27,10 +27,11 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 } else {
     \MarkNotes\Autoload::register();
 
+    $aeFunctions = \MarkNotes\Functions::getInstance();
     // Application root folder.
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
-    $aeFunctions = \MarkNotes\Functions::getInstance();
+
     $filename = rtrim(rawurldecode($aeFunctions->getParam('file', 'string', '', false)), '/');
 
     $params = array('filename' => $filename);

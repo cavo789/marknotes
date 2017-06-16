@@ -46,7 +46,7 @@ class Events
             $aeDebug->log('Trigger started for ['.$event.']', 'debug');
             if ($aeSettings->getDevMode()) {
                 if (!isset(self::$arrEvents[$event])) {
-                    $aeDebug->log('There is no listener for the '.$event, 'debug');
+                    $aeDebug->log('There is no listener for the '.$event, 'warning');
                 }
             }
         }
@@ -160,14 +160,13 @@ class Events
             $dir = rtrim(dirname(__DIR__), DS).'/marknotes/plugins/'.$type.DS;
 
             if ($subtask !== '') {
+
                 // can be edit.save => retrieve the first part : edit
                 if (($wPos = strpos($subtask, '.')) !== false) {
                     $subtask = substr($subtask, 0, $wPos);
                 }
                 $dir = $dir.$subtask.DS;
             }
-
-
             if (is_dir($dir)) {
                 $aeFiles = \MarkNotes\Files::getInstance();
 
@@ -178,47 +177,46 @@ class Events
                     $tmp = str_replace($dir, '', array_filter(glob($dir.'*'), 'is_file'));
                     $plugins = array();
                     foreach ($tmp as $plugin) {
-                        $plugins[] = array($plugin => 1);
+                        $plugins = array($plugin => 1);
                     }
                 }
 
                 // And if the plugin exists on the filesystem, load it
                 if (count($plugins) > 0) {
-                    foreach ($plugins as $plugin) {
 
-                    // plugins is an array with two entries : the name of the plugin (f.i. gtranslate)
-                    // and a boolean 1/0 for "is this plugin enabled or not".
+                    // plugins is an array with two entries : the name of the
+                    // plugin (f.i. gtranslate) and a boolean 1/0 for "is this
+                    // plugin enabled or not".
 
-                        foreach ($plugin as $name => $enabled) {
-                            if (substr($name, -4) !== '.php') {
-                                $name .= '.php';
+                    foreach ($plugins as $name => $enabled) {
+                        if (substr($name, -4) !== '.php') {
+                            $name .= '.php';
+                        }
+
+                        if (($enabled === 1) && ($aeFiles->fileExists($file = $dir.$name))) {
+
+                            /*<!-- build:debug -->*/
+                            $aeSettings = \MarkNotes\Settings::getInstance();
+                            if ($aeSettings->getDevMode()) {
+                                $aeDebug = \MarkNotes\Debug::getInstance();
+                                $aeDebug->log('Load the plugin '.$file);
                             }
+                            /*<!-- endbuild -->*/
 
-                            if (($enabled === 1) && ($aeFiles->fileExists($file = $dir.$name))) {
+                            // Load the plugin
+                            require_once($file);
 
-                                /*<!-- build:debug -->*/
-                                $aeSettings = \MarkNotes\Settings::getInstance();
-                                if ($aeSettings->getDevMode()) {
-                                    $aeDebug = \MarkNotes\Debug::getInstance();
-                                    $aeDebug->log('Load the plugin '.$file);
-                                }
-                                /*<!-- endbuild -->*/
+                            // And retrieve its namespace and class name
+                            // f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
+                            $class = self::getNameSpaceAndClassName($file);
 
-                                // Load the plugin
-                                require_once($file);
+                            // Instanciate the class (plugin)
+                            $plug = new $class;
 
-                                // And retrieve its namespace and class name
-                                // f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
-                                $class = self::getNameSpaceAndClassName($file);
-
-                                // Instanciate the class (plugin)
-                                $plug = new $class;
-
-                                // and run the bind() function
-                                $plug->bind();
-                            } // foreach ($plugin as $name => $enabled)
-                        } // foreach
-                    } // foreach ($plugins as $plugin)
+                            // and run the bind() function
+                            $plug->bind();
+                        } // foreach ($plugin as $name => $enabled)
+                    } // foreach
                 } // if(count($plugins)>0)
             } else {
 

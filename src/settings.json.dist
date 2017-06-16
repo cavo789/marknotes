@@ -16,157 +16,84 @@
 		"robots": "noindex, nofollow"
 	},
 	"plugins": {
-		"authentication": ["login"],
+		"authentication": {
+			"login": 1
+		},
 		"buttons": {
-			"treeview": [
-				{
-					"login": 1
-				},
-				{
-					"sitemap": 1
-				},
-				{
-					"timeline": 1
-				},
-				{
-					"clear": 1
-				}],
-			"content": [
-				{
-					"fullscreen": 1
-				}, {
-					"printer": 1
-				}, {
-					"clipboard": 1
-				}, {
-					"html": 1
-				}, {
-					"reveal": 1
-				}, {
-					"remark": 1
-				}, {
-					"txt": 1
-				}, {
-					"epub": 1
-				}, {
-					"odt": 1
-				}, {
-					"docx": 1
-				}, {
-					"pdf": 1
-				}, {
-					"editor": 1
-				},
-				{
-					"refresh": 1
-				}]
+			"treeview": {
+				"login": 1,
+				"sitemap": 1,
+				"timeline": 1,
+				"clear": 1
+			},
+			"content": {
+				"fullscreen": 1,
+				"printer": 1,
+				"clipboard": 1,
+				"html": 1,
+				"reveal": 1,
+				"remark": 1,
+				"txt": 1,
+				"epub": 1,
+				"odt": 1,
+				"docx": 1,
+				"pdf": 1,
+				"editor": 1,
+				"refresh": 1
+			}
 		},
 		"content": {
-			"html": [
-				{
-					"login": 1
-				},
-				{
-					"encrypt": 1
-				},
-				{
-					"bootstrap": 1
-				},
-				{
-					"clear": 1
-				},
-				{
-					"clipboard": 1
-				},
-				{
-					"datatables": 1
-				},
-				{
-					"editor": 1
-				},
-				{
-					"lazyload": 1
-				},
-				{
-					"linkify": 1
-				},
-				{
-					"ganalytics": 1
-				},
-				{
-					"gtranslate": 1
-				},
-				{
-					"jolitypo": 1
-				},
-				{
-					"meta": 1
-				},
-				{
-					"prism": 1
-				},
-				{
-					"seo": 1
-				},
-				{
-					"share": 1
-				},
-				{
-					"smileys": 1
-				},
-				{
-					"tags": 1
-				},
-				{
-					"caroussel": 1
-				},
-				{
-					"security": 1
-				},
-				{
-					"custom": 1
-				}
-				],
-			"docx": [
-				{
-					"pandoc": 1
-				}],
-			"epub": [{
+			"html": {
+				"login": 1,
+				"encrypt": 1,
+				"bootstrap": 1,
+				"clear": 1,
+				"clipboard": 1,
+				"datatables": 1,
+				"editor": 1,
+				"lazyload": 1,
+				"linkify": 1,
+				"ganalytics": 1,
+				"gtranslate": 1,
+				"jolitypo": 1,
+				"meta": 1,
+				"prism": 1,
+				"seo": 1,
+				"share": 1,
+				"smileys": 1,
+				"tags": 1,
+				"caroussel": 1,
+				"security": 1,
+				"custom": 1
+			},
+			"docx": {
 				"pandoc": 1
-			}],
-			"odt": [{
+			},
+			"epub": {
 				"pandoc": 1
-			}],
-			"pdf": [{
-				"decktape": 1
-			}, {
+			},
+			"odt": {
 				"pandoc": 1
-			}, {
+			},
+			"pdf": {
+				"decktape": 1,
+				"pandoc": 1,
 				"dompdf": 1
-			}],
-			"slides": [{
-				"remark": 1
-			}, {
+			},
+			"slides": {
+				"remark": 1,
 				"reveal": 1
-			}],
-			"txt": [{
+			},
+			"txt": {
 				"pandoc": 1
-			}]
-		},
-		"markdown": [
-			{
-				"caroussel": 1
-			},
-			{
-				"read": 1
-			},
-			{
-				"encrypt": 1
-			},
-			{
-				"write": 1
 			}
-		],
+		},
+		"markdown": {
+			"caroussel": 1,
+			"read": 1,
+			"encrypt": 1,
+			"write": 1
+		},
 		"options": {
 			"bootstrap": {
 				"bullet": "check",

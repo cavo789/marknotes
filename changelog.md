@@ -4,11 +4,17 @@
 
 ## 1.1
 
+### 2017-06-xxx
+
 ```diff
 + Plugin Carrousel - Also for html rendering (and Reveal too)
 + Add support for the dynamic page 'index.html'
++ Migrate the clear cache button from core to a plugin
++ The authentication plugin won't fired if the settings doens't contains a login/passord i.e. it's possible to immediatly edit notes without need to make a login (f.i. on a localhost)
++ Rewrite share plugin to use the same way to display functionnalities i.e. thanks to jquery-toolbar (need to first click on the "share" button and then choose a sharing feature)
+- Solve issue when creating, from the interface, folders/files with accentuated characters in their name
+- Solve bug in settings.json override when the change was for a plugin (into a array like plugin->content->html). Now, json only contains key and no more arrays.
 ```
-
 
 ## 1.0.8
 

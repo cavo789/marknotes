@@ -108,28 +108,28 @@ class Settings
     * Initialize class properties
     * @return {bool [description]
     */
-    private function readSettings(array $params = null) : bool
-    {
-        $aeFiles = \MarkNotes\Files::getInstance();
+     private function readSettings(array $params = null) : bool
+     {
+         $aeFiles = \MarkNotes\Files::getInstance();
 
-        $this->_json = $this->loadJSON($params);
+         $this->_json = $this->loadJSON($params);
 
-        $this->setLanguage(DEFAULT_LANGUAGE);
+         $this->setLanguage(DEFAULT_LANGUAGE);
 
-        if (isset($this->_json['language'])) {
-            $this->setLanguage($this->_json['language']);
-        }
+         if (isset($this->_json['language'])) {
+             $this->setLanguage($this->_json['language']);
+         }
 
         /*<!-- build:debug -->*/
         if (isset($this->_json['debug'])) {
             // Debug mode enabled or not
             $this->setDebugMode($this->_json['debug'] == 1?true:false);
         }
-        if (isset($this->_json['development'])) {
-            // Developer mode enabled or not
+         if (isset($this->_json['development'])) {
+             // Developer mode enabled or not
             $timezone = $this->_json['development'] ?? 'Europe/Paris';
-            $this->setDevMode(($this->_json['development'] == 1?true:false), $timezone);
-        }
+             $this->setDevMode(($this->_json['development'] == 1?true:false), $timezone);
+         }
         /*<!-- endbuild -->*/
 
         /*
@@ -147,7 +147,7 @@ class Settings
         */
 
         return true;
-    }
+     }
 
     /**
     * Return the translation of a given text
