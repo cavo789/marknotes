@@ -48,7 +48,6 @@ class Markdown
      */
     public function ShowConfidential(string $markdown) : string
     {
-
         // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
         preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
 
@@ -158,7 +157,9 @@ class Markdown
      */
     public function read(string $filename, array $params = null) : string
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
         $aeEvents = \MarkNotes\Events::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
         if (mb_detect_encoding($filename)) {
             if (!file_exists($filename)) {
@@ -166,36 +167,46 @@ class Markdown
             }
         }
 
-        $markdown = file_get_contents($filename);
+        if (file_exists($filename)) {
+            $markdown = file_get_contents($filename);
 
-        // --------------------------------
-        // Call content plugins
-        $aeEvents->loadPlugins('markdown');
-        $args = array(&$markdown);
-        $aeEvents->trigger('markdown.read', $args);
-        $markdown = $args[0];
-        // --------------------------------
+            // --------------------------------
+            // Call content plugins
+            $aeEvents->loadPlugins('markdown');
+            $args = array(&$markdown);
+            $aeEvents->trigger('markdown.read', $args);
+            $markdown = $args[0];
+            // --------------------------------
 
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+            $aeFiles = \MarkNotes\Files::getInstance();
+            $aeFunctions = \MarkNotes\Functions::getInstance();
 
-        // Get the full path to this note
-        $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-        $noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+            // Get the full path to this note
+            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+            $noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
 
-        // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
-        // Be sure to have the correct relative path i.e. pointing to the folder of the note
-        $matches = array();
-        $markdown = self::setImagesAbsolute($markdown, $params);
+            // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
+            // Be sure to have the correct relative path i.e. pointing to the folder of the note
+            $matches = array();
+            $markdown = self::setImagesAbsolute($markdown, $params);
 
-        // And do it too for links to the files folder
-        $markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
+            // And do it too for links to the files folder
+            $markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
 
-        if (isset($params['removeConfidential'])) {
-            if ($params['removeConfidential'] === '1') {
-                $markdown = $this->ShowConfidential($markdown);
+            if (isset($params['removeConfidential'])) {
+                if ($params['removeConfidential'] === '1') {
+                    $markdown = $this->ShowConfidential($markdown);
+                }
             }
+        } else {
+
+            /*<!-- build:debug -->*/
+            if ($aeSettings->getDebugMode()) {
+                $aeDebug->log('Error while opening '.$filename, 'error');
+            }
+            /*<!-- endbuild -->*/
+
+            $markdown = '';
         }
 
         return $markdown;

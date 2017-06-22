@@ -1,6 +1,4 @@
 function fnPluginContentTag() {
-	alert('TAGS');
-
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -8,10 +6,15 @@ function fnPluginContentTag() {
 	}
 	/*<!-- endbuild -->*/
 
-	addSearchEntry({
-		keyword: $tag,
-		reset: true
-	});
+   // Not sure that the search plugin is enabled
+	try {
+		fnPluginTaskSearch_addSearchEntry({
+			keyword: $tag,
+			reset: true
+		});
+	} catch (err) {
+		console.warn(err.message);
+	}
 
 	return true;
 }

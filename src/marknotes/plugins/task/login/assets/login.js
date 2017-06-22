@@ -74,6 +74,7 @@ function fnPluginTaskLogin() {
 					}
 
 					if ($status) {
+
 						$('#mask , .login-popup').fadeOut(300, function () {
 							$('#mask').remove();
 						});
@@ -81,6 +82,12 @@ function fnPluginTaskLogin() {
 							message: marknotes.message.login_success,
 							type: 'success'
 						});
+
+						// Reload the page because html plugins can be different when the
+						// user is logged or not (f.i. add extra features in the Treeview)
+						// so a reload is needed
+						location.reload();
+
 					} else {
 
 						Noty({

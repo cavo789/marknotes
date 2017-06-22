@@ -51,6 +51,11 @@ class ShowInterface
             $args = array(&$buttons);
             $aeEvents->trigger('add.buttons', $args);
 
+            // If all buttons are disabled, kill the toolbar button
+            if (trim($buttons) === '') {
+                $buttons = '<script>try { document.getElementById("toolbar-app").remove(); } catch (err) { }</script>';
+            }
+
             $template = str_replace('%ICONS%', $buttons, $template);
         }
 
@@ -84,7 +89,6 @@ class ShowInterface
         "marknotes.message.ok='".$aeSettings->getText('OK', 'Ok', true)."';\n".
         "marknotes.message.open_html='".$aeSettings->getText('open_html', 'Open in a new window', true)."';\n".
         "marknotes.message.pleasewait='".$aeSettings->getText('please_wait', 'Please wait...', true)."';\n".
-        "marknotes.message.search_no_result='".$aeSettings->getText('search_no_result', 'Sorry, the search is not successfull', true)."';\n".
 
         "marknotes.message.tree_collapse='".$aeSettings->getText('tree_collapse', 'Collapse all', true)."';\n".
         "marknotes.message.tree_expand='".$aeSettings->getText('tree_expand', 'Expand all', true)."';\n".
@@ -93,19 +97,9 @@ class ShowInterface
         "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
         "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
-        "marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
         "marknotes.treeview.defaultNode='".trim(str_replace("'", "\'", $aeSettings->getTreeviewDefaultNode('')))."';\n";
 
-        // --------------------------------
-        // Call task plugins
-        $aeEvents->loadPlugins('task', 'treeview');
-        $form = array('js' => '');
-        $args = array(&$form);
-        $aeEvents->trigger('display', $args);
-        $extraJS = $args[0]['js'] ?? '';
-        // --------------------------------
-
-        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>'.$extraJS, $html);
+        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 
         return $html;
     }

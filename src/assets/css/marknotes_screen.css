@@ -90,6 +90,10 @@ h2 {
 	z-index : 1;
 }*/
 
+#TDM .flexdatalist-multiple {
+   border:none !important;
+}
+
 #TDM .flexdatalist-multiple li.input-container,
 .flexdatalist-multiple li.input-container input {
 

@@ -11,7 +11,17 @@ function fnPluginTaskTreeView_init() {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('fnPluginTaskTreeView_init - Add events to the treeview');
+				console.log('      fnPluginTaskTreeView_init - Add events to the treeview - This function will be called only once');
+			}
+			/*<!-- endbuild -->*/
+
+			// This function should only be fired once
+			// So, now, remove it from the arrPluginsFct array
+	        marknotes.arrPluginsFct.splice(marknotes.arrPluginsFct.indexOf('fnPluginTaskTreeView_init'),1);
+
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log('      fnPluginTaskTreeView_init has been removed from marknotes.arrPluginsFct');
 			}
 			/*<!-- endbuild -->*/
 

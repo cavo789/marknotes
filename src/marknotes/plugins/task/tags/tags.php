@@ -35,9 +35,6 @@ class Tags
 
         $paths = $aeFunctions->array_iunique($paths, SORT_STRING);
 
-        // Be carefull, folders / filenames perhaps contains accentuated characters
-        $paths = array_map('utf8_encode', $paths);
-
         $tmp = '';
         foreach ($paths as $dir) {
             $tmp .= basename($dir).';';
@@ -95,7 +92,11 @@ class Tags
                 $arrTags[] = array('name' => $value);
             }
 
-            $sReturn = json_encode($arrTags, JSON_PRETTY_PRINT);
+            // Be carefull, folders / filenames perhaps contains accentuated characters
+            //$arrTags = array_map('utf8_encode', $arrTags);
+
+            $aeJSON = \MarkNotes\JSON::getInstance();
+            $sReturn = $aeJSON->json_encode($arrTags);
 
             if ($aeSettings->getOptimisationUseServerSession()) {
                 // Remember for the next call
@@ -103,7 +104,7 @@ class Tags
             }
         } // if (count($arrTags)==0)
 
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=UTF-8');
         header("cache-control: must-revalidate");
         $offset = 48 * 60 * 60;  // 48 hours
         $expire = "expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";

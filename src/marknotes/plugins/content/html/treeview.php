@@ -1,16 +1,16 @@
 <?php
 
-/**
- * The treeview is being displayed, add extra js scripts if needed
- */
-
-namespace MarkNotes\Plugins\Task;
+namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class Treeview
 {
-    public static function display(array &$params) : bool
+
+    /**
+     * Provide additionnal javascript
+     */
+    public static function addJS(&$js = null)
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -18,12 +18,10 @@ class Treeview
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
         if ($aeSettings->getDebugMode()) {
-            $js = "\n<!-- Lines below are added by ".__FILE__."-->";
-        } else {
-            $js = '';
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
         }
 
-        $js .= "\n<script type=\"text/javascript\" ". "src=\"".$root."/marknotes/plugins/task/treeview/assets/treeview.js\"></script>\n";
+        $js .= "\n<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/treeview/treeview.js\"></script>\n";
 
         $js .=
             "<script type=\"text/javascript\">".
@@ -39,10 +37,8 @@ class Treeview
             "</script>";
 
         if ($aeSettings->getDebugMode()) {
-            $js .= "\n<!-- End for ".__FILE__."-->";
+            $js .= "<!-- End for ".__FILE__."-->";
         }
-
-        $params['js'] = $js;
 
         return true;
     }
@@ -50,16 +46,15 @@ class Treeview
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind() : bool
     {
         $aeSession = \MarkNotes\Session::getInstance();
 
         // Only when the user is connected
         if ($aeSession->get('authenticated', 0) === 1) {
             $aeEvents = \MarkNotes\Events::getInstance();
-            $aeEvents->bind('display', __CLASS__.'::display');
+            $aeEvents->bind('render.js', __CLASS__.'::addJS');
         }
-
         return true;
     }
 }

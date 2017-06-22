@@ -81,12 +81,6 @@ $(document).ready(function () {
 			useStore: marknotes.settings.use_localcache
 		});
 
-		$('#search').change(function (e) {
-			console.log("search change");
-			$('#TOC').jstree(true).show_all();
-			$('#TOC').jstree('search', $(this).val());
-		});
-
 	} // if (marknotes.autoload === 1)
 
 });
@@ -236,35 +230,8 @@ function ajaxify($params) {
 }
 
 /**
- * Add a new entry in the search box (append and not replace)
- *
- * @param {json} $entry
- *      keyword           : the value to add in the search area
- *      reset (optional)  : if true, the search area will be resetted before (so only search for the new keyword)
- *
- * @returns {Boolean}
- */
-function addSearchEntry($entry) {
-
-	$bReset = (($entry.reset === 'undefined') ? false : $entry.reset);
-
-	$current = $('#search').val().trim();
-
-	if (($current !== '') && ($bReset === false)) {
-		// Append the new keyword only when bReset is not set or set to False
-		var values = $current.split(',');
-		values.push($entry.keyword);
-		$('#search').val(values.join(','));
-	} else {
-		$('#search').val($entry.keyword);
-	}
-
-	return true;
-
-}
-
-/**
- * The ajax request has returned the list of files.  Build the table and initialize the #TOC DOM object
+ * The ajax request has returned the list of files.  Build the table and initialize
+ * the #TOC DOM object
  *
  * @param {json} $data  The return of the JSON returned by index.php?task=listFiles
  * @returns {Boolean}
@@ -304,34 +271,6 @@ function initFiles($data) {
 	}
 
 	jstree_init($data);
-
-	// initialize the search area, thanks to the Flexdatalist plugin
-
-	if ($.isFunction($.fn.flexdatalist)) {
-		$('.flexdatalist').flexdatalist({
-			toggleSelected: true,
-			minLength: 3,
-			valueProperty: 'id',
-			selectionRequired: false,
-			visibleProperties: ["name"],
-			searchIn: 'name',
-			data: 'tag.json',
-			focusFirstResult: true,
-			noResultsText: marknotes.message.search_no_result,
-			requestType: (marknotes.settings.debug ? 'get' : 'post')
-		});
-	} // if ($.isFunction($.fn.flexdatalist))
-
-	$('#search').css('width', $('#TDM').width() - 5);
-	$('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent()
-		.width() - 10).show();
-
-	// Interface : put the cursor immediatly in the edit box
-	try {
-		$('#search-flexdatalist').focus();
-	} catch (err) {
-		console.warn(err.message);
-	}
 
 	// See if the custominiFiles() function has been defined and if so, call it
 	try {
@@ -646,16 +585,7 @@ function afterDisplay($fname) {
 
 		// Interface : put the cursor immediatly in the edit box
 		try {
-			$('#search').focus();
-
-			// Get the searched keywords.  Apply the restriction on the size.
-			var $searchKeywords = $('#search').val().substr(0, marknotes.settings.search_max_width).trim();
-
-			if ($searchKeywords !== '') {
-				if ($.isFunction($.fn.highlight)) {
-					$("#CONTENT").highlight($searchKeywords);
-				}
-			}
+			fnPluginTaskSearch_afterDisplay();
 		} catch (err) {
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
@@ -702,11 +632,28 @@ function runPluginsFunctions() {
 	/*<!-- endbuild -->*/
 
 	try {
-		for (var i = 0, len = marknotes.arrPluginsFct.length; i < len; i++) {
-			// As explained here : https://www.sitepoint.com/call-javascript-function-string-without-using-eval/
-			fn = window[marknotes.arrPluginsFct[i]];
 
-			if (typeof fn === "function") fn();
+		// Duplicate the marknotes.arrPluginsFct array (use slice() for this)
+		// because some functions like f.i. fnPluginTaskTreeView_init() (in plugin task treeview)
+		// should be called only once and, that function, remove its entry from the
+		// marknotes.arrPluginsFct array.  Be sure to process every items so copy the array
+
+		$arrFct = marknotes.arrPluginsFct.slice();
+
+		for (var i = 0, len = $arrFct.length; i < len; i++) {
+
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log('   call ' + $arrFct[i]);
+			}
+			/*<!-- endbuild -->*/
+
+			// As explained here : https://www.sitepoint.com/call-javascript-function-string-without-using-eval/
+			fn = window[$arrFct[i]];
+
+			if (typeof fn === "function") {
+				fn();
+			}
 
 		}
 	} catch (err) {

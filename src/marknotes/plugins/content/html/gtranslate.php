@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Google Translate plugin for Marknotes
+ */
+
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -63,7 +67,7 @@ class GTranslate
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind() : bool
     {
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
@@ -72,13 +76,36 @@ class GTranslate
         // There is no need for translation when the output format is pdf
 
         if (in_array($task, array('edit','pdf'))) {
-            return true;
+            return false;
         }
 
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('display.html', __CLASS__.'::doIt');
-        $aeEvents->bind('render.js', __CLASS__.'::addJS');
-        $aeEvents->bind('render.css', __CLASS__.'::addCSS');
-        return true;
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $arrSettings = $aeSettings->getPlugins('options', 'gtranslate');
+
+        // Check if, in the settings, enable_localhost is set to 1 (default value)
+        // If set to 0, don't load the plugin on localhost system
+        $localhost = $arrSettings['enable_localhost'] ?? 1;
+
+        // localhost is equal to 1 ? Always load the plugin
+        $bLoad = ($localhost == 1);
+
+        if (!$bLoad) {
+            // Check if we're on localhost, if so, don't load the plugin
+            $bLoad = !in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1','::1'));
+            // Check name too
+            if ($bLoad) {
+                $bLoad = ($_SERVER['SERVER_NAME'] !== 'localhost');
+            }
+        }
+
+        if ($bLoad) {
+            $aeEvents = \MarkNotes\Events::getInstance();
+            $aeEvents->bind('display.html', __CLASS__.'::doIt');
+            $aeEvents->bind('render.js', __CLASS__.'::addJS');
+            $aeEvents->bind('render.css', __CLASS__.'::addCSS');
+            return true;
+        } else {
+            return false;
+        }
     }
 }

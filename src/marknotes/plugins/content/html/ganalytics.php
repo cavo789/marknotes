@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Google Analytics plugin for Marknotes
+ */
+
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -15,25 +19,20 @@ class GAnalytics
 
         $arr = $aeSettings->getPlugins();
 
-        $analyticsCode = '';
-        if (isset($arr['options'])) {
-            if (isset($arr['options']['ganalytics'])) {
-                $analyticsCode = $arr['options']['ganalytics'];
-            }
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $arrSettings = $aeSettings->getPlugins('options', 'ganalytics');
+
+        // Don't load if no code has been provided
+        $analyticsCode = $arrSettings['code'] ?? '';
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
         }
 
-        if ($analyticsCode !== '') {
-			
-			if ($aeSettings->getDebugMode()) {
-				$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-			}
-			
-            $js .= "\n<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '".$analyticsCode."', 'auto'); ga('send', 'pageview');</script>\n";
-			
-			if ($aeSettings->getDebugMode()) {
-				$js .= "<!-- End for ".__FILE__."-->";
-			}
-			
+        $js .= "\n<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '".$analyticsCode."', 'auto'); ga('send', 'pageview');</script>\n";
+
+        if ($aeSettings->getDebugMode()) {
+            $js .= "<!-- End for ".__FILE__."-->";
         }
 
         return true;
@@ -42,24 +41,51 @@ class GAnalytics
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind(): bool
     {
-        // No analytics on localhost ("::1" is the IPV6-format)
-        if ((in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', "::1"))) || ($_SERVER['SERVER_NAME'] === 'localhost')) {
-            // Just return, don't add the Google analytics code
-            return true;
-        }
-
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
         // The ganalytics plugin is not needed when the task is f.i. 'display' (i.e. when the note
         // is displayed through the interface) or when exporting the note to pdf
         if (in_array($task, array('display','pdf'))) {
-            return true;
+            return false;
         }
 
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('render.js', __CLASS__.'::addJS');
-        return true;
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        $arrSettings = $aeSettings->getPlugins('options', 'ganalytics');
+
+        // Don't load if no code has been provided
+        $analyticsCode = $arrSettings['code'] ?? '';
+        if ($analyticsCode === '') {
+            return false;
+        }
+
+        // Check if, in the settings, enable_localhost is set to 1 (default value)
+        // If set to 0, don't load the plugin on localhost system
+        $localhost = $arrSettings['enable_localhost'] ?? 1;
+
+        // localhost is equal to 1 ? Always load the plugin
+        $bLoad = ($localhost == 1);
+
+        if (!$bLoad) {
+
+            // Check if we're on localhost, if so, don't load the plugin
+            $bLoad = !in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1','::1'));
+
+            // Check name too
+            if ($bLoad) {
+                $bLoad = ($_SERVER['SERVER_NAME'] !== 'localhost');
+            }
+        }
+
+        if ($bLoad) {
+            $aeDebug = \MarkNotes\Debug::getInstance();
+            $aeDebug->here("", 1);
+            $aeEvents = \MarkNotes\Events::getInstance();
+            $aeEvents->bind('render.js', __CLASS__.'::addJS');
+            return true;
+        } else {
+            return false;
+        }
     }
 }

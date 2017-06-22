@@ -2,6 +2,7 @@
 
 /**
  * Search engine, search for keywords in notes and return the md5 of the filename
+ * Then, the treeview (jstree) will filter on that list and only show items with the same md5
  */
 
 namespace MarkNotes\Plugins\Task;
@@ -33,9 +34,6 @@ class Search
             // Sort, case insensitve
             natcasesort($arrFiles);
 
-            // Be carefull, folders / filenames perhaps contains accentuated characters
-            $arrFiles = array_map('utf8_encode', $arrFiles);
-
             if ($aeSettings->getOptimisationUseServerSession()) {
                 // Remember for the next call
                 $aeSession->set('SearchFileList', json_encode($arrFiles, JSON_PRETTY_PRINT));
@@ -50,6 +48,7 @@ class Search
 
     public static function run(&$params = null)
     {
+        $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -57,6 +56,12 @@ class Search
 
         // String to search (can be something like 'invoices,2017,internet') i.e. multiple keywords
         $pattern = trim($aeFunctions->getParam('str', 'string', '', false, SEARCH_MAX_LENGTH));
+
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log('Searching for ['.$pattern.']', 'debug');
+        }
+        /*<!-- endbuild -->*/
 
         // $keywords can contains multiple terms like 'invoices,2017,internet'.
         // Search for these three keywords (AND)
@@ -88,6 +93,13 @@ class Search
             }
 
             if ($bFound) {
+
+                /*<!-- build:debug -->*/
+                if ($aeSettings->getDebugMode()) {
+                    $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'debug');
+                }
+                /*<!-- endbuild -->*/
+
                 // Found in the filename => stop process of this file
                 $return[] = md5($docs.$file);
             } else { // if ($bFound)
@@ -116,6 +128,13 @@ class Search
                 } // foreach($keywords as $keyword)
 
                 if ($bFound) {
+
+                    /*<!-- build:debug -->*/
+                    if ($aeSettings->getDebugMode()) {
+                        $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'debug');
+                    }
+                    /*<!-- endbuild -->*/
+
                     // Found in the filename => stop process of this file
                     $return[] = md5($docs.$file);
                 }  // if ($bFound)
@@ -134,6 +153,14 @@ class Search
      */
     public function bind()
     {
+        $aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+
+        // The search plugin is only for the interface so task="main" or by searching
+        if (!in_array($task, array('main','search'))) {
+            return false;
+        }
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('run.task', __CLASS__.'::run');
         return true;
