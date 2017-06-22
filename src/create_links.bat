@@ -69,8 +69,8 @@ mklink readme.md %MASTER%readme.md
 mklink router.php %MASTER%router.php
 mklink ruleset.xml %MASTER%ruleset.xml
 mklink settings.json.dist %MASTER%settings.json.dist
-mklink tags.json %MASTER%tags.json
 
+if not exist "tags.json" echo {} > tags.json
 
 if not exist "settings.json" echo {"debug":1,"plugins":{"options":{"login":{"username":"","password":""},"optimisation":{"browser_cache":0,"localStorage":0,"server_session":0}}},"site_name":"Test site"} > settings.json
 

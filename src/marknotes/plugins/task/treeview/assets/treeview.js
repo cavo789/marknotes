@@ -214,9 +214,10 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 		// Encode the name in base64 so no problem with f.i. slashes and accentuated characters
 		if ($task !== 'files.create') {
-			$oldname = window.btoa(encodeURIComponent(JSON.stringify($oldname)));
+			$oldname = window.btoa(encodeURIComponent($oldname));
 		}
-		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
+//		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
+		$newname = window.btoa(encodeURIComponent($newname));
 
 		switch ($task) {
 		case 'files.create':

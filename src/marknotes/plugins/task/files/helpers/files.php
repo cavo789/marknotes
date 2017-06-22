@@ -39,7 +39,7 @@ class Files
         }
 
         // Sanitize the filename
-        $name = utf8_decode($aeFiles->sanitizeFileName($name));
+        $name = $aeFiles->sanitizeFileName($name);
         $name = $aeSettings->getFolderDocs().$name;
 
         if (!$aeFiles->fileExists($name)) {

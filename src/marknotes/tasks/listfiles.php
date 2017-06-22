@@ -142,13 +142,13 @@ class ListFiles
 
         // Entry for the folder
         $listDir = array(
-            'id' => utf8_encode(str_replace($root, '', $dir).DS),
+            'id' => str_replace($root, '', $dir).DS,
             'type' => 'folder',
             'icon' => 'folder',
-            'text' => utf8_encode(basename($dir)),
+            'text' => basename($dir), //utf8_encode(basename($dir)),
             'state' => array('opened' => $opened,'disabled' => 1),
             'data' => array(
-                'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir)))
+                'url' => str_replace(DS, '/', str_replace($root, '', $dir))
             ),
             'children' => array()
         );
@@ -173,15 +173,15 @@ class ListFiles
                                 $filename = str_replace('.'.$extension, '', $sub);
 
                                 $files[] = array(
-                                    'id' => md5(utf8_encode(str_replace($root, $rootNode, $dir.DS.$sub))),
+                                    'id' => md5(str_replace($root, $rootNode, $dir.DS.$sub)),
                                     'icon' => 'file file-md',
-                                    'text' => utf8_encode($filename),
+                                    'text' => $filename,
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(
                                         'task' => 'display',
-                                        'file' => utf8_encode(str_replace($root, '', $dir.DS.$sub)),
-                                        'url' => str_replace(DS, '/', utf8_encode(str_replace($root, '', $dir.DS.$filename)))
+                                        'file' => str_replace($root, '', $dir.DS.$sub),
+                                        'url' => str_replace(DS, '/', str_replace($root, '', $dir.DS.$filename))
                                     ),
                                     'state' => array(
                                         'opened' => $opened,

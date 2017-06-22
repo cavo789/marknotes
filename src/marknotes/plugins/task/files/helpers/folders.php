@@ -141,6 +141,7 @@ class Folders
         $foldername = $aeFiles->sanitizeFileName($foldername);
 
         if (!$aeFiles->folderExists($foldername)) {
+
             // The "old" folder is not found
             return FOLDER_NOT_FOUND;
         } else {

@@ -231,7 +231,6 @@ class Files
         // Be sure to have the .md extension
         $filename = $aeFiles->removeExtension($filename).'.md';
 
-        // Try to create a file called "$filename.md" on the disk
         $wReturn = $aeFilesystem->createFile($filename);
 
         switch ($wReturn) {
@@ -368,7 +367,8 @@ class Files
         // file or folder
         $type = $aeFunctions->getParam('type', 'string', '', false);
 
-        $newname = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
+        $newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
+
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
             //if (mb_detect_encoding($newname)) {
@@ -397,7 +397,6 @@ class Files
                 // it's a folder
                 $return = self::createFolder($newname);
             } else {
-
                 // it's a file
                 $return = self::createFile($newname);
             }
@@ -419,7 +418,7 @@ class Files
         // file or folder
         $type = $aeFunctions->getParam('type', 'string', '', false);
 
-        $newname = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
+        $newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
             //if (mb_detect_encoding($newname)) {
@@ -429,7 +428,7 @@ class Files
             //}
         }
 
-        $oldname = trim(json_decode(urldecode($aeFunctions->getParam('oldname', 'string', '', true))));
+        $oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
         if ($oldname != '') {
             $oldname = $aeFiles->sanitizeFileName(trim($oldname));
 
@@ -483,7 +482,7 @@ class Files
         // file or folder
         $type = $aeFunctions->getParam('type', 'string', '', false);
 
-        $name = trim(json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true))));
+        $name = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
         $name = $aeFiles->sanitizeFileName($name);
         if ($name === '') {
             $return = array(

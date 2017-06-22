@@ -281,7 +281,9 @@ function contextMenuNewWindow(node) {
 	$url = node.data.url;
 
 	// Be sure the URL is ending with / if it's a folder
-	if (($url.slice(-1) !== '/') && ($type === 'folder')) $url += '/';
+	if ($url.length>0) {
+	   if (($url.slice(-1) !== '/') && ($type === 'folder')) $url += '/';
+   }
 
 	$url += ($type === 'folder' ? 'index.html' : '.html');
 
