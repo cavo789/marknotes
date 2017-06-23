@@ -37,24 +37,24 @@ class JSON
 
         switch (json_last_error()) {
             case JSON_ERROR_DEPTH:
-                $msg = $param.'Maximum stack depth exceeded [error code '.JSON_ERROR_DEPTH.']';
+                $msg = $param.'Maximum stack depth exceeded [error code JSON_ERROR_DEPTH]';
                 break;
 
             case JSON_ERROR_STATE_MISMATCH:
-                $msg = $param.'Underflow or the modes mismatch [error code '.JSON_ERROR_STATE_MISMATCH.']';
+                $msg = $param.'Underflow or the modes mismatch [error code JSON_ERROR_STATE_MISMATCH]';
                 break;
 
             case JSON_ERROR_CTRL_CHAR:
-                $msg = $param.'Unexpected control character found [error code '.JSON_ERROR_CTRL_CHAR.']';
+                $msg = $param.'Unexpected control character found [error code JSON_ERROR_CTRL_CHAR]';
                 break;
 
             case JSON_ERROR_SYNTAX:
-                $msg = $param.'Syntax error, malformed JSON [error code '.JSON_ERROR_SYNTAX.'] '.
+                $msg = $param.'Syntax error, malformed JSON [error code JSON_ERROR_SYNTAX] '.
                 '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
                 break;
 
             case JSON_ERROR_UTF8:
-                $msg = $param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code '.JSON_ERROR_UTF8.']';
+                $msg = $param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code JSON_ERROR_UTF8]';
                 break;
 
             default:
@@ -63,9 +63,8 @@ class JSON
         } // switch (json_last_error())
 
         if (self::$_debug == true) {
-            $msg .= ' <em class="text-info">(called by '.debug_backtrace()[1]['function'].', line '.
-               debug_backtrace()[1]['line'].', '.debug_backtrace()[2]['class'].'::'.debug_backtrace()[2]['function'].
-               ', line '.debug_backtrace()[2]['line'].')</em>';
+            $aeDebug = \MarkNotes\Debug::getInstance();
+            $aeDebug->here("", 4);
         }
 
         $msg = '<div class="error bg-danger">ERROR - '.$msg.'</div>';
@@ -109,7 +108,10 @@ class JSON
             $arr = json_decode(trim(file_get_contents($fname)), $assoc);
 
             if (json_last_error() != JSON_ERROR_NONE) {
+                header('Content-Type: text/html; charset=utf-8');
+
                 self::showError($fname, false);
+
                 if (self::$_debug) {
                     echo '<pre>'.file_get_contents($fname).'</pre>';
                 }
@@ -128,11 +130,22 @@ class JSON
         try {
             $return = json_encode($value, $option);
 
+            if (json_last_error() === JSON_ERROR_UTF8) {
+                // In case of UTF8 error, just try to encode the string and json_encode again
+                if (!is_array($value)) {
+                    $return = json_encode(iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($value)), $option);
+                }
+            }
+
             if (json_last_error() !== JSON_ERROR_NONE) {
+                header('Content-Type: text/html; charset=utf-8');
+
                 self::showError('', false);
+
                 if (self::$_debug) {
                     echo '<pre style="background-color:yellow;">'.print_r($value, true).'</pre>';
                 }
+
                 die();
             } // if (json_last_error()!==JSON_ERROR_NONE)
         } catch (Exception $ex) {

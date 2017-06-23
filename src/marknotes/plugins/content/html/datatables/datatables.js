@@ -26,8 +26,8 @@ function fnPluginHTMLDataTable() {
 					"info": true,
 					"order": [], // No ordering by default
 					"lengthMenu": [
-						[10, 25, 50, -1],
-						[10, 25, 50, "All"]
+						[5, 10, 25, 50, -1],
+						[5, 10, 25, 50, "All"]
 					],
 					"language": {
 						"decimal": '.',
