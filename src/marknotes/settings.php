@@ -21,8 +21,6 @@ class Settings
             $this->setFolderWebRoot($folder);
         }
 
-        $this->setFolderDocs(DOC_FOLDER);
-
         self::readSettings($params);
 
         if (isset($this->_json['locale'])) {
@@ -120,11 +118,14 @@ class Settings
              $this->setLanguage($this->_json['language']);
          }
 
+         $this->setFolderDocs($this->_json['folder'] ?? DOC_FOLDER);
+
         /*<!-- build:debug -->*/
         if (isset($this->_json['debug'])) {
             // Debug mode enabled or not
             $this->setDebugMode($this->_json['debug'] == 1?true:false);
         }
+
          if (isset($this->_json['development'])) {
              // Developer mode enabled or not
             $timezone = $this->_json['development'] ?? 'Europe/Paris';

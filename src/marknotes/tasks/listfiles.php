@@ -142,13 +142,13 @@ class ListFiles
 
         // Entry for the folder
         $listDir = array(
-            'id' => str_replace($root, '', $dir).DS,
+            'id' => utf8_encode(str_replace($root, '', $dir).DS),
             'type' => 'folder',
             'icon' => 'folder',
-            'text' => basename($dir), //utf8_encode(basename($dir)),
+            'text' => utf8_encode(basename($dir)), //utf8_encode(basename($dir)),
             'state' => array('opened' => $opened,'disabled' => 1),
             'data' => array(
-                'url' => str_replace(DS, '/', str_replace($root, '', $dir))
+                'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir)))
             ),
             'children' => array()
         );
@@ -175,13 +175,13 @@ class ListFiles
                                 $files[] = array(
                                     'id' => md5(str_replace($root, $rootNode, $dir.DS.$sub)),
                                     'icon' => 'file file-md',
-                                    'text' => $filename,
+                                    'text' => utf8_encode($filename),
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(
                                         'task' => 'display',
-                                        'file' => str_replace($root, '', $dir.DS.$sub),
-                                        'url' => str_replace(DS, '/', str_replace($root, '', $dir.DS.$filename))
+                                        'file' => utf8_encode(str_replace($root, '', $dir.DS.$sub)),
+                                        'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir.DS.$filename)))
                                     ),
                                     'state' => array(
                                         'opened' => $opened,

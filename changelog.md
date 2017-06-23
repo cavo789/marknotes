@@ -22,6 +22,7 @@
 + The treeview options button won't appear anymore if all treeview plugins are disabled
 - Solve issue when creating, from the interface, folders/files with accentuated characters in their name
 - Solve bug in settings.json override when the change was for a plugin (into a array like plugin->content->html). Now, json only contains key and no more arrays.
+- The `folder` setting was incorrectly read; solved.
 ```
 
 ## 1.0.8
