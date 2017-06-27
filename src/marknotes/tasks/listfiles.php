@@ -140,12 +140,19 @@ class ListFiles
             }
         }
 
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // Use utf8_encode only under Windows OS
+            $sDirectoryText = utf8_encode(basename($dir));
+        } else {
+            $sDirectoryText = basename($dir);
+        }
+
         // Entry for the folder
         $listDir = array(
             'id' => utf8_encode(str_replace($root, '', $dir).DS),
             'type' => 'folder',
             'icon' => 'folder',
-            'text' => utf8_encode(basename($dir)), //utf8_encode(basename($dir)),
+            'text' => $sDirectoryText,
             'state' => array('opened' => $opened,'disabled' => 1),
             'data' => array(
                 'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir)))
@@ -172,10 +179,17 @@ class ListFiles
                                 // Filename but without the extension (and no path)
                                 $filename = str_replace('.'.$extension, '', $sub);
 
+                                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                                    // Use utf8_encode only under Windows OS
+                                    $sFileText = utf8_encode($filename);
+                                } else {
+                                    $sFileText = $filename;
+                                }
+
                                 $files[] = array(
                                     'id' => md5(str_replace($root, $rootNode, $dir.DS.$sub)),
                                     'icon' => 'file file-md',
-                                    'text' => utf8_encode($filename),
+                                    'text' => $sFileText,
 
                                     // Populate the data attribute with the task to fire and the filename of the note
                                     'data' => array(

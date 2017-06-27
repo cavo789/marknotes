@@ -67,47 +67,48 @@ class ListFiles
 
                     $sList = '';
                     foreach ($arrFiles as $file) {
-                        $ext = strtolower($aeFiles->getExtension($file));
+                        if (is_file($file)) {
+                            $ext = strtolower($aeFiles->getExtension($file));
 
-                        switch ($ext) {
-                             case 'doc':
-                             case 'docx':
-                                 $icon = 'file-excel-o';
-                                 break;
-                            case 'pdf':
-                               $icon = 'file-pdf-o';
-                               break;
-                            case 'ppt':
-                            case 'pptx':
-                                $icon = 'file-powerpoint-o';
-                                break;
-                            case 'txt':
-                               $icon = 'file-text-o';
-                               break;
-                            case 'xls':
-                            case 'xlsx':
-                                $icon = 'file-excel-o';
-                                break;
-                            case '7z':
-                            case 'gzip':
-                            case 'tar':
-                             case 'zip':
-                                 $icon = 'file-archive-o';
-                                 break;
-                            default:
-                                $icon = 'file-o';
-                        }
+                            switch ($ext) {
+                                case 'doc':
+                                case 'docx':
+                                    $icon = 'file-excel-o';
+                                    break;
+                                case 'pdf':
+                                    $icon = 'file-pdf-o';
+                                    break;
+                                case 'ppt':
+                                case 'pptx':
+                                    $icon = 'file-powerpoint-o';
+                                    break;
+                                case 'txt':
+                                    $icon = 'file-text-o';
+                                    break;
+                                case 'xls':
+                                case 'xlsx':
+                                    $icon = 'file-excel-o';
+                                    break;
+                                case '7z':
+                                case 'gzip':
+                                case 'tar':
+                                case 'zip':
+                                    $icon = 'file-archive-o';
+                                    break;
+                                default:
+                                    $icon = 'file-o';
+                            } // switch
 
-                        $file = str_replace($root, '', utf8_encode($file));
+                            $file = str_replace($root, '', utf8_encode($file));
 
-                        $relURL = str_replace(DS, '/', str_replace($root, '', $file));
-                        $sList .= '<li><i class="fa fa-'.$icon.'"></i><a href="'.$url.$relURL.'">&nbsp;'.$relURL.'</a></li>';
-                    }
+                            $relURL = str_replace(DS, '/', str_replace($root, '', $file));
+                            $sList .= '<li><i class="fa fa-'.$icon.'"></i><a href="'.$url.$relURL.'">&nbsp;'.$relURL.'</a></li>';
+                        } // if (is_file($file))
+                    } // foreach ($arrFiles as $file)
 
                     if ($sList !== '') {
                         $sList = '<ul class="fa-ul">'.$sList.'</ul>';
                     }
-
                     $content = str_replace($arrTags[$i], $sList, $content);
                 }
             }
