@@ -36,7 +36,7 @@ class Functions
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
             $aeDebug = \MarkNotes\Debug::getInstance();
-            $aeDebug->here('#DebugMode# - File '.$file.' not found', 5);
+            $aeDebug->here('#DebugMode# - File '.$file.' not found', 10);
         }
         /*<!-- endbuild -->*/
 

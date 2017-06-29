@@ -61,25 +61,27 @@ class Markdown
 
         if ($filename != '') {
 
-            // Do we need to encode accent on that system ?
-            $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
-            if (!$bEncodeAccents) {
-                $filename = utf8_decode($filename);
+            // The filename shouldn't mention the docs folders, just the filename
+            // So, $filename should not be docs/markdown.md but only markdown.md because the
+            // folder name will be added later on
+
+            $docRoot = $aeSettings->getFolderDocs(false);
+            if (substr($filename, 0, strlen($docRoot)) === $docRoot) {
+                $filename = substr($filename, strlen($docRoot));
+            }
+
+            if (!file_exists($aeSettings->getFolderDocs(true).$filename)) {
+
+                // Do we need to encode accent on that system ?
+                $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+                if (!$bEncodeAccents) {
+                    $filename = utf8_decode($filename);
+                }
             }
 
             $filename = $aeFiles->sanitizeFileName(trim($filename));
         }
 
-        $docRoot = $aeSettings->getFolderDocs(false);
-
-        // The filename shouldn't mention the docs folders, just the filename
-        // So, $filename should not be docs/markdown.md but only markdown.md because the
-        // folder name will be added later on
-
-
-        if (substr($filename, 0, strlen($docRoot)) === $docRoot) {
-            $filename = substr($filename, strlen($docRoot));
-        }
 
         if ($params === null) {
             $params = array();
