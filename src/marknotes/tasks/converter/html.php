@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -15,11 +15,11 @@ class HTML
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new HTML();
+        if (self::$hInstance === null) {
+            self::$hInstance = new HTML();
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     /**
@@ -32,6 +32,7 @@ class HTML
     public function run(string $html, array $params = null)
     {
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -56,9 +57,16 @@ class HTML
         }
 
         $javascript =
-        "marknotes.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';";
+        "marknotes.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';\n";
 
-        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
+        $sQuerystring = "";
+        foreach ($_GET as $name => $value) {
+            $value = filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);
+            $value = str_replace("'", "\'", $value);
+            $sQuerystring .= "marknotes.querystring.".$name."='".$value."';\n";
+        }
+
+        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.$sQuerystring.'</script>', $html);
 
         return $html;
     }

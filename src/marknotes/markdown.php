@@ -60,6 +60,13 @@ class Markdown
         }
 
         if ($filename != '') {
+
+            // Do we need to encode accent on that system ?
+            $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+            if (!$bEncodeAccents) {
+                $filename = utf8_decode($filename);
+            }
+
             $filename = $aeFiles->sanitizeFileName(trim($filename));
         }
 
@@ -68,6 +75,8 @@ class Markdown
         // The filename shouldn't mention the docs folders, just the filename
         // So, $filename should not be docs/markdown.md but only markdown.md because the
         // folder name will be added later on
+
+
         if (substr($filename, 0, strlen($docRoot)) === $docRoot) {
             $filename = substr($filename, strlen($docRoot));
         }
@@ -79,7 +88,6 @@ class Markdown
         if (!isset($params['filename'])) {
             $params['filename'] = $filename;
         }
-
         if (!isset($params['task'])) {
             $params['task'] = $task;
         }
@@ -110,9 +118,15 @@ class Markdown
 
                 // Retrieve the list of .md files.
                 $aeTask = \MarkNotes\Tasks\ListFiles::getInstance();
+                $return = \MarkNotes\Tasks\ListFiles::run();
+
+                // Set the header after the run() method so, if an error occurs, the error
+                // will be displayed as a html string and not a json one
+
                 header('Content-Type: application/json; charset=UTF-8');
                 header('Content-Transfer-Encoding: ascii');
-                echo \MarkNotes\Tasks\ListFiles::run();
+                echo $return;
+
                 break;
 
             case 'main':

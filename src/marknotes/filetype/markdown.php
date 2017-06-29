@@ -83,6 +83,8 @@ class Markdown
         $folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
 
         if (isset($params['filename'])) {
+            $params['filename'] = str_replace($folderNote, '', $params['filename']);
+
             $folderNote .= rtrim(dirname($params['filename']), DS).DS;
 
             // Get the full path to this note
@@ -104,14 +106,19 @@ class Markdown
                         // Add the fullpath only if the link to the image doesn't contains yet
                         // an hyperlink
                         if (strpos($matches[2][$i], '//') === false) {
-                            $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
+                            $filename = str_replace('/', DS, $matches[2][$i]);
+
+                            if (strpos($filename, $folderNote) === false) {
+                                $filename = $folderNote.$filename;
+                            }
+
                             if ($aeFiles->fileExists($filename)) {
                                 $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
                             } else {
                                 /*<!-- build:debug -->*/
                                 if ($aeSettings->getDebugMode()) {
                                     $aeDebug = \MarkNotes\Debug::getInstance();
-                                    $aeDebug->here('DEBUG MODE --- '.$filename.' NOT FOUND');
+                                    $aeDebug->here('DEBUG MODE --- In file '.$params['filename'].' ==> '.$filename.' NOT FOUND');
                                 }
                                 /*<!-- endbuild -->*/
                             }
@@ -173,9 +180,14 @@ class Markdown
             // --------------------------------
             // Call content plugins
             $aeEvents->loadPlugins('markdown');
-            $args = array(&$markdown);
+
+            $params['markdown'] = $markdown;
+            $params['filename'] = $filename;
+            $args = array(&$params);
+
             $aeEvents->trigger('markdown.read', $args);
-            $markdown = $args[0];
+
+            $markdown = $args[0]['markdown'];
             // --------------------------------
 
             $aeFiles = \MarkNotes\Files::getInstance();

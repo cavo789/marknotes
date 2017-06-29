@@ -13,18 +13,23 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Caroussel
 {
-    public static function doIt(&$markdown = null) : bool
-    {
-        if (trim($markdown) === '') {
-            return true;
-        }
+    /*
+    * $params is a associative array with, as entries,
+    *	* markdown : the markdown string (content of the file)
+    *	* filename : the absolute filename on disk
+   */
+   public static function readMD(&$params = null) : bool
+   {
+       if (trim($params['markdown']) === '') {
+           return true;
+       }
 
-        $matches = array();
+       $matches = array();
 
         // Check if the content contains things like ' %CAROUSSEL .images/folder/demo%'
         // i.e. '%CAROUSSEL ' followed by a foldername and ending by '%'
 
-        if (preg_match_all('/%CAROUSSEL ([^\\%]*)%/', $markdown, $matches)) {
+        if (preg_match_all('/%CAROUSSEL ([^\\%]*)%/', $params['markdown'], $matches)) {
             $aeFiles = \MarkNotes\Files::getInstance();
             $aeFunctions = \MarkNotes\Functions::getInstance();
             $aeSettings = \MarkNotes\Settings::getInstance();
@@ -78,12 +83,12 @@ class Caroussel
                         }
                     }
 
-                    $markdown = str_replace($arrTags[$i], $images, $markdown);
+                    $params['markdown'] = str_replace($arrTags[$i], $images, $params['markdown']);
                 }
             }
         }
-        return true;
-    }
+       return true;
+   }
 
     /**
      * Attach the function and responds to events
@@ -100,7 +105,7 @@ class Caroussel
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('markdown.read', __CLASS__.'::doIt');
+        $aeEvents->bind('markdown.read', __CLASS__.'::readMD');
         return true;
     }
 }

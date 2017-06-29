@@ -65,6 +65,8 @@ class ListFiles
             }
             /*<!-- endbuild -->*/
 
+            $aeDebug->enable(true);
+
             // --------------------------------------------------------------------------------------
             // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
 
@@ -101,12 +103,19 @@ class ListFiles
     * @param  string $ext   array() with extensions to search for (only .md for this program)
     * @return array
     */
-    private static function dir_to_jstree_array(
-        string $dir,
-        array $ext = array(),
-        array $arrTreeAutoOpen
-    ) : array {
+    private static function dir_to_jstree_array(string $dir, array $ext = array(), array $arrTreeAutoOpen) : array
+    {
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+        /* ----------------------------------------------------------------------------
+           TODO: Understand why on somes Windows computer (my home one), this function
+           shouldn't use utf8_encode() for returning files/folders name but on some other (my
+           office computer) yes, utf8_encode should be used. Strange!
+           June 2017 : for the moment, I've created a files->encode_accent option in the
+           settings.json file. By default, set to 0.
+           ---------------------------------------------------------------------------- */
+        $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+
         $root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
         $rootNode = $aeSettings->getFolderDocs(false);
 
@@ -140,7 +149,7 @@ class ListFiles
             }
         }
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($bEncodeAccents) {
             // Use utf8_encode only under Windows OS
             $sDirectoryText = utf8_encode(basename($dir));
         } else {
@@ -179,7 +188,7 @@ class ListFiles
                                 // Filename but without the extension (and no path)
                                 $filename = str_replace('.'.$extension, '', $sub);
 
-                                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                                if ($bEncodeAccents) {
                                     // Use utf8_encode only under Windows OS
                                     $sFileText = utf8_encode($filename);
                                 } else {

@@ -96,7 +96,7 @@ class Search
 
                 /*<!-- build:debug -->*/
                 if ($aeSettings->getDebugMode()) {
-                    $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'debug');
+                    $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'info');
                 }
                 /*<!-- endbuild -->*/
 
@@ -131,7 +131,7 @@ class Search
 
                     /*<!-- build:debug -->*/
                     if ($aeSettings->getDebugMode()) {
-                        $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'debug');
+                        $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'info');
                     }
                     /*<!-- endbuild -->*/
 

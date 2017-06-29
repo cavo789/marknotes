@@ -631,6 +631,15 @@ class Settings
     }
 
     /**
+     * Return a node from the "files" JSON entry
+     */
+    public function getFiles(string $node = '', $default = '')
+    {
+        return $this->_json['files'][$node] ?? $default;
+    } // function getFiles()
+
+
+    /**
      * Should nodes of the treeview be opened at loading time ?
      *
      * @return bool
@@ -716,6 +725,7 @@ class Settings
     public function getPlugins(string $type = '', string $layout = '') : array
     {
         $arr = array();
+
         if (isset($this->_json['plugins'])) {
             if ($type !== '') {
                 if (isset($this->_json['plugins'][$type])) {

@@ -67,7 +67,6 @@ class Display
         $aeConvert = \MarkNotes\Helpers\Convert::getInstance();
         $html = $aeConvert->getHTML($markdown, $params);
 
-        // Check if the .html version of the markdown file already exists; if not, create it
         if (!$aeFunctions->isAjaxRequest()) {
             $aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
             $html = $aeConvert->run($html, $params);

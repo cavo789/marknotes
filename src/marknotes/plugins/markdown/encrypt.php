@@ -181,10 +181,14 @@ class Encrypt
     /**
      * The markdown file has been read, this function will get the content of the .md file and
      * make some processing like data cleansing
-     */
-    public static function readMD(&$markdown = null)
+     *
+     * $params is a associative array with, as entries,
+     *	* markdown : the markdown string (content of the file)
+     *	* filename : the absolute filename on disk
+    */
+    public static function readMD(&$params = null)
     {
-        if (trim($markdown) === '') {
+        if (trim($params['markdown']) === '') {
             return true;
         }
         // Check if, in the markdown string, there is encrypt tags like <encrypt>SOMETHING</encrypt>
@@ -192,25 +196,27 @@ class Encrypt
 
         $pattern = '/<encrypt[[:blank:]]*([^>]*)>([\\S\\n\\r\\s]*?)<\/encrypt>/';
         $matches = array();
-        preg_match_all($pattern, $markdown, $matches);
+        preg_match_all($pattern, $params['markdown'], $matches);
 
         if (count($matches) > 0) {
             // Yes => encrypt these contents
-            $markdown = self::encrypt($markdown, $matches);
+            $params['markdown'] = self::encrypt($params['markdown'], $matches);
         }
 
         $aeSession = \MarkNotes\Session::getInstance();
 
         // The note should be unencrypted in case of editing or when the search is fired
-        // edit : the unencrypted version should be editable
+        // edit.form : the unencrypted version should be editable
         // search : we also need to search in encrypted text
-        $bShowUnencrypt = in_array($aeSession->get('task'), array('edit','search'));
+        $task = $aeSession->get('task');
+
+        $bShowUnencrypt = in_array($task, array('edit.form','search'));
 
         if ($bShowUnencrypt) {
             $matches = array();
 
             // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
-            preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+            preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $params['markdown'], $matches);
 
             // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
             if (count($matches[1]) > 0) {
@@ -220,7 +226,7 @@ class Encrypt
 
                 for ($i; $i < $j; $i++) {
                     $decrypt = self::sslDecrypt($matches[1][$i]);
-                    $markdown = str_replace($matches[0][$i], '<encrypt>'.$decrypt.'</encrypt>', $markdown);
+                    $params['markdown'] = str_replace($matches[0][$i], '<encrypt>'.$decrypt.'</encrypt>', $params['markdown']);
                 }
             } // if (count($matches[1])>0)
         }
