@@ -61,7 +61,6 @@
 				"jolitypo": 1,
 				"meta": 1,
 				"prism": 1,
-				"search": 1,
 				"seo": 1,
 				"share": 1,
 				"smileys": 1,
@@ -69,6 +68,7 @@
 				"caroussel": 1,
 				"treeview": 1,
 				"security": 1,
+				"search": 1,
 				"custom": 1
 			},
 			"docx": {

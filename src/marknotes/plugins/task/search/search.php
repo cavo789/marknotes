@@ -70,6 +70,12 @@ class Search
         // Retrieve the list of files
         $arrFiles = self::getFiles();
 
+        // Do we need to encode accents ?
+        $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+        if ($bEncodeAccents) {
+            $arrFiles = array_map('utf8_encode', $arrFiles);
+        }
+
         // docs should be relative so $aeSettings->getFolderDocs(false) and not $aeSettings->getFolderDocs(true)
         $docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
@@ -94,23 +100,31 @@ class Search
 
             if ($bFound) {
 
+                // Found in the filename => stop process of this file
+
                 /*<!-- build:debug -->*/
                 if ($aeSettings->getDebugMode()) {
                     $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'info');
                 }
                 /*<!-- endbuild -->*/
 
-                // Found in the filename => stop process of this file
                 $return[] = md5($docs.$file);
             } else { // if ($bFound)
 
                 // Open the file and check against its content (plain and encrypted)
-                $fullname = utf8_decode($aeSettings->getFolderDocs(true).$file);
+
+                /*$bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+                if (!$bEncodeAccents) {
+                    $fullname = utf8_decode($aeSettings->getFolderDocs(true).$file);
+                } else {*/
+                    $fullname = $aeSettings->getFolderDocs(true).$file;
+                /*}*/
 
                 // Read the note content
                 // The read() method will fires any plugin linked to the markdown.read event
                 // so encrypted notes will be automatically unencrypted
                 $content = $aeMarkdown->read($fullname);
+
                 $bFound = true;
 
                 foreach ($keywords as $keyword) {

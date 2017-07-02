@@ -71,7 +71,6 @@ class Markdown
             }
 
             if (!file_exists($aeSettings->getFolderDocs(true).$filename)) {
-
                 // Do we need to encode accent on that system ?
                 $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
                 if (!$bEncodeAccents) {

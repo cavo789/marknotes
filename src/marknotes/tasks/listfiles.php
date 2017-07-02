@@ -188,15 +188,17 @@ class ListFiles
                                 // Filename but without the extension (and no path)
                                 $filename = str_replace('.'.$extension, '', $sub);
 
+                                $id = str_replace($root, $rootNode, $dir.DS.$sub);
+                                $sFileText = $filename;
+
                                 if ($bEncodeAccents) {
                                     // Use utf8_encode only under Windows OS
                                     $sFileText = utf8_encode($filename);
-                                } else {
-                                    $sFileText = $filename;
+                                    $id = utf8_encode($id);
                                 }
 
                                 $files[] = array(
-                                    'id' => md5(str_replace($root, $rootNode, $dir.DS.$sub)),
+                                    'id' => md5($id),
                                     'icon' => 'file file-md',
                                     'text' => $sFileText,
 

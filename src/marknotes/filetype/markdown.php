@@ -166,16 +166,18 @@ class Markdown
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeEvents = \MarkNotes\Events::getInstance();
+        $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeDebug = \MarkNotes\Debug::getInstance();
 
-        if (mb_detect_encoding($filename)) {
+        /*if (mb_detect_encoding($filename)) {
             if (!file_exists($filename)) {
                 $filename = utf8_decode($filename);
             }
-        }
+        }*/
 
-        if (file_exists($filename)) {
-            $markdown = file_get_contents($filename);
+        if ($aeFiles->fileExists($filename)) {
+            $markdown = file_get_contents(utf8_decode($filename));
 
             // --------------------------------
             // Call content plugins

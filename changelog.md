@@ -7,7 +7,7 @@
 ### 2017-06-xxx
 
 ```diff
-+ Plugin List Of Files - new plugin that will scan a folder and retrieve the list of files in it
++ Plugin List Of Files - new markdown plugin that will scan a folder and retrieve the list of files in it
 + Plugin Carrousel - Also for html rendering (and Reveal too)
 + Add support for the dynamic page 'index.html'
 + Migrate the clear cache button from core to a plugin
