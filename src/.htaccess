@@ -14,6 +14,13 @@ DirectoryIndex index.php
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
 
+    # Exceptions : don't allow direct access to .md files but reroute to the router.
+	# This because .md file content can use plugins calls and these plugins should then first
+	# be fired before displaying them on the browser
+	RewriteCond %{REQUEST_FILENAME} -f
+	RewriteCond %{REQUEST_URI} \.(md)$
+	RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
+
     # Block access to hidden files / folders but allow .files, .images or .well)-known
     RewriteCond %{SCRIPT_FILENAME} -d [OR]
     RewriteCond %{SCRIPT_FILENAME} -f

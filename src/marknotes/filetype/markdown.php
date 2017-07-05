@@ -89,7 +89,11 @@ class Markdown
 
             // Get the full path to this note
             $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+
             $folder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+
+            // Don't allow spaces in name
+            $folder = str_replace(' ', '%20', $folder);
 
             $imgTag = '\!\[(.*)\]\((.*)\)';
 
@@ -143,7 +147,7 @@ class Markdown
                             $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
 
                             if ($aeFiles->fileExists($filename)) {
-                                $img = $folder.$matches[2][$i];
+                                $img = $folder.trim($matches[2][$i]);
                                 $markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
                             }
                         }

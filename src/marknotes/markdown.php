@@ -146,11 +146,13 @@ class Markdown
 
             case 'md':
 
-                // Display a .md file, just output his content
-                $filename = utf8_decode($aeSettings->getFolderDocs(true).$filename);
-                $content = file_get_contents($filename);
+                // Display a .md file, call plugins and output note's content
+                $filename = $aeSettings->getFolderDocs(true).$filename;
 
-                header('Content-Type: text/markdown');
+                $aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
+                $content = $aeMarkdown->read($filename);
+
+                header('Content-Type: text/markdown; charset=UTF-8');
                 header('Content-Transfer-Encoding: ascii');
                 echo $content;
 
