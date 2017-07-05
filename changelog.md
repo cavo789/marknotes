@@ -4,9 +4,10 @@
 
 ## 1.1
 
-### 2017-06-xxx
+### 2017-07-xxx
 
 ```diff
++ Update of third parties libraries
 + Plugin List Of Files - new markdown plugin that will scan a folder and retrieve the list of files in it
 + Plugin Carrousel - Also for html rendering (and Reveal too)
 + Add support for the dynamic page 'index.html'
@@ -21,9 +22,13 @@
 + Plugin gTranslate - Add a parameter in settings.json to be able to not load the plugin on localhost
 + Plugin ganalytics - Add a parameter in settings.json to be able to not load the plugin on localhost
 + The treeview options button won't appear anymore if all treeview plugins are disabled
++ Add an entry "Edit note" in the treeview contextual menu
 - Solve issue when creating, from the interface, folders/files with accentuated characters in their name
 - Solve bug in settings.json override when the change was for a plugin (into a array like plugin->content->html). Now, json only contains key and no more arrays.
 - The `folder` setting was incorrectly read; solved.
+- localStorage :
+    - solve an issue when the list was empty; in that case localStorage is bypass and the server is querying for that list.
+    - invalidate store.js when adding / renaming / removing a note / folder
 ```
 
 ## 1.0.8

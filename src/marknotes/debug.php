@@ -99,7 +99,8 @@ class Debug
 
             $trace = debug_backtrace();
 
-            $class = ($trace[1]['class'] ?? '').'::'.$trace[1]['function'];
+            $class = ($trace[1]['class'] ?? '').'::'.($trace[1]['function'] ?? '');
+
             $context[]['caller'] = $class.' line '.$trace[0]['line'];
 
             if ($deep > 1) {

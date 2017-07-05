@@ -30,7 +30,6 @@ class Compiler
     {
         $this->passConfig = new PassConfig();
         $this->serviceReferenceGraph = new ServiceReferenceGraph();
-        $this->loggingFormatter = new LoggingFormatter();
     }
 
     /**
@@ -57,9 +56,17 @@ class Compiler
      * Returns the logging formatter which can be used by compilation passes.
      *
      * @return LoggingFormatter
+     *
+     * @deprecated since version 3.3, to be removed in 4.0. Use the ContainerBuilder::log() method instead.
      */
     public function getLoggingFormatter()
     {
+        if (null === $this->loggingFormatter) {
+            @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0. Use the ContainerBuilder::log() method instead.', __METHOD__), E_USER_DEPRECATED);
+
+            $this->loggingFormatter = new LoggingFormatter();
+        }
+
         return $this->loggingFormatter;
     }
 
@@ -70,7 +77,7 @@ class Compiler
      * @param string                $type     The type of the pass
      * @param int                   $priority Used to sort the passes
      */
-    public function addPass(CompilerPassInterface $pass, $type = PassConfig::TYPE_BEFORE_OPTIMIZATION/*, $priority = 0*/)
+    public function addPass(CompilerPassInterface $pass, $type = PassConfig::TYPE_BEFORE_OPTIMIZATION/*, int $priority = 0*/)
     {
         if (func_num_args() >= 3) {
             $priority = func_get_arg(2);
@@ -78,7 +85,7 @@ class Compiler
             if (__CLASS__ !== get_class($this)) {
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
-                    @trigger_error(sprintf('Method %s() will have a third `$priority = 0` argument in version 4.0. Not defining it is deprecated since 3.2.', __METHOD__), E_USER_DEPRECATED);
+                    @trigger_error(sprintf('Method %s() will have a third `int $priority = 0` argument in version 4.0. Not defining it is deprecated since 3.2.', __METHOD__), E_USER_DEPRECATED);
                 }
             }
 
@@ -92,10 +99,26 @@ class Compiler
      * Adds a log message.
      *
      * @param string $string The log message
+     *
+     * @deprecated since version 3.3, to be removed in 4.0. Use the ContainerBuilder::log() method instead.
      */
     public function addLogMessage($string)
     {
+        @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0. Use the ContainerBuilder::log() method instead.', __METHOD__), E_USER_DEPRECATED);
+
         $this->log[] = $string;
+    }
+
+    /**
+     * @final
+     */
+    public function log(CompilerPassInterface $pass, $message)
+    {
+        if (false !== strpos($message, "\n")) {
+            $message = str_replace("\n", "\n".get_class($pass).': ', trim($message));
+        }
+
+        $this->log[] = get_class($pass).': '.$message;
     }
 
     /**

@@ -14,6 +14,7 @@ return array(
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php/PDepend'),
     'Org\\Heigl\\Hyphenator\\' => array($vendorDir . '/org_heigl/hyphenator/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),

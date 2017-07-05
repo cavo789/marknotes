@@ -24,6 +24,7 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Psr\\Container\\' => 14,
             'PDepend\\' => 8,
         ),
         'O' => 
@@ -72,6 +73,10 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'PDepend\\' => 
         array (

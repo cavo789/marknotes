@@ -147,13 +147,28 @@ function ajaxify($params) {
 
 		try {
 			if (typeof store.get('task_' + $data.task) !== 'undefined') {
-				$bAjax = false;
-				data = store.get('task_' + $data.task);
+
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
 					console.log('Using localStorage to retrieve the previous result for [' + $data.task + ']');
 				}
 				/*<!-- endbuild -->*/
+
+				data = store.get('task_' + $data.task);
+
+				if (typeof(data) !== undefined) {
+
+					if ($data.task==='listFiles') {
+						// Don't reload if the list of files unless the data object
+						// doesn't contains files
+						if (data.hasOwnProperty("tree")) {
+							if (data.tree.children.length>0)  {
+						       $bAjax = false;
+					   		}
+					   	}
+					}
+			   	}
+
 			}
 		} catch (err) {
 			console.warn(err.message);
@@ -237,6 +252,9 @@ function ajaxify($params) {
  * @returns {Boolean}
  */
 function initFiles($data) {
+console.log('***********************');
+console.log($data);
+console.log('***********************');
 
 	var $msg = '';
 

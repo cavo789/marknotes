@@ -125,6 +125,19 @@ function fnPluginTaskTreeViewContextMenu(node) {
 			}
 		};
 
+		// Edit an existing note
+		if ($type === 'file') {
+			$items.Edit = {
+				separator_before: false,
+				separator_after: false,
+				label: marknotes.message.tree_edit_note,
+				icon: 'fa fa-pencil-square-o',
+				action: function () {
+					fnPluginTaskTreeView_editNode(node);
+				}
+			};
+		}
+
 		// Kill a note or folder
 		$items.Remove = {
 			separator_before: true,
@@ -228,6 +241,22 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 		}
 //		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
 		$newname = window.btoa(encodeURIComponent($newname));
+
+		// By renaming, adding or deleting a note, invalidate localStorage
+		try {
+			var $useStore = marknotes.settings.use_localcache;
+			if (($useStore) && (typeof store === "object")) {
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.log('    Clear localStorage');
+				}
+				/*<!-- endbuild -->*/
+
+				store.clearAll();
+		    } // if ($useStore)
+		} catch (err) {
+			console.warn(err.message);
+		}
 
 		switch ($task) {
 		case 'files.create':
@@ -400,4 +429,28 @@ function fnPluginTaskTreeView_removeNode(e, data) {
 
 	return;
 
+}
+
+/**
+ * Edit the note, open the editor
+ */
+function fnPluginTaskTreeView_editNode($node) {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('Context menu - Open the editor');
+		console.log($node);
+	}
+	/*<!-- endbuild -->*/
+
+	var $fname = window.btoa(encodeURIComponent(JSON.stringify($node.data.file)));
+
+	ajaxify({
+		task: 'edit.form',
+		param: $fname,
+		callback: 'afterEdit($data.param)',
+		target: 'CONTENT'
+	});
+
+	return true;
 }

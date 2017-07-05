@@ -46,12 +46,6 @@ class Markdown
             $task = $aeSettings->getTask()['default'] ?? 'reveal';
         }
 
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDebugMode()) {
-            $aeDebug->log('Run ['.$task.'] filename ['.$filename.']', 'debug');
-        }
-        /*<!-- endbuild -->*/
-
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSession->extend();
 
@@ -70,7 +64,13 @@ class Markdown
                 $filename = substr($filename, strlen($docRoot));
             }
 
+            // If the filename doesn't mention the file's extension, add it.
+            if (substr($filename, -3) != '.md') {
+                $filename .= '.md';
+            }
+
             if (!file_exists($aeSettings->getFolderDocs(true).$filename)) {
+
                 // Do we need to encode accent on that system ?
                 $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
                 if (!$bEncodeAccents) {
@@ -81,6 +81,12 @@ class Markdown
             $filename = $aeFiles->sanitizeFileName(trim($filename));
         }
 
+        /*<!-- build:debug -->*/
+        if ($aeSettings->getDebugMode()) {
+            $aeDebug->log('Running task ['.$task.']', 'debug');
+            $aeDebug->log('Run ['.$task.'] filename ['.$filename.']', 'debug');
+        }
+        /*<!-- endbuild -->*/
 
         if ($params === null) {
             $params = array();

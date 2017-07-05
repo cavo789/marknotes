@@ -20,7 +20,13 @@
         "symfony/filesystem": "~2.8|~3.0"
     },
     "require-dev": {
-        "symfony/yaml": "~3.0"
+        "symfony/finder": "~3.3",
+        "symfony/yaml": "~3.0",
+        "symfony/dependency-injection": "~3.3"
+    },
+    "conflict": {
+        "symfony/finder": "<3.3",
+        "symfony/dependency-injection": "<3.3"
     },
     "suggest": {
         "symfony/yaml": "To use the yaml reference dumper"
@@ -34,7 +40,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "3.2-dev"
+            "dev-master": "3.3-dev"
         }
     }
 }
