@@ -50,7 +50,12 @@ class Display
         );
 
         if (!$aeFiles->fileExists($fullname)) {
-            $aeFunctions->fileNotFound($fullname);
+            // Damned ! It's so difficult to work with accentuated chars and make the
+            // code works both on Windows and Unix...
+            $fullname = utf8_encode($fullname);
+            if (!$aeFiles->fileExists($fullname)) {
+                $aeFunctions->fileNotFound($fullname);
+            }
         }
 
         // Read the markdown file

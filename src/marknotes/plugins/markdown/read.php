@@ -12,8 +12,17 @@ class Read
     private static function replaceVariables(string $markdown) : string
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
-        $markdown = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $markdown);
+
+        // Get the web root like http://localhost/notes/
+        $sRoot = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/';
+
+        // Get the relative folder; like docs/folder/
+        $sFolder = str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
+
+        $markdown = str_replace('%ROOT%', $sRoot, $markdown);
+        $markdown = str_replace('%URL%', $sRoot.$sFolder, $markdown);
         $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
 
         return $markdown;
