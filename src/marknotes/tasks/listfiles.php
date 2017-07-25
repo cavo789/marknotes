@@ -35,11 +35,14 @@ class ListFiles
 
         $sReturn = '';
 
-        if ($aeSettings->getOptimisationUseServerSession()) {
+        // Due to the ACLs plugin, the list of folders that are returned by
+        // this script can vary from one user to an another so we can't store
+        // the information at the session level (or to a "user" level)
+        /*if ($aeSettings->getOptimisationUseServerSession()) {
             // Get the list of files/folders from the session object if possible
             $aeSession = \MarkNotes\Session::getInstance();
             $sReturn = $aeSession->get('ListFiles', '');
-        }
+        }*/
 
         if ($sReturn === '') {
 
@@ -83,10 +86,13 @@ class ListFiles
             $aeJSON = \MarkNotes\JSON::getInstance();
             $sReturn = $aeJSON->json_encode($return);
 
-            if ($aeSettings->getOptimisationUseServerSession()) {
-                // Remember for the next call
-                $aeSession->set('ListFiles', $sReturn);
-            }
+            // Due to the ACLs plugin, the list of folders that are returned by
+            // this script can vary from one user to an another so we can't store
+            // the information at the session level (or to a "user" level)
+            //if ($aeSettings->getOptimisationUseServerSession()) {
+            //    // Remember for the next call
+            //    $aeSession->set('ListFiles', $sReturn);
+            //}
         } // if (count($arr)>0)
 
         return $sReturn;
@@ -223,10 +229,17 @@ class ListFiles
                             $aeEvents->loadPlugins('task', 'acls');
                             $params = '';
 
+                            $fname = DS.ltrim(rtrim(str_replace($root, '', $dir.DS.$sub), DS), DS).DS;
+
+                            if ($bEncodeAccents) {
+                                $fname = utf8_encode($fname);
+                            }
+
                             // The folder should start and end with the slash
                             $tmp = array(
-                                'folder' => utf8_encode(DS.ltrim(rtrim(str_replace($root, '', $dir.DS.$sub), DS), DS).DS),
+                                'folder' => $fname,
                                 'return' => true);
+
                             $args = array(&$tmp);
                             $aeEvents->trigger('canSeeFolder', $args);
 
