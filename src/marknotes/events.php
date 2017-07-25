@@ -93,8 +93,8 @@ class Events
                         // The call should be something like this :
                         //    $aeEvents = \MarkNotes\Events::getInstance();
                         //    $aeEvents->bind('display.html', __CLASS__.'::doIt');
-                        // The full qualified function name i.e. the name space, the class name and the
-                        // function name without the parenthesis
+                        // The full qualified function name i.e. the name space, the class name
+                        // and the function name without the parenthesis
                         /*<!-- build:debug -->*/
                         if ($aeSettings->getDevMode()) {
                             $aeDebug->here('Event '.$event.', '.$func.' is not callable, ERROR', 5);

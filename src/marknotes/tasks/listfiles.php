@@ -68,12 +68,13 @@ class ListFiles
             $aeDebug->enable(true);
 
             // --------------------------------------------------------------------------------------
-            // Populate the tree that will be used for jsTree (see https://www.jstree.com/docs/json/)
-
+            // Populate the tree that will be used for jsTree
+            // (see https://www.jstree.com/docs/json/)
             $folder = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 
             // $arr is an array with arrays that contains arrays ...
-            // i.e. the root folder that contains subfolders and subfolders can contains subfolders...
+            // i.e. the root folder that contains subfolders and subfolders
+            // can contains subfolders...
             $arr = self::dir_to_jstree_array($folder, array('md'), $aeSettings->getTreeAutoOpen());
 
             // The array is now ready
@@ -105,6 +106,7 @@ class ListFiles
     */
     private static function dir_to_jstree_array(string $dir, array $ext = array(), array $arrTreeAutoOpen) : array
     {
+        $aeEvents = \MarkNotes\Events::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         /* ----------------------------------------------------------------------------
@@ -215,7 +217,30 @@ class ListFiles
                                 );
                             }
                         } elseif (is_dir($dir.DS.$sub)) {
-                            $dirs [] = rtrim($dir, DS).DS.$sub;
+
+                            // Check if the folder can be displayed or not
+
+                            $aeEvents->loadPlugins('task', 'acls');
+                            $params = '';
+
+                            // The folder should start and end with the slash
+                            $tmp = array(
+                                'folder' => utf8_encode(DS.ltrim(rtrim(str_replace($root, '', $dir.DS.$sub), DS), DS).DS),
+                                'return' => true);
+                            $args = array(&$tmp);
+                            $aeEvents->trigger('canSeeFolder', $args);
+
+                            // The canSeeFolder event will initialize the 'return' parameter
+                            // to false when the current user can't see the folder i.e. don't
+                            // have the permission to see it. This permission is defined in the
+                            // acls plugin options
+                            //
+                            // See function run() of MarkNotes\Plugins\Task\ACLs for more
+                            // information
+
+                            if ($args[0]['return'] === true) {
+                                $dirs [] = rtrim($dir, DS).DS.$sub;
+                            }
                         }
                     } // if (substr($sub, 0, 1)!=='.')
                 }

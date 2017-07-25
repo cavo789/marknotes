@@ -30,6 +30,18 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     // Application root folder.
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
+    // --------------------------------------------------------------------------
+    // In order to make SEF URLs working, marknotes need a .htaccess file
+    // Check the presence of the .htaccess file; if not present, create it by getting a
+    // copy of htaccess.txt
+    if (!is_file($folder.'.htaccess') && is_file($folder.'htaccess.txt')) {
+        if (is_writeable($folder)) {
+            copy($folder.'htaccess.txt', $folder.'.htaccess');
+            chmod($folder.'.htaccess', 0444);
+        }
+    }
+    // --------------------------------------------------------------------------
+
     $aeSettings = \MarkNotes\Settings::getInstance($folder);
 
     include_once 'marknotes/includes/debug.php';

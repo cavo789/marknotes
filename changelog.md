@@ -4,7 +4,7 @@
 
 ## 1.1
 
-### 2017-07-xxx
+### 2017-07-25
 
 ```diff
 + Update of third parties libraries
@@ -16,13 +16,14 @@
 + Plugin search improved
     + The highlight process when the note is displayed support now more than one keyword
     - Update the jquery-flexdatalist library, this solve an issue by removing keywords
-    - Solve by searching in files with accentuated characters in their name
+    - Solve by searching in files with accentuated characters in their name	
 + The authentication plugin won't fired if the settings doens't contains a login/passord i.e. it's possible to immediatly edit notes without need to make a login (f.i. on a localhost)
 + Rewrite share plugin to use the same way to display functionnalities i.e. thanks to jquery-toolbar (need to first click on the "share" button and then choose a sharing feature)
 + Plugin gTranslate - Add a parameter in settings.json to be able to not load the plugin on localhost
 + Plugin ganalytics - Add a parameter in settings.json to be able to not load the plugin on localhost
 + The treeview options button won't appear anymore if all treeview plugins are disabled
 + Add an entry "Edit note" in the treeview contextual menu
++ Add the ACLs plugin : allow to defined one or more folder that will be hidden to unauthorized people
 - Solve issue when creating, from the interface, folders/files with accentuated characters in their name
 - Solve bug in settings.json override when the change was for a plugin (into a array like plugin->content->html). Now, json only contains key and no more arrays.
 - The `folder` setting was incorrectly read; solved.

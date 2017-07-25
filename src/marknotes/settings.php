@@ -732,7 +732,9 @@ class Settings
                     if (($layout !== '') && (isset($this->_json['plugins'][$type][$layout]))) {
                         $arr = $this->_json['plugins'][$type][$layout];
                     } else {
-                        $arr = $this->_json['plugins'][$type];
+                        if ($layout === '') {
+                            $arr = $this->_json['plugins'][$type];
+                        }
                     }
                 }
             } else {
