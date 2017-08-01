@@ -46,6 +46,17 @@ IF EXIST %VENDOR%%LIB% (
 )
 
 REM ----------------------------------------------------------------------
+SET LIB=datatables-buttons\
+IF EXIST %VENDOR%drmonty\%LIB% (
+   ECHO  === %LIB% === >> %LOG%
+   ECHO  === %LIB% ===
+   COPY %VENDOR%drmonty\%LIB%\js\dataTables.buttons.min.js %LIBS%datatables\js\dataTables.buttons.min.js >> %LOG%
+   COPY %VENDOR%drmonty\%LIB%\js\buttons.html5.min.js %LIBS%datatables\js\buttons.html5.min.js >> %LOG%
+   COPY %VENDOR%drmonty\%LIB%\css\buttons.dataTables.min.css %LIBS%datatables\css\buttons.dataTables.min.css >> %LOG%
+   COPY %VENDOR%drmonty\%LIB%\css\buttons.bootstrap.min.css %LIBS%datatables\css\buttons.bootstrap.min.css >> %LOG%
+)
+
+REM ----------------------------------------------------------------------
 SET LIB=dompdf\
 IF EXIST %VENDOR%%LIB% (
    ECHO  === %LIB% === >> %LOG%
@@ -140,3 +151,5 @@ IF EXIST %NODE%%LIB% (
    ECHO  === %LIB% ===
    XCOPY %NODE%%LIB%*.* %LIBS%reveal\plugin\%LIB%*.* /E /Y >> %LOG%
 )
+
+:END

@@ -31,12 +31,15 @@ class Convert
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Call the Markdown parser (https://github.com/erusev/parsedown)
-        $lib = $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
-        if (!file_exists($lib)) {
+        $file = "Parsedown";
+        $lib = "Parsedown";
+        $folder = $aeSettings->getFolderLibs()."parsedown/";
+
+        if (!file_exists($folder.$file.'.php')) {
             self::ShowError(
                 str_replace(
                     '%s',
-                    '<strong>'.$lib.'</strong>',
+                    '<strong>'.$folder.$file.'.php</strong>',
                     $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
                 ),
                 true
@@ -51,9 +54,20 @@ class Convert
             $markdown = preg_replace('/('.NEW_SLIDE.')/m', '', $markdown);
         }
 
-        include_once $lib;
-        $parsedown = new \Parsedown();
-        
+        include_once $folder.$file.'.php';
+
+        if (is_file($extra = $folder.$file.'Extra'.'.php')) {
+            $lib = "ParsedownExtra";
+            include_once $extra;
+        }
+
+        if (is_file($extra = $folder.$file.'CheckBox'.'.php')) {
+            $lib = "ParsedownCheckbox";
+            include_once $extra;
+        }
+
+        $parsedown = new $lib();
+
         return $parsedown->text(trim($markdown));
     }
 }

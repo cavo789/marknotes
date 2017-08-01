@@ -1505,5 +1505,79 @@
         ],
         "description": "Symfony Finder Component",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "drmonty/datatables-buttons",
+        "version": "1.3.1",
+        "version_normalized": "1.3.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/mrohnstock/datatables-buttons.git",
+            "reference": "c6af77b58eb53ef9973718e40f345ff261c823ba"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/mrohnstock/datatables-buttons/zipball/c6af77b58eb53ef9973718e40f345ff261c823ba",
+            "reference": "c6af77b58eb53ef9973718e40f345ff261c823ba",
+            "shasum": ""
+        },
+        "require": {
+            "components/jquery": ">=1.7"
+        },
+        "time": "2017-04-18T07:29:49+00:00",
+        "type": "component",
+        "extra": {
+            "component": {
+                "scripts": [
+                    "js/dataTables.buttons.js"
+                ],
+                "files": [
+                    "css/buttons.bootstrap.css",
+                    "css/buttons.bootstrap4.css",
+                    "css/buttons.foundation.min.css",
+                    "css/buttons.jqueryui.css",
+                    "css/buttons.dataTables.min.css",
+                    "css/buttons.foundation.css",
+                    "css/buttons.semanticui.css",
+                    "css/mixins.scss",
+                    "css/buttons.dataTables.css",
+                    "css/buttons.bootstrap4.min.css",
+                    "css/common.scss",
+                    "css/buttons.bootstrap.min.css",
+                    "css/buttons.semanticui.min.css",
+                    "css/buttons.jqueryui.min.css",
+                    "swf/flashExport.swf",
+                    "js/buttons.colVis.min.js",
+                    "js/buttons.bootstrap4.min.js",
+                    "js/buttons.flash.min.js",
+                    "js/buttons.colVis.js",
+                    "js/buttons.semanticui.js",
+                    "js/buttons.jqueryui.js",
+                    "js/buttons.bootstrap.min.js",
+                    "js/buttons.jqueryui.min.js",
+                    "js/buttons.html5.min.js",
+                    "js/buttons.bootstrap.js",
+                    "js/buttons.foundation.js",
+                    "js/buttons.print.min.js",
+                    "js/buttons.bootstrap4.js",
+                    "js/dataTables.buttons.min.js",
+                    "js/buttons.foundation.min.js",
+                    "js/buttons.print.js",
+                    "js/buttons.semanticui.min.js",
+                    "js/buttons.flash.js",
+                    "js/buttons.html5.js",
+                    "js/dataTables.buttons.js"
+                ],
+                "shim": {
+                    "deps": [
+                        "jquery"
+                    ]
+                }
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "description": "Buttons is an extension for DataTables that adds control buttons to the table.",
+        "homepage": "http://www.datatables.net/"
     }
 ]

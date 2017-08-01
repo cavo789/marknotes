@@ -1,4 +1,5 @@
 <?php
+
 /* REQUIRES PHP 7.x AT LEAST */
 
 /**

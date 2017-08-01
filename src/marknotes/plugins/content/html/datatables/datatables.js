@@ -25,11 +25,24 @@ function fnPluginHTMLDataTable() {
 					"scrollCollapse": true,
 					"info": true,
 					"order": [], // No ordering by default
+					"dom": "<'top'B>flrt<'bottom'pi>",  // https://datatables.net/reference/option/dom
+			        "buttons": [
+			           "copyHtml5"
+			        ],
 					"lengthMenu": [
 						[-1, 5, 10, 25, 50],
 						["All", 5, 10, 25, 50]
 					],
 					"language": {
+						"buttons": {
+							"copy": marknotes.message.datatable_copy,
+							"copyTitle": marknotes.message.datatable_copyTitle,
+							"copyKeys": marknotes.message.datatable_copyKeys,
+							"copySuccess": {
+								"_": marknotes.message.datatable_copySuccess_Many,
+								"1": marknotes.message.datatable_copySuccess_One
+							}
+						},
 						"decimal": '.',
 						"thousands": ',',
 						"url": marknotes.webroot + 'libs/DataTables/' + marknotes.settings.language + '.json'
