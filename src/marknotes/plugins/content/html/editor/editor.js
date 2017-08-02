@@ -54,6 +54,15 @@ function afterEdit($fname) {
 				className: "fa fa-user-secret",
 				title: marknotes.message.button_encrypt
 			},
+			{
+				// Table of content
+				name: "AddTOC",
+				action: function customFunction(editor) {
+					buttonAddTOC(editor);
+				},
+				className: "fa fa-map-o",
+				title: marknotes.message.button_addTOC
+			},
 			"|",
 			{
 				// Add a custom button for saving
@@ -129,4 +138,16 @@ function buttonEncrypt(editor) {
 	output = '<encrypt>' + text + '</encrypt>';
 	cm.replaceSelection(output);
 
+}
+
+/**
+ * ADD TOC - Add the %TOC_3% tag
+ *
+ * @returns {boolean}
+ */
+function buttonAddTOC(editor) {
+
+	var cm = editor.codemirror;
+	// Just add the tag where the cursor is located
+	cm.replaceSelection('%TOC_3%');
 }

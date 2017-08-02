@@ -2,6 +2,18 @@
 
 [https://github.com/cavo789/marknotes](https://github.com/cavo789/marknotes)
 
+## 1.1.1
+
+### 2017-08-xx
+
+```diff
++ Add support for the Markdown Extra syntax (https://michelf.ca/projects/php-markdown/extra/)
++ Add parsedown-checkbox library for better rendering of checkboxes (https://github.com/leblanc-simon/parsedown-checkbox)
++ Add 'Copy' button in the dataTable : now, it'll be possible to copy a HTML table directly in the clipboard
++ Plugin Todos : from the markdown content, this plugin will add todo number and will create a summary table at the end of the document
++ Plugin Table of content (TOC) : generate a table of content in your html document; just add %TOC_3% f.i. in your note, where the TOC should appears
+```
+
 ## 1.1
 
 ### 2017-07-25
@@ -16,7 +28,7 @@
 + Plugin search improved
     + The highlight process when the note is displayed support now more than one keyword
     - Update the jquery-flexdatalist library, this solve an issue by removing keywords
-    - Solve by searching in files with accentuated characters in their name	
+    - Solve by searching in files with accentuated characters in their name
 + The authentication plugin won't fired if the settings doens't contains a login/passord i.e. it's possible to immediatly edit notes without need to make a login (f.i. on a localhost)
 + Rewrite share plugin to use the same way to display functionnalities i.e. thanks to jquery-toolbar (need to first click on the "share" button and then choose a sharing feature)
 + Plugin gTranslate - Add a parameter in settings.json to be able to not load the plugin on localhost

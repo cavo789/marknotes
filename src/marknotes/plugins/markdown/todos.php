@@ -40,6 +40,11 @@ class Todos
             return true;
         }
 
+        // Don't fire this plugin when the task is edit.form
+        if (in_array($params['task'], array('edit.form'))) {
+            return true;
+        }
+
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();

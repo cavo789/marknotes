@@ -29,7 +29,8 @@ class Editor
         // Add text for the editor
         $aeSettings = \MarkNotes\Settings::getInstance();
         $js .=
-            "\n<script type=\"text/javascript\">\n". "marknotes.message.button_encrypt='".$aeSettings->getText('button_encrypt', 'Add encryption for the selection', true)."';\n".
+            "\n<script type=\"text/javascript\">\n". "marknotes.message.button_addTOC='".$aeSettings->getText('button_addTOC', 'Add a table of content', true)."';\n".
+            "marknotes.message.button_encrypt='".$aeSettings->getText('button_encrypt', 'Add encryption for the selection', true)."';\n".
             "marknotes.message.button_exit_edit_mode='".$aeSettings->getText('button_exit_edit_mode', 'Exit the editing mode', true)."';\n".
             "marknotes.message.button_save='".$aeSettings->getText('button_save', 'Submit your changes', true)."';\n".
             "marknotes.message.button_save_done='".$aeSettings->getText('button_save_done', 'The file has been successfully saved', true)."';\n".
