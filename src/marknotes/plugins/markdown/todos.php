@@ -14,10 +14,20 @@
  *
  * "plugins": {
  *		"options": {
- *			"todos": {
- *	 			"title": "### Hey guys, this is my Todo's overview"
- *			}
- *		}
+ *          "todos" {
+ *             "introduction":"## Summary",
+*              "todos" : {
+ *                "pattern" : "(Todo)( |\a|\t|:){1}(.*)",
+ *                "title": "### Todo's overview",
+ *                "column": "Action point"
+ *             },
+ *             "decisions" : {
+ *                "pattern" : "(Decision)( |\a|\t|:){1}(.*)",
+ *                "title": "### Decision points",
+ *                "column": "Decision"
+ *             }
+ *		   }
+ *     }
  *	}
  */
 namespace MarkNotes\Plugins\Markdown;
@@ -41,8 +51,10 @@ class Todos
         }
 
         // Don't fire this plugin when the task is edit.form
-        if (in_array($params['task'], array('edit.form'))) {
-            return true;
+        if (isset($params['task'])) {
+            if (in_array($params['task'], array('edit.form'))) {
+                return true;
+            }
         }
 
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -53,6 +65,8 @@ class Todos
         $file = $aeSession->get('filename');
         $matches = array();
 
+        $bIntroAdded = false;
+
         $url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
 
         $urlHTML = '';
@@ -62,50 +76,96 @@ class Todos
             $urlHTML = str_replace(' ', '%20', $urlHTML);
         }
 
-        // Search strings starting with "Todo" followed or not by a space or a :
-        if (preg_match_all("/(Todo)([[:blank:]]?:?)(.*)/im", $params['markdown'], $matches)) {
-            $arrTodos = array();
+        // Retrieve the title for the section, from settings.json
+        //
+        // $arrSettings is an array like :
+        //      "todos" : {
+        //         "pattern" : "(Todo)( |\a|\t|:){1}(.*)",
+        //         "title": "## Todo's overview"
+        //      },
+        //      "decisions" : {
+        //         "pattern" : "(Decision)( |\a|\t|:){1}(.*)",
+        //         "title": "## Decision points"
+        //      }
 
-            // Get the number of groups in the regex
-            //
-            // Example : "Todo Christophe : make it rocks!"
-            //
-            // 0 : the matched string                        => "Todo Christophe : make it rocks!"
-            // 1 : The todo word                             => "Todo"
-            // 2 : Spaces or punctuation just after the word => ""
-            // 3 : After the punctuation                     => "Christophe : make it rocks!"
+        $arrSettings = $aeSettings->getPlugins('options', 'todos');
 
-            $j = count($matches);
+        foreach ($arrSettings as $key => $value) {
 
-            $entries = count($matches[0]);
+            // $prefix will f.i. contains "todos" or "decisions" i.e. the name of the key
+            // from settings.json->plugins->options->todos
 
-            for ($i = 0; $i < $entries; $i++) {
+            $prefix = $key;
 
-                // Prepare the new line :
-                //   * Add a todo number (given by #$i)
-                //   * Add put the line in bold
+            // $pattern will contain the regex pattern
+            $pattern = trim($value['pattern'] ?? '');
 
-                $sWhoWhat = $matches[2][$i].$matches[3][$i];
-                $sTodo = "<a name='todo_".($i + 1)."'></a> [ ] ".$matches[1][$i].' #'.($i + 1).$sWhoWhat;
+            // and $title the ... title for the summary table
 
-                $params['markdown'] = str_replace($matches[0][$i], '**'.$sTodo.'**', $params['markdown']);
-                $arrTodos[$i] = $sWhoWhat;
+            if ($pattern == '') {
+                continue;
             }
 
-            // Add the Todo summary after the content
+            // and $title the ... title for the summary table
+            $title = trim($value['title'] ?? '');
 
-            // Retrieve the title for the section, from settings.json
-            $arrSettings = $aeSettings->getPlugins('options', 'todos');
-            $sTodo = $arrSettings['title'] ?? "### Todos Overview";
+            // and $column the text to use as header of the table's column
+            $column = trim($value['column'] ?? '');
 
-            $sTodo .= "\n| # | Todo |\n| --- | --- |\n";
+            if (preg_match_all("/".$pattern."/im", $params['markdown'], $matches)) {
+                $arrTodos = array();
 
-            foreach ($arrTodos as $key => $value) {
-                $sTodo .= "| [".($key + 1)."](".$urlHTML."#todo_".($key + 1).") | ".$value." |\n";
+                // Get the number of groups in the regex
+                //
+                // Example : "Todo Christophe : make it rocks!"
+                //
+                // 0 : the matched string                        => "Todo Christophe : make it rocks!"
+                // 1 : The todo word                             => "Todo"
+                // 2 : Spaces or punctuation just after the word => ""
+                // 3 : After the punctuation                     => "Christophe : make it rocks!"
+
+                $j = count($matches);
+
+                $entries = count($matches[0]);
+
+                for ($i = 0; $i < $entries; $i++) {
+
+                    // Prepare the new line :
+                    //   * Add a todo number (given by #$i)
+                    //   * Add put the line in bold
+
+                    $sWhoWhat = $matches[2][$i].($matches[3][$i] ?? '');
+                    $sTodo = "<a name='".$prefix."_".($i + 1)."'></a>**".$matches[1][$i].' #'.($i + 1).$sWhoWhat."**";
+
+                    $params['markdown'] = str_replace($matches[0][$i], $sTodo, $params['markdown']);
+                    $arrTodos[$i] = $sWhoWhat;
+                }
+
+                // ----------------------------------------------------
+                // Add the Todo summary after the content
+
+                $sTodo = '';
+
+                if ($bIntroAdded == false) {
+                    $introduction = $arrSettings['introduction'] ?? '';
+
+                    if (trim($introduction) !== '') {
+                        $bIntroAdded = true;
+
+                        $sTodo .= trim($introduction)."\n";
+                    }
+                }
+
+                $sTodo .= $title."\n| # | ".$column." |\n| --- | --- |\n";
+
+                foreach ($arrTodos as $key => $value) {
+                    $sTodo .= "| [".($key + 1)."](".$urlHTML."#".$prefix."_".($key + 1).") | ".$value." |\n";
+                }
+                $sTodo .= "\n\n";
+
+                $params['markdown'] .= $sTodo;
             }
-
-            $params['markdown'] .= $sTodo;
-        }
+        } // foreach ($arrSettings as $key => $value)
 
         return true;
     }

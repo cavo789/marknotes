@@ -163,7 +163,17 @@
 				"auto_select": []
 			},
 			"todos": {
-				"title": "## Todo's overview"
+				"introduction":"## Summary",
+				"todos" : {
+					"pattern" : "(Todo)( |\\a|\\t|:){1}(.*)",
+					"title": "### Todo's overview",
+					"column":"Todo"
+				},
+				"decisions" : {
+					"pattern" : "(Decision)( |\\a|\\t|:){1}(.*)",
+					"title": "### Decision points",
+					"column": "Decision"
+				}
 			}
 		}
 	},

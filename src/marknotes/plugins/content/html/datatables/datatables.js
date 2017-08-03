@@ -21,11 +21,12 @@ function fnPluginHTMLDataTable() {
 
 				$(this).addClass('display');
 				$(this).DataTable({
+					 "fixedHeader": false,
 					"scrollY": "50vh", // 50%
 					"scrollCollapse": true,
 					"info": true,
 					"order": [], // No ordering by default
-					"dom": "<'top'B>flrt<'bottom'pi>",  // https://datatables.net/reference/option/dom
+					"dom": "<'dtmn-Buttons'B><'dtmn-Find'f><'dtmn-List'l>rt<'dtmn-Bottom'pi>",  // https://datatables.net/reference/option/dom
 			        "buttons": [
 			           "copyHtml5"
 			        ],
