@@ -50,13 +50,6 @@ class Todos
             return true;
         }
 
-        // Don't fire this plugin when the task is edit.form
-        if (isset($params['task'])) {
-            if (in_array($params['task'], array('edit.form'))) {
-                return true;
-            }
-        }
-
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
@@ -176,6 +169,15 @@ class Todos
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
+
+        $task = $aeSession->get('task');
+
+        // Don't fire this plugin when the task is edit.form or during a search
+        if (in_array($task, array('edit.form','search'))) {
+            return true;
+        }
+
         $aeEvents->bind('markdown.read', __CLASS__.'::readMD');
         return true;
     }

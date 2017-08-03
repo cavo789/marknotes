@@ -135,7 +135,7 @@ class TOC
 
         // This plugin is not needed when the task is f.i. 'pdf'
 
-        if (in_array($task, array('pdf'))) {
+        if (in_array($task, array('edit.form','pdf','search'))) {
             return true;
         }
 
