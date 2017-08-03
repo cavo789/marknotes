@@ -2,6 +2,27 @@
  * Copy the html's note content in the clipboard so, f.i., we can paste it then in an email
  */
 
+ function copyHTMLSource(text){
+   function selectElementText(element) {
+     if (document.selection) {
+       var range = document.body.createTextRange();
+       range.moveToElementText(element);
+       range.select();
+     } else if (window.getSelection) {
+       var range = document.createRange();
+       range.selectNode(element);
+       window.getSelection().removeAllRanges();
+       window.getSelection().addRange(range);
+     }
+   }
+   var element = document.createElement('DIV');
+   element.textContent = text;
+   document.body.appendChild(element);
+   selectElementText(element);
+   document.execCommand('copy');
+   element.remove();
+ }
+
 function fnPluginButtonCopyHTML() {
 
 	/*<!-- build:debug -->*/
@@ -10,42 +31,12 @@ function fnPluginButtonCopyHTML() {
 	}
 	/*<!-- endbuild -->*/
 
-	// Initialize the Copy into the clipboard button, See https://clipboardjs.com/
+	copyHTMLSource($('#note_content').html());
 
-	if (typeof Clipboard === 'function') {
-
-		if (Clipboard.isSupported()) {
-			console.info('copy html 1');
-			var clipboard = new Clipboard('#icon_copyhtml');
-			console.info('copy html 2');
-			clipboard.on('success', function (e) {
-				console.info('copy html 3');
-				/*<!-- build:debug -->*/
-				if (marknotes.settings.debug) {
-					console.info('Action:', e.action);
-					console.info('Text:', e.text);
-					console.info('Trigger:', e.trigger);
-				}
-				/*<!-- endbuild -->*/
-
-				Noty({
-					message: marknotes.message.copy_html_done,
-					type: 'success'
-				});
-
-				e.clearSelection();
-			});
-
-		} // if (Clipboard.isSupported())
-
-	} else {
-
-		/*<!-- build:debug -->*/
-		if (marknotes.settings.debug) {
-			console.error('Plugin html - CopyHTML - Clipboard not initialized / loaded');
-		}
-		/*<!-- endbuild -->*/
-	}
+	Noty({
+		message: marknotes.message.copy_html_done,
+		type: 'success'
+	});
 
 	return true;
 }
