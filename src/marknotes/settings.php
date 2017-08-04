@@ -613,64 +613,12 @@ class Settings
     }
 
     /**
-     * Is there a node to automatically select after the load of the treeview ?
-     * Usefull when the user wish to immediatly show a specific note.
-     *
-     * @return string
-     */
-    public function getTreeviewDefaultNode(string $defaultNode = '') : string
-    {
-        $sReturn = $defaultNode;
-        if (isset($this->_json['treeview'])) {
-            if (isset($this->_json['treeview']['default'])) {
-                $sReturn = str_replace('/', DS, trim($this->_json['treeview']['default']));
-            }
-        }
-
-        return $sReturn;
-    }
-
-    /**
      * Return a node from the "files" JSON entry
      */
     public function getFiles(string $node = '', $default = '')
     {
         return $this->_json['files'][$node] ?? $default;
     } // function getFiles()
-
-
-    /**
-     * Should nodes of the treeview be opened at loading time ?
-     *
-     * @return bool
-     */
-    public function getTreeOpened() : bool
-    {
-        return boolval($this->_json['list']['opened'] ?? false);
-    } // function getTreeOpened()
-
-    /**
-     * List of folders that should be immediately opened
-     *
-     * @return array
-     */
-    public function getTreeAutoOpen() : array
-    {
-        $arr = array();
-
-        if (isset($this->_json['list'])) {
-            if (isset($this->_json['list']['auto_open'])) {
-                foreach ($this->_json['list']['auto_open'] as $folder) {
-                    // Respect OS directory separator
-                    $folder = rtrim(str_replace('/', DS, $folder), DS);
-                    // List of folders that should be immediatly opened
-                    $arr[] = $this->getFolderDocs(true).$folder;
-                }
-            }
-        } // if(isset($this->_json['list']))
-
-        return $arr;
-    }
 
     public function getShowTreeAllowed() : bool
     {

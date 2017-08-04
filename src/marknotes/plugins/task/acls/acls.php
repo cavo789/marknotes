@@ -87,6 +87,9 @@ class ACLs
                     // i.e. the user used to connect on the site when a .htpasswd is used
                     // to protect the site
                     $username = $_SERVER['PHP_AUTH_USER'] ?? '';
+                    if ($username == '') {
+                        $username = $_SERVER['REMOTE_USER'] ?? '';
+                    }
 
                     // Be carefull, names are case sensitive. If the connected user is
                     // "christophe", the $arrUsers array should mentionned "christophe" (and

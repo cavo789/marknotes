@@ -96,8 +96,7 @@ class ShowInterface
         "marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
         "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
         "marknotes.settings.DS='".preg_quote(DS)."';\n".
-        "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
-        "marknotes.treeview.defaultNode='".trim(str_replace("'", "\'", $aeSettings->getTreeviewDefaultNode('')))."';\n";
+        "marknotes.settings.locale='".$aeSettings->getLocale()."';\n";
 
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
 

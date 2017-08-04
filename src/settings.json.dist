@@ -7,9 +7,7 @@
 	"folder": "docs",
 	"language": "fr",
 	"list": {
-		"show_tree_allowed": 1,
-		"opened": 0,
-		"auto_open": []
+		"show_tree_allowed": 1
 	},
 	"locale": "fr-FR",
 	"timezone": "Europe/Brussels",
@@ -196,9 +194,6 @@
 		"reveal": "reveal",
 		"screen": "screen",
 		"timeline": "timeline"
-	},
-	"treeview": {
-		"default": ""
 	},
 	"languages": {
 		"en": {

@@ -21,9 +21,7 @@ function jstree_init($data) {
 
 			var $arrPlugins = ['contextmenu', 'types', 'search', 'types', 'unique', 'wholerow'];
 
-			if (marknotes.treeview.defaultNode === '') {
-				$arrPlugins.push('state');
-			}
+			$arrPlugins.push('state');
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
@@ -281,9 +279,9 @@ function contextMenuNewWindow(node) {
 	$url = node.data.url;
 
 	// Be sure the URL is ending with / if it's a folder
-	if ($url.length>0) {
-	   if (($url.slice(-1) !== '/') && ($type === 'folder')) $url += '/';
-   }
+	if ($url.length > 0) {
+		if (($url.slice(-1) !== '/') && ($type === 'folder')) $url += '/';
+	}
 
 	$url += ($type === 'folder' ? 'index.html' : '.html');
 

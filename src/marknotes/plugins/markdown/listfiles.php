@@ -80,7 +80,7 @@ class ListFiles
 
                                 $relURL = str_replace($aeSettings->getFolderWebRoot(), '', $file);
                                 $relURL = str_replace(DS, '/', $relURL);
-                                $file = str_replace($root, '', $file);
+                                $file = str_replace(utf8_decode($root), '', str_replace($root, '', $file));
 
                                 $sList .= "*   [".$file."](".str_replace(' ', '%20', $relURL).")".PHP_EOL;
                             }

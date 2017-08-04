@@ -95,17 +95,6 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 
             $fileMD = $aeFiles->removeExtension($filename).'.md';
 
-            /*if (mb_detect_encoding($fileMD)) {
-                if (!file_exists($webRoot.$fileMD)) {
-                    $fileMD = utf8_decode($fileMD);
-                }
-            }*/
-
-            if (!$aeFiles->fileExists($webRoot.$fileMD)) {
-                $aeFunctions = \MarkNotes\Functions::getInstance();
-                $aeFunctions->fileNotFound($aeFiles->sanitizeFileName($fileMD));
-            }
-
             // Get the extension (f.i. "pdf")
             // In case of double extension (f.i. "reveal.pdf"), the first part will
             // be understand as a layout ("reveal")

@@ -1,48 +1,55 @@
-#toc
-{
-	border: 1px solid #bba;
+#toc {
+	border          : 1px solid #bba;
 	background-color: #f7f8ff;
-	padding: 1em 1em 0.2em 1em;
-	font-size: 90%;
-	text-align: center;
+	padding         : 1em 1em .2em;
+	font-size       : 90%;
+	text-align      : center;
 	/*width:15em;*/
 }
 
 #toc ul {
 	list-style-type: none;
-	margin-left: 0;
-	padding-left: 0;
-	text-align: left;
+	margin-left    : 0;
+	padding-left   : 0;
+	text-align     : left;
 }
 
-#toc  a {
-   text-decoration: none;
+#toc a {
+	text-decoration: none;
 }
 
-#toc a:hover,#toc a:active {
-   text-decoration: underline;
+#toc a:active,
+#toc a:hover {
+	text-decoration: underline;
 }
 
 #toc .toc2 {
-	margin-left: 1em;
+	font-weight: bold;
 }
 
 #toc .toc3 {
 	margin-left: 2em;
-	font-style:italic;
+	font-style : italic;
 }
 
-#toc .toc4
-{
-	margin-left: 3em;
-	font-size:smaller;
+#toc .toc4 {
+	margin-left: 6em;
+	font-size  : smaller;
 }
 
-h2:tagert, h3:target, h4:target, h5:target, h6:target {
-  animation: highlight 1s ease;
+h2:tagert,
+h3:target,
+h4:target,
+h5:target,
+h6:target {
+	animation: highlight 1s ease;
 }
-
 @keyframes highlight {
-  from { background: yellow; }
-  to { background: white; }
+	from {
+		background: yellow;
+	}
+
+	to {
+		background: white;
+	}
 }
