@@ -203,12 +203,15 @@ class ListFiles
         }
 
         // Entry for the folder
+        // ($root==$dir) ==> on the first visit on the page (very first visit),
+        // the root directory will be opened so the treeview will display the list
+        // of files and folders under the root.
         $listDir = array(
             'id' => utf8_encode(str_replace($root, '', $dir).DS),
             'type' => 'folder',
             'icon' => 'folder',
             'text' => $sDirectoryText,
-            'state' => array('opened' => 0,'disabled' => 1),
+            'state' => array('opened' => ($root == $dir),'disabled' => 1),
             'data' => array(
                 'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir)))
             ),
