@@ -107,7 +107,7 @@ class HTML
         $template = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $template);
         $template = str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $template);
         $template = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(true, false), '/'), $template);
-        $template = str_replace('%URL%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $template);
+        $template = str_replace('%URL%', str_replace(' ', '%20', rtrim($aeFunctions->getCurrentURL(false, false), '/')), $template);
 
         $template = str_replace('%APP_NAME%', $aeSettings->getAppName(), $template);
         $template = str_replace('%APP_VERSION%', $aeSettings->getAppName(true), $template);

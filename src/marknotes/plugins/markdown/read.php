@@ -22,7 +22,7 @@ class Read
         $sFolder = str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
 
         $markdown = str_replace('%ROOT%', $sRoot, $markdown);
-        $markdown = str_replace('%URL%', $sRoot.$sFolder, $markdown);
+        $markdown = str_replace('%URL%', str_replace(' ', '%20', $sRoot.$sFolder), $markdown);
         $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
 
         return $markdown;
