@@ -37,7 +37,7 @@
 Const cPandocExecutable = "C:\Christophe\Tools\pandoc\pandoc.exe"
 '
 ' Enable or not the debug mode (is more verbose)
-Const cDebug  = false
+Const cDebug  = False
 '
 ' ### END OF CONFIGURATION ###############################################
 
@@ -125,7 +125,7 @@ Class clsFunctions
 		sResult = objRegExp.Replace(sFileName, "-")
 
 		' Replace some invalid characters
-		objRegExp.Pattern = "[(?*"",\\<>«&#~%{}\'+_û–.@:\/!;]+"
+		objRegExp.Pattern = "[(?*"",\\<>«&#~%{}\(\)\'+_û–.@:\/!;]+"
 		sResult = objRegExp.Replace(sResult, "-")
 
 		objRegExp.Pattern = "\-+"
@@ -161,6 +161,47 @@ Class clsFunctions
 			End If
 
 		Next
+
+	End Function
+
+	' -------------------------------
+	'
+	' Remove specific tags from a string
+    ' http://webdevel.blogspot.be/2005/05/strip-tags-vbscript.html
+	'
+	' For instance = to remove span, do something like :
+	'
+	'    StripTags("<html>...<span id='JJ'>blabla</span>...", "span")
+	' -------------------------------
+
+	Private Function StripTags(sValue, sTag)
+
+		' set 'sTag' to empty string to strip all sTag
+		If sTag = "" Then sTag = "[a-zA-Z]+"
+
+		Set objRegExp = New RegExp
+
+		objRegExp.IgnoreCase = True
+		objRegExp.Global = True
+
+		' tag to remove (based on http://regexplib.com/REDetails.aspx?regexp_id=211)
+		objRegExp.Pattern = "</?("+sTag+")(\s+\w+=(\w+|""[^""]*""|'[^']*'))*\s*?/?>"
+
+		StripTags = objRegExp.Replace(sValue, "")
+
+	End Function
+
+	' -------------------------------
+	'
+	' Conversion from .docx can generate a lot of <span> for, f.i., table
+	' of contents. Remove these span
+	'
+	' -------------------------------
+
+	Public Function RemoveHTMLTags(sValue)
+
+		sValue = StripTags(sValue, "span")
+		RemoveHTMLTags = sValue
 
 	End Function
 
@@ -300,11 +341,21 @@ Class clsFileSystem
 
 	Sub MoveFile(sSourceName, sTargetName)
 
-		Call cFunctions.Echo ("Archive " & sSourceName, False, True, 3)
+		Call cFunctions.Echo ("Archive " & sSourceName, False, True, 2)
 
 		' If the .md file is still there, move the original file into the .files subfolder
 		If Not DebugMode() Then
+
+			If objFSO.FileExists(sTargetName) Then
+				objFSO.DeleteFile(sTargetName)
+			End if
+
 			Call objFSO.MoveFile(sSourceName, sTargetName)
+
+		Else
+
+			Call cFunctions.Echo("Don't archive when DebugMode is set", False, True, 3)
+
 		End if
 
 	End Sub
@@ -323,19 +374,24 @@ Class clsFileSystem
 
 	' -------------------------------
 	'
-	' Read the file's content
+	' Read the file's content. Be sure to open as a UTF-8 file
 	'
 	' -------------------------------
 
 	Function GetFileContent(sFileName)
 
-		Set objFile = objFSO.OpenTextFile(sFileName,1)
+		Set objBinaryStream = CreateObject("ADODB.Stream")
 
-		sContent = objFile.ReadAll()
+		objBinaryStream.CharSet = "utf-8"
+		objBinaryStream.Open
 
-		objFile.Close
+		objBinaryStream.LoadFromFile sFileName
 
-		Set objFile = Nothing
+		sContent = objBinaryStream.ReadText()
+
+		objBinaryStream.Close
+
+		Set objBinaryStream = Nothing
 
 		GetFileContent = sContent
 
@@ -463,14 +519,23 @@ Private sTmp
 		' Build the pandoc command line
 		sTmp = Executable()
 
-		' -w indicate the target desired format. Here, convert to a markdown_github format
+		' -w (write-to) indicate the target desired format.
+		' Here, convert to a markdown_github format
 		sTmp = sTmp & " -w markdown_github"
 
-		' Convert accentuated characters in their HTML equivalent (f.i. & will be saved as &amp;)
+		' Convert accentuated characters in their HTML equivalent
+		' (f.i. & will be saved as &amp;)
 		sTmp = sTmp & " --ascii"
 
-		' Set the heading style to #, ##, ### and not lines (see http://pandoc.org/MANUAL.html#atx-style-headers)
+		' Set the heading style to #, ##, ### and not lines
+		'(see http://pandoc.org/MANUAL.html#atx-style-headers)
 		sTmp = sTmp & " --atx-headers"
+
+		' With none, pandoc will not wrap lines in the generated document.
+		sTmp = sTmp & " --wrap=none"
+
+		' The file is a stand-alone one (stand-alone)
+		sTmp = sTmp & " -s"
 
 		' Extract images and saved them in a .images/FILENAME subfolder
 		sTmp = sTmp & " --extract-media=.images/" & MediaFolder()
@@ -481,7 +546,7 @@ Private sTmp
 		' And the source filename
 		sTmp = sTmp & " """ & BaseName()  & "." & SourceExtension() & """"
 
-		Call cFunctions.Echo (sTmp, False, True, 3)
+		'Call cFunctions.Echo (sTmp, False, True, 2)
 
 		GetCommandLine = sTmp
 
@@ -522,8 +587,17 @@ End Class
 
 Class clsConvert
 
+Private bDebugMode
 Private sSourceFileName, sInitialDirectory
 Private objFSO
+
+	Public Property Let DebugMode(bOnOff)
+		bDebugMode = bOnOff
+	End Property
+
+	Public Property Get DebugMode()
+		DebugMode = bDebugMode
+	End Property
 
 	Public Property Let InitialDirectory(sValue)
 		sInitialDirectory = sValue
@@ -659,13 +733,20 @@ Private objFSO
 
 			sContent = Replace(sContent, "src=" & chr(34) & ".images/", "src=" & chr(34) & "%URL%.images/")
 
-			sContent = cFunctions.RemoveNonASCII(sContent)
+			sContent = cFunctions.RemoveHTMLTags(sContent)
+
+			'sContent = cFunctions.RemoveNonASCII(sContent)
 
 			Call cFileSystem.MakeUTF8(TargetFileName(), sContent)
 
 			If objFSO.FileExists(TargetFileName()) Then
 				sTemp = SourceFileParentFolder() & ".files\" & SourceFileBaseName() & "." & SourceFileExtensionName()
 				Call cFileSystem.MoveFile(SourceFileName(), sTemp)
+			End if
+
+			If DebugMode() Then
+				'sContent = cFileSystem.GetFileContent(TargetFileName())
+				'Call cFunctions.Echo(sContent, False, True, 0)
 			End if
 
 		End if
@@ -695,6 +776,7 @@ Dim I
 
 	cFunctions.DebugMode = cDebug
 	cFileSystem.DebugMode = cDebug
+	cConvert.DebugMode = cDebug
 	cPandoc.DebugMode = cDebug
 
 	cPandoc.Executable = cPandocExecutable
@@ -753,31 +835,6 @@ Dim I
 	Set cFileSystem = Nothing
 	Set cPandoc = Nothing
 	Set cConvert = Nothing
-
-	wscript.quit
-
-
-Dim objFSO, objFile, objShell
-Dim colFiles
-Dim arrSupportedFileExt
-Dim sInitialDirectory, sProcessingDir
-Dim sRelFileName
-
-sProcessingDir = sInitialDirectory
-
-	Set objShell = CreateObject("WScript.Shell")
-
-
-
-
-	Call Echo ("", False, False, 0)
-
-
-
-
-	Set objFile = Nothing
-	Set objFSO = Nothing
-	Set objShell = Nothing
 
 	If InStr(1, WScript.FullName, "wscript", vbTextCompare) Then
 		wScript.Echo "Marknotes Convert utility has finished."
