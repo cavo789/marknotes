@@ -36,7 +36,8 @@ function afterEdit($fname) {
 		element: document.getElementById("sourceMarkDown"),
 		indentWithTabs: false,
 		codeSyntaxHighlighting: false,
-		toolbar: [{
+		toolbar: [
+			{
 				// Add a custom button for saving
 				name: "Save",
 				action: function customFunction(editor) {
@@ -107,7 +108,7 @@ function buttonSave($fname, $markdown) {
 
 	$.ajax({
 		async: true,
-		type: 'POST',
+		type: 'POST', // GET can't be used because note's content can be too big for URLs
 		url: marknotes.url,
 		data: $data,
 		datatype: 'json',

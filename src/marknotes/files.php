@@ -303,7 +303,7 @@ class Files
         /*<!-- endbuild -->*/
 
         if (self::fileExists($filename)) {
-            $filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
+            //$filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
 
             rename($filename, $filename.'.old');
 
