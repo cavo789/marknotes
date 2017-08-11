@@ -66,16 +66,20 @@
 			// When displaying the html rendering, the user can add a ?fullscreen=1 on the
 			// querystring to give more width to the article
 
-			if(typeof marknotes.querystring.fullscreen !== 'undefined'){
+			try {
+				if(typeof marknotes.querystring.fullscreen !== 'undefined'){
 
-				// Typecast fullscreen, only '1' should be interpreted
-				var $isFullscreen = (marknotes.querystring.fullscreen === '1');
+					// Typecast fullscreen, only '1' should be interpreted
+					var $isFullscreen = (marknotes.querystring.fullscreen === '1');
 
-				if ($isFullscreen) {
-					$('body').css('padding','0');
-					$('article').css('max-width','100%').css('margin','0');
-					$('.container').css('width','100%').css('margin','0').css('padding','0');
+					if ($isFullscreen) {
+						$('body').css('padding','0');
+						$('article').css('max-width','100%').css('margin','0');
+						$('.container').css('width','100%').css('margin','0').css('padding','0');
+					}
 				}
+			} catch (err) {
+				console.warn(err.message);
 			}
 		});
 	</script>

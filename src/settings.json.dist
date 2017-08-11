@@ -116,10 +116,10 @@
 			},
 			"ganalytics": {
 				"code": "",
-				"enable_localhost":0
+				"enable_localhost": 0
 			},
 			"gtranslate": {
-				"enable_localhost":0
+				"enable_localhost": 0
 			},
 			"login": {
 				"username": "admin",
@@ -152,23 +152,21 @@
 				}
 			},
 			"seo": {
-				"keywords": [
-					"Open Source", "JoomlaDays", "JoomlaDagen", "JDay 2017 NL", "JDay 2017 FR", "#jd17nl", "#jd17fr", "JUG Wallonie"
-				]
+				"keywords": [ ]
 			},
 			"tags": {
 				"prefix": "§",
 				"auto_select": []
 			},
 			"todos": {
-				"introduction":"## Summary",
-				"todos" : {
-					"pattern" : "(Todo)( |\\a|\\t|:){1}(.*)",
+				"introduction": "## Summary",
+				"todos": {
+					"pattern": "(Todo)( |\\a|\\t|:){1}(.*)",
 					"title": "### Todo's overview",
-					"column":"Todo"
+					"column": "Todo"
 				},
-				"decisions" : {
-					"pattern" : "(Decision)( |\\a|\\t|:){1}(.*)",
+				"decisions": {
+					"pattern": "(Decision)( |\\a|\\t|:){1}(.*)",
 					"title": "### Decision points",
 					"column": "Decision"
 				}
@@ -217,11 +215,11 @@
 			"copy_clipboard_done": "The note&#39;s content has been copied.  You can now paste the clipboard in your application.",
 			"copy_link_done": "The URL of this note has been copied into the clipboard",
 			"confidential": "confidential",
-			"datatable_copy":"Copy",
-			"datatable_copyTitle":"Copy to clipboard",
-			"datatable_copyKeys":"Press <i>ctrl</i> or <i>\u2318</i> + <i>C</i> to copy the table data<br>to your system clipboard.<br><br>To cancel, click this message or press escape.",
-			"datatable_copySuccess_One":"Copied one row to clipboard",
-			"datatable_copySuccess_Many":"Copied %d rows to clipboard",
+			"datatable_copy": "Copy",
+			"datatable_copyTitle": "Copy to clipboard",
+			"datatable_copyKeys": "Press <i>ctrl</i> or <i>\u2318</i> + <i>C</i> to copy the table data<br>to your system clipboard.<br><br>To cancel, click this message or press escape.",
+			"datatable_copySuccess_One": "Copied one row to clipboard",
+			"datatable_copySuccess_Many": "Copied %d rows to clipboard",
 			"display_that_note": "Display that note",
 			"edit_file": "Edit",
 			"error": "Error",
@@ -311,11 +309,11 @@
 			"copy_link": "Copier le lien vers cette note dans le presse-papier",
 			"copy_link_done": "L&#39;URL vers cette note a &eacute;t&eacute; copi&eacute;e dans le presse-papier.",
 			"confidential": "confidentiel",
-			"datatable_copy":"Copier",
-			"datatable_copyTitle":"Ajouté au presse-papiers",
-			"datatable_copyKeys":"Appuyez sur <i>ctrl</i> ou <i>\u2318</i> + <i>C</i> pour copier les données du tableau à votre presse-papiers. <br><br>Pour annuler, cliquez sur ce message ou appuyez sur Echap.",
-			"datatable_copySuccess_One":"1 ligne copiée",
-			"datatable_copySuccess_Many":"%d lignes copiées",
+			"datatable_copy": "Copier",
+			"datatable_copyTitle": "Ajouté au presse-papiers",
+			"datatable_copyKeys": "Appuyez sur <i>ctrl</i> ou <i>\u2318</i> + <i>C</i> pour copier les données du tableau à votre presse-papiers. <br><br>Pour annuler, cliquez sur ce message ou appuyez sur Echap.",
+			"datatable_copySuccess_One": "1 ligne copiée",
+			"datatable_copySuccess_Many": "%d lignes copiées",
 			"display_that_note": "Afficher cette note",
 			"edit_file": "Éditer",
 			"error": "Erreur",

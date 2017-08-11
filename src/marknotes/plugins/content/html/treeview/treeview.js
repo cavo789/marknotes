@@ -17,7 +17,7 @@ function fnPluginTaskTreeView_init() {
 
 			// This function should only be fired once
 			// So, now, remove it from the arrPluginsFct array
-	        marknotes.arrPluginsFct.splice(marknotes.arrPluginsFct.indexOf('fnPluginTaskTreeView_init'),1);
+			marknotes.arrPluginsFct.splice(marknotes.arrPluginsFct.indexOf('fnPluginTaskTreeView_init'), 1);
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
@@ -239,7 +239,7 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 		if ($task !== 'files.create') {
 			$oldname = window.btoa(encodeURIComponent($oldname));
 		}
-//		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
+		//		$newname = window.btoa(encodeURIComponent(JSON.stringify($newname)));
 		$newname = window.btoa(encodeURIComponent($newname));
 
 		// By renaming, adding or deleting a note, invalidate localStorage
@@ -253,7 +253,7 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 				/*<!-- endbuild -->*/
 
 				store.clearAll();
-		    } // if ($useStore)
+			} // if ($useStore)
 		} catch (err) {
 			console.warn(err.message);
 		}
@@ -357,6 +357,7 @@ function fnPluginTaskTreeView_showStatus($data) {
 					callback: 'initFiles(data)',
 					useStore: false // After a creation, don't use the localStorage, we need to get the new list
 				});
+
 				Noty({
 					message: marknotes.message.loading_tree,
 					type: 'info'

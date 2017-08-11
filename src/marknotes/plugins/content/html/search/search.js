@@ -15,7 +15,7 @@ function fnPluginTaskSearch_init() {
 
 		// This function should only be fired once
 		// So, now, remove it from the arrPluginsFct array
-        marknotes.arrPluginsFct.splice(marknotes.arrPluginsFct.indexOf('fnPluginTaskSearch_init'),1);
+		marknotes.arrPluginsFct.splice(marknotes.arrPluginsFct.indexOf('fnPluginTaskSearch_init'), 1);
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
@@ -78,7 +78,12 @@ function fnPluginTaskSearch_afterDisplay() {
 	}
 	/*<!-- endbuild -->*/
 
-	$('#search-flexdatalist').focus();
+	/*<!-- build:debug -->*/
+	// Don't focus !!!
+	// Problem is that the view will always be resetted on the search field so the
+	// treeview will always display the first items (just like we press then Home key)
+	//$('#search-flexdatalist').focus();
+	/*<!-- endbuild -->*/
 
 	if ($.isFunction($.fn.highlight)) {
 		// Get the searched keywords.  Apply the restriction on the size.
@@ -86,15 +91,16 @@ function fnPluginTaskSearch_afterDisplay() {
 
 		if ($searchKeywords !== '') {
 
-			$arrKeywords=$searchKeywords.split(',');
+			$arrKeywords = $searchKeywords.split(',');
 
 			for (var i = 0; i < $arrKeywords.length; i++) {
 
-				$highlight=$arrKeywords[i];
+				$highlight = $arrKeywords[i];
 
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
-					console.log('Highlighting '+$highlight);}
+					console.log('Highlighting ' + $highlight);
+				}
 				/*<!-- endbuild -->*/
 
 				$("#CONTENT").highlight($highlight);
@@ -120,6 +126,12 @@ function fnPluginTaskSearch_afterDisplay() {
  * @returns {Boolean}
  */
 function fnPluginTaskSearch_addSearchEntry($entry) {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('fnPluginTaskSearch_addSearchEntry');
+	}
+	/*<!-- endbuild -->*/
 
 	$bReset = (($entry.reset === 'undefined') ? false : $entry.reset);
 

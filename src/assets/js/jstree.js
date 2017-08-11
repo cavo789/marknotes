@@ -109,7 +109,7 @@ function jstree_init($data) {
 						multiple: false,
 						initially_open: ['phtml_1'], // Automatically open the root node
 						themes: {
-							responsive: 1,
+							responsive: 0, // Strange : the UI rendering is really bad if responsive=1 on small screens
 							variant: 'small',
 							stripes: 1
 						},

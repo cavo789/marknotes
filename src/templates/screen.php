@@ -24,7 +24,7 @@
         <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
         <link media="screen" rel="stylesheet" type="text/css" href="assets/css/marknotes_screen.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
 
         <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-toolbar/jquery.toolbar.css" />
 

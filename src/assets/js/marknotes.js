@@ -156,18 +156,18 @@ function ajaxify($params) {
 
 				data = store.get('task_' + $data.task);
 
-				if (typeof(data) !== undefined) {
+				if (typeof (data) !== undefined) {
 
-					if ($data.task==='listFiles') {
+					if ($data.task === 'listFiles') {
 						// Don't reload if the list of files unless the data object
 						// doesn't contains files
 						if (data.hasOwnProperty("tree")) {
-							if (data.tree.children.length>0)  {
-						       $bAjax = false;
-					   		}
-					   	}
+							if (data.tree.children.length > 0) {
+								$bAjax = false;
+							}
+						}
 					}
-			   	}
+				}
 
 			}
 		} catch (err) {
@@ -252,9 +252,10 @@ function ajaxify($params) {
  * @returns {Boolean}
  */
 function initFiles($data) {
-console.log('***********************');
-console.log($data);
-console.log('***********************');
+
+	console.log('***********************');
+	console.log($data);
+	console.log('***********************');
 
 	var $msg = '';
 
@@ -603,7 +604,11 @@ function afterDisplay($fname) {
 
 		// Interface : put the cursor immediatly in the edit box
 		try {
-			fnPluginTaskSearch_afterDisplay();
+			// The function is defined in a plugin, be sure that the plugin has been loaded
+			// and the function therefore exists
+			if (typeof fnPluginTaskSearch_afterDisplay === "function") {
+				fnPluginTaskSearch_afterDisplay();
+			}
 		} catch (err) {
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
