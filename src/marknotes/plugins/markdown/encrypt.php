@@ -210,7 +210,7 @@ class Encrypt
         // search : we also need to search in encrypted text
         $task = $aeSession->get('task');
 
-        $bShowUnencrypt = in_array($task, array('edit.form','search'));
+        $bShowUnencrypt = in_array($task, array('docx', 'edit.form', 'epub', 'odt', 'pdf', 'search', 'txt'));
 
         if ($bShowUnencrypt) {
             $matches = array();
@@ -226,7 +226,15 @@ class Encrypt
 
                 for ($i; $i < $j; $i++) {
                     $decrypt = self::sslDecrypt($matches[1][$i]);
-                    $params['markdown'] = str_replace($matches[0][$i], '<encrypt>'.$decrypt.'</encrypt>', $params['markdown']);
+
+					// Editing form : add the encrypt tag
+					// Don't add the tag when, f.i., the task is txt since it isn't needed
+					// to export the tag for a TXT file
+					if($task=='edit.form') {
+						$decrypt='<encrypt>'.$decrypt.'</encrypt>';
+					}
+
+                    $params['markdown'] = str_replace($matches[0][$i], $decrypt, $params['markdown']);
                 }
             } // if (count($matches[1])>0)
         }

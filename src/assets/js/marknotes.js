@@ -204,6 +204,20 @@ function ajaxify($params) {
 			datatype: $params.dataType,
 			success: function (data) {
 
+				// If "select_node" has been set by the caller (f.i. the treeview plugin
+				// add this attribute in the fnPluginTaskTreeView_reload() function when
+				// the treeview should be reloaded and, then, a specific node should be
+				// selected (f.i. after the creation of a new note)
+				if (typeof $params.select_node !== 'undefined') {
+
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						console.log('   Add data.select_node attribute');
+					}
+					/*<!-- endbuild -->*/
+					data.select_node = $params.select_node;
+					console.log(data);
+				}
 				if ($useStore) {
 					store.set('task_' + $data.task, data);
 				}
@@ -216,8 +230,7 @@ function ajaxify($params) {
 					}
 					/*<!-- endbuild -->*/
 
-					$($target)
-						.html(data);
+					$($target).html(data);
 				}
 
 				/* jshint ignore:start */
@@ -231,6 +244,8 @@ function ajaxify($params) {
 					eval($callback);
 				}
 				/* jshint ignore:end */
+
+
 			}
 		}); // $.ajax()
 	} else {
@@ -253,9 +268,12 @@ function ajaxify($params) {
  */
 function initFiles($data) {
 
-	console.log('***********************');
-	console.log($data);
-	console.log('***********************');
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('******** initFiles ***************');
+		console.log($data);
+	}
+	/*<!-- endbuild -->*/
 
 	var $msg = '';
 
@@ -310,6 +328,16 @@ function initFiles($data) {
 
 	// Call javascript functions there were added by plugins
 	runPluginsFunctions();
+
+	// Automatically select a specific node when $data.select_node exists
+	if ($data.hasOwnProperty('select_node')) {
+
+		// Select the node
+		$('#TOC').jstree('select_node', $data.select_node);
+
+		// Needed otherwise the jstree's state plugin will reset the selected node
+		$('#TOC').jstree(true).save_state();
+	}
 
 	return true;
 

@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Convert
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -15,11 +15,11 @@ class Convert
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Convert();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Convert();
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     /**

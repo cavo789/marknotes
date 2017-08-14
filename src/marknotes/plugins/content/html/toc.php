@@ -66,6 +66,7 @@ class TOC
         // in the table of content (so, for headings 1 -> 4, mention %TOC_4%)
 
         if (preg_match("/%TOC_(\\d)%/", $content, $match)) {
+
             $aeSettings = \MarkNotes\Settings::getInstance();
 
             // Get the deepest level

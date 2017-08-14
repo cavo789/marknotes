@@ -79,6 +79,14 @@ class Markdown
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
+
+		// List of tasks (extensions) for which images should be referred locally
+		// i.e. not through a http:// syntax but like c:\folder, local on the filesystem
+		// so the convertor program can retrieve the file (the image)
+		$arrFilePaths=array('docx','epub','pdf');
+
+		$task = $aeSession->get('task');
 
         $folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
 
@@ -87,23 +95,63 @@ class Markdown
 
             $folderNote .= rtrim(dirname($params['filename']), DS).DS;
 
-            // Get the full path to this note
-            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$subfolder=trim(str_replace(basename($params['filename']),'',$params['filename']));
 
-            $folder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+			// Get the full path to this note
+			// $url will be, f.i., http://localhost/notes/docs/
+			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+
+			// Extract the subfolder f.i. private/home/dad/
+
+			if ($subfolder!=='') $url.=str_replace(DS,'/',$subfolder);
+
+			$pageURL=$url;
+
+			if(in_array($task, $arrFilePaths)) {
+
+				// PDF exportation : links to images should remains relative
+				$url = rtrim($aeSettings->getFolderDocs(true), DS).DS;
+				if ($subfolder!=='') $url.=$subfolder;
+
+			}
 
             // Don't allow spaces in name
-            $folder = str_replace(' ', '%20', $folder);
+			if(!in_array($task, $arrFilePaths)) {
+            	$url = str_replace(' ', '%20', $url);
+
+			}
 
             $imgTag = '\!\[(.*)\]\((.*)\)';
 
-            // Get the list of images i.e. tags like :  ![My nice image](.images/local.jpg)
+			$matches = array();
+
+			// When the task is DOCX, PDF, ... links to images should be from the disk and
+			// not from an url so replace absolute links by relative ones, then, replace
+			// links by hard disk filepaths
+
+			if(in_array($task, $arrFilePaths)) {
+
+	            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+
+					for ($i=0;$i<count($matches[2]);$i++) {
+						$matches[2][$i]=str_replace($pageURL, '', $matches[2][$i]);
+						$matches[2][$i]=str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
+
+						$markdown=str_replace($matches[0][$i],'!['.$matches[1][$i].']('.$matches[2][$i].')',$markdown);
+					}
+
+				}
+
+			} // if(in_array($task, $arrFilePaths))
+
+            // Get the list of images i.e. tags like :  ![My image](.images/local.jpg)
             // and check if the file is local (in a subfolder of the note). If so, convert the relative
-            //     ![My nice image](.images/local.jpg) to an absolute path
-            //     ![My nice image](http://localhost/folder/subfolder/.images/local.jpg)
+            //     ![My image](.images/local.jpg) to an absolute path
+            //     ![My image](http://localhost/folder/subfolder/.images/local.jpg)
 
             $matches = array();
             if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+
                 $j = count($matches[0]);
                 for ($i = 0; $i <= $j; $i++) {
                     if (isset($matches[2][$i])) {
@@ -116,8 +164,28 @@ class Markdown
                                 $filename = $folderNote.$filename;
                             }
 
-                            if ($aeFiles->fileExists($filename)) {
-                                $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$folder.$matches[2][$i].')', $markdown);
+							// Relative name to the image
+							$img=$matches[2][$i];
+
+							if(in_array($task, $arrFilePaths)) {
+
+								$img = str_replace(str_replace(' ','%20',$pageURL), '', $img);
+
+								// PDF => convert the / to the OS directory separator
+								$img=str_replace('/',DS,$img);
+
+								$img=$url.$img;
+								// If the link to the image contains \. double the slash
+								// (otherwise the slash will be interpreted as
+								// an escape character)
+								$img=str_replace('\.','\\\.',$img);
+
+							} // if($task==='pdf')
+
+							if ($aeFiles->fileExists($filename)) {
+
+
+                                $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
                             } else {
                                 /*<!-- build:debug -->*/
                                 if ($aeSettings->getDebugMode()) {
@@ -144,10 +212,26 @@ class Markdown
                         // Add the fullpath only if the link to the image doesn't contains yet
                         // an hyperlink
                         if (strpos($matches[2][$i], '//') === false) {
+
+							// Relative name to the image
+							$img=$matches[2][$i];
+
+							if(in_array($task, $arrFilePaths)) {
+
+								// PDF => convert the / to the OS directory separator
+								$img=str_replace('/',DS,$img);
+
+								// If the link to the image contains \. double the slash
+								// (otherwise the slash will be interpreted as
+								// an escape character)
+								$img=str_replace('\.','\\\.',$img);
+
+							} // if($task==='pdf')
+
                             $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
 
                             if ($aeFiles->fileExists($filename)) {
-                                $img = $folder.trim($matches[2][$i]);
+                                $img = $url.trim($matches[2][$i]);
                                 $markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
                             }
                         }
@@ -174,12 +258,6 @@ class Markdown
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeDebug = \MarkNotes\Debug::getInstance();
 
-        /*if (mb_detect_encoding($filename)) {
-            if (!file_exists($filename)) {
-                $filename = utf8_decode($filename);
-            }
-        }*/
-
         if ($aeFiles->fileExists($filename)) {
             $markdown = file_get_contents(utf8_decode($filename));
 
@@ -194,7 +272,6 @@ class Markdown
             $aeEvents->trigger('markdown.read', $args);
 
             $markdown = $args[0]['markdown'];
-            // --------------------------------
 
             $aeFiles = \MarkNotes\Files::getInstance();
             $aeFunctions = \MarkNotes\Functions::getInstance();
@@ -202,6 +279,7 @@ class Markdown
             // Get the full path to this note
             $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
             $noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+			// --------------------------------
 
             // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
             // Be sure to have the correct relative path i.e. pointing to the folder of the note

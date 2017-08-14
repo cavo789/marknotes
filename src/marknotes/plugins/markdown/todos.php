@@ -55,6 +55,8 @@ class Todos
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+		$task = $aeSession->get('task');
+
         $file = $aeSession->get('filename');
         $matches = array();
 
@@ -128,7 +130,14 @@ class Todos
                     //   * Add put the line in bold
 
                     $sWhoWhat = $matches[2][$i].($matches[3][$i] ?? '');
-                    $sTodo = "<a name='".$prefix."_".($i + 1)."'></a>**".$matches[1][$i].' #'.($i + 1).$sWhoWhat."**";
+
+					if (!in_array($task, array("pdf","txt"))) {
+						$anchor = "<a name='".$prefix."_".($i + 1)."'></a>";
+					} else {
+						$anchor = "";
+					}
+
+                    $sTodo = $anchor."**".$matches[1][$i].' #'.($i + 1).$sWhoWhat."**";
 
                     $params['markdown'] = str_replace($matches[0][$i], $sTodo, $params['markdown']);
                     $arrTodos[$i] = $sWhoWhat;
@@ -145,18 +154,25 @@ class Todos
                     if (trim($introduction) !== '') {
                         $bIntroAdded = true;
 
-                        $sTodo .= trim($introduction)."\n";
+                        $sTodo .= trim($introduction).PHP_EOL.PHP_EOL;
                     }
                 }
 
-                $sTodo .= $title."\n| # | ".$column." |\n| --- | --- |\n";
+                $sTodo .= $title.PHP_EOL.PHP_EOL."| ID | ".$column." |".PHP_EOL."| --- | --- |".PHP_EOL;
 
                 foreach ($arrTodos as $key => $value) {
-                    $sTodo .= "| [".($key + 1)."](".$urlHTML."#".$prefix."_".($key + 1).") | ".$value." |\n";
-                }
-                $sTodo .= "\n\n";
 
-                $params['markdown'] .= $sTodo;
+					if (!in_array($task, array("pdf","txt"))) {
+						$anchor="[".($key + 1)."](".$urlHTML."#".$prefix."_".($key + 1).")";
+					} else {
+						 $anchor=$key + 1;
+					 }
+
+                    $sTodo .= "| ".$anchor." | ".$value." |".PHP_EOL;
+                }
+                $sTodo .= PHP_EOL.PHP_EOL;
+
+                $params['markdown'] .= PHP_EOL.$sTodo;
             }
         } // foreach ($arrSettings as $key => $value)
 

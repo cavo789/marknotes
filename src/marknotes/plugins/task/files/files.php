@@ -54,6 +54,8 @@ class Files
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
+
         $foldername = $aeFiles->sanitizeFileName($foldername);
 
         // Try to create a file called "$filename.md" on the disk
@@ -101,6 +103,7 @@ class Files
             'status' => (($wReturn == CREATE_SUCCESS) ? 1 : 0),
             'action' => 'create',
             'type' => 'folder',
+			'md5' => md5($docs.$foldername),
             'msg' => $msg,
             'foldername' => utf8_encode($foldername)
         );
@@ -116,6 +119,8 @@ class Files
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
         $oldname = $aeFiles->sanitizeFileName($oldname);
         $newname = $aeFiles->sanitizeFileName($newname);
@@ -156,6 +161,7 @@ class Files
             'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
             'action' => 'rename',
             'type' => 'folder',
+			'md5' => md5($docs.$newname),
             'msg' => $msg,
             'foldername' => utf8_encode($newname)
         );
@@ -170,6 +176,8 @@ class Files
     {
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Folders::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
         $wReturn = $aeFilesystem->deleteFolder($foldername);
 
@@ -212,6 +220,7 @@ class Files
             'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
             'action' => 'delete',
             'type' => 'folder',
+			'md5' => md5($docs.$foldername),
             'msg' => $msg,
             'foldername' => utf8_encode($foldername)
         );
@@ -227,6 +236,8 @@ class Files
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
         // Be sure to have the .md extension
         $filename = $aeFiles->removeExtension($filename).'.md';
@@ -256,6 +267,7 @@ class Files
             'action' => 'create',
             'type' => 'file',
             'msg' => $msg,
+			'md5' => md5($docs.$filename),
             'filename' => utf8_encode($filename)
         );
 
@@ -270,6 +282,8 @@ class Files
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
         // Be sure to have the .md extension
         $oldname = $aeFiles->removeExtension($oldname).'.md';
@@ -303,6 +317,7 @@ class Files
             'action' => 'rename',
             'type' => 'file',
             'msg' => $msg,
+			'md5' => md5($docs.$newname),
             'filename' => utf8_encode($newname)
         );
 
@@ -318,9 +333,10 @@ class Files
         $aeFilesystem = \MarkNotes\Plugins\Task\Files\Helpers\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
+
         // Be sure to have the .md extension
         $filename = $aeFiles->removeExtension($filename).'.md';
-
         // Try to create a file called "$filename.md" on the disk
         $wReturn = $aeFilesystem->deleteFile($filename);
 
@@ -348,6 +364,7 @@ class Files
             'action' => 'delete',
             'type' => 'file',
             'msg' => $msg,
+			'md5' => md5($docs.$filename),
             'filename' => utf8_encode($filename)
         );
 
@@ -367,13 +384,11 @@ class Files
         // file or folder
         $type = $aeFunctions->getParam('type', 'string', '', false);
 
+		// Get the file name and remove dangerous characters
         $newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
 
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
-            //if (mb_detect_encoding($newname)) {
-            //    $newname = utf8_decode($newname);
-            //}
         }
 
         /*<!-- build:debug -->*/
@@ -421,22 +436,12 @@ class Files
         $newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
         if ($newname != '') {
             $newname = $aeFiles->sanitizeFileName(trim($newname));
-            //if (mb_detect_encoding($newname)) {
-            //    if (!file_exists($newname)) {
-            //        $newname = utf8_decode($newname);
-            //    }
-            //}
         }
 
         $oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
+
         if ($oldname != '') {
             $oldname = $aeFiles->sanitizeFileName(trim($oldname));
-
-            //if (mb_detect_encoding($oldname)) {
-            //    if (!file_exists($oldname)) {
-            //        $oldname = utf8_decode($oldname);
-            //    }
-            //}
         }
 
         /*<!-- build:debug -->*/
@@ -493,11 +498,6 @@ class Files
                 'filename' => $name
             );
         } else {
-            //if (mb_detect_encoding($name)) {
-            //    if (!file_exists($name)) {
-            //        $name = utf8_decode($name);
-            //    }
-            //}
 
             // Get the fullname of the folder/file name
             $name = $aeSettings->getFolderDocs(true).$name;
@@ -509,7 +509,6 @@ class Files
                 // it's a folder
                 $return = self::deleteFolder($name);
             } else {
-
                 // it's a file
                 $return = self::deleteFile($name);
             }
@@ -523,6 +522,7 @@ class Files
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+		// Be sure that filenames doesn't already start with the /docs folder
         self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
         $task = trim($aeSession->get('task'));

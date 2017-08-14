@@ -7,7 +7,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Pandoc
 {
     /**
-     *
+     * Generate a TXT file thanks to Pandoc
      */
     public static function doIt(&$params = null)
     {
@@ -38,7 +38,29 @@ class Pandoc
 
         $final = $aeTask->getFileName($params['filename'], $params['task']);
 
-        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+		// Get a slug of the filename
+		$slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+
+		// Display a .md file, call plugins and output note's content
+		$filename = $aeSettings->getFolderDocs(true).$params['filename'];
+		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
+		$content = $aeMarkdown->read($filename);
+
+		// ----------------------------------------
+		//
+		// Create a temporary version of the .md file, in the temporary folder
+		$tmpMD = $aeSettings->getFolderTmp().$slug.'.md';
+		$content=$aeMarkdown->read($filename);
+
+		// Escape slashes
+		$content=str_replace('\\', '\\\\', $content);
+
+		// Note : pandoc use LaTeX which can incorrectly understand the "_" character.
+		// So, escape it before converting to PDF
+		$content=str_replace('_', '\_', $content);
+
+        $aeFiles->createFile($tmpMD,$content);
+
 
         // $params['task'] is the output format (f.i. pdf), check if there are options to use
         // for that format
@@ -52,30 +74,20 @@ class Pandoc
         $debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
 
         $sProgram =
-            '@ECHO OFF'.PHP_EOL.
-            'chcp 65001'.PHP_EOL.
-            'pushd "'.dirname($aeSettings->getFolderDocs(true).mb_convert_encoding($params['filename'], "ISO-8859-1", "UTF-8")).'"'.PHP_EOL.
-            '"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
-            '"'.basename($params['filename']).'" > '.$debugFile.' 2>&1'.PHP_EOL.
-            'popd'.PHP_EOL;
+			'@ECHO OFF'.PHP_EOL.
+			'chcp 65001'.PHP_EOL.
+			'"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
+			'"'.$tmpMD.'" > '.$debugFile.' 2>&1'.PHP_EOL.
+			'copy "'.basename($final).'" "'.rtrim(dirname($final),DS).DS.'"'.PHP_EOL;
+
 
         $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 
         $aeFiles->fwriteANSI($fScriptFile, $sProgram);
 
-        //echo '<pre>'.$sProgram.'</pre>';
-
         // Run the script. This part can be long depending on the number of slides in the HTML file to convert
         $output = array();
         exec("start cmd /c ".$fScriptFile, $output);
-
-        // $output is an array and contains the result of the script. If at least one line of the output start with
-        // Error:, show the debug information and stop the code
-        /*foreach ($output as $line) {
-            if (substr($line, 0, 6) === 'Error:') {
-                die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the pandoc script<br/><br/>".print_r($output, true)."</pre>");
-            }
-        }*/
 
         $params['output'] = $final;
 

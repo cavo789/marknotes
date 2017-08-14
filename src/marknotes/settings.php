@@ -355,8 +355,8 @@ class Settings
     /**
      * Return the name of the folder (relative) of the documents folder
      *
-     * @param  bool $absolute Return the full path (f.i. 'C:\Repository\notes\docs\') if True, the relative one (f.i. 'docs') if False
-     *                         the relative one (f.i. 'docs') if False
+     * @param  bool  True  : return the full path (f.i. 'C:\Repository\notes\docs\')
+     *               False : return the relative one (f.i. 'docs')
      * @return string
      */
     public function getFolderDocs(bool $absolute = true) : string
