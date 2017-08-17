@@ -259,14 +259,14 @@ class Files
         // Remove any trailing dots, as those aren't ever valid file names.
         $filename = rtrim($filename, '.');
 
-		// Replace characters not in the list below by a dash (-)
-		// For instance : single quote, double-quote, parenthesis, ...
-		$regex = array('#[^: A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇ\.\\\/\_\- ]#');
-   	    $filename=trim(preg_replace($regex, '-', $filename));
+        // Replace characters not in the list below by a dash (-)
+        // For instance : single quote, double-quote, parenthesis, ...
+        $regex = array('#[^: A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇ\.\\\/\_\- ]#');
+        $filename = trim(preg_replace($regex, '-', $filename));
 
-		// Don't allow a double .. in the name and don't allow to start with a dot
-		$regex = array('#(\.){2,}#', '#^\.#');
-		$filename=trim(preg_replace($regex, '', $filename));
+        // Don't allow a double .. in the name and don't allow to start with a dot
+        $regex = array('#(\.){2,}#', '#^\.#');
+        $filename = trim(preg_replace($regex, '', $filename));
 
         // If $filename was f.i. '../../../../../'.$filename
         // the preg_replace has change it to '/////'.$filename so remove leading /
@@ -307,7 +307,7 @@ class Files
         /*<!-- endbuild -->*/
 
         if (self::fileExists($filename)) {
-            //$filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
+            $filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
 
             rename($filename, $filename.'.old');
 

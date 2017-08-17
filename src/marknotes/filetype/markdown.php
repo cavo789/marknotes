@@ -81,12 +81,12 @@ class Markdown
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
 
-		// List of tasks (extensions) for which images should be referred locally
-		// i.e. not through a http:// syntax but like c:\folder, local on the filesystem
-		// so the convertor program can retrieve the file (the image)
-		$arrFilePaths=array('docx','epub','pdf');
+        // List of tasks (extensions) for which images should be referred locally
+        // i.e. not through a http:// syntax but like c:\folder, local on the filesystem
+        // so the convertor program can retrieve the file (the image)
+        $arrFilePaths = array('docx','epub','pdf');
 
-		$task = $aeSession->get('task');
+        $task = $aeSession->get('task');
 
         $folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
 
@@ -95,54 +95,54 @@ class Markdown
 
             $folderNote .= rtrim(dirname($params['filename']), DS).DS;
 
-			$subfolder=trim(str_replace(basename($params['filename']),'',$params['filename']));
+            $subfolder = trim(str_replace(basename($params['filename']), '', $params['filename']));
 
-			// Get the full path to this note
-			// $url will be, f.i., http://localhost/notes/docs/
-			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+            // Get the full path to this note
+            // $url will be, f.i., http://localhost/notes/docs/
+            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
-			// Extract the subfolder f.i. private/home/dad/
+            // Extract the subfolder f.i. private/home/dad/
 
-			if ($subfolder!=='') $url.=str_replace(DS,'/',$subfolder);
+            if ($subfolder !== '') {
+                $url .= str_replace(DS, '/', $subfolder);
+            }
 
-			$pageURL=$url;
+            $pageURL = $url;
 
-			if(in_array($task, $arrFilePaths)) {
+            if (in_array($task, $arrFilePaths)) {
 
-				// PDF exportation : links to images should remains relative
-				$url = rtrim($aeSettings->getFolderDocs(true), DS).DS;
-				if ($subfolder!=='') $url.=$subfolder;
-
-			}
+                // PDF exportation : links to images should remains relative
+                $url = rtrim($aeSettings->getFolderDocs(true), DS).DS;
+                if ($subfolder !== '') {
+                    $url .= $subfolder;
+                }
+            }
 
             // Don't allow spaces in name
-			if(!in_array($task, $arrFilePaths)) {
-            	$url = str_replace(' ', '%20', $url);
-
-			}
+            if (!in_array($task, $arrFilePaths)) {
+                $url = str_replace(' ', '%20', $url);
+            }
 
             $imgTag = '\!\[(.*)\]\((.*)\)';
 
-			$matches = array();
+            $matches = array();
 
-			// When the task is DOCX, PDF, ... links to images should be from the disk and
-			// not from an url so replace absolute links by relative ones, then, replace
-			// links by hard disk filepaths
+            // When the task is DOCX, PDF, ... links to images should be from the disk and
+            // not from an url so replace absolute links by relative ones, then, replace
+            // links by hard disk filepaths
 
-			if(in_array($task, $arrFilePaths)) {
+            if (in_array($task, $arrFilePaths)) {
+                if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+                    /* FIXME: remove debugging */
+/* */die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($matches, true)."</pre>");
+                    for ($i = 0;$i < count($matches[2]);$i++) {
+                        $matches[2][$i] = str_replace($pageURL, '', $matches[2][$i]);
+                        $matches[2][$i] = str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
 
-	            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-
-					for ($i=0;$i<count($matches[2]);$i++) {
-						$matches[2][$i]=str_replace($pageURL, '', $matches[2][$i]);
-						$matches[2][$i]=str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
-
-						$markdown=str_replace($matches[0][$i],'!['.$matches[1][$i].']('.$matches[2][$i].')',$markdown);
-					}
-
-				}
-
-			} // if(in_array($task, $arrFilePaths))
+                        $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$matches[2][$i].')', $markdown);
+                    }
+                }
+            } // if(in_array($task, $arrFilePaths))
 
             // Get the list of images i.e. tags like :  ![My image](.images/local.jpg)
             // and check if the file is local (in a subfolder of the note). If so, convert the relative
@@ -151,7 +151,6 @@ class Markdown
 
             $matches = array();
             if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-
                 $j = count($matches[0]);
                 for ($i = 0; $i <= $j; $i++) {
                     if (isset($matches[2][$i])) {
@@ -164,27 +163,23 @@ class Markdown
                                 $filename = $folderNote.$filename;
                             }
 
-							// Relative name to the image
-							$img=$matches[2][$i];
+                            // Relative name to the image
+                            $img = $matches[2][$i];
 
-							if(in_array($task, $arrFilePaths)) {
+                            if (in_array($task, $arrFilePaths)) {
+                                $img = str_replace(str_replace(' ', '%20', $pageURL), '', $img);
 
-								$img = str_replace(str_replace(' ','%20',$pageURL), '', $img);
+                                // PDF => convert the / to the OS directory separator
+                                $img = str_replace('/', DS, $img);
 
-								// PDF => convert the / to the OS directory separator
-								$img=str_replace('/',DS,$img);
+                                $img = $url.$img;
+                                // If the link to the image contains \. double the slash
+                                // (otherwise the slash will be interpreted as
+                                // an escape character)
+                                $img = str_replace('\.', '\\\.', $img);
+                            } // if($task==='pdf')
 
-								$img=$url.$img;
-								// If the link to the image contains \. double the slash
-								// (otherwise the slash will be interpreted as
-								// an escape character)
-								$img=str_replace('\.','\\\.',$img);
-
-							} // if($task==='pdf')
-
-							if ($aeFiles->fileExists($filename)) {
-
-
+                            if ($aeFiles->fileExists($filename)) {
                                 $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
                             } else {
                                 /*<!-- build:debug -->*/
@@ -213,20 +208,19 @@ class Markdown
                         // an hyperlink
                         if (strpos($matches[2][$i], '//') === false) {
 
-							// Relative name to the image
-							$img=$matches[2][$i];
+                            // Relative name to the image
+                            $img = $matches[2][$i];
 
-							if(in_array($task, $arrFilePaths)) {
+                            if (in_array($task, $arrFilePaths)) {
 
-								// PDF => convert the / to the OS directory separator
-								$img=str_replace('/',DS,$img);
+                                // PDF => convert the / to the OS directory separator
+                                $img = str_replace('/', DS, $img);
 
-								// If the link to the image contains \. double the slash
-								// (otherwise the slash will be interpreted as
-								// an escape character)
-								$img=str_replace('\.','\\\.',$img);
-
-							} // if($task==='pdf')
+                                // If the link to the image contains \. double the slash
+                                // (otherwise the slash will be interpreted as
+                                // an escape character)
+                                $img = str_replace('\.', '\\\.', $img);
+                            } // if($task==='pdf')
 
                             $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
 
@@ -279,7 +273,7 @@ class Markdown
             // Get the full path to this note
             $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
             $noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
-			// --------------------------------
+            // --------------------------------
 
             // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
             // Be sure to have the correct relative path i.e. pointing to the folder of the note
