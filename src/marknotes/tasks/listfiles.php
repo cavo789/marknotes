@@ -245,7 +245,7 @@ class ListFiles
                     'data' => array(
                         'task' => 'display',
                         'file' => utf8_encode(str_replace($root, '', $entry['name'])),
-                        'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $entry['name'])))
+                        'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', str_replace('.md', '', $entry['name']))))
                     ),
                     'state' => array(
                         'opened' => $opened,
