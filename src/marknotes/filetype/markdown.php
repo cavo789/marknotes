@@ -133,8 +133,7 @@ class Markdown
 
             if (in_array($task, $arrFilePaths)) {
                 if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-                    /* FIXME: remove debugging */
-/* */die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($matches, true)."</pre>");
+
                     for ($i = 0;$i < count($matches[2]);$i++) {
                         $matches[2][$i] = str_replace($pageURL, '', $matches[2][$i]);
                         $matches[2][$i] = str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
@@ -152,6 +151,7 @@ class Markdown
             $matches = array();
             if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
                 $j = count($matches[0]);
+
                 for ($i = 0; $i <= $j; $i++) {
                     if (isset($matches[2][$i])) {
                         // Add the fullpath only if the link to the image doesn't contains yet
@@ -165,6 +165,12 @@ class Markdown
 
                             // Relative name to the image
                             $img = $matches[2][$i];
+
+							// If the image url doesn't start with http, make the
+							// url absolute by adding the full url of the note
+							if (strpos($img, 'http')!== 0) {
+								$img=$url.$img;
+							}
 
                             if (in_array($task, $arrFilePaths)) {
                                 $img = str_replace(str_replace(' ', '%20', $pageURL), '', $img);
@@ -183,10 +189,13 @@ class Markdown
                                 $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
                             } else {
                                 /*<!-- build:debug -->*/
-                                if ($aeSettings->getDebugMode()) {
-                                    $aeDebug = \MarkNotes\Debug::getInstance();
-                                    $aeDebug->here('DEBUG MODE --- In file '.$params['filename'].' ==> '.$filename.' NOT FOUND');
-                                }
+
+								if ($task!=='edit.form') {
+                                   if ($aeSettings->getDebugMode()) {
+                                       $aeDebug = \MarkNotes\Debug::getInstance();
+                                       $aeDebug->here('DEBUG MODE --- In file    '.$params['filename'].' ==> '.$filename.' NOT FOUND');
+                                   }
+							   }
                                 /*<!-- endbuild -->*/
                             }
                         }//if (strpos('//', $matches[2][$i])===FALSE)

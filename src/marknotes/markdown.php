@@ -50,7 +50,8 @@ class Markdown
         $aeSession->extend();
 
         if ($filename === '') {
-            $filename = json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true)));
+			$tmp=urldecode($aeFunctions->getParam('param', 'string', '', true));
+			$filename=((json_decode($tmp)!='')?json_decode($tmp):$tmp);
         }
 
         if ($filename != '') {
@@ -80,7 +81,6 @@ class Markdown
 
             $filename = $aeFiles->sanitizeFileName(trim($filename));
         }
-
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
             $aeDebug->log('Running task ['.$task.']', 'debug');

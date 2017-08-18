@@ -61,7 +61,6 @@ class Pandoc
 
         $aeFiles->createFile($tmpMD,$content);
 
-
         // $params['task'] is the output format (f.i. pdf), check if there are options to use
         // for that format
         $options = isset($arrPandoc['options'][$params['task']]) ? $arrPandoc['options'][$params['task']] : '';
@@ -73,13 +72,12 @@ class Pandoc
 
         $debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
 
-        $sProgram =
+		$sProgram =
 			'@ECHO OFF'.PHP_EOL.
 			'chcp 65001'.PHP_EOL.
-			'"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
+			'"'. $sScriptName.'" '. $options . ' -o "'.$final.'" '.
 			'"'.$tmpMD.'" > '.$debugFile.' 2>&1'.PHP_EOL.
 			'copy "'.basename($final).'" "'.rtrim(dirname($final),DS).DS.'"'.PHP_EOL;
-
 
         $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 

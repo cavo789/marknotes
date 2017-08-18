@@ -21,9 +21,14 @@ class Read
         // Get the relative folder; like docs/folder/
         $sFolder = str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
 
-        $markdown = str_replace('%ROOT%', $sRoot, $markdown);
-        $markdown = str_replace('%URL%', str_replace(' ', '%20', $sRoot.$sFolder), $markdown);
-        $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
+		$task = $aeSession->get('task');
+
+		// Keep variables during the editing
+		if ($task!=='edit.form') {
+	        $markdown = str_replace('%ROOT%', $sRoot, $markdown);
+			$markdown = str_replace('%URL%', str_replace(' ', '%20', $sRoot.$sFolder), $markdown);
+	        $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
+		}
 
         return $markdown;
     }
@@ -40,6 +45,22 @@ class Read
         if (trim($params['markdown']) === '') {
             return true;
         }
+
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task');
+
+		if ($task==='edit.form') {
+			// In the edit form, the single "&" character won't be correctly interpreted
+			// The regex here below will retrieve every & and not &amp;
+			// If there are occurences, replace & by &amp;
+			$matches = array();
+	        if (preg_match_all('/&(?![A-Za-z]+;|#[0-9]+;)/m', $params['markdown'], $matches)) {
+	            foreach ($matches as $match) {
+					$params['markdown'] = str_replace($match, '$$$$', $params['markdown']);
+					$params['markdown'] = str_replace('$$$$', '&amp;', $params['markdown']);
+	            }
+	        }
+		}
 
         // Be sure to have content with LF and not CRLF in order to be able to use
         // generic regex expression (match \n for new lines)
@@ -65,6 +86,8 @@ class Read
                 $params['markdown'] = str_replace($match, $sMatch, $params['markdown']);
             }
         }
+
+		$params['markdown'] = str_replace('&params', '&amp;param', $params['markdown']);
 
         $params['markdown'] = self::replaceVariables($params['markdown']);
 

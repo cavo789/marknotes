@@ -261,7 +261,8 @@ class Files
 
         // Replace characters not in the list below by a dash (-)
         // For instance : single quote, double-quote, parenthesis, ...
-        $regex = array('#[^: A-Za-z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇ\.\\\/\_\- ]#');
+		// The list mentionned below is thus the allowed characters
+        $regex = array('#[^: A-Za-z0-9&_àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇ\.\\\/\_\- ]#');
         $filename = trim(preg_replace($regex, '-', $filename));
 
         // Don't allow a double .. in the name and don't allow to start with a dot

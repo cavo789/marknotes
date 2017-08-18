@@ -7,44 +7,42 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 class Autoload
 {
-    public static function register()
-    {
-        spl_autoload_register(array(__CLASS__, 'autoload'));
-    }
+	public static function register()
+	{
+		spl_autoload_register(array(__CLASS__, 'autoload'));
+	}
 
-    public static function autoload($class)
-    {
+	public static function autoload($class)
+	{
 
-        // Only for MarkNotes classes and not third parties libraries f.i.
-        if (substr($class, 0, 10) === 'MarkNotes\\') {
-            $parts = preg_split('#\\\#', $class);
+		// Only for MarkNotes classes and not third parties libraries f.i.
+		if (substr($class, 0, 10) === 'MarkNotes\\') {
+			$parts = preg_split('#\\\#', $class);
 
-            // on extrait le dernier element
-            $className = array_pop($parts);
+			$className = array_pop($parts);
 
-            // on créé le chemin vers la classe
-            // on utilise DS car plus propre et meilleure portabilité entre les différents systèmes (windows/linux)
+			$path = implode(DS, $parts);
+			$file = $className.'.php';
 
-            $path = implode(DS, $parts);
-            $file = $className.'.php';
+			$filepath = dirname(__FILE__).DS.strtolower($path.DS.$file);
 
-            $filepath = dirname(__FILE__).DS.strtolower($path.DS.$file);
+			if (!file_exists($filepath)) {
+				echo '<strong>autoload - The file '.$filepath.' is missing!</strong>';
 
-            if (!file_exists($filepath)) {
-                echo '<strong>autoload - The file '.$filepath.' is missing!</strong>';
+				/*<!-- build:debug -->*/
+				if (class_exists("\MarkNotes\Debug")) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					if ($aeDebug->enable()) {
+						echo '<pre>'.print_r(debug_backtrace(3), true).'</pre>';
+					}
+				}
+				/*<!-- endbuild -->*/
 
-                /*<!-- build:debug -->*/
-                if (class_exists("\MarkNotes\Debug")) {
-                    $aeDebug = \MarkNotes\Debug::getInstance();
-                    if ($aeDebug->enable()) {
-                        echo '<pre>'.print_r(debug_backtrace(3), true).'</pre>';
-                    }
-                }
-                /*<!-- endbuild -->*/
+				return false;
+			}
 
-                return false;
-            }
-            require $filepath;
-        }
-    }
+			require $filepath;
+
+		}
+	}
 }

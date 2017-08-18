@@ -1,5 +1,8 @@
 /* global markdown, custominiFiles, customafterDisplay */
 
+// logger for marknotes
+var logMN;
+
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
 var QueryString = function () {
 	// This function is anonymous, is executed immediately and
@@ -245,8 +248,18 @@ function ajaxify($params) {
 				}
 				/* jshint ignore:end */
 
-
-			}
+			}, // success
+			error: function (Request, textStatus, errorThrown) {
+				// Display an error message to inform the user about the problem
+				var $msg = '<div class="bg-danger text-danger img-rounded" style="margin-top:25px;padding:10px;">';
+				$msg = $msg + '<strong>An error has occured :</strong><br/>';
+				$msg = $msg + 'Internal status: ' + textStatus + '<br/>';
+				$msg = $msg + 'HTTP Status: ' + Request.status + ' (' + Request.statusText + ')<br/>';
+				$msg = $msg + 'XHR ReadyState: ' + Request.readyState + '<br/>';
+				$msg = $msg + 'Raw server response:<br/>' + Request.responseText + '<br/>';
+				$msg = $msg + '</div>';
+				$($target).html($msg);
+			} // error
 		}); // $.ajax()
 	} else {
 		/* jshint ignore:start */

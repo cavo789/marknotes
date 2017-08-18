@@ -112,7 +112,6 @@
       <script type="text/javascript" src="assets/js/jstree.js"></script>
       <script type="text/javascript" src="assets/js/fullscreen.js"></script>
       <script type="text/javascript" src="assets/js/marknotes.js"></script>
-
       <script type="text/javascript">initializeTasks();</script>
 
    </body>

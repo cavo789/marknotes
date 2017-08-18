@@ -1,4 +1,5 @@
 var jsTree_Search_Result = '';
+var logJSTree;
 
 // Used by the search plugin to filter on notes having an ID as returned by the ajax search task
 function jsTree_ajax_search(str, node) {
@@ -25,7 +26,7 @@ function jstree_init($data) {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('jsTree - List of plugins loaded');
+				console.log('List of plugins loaded');
 				console.log($arrPlugins);
 			}
 			/*<!-- endbuild -->*/
@@ -140,7 +141,7 @@ function jstree_init($data) {
 								jsTree_Search_Result = data;
 								/*<!-- build:debug -->*/
 								if (marknotes.settings.debug) {
-									console.log('jsTree - Search - success, list of IDs returned :');
+									console.log('Search - success, list of IDs returned :');
 									console.log(data);
 								}
 								/*<!-- endbuild -->*/
