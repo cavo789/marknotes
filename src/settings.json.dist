@@ -9,7 +9,7 @@
 	"list": {
 		"show_tree_allowed": 1
 	},
-	"locale": "fr-FR",
+	"locale": "fr",
 	"timezone": "Europe/Brussels",
 	"page": {
 		"google_font": "",
@@ -222,6 +222,7 @@
 			"datatable_copyKeys": "Press <i>ctrl</i> or <i>\u2318</i> + <i>C</i> to copy the table data<br>to your system clipboard.<br><br>To cancel, click this message or press escape.",
 			"datatable_copySuccess_One": "Copied one row to clipboard",
 			"datatable_copySuccess_Many": "Copied %d rows to clipboard",
+			"date": "%A %d %B %Y - %H:%M",
 			"display_that_note": "Display that note",
 			"edit_file": "Edit",
 			"error": "Error",
@@ -316,6 +317,7 @@
 			"datatable_copyKeys": "Appuyez sur <i>ctrl</i> ou <i>\u2318</i> + <i>C</i> pour copier les données du tableau à votre presse-papiers. <br><br>Pour annuler, cliquez sur ce message ou appuyez sur Echap.",
 			"datatable_copySuccess_One": "1 ligne copiée",
 			"datatable_copySuccess_Many": "%d lignes copiées",
+			"date": "%A %d %B %Y - %H:%M",
 			"display_that_note": "Afficher cette note",
 			"edit_file": "Éditer",
 			"error": "Erreur",

@@ -57,7 +57,7 @@ class Prism
 
         // Don't load Prism for slideshows since these frameworks already provide such mechanism
         // But well for reveal slideshows
-        if (in_array($task, array('main','remark'))) {
+        if (in_array($task, array('remark'))) {
             return true;
         }
 

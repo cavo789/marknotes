@@ -12,11 +12,14 @@ class Read
     private static function replaceVariables(string $markdown) : string
     {
         $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeLanguage = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         // Get the web root like http://localhost/notes/
         $sRoot = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/';
+
+		$sFileName =str_replace('/', DS,$aeSettings->getFolderDocs(true).$aeSession->get('filename'));
 
         // Get the relative folder; like docs/folder/
         $sFolder = str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
@@ -25,7 +28,14 @@ class Read
 
 		// Keep variables during the editing
 		if ($task!=='edit.form') {
-	        $markdown = str_replace('%ROOT%', $sRoot, $markdown);
+
+			$markdown = str_replace('%ROOT%', $sRoot, $markdown);
+
+			if (strpos($markdown, '%LASTUPDATE%')!==FALSE) {
+				$date=utf8_encode(ucfirst(strftime($aeSettings->getText('date'), filemtime($sFileName))));
+				$markdown = str_replace('%LASTUPDATE%', $date, $markdown);
+			}
+
 			$markdown = str_replace('%URL%', str_replace(' ', '%20', $sRoot.$sFolder), $markdown);
 	        $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
 		}
