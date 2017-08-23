@@ -173,6 +173,9 @@ h2 {
 	background-position: -254px -18px;
 }
 
+pre {
+	max-width: 950px;
+}
 /* page is used to display the content of the selected note */
 
 page {

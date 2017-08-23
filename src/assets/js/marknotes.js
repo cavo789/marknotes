@@ -1,8 +1,5 @@
 /* global markdown, custominiFiles, customafterDisplay */
 
-// logger for marknotes
-var logMN;
-
 /*  Allow to easily access to querystring parameter like alert(QueryString.ParamName); */
 var QueryString = function () {
 	// This function is anonymous, is executed immediately and
@@ -57,6 +54,7 @@ RegExp.quote = function (str) {
 $(document).ready(function () {
 
 	if (marknotes.autoload === 1) {
+
 		if ($.isFunction($.fn.toolbar)) {
 
 			$("#toolbar-app")
@@ -69,6 +67,12 @@ $(document).ready(function () {
 				});
 		}
 
+		// Be sure that this plugin is well part of the current Prism installation and is loaded
+		if (Prism.plugins.NormalizeWhitespace) {
+			Prism.plugins.NormalizeWhitespace.setDefaults({
+				'break-lines': 120 // Soft wrap after 120 chars
+			});
+		}
 		// On page entry, get the list of .md files on the server
 		if (marknotes.hasOwnProperty('message')) {
 			Noty({
