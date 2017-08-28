@@ -152,7 +152,7 @@
 					"h5": "fade",
 					"h6": "convex"
 				},
-				"no_html_convert": 1,
+				"no_html_convert": 0,
 				"section": {
 					"extra_data_img_attr": "data-background-size='contain'"
 				}
@@ -185,7 +185,7 @@
 			"minutes": 60,
 			"bar_height": 30
 		},
-		"HideUnnecessaryThings": 1
+		"HideUnnecessaryThings": 0
 	},
 	"task": {
 		"default": "reveal"

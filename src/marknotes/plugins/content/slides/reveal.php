@@ -266,7 +266,6 @@ class Reveal
 
 			$content = $markdown;
 
-
 			if ($no_html_convert!==1) {
 
                $html = $aeConvert->getHTML($markdown, $params);
