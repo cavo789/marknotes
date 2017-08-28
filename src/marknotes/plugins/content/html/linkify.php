@@ -59,7 +59,7 @@ class Linkify
 
         // This plugin is not needed when the task is one of the mentionned below
         if (in_array($task, array('main','pdf','reveal','remark'))) {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

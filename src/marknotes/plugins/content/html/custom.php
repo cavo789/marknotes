@@ -19,17 +19,17 @@ class Custom
         if ($aeFiles->fileExists($aeSettings->getFolderWebRoot()."custom.js")) {
             // if present, add your custom javascript if the custom.js file is present. That file should be present in the root folder; not in /assets/js
             $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-			
+
 			if ($aeSettings->getDebugMode()) {
 				$js .= "\n<!-- Lines below are added by ".__FILE__."-->";
 			}
-		
+
             $js .= "\n<script type=\"text/javascript\" src=\"".$root."/custom.js\"></script>\n";
-			
+
 			if ($aeSettings->getDebugMode()) {
 				$js .= "<!-- End for ".__FILE__."-->";
 			}
-			
+
         }
 
         return true;
@@ -58,6 +58,15 @@ class Custom
      */
     public function bind()
     {
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task', '');
+
+		// This plugin is needed only for these tasks : main, display and html
+
+		if (!in_array($task, array('main', 'display', 'html'))) {
+			return false;
+		}
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');

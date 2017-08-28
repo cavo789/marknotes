@@ -33,7 +33,22 @@
 }
 
 #toc .toc4 {
+	margin-left: 4em;
+	font-size  : smaller;
+}
+
+#toc .toc5 {
 	margin-left: 6em;
+	font-size  : smaller;
+}
+
+#toc .toc6 {
+	margin-left: 8em;
+	font-size  : smaller;
+}
+
+#toc .toc7 {
+	margin-left: 10em;
 	font-size  : smaller;
 }
 

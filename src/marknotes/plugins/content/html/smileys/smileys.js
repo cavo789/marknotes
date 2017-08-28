@@ -86,25 +86,37 @@ function fnPluginHTMLSmileys() {
 	}
 	/*<!-- endbuild -->*/
 
-	var $html = $('#note_content').html();
-	var $patterns = [];
-	var $metachars = /[[\]{}()*+?.\\|^$\-,&#\s]/g
+	var $html = $('article').html();
 
-	// build a regex pattern for each defined property
-	for (var i in $emoticons) {
-		if ($emoticons.hasOwnProperty(i)) { // escape metacharacters
-			$patterns.push('(' + i.replace($metachars, "\\$&") + ')');
-		}
-	}
+	if (typeof $html !== 'undefined') {
 
-	// build the regular expression and replace
-	var tmp = $html.replace(new RegExp($patterns.join('|'), 'g'), function (match) {
-		return typeof $emoticons[match] != 'undefined' ?
-			$emoticons[match] :
-			match;
-	});
+		if ($html !== '') {
 
-	// Replace ASCII Emojis with images
-	$('#note_content').html(tmp);
+			var $patterns = [];
+			var $metachars = /[[\]{}()*+?.\\|^$\-,&#\s]/g
+
+			// build a regex pattern for each defined property
+			for (var i in $emoticons) {
+				if ($emoticons.hasOwnProperty(i)) { // escape metacharacters
+					$patterns.push('(' + i.replace($metachars, "\\$&") + ')');
+				}
+			}
+
+			// build the regular expression and replace
+			try {
+				var tmp = $html.replace(new RegExp($patterns.join('|'), 'g'), function (match) {
+					return typeof $emoticons[match] != 'undefined' ?
+						$emoticons[match] :
+						match;
+				});
+			} catch (err) {
+				console.warn(err.message);
+			}
+
+			// Replace ASCII Emojis with images
+			$('article').html(tmp);
+
+		} // if ($html!=='')
+	} // if (typeof $html !== 'undefined')
 
 }

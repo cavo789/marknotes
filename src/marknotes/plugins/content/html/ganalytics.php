@@ -43,11 +43,13 @@ class GAnalytics
      */
     public function bind(): bool
     {
-        $aeSession = \MarkNotes\Session::getInstance();
+
+		$aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
-        // The ganalytics plugin is not needed when the task is f.i. 'display' (i.e. when the note
-        // is displayed through the interface) or when exporting the note to pdf
-        if (in_array($task, array('display','pdf'))) {
+
+        // This plugin is needed only for these tasks : main, display and html
+
+        if (!in_array($task, array('main', 'display', 'html'))) {
             return false;
         }
 

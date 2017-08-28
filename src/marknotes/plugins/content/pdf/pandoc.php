@@ -75,18 +75,20 @@ class Pandoc
 
         $debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
 
+		if ($aeFiles->fileExists($debugFile)) unlink($debugFile);
+
         $sProgram =
             '@ECHO OFF'.PHP_EOL.
             'chcp 65001'.PHP_EOL.
+			'cd "'.$aeSettings->getFolderTmp().'"'.PHP_EOL.
             '"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
             '"'.$tmpMD.'" > '.$debugFile.' 2>&1'.PHP_EOL.
             'copy "'.basename($final).'" "'.rtrim(dirname($final),DS).DS.'"'.PHP_EOL;
 
         $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 
-        $aeFiles->fwriteANSI($fScriptFile, $sProgram);
-
-		//die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($sProgram, true)."</pre>");
+		$aeFiles->createFile($fScriptFile, $sProgram);
+        //$aeFiles->fwriteANSI($fScriptFile, $sProgram);
 
 		// ----------------------------------------
 		//
@@ -95,18 +97,10 @@ class Pandoc
         // No timeout
         set_time_limit(0);
 
-        // Run the script. This part can be long depending on the number of slides in the HTML file to convert
+        // Run the script
         $output = array();
 
         exec("start cmd /c ".$fScriptFile, $output);
-
-        // $output is an array and contains the result of the script. If at least one line of the output start with
-        // Error:, show the debug information and stop the code
-        /*foreach ($output as $line) {
-            if (substr($line, 0, 6) === 'Error:') {
-                die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the pandoc script<br/><br/>".print_r($output, true)."</pre>");
-            }
-        }*/
 
 		if (!$aeFiles->fileExists($final)) {
 
@@ -123,6 +117,17 @@ class Pandoc
 			echo $msg.PHP_EOL.PHP_EOL;
 
 			echo '<p>Check to start <strong>'.$fScriptFile.'</strong> manually; indeed, sometimes it doesn\'t work within PHP but well manually; with the user\'s OS credentials (PHP permissions problems). Then, just refresh this page.</p>';
+
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				if ($aeFiles->fileExists($debugFile)) {
+					$content = file_get_contents ($debugFile);
+					echo '<h3>Content of the debug file : '.$debugFile.'</h3>';
+					echo "<pre style='background-color:yellow;'>".$content."</pre>";
+				}
+			}
+
+			die();
 
 		} // if (!$aeFiles->fileExists($final))
 

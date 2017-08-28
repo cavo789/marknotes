@@ -109,7 +109,7 @@ class Remark
 
         // Don't attach code if the task is reveal
         if (in_array($task, array('reveal'))) {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

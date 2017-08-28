@@ -64,6 +64,14 @@ class Meta
      */
     public function bind()
     {
+
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task', '');
+
+        if (!in_array($task, array('main', 'display'))) {
+            return false;
+        }
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('display.html', __CLASS__.'::doIt');
         return true;

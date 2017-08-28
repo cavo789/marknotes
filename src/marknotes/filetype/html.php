@@ -56,26 +56,33 @@ class HTML
 		 * be used in javascript (see https://css-tricks.com/automatic-table-of-contents/)
 		 */
 
-		$matches = array();
-		$arr = array('h2','h3');
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		foreach ($arr as $head) {
-			try {
-				preg_match_all('/<'.$head.'>(.*)<\/'.$head.'>/', $html, $matches);
-				if (count($matches[1]) > 0) {
-					$i = 0;
+		try {
 
-					// Only for headings 2
-					$goTop = (($addGoTop && ($head === 'h2'))? '<a class="btnTop" href="#top"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>' : '');
+			// Retrieve headings
+	        $matches = array();
+	        preg_match_all('|<h\d{1}[^>]?>(.*)</h\d{1}[^>]?>|iU', $html, $matches);
 
-					foreach ($matches[1] as $key => $value) {
-						$i += 1;
-						$html = str_replace('<'.$head.'>'.$value.'</'.$head.'>', $goTop.'<'.$head.' id="'.$head.'_'.$i.'">'.$value.'</'.$head.'>', $html);
-					}
-				}
-			} catch (Exception $e) {
-			} // try
-		} // foreach
+			// $matches contains the list of titles (including the tag so f.i. "<h2>Title</h2>"
+	        foreach ($matches[0] as $tmp) {
+
+	            // In order to have nice URLs, extract the title (stored in $tmp)
+	            // $tmp is equal, f.i., to <h2>My slide title</h2>
+	            $id = $aeFunctions->slugify(strip_tags($tmp));
+
+	            // The ID can't start with a figure, remove it if any
+	            // Remove also . - , ; if present at the beginning of the id
+	            $id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
+
+	            // The tag (like h2)
+	            $head = substr($tmp, 1, 2);
+
+	            $html = str_replace($tmp, '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
+	        }
+
+		} catch (Exception $e) {
+		} // try
 
 		return $html;
 	}

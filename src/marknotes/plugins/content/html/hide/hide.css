@@ -1,0 +1,22 @@
+.sidebar-hidden .sidebar {
+	visibility: hidden;
+}
+
+.sidebar-visible .sidebar {
+	visibility: visible;
+
+}
+
+.toolbar-app-left {
+	visibility: visible;
+	float     : '';
+	position  : inherit;
+	top       : 10px;
+}
+
+.toolbar-app-right {
+	visibility: visible;
+	float     : right;
+	position  : '';
+	top       : '';
+}

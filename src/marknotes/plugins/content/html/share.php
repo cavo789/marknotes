@@ -79,12 +79,13 @@ class Share
      */
     public function bind()
     {
-        $aeSession = \MarkNotes\Session::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
 
-        // Don't load the Share toolbar for slideshows and for pdf rendering
-        if (in_array($task, array('pdf' , 'reveal','remark','slides'))) {
-            return true;
+        // This plugin is needed only for these tasks : main, display and html
+
+        if (!in_array($task, array('main', 'display', 'html'))) {
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

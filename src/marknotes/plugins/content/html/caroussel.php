@@ -105,7 +105,7 @@ class Caroussel
 
         // This plugin is only needed when the task is one of the following
         if (!in_array($task, array('display','html','pdf','reveal'))) {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

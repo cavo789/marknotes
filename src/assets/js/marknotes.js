@@ -57,13 +57,14 @@ $(document).ready(function () {
 
 		if ($.isFunction($.fn.toolbar)) {
 
+			// http://paulkinzett.github.io/toolbar/
 			$("#toolbar-app")
 				.toolbar({
-					content: "#toolbar-app-options",
-					position: "bottom",
-					event: "click",
-					style: "default",
-					hideOnClick: true
+					"content": "#toolbar-app-options",
+					"position": "bottom",
+					"event": "click",
+					"style": "default",
+					"hideOnClick": true
 				});
 		}
 
@@ -73,6 +74,7 @@ $(document).ready(function () {
 				'break-lines': 120 // Soft wrap after 120 chars
 			});
 		}
+
 		// On page entry, get the list of .md files on the server
 		if (marknotes.hasOwnProperty('message')) {
 			Noty({
@@ -193,7 +195,7 @@ function ajaxify($params) {
 			$data.type = $params.type;
 		}
 
-		var $target = '#' + (($params.target === 'undefined') ? 'TDM' : $params.target);
+		var $target = '#' + (($params.target === 'undefined') ? 'sidebar' : $params.target);
 
 		$.ajax({
 			beforeSend: function () {

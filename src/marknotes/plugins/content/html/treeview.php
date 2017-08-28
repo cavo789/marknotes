@@ -50,12 +50,21 @@ class Treeview
     public function bind() : bool
     {
         $aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task', '');
+
+		// This plugin is needed only for these tasks : main, display and html
+
+		if (!in_array($task, array('main', 'display', 'html'))) {
+			return false;
+		}
 
         // Only when the user is connected
         if ($aeSession->get('authenticated', 0) === 1) {
             $aeEvents = \MarkNotes\Events::getInstance();
             $aeEvents->bind('render.js', __CLASS__.'::addJS');
-        }
-        return true;
+			return true;
+        } else {
+           return false;
+	   }
     }
 }

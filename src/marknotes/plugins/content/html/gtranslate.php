@@ -72,10 +72,9 @@ class GTranslate
         $aeSession = \MarkNotes\Session::getInstance();
         $task = $aeSession->get('task', '');
 
-        // This plugin is not needed when the task is f.i. 'pdf'
-        // There is no need for translation when the output format is pdf
+        // This plugin is needed only for these tasks : main, display and html
 
-        if (in_array($task, array('edit','pdf'))) {
+        if (!in_array($task, array('main', 'display', 'html'))) {
             return false;
         }
 

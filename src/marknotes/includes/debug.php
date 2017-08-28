@@ -20,7 +20,6 @@ if (is_file($fname = $folder.'settings.json')) {
     $timeZone = $json['timezone'] ?? 'Europe/London';
     if (isset($json['debug'])) {
         $aeDebug->enable($devMode, $timeZone);
-        $aeDebug->log('Start the application');
     }
 }
 /*<!-- endbuild -->*/

@@ -90,17 +90,17 @@ h2 {
 	z-index : 1;
 }*/
 
-#TDM .flexdatalist-multiple {
+#sidebar .flexdatalist-multiple {
 	border: none !important;
 }
 
-#TDM .flexdatalist-multiple li.input-container,
+#sidebar .flexdatalist-multiple li.input-container,
 .flexdatalist-multiple li.input-container input {
 
 	width: 212px;
 }
 
-#TDM .flexdatalist-multiple {
+#sidebar .flexdatalist-multiple {
 	/*z-index     : 1;*/
 	display: none;
 	/*border-width: 1px !important;
@@ -128,13 +128,10 @@ h2 {
 	min-height : calc(100vh - 12px);
 }
 
-/* TDM if the left part, i.e. the container of the search area and TOC (the list of files) */
+/* sidebar if the left part, i.e. the container of the search area and TOC (the list of files) */
 
-#TDM {
+#sidebar {
 	left    : 5px;
-	/*top       : 5px !important;
-	overflow-y: auto;
-	overflow-x: auto;*/
 	width   : 280px;
 	position: fixed;
 	left    : 0;

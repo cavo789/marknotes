@@ -40,7 +40,7 @@
 
       <div>
 
-        <div class="onlyscreen" id="TDM">
+        <div class="onlyscreen sidebar" id="sidebar">
             <a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="assets/images/marknotes.png" class="logo" /></a>
 
             <div id="toolbar-app" data-toolbar="style-option" class="btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>
@@ -50,9 +50,7 @@
                 </div>
             </div>
 
-            <input id='search' name='search' type='text' class='flexdatalist' placeholder='%EDT_SEARCH_PLACEHOLDER%'
-               alt=""accesskey=""accept=""maxlength='%EDT_SEARCH_MAXLENGTH%' data-data='index.php?task=tags' data-search-in='name'
-               data-visible-properties='["name","type"]' multiple='multiple' />
+			<input id="search" name="search" type="text" class="flexdatalist" placeholder="%EDT_SEARCH_PLACEHOLDER%" alt="" accesskey="" accept="" maxlength="%EDT_SEARCH_MAXLENGTH%" data-data="index.php?task=tags" data-search-in="name" data-visible-properties="['name','type']" multiple="multiple" />
 
             <div id="TOC">&nbsp;</div>
 
@@ -60,9 +58,13 @@
 
          </div>
 
-         <div class="content">
-            <page size="A4" layout="portrait" class="" id="CONTENT">&nbsp;</page>
-         </div>
+         <div id="page-wrapper" class="page-wrapper">
+ 		 	<div class="page">
+				<div id="content" class="content">
+					<page size="A4" layout="portrait" class="" id="CONTENT">&nbsp;</page>
+                </div>
+			</div>
+		</div>
 
       </div>
 

@@ -49,7 +49,7 @@ class TOC
 
         // Fire this plugin only for the specified task
         if (!in_array($aeSession->get('task'), array('pdf','txt'))) {
-            return true;
+            return false;
         }
 
         $aeEvents->bind('markdown.read', __CLASS__.'::readMD');

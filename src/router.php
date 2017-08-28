@@ -22,23 +22,32 @@ include_once 'autoload.php';
 use \MarkNotes\Autoload;
 
 if (version_compare(phpversion(), '7.0.0', '<')) {
+
     $root = dirname($_SERVER['SCRIPT_NAME']);
     $content = str_replace('%ROOT%', $root, file_get_contents(__DIR__.'/error_php.html'));
     echo $content;
+
 } else {
+
     \MarkNotes\Autoload::register();
 
     $aeFunctions = \MarkNotes\Functions::getInstance();
     // Application root folder.
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
-
     $filename = rtrim(rawurldecode($aeFunctions->getParam('file', 'string', '', false)), '/');
 
     $params = array('filename' => $filename);
     $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
 
-    include_once 'marknotes/includes/debug.php';
+	include_once 'marknotes/includes/debug.php';
+
+	/*<!-- build:debug -->*/
+	if ($aeSettings->getDebugMode()) {
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeDebug->log('*** START of marknotes - router.php ***','debug');
+	}
+	/*<!-- endbuild -->*/
 
     $aeSession = \MarkNotes\Session::getInstance();
     $aeFiles = \MarkNotes\Files::getInstance();
@@ -111,10 +120,17 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
             $params['layout'] = $layout;
         }
 
-        $aeSMarkDown = new \MarkNotes\Markdown();
+        $aeMarkDown = new \MarkNotes\Markdown();
 
         // $fileMD filename should be relative
-        $aeSMarkDown->process($format, $fileMD, $params);
-        unset($aeSMarkDown);
+        $aeMarkDown->process($format, $fileMD, $params);
+        unset($aeMarkDown);
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log('*** END of marknotes - router.php ***','debug');
+		}
+		/*<!-- endbuild -->*/
     }
 }

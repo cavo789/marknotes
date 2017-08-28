@@ -38,7 +38,7 @@ function exitFullScreen() {
 function toggleFullScreen(element) {
 
 	// Hide (or show it again) the treeview and the search engine i.e. everything at the left side
-	$('#TDM').toggleClass('hidden');
+	$('#sidebar').toggleClass('hidden');
 
 	// Give the content part the full width (or give it back its original width)
 	$('#CONTENT').parent().toggleClass('fullwidth');

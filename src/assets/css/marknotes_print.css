@@ -61,7 +61,7 @@ li {
 
 /* Don't print the left part */
 
-#TDM {
+#sidebar {
 	display: none;
 }
 

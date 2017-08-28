@@ -28,6 +28,56 @@ class Display
         return self::$hInstance;
     } // function getInstance()
 
+	private function insertHR(&$markdown)
+	{
+
+		// Convert any '---' (or '-----') to a new line (<hr/>) only if
+		// preceded and followed by an empty line, so, like this :
+		//
+		//                  (empty line)
+		//      ---
+		//                  (empty line)
+		//
+		// Needed because there is sometimes bugs in MarkDown Extra when '---' follow
+		// the declaration of an array
+
+		$matches = array();
+		preg_match_all('/\n\r?-{3,5}(\s*(\n\r?)*)*/', $markdown, $matches);
+
+		foreach ($matches[0] as $tmp) {
+			$markdown = str_replace($tmp, '<hr/>'.PHP_EOL, $markdown);
+		}
+
+		return true;
+
+	}
+
+	private function insertPageBreak(&$markdown)
+	{
+
+		// Convert any '***' to a page break only if, twice and if
+		// preceded and followed by an empty line, so, like this :
+		//
+		//                  (empty line)
+		//      ***
+		//      ***
+		//                  (empty line)
+		//
+
+		$matches = array();
+		preg_match_all('/\n\r?(\*{3,5}(\s*(\n\r?)*)*){2}(\s*\n\r?)*/', $markdown, $matches);
+
+		$break='<p style="page-break-after: always;">&nbsp;</p>'.
+		   '<p style="page-break-before: always;">&nbsp;</p>';
+
+		foreach ($matches[0] as $tmp) {
+			$markdown = str_replace($tmp, $break.PHP_EOL, $markdown);
+		}
+
+		return true;
+
+	}
+
     public function run(array $params)
     {
         $aeEvents = \MarkNotes\Events::getInstance();
@@ -60,6 +110,9 @@ class Display
 
         // Read the markdown file
         $markdown = $aeMD->read($fullname, $params);
+
+		self::insertHR($markdown);
+		self::insertPageBreak($markdown);
 
         $fnameHTML = $aeFiles->replaceExtension($fullname, 'html');
 

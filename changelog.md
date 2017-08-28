@@ -12,6 +12,10 @@
 + Add 'Copy' button in the dataTable : now, it'll be possible to copy a HTML table directly in the clipboard
 + Plugin Todos : from the markdown content, this plugin will add todo number and will create a summary table at the end of the document
 + Plugin Table of content (TOC) : generate a table of content in your html document; just add %TOC_3% f.i. in your note, where the TOC should appears
++ Plugin anchor for displaying an anchor icon after each headings
++ Plugin Treeview - Hide so it's possible to hide the treeview and give more spaces to the content
++ Improve logging (debug)
++ convert.vbs - Script for windows to convert .docx and .odt files into .md ones
 ```
 
 ## 1.1

@@ -82,6 +82,15 @@ class Bootstrap
      */
     public function bind()
     {
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task', '');
+
+		// This plugin is needed only for these tasks : main, display and html
+
+		if (!in_array($task, array('main', 'display', 'html'))) {
+			return false;
+		}
+
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         $aeEvents->bind('render.content', __CLASS__.'::doIt');

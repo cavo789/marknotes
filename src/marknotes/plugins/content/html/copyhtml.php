@@ -52,7 +52,7 @@ class CopyHTML
         // The clipboard plugin will add the clipboard.js script to the interface i.e.
         // only when the running task is "main"
         if ($task !== 'main') {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

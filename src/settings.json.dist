@@ -25,6 +25,7 @@
 				"login": 1,
 				"sitemap": 1,
 				"timeline": 1,
+				"hide": 1,
 				"clear": 1
 			},
 			"content": {
@@ -48,12 +49,14 @@
 			"html": {
 				"login": 1,
 				"encrypt": 1,
+				"anchor": 1,
 				"bootstrap": 1,
 				"clear": 1,
 				"clipboard": 1,
 				"copyhtml": 1,
 				"datatables": 1,
 				"editor": 1,
+				"hide": 1,
 				"lazyload": 1,
 				"linkify": 1,
 				"ganalytics": 1,
@@ -149,6 +152,7 @@
 					"h5": "fade",
 					"h6": "convex"
 				},
+				"no_html_convert": 1,
 				"section": {
 					"extra_data_img_attr": "data-background-size='contain'"
 				}
@@ -252,6 +256,7 @@
 			"folder_read_only": "Sorry but the folder [%s] is read-only",
 			"folder_renamed": "The folder [%s] has been renamed into [%s]",
 			"fullscreen": "Display the note in fullscreen",
+			"hide_treeview": "Hide the list with files, give more place to the content",
 			"incorrect_parameter": "The parameter [%s] is incorrect",
 			"is_encrypted": "This information is encrypted in the original note and decoded here for screen display",
 			"json_error": "The [%s] task has returned an invalid JSON result",
@@ -347,6 +352,7 @@
 			"folder_read_only": "D&#233;sol&#233;, le dossier [%s] est en lecture seule",
 			"folder_renamed": "Le dossier [%s] a &#233;t&#233; renomm&#233; en [%s]",
 			"fullscreen": "Affiche la note en plein &eacute;cran",
+			"hide_treeview": "Cache la liste des fichiers, donne plus de place au contenu",
 			"incorrect_parameter": "Le param&#232;tre [%s] est incorrect",
 			"is_encrypted": "Cette information, m&ecirc;me si elle est affich&eacute;e en clair, est crypt&eacute;e dans le fichier. Elle n&#39;est pas donc pas accessible si on ouvre imm&eacute;diatement le fichier source.",
 			"json_error": "La t&acirc;che [%s] a retourn&eacute; une r&eacute;ponse JSON incorrecte",

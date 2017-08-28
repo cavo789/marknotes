@@ -70,7 +70,7 @@ class Editor
         // This plugin is needed only for these tasks : main, display and html
 
         if (!in_array($task, array('main', 'display'))) {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

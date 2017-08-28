@@ -34,7 +34,7 @@ class Pandoc
             return false;
         }
 
-		// Display a .md file, call plugins and output note's content
+		// Read the content of the .md file
 		$filename = $aeSettings->getFolderDocs(true).$params['filename'];
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 		$content = $aeMarkdown->read($filename);

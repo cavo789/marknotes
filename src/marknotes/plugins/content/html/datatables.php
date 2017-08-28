@@ -81,7 +81,7 @@ class DataTables
         // There is no need for interaction with the table when the output format is pdf
 
         if (in_array($task, array('pdf','reveal','remark'))) {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

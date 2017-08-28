@@ -52,7 +52,7 @@ function fnPluginTaskSearch_init() {
 
 		} // if ($.isFunction($.fn.flexdatalist))
 
-		$('#search').css('width', $('#TDM').width() - 5);
+		$('#search').css('width', $('#sidebar').width() - 5);
 		$('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width() - 10).show();
 
 		// Interface : put the cursor immediatly in the edit box

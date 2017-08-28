@@ -175,6 +175,15 @@ class Tags
     public function bind() : bool
     {
 
+		$aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+
+        // This plugin is needed only for these tasks : main, display and html
+
+        if (!in_array($task, array('main', 'display', 'html'))) {
+            return false;
+        }
+
         /*<!-- build:debug -->*/
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();

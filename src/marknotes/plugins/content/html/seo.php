@@ -66,15 +66,14 @@ class SEO
      */
     public function bind()
     {
-        $aeSession = \MarkNotes\Session::getInstance();
-        $task = $aeSession->get('task', '');
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task', '');
 
-        // This plugin is not needed when the task is f.i. 'pdf'
-        // There is no need for add SEO meta when the output format is pdf
+		// This plugin is needed only for these tasks : main, display and html
 
-        if (in_array($task, array('pdf'))) {
-            return true;
-        }
+		if (!in_array($task, array('main', 'display', 'html'))) {
+			return false;
+		}
 
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');

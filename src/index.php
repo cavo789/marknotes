@@ -46,13 +46,27 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 
     include_once 'marknotes/includes/debug.php';
 
+	/*<!-- build:debug -->*/
+	if ($aeSettings->getDebugMode()) {
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeDebug->log('*** START of marknotes - index.php ***','debug');
+	}
+	/*<!-- endbuild -->*/
+
     $aeFunctions = \MarkNotes\Functions::getInstance();
     $aeJSON = \MarkNotes\JSON::getInstance();
 
     $aeFunctions = \MarkNotes\Functions::getInstance();
     $task = $aeFunctions->getParam('task', 'string', 'main', false);
 
-    $aeSMarkDown = new \MarkNotes\Markdown();
-    $aeSMarkDown->process($task);
-    unset($aeSMarkDown);
+    $aeMarkDown = new \MarkNotes\Markdown();
+    $aeMarkDown->process($task);
+    unset($aeMarkDown);
+
+	/*<!-- build:debug -->*/
+	if ($aeSettings->getDebugMode()) {
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeDebug->log('*** END of marknotes - index.php ***','debug');
+	}
+	/*<!-- endbuild -->*/
 }

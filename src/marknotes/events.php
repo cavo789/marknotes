@@ -153,7 +153,12 @@ class Events
 
     public static function loadPlugins(string $type = 'content', string $subtask = '')
     {
+
+		$aeSession = \MarkNotes\Session::getInstance();
+        $task = $aeSession->get('task', '');
+
         $aeSettings = \MarkNotes\Settings::getInstance();
+
         if ($type !== '') {
 
             // The plugins folder is under /marknotes
@@ -189,19 +194,12 @@ class Events
                     // plugin enabled or not".
 
                     foreach ($plugins as $name => $enabled) {
+
                         if (substr($name, -4) !== '.php') {
                             $name .= '.php';
                         }
 
                         if (($enabled === 1) && ($aeFiles->fileExists($file = $dir.$name))) {
-
-                            /*<!-- build:debug -->*/
-                            $aeSettings = \MarkNotes\Settings::getInstance();
-                            if ($aeSettings->getDevMode()) {
-                                $aeDebug = \MarkNotes\Debug::getInstance();
-                                $aeDebug->log('Load the plugin '.$file);
-                            }
-                            /*<!-- endbuild -->*/
 
                             // Load the plugin
                             require_once($file);
@@ -214,7 +212,21 @@ class Events
                             $plug = new $class;
 
                             // and run the bind() function
-                            $plug->bind();
+							// return true when the plugin has bind a function
+							// return false f.i. when the plugin is for HTML output
+							//    and the task is pdf
+                            $return = $plug->bind();
+
+                            /*<!-- build:debug -->*/
+							if ($return) {
+	                            $aeSettings = \MarkNotes\Settings::getInstance();
+	                            if ($aeSettings->getDevMode()) {
+	                                $aeDebug = \MarkNotes\Debug::getInstance();
+	                                $aeDebug->log(' - Load plugin '.$file);
+	                            }
+							}
+                            /*<!-- endbuild -->*/
+
                         } // foreach ($plugin as $name => $enabled)
                     } // foreach
                 } // if(count($plugins)>0)

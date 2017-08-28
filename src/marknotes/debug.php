@@ -63,7 +63,7 @@ class Debug
                 }
             }
 
-            $output = "[%datetime%] [%channel%] [%level_name%] %message% %context%\n";
+            $output = "[%datetime%] [%level_name%] %message% %context%\n";
             $formatter = new LineFormatter($output, "Y-m-d H:i:s");
 
             // \Monolog\Logger::DEBUG =  The minimum logging level at which this
@@ -83,7 +83,7 @@ class Debug
     /**
      * Add an entry in the /tmp/debug.log file
      */
-    public function log(string $msg = '', string $method = 'debug', int $deep = 3) : bool
+    public function log(string $msg = '', string $method = 'debug', int $deep = 1) : bool
     {
         /*<!-- build:debug -->*/
         if (self::$logger !== null) {

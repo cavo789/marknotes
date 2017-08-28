@@ -15,40 +15,6 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class TOC
 {
 
-    /**
-     * Get the list of headings (h1, h2, h3, ...), extract the text
-     * (f.i. <h2>Title</h2> => get Title), and derived an "id" thanks to slugify function.
-     * Add then <h2 id="title">Title</h2>
-     *
-     * This way, a nice table of contents can be proposed f.i.
-     */
-     private static function addIdToHeadings(string $html) : string
-     {
-         $aeFunctions = \MarkNotes\Functions::getInstance();
-
-        // Retrieve headings
-        $matches = array();
-         preg_match_all('|<h\d{1}[^>]+>(.*)</h\d{1}[^>]+>|iU', $html, $matches);
-
-        // $matches contains the list of titles (including the tag so f.i. "<h2>Title</h2>"
-        foreach ($matches[0] as $tmp) {
-
-            // In order to have nice URLs, extract the title (stored in $tmp)
-            // $tmp is equal, f.i., to <h2>My slide title</h2>
-            $id = $aeFunctions->slugify(strip_tags($tmp));
-
-            // The ID can't start with a figure, remove it if any
-            // Remove also . - , ; if present at the beginning of the id
-            $id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
-
-            // The tag (like h2)
-            $head = substr($tmp, 1, 2);
-
-            $html = str_replace($tmp, '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
-        }
-
-         return $html;
-     }
 
     /**
      * Modify the HTML rendering of the note
@@ -58,9 +24,6 @@ class TOC
         if (trim($content) === '') {
             return true;
         }
-
-        // First, add nice IDs to every header
-        $content = self::addIdToHeadings($content);
 
         // Try to find the tag : %TOC_9%  (where 9 is the deepest level to mention
         // in the table of content (so, for headings 1 -> 4, mention %TOC_4%)
@@ -74,7 +37,7 @@ class TOC
 
             // Retrieve the title for the section, from settings.json
             $arrSettings = $aeSettings->getPlugins('options', 'toc');
-            $sTitle = $arrSettings['title'] ?? "### Table of content";
+            $sTitle = $arrSettings['title'] ?? "**Table of content**";
 
             // Retrieve every h2 till the lowest level (f.i. 4)
             $pattern = '/<h([2-'.$deepestLevel.']){1} *(id="(.*)")?[^>]*>(.*)<\/h[2-'.$deepestLevel.']>/i';
@@ -136,8 +99,8 @@ class TOC
 
         // This plugin is not needed when the task is f.i. 'pdf'
 
-        if (in_array($task, array('edit.form','pdf','search'))) {
-            return true;
+        if (in_array($task, array('edit.form','pdf','remarks','reveal','search','slides'))) {
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();

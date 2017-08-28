@@ -204,7 +204,15 @@ class Reveal
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
+		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+
         $template = $aeSettings->getTemplateFile(static::$layout);
+
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log('Template used : '.$root.$template);
+        }
+
         if ($template === '') {
             $aeFunctions->fileNotFound($template);
         }
@@ -222,6 +230,9 @@ class Reveal
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Get the options for reveal
+        $arrSettings = $aeSettings->getPlugins('options', static::$layout);
 
         if ($params['filename'] !== "") {
             $fullname = $aeSettings->getFolderDocs(true).$params['filename'];
@@ -247,11 +258,36 @@ class Reveal
             // Convert the Markdown text into an HTML text
             $aeConvert = \MarkNotes\Helpers\Convert::getInstance();
 
-            $html = $aeConvert->getHTML($markdown, $params);
+			// reveal can work both with HTML content or markdown content.
+			// Check settings.json and take a look on the no_html_convert option
+			// If equal to 1, don"t convert the .md note into a html string
 
-            $html = self::processHTML($html);
+			$no_html_convert = $arrSettings['no_html_convert'] ?? 0;
 
-            $html = self::addTemplate($html, $params);
+			$content = $markdown;
+
+
+			if ($no_html_convert!==1) {
+
+               $html = $aeConvert->getHTML($markdown, $params);
+
+               $content = self::processHTML($html);
+
+			} else {
+
+				// Automatically add a horizontal slide break between each titles
+	            $content = preg_replace("/^(#{2,})/m", "\n---\n\n$1", $content);
+
+				// No empty slides
+				$content = preg_replace("/^(-{2,3})\n*-{2,3}\n*/m", "$1\n\n", $content);
+
+				$content=
+				   '<section data-markdown="" data-separator="^\r?\n*---\r?\n*$" data-separator-vertical="^\r?\n--\r?\n$">'.
+				   '<script type="text/template">'.$content.'</script>'.
+				   '</section>';
+			}
+            $html = self::addTemplate($content, $params);
+
         } // if ($params['filename'] !== "")
 
         // The slideshow is now created, no need to process other slideshow plugins
@@ -304,7 +340,7 @@ class Reveal
 
         // Don't attach code if the task is remark
         if (in_array($task, array('remark'))) {
-            return true;
+            return false;
         }
 
         $aeEvents = \MarkNotes\Events::getInstance();
