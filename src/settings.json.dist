@@ -14,7 +14,8 @@
 	"page": {
 		"google_font": "",
 		"img_maxwidth": 800,
-		"robots": "noindex, nofollow"
+		"robots": "noindex, nofollow",
+		"remove_html_comments": 1
 	},
 	"plugins": {
 		"authentication": {
@@ -73,6 +74,7 @@
 				"treeview": 1,
 				"security": 1,
 				"search": 1,
+				"optimize": 1,
 				"custom": 1
 			},
 			"docx": {
@@ -86,8 +88,8 @@
 			},
 			"pdf": {
 				"decktape": 1,
-				"pandoc": 1,
-				"dompdf": 1
+				"dompdf": 1,
+				"pandoc": 1
 			},
 			"slides": {
 				"remark": 1,
@@ -99,6 +101,7 @@
 		},
 		"markdown": {
 			"read": 1,
+			"include": 1,
 			"caroussel": 1,
 			"toc": 1,
 			"todos": 1,
@@ -125,21 +128,41 @@
 			"gtranslate": {
 				"enable_localhost": 0
 			},
+			"lastupdate": {
+				"text": ">*Last update : %s*"
+			},
 			"login": {
 				"username": "admin",
 				"password": "marknotes"
 			},
-			"optimisation": {
+			"optimize": {
 				"browser_cache": 1,
 				"localStorage": 1,
-				"server_session": 1
+				"server_session": 1,
+				"html": {
+					"minify": 1,
+					"remove_comments": 1
+				},
+				"css": {
+					"minify": 1
+				},
+				"js": {
+					"add_defer": 1,
+					"defer_exceptions": [
+						"jquery.min.js",
+						"bootstrap"
+					],
+					"minify": 1
+				}
 			},
 			"pandoc": {
 				"script": "c:\\christophe\\tools\\pandoc\\pandoc.exe",
 				"options": {
-					"docx": "-s -S --toc",
-					"txt": "--ascii",
-					"pdf": "-s -S --toc --latex-engine=c:\\Christophe\\tools\\pandoc\\miktex\\miktex\\bin\\x64\\xelatex.exe -V geometry:margin=1in"
+					"docx": "--from markdown --standalone -S --table-of-contents --smart --to docx",
+					"epub": "--from markdown --standalone -S --table-of-contents --smart --to epub",
+					"odt": "--from markdown --standalone -S --table-of-contents --smart --to odt",
+					"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=c:\\Christophe\\tools\\pandoc\\miktex\\miktex\\bin\\x64\\xelatex.exe -V geometry:margin=1in",
+					"txt": "--from markdown --ascii --to txt"
 				}
 			},
 			"reveal": {
@@ -164,6 +187,9 @@
 				"prefix": "§",
 				"auto_select": []
 			},
+			"toc": {
+				"text": "**Table of content** %s"
+			},
 			"todos": {
 				"introduction": "## Summary",
 				"todos": {
@@ -175,6 +201,15 @@
 					"pattern": "(Decision)( |\\a|\\t|:){1}(.*)",
 					"title": "### Decision points",
 					"column": "Decision"
+				}
+			},
+			"yaml": {
+				"add_if_missing": 1,
+				"defaults": {
+					"author": "Christophe Avonture",
+					"created_time": "%TODAY%",
+					"language": "%LANGUAGE%",
+					"subtitle": ""
 				}
 			}
 		}
@@ -191,6 +226,7 @@
 		"default": "reveal"
 	},
 	"templates": {
+		"docx": "winword.docx",
 		"index": "index",
 		"html": "html",
 		"pdf": "pdf",

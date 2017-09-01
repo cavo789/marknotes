@@ -35,8 +35,13 @@ class Events
 
     /**
      * Call an event and fires every attached functions if there are somes
-     */
-    public static function trigger(string $event = '', array &$args = array()) : bool
+	 *
+	 * $bStopOnFirstTrue : when a plugin is called (f.i. export.pdf), when the file has been
+	 * created, no need to call a second or a third export plugin when the job was
+	 * already done. So, when $bStopOnFirstTrue is set on True, this function will stop
+	 * to call plugins as soon as one plugin has returned True (which means "I've done the job")
+	 */
+    public static function trigger(string $event = '', array &$args = array(), bool $bStopOnFirstTrue = false) : bool
     {
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
@@ -63,29 +68,19 @@ class Events
                         }
                         /*<!-- endbuild -->*/
 
-                        call_user_func_array($func, $args);
+						// Get the value returned by the function in $bReturn
+                        $bReturn = call_user_func_array($func, $args);
 
-                        $bStopProcessing = false;
+						if ($bReturn && $bStopOnFirstTrue) {
+							/*<!-- build:debug -->*/
+	                        if ($aeSettings->getDebugMode()) {
+	                            $aeDebug->log('   '.$func.' has done the job, stop', 'debug');
+	                        }
+	                        /*<!-- endbuild -->*/
 
-                        if (isset($args['stop_processing']) && (substr($event, 0, 5) === 'export')) {
+							break;
+						}
 
-                            // If the file (f.i. the pdf output) has been created, there is
-                            // no need to continue and use the second converter.
-                            //
-                            // For instance, see below, if "pandoc" which is called first
-                            // has successfully created the PDF there is no need to continue with
-                            // dompdf
-                            //
-                            // "plugins": {
-                            //		"content": {
-                            //			"pdf": ["pandoc", "dompdf"]
-
-                            $bStopProcessing = ($args['stop_processing'] == 1);
-                        }
-
-                        if ($bStopProcessing) {
-                            break;
-                        }
                     } else {
 
                         // OUCH ! The function isn't callable

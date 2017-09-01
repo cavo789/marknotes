@@ -56,7 +56,9 @@ class Tags
         // get the list of folders and generate a "tags" node
         $sReturn = '';
 
-        if ($aeSettings->getOptimisationUseServerSession()) {
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$bOptimize = $arrOptimize['server_session'] ?? false;
+		if ($bOptimize) {
             // Get the list of files/folders from the session object if possible
             // If found, it's a JSON object
             $sReturn = $aeSession->get('Tags', '');
@@ -98,7 +100,7 @@ class Tags
             $aeJSON = \MarkNotes\JSON::getInstance();
             $sReturn = $aeJSON->json_encode($arrTags);
 
-            if ($aeSettings->getOptimisationUseServerSession()) {
+            if ($bOptimize) {
                 // Remember for the next call
                 $aeSession->set('Tags', $sReturn);
             }

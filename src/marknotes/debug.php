@@ -35,10 +35,17 @@ class Debug
     {
         self::$_enable = true;
 
+		$tempFolder = str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
+		$tempFolder = rtrim($tempFolder, DS).DS.'tmp'.DS;
+
         ini_set("display_errors", "1");
         ini_set("display_startup_errors", "1");
         ini_set("html_errors", "1");
         ini_set("docref_root", "http://www.php.net/");
+
+		// Log php errors in the temporary folder
+		ini_set('error_log', $tempFolder.'php_errors.log');
+
         ini_set(
             "error_prepend_string",
             "<div style='color:black;'."
@@ -50,10 +57,9 @@ class Debug
         // Enable the logger
         /*<!-- build:debug -->*/
         if (is_dir(dirname(dirname(__FILE__)).'/libs/monolog/monolog/src/')) {
-            $folder = str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME']));
-            $folder = rtrim($folder, DS).DS.'tmp'.DS;
 
-            self::$sDebugFileName = $folder.'debug.log';
+
+            self::$sDebugFileName = $tempFolder.'debug.log';
 
             // Don't keep previous run
             if (is_file(self::$sDebugFileName)) {
@@ -90,8 +96,8 @@ class Debug
 
             // Try to keep the log file readable : remove the parent path if present so
             // filenames will be relative
-            $folder = dirname(dirname(__FILE__)).DS;
-            $msg = str_ireplace($folder, '', $msg);
+            $tempFolder = dirname(dirname(__FILE__)).DS;
+            $msg = str_ireplace($tempFolder, '', $msg);
 
             if (!in_array($method, array('debug','info','notice','warning','error','critical','alert','emergency'))) {
                 $method = 'debug';
@@ -105,7 +111,7 @@ class Debug
 
             if ($deep > 1) {
                 // Add the previous caller
-                $file = str_ireplace($folder, '', $trace[1]['file'] ?? '');
+                $file = str_ireplace($tempFolder, '', $trace[1]['file'] ?? '');
                 $parent = ($trace[2]['class'] ?? $file).'::'.($trace[2]['function'] ?? '');
                 $context[]['caller'] = $parent.' line '.($trace[1]['line'] ?? '');
             }
@@ -113,7 +119,7 @@ class Debug
             if ($deep > 2) {
                 if (isset($trace[3]['class'])) {
                     // Add the previous caller
-                    $file = str_ireplace($folder, '', $trace[2]['file']);
+                    $file = str_ireplace($tempFolder, '', $trace[2]['file']);
 
                     $parent = ($trace[3]['class'] ?? $file).'::'.($trace[3]['function'] ?? '');
                     $context[]['caller'] = $parent.' line '.$trace[2]['line'];

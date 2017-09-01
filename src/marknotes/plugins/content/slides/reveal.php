@@ -289,9 +289,6 @@ class Reveal
 
         } // if ($params['filename'] !== "")
 
-        // The slideshow is now created, no need to process other slideshow plugins
-        $params['stop_processing'] = true;
-
         // And return the HTML to the caller
         $params['html'] = $html;
         return true;

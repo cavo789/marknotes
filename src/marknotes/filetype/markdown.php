@@ -173,12 +173,14 @@ class Markdown
 							}
 
                             if (in_array($task, $arrFilePaths)) {
+
                                 $img = str_replace(str_replace(' ', '%20', $pageURL), '', $img);
 
-                                // PDF => convert the / to the OS directory separator
+                                // convert the / to the OS directory separator
                                 $img = str_replace('/', DS, $img);
 
-                                $img = $url.$img;
+                                //$img = $url.$img;
+
                                 // If the link to the image contains \. double the slash
                                 // (otherwise the slash will be interpreted as
                                 // an escape character)

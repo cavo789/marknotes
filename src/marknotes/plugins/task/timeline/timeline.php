@@ -20,7 +20,9 @@ class Timeline
 
         $sReturn = '';
 
-        if ($aeSettings->getOptimisationUseServerSession()) {
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$bOptimize = $arrOptimize['server_session'] ?? false;
+		if ($bOptimize) {
             // Get the list of files/folders from the session object if possible
             $aeSession = \MarkNotes\Session::getInstance();
             $sReturn = $aeSession->get('timeline', '');
@@ -101,7 +103,7 @@ class Timeline
 
             $sReturn = $aeJSON->json_encode($json, JSON_PRETTY_PRINT);
 
-            if ($aeSettings->getOptimisationUseServerSession()) {
+            if ($bOptimize) {
                 // Remember for the next call
                 $aeSession->set('timeline', $sReturn);
             }
@@ -118,6 +120,9 @@ class Timeline
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$bOptimize = $arrOptimize['localStorage'] ?? false;
+
         // Define the global marknotes variable.  Used by the assets/js/marknotes.js script
         $JS =
             "\nvar marknotes = {};\n".
@@ -126,7 +131,7 @@ class Timeline
             "marknotes.settings={};\n".
             "marknotes.settings.debug=".($aeSettings->getDebugMode()?1:0).";\n".
             "marknotes.settings.locale='".$aeSettings->getLocale()."';\n".
-            "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n";
+            "marknotes.settings.use_localcache=".($bOptimize?1:0).";\n";
 
         $html = file_get_contents($aeSettings->getTemplateFile('timeline'));
         $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$JS.'</script>', $html);

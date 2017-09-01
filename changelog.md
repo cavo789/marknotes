@@ -4,7 +4,7 @@
 
 ## 1.1.1
 
-### 2017-08-xx
+### 2017-09-xx
 
 ```diff
 + Add support for the Markdown Extra syntax (https://michelf.ca/projects/php-markdown/extra/)
@@ -14,8 +14,11 @@
 + Plugin Table of content (TOC) : generate a table of content in your html document; just add %TOC_3% f.i. in your note, where the TOC should appears
 + Plugin anchor for displaying an anchor icon after each headings
 + Plugin Treeview - Hide so it's possible to hide the treeview and give more spaces to the content
++ Plugin Optimize for HTML rendering optimization
++ Plugin Include so you can write a "master" note and "include" subnotes in it
 + Improve logging (debug)
 + convert.vbs - Script for windows to convert .docx and .odt files into .md ones
++ Add support for YAML heading in .md notes
 ```
 
 ## 1.1
@@ -214,7 +217,7 @@
 ```diff
 + Add aeSecureJSON class for better JSON handling (error handling)
 + If translated string isn't in settings.json, use the one of settings.json.dist
-+ Add images lazyload (see settings.json -> optimisation -> lazyload
++ Add images lazyload (see settings.json -> plugins -> lazyload
 ```
 
 ### 2017-01-15

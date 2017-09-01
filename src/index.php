@@ -42,7 +42,12 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     }
     // --------------------------------------------------------------------------
 
-    $aeSettings = \MarkNotes\Settings::getInstance($folder);
+	// Retrieve, if any, the name of the file that is being processed
+	$aeFunctions = \MarkNotes\Functions::getInstance();
+	$tmp=urldecode($aeFunctions->getParam('param', 'string', '', true));
+	$filename=((json_decode($tmp)!='')?json_decode($tmp):$tmp);
+
+    $aeSettings = \MarkNotes\Settings::getInstance($folder, array('filename'=>$filename));
 
     include_once 'marknotes/includes/debug.php';
 

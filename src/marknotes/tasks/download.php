@@ -11,7 +11,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Download
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -20,11 +20,11 @@ class Download
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Download();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Download();
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     /**
@@ -63,6 +63,7 @@ class Download
             @readfile(utf8_decode($fname));
 
             $bReturn = true;
+
         } else { // if ($content!=='')
 
             /*<!-- build:debug -->*/

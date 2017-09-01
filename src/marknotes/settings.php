@@ -44,6 +44,7 @@ class Settings
 
     private function loadJSON(array $params = null) : array
     {
+
         // Read settings.json in this order :
         //   1. the settings.json.dist file to initialize all parameters
         //   2. If present, the settings.json file i.e. the user settings for the application
@@ -77,20 +78,23 @@ class Settings
             }
         }
 
-        // 3. Get the settings.json file that is, perhaps, present in the folder of the note
         if (isset($params['filename'])) {
-            $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, dirname($params['filename']));
-            $noteJSON = $noteFolder.DS.'settings.json';
+
+			// 3. Get the settings.json file that is, perhaps, present in the folder of the note
+
+			// First, be sure that the doc folder has been set
+
+			$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
+            $noteFolder =$this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
+            $noteJSON = rtrim($noteFolder,DS).DS.'settings.json';
 
             if ($aeFiles->fileExists($noteJSON)) {
                 $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
             }
-        }
 
-        // 4. Get the note_name.json file that is, perhaps, present in the folder of the note.
-        // note_name is the note filename with the .json extension of .md
-        if (isset($params['filename'])) {
-            $noteFolder = $this->getFolderWebRoot().str_replace('/', DS, $params['filename']);
+			// 4. Get the note_name.json file that is, perhaps, present in the folder of the note.
+	        // note_name is the note filename with the .json extension of .md
+
             $noteJSON = $aeFiles->replaceExtension($noteFolder, 'json');
 
             if ($aeFiles->fileExists($noteJSON)) {
@@ -98,7 +102,8 @@ class Settings
             }
         }
 
-        return $json;
+		return $json;
+
     }
 
    /**
@@ -118,7 +123,7 @@ class Settings
              $this->setLanguage($this->_json['language']);
          }
 
-         $this->setFolderDocs($this->_json['folder'] ?? DOC_FOLDER);
+		 $this->setFolderDocs($this->_json['folder'] ?? DOC_FOLDER);
 
         /*<!-- build:debug -->*/
         if (isset($this->_json['debug'])) {
@@ -129,7 +134,7 @@ class Settings
          if (isset($this->_json['development'])) {
              // Developer mode enabled or not
             $timezone = $this->_json['development'] ?? 'Europe/Paris';
-             $this->setDevMode(($this->_json['development'] == 1?true:false), $timezone);
+			$this->setDevMode(($this->_json['development'] == 1?true:false), $timezone);
          }
         /*<!-- endbuild -->*/
 
@@ -190,8 +195,8 @@ class Settings
         $fname = trim($fname);
 
         if ($fname !== '') {
-            // should only contains letters, figures or dot/minus/underscore
-            if (!preg_match('/^[A-Za-z0-9-_\.]+$/', $fname)) {
+            // should only contains letters, figures or dot/minus/underscore or a slash
+            if (!preg_match('/^[A-Za-z0-9-_\.\/]+$/', $fname)) {
                 $fname = '';
             }
         } // if ($fname!=='')
@@ -441,6 +446,9 @@ class Settings
      */
     public function getTemplateFile(string $default = 'screen') : string
     {
+
+        $aeFiles = \MarkNotes\Files::getInstance();
+
         $tmpl = $default;
         if (isset($this->_json['templates'])) {
             if (isset($this->_json['templates'][$default])) {
@@ -449,11 +457,19 @@ class Settings
         }
 
         if ($tmpl !== '') {
-            $fname = $tmpl;
 
-            $aeFiles = \MarkNotes\Files::getInstance();
+			// Get the filename (f.i. "screen" (or "screen.php")
+            $fname = $this->getFolderTemplates().$tmpl;
 
-            if (!$aeFiles->fileExists($fname = $this->getFolderTemplates().$tmpl.'.php')) {
+			// The file isn't found; perhaps the extension wasn't mentionned
+			// If no extension mentionned; default is .php
+			if (!$aeFiles->fileExists($fname)) {
+				if ($aeFiles->fileExists($fname.'.php')) {
+					$fname.='.php';
+				}
+			}
+
+            if (!$aeFiles->fileExists($fname)) {
                 // The specified template doesn't exists. Back to the default one;
                 if ($this->getDebugMode()) {
                     echo '<span style="font-size:0.8em;">Debug | '.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
@@ -461,13 +477,34 @@ class Settings
                 echo '<strong><em>Template ['.$fname.'] not found, please review your settings.json file.</em></strong>';
                 $fname = '';
             }
+
         } else { // if ($tmpl!=='')
 
-            $fname = $this->getFolderTemplates().$tmpl.'.php';
+            if ($aeFiles->fileExists($this->getFolderTemplates().$tmpl.'.php')) {
+
+               $fname = $this->getFolderTemplates().$tmpl.'.php';
+
+           } else {
+
+               // No template at all
+
+               $fname='';
+
+           }
         } // if ($tmpl!=='')
 
+		$fname = str_replace('/', DS, $fname);
+
+		/*<!-- build:debug -->*/
+		if (($fname!=='') && (self::getDebugMode())) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log('Template for '.$default.' is '.$fname, 'debug');
+		}
+		/*<!-- endbuild -->*/
+
         return $fname;
-    } // function getTemplateFile()
+
+    }
 
     /**
      * Return the slideshow entry of the settings.json file
@@ -475,26 +512,6 @@ class Settings
     public function getSlideShow() : array
     {
         return $this->_json['slideshow'] ?? array();
-    }
-
-    /**
-     * Use browser's cache or not depending on settings.json
-     *
-     * @return bool
-     */
-    public function getOptimisationUseBrowserCache() : bool
-    {
-        return boolval($this->_json['optimisation']['browser_cache'] ?? false);
-    }
-
-    /**
-     * Use server's session
-     *
-     * @return bool
-     */
-    public function getOptimisationUseServerSession() : bool
-    {
-        return boolval($this->_json['optimisation']['server_session'] ?? false);
     }
 
     /**
@@ -620,6 +637,14 @@ class Settings
         return $this->_json['files'][$node] ?? $default;
     } // function getFiles()
 
+    /**
+     * Return a node from the "Page" JSON entry
+     */
+    public function getPage(string $node = '', $default = '')
+    {
+        return $this->_json['page'][$node] ?? $default;
+    } // function getPage()
+
     public function getShowTreeAllowed() : bool
     {
         return boolval($this->_json['list']['show_tree_allowed'] ?? true);
@@ -658,16 +683,6 @@ class Settings
     public function getTask() : array
     {
         return $this->_json['task'] ?? array();
-    }
-
-    /**
-     * Can we use the navigator localStorage cache system ?
-     *
-     * @return bool
-     */
-    public function getUseLocalCache() : bool
-    {
-        return boolval($this->_json['optimisation']['localStorage'] ?? true);
     }
 
     public function getPlugins(string $type = '', string $layout = '') : array

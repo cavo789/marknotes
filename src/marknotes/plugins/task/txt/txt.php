@@ -16,7 +16,9 @@ class TXT
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->loadPlugins('content', 'txt');
         $args = array(&$params);
-        $aeEvents->trigger('export.txt', $args);
+
+		// true = stop on the first plugin which return "true" i.e. has done the job
+        $aeEvents->trigger('export.txt', $args, true);
 
         header('Content-Type: text/plain; charset=utf-8');
 

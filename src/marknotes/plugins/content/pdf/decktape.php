@@ -18,7 +18,7 @@ class DeckTape
 
         $layout = $params['layout'] ?? '';
         if (!in_array($layout, array('remark','reveal'))) {
-            return true;
+            return false;
         }
 
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -61,11 +61,12 @@ class DeckTape
         } else {
             $aeEvents = \MarkNotes\Events::getInstance();
             $aeEvents->loadPlugins('content', 'slides');
-            $params['stop_processing'] = 0;
             $args = array(&$params);
 
             $params['layout'] = $layout;
-            $aeEvents->trigger('export.slides', $args);
+
+			// true = stop on the first plugin which return "true" i.e. has done the job
+            $aeEvents->trigger('export.slides', $args, true);
 
             $html = $params['html'];
 
@@ -112,7 +113,6 @@ class DeckTape
         }
 
         $params['output'] = $finalPDF;
-        $params['stop_processing'] = true;
 
         return true;
     }

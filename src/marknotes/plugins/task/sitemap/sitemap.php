@@ -19,7 +19,9 @@ class Sitemap
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        if ($aeSettings->getOptimisationUseServerSession()) {
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$bOptimize = $arrOptimize['server_session'] ?? false;
+		if ($bOptimize) {
             // Get the list of files/folders from the session object if possible
             $arrFiles = json_decode($aeSession->get('Sitemap', ''));
         }
@@ -34,7 +36,7 @@ class Sitemap
             // Be carefull, folders / filenames perhaps contains accentuated characters
             $arrFiles = array_map('utf8_encode', $arrFiles);
 
-            if ($aeSettings->getOptimisationUseServerSession()) {
+            if ($bOptimize)) {
                 $aeSession->set('Sitemap', json_encode($arrFiles));
             }
         } // if (count($arrFiles)==0)

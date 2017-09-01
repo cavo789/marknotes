@@ -43,7 +43,9 @@ class EPUB
 	        $aeEvents = \MarkNotes\Events::getInstance();
 	        $aeEvents->loadPlugins('content', self::$extension);
 	        $args = array(&$params);
-	        $aeEvents->trigger('export.'.self::$extension, $args);
+
+			// true = stop on the first plugin which return "true" i.e. has done the job
+	        $aeEvents->trigger('export.'.self::$extension, $args, true);
 
 		} // if (!$aeFiles->fileExists($filename))
 

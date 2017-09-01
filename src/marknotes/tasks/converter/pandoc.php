@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Pandoc
 {
-    protected static $_Instance = null;
+    protected static $hInstance = null;
 
     public function __construct()
     {
@@ -15,11 +15,11 @@ class Pandoc
 
     public static function getInstance()
     {
-        if (self::$_Instance === null) {
-            self::$_Instance = new Pandoc();
+        if (self::$hInstance === null) {
+            self::$hInstance = new Pandoc();
         }
 
-        return self::$_Instance;
+        return self::$hInstance;
     }
 
     /**

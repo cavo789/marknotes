@@ -123,9 +123,14 @@ class HTML
 		$template = str_replace('%APP_NAME_64%', base64_encode($aeSettings->getAppName()), $template);
 		$template = str_replace('%IMG_MAXWIDTH%', $aeSettings->getPageImgMaxWidth(), $template);
 
+
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+
 		if (strpos($template, '<!--%META_CACHE%-->') !== false) {
 			$cache = '';
-			if ($aeSettings->getOptimisationUseBrowserCache()) {
+
+			$bOptimize = $arrOptimize['browser_cache'] ?? false;
+			if ($bOptimize) {
 				// Define metadata for the cache
 				$cache =
 				'<meta http-equiv="cache-control" content="max-age=0" />'.PHP_EOL.

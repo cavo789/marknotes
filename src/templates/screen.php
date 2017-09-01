@@ -43,7 +43,7 @@
         <div class="onlyscreen sidebar" id="sidebar">
             <a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="assets/images/marknotes.png" class="logo" /></a>
 
-            <div id="toolbar-app" data-toolbar="style-option" class="btn-toolbar btn-toolbar-default"><i class="fa fa-cog"></i></div>
+            <div id="toolbar-app" data-toolbar="style-option" class="btn-toolbar btn-toolbar-default"><i class="fa fa-bars"></i></div>
             <div id="toolbar-app-options" class="hidden btn-toolbar-warning">
                 <div id="icons" class="fa-1x">
 					%ICONS%

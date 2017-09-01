@@ -16,7 +16,9 @@ class Slides
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->loadPlugins('content', 'slides');
         $args = array(&$params);
-        $aeEvents->trigger('export.slides', $args);
+
+		// true = stop on the first plugin which return "true" i.e. has done the job
+        $aeEvents->trigger('export.slides', $args, true);
 
         echo $params['html'];
 

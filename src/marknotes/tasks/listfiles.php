@@ -38,11 +38,13 @@ class ListFiles
         // Due to the ACLs plugin, the list of folders that are returned by
         // this script can vary from one user to an another so we can't store
         // the information at the session level (or to a "user" level)
-        /*if ($aeSettings->getOptimisationUseServerSession()) {
-            // Get the list of files/folders from the session object if possible
-            $aeSession = \MarkNotes\Session::getInstance();
-            $sReturn = $aeSession->get('ListFiles', '');
-        }*/
+        //$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		//$bOptimize = $arrOptimize['server_session'] ?? false;
+		//if ($bOptimize) {
+        //    // Get the list of files/folders from the session object if possible
+        //    $aeSession = \MarkNotes\Session::getInstance();
+        //    $sReturn = $aeSession->get('ListFiles', '');
+        //}
 
         if ($sReturn === '') {
 
@@ -89,7 +91,7 @@ class ListFiles
             // Due to the ACLs plugin, the list of folders that are returned by
             // this script can vary from one user to an another so we can't store
             // the information at the session level (or to a "user" level)
-            //if ($aeSettings->getOptimisationUseServerSession()) {
+            //if ($bOptimize()) {
             //    // Remember for the next call
             //    $aeSession->set('ListFiles', $sReturn);
             //}

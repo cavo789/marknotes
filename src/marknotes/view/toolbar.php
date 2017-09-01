@@ -46,7 +46,7 @@ class Toolbar
         $toolbar =
             '<div id="toolbar-button" data-toolbar="style-option" '.
                 'class="onlyscreen btn-toolbar btn-toolbar-default">'.
-                '<i class="fa fa-cog"></i>'.
+                '<i class="fa fa-bars"></i>'.
             '</div>'.
             '<div id="toolbar-options" class="hidden btn-toolbar-warning">'.$icons.'</div>';
 

@@ -77,7 +77,7 @@ class Index
         // $fullname will be something like
         // c:\site\docs\docs\CMS\Joomla\JUGWallonie\index.html
         //
-        // ==> the objectifve is to create an index.html rendering with the list of .md Files
+        // ==> the objective is to create an index.html rendering with the list of .md Files
         // found in the c:\site\docs\docs\CMS\Joomla\JUGWallonie\ folder.
 
         if (!$aeFiles->folderExists($folder)) {

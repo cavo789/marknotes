@@ -20,7 +20,10 @@ class Search
 
         // get the list of files
         $arrFiles = array();
-        if ($aeSettings->getOptimisationUseServerSession()) {
+
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$bOptimize = $arrOptimize['server_session'] ?? false;
+		if ($bOptimize) {
             // Get the list of files/folders from the session object if possible
             $arrFiles = json_decode($aeSession->get('SearchFileList', ''));
             if (!is_array($arrFiles)) {
@@ -34,7 +37,7 @@ class Search
             // Sort, case insensitve
             natcasesort($arrFiles);
 
-            if ($aeSettings->getOptimisationUseServerSession()) {
+            if ($bOptimize) {
                 // Remember for the next call
                 $aeSession->set('SearchFileList', json_encode($arrFiles, JSON_PRETTY_PRINT));
             }

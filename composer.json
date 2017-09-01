@@ -18,7 +18,8 @@
 		"phenx/php-font-lib": "^0.4.0",
 		"jolicode/jolitypo": "^1.0",
 		"monolog/monolog": "^1.22",
-		"drmonty/datatables-buttons": "^1.3"
+		"drmonty/datatables-buttons": "^1.3",
+		"symfony/yaml": "^3.3"
 	},
 	"config": {
 		"preferred-install": "dist"

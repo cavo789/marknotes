@@ -29,9 +29,18 @@ class DOCX
 			// If already there, check if that file is most recent than the .md file
 			$filenameMD = $aeFiles->removeExtension($filename).'.md';
 
-			if (filemtime($filenameMD) > filemtime($filename)) {
-				// The .md file is most recent, delete the exported document since it's an old one
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDevMode()) {
+				// During the development mode, always recreate the file
 				unlink($filename);
+			}
+			/*<!-- endbuild -->*/
+
+			if ($aeFiles->fileExists($filename)) {
+				if (filemtime($filenameMD) > filemtime($filename)) {
+					// The .md file is most recent, delete the exported document since it's an old one
+					unlink($filename);
+				}
 			}
 
         } // if ($aeFiles->fileExists($filename))
@@ -43,7 +52,9 @@ class DOCX
 	        $aeEvents = \MarkNotes\Events::getInstance();
 	        $aeEvents->loadPlugins('content', self::$extension);
 	        $args = array(&$params);
-	        $aeEvents->trigger('export.'.self::$extension, $args);
+
+			// true = stop on the first plugin which return "true" i.e. has done the job
+	        $aeEvents->trigger('export.'.self::$extension, $args, true);
 
 		} // if (!$aeFiles->fileExists($filename))
 

@@ -69,6 +69,29 @@ class DataTables
         return true;
     }
 
+	public static function doIt(&$html = null)
+	{
+		if (trim($html) === '') {
+			return true;
+		}
+
+		// Because datatables.js is always loaded and, because we can disable the databatables
+		// plugin for a given folder / note (override of settings.json); this is needed to
+		// communicate to the js script that "this time" the html table can be converted
+		// to a datatables one.
+		//
+		// This is simply done by : when database.php is enabled, add the attribute below
+		// (i.e. data-datatables-enable="1"). The js script will examine every tables and will
+		// only process the ones with that attribute on 1.
+		//
+		// If the datatables.php plugin isn't enabled, then this code isn't fired and the
+		// attribute doesn't exists. Even if datatables.js is loaded, nothing will be done.
+
+		$html = str_replace('<table>', '<table data-datatables-enable="1">', $html);;
+
+		return true;
+	}
+
     /**
      * Attach the function and responds to events
      */
@@ -87,6 +110,7 @@ class DataTables
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('render.js', __CLASS__.'::addJS');
         $aeEvents->bind('render.css', __CLASS__.'::addCSS');
+        $aeEvents->bind('render.content', __CLASS__.'::doIt');
         return true;
     }
 }

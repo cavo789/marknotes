@@ -35,14 +35,24 @@ class TOC
             // Get the deepest level
             $deepestLevel = (int)$match[1];
 
-            // Retrieve the title for the section, from settings.json
-            $arrSettings = $aeSettings->getPlugins('options', 'toc');
-            $sTitle = $arrSettings['title'] ?? "**Table of content**";
-
             // Retrieve every h2 till the lowest level (f.i. 4)
             $pattern = '/<h([2-'.$deepestLevel.']){1} *(id="(.*)")?[^>]*>(.*)<\/h[2-'.$deepestLevel.']>/i';
 
             if (preg_match_all($pattern, $content, $matches)) {
+
+	            // Retrieve the title for the section, from settings.json
+	            $arrSettings = $aeSettings->getPlugins('options', 'toc');
+
+	            $text = $arrSettings['text'] ?? "**Table of content** : %s";
+
+				// $text is probably written in the markdown language, get html version
+				$file=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+
+				if (is_file($file)) {
+		           include_once $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+				   $parsedown = new \Parsedown();
+				   $text=$parsedown->text(trim($text));
+			   }
 
                 // Just add a carriage return after each entries
                 $heads = implode("\n", $matches[0]);
@@ -68,7 +78,8 @@ class TOC
                 $heads = "<nav role='navigation' id='toc'><ul>\n".$heads."\n</ul></nav>";
 
                 // And replace the tag (%TOC_3% f.i.) by the table of content
-                $content = str_replace('<p>'.$match[0].'</p>', $heads, $content);
+				$text = sprintf($text, $heads);
+                $content = str_replace('<p>'.$match[0].'</p>', $text, $content);
             }
         }
 

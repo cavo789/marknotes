@@ -29,7 +29,9 @@ class Anchor
 		}
 
 		$js .= "\n<script type=\"text/javascript\" src=\"".$root."/libs/anchor-js/anchor.min.js\"></script>\n".
-		   "\n<script type=\"text/javascript\">anchors.add('h2, h3, h4, h5, h6');</script>\n";
+		   "\n<script type=\"text/javascript\">\n".
+		   "$('document').ready(function(){anchors.add('h2, h3, h4, h5, h6');});\n".
+		   "</script>\n";
 
 		if ($aeSettings->getDebugMode()) {
 			$js .= "<!-- End for ".__FILE__."-->";

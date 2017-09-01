@@ -1,103 +1,73 @@
 <?php
 
-namespace MarkNotes\Plugins\Content\EPUB;
+/*
+ * Export a note to a .odt, thanks to pandoc
+ */
+
+namespace MarkNotes\Plugins\Content\ODT;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class Pandoc
 {
-    /**
-     *
+    private static $layout = 'odt';
+
+	/**
+     * Make the conversion
      */
     public static function doIt(&$params = null)
     {
+
+		$bReturn = true;
+
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        // $sScriptName string Absolute filename to the pandoc.exe script
-        $arrPandoc = $aeSettings->getPlugins('options', 'pandoc');
-
-        if ($arrPandoc === array()) {
-            return false;
-        }
-
-        $sScriptName = $arrPandoc['script'];
-
-        if (!$aeFiles->fileExists($sScriptName)) {
-            /*<!-- build:debug -->*/
-            if ($aeSettings->getDebugMode()) {
-                $aeDebug->here('Pandoc, file '.$sScriptName.' didn\'t exists', 5);
-            }
-            /*<!-- endbuild -->*/
-            return false;
-        }
-
 		// ----------------------------------------
-		//
-		// Create a temporary version of the .epub file, in the temporary folder
-		$slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+		// Call the generic class for file conversion
+        $aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$layout, 'pandoc');
 
-		$tmpMD = $aeSettings->getFolderTmp().$slug.'.md';
-		$filename = $aeSettings->getFolderDocs(true).$params['filename'];
-		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
-		$content=$aeMarkdown->read($filename);
-		$aeFiles->createFile($tmpMD,$content);
+		// Get the filename, once exported (f.i. notes.txt)
+		$final = $aeConvert->getFileName();
 
-        $aeTask = \MarkNotes\Tasks\Convert::getInstance();
+		// Check if pandoc is installed; if not, check if the exported file already exists
+		if (!$aeConvert->isValid()) {
 
-        $final = $aeTask->getFileName($params['filename'], $params['task']);
+			if (!$aeFiles->fileExists($final)) {
 
-        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+				// No, doesn't exists
 
-        // $params['task'] is the output format (f.i. pdf), check if there are options to use
-        // for that format
-        $options = isset($arrPandoc['options'][$params['task']]) ? $arrPandoc['options'][$params['task']] : '';
+		        $bReturn = false;
 
-        // Create a script on the disk
-        // Use 'chcp 65001' command, accentuated characters won't be correctly understand if
-        // the file should be executable (like a .bat file)
-        // see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
-
-        $debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
-
-		$sProgram =
-			'@ECHO OFF'.PHP_EOL.
-			'chcp 65001'.PHP_EOL.
-			'"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
-			'"'.$tmpMD.'" > '.$debugFile.' 2>&1'.PHP_EOL.
-			'copy "'.basename($final).'" "'.rtrim(dirname($final),DS).DS.'"'.PHP_EOL;
-
-        $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
-
-        $aeFiles->fwriteANSI($fScriptFile, $sProgram);
-
-        // Run the script. This part can be long depending on the number of slides in the HTML file to convert
-        $output = array();
-        exec("start cmd /c ".$fScriptFile, $output);
-
-		if (!$aeFiles->fileExists($final)) {
-
-			$msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
-			$msg = str_replace('%s', '<strong>'.$final.'</strong>', $msg);
-
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->here('#DebugMode# - File '.$final.' not found', 10);
 			}
-			/*<!-- endbuild -->*/
 
-			echo $msg.PHP_EOL.PHP_EOL;
+		} else { // if (!$aeConvert->isValid())
 
-			echo '<p>Check to start <strong>'.$fScriptFile.'</strong> manually; indeed, sometimes it doesn\'t work within PHP but well manually; with the user\'s OS credentials (PHP permissions problems). Then, just refresh this page.</p>';
+	        $arrPandoc = $aeSettings->getPlugins('options', 'pandoc');
 
-		} // if (!$aeFiles->fileExists($final))
+			// Read the content of the .md file
+			$filename = $aeSettings->getFolderDocs(true).$params['filename'];
 
-        $params['output'] = $final;
+			// Derive filenames
+
+			$slug = $aeConvert->getSlugName();
+			$debugFile = $aeConvert->getDebugFileName();
+
+			// Get a copy of the .md note (in /temp folder), run any plugins
+			$tempMD = $aeConvert->createTempNote();
+
+			$sScript = $aeConvert->getScript($tempMD, $final);
+
+			$aeConvert->Run($sScript, $final);
+
+		} // if (!$aeConvert->isValid())
+
+		if ($bReturn) $params['output'] = $final;
 
         return true;
+
     }
 
     /**
@@ -106,7 +76,7 @@ class Pandoc
     public function bind()
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.odt', __CLASS__.'::doIt');
+        $aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt');
         return true;
     }
 }

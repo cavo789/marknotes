@@ -18,7 +18,7 @@ class Hide
         $buttons .=
             '<a id="icon_hide" data-task="fnPluginTaskHideTreeViewDoIt" '.
                 'title="'.$title.'" href="#">'.
-                '<i class="fa fa-bars" aria-hidden="true"></i>'.
+                '<i class="fa fa-compress" aria-hidden="true"></i>'.
             '</a>';
 
         return true;

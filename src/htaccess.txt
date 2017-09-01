@@ -11,6 +11,8 @@ DirectoryIndex index.php
     Options +FollowSymlinks
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
+	# Don't redirect to the routeur for images
+	RewriteCond %{REQUEST_URI} !\.(gif|jpe?g|png)$
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule (.*) router.php?file=$1&%{QUERY_STRING} [L]
 

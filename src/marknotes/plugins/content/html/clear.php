@@ -17,13 +17,17 @@ class Clear
 
         $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 
+		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$bOptimize = $arrOptimize['localStorage'] ?? false;
+
+
         if ($aeSettings->getDebugMode()) {
             $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
         }
         $js .=
             "\n<script type=\"text/javascript\">\n".
             "marknotes.message.settings_clean_done='".$aeSettings->getText('settings_clean_done', 'The application\'s cache has been cleared', true)."';\n".
-            "marknotes.settings.use_localcache=".($aeSettings->getUseLocalCache()?1:0).";\n".
+            "marknotes.settings.use_localcache=".($bOptimize?1:0).";\n".
             "</script>\n".
             "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/clear/clear.js\"></script>\n";
 

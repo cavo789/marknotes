@@ -35,7 +35,8 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     // Application root folder.
     $folder = rtrim(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), DS).DS;
 
-    $filename = rtrim(rawurldecode($aeFunctions->getParam('file', 'string', '', false)), '/');
+    $filename = rtrim(rawurldecode($aeFunctions->getParam('file', 'string', '', false)), DS);
+	$filename = str_replace('/', DS, $filename);
 
     $params = array('filename' => $filename);
     $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
@@ -68,9 +69,27 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
     if ($filename !== '') {
         $fileMD = '';
 
-        if (basename($filename) === 'index.html') {
+		// The filename shouldn't mention the docs folders, just the filename
+		// So, $filename should not be docs/markdown.md but only markdown.md because the
+		// folder name will be added later on
+
+		$docRoot = $aeSettings->getFolderDocs(false);
+
+		if ($aeFunctions->startsWith($filename, $docRoot)) {
+			$filename = substr($filename, strlen($docRoot));
+		}
+
+		$filename=$aeFiles->removeExtension($filename).'.md';
+
+		$full=$aeSettings->getFolderDocs(true).$filename;
+
+		// Note that an "index.md" note can well be present so don't inmmediatly
+		// run the "index" task when index.html is called
+		if ( (!file_exists($filename)) && (basename($filename) === 'index.html')) {
+
             $format = 'index';
             $fileMD = $filename;
+
         } elseif (in_array($filename, array('tag.json', 'timeline.html', 'timeline.json', 'sitemap.xml'))) {
             // Specific files
             $aeFiles = \MarkNotes\Files::getInstance();

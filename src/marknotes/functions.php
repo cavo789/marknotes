@@ -324,4 +324,25 @@ class Functions
         $bAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
         return $bAjax;
     }
+
+	public static function removeHTMLComments(string $str) : string
+	{
+		return preg_replace(
+			'#(?>(?:<(?!!))?[^<]*+(?:<(?:script|style)\b[^>]*+>(?><?[^<]*+)*?<\/(?:script|style)>|<!--\[(?><?[^<]*+)*?'.
+			'<!\s*\[(?>-?[^-]*+)*?--!?>|<!DOCTYPE[^>]++>)?)*?\K(?:<!--(?>-?[^-]*+)*?--!?>|[^<]*+\K$)#i', '', $str);
+	}
+
+	public static function startsWith(string $haystack, string $needle) : bool
+	{
+	     $length = strlen($needle);
+	     return (substr($haystack, 0, $length) === $needle);
+	}
+
+	public static function endsWith(string $haystack, string $needle) : bool
+	{
+	    $length = strlen($needle);
+
+	    return $length === 0 ||
+	    (substr($haystack, -$length) === $needle);
+	}
 }

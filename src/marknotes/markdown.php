@@ -56,21 +56,27 @@ class Markdown
 
         if ($filename != '') {
 
+			$filename = str_replace('/',DS,$filename);
+
             // The filename shouldn't mention the docs folders, just the filename
             // So, $filename should not be docs/markdown.md but only markdown.md because the
             // folder name will be added later on
 
             $docRoot = $aeSettings->getFolderDocs(false);
-            if (substr($filename, 0, strlen($docRoot)) === $docRoot) {
+
+			if ($aeFunctions->startsWith($filename, $docRoot)) {
                 $filename = substr($filename, strlen($docRoot));
             }
 
-            // If the filename doesn't mention the file's extension, add it.
+			// If the filename doesn't mention the file's extension, add it.
             if (substr($filename, -3) != '.md') {
                 $filename .= '.md';
             }
 
-            if (!file_exists($aeSettings->getFolderDocs(true).$filename)) {
+			$filename=$aeFiles->removeExtension($filename).'.md';
+			$full=$aeSettings->getFolderDocs(true).$filename;
+
+            if (!file_exists($filename)) {
 
                 // Do we need to encode accent on that system ?
                 $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
@@ -81,10 +87,11 @@ class Markdown
 
             $filename = $aeFiles->sanitizeFileName(trim($filename));
         }
+
         /*<!-- build:debug -->*/
         if ($aeSettings->getDebugMode()) {
             $aeDebug->log('Running task ['.$task.']', 'debug');
-            $aeDebug->log('Run ['.$task.'] filename ['.$filename.']', 'debug');
+            $aeDebug->log('Run ['.$task.'] filename ['.$filename.']', 'debug',3);
         }
         /*<!-- endbuild -->*/
 

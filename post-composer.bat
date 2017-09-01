@@ -152,4 +152,13 @@ IF EXIST %NODE%%LIB% (
    XCOPY %NODE%%LIB%*.* %LIBS%reveal\plugin\%LIB%*.* /E /Y >> %LOG%
 )
 
+REM ----------------------------------------------------------------------
+SET LIB=yaml\
+IF EXIST %VENDOR%symfony\%LIB% (
+   ECHO  === %LIB% === >> %LOG%
+   ECHO  === %LIB% ===
+   XCOPY %VENDOR%symfony\%LIB%*.* %LIBS%symfony\%LIB%*.* /E /Y >> %LOG%
+)
+
+
 :END

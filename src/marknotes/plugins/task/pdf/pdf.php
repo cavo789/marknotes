@@ -10,7 +10,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class PDF
 {
-    private static $extension = 'pdf';
+    private static $layout = 'pdf';
 
 	public static function run(&$params = null)
 	{
@@ -20,7 +20,7 @@ class PDF
 
 		// Derive the name of the file and set it as an absolute filename
 		if ($filename!=='') {
-			$filename = $aeFiles->removeExtension($filename).'.'.self::$extension;
+			$filename = $aeFiles->removeExtension($filename).'.'.self::$layout;
 			$filename = $aeSettings->getFolderDocs(true).$filename;
 		}
 
@@ -41,9 +41,11 @@ class PDF
 			// Run the conversion
 
 			$aeEvents = \MarkNotes\Events::getInstance();
-			$aeEvents->loadPlugins('content', self::$extension);
+			$aeEvents->loadPlugins('content', self::$layout);
 			$args = array(&$params);
-			$aeEvents->trigger('export.'.self::$extension, $args);
+
+			// true = stop on the first plugin which return "true" i.e. has done the job
+			$aeEvents->trigger('export.'.self::$layout, $args, true);
 
 		} // if (!$aeFiles->fileExists($filename))
 

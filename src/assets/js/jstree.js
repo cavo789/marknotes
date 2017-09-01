@@ -1,5 +1,4 @@
 var jsTree_Search_Result = '';
-var logJSTree;
 
 // Used by the search plugin to filter on notes having an ID as returned by the ajax search task
 function jsTree_ajax_search(str, node) {
