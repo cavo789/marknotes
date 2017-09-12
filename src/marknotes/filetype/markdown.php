@@ -190,9 +190,9 @@ class Markdown
                             if ($aeFiles->fileExists($filename)) {
                                 $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
                             } else {
-                                /*<!-- build:debug -->*/
 
-								if ($task!=='edit.form') {
+                                /*<!-- build:debug -->*/
+                                if (in_array($task, array('display','main','html'))) {
                                    if ($aeSettings->getDebugMode()) {
                                        $aeDebug = \MarkNotes\Debug::getInstance();
                                        $aeDebug->here('DEBUG MODE --- In file    '.$params['filename'].' ==> '.$filename.' NOT FOUND');
@@ -262,8 +262,12 @@ class Markdown
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
         $aeDebug = \MarkNotes\Debug::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
         if ($aeFiles->fileExists($filename)) {
+
+			$task = $aeSession->get('task');
+
             $markdown = file_get_contents(utf8_decode($filename));
 
             // --------------------------------
@@ -273,9 +277,7 @@ class Markdown
             $params['markdown'] = $markdown;
             $params['filename'] = $filename;
             $args = array(&$params);
-
             $aeEvents->trigger('markdown.read', $args);
-
             $markdown = $args[0]['markdown'];
 
             $aeFiles = \MarkNotes\Files::getInstance();
@@ -286,8 +288,10 @@ class Markdown
             $noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
             // --------------------------------
 
-            // In the markdown file, two syntax are possible for images, the ![]() one or the <img src one
-            // Be sure to have the correct relative path i.e. pointing to the folder of the note
+            // In the markdown file, two syntax are possible for images,
+            // the ![]() one or the <img src one
+            // Be sure to have the correct relative path i.e. pointing to the
+            // folder of the note
             $matches = array();
             $markdown = self::setImagesAbsolute($markdown, $params);
 
@@ -299,6 +303,7 @@ class Markdown
                     $markdown = $this->ShowConfidential($markdown);
                 }
             }
+
         } else {
 
             /*<!-- build:debug -->*/

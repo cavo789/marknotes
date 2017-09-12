@@ -251,7 +251,8 @@ function ajaxify($params) {
 					}
 					/*<!-- endbuild -->*/
 					eval($callback);
-				}
+
+				} // if ($callback !== '')
 				/* jshint ignore:end */
 
 			}, // success
@@ -268,6 +269,7 @@ function ajaxify($params) {
 			} // error
 		}); // $.ajax()
 	} else {
+
 		/* jshint ignore:start */
 		var $callback = ($params.callback === undefined) ? '' : $params.callback;
 		if ($callback !== '') {
@@ -289,7 +291,7 @@ function initFiles($data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('******** initFiles ***************');
+		console.log('******** initFiles - START ***************');
 		console.log($data);
 	}
 	/*<!-- endbuild -->*/
@@ -351,12 +353,22 @@ function initFiles($data) {
 	// Automatically select a specific node when $data.select_node exists
 	if ($data.hasOwnProperty('select_node')) {
 
-		// Select the node
-		$('#TOC').jstree('select_node', $data.select_node);
-
 		// Needed otherwise the jstree's state plugin will reset the selected node
-		$('#TOC').jstree(true).save_state();
+		try {
+			// Select the node
+			$('#TOC').jstree('select_node', $data.select_node);
+			$('#TOC').jstree(true).save_state();
+		} catch (e) {
+			console.warn(err.message);
+		} finally {}
+
 	}
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('******** initFiles - END ***************');
+	}
+	/*<!-- endbuild -->*/
 
 	return true;
 
@@ -696,7 +708,7 @@ function runPluginsFunctions() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.debug('Running plugins functions...');
+		console.log('Running plugins functions - START');
 		console.log(marknotes.arrPluginsFct);
 	}
 	/*<!-- endbuild -->*/
@@ -710,16 +722,17 @@ function runPluginsFunctions() {
 
 		$arrFct = marknotes.arrPluginsFct.slice();
 
-		for (var i = 0, len = $arrFct.length; i < len; i++) {
+		var $j = $arrFct.length;
+		for (var $i = 0, $j = $arrFct.length; $i < $j; $i++) {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('   call ' + $arrFct[i]);
+				console.log('   call ' + ($i + 1) + '/' + $j + ' : ' + $arrFct[$i]);
 			}
 			/*<!-- endbuild -->*/
 
 			// As explained here : https://www.sitepoint.com/call-javascript-function-string-without-using-eval/
-			fn = window[$arrFct[i]];
+			fn = window[$arrFct[$i]];
 
 			if (typeof fn === "function") {
 				fn();
@@ -729,6 +742,12 @@ function runPluginsFunctions() {
 	} catch (err) {
 		console.warn(err.message);
 	}
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('Running plugins functions - END');
+	}
+	/*<!-- endbuild -->*/
 
 	return true;
 

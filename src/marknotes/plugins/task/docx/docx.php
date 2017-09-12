@@ -38,7 +38,8 @@ class DOCX
 
 			if ($aeFiles->fileExists($filename)) {
 				if (filemtime($filenameMD) > filemtime($filename)) {
-					// The .md file is most recent, delete the exported document since it's an old one
+					// The .md file is most recent, delete the exported document
+					// since it's an old one
 					unlink($filename);
 				}
 			}
@@ -77,6 +78,7 @@ class DOCX
     {
         $aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('run.task', __CLASS__.'::run');
+
         return true;
     }
 }

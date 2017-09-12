@@ -144,7 +144,7 @@ class Files
 
         if (($arrSkipFolder != null) && (count($arrSkipFolder) > 0)) {
             foreach ($arrSkipFolder as $folder) {
-                if (self::startsWith($path, $folder)) {
+                if (self::startsWith($folder, $path)) {
                     return null;
                 }
             } // foreach
@@ -290,7 +290,10 @@ class Files
     {
         $bReturn = false;
 
+        /*<!-- build:debug -->*/
         $aeDebug = \MarkNotes\Debug::getInstance();
+        /*<!-- endbuild -->*/
+
         $aeSettings = \MarkNotes\Settings::getInstance();
 
         $filename = str_replace('/', DS, $filename);

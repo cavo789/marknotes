@@ -101,12 +101,16 @@
 		},
 		"markdown": {
 			"read": 1,
+			"images": 1,
+			"clean_code": 1,
 			"include": 1,
 			"caroussel": 1,
 			"toc": 1,
 			"todos": 1,
 			"encrypt": 1,
 			"listfiles": 1,
+			"head_numbering": 1,
+			"docx": 1,
 			"write": 1
 		},
 		"options": {
@@ -150,6 +154,7 @@
 					"add_defer": 1,
 					"defer_exceptions": [
 						"jquery.min.js",
+						"linkify.min.js",
 						"bootstrap"
 					],
 					"minify": 1
@@ -206,7 +211,6 @@
 			"yaml": {
 				"add_if_missing": 1,
 				"defaults": {
-					"author": "Christophe Avonture",
 					"created_time": "%TODAY%",
 					"language": "%LANGUAGE%",
 					"subtitle": ""

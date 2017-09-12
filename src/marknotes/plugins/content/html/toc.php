@@ -15,7 +15,6 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class TOC
 {
 
-
     /**
      * Modify the HTML rendering of the note
      */
@@ -28,7 +27,7 @@ class TOC
         // Try to find the tag : %TOC_9%  (where 9 is the deepest level to mention
         // in the table of content (so, for headings 1 -> 4, mention %TOC_4%)
 
-        if (preg_match("/%TOC_(\\d)%/", $content, $match)) {
+		if (preg_match("/%TOC_(\\d)%/", $content, $match)) {
 
             $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -39,6 +38,10 @@ class TOC
             $pattern = '/<h([2-'.$deepestLevel.']){1} *(id="(.*)")?[^>]*>(.*)<\/h[2-'.$deepestLevel.']>/i';
 
             if (preg_match_all($pattern, $content, $matches)) {
+
+				$aeFunctions = \MarkNotes\Functions::getInstance();
+
+				list($tags, $level, $id, $slug, $title) = $matches;
 
 	            // Retrieve the title for the section, from settings.json
 	            $arrSettings = $aeSettings->getPlugins('options', 'toc');
@@ -52,27 +55,38 @@ class TOC
 		           include_once $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
 				   $parsedown = new \Parsedown();
 				   $text=$parsedown->text(trim($text));
-			   }
+			   	}
 
-                // Just add a carriage return after each entries
-                $heads = implode("\n", $matches[0]);
+			   	// Just add a carriage return after each entries
+				$heads = implode("\n", $matches[0]);
 
-                $j = count($matches[0]);
+				$j = count($matches[0]);
 
-                // Process every entries in the table of content
-                for ($i = 0; $i < $j; $i++) {
+				// Process every entries in the table of content
+				for ($i = 0; $i < $j; $i++) {
 
-                    // Build the entry in the TOC
+					/*<!-- build:debug -->*/
+					// When the developper mode is enabled in settings.json, the
+					// INCLUDE plugin will add a sentence like
+					//
+					//   ###### DEV_MODE_PREFIX INCLUDE FILE filename {.devmode}
+					//
+					// (DEV_MODE_PREFIX is a prefiw defined in includes/constants.php)
+					//
+					// So, here in the Table of Content plugin, we should ignore
+					// headings when the title starts with the DEV_MODE_PREFIX and
+					// don't put them in the table of content.
+					if ($aeFunctions::startsWith($title[$i],DEV_MODE_PREFIX)) {
+						$heads = str_replace($matches[0][$i], '', $heads);
+						continue;
+					}
+					/*<!-- endbuild -->*/
 
-                    // $matches[1][$i] is the level (f.i. 3 for a H3 tag)
-                    // $matches[3][$i] is the "id=" value (f.i. "agenda_of_the_meeting")
-                    // $matches[4][$i] is the text (f.i. "Agenda of the meeting")
+					$entry = '<li class="toc'.$level[$i].'"><a href="#'.$slug[$i].'">'.$title[$i].'</a></li>';
 
-                    $entry = '<li class="toc'.$matches[1][$i].'"><a href="#'.$matches[3][$i].'">'.$matches[4][$i].'</a></li>';
-
-                    // Replace the header by the entry
-                    $heads = str_replace($matches[0][$i], $entry, $heads);
-                }
+					// Replace the header by the entry
+					$heads = str_replace($matches[0][$i], $entry, $heads);
+				}
 
                 // Put everything in a navigation element
                 $heads = "<nav role='navigation' id='toc'><ul>\n".$heads."\n</ul></nav>";
@@ -80,8 +94,10 @@ class TOC
                 // And replace the tag (%TOC_3% f.i.) by the table of content
 				$text = sprintf($text, $heads);
                 $content = str_replace('<p>'.$match[0].'</p>', $text, $content);
-            }
-        }
+
+            } // if (preg_match_all($pattern
+
+        } // if (preg_match("/%TOC_(\\d)%/"
 
         return true;
     }

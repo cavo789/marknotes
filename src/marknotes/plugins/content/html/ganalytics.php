@@ -81,8 +81,6 @@ class GAnalytics
         }
 
         if ($bLoad) {
-            $aeDebug = \MarkNotes\Debug::getInstance();
-            $aeDebug->here("", 1);
             $aeEvents = \MarkNotes\Events::getInstance();
             $aeEvents->bind('render.js', __CLASS__.'::addJS');
             return true;

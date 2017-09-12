@@ -194,6 +194,13 @@ class Convert
 			}
         }
 
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDevMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->here("DEVELOPPER MODE - SHOW THE MARKDOWN CONTENT BEFORE PANDOC CONVERSION (".$filename.")",1);
+			die("<pre>".print_r($content, true)."</pre>");
+		}
+
 		// Return the temporary filename or an empty string
 		return $aeFiles->createFile($filename,$content) ? $filename : '';
 

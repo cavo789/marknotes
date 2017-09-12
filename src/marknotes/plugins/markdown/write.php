@@ -43,6 +43,7 @@ class Write
 
         $aeDebug = \MarkNotes\Debug::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
+        $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -53,9 +54,11 @@ class Write
         $filename = $aeFiles->removeExtension($filename).'.md';
 
         if ($filename !== '') {
-
             // Get the absolute filename on the disk
-            $filename = $aeSettings->getFolderDocs(true).$filename;
+			if(!$aeFunctions->startsWith($filename, $aeSettings->getFolderDocs(true))) {
+            	$filename = $aeSettings->getFolderDocs(true).$filename;
+			}
+
             // And write the file
             $aeFiles = \MarkNotes\Files::getInstance();
             $aeFiles->rewriteFile($filename, $markdown);

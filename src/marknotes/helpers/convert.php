@@ -66,7 +66,13 @@ class Convert
             include_once $extra;
         }
 
+		if (is_file($extra = $aeSettings->getHelpersRoot().'markNotesParsedown.php')) {
+			$lib = "marknotesParsedown";
+            include_once $extra;
+        }
+
         $parsedown = new $lib();
+
 
         return $parsedown->text(trim($markdown));
     }

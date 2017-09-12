@@ -61,3 +61,9 @@ define('KILL_SUCCESS', 3);
 
 // Force LF and not PHP_EOL when writting files on the filesystem
 defined('PHP_LF') or define('PHP_LF', "\n");
+
+// When the developper mode is set, in a few cases, a sentence will be outputted
+// That sentence will start with the text below
+// Used in the include, head_numbering and TOC plugin f.i.
+// (Don't use the minus sign !!!)
+define('DEV_MODE_PREFIX', 'MN_DEV_MODE |');

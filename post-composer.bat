@@ -36,6 +36,14 @@ IF EXIST %VENDOR%twitter\%LIB% (
 )
 
 REM ----------------------------------------------------------------------
+SET LIB=slugify\
+IF EXIST %VENDOR%cocur\%LIB% (
+   ECHO  === %LIB% === >> %LOG%
+   ECHO  === %LIB% ===
+   XCOPY %VENDOR%cocur\%LIB%src\*.* %LIBS%%LIB%\*.* /E /Y >> %LOG%
+)
+
+REM ----------------------------------------------------------------------
 SET LIB=datatables\
 IF EXIST %VENDOR%%LIB% (
    ECHO  === %LIB% === >> %LOG%

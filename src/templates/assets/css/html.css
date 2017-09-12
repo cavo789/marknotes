@@ -144,3 +144,10 @@ footer > ul.list-inline li {
 	margin          : 5px;
 	color           : white;
 }
+
+.devmode {
+	background-color: #f78272;
+	padding         : 10px;
+	margin          : 5px;
+	color           : #f7eeee;
+}

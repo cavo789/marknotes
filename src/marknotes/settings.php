@@ -50,11 +50,14 @@ class Settings
         //   2. If present, the settings.json file i.e. the user settings for the application
         //   3. If present, the settings.json file that can be found in the note folder
         //       (so if the note /docs/marknotes/userguide.md if displayed, check if a file
-        //       /docs/marknotes/settings.json exists and if so, use it),
-        //   4. Finally, a very specific note.json file : if the note /docs/marknotes/userguide.md if displayed,
-        //      check if the file /docs/marknotes/userguide.json exists and if so, use it.
+        //       /docs/settings.json and /docs/marknotes/settings.json exists and if so,
+		//       use it) (check from the parent folder till the deepest one),
+        //   4. Finally, a very specific note.json file : if the note
+		//      /docs/marknotes/userguide.md if displayed, check if the file
+		//      /docs/marknotes/userguide.json exists and if so, use it.
         //
-        // In this order so the file loaded in step 4 will have the priority and can overwrite global settings
+        // In this order so the file loaded in step 4 will have the priority and can
+		// overwrite global settings
 
         $aeJSON = \MarkNotes\JSON::getInstance();
         $aeFiles = \MarkNotes\Files::getInstance();
@@ -62,35 +65,95 @@ class Settings
         $json = array();
 
         // 1. Get the settings.json.dist global file, shipped with each releases of MarkNotes
-        if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json.dist')) {
-            $json = $aeJSON->json_decode($fname, true);
+        if ($aeFiles->fileExists($noteJSON = $this->getFolderWebRoot().'settings.json.dist')) {
+            $json = $aeJSON->json_decode($noteJSON, true);
         } else {
-            if ($aeFiles->fileExists($fname = $this->getFolderAppRoot().'settings.json.dist')) {
-                $json = $aeJSON->json_decode($fname, true);
+            if ($aeFiles->fileExists($noteJSON = $this->getFolderAppRoot().'settings.json.dist')) {
+                $json = $aeJSON->json_decode($noteJSON, true);
             }
         }
 
         // 2. Get the settings.json user's file
-        if ($aeFiles->fileExists($fname = $this->getFolderWebRoot().'settings.json')) {
-            $arr = $aeJSON->json_decode($fname, true);
+        if ($aeFiles->fileExists($noteJSON = $this->getFolderWebRoot().'settings.json')) {
+
+            $arr = $aeJSON->json_decode($noteJSON, true);
             if (count($arr) > 0) {
-                $json = array_replace_recursive($json, $aeJSON->json_decode($fname, true));
+                $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
+				/*<!-- build:debug -->*/
+				if (isset($json['debug'])) {
+					// Debug mode enabled or not
+					$this->setDebugMode($json['debug'] == 1?true:false);
+
+					if($json['debug'] == 1) {
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log('Load settings file : '.$noteJSON,'debug');
+					}
+
+				}
+				/*<!-- endbuild -->*/
             }
         }
 
         if (isset($params['filename'])) {
 
-			// 3. Get the settings.json file that is, perhaps, present in the folder of the note
+
+			// The filename shouldn't mention the docs folders, just the filename
+			// So, $filename should not be docs/markdown.md but only markdown.md because the
+			// folder name will be added later on
+
+			$docRoot = $json['folder'].DS;
+
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+			if ($aeFunctions->startsWith($params['filename'], $docRoot)) {
+				$params['filename'] = substr($params['filename'], strlen($docRoot));
+			}
+
+			// 3. Get the settings.json file that is, perhaps,
+			// present in the folder of the note
 
 			// First, be sure that the doc folder has been set
 
 			$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
-            $noteFolder =$this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
-            $noteJSON = rtrim($noteFolder,DS).DS.'settings.json';
+            $noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
 
-            if ($aeFiles->fileExists($noteJSON)) {
-                $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
-            }
+			// $noteFolder is perhaps C:\notes\docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+			// Process from C:\notes\docs\ till that (so from the top to the deepest)
+			// and check if there is a settings.json file
+
+			$folder = $this->getFolderWebRoot();
+
+			do {
+
+				// $tree will be equal to docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+				$tree = str_replace($folder, '', $noteFolder);
+
+				// Process docs, then Folder, then Sub1, ...
+				$subFolder = strrev(basename(strrev($tree)));
+
+				$folder = rtrim($folder,DS).DS.$subFolder;
+
+	            $noteJSON = rtrim($folder,DS).DS.'settings.json';
+
+	            if ($aeFiles->fileExists($noteJSON)) {
+
+	                $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
+
+					/*<!-- build:debug -->*/
+					if (isset($json['debug'])) {
+						// Debug mode enabled or not
+						$this->setDebugMode($json['debug'] == 1?true:false);
+
+						if($json['debug'] == 1) {
+							$aeDebug = \MarkNotes\Debug::getInstance();
+							$aeDebug->log('Load settings file : '.$noteJSON,'debug');
+						}
+
+					}
+					/*<!-- endbuild -->*/
+
+	            }
+
+			} while ($folder !== $noteFolder);
 
 			// 4. Get the note_name.json file that is, perhaps, present in the folder of the note.
 	        // note_name is the note filename with the .json extension of .md
@@ -98,9 +161,22 @@ class Settings
             $noteJSON = $aeFiles->replaceExtension($noteFolder, 'json');
 
             if ($aeFiles->fileExists($noteJSON)) {
+
                 $json = array_replace_recursive($json, $aeJSON->json_decode($noteJSON, true));
+				/*<!-- build:debug -->*/
+				if (isset($json['debug'])) {
+					// Debug mode enabled or not
+					$this->setDebugMode($json['debug'] == 1?true:false);
+
+					if($json['debug'] == 1) {
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log('Load settings file : '.$noteJSON,'debug');
+					}
+				}
+				/*<!-- endbuild -->*/
             }
-        }
+        } // if (isset($params['filename']))
+
 
 		return $json;
 
@@ -116,7 +192,6 @@ class Settings
          $aeFiles = \MarkNotes\Files::getInstance();
 
          $this->_json = $this->loadJSON($params);
-
          $this->setLanguage(DEFAULT_LANGUAGE);
 
          if (isset($this->_json['language'])) {
@@ -333,6 +408,11 @@ class Settings
         /*<!-- endbuild -->*/
 
         return true;
+    }
+
+    public function getHelpersRoot() : string
+    {
+        return $this->_folderAppRoot.'marknotes'.DS.'helpers'.DS;
     }
 
     /**

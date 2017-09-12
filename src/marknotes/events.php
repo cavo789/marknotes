@@ -115,7 +115,7 @@ class Events
         $aeSettings = \MarkNotes\Settings::getInstance();
         if ($aeSettings->getDevMode()) {
             $aeDebug = \MarkNotes\Debug::getInstance();
-            $aeDebug->log('Add a listener for '.$event);
+            //$aeDebug->log('Add a listener for '.$event);
         }
         /*<!-- endbuild -->*/
 

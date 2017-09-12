@@ -19,13 +19,18 @@ function jstree_init($data) {
 			$('#TOC').jstree("destroy").empty();
 			$('#TOC').jstree("true");
 
+			// Sometimes wholerow raise an error with the state plugin.
+			// Error can be "this.get node().find is not a function".
+			// By removing wholerow in the list below and refreshing the page will
+			// solve the issue. Then add wholerow back in the list.
+			// Still occurs with jsTree 3.3.4 (2017-07-31)
 			var $arrPlugins = ['contextmenu', 'types', 'search', 'types', 'unique', 'wholerow'];
 
 			$arrPlugins.push('state');
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('List of plugins loaded');
+				console.log('List of jstree plugins');
 				console.log($arrPlugins);
 			}
 			/*<!-- endbuild -->*/
@@ -39,7 +44,6 @@ function jstree_init($data) {
 						console.log('Tree has been successfully loaded');
 					}
 					/*<!-- endbuild -->*/
-					//	$("#TOC").jstree("select_node", "#e4dd128f135e34986b483208539e9c6c"); // JUG W
 				})
 				.on('changed.jstree', function (e, data) {
 					var objNode = data.instance.get_node(data.selected);

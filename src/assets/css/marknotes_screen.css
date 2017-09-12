@@ -28,8 +28,8 @@ h2 {
 #CONTENT img {
 	max-width: 100%;
 	height   : auto;
-	padding  : 25px 5px;
-	display  : block;
+	/*padding  : 25px 5px;
+	display  : block;*/
 }
 
 /* Style for the scrollbars */
@@ -207,9 +207,9 @@ page {
 	pointer-events: all;
 }
 
-#icon_separator {
+/*#icon_separator {
 	height: 40px;
-}
+}*/
 
 /* Use by the jQuery highlight plugin, highlight searched keywords */
 
@@ -269,6 +269,13 @@ div.editor-wrapper .editor-toolbar a {
 
 .strikeout {
 	text-decoration: line-through;
+}
+
+.devmode {
+	background-color: #f78272;
+	padding         : 10px;
+	margin          : 5px;
+	color           : #f7eeee;
 }
 
 .yellow {

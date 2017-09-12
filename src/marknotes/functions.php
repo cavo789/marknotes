@@ -93,36 +93,36 @@ class Functions
     }
 
     /**
-     * Remove any accentuated characters, dot, space, comma, ... and replace them by an underscore
-     * character
+     * Remove any accentuated characters, dot, space, comma, ... and generate
+	 * a secure string (can be used for an alias or a filename)
+	 *
+	 * @link https://github.com/cocur/slugify
      */
     public static function slugify(string $text) : string
     {
-        // remove &quote; &amp; and so on; keep only text
-        $text = html_entity_decode($text);
 
-        // replace non letter or digits by -
-        $sReturn = preg_replace('~[^\pL\d]+~u', '-', $text);
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$folder = $aeSettings->getFolderLibs()."slugify/";
 
-        // transliterate
-        $sReturn = iconv('utf-8', 'us-ascii//TRANSLIT', $sReturn);
+		include_once $folder.'RuleProvider/RuleProviderInterface.php';
+		include_once $folder.'RuleProvider/DefaultRuleProvider.php';
+		include_once $folder.'RuleProvider/FileRuleProvider.php';
+		include_once $folder.'SlugifyInterface.php';
+		include_once $folder.'Slugify.php';
 
-        // remove unwanted characters
-        $sReturn = preg_replace('~[^-\w]+~', '', $sReturn);
+		$slugify = new \Cocur\Slugify\Slugify();
 
-        // trim
-        $sReturn = trim($sReturn, '-');
+		// Slugify support different languages (rules); see the $rules array defined in
+		// https://github.com/cocur/slugify/blob/master/src/RuleProvider/DefaultRuleProvider.php
+		$rule='default';
+		if ($aeSettings->getLanguage()=='fr') {
+			$rule='french';
+		}
 
-        // remove duplicate -
-        $sReturn = preg_replace('~-+~', '-', $sReturn);
-        // lowercase
-        $sReturn = strtolower($sReturn);
+		$slugify->activateRuleSet($rule);
 
-        if (empty($sReturn)) {
-            $sReturn = 'n-a';
-        }
+		return $slugify->slugify($text);
 
-        return $sReturn;
     }
 
     /**
@@ -332,17 +332,24 @@ class Functions
 			'<!\s*\[(?>-?[^-]*+)*?--!?>|<!DOCTYPE[^>]++>)?)*?\K(?:<!--(?>-?[^-]*+)*?--!?>|[^<]*+\K$)#i', '', $str);
 	}
 
-	public static function startsWith(string $haystack, string $needle) : bool
+	/**
+	 * For instance :
+	 *     if (startsWith("Debug - This is a test", "Debug")) {
+	 *         // Debug mode ...
+	 *     }
+	 *
+	 */
+	public static function startsWith(string $sLine, string $sPattern) : bool
 	{
-	     $length = strlen($needle);
-	     return (substr($haystack, 0, $length) === $needle);
+		$length = strlen($sPattern);
+		return (substr($sLine, 0, $length) === $sPattern);
 	}
 
-	public static function endsWith(string $haystack, string $needle) : bool
+	public static function endsWith(string $sLine, string $sPattern) : bool
 	{
-	    $length = strlen($needle);
+		$length = strlen($sPattern);
 
 	    return $length === 0 ||
-	    (substr($haystack, -$length) === $needle);
+	    (substr($sLine, -$length) === $sPattern);
 	}
 }

@@ -11,7 +11,9 @@ function fnPluginHTMLLinkify() {
 		}
 		/*<!-- endbuild -->*/
 
-		$('page').linkify();
+		if ($.isFunction($.fn.linkify)) {
+			$('page').linkify();
+		}
 	}
 
 }

@@ -39,6 +39,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 	$filename = str_replace('/', DS, $filename);
 
     $params = array('filename' => $filename);
+
     $aeSettings = \MarkNotes\Settings::getInstance($folder, $params);
 
 	include_once 'marknotes/includes/debug.php';
@@ -51,11 +52,13 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 	/*<!-- endbuild -->*/
 
     $aeSession = \MarkNotes\Session::getInstance();
+	$aeSession->set('img_id',0);
+
     $aeFiles = \MarkNotes\Files::getInstance();
     $aeEvents = \MarkNotes\Events::getInstance();
 
-    // Retrieve the asked extension i.e. if the user try to access the /note.html or /note.pdf file,
-    // extract the extension (html or pdf)
+    // Retrieve the asked extension i.e. if the user try to access the /note.html
+	// or /note.pdf file, extract the extension (html or pdf)
     $format = '';
     if ($filename !== '') {
         $format = $aeFiles->getExtension($filename);

@@ -9,10 +9,19 @@
  *
  *   # My big story
  *
+ *   %INCLUDE .chapters/settings.md{"once":1}%
  *   %INCLUDE .chapters/chapter1.md%
  *   %INCLUDE .chapters/chapter2.md%
  *   %INCLUDE .chapters/chapter3.md%
  *
+ * After the filename, settings can be given in a json format like {"once":1}
+ *
+ *    once:1    => that file will be loaded only once even when multiples .md files
+ *                 are referencing the same include. Usefull for f.i. including a settings
+ *                 file.
+ *                 once=1 is good when you're including a settings file (i.e a markdown file
+ *                    where you're defining, once and for all, your abbreviations, URLs, ...),
+ *                 once=0 can be good when you wish to include headers and footers f.i.
  */
 
 namespace MarkNotes\Plugins\Markdown;
@@ -45,6 +54,8 @@ class Include_File
 
     private static function processIncludes(string $markdown, string $filename, string $indent = '') : string {
 
+		static $arrLoaded=null;
+
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		/*<!-- build:debug -->*/
@@ -54,15 +65,29 @@ class Include_File
 		/*<!-- endbuild -->*/
 
 		// Replace the variable by the location of the current note
+
 		if (strpos($markdown, '%NOTE_FOLDER%') !== false) {
 			$folder=rtrim(str_replace('/', DS, dirname($filename)), DS).DS;
 			$markdown = str_replace('%NOTE_FOLDER%', $folder, $markdown);
 		}
 
-    	// The %INCLUDE ...% tag should start the line. If there is one or more character before
-    	// (for instance a single space) consider the tag not active.
-    	// So " %INCLUDE ..." won't work and can be therefore use to temporary disable the tag f.i.
-        if (preg_match_all('/^([ \\t])*%INCLUDE (.*)%/m', $markdown, $matches)) {
+    	// The %INCLUDE ...% tag should start the line. If there is one or more
+		// character before (for instance a single space) consider the tag not active.
+    	// So " %INCLUDE ..." won't work and can be therefore use to temporary
+		//  disable the tag f.i.
+		//
+		// The include statement is something like :
+		//
+		// %INCLUDE %NOTE_FOLDER%.settings/0_links.md{"once":1}%
+		//
+		// The JSON part ("  {"once":1}  " in this example) is optionnal and, if mentionned,
+		// contains settings
+
+		if ($arrLoaded===null) {
+			$arrLoaded=array();
+		}
+
+        if (preg_match_all('/^([ \\t])*%INCLUDE ([^{\\n]*)({.*})?%/m', $markdown, $matches)) {
 
             $aeSession = \MarkNotes\Session::getInstance();
     		$task = $aeSession->get('task');
@@ -72,8 +97,7 @@ class Include_File
     		$aeSession = \MarkNotes\Session::getInstance();
 
     		// Retrieve the note fullpath
-    		$root = rtrim($aeSettings->getFolderDocs(true), DS).DS;
-    		$root = $root.dirname($aeSession->get('filename')).DS;
+    		$root = dirname($filename).DS;
 
     		// Loop and process every %INCLUDE ..% tags
 
@@ -82,57 +106,125 @@ class Include_File
     		for($i=0; $i<count($matches[0]); $i++) {
 
     			// $tag    => $matches[0][0] will be f.i. "  %INCLUDE .chapters/chapter1.md%"
-    			// $before => $matches[1][0] will be f.i. "  "          // What's before %INCLUDE
+    			// $before => $matches[1][0] will be f.i. "  " i.e. what's before %INCLUDE
     			// $file   => $matches[2][0] will be f.i. ".chapters/chapter1.md"
-    			list($tag, $before, $file) = $matches;
+    			// $json   => $matches[3][0] will be f.i. "{"once":1}"
+    			list($tag, $before, $file, $json) = $matches;
 
     			// Get the filename to include
     			$sFile = realpath(str_replace('/',DS,$file[$i]));
 
-    			/*<!-- build:debug -->*/
-                if ($aeSettings->getDebugMode()) {
-                    $aeDebug->log($indent.'Including '.$sFile, 'debug');
-                }
-                /*<!-- endbuild -->*/
+				if ($sFile=='') continue;
 
     			if ($before[$i]=='') {
 
     				// Ok, no space before the tag => it's enabled => run it
 
+					$bContinue=1;
+
     				if (is_file($sFile)) {
 
-    					// And if found, get its content and replace the tag
-    					$content = trim(file_get_contents($sFile));
+						if ($json[$i]!=="") {
 
-						// Remove HTML comments ?
- 						$removeComments = boolval($aeSettings->getPage('remove_html_comments', 0));
-						if ($removeComments) $content=$aeFunctions::removeHTMLComments($content);
+							$tmp=json_decode($json[$i],true);
 
-						if (strpos($content, '%URL%') !== false) {
+							$once=$tmp['once']??0;
+							if(boolval($once)) {
 
-							// The %URL% variable should be relative to this note ($sFile)
-							// and not from the master note i.e. where the %INCLUDE% tag has
-							// been put
-							$content = str_replace('%URL%', self::getURL($sFile), $content);
+								// The file should be included only once
+								// So if already processed previously, don't import again.
+								if(in_array($sFile, $arrLoaded)) {
+									$bContinue=0;
+								}
+							} // if(boolval($once))
 
-						}
+						} // if ($json[$i]!=="")
 
-						// Now, perhaps that note (the included one) also contains
-    					// %INCLUDE ...% tag so ... process it again
+						if ($bContinue) {
 
-						while (strpos($content, '%INCLUDE ') !== false) {
+							/*<!-- build:debug -->*/
+			                if ($aeSettings->getDebugMode()) {
+			                    $aeDebug->log($indent.'Including '.$sFile, 'debug');
+			                }
+			                /*<!-- endbuild -->*/
 
-							$content = self::processIncludes($content, $sFile, $indent.'   ');
+							$arrLoaded[]=$sFile;
 
-						}
+							// Read the file
+							$sContent = trim(file_get_contents($sFile));
 
-    					$markdown = str_replace($tag[$i], $content, $markdown);
+							/*<!-- build:debug -->*/
+						    if ($aeSettings->getDevMode()) {
+								// Add the name of the included file to make
+								// easier to retrieve in which file the content
+								// can be retrieved / modified.
+								// (otherwise in the case of a complex note with
+								// a big number of INCLUDE statement, it becomes
+								// quite complex)
+							   	$sContent = "###### ".DEV_MODE_PREFIX." INCLUDE FILE ".$sFile."    {.devmode}\n\n".$sContent;
+						   	}
+							/*<!-- endbuild -->*/
+
+							$aeEvents = \MarkNotes\Events::getInstance();
+							$params['markdown'] = $sContent;
+							$params['filename'] = $sFile;
+							$args = array(&$params);
+
+							$aeEvents->trigger('markdown.read', $args);
+
+							$sContent = $args[0]['markdown'];
+
+							// Replace non breaking space to spaces since, otherwise,
+							// rendering will fail and no output will be done for the
+							// sentence/paragraph with that character.
+							// A non breaking space is U+00A0 (Unicode) but encoded
+							// as C2A0 in UTF-8
+							// Replace by a space character
+							$sContent=preg_replace('/\x{00a0}/siu', ' ', $sContent);
+
+							// Remove HTML comments ?
+	 						$removeComments = boolval($aeSettings->getPage('remove_html_comments', 0));
+							if ($removeComments) $sContent=$aeFunctions::removeHTMLComments($sContent);
+
+							if (strpos($sContent, '%URL%') !== false) {
+
+								// The %URL% variable should be relative to this note ($sFile)
+								// and not from the master note i.e. where the %INCLUDE% tag
+								// has been put
+
+								if(!in_array($task,array('epub','docx','pdf'))) {
+									// This is an hyperlink
+									$sContent = str_replace('%URL%', str_replace(' ','%20',self::getURL($sFile)), $sContent);
+								} else {
+									// When exporting the note, should be a local file
+									// Escape the directory separator (since under Windows,
+									// it's a backslash \ which has special meaning in a regex)
+									$sContent = str_replace('%URL%', str_replace(DS, '\\'.DS,rtrim(dirname($sFile)).DS), $sContent);
+
+								}
+
+							}
+
+							// Now, perhaps that note (the included one) also contains
+	    					// %INCLUDE ...% tag so ... process it again
+
+							while (strpos($sContent, '%INCLUDE ') !== false) {
+								$sContent = self::processIncludes($sContent, $sFile, $indent.'   ');
+							}
+
+						} else {
+
+							$sContent = '';
+
+						} // if ($bContinue)
+
+    					$markdown = str_replace($tag[$i], $sContent, $markdown);
 
     				} else { // if (is_file($sFile))
 
     					/*<!-- build:debug -->*/
     		            if ($aeSettings->getDebugMode()) {
-    		                $aeDebug->log('   Failure : file not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
+    		                $aeDebug->log('   Failure : file ['.$sFile.'] not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
     		            }
     		            /*<!-- endbuild -->*/
 
@@ -186,10 +278,14 @@ class Include_File
         $aeSession = \MarkNotes\Session::getInstance();
 
 		$task = $aeSession->get('task');
-		$filename = $aeSettings->getFolderDocs(true).$aeSession->get('filename');
 
 		// Don't change anything if the note is displayed through the edit form
-		if($task!=='edit.form') {
+		// No need to include files during a search since all single .md files will
+		// be processed
+
+		if(!in_array($task, array('edit.form','search'))) {
+
+			$filename = $aeSettings->getFolderDocs(true).$aeSession->get('filename');
 
             $params['markdown'] = self::processIncludes($params['markdown'], $filename, '');
 

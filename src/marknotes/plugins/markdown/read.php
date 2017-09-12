@@ -11,24 +11,57 @@ class Read
 
 	private static $sep='---';
 
+	private static function replaceSpecialCharacters(string $markdown) : string
+	{
+
+		if (trim($markdown) == '') {
+			return $markdown;
+		}
+
+		// Replace non breaking space to spaces since, otherwise, rendering will fail
+		// and no output will be done for the sentence/paragraph with that character.
+		// A non breaking space is U+00A0 (Unicode) but encoded as C2A0 in UTF-8
+		// Replace by a space character
+
+		try {
+			$markdown=preg_replace('/\x{00a0}/siu', ' ', $markdown);
+			if ($markdown == null) $markdown='';
+		} catch (Exception $e) {
+
+			/*<!-- build:debug -->*/
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log($e->getMessage(),"error",3);
+			/*<!-- endbuild -->*/
+		}
+
+		return $markdown;
+	}
+
     /**
      * Notes written in .md can contains variables.  The function below will
 	 * translate these variables.
      */
-    private static function replaceVariables(string $markdown) : string
+    private static function replaceVariables(array $params) : string
     {
+
         $aeFunctions = \MarkNotes\Functions::getInstance();
         $aeLanguage = \MarkNotes\Functions::getInstance();
         $aeSession = \MarkNotes\Session::getInstance();
         $aeSettings = \MarkNotes\Settings::getInstance();
 
-        // Get the web root like http://localhost/notes/
+		// Get the web root like http://localhost/notes/
         $sRoot = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/';
 
-		$sFileName =str_replace('/', DS,$aeSettings->getFolderDocs(true).$aeSession->get('filename'));
+		// markdown content
+		$markdown=$params['markdown'];
 
-        // Get the relative folder; like docs/folder/
-        $sFolder = str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
+		// Processing filename
+		// f.i. c:\sites\notes\docs\marknotes\french\userguide.md
+		$filename=str_replace('/', DS,$params['filename']);
+
+		// Get the relative folder; like docs/marknotes/french/
+        $sFolder=str_replace($aeSettings->getFolderDocs(true), '', dirname($filename)).'/';
+		$sFolder=str_replace(DS, '/', $aeSettings->getFolderDocs(false).$sFolder);
 
 		$task = $aeSession->get('task');
 
@@ -51,17 +84,41 @@ class Read
 				// Default will be '**Last update : %s**
 				$text = $arrSettings['text'] ?? '**Last update : %s**';
 
-				$date=utf8_encode(ucfirst(strftime($aeSettings->getText('date'), filemtime($sFileName))));
+				$date=utf8_encode(ucfirst(strftime($aeSettings->getText('date'), filemtime($filename))));
 
 				$markdown = str_replace('%LASTUPDATE%', sprintf($text, $date), $markdown);
 
 			}
 
-			$markdown = str_replace('%URL%', str_replace(' ', '%20', $sRoot.$sFolder), $markdown);
+			// The %URL% variable should be relative to this note ($sFile)
+			// and not from the master note i.e. where the %INCLUDE% tag
+			// has been put
+			//
+			// domPDF requires URL not filename
 
-	        $markdown = str_replace('%NOTE_FOLDER%', rtrim($aeSettings->getFolderWebRoot().$sFolder, DS), $markdown);
+			if(!in_array($task,array('epub','docx'))) {
+				// This is an hyperlink
+				$markdown = str_replace('%URL%', str_replace(' ', '%20', $sRoot.$sFolder), $markdown);
+			} else {
+				// When exporting the note, should be a local file
+				// Escape the directory separator (since under Windows,
+				// it's a backslash \ which has special meaning in a regex)
+				$markdown = str_replace('%URL%', str_replace(DS, '\\'.DS,rtrim(dirname($filename)).DS), $markdown);
 
-	        $markdown = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $markdown);
+			}
+
+			if (strpos($markdown, '%NOTE_FOLDER%')!==FALSE) {
+
+				$tmp=rtrim($aeSettings->getFolderWebRoot().$sFolder);
+				$tmp=str_replace('/',DS,$tmp);
+
+		        $markdown = str_replace('%NOTE_FOLDER%', rtrim($tmp, DS).DS, $markdown);
+
+			} // if (strpos($markdown, '%NOTE_FOLDER%')!==FALSE)
+
+			$tmp=$aeSettings->getFolderDocs(false);
+			$tmp=str_replace('/',DS,$tmp);
+	        $markdown = str_replace('%DOCS%', rtrim($tmp, DS), $markdown);
 		}
 
         return $markdown;
@@ -84,7 +141,7 @@ class Read
 
 		$arr=array();
 
-		$arr['title']=$pageTitle;
+		$arr['title']=trim($pageTitle);
 
 		// Check if there are default values and if yes, add them
 		$defaults=$arrSettings['defaults'];
@@ -251,7 +308,8 @@ class Read
 
 		$params['markdown'] = str_replace('&params', '&amp;param', $params['markdown']);
 
-        $params['markdown'] = self::replaceVariables($params['markdown']);
+		$params['markdown'] = self::replaceVariables($params);
+		$params['markdown'] = self::replaceSpecialCharacters($params['markdown']);
 
         return true;
     }
@@ -261,8 +319,11 @@ class Read
      */
     public function bind()
     {
-        $aeEvents = \MarkNotes\Events::getInstance();
+
+		$aeEvents = \MarkNotes\Events::getInstance();
         $aeEvents->bind('markdown.read', __CLASS__.'::readMD');
+
         return true;
+
     }
 }

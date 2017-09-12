@@ -136,7 +136,8 @@ class Display
             include_once dirname(__DIR__)."/view/toolbar.php";
             $aeToolbar = \MarkNotes\View\Toolbar::getInstance();
 
-            $html = $aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
+			//$html = $aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
+			$html = $aeToolbar->getToolbar($params).'<div id="note_content">'.$html.'</div>';
 
             $html = '<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
 

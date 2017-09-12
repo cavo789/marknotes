@@ -213,7 +213,7 @@ class ListFiles
             'type' => 'folder',
             'icon' => 'folder',
             'text' => $sDirectoryText,
-            'state' => array('opened' => ($root == $dir),'disabled' => 1),
+            'state' => array('opened' => (($root == $dir)?1:0),'disabled' => 1),
             'data' => array(
                 'url' => utf8_encode(str_replace(DS, '/', str_replace($root, '', $dir)))
             ),

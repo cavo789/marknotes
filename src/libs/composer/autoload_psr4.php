@@ -20,4 +20,5 @@ return array(
     'Org\\Heigl\\Hyphenator\\' => array($vendorDir . '/org_heigl/hyphenator/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
+    'Cocur\\Slugify\\' => array($vendorDir . '/cocur/slugify/src'),
 );

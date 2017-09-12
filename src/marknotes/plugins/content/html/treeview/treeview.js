@@ -322,6 +322,7 @@ function fnPluginTaskTreeView_reload(data) {
 		select_node: $select_node,
 		useStore: false
 	});
+
 	return true;
 
 }

@@ -51,8 +51,8 @@ class Pandoc
 			$filename = $aeSettings->getFolderDocs(true).$params['filename'];
 
 			// Derive filenames
-
 			$slug = $aeConvert->getSlugName();
+
 			$debugFile = $aeConvert->getDebugFileName();
 
 			// Get a copy of the .md note (in /temp folder), run any plugins

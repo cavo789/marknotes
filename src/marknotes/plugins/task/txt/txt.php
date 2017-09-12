@@ -25,6 +25,13 @@ class TXT
         $aeFiles = \MarkNotes\Files::getInstance();
         $filename = $params['output'] ?? '';
 
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDevMode()) {
+			// During the development mode, always recreate the file
+			unlink($filename);
+		}
+		/*<!-- endbuild -->*/
+
 //        if (!$aeFiles->fileExists($filename)) {
 //            $filename = utf8_encode($filename);
 //        }
