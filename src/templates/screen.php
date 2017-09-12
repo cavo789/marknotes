@@ -19,15 +19,14 @@
 
         <!--%FONT%-->
 
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/font-awesome/css/font-awesome.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/print-preview/print-preview.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="assets/css/marknotes_screen.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/jsTree/themes/default/style.min.css" />
-        <link media="screen" rel="stylesheet" type="text/css" href="libs/jquery-toolbar/jquery.toolbar.css" />
-
-        <link media="print" rel="stylesheet" type="text/css" media="print" href="assets/css/marknotes_print.css">
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/bootstrap/css/bootstrap.min.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/print-preview/print-preview.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/jquery-flexdatalist/jquery.flexdatalist.min.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/assets/css/marknotes_screen.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/jsTree/themes/default/style.min.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/jquery-toolbar/jquery.toolbar.css" />
+        <link media="print" rel="stylesheet" type="text/css" media="print" href="%ROOT%/assets/css/marknotes_print.css">
 
         <!--%ADDITIONNAL_CSS%-->
 
@@ -70,29 +69,29 @@
       <footer class="onlyprint">&nbsp;</footer>
 
       <!-- Add libraries. Thank you to these developpers! -->
-      <script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
-      <script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/jquery/jquery.min.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/bootstrap/js/bootstrap.min.js"></script>
 
       <!-- Used by the search box, for auto-completion -->
-      <script type="text/javascript" src="libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/jquery-flexdatalist/jquery.flexdatalist.min.js"></script>
 
       <!-- For the Print preview button -->
-      <script type="text/javascript" src="libs/print-preview/jquery.print-preview.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/print-preview/jquery.print-preview.js"></script>
 
       <!-- For nice user alerts (informations, warning, ...) -->
-      <script type="text/javascript" src="libs/noty/jquery.noty.packaged.min.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/noty/jquery.noty.packaged.min.js"></script>
 
       <!-- For highligthing content in a note : after a search, the displayed note will have the search term highlighted -->
-      <script type="text/javascript" src="libs/jquery.highlight.js/jquery.highlight.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/jquery.highlight.js/jquery.highlight.js"></script>
 
       <!-- jsTree -->
-      <script type="text/javascript" src="libs/jsTree/jstree.min.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/jsTree/jstree.min.js"></script>
 
       <!-- jquery-toolbar -->
-      <script type="text/javascript" src="libs/jquery-toolbar/jquery.toolbar.min.js"></script>
+      <script type="text/javascript" src="%ROOT%/libs/jquery-toolbar/jquery.toolbar.min.js"></script>
 
       <!-- Store.js -->
-      <script src="libs/store/store.everything.min.js"></script>
+      <script src="%ROOT%/libs/store/store.everything.min.js"></script>
 
       <script type="text/javascript">
          var marknotes = {};
@@ -110,9 +109,9 @@
       <!--%ADDITIONNAL_JS%-->
 
       <!--%MARKDOWN_GLOBAL_VARIABLES%-->
-      <script type="text/javascript" src="assets/js/jstree.js"></script>
-      <script type="text/javascript" src="assets/js/fullscreen.js"></script>
-      <script type="text/javascript" src="assets/js/marknotes.js"></script>
+      <script type="text/javascript" src="%ROOT%/assets/js/jstree.js"></script>
+      <script type="text/javascript" src="%ROOT%/assets/js/fullscreen.js"></script>
+      <script type="text/javascript" src="%ROOT%/assets/js/marknotes.js"></script>
       <script type="text/javascript">initializeTasks();</script>
 
    </body>

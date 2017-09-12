@@ -18,6 +18,7 @@
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/bootstrap/css/bootstrap.min.css" />
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/font-awesome/css/font-awesome.min.css" />
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/html.css" />
+        <link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/github-markdown-css/github-markdown.css" />
 
 		<!--%ADDITIONNAL_CSS%-->
 
@@ -26,7 +27,7 @@
 	<body>
 
 		<div class="container">
-			<article id="top">
+			<article id="top" class="markdown-body">
 				%CONTENT%
 			</article>
 		</div>
