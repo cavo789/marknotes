@@ -77,11 +77,14 @@ class Tags
             if ($aeFiles->fileExists($fname = $aeSettings->getFolderWebRoot().'tags.json')) {
                 $aeJSON = \MarkNotes\JSON::getInstance();
                 if (filesize($fname) > 0) {
+
                     $arrTags = $aeJSON->json_decode($fname, true);
 
-                    foreach ($arrTags as $tag) {
-                        $arr[] = $tag;
-                    }
+					if (count($arrTags)>0) {
+	                    foreach ($arrTags as $tag) {
+	                        $arr[] = $tag;
+	                    }
+					}
                 }
             }
 

@@ -10,8 +10,6 @@
  *    ------      ----------
  *    “           `
  *    ”           `
- *    ‘           `
- *    ’           `
  *
  * 2. replace non breaking spaces introduced by Pandoc when the .md file
  *    is the result of a conversion from .docx to .md
@@ -52,8 +50,6 @@ class Clean_Code
 		// 1. Replace characters
 		$tmp=str_replace('“', '`', $tmp);
 		$tmp=str_replace('”', '`', $tmp);
-		$tmp=str_replace('‘', '`', $tmp);
-		$tmp=str_replace('’', '`', $tmp);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDevMode()) {

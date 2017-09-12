@@ -36,7 +36,7 @@ class Sitemap
             // Be carefull, folders / filenames perhaps contains accentuated characters
             $arrFiles = array_map('utf8_encode', $arrFiles);
 
-            if ($bOptimize)) {
+            if ($bOptimize) {
                 $aeSession->set('Sitemap', json_encode($arrFiles));
             }
         } // if (count($arrFiles)==0)

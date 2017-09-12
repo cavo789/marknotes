@@ -82,7 +82,12 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
 			$filename = substr($filename, strlen($docRoot));
 		}
 
-		$filename=$aeFiles->removeExtension($filename).'.md';
+		// Very special files
+		$arrSpecialFiles=array('tag.json', 'timeline.html', 'timeline.json', 'sitemap.xml');
+
+		if (!in_array($filename, $arrSpecialFiles)) {
+			$filename=$aeFiles->removeExtension($filename).'.md';
+		}
 
 		$full=$aeSettings->getFolderDocs(true).$filename;
 
@@ -93,7 +98,7 @@ if (version_compare(phpversion(), '7.0.0', '<')) {
             $format = 'index';
             $fileMD = $filename;
 
-        } elseif (in_array($filename, array('tag.json', 'timeline.html', 'timeline.json', 'sitemap.xml'))) {
+        } elseif (in_array($filename, $arrSpecialFiles)) {
             // Specific files
             $aeFiles = \MarkNotes\Files::getInstance();
 
