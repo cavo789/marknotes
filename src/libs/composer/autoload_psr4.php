@@ -19,6 +19,9 @@ return array(
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php/PDepend'),
     'Org\\Heigl\\Hyphenator\\' => array($vendorDir . '/org_heigl/hyphenator/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'MatthiasMullie\\PathConverter\\' => array($vendorDir . '/matthiasmullie/path-converter/src'),
+    'MatthiasMullie\\Minify\\' => array($vendorDir . '/matthiasmullie/minify/src'),
+    'Jaybizzle\\CrawlerDetect\\' => array($vendorDir . '/jaybizzle/crawler-detect/src'),
     'Dompdf\\' => array($vendorDir . '/dompdf/dompdf/src'),
     'Cocur\\Slugify\\' => array($vendorDir . '/cocur/slugify/src'),
 );

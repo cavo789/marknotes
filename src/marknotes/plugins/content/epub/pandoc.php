@@ -61,22 +61,22 @@ class Pandoc
 			$sScript = $aeConvert->getScript($tempMD, $final);
 
 			$aeConvert->Run($sScript, $final);
-
 		} // if (!$aeConvert->isValid())
 
-		if ($bReturn) $params['output'] = $final;
+		if ($bReturn) {
+			$params['output'] = $final;
+		}
 
-        return true;
+		return true;
+	}
 
-    }
-
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-    {
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt');
-        return true;
-    }
+	/**
+	* Attach the function and responds to events
+	*/
+	public function bind(string $plugin)
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt', $plugin);
+		return true;
+	}
 }

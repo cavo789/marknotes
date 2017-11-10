@@ -6,315 +6,288 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Markdown
 {
-    protected static $hInstance = null;
+	protected static $hInstance = null;
 
-    public function __construct()
-    {
-        return true;
-    } // function __construct()
+	public function __construct()
+	{
+		return true;
+	} // function __construct()
 
-    public static function getInstance()
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new Markdown();
-        }
-        return self::$hInstance;
-    } // function getInstance()
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new Markdown();
+		}
+		return self::$hInstance;
+	} // function getInstance()
 
-    /**
-     * From a markdown content, return an heading text (by default the ""# TEXT" i.e. the heading 1)
-     */
-    public function getHeadingText(string $markdown, string $heading = '#') : string
-    {
-        // Try to find a heading 1 and if so use that text for the title tag of the generated page
-        $matches = array();
-        $title = '';
+	/**
+	 * From a markdown content, return an heading text (by default the ""# TEXT" i.e. the heading 1)
+	 */
+	public function getHeadingText(string $markdown, string $heading = '#') : string
+	{
+		// Try to find a heading 1 and if so use that text for the title tag of the generated page
+		$matches = array();
+		$title = '';
 
-        try {
-            preg_match("/".$heading." ?(.*)/", $markdown, $matches);
-            $title = (count($matches) > 0) ? trim($matches[1]) : '';
+		try {
+			preg_match("/".$heading." ?(.*)/", $markdown, $matches);
+			$title = (count($matches) > 0) ? trim($matches[1]) : '';
 
-            // Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
+			// Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
 
-            $title = ltrim(rtrim($title, $heading), $heading);
-        } catch (Exception $e) {
-        }
+			$title = ltrim(rtrim($title, $heading), $heading);
+		} catch (Exception $e) {
+		}
 
-        return $title;
-    } //  function getHeadingText()
+		return $title;
+	} //  function getHeadingText()
 
-    /**
-     * Remove <encrypt xxxx> content </encrypt> and replace by *confidential*
-     */
-    public function ShowConfidential(string $markdown) : string
-    {
-        // ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
-        preg_match_all('/<encrypt[[:blank:]]*[^>]*>([\\S\\n\\r\\s]*?)<\/encrypt>/', $markdown, $matches);
+	/**
+	 * Convert any links like ![alt](image/file.png) or <img src='image/file.php' /> to
+	 * an absolute link to the image
+	 */
+	private function setImagesAbsolute(string $markdown, array $params = null) : string
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+		   $aeDebug = \MarkNotes\Debug::getInstance();
+		   $aeDebug->log("STILL NEEDED ?????","debug");
+		}
+		return $markdown;
+		/*<!-- endbuild -->*/
+		// List of tasks (extensions) for which images should be referred locally
+		// i.e. not through a http:// syntax but like c:\folder, local on the filesystem
+		// so the convertor program can retrieve the file (the image)
+		$arrFilePaths = array('docx','epub','pdf');
 
-        // Remove the tag prefix
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $prefix = $aeSettings->getTagPrefix();
-        $markdown = str_replace($prefix, '', $markdown);
+		$task = $aeSession->get('task');
 
-        // If matches is greater than zero, there is at least one <encrypt> tag found in the file content
-        if (count($matches[0]) > 0) {
-            $j = count($matches[0]);
+		$folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
+		if (isset($params['filename'])) {
+			$params['filename'] = str_replace($folderNote, '', $params['filename']);
 
-            $i = 0;
+			$folderNote .= rtrim(dirname($params['filename']), DS).DS;
 
-            for ($i; $i < $j; $i++) {
-                $markdown = str_replace($matches[0][$i], '<strong class="confidential">'.$aeSettings->getText('confidential', 'confidential').'</strong>', $markdown);
-            }
-        }
+			$subfolder = trim(str_replace(basename($params['filename']), '', $params['filename']));
 
-        return $markdown;
-    } // function ShowConfidential
+			// Get the full path to this note
+			// $url will be, f.i., http://localhost/notes/docs/
+			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
-    /**
-     * Convert any links like ![alt](image/file.png) or <img src='image/file.php' /> to
-     * an absolute link to the image
-     */
-    private function setImagesAbsolute(string $markdown, array $params = null) : string
-    {
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
+			// Extract the subfolder f.i. private/home/dad/
 
-        // List of tasks (extensions) for which images should be referred locally
-        // i.e. not through a http:// syntax but like c:\folder, local on the filesystem
-        // so the convertor program can retrieve the file (the image)
-        $arrFilePaths = array('docx','epub','pdf');
+			if ($subfolder !== '') {
+				$url .= str_replace(DS, '/', $subfolder);
+			}
 
-        $task = $aeSession->get('task');
+			$pageURL = $url;
 
-        $folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
+			if (in_array($task, $arrFilePaths)) {
+				// PDF exportation : links to images should remains relative
+				$url = rtrim($aeSettings->getFolderDocs(true), DS).DS;
+				if ($subfolder !== '') {
+					$url .= $subfolder;
+				}
+			}
 
-        if (isset($params['filename'])) {
-            $params['filename'] = str_replace($folderNote, '', $params['filename']);
+			// Don't allow spaces in name
+			if (!in_array($task, $arrFilePaths)) {
+				$url = str_replace(' ', '%20', $url);
+			}
 
-            $folderNote .= rtrim(dirname($params['filename']), DS).DS;
+			$imgTag = '\!\[(.*)\]\((.*)\)';
 
-            $subfolder = trim(str_replace(basename($params['filename']), '', $params['filename']));
+			$matches = array();
 
-            // Get the full path to this note
-            // $url will be, f.i., http://localhost/notes/docs/
-            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			// When the task is DOCX, PDF, ... links to images should be from the disk and
+			// not from an url so replace absolute links by relative ones, then, replace
+			// links by hard disk filepaths
 
-            // Extract the subfolder f.i. private/home/dad/
+			if (in_array($task, $arrFilePaths)) {
+				if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+					for ($i = 0; $i < count($matches[2]); $i++) {
+						$matches[2][$i] = str_replace($pageURL, '', $matches[2][$i]);
+						$matches[2][$i] = str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
 
-            if ($subfolder !== '') {
-                $url .= str_replace(DS, '/', $subfolder);
-            }
+						$markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$matches[2][$i].')', $markdown);
+					}
+				}
+			} // if(in_array($task, $arrFilePaths))
 
-            $pageURL = $url;
+			// Get the list of images i.e. tags like :  ![My image](.images/local.jpg)
+			// and check if the file is local (in a subfolder of the note). If so, convert the relative
+			//     ![My image](.images/local.jpg) to an absolute path
+			//     ![My image](http://localhost/folder/subfolder/.images/local.jpg)
 
-            if (in_array($task, $arrFilePaths)) {
+			$matches = array();
+			if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+				$j = count($matches[0]);
+				for ($i = 0; $i <= $j; $i++) {
+					if (isset($matches[2][$i])) {
+						// Add the fullpath only if the link to the image doesn't contains yet
+						// an hyperlink
+						if (strpos($matches[2][$i], '//') === false) {
+							$filename = str_replace('/', DS, $matches[2][$i]);
 
-                // PDF exportation : links to images should remains relative
-                $url = rtrim($aeSettings->getFolderDocs(true), DS).DS;
-                if ($subfolder !== '') {
-                    $url .= $subfolder;
-                }
-            }
+							if (strpos($filename, $folderNote) === false) {
+								$filename = $folderNote.$filename;
+							}
 
-            // Don't allow spaces in name
-            if (!in_array($task, $arrFilePaths)) {
-                $url = str_replace(' ', '%20', $url);
-            }
-
-            $imgTag = '\!\[(.*)\]\((.*)\)';
-
-            $matches = array();
-
-            // When the task is DOCX, PDF, ... links to images should be from the disk and
-            // not from an url so replace absolute links by relative ones, then, replace
-            // links by hard disk filepaths
-
-            if (in_array($task, $arrFilePaths)) {
-                if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-
-                    for ($i = 0;$i < count($matches[2]);$i++) {
-                        $matches[2][$i] = str_replace($pageURL, '', $matches[2][$i]);
-                        $matches[2][$i] = str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
-
-                        $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$matches[2][$i].')', $markdown);
-                    }
-                }
-            } // if(in_array($task, $arrFilePaths))
-
-            // Get the list of images i.e. tags like :  ![My image](.images/local.jpg)
-            // and check if the file is local (in a subfolder of the note). If so, convert the relative
-            //     ![My image](.images/local.jpg) to an absolute path
-            //     ![My image](http://localhost/folder/subfolder/.images/local.jpg)
-
-            $matches = array();
-            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-                $j = count($matches[0]);
-
-                for ($i = 0; $i <= $j; $i++) {
-                    if (isset($matches[2][$i])) {
-                        // Add the fullpath only if the link to the image doesn't contains yet
-                        // an hyperlink
-                        if (strpos($matches[2][$i], '//') === false) {
-                            $filename = str_replace('/', DS, $matches[2][$i]);
-
-                            if (strpos($filename, $folderNote) === false) {
-                                $filename = $folderNote.$filename;
-                            }
-
-                            // Relative name to the image
-                            $img = $matches[2][$i];
-
-							// If the image url doesn't start with http, make the
+							// Relative name to the image
+							$img = $matches[2][$i];
+// If the image url doesn't start with http, make the
 							// url absolute by adding the full url of the note
 							if (strpos($img, 'http')!== 0) {
 								$img=$url.$img;
 							}
 
-                            if (in_array($task, $arrFilePaths)) {
+							if (in_array($task, $arrFilePaths)) {
+								$img = str_replace(str_replace(' ', '%20', $pageURL), '', $img);
+								// convert the / to the OS directory separator
+								$img = str_replace('/', DS, $img);
 
-                                $img = str_replace(str_replace(' ', '%20', $pageURL), '', $img);
+								//$img = $url.$img;
+								// If the link to the image contains \. double the slash
+								// (otherwise the slash will be interpreted as
+								// an escape character)
+								$img = str_replace('\.', '\\\.', $img);
+							} // if($task==='pdf')
 
-                                // convert the / to the OS directory separator
-                                $img = str_replace('/', DS, $img);
+							if ($aeFiles->fileExists($filename)) {
+								$markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
+							} else {
+								/*<!-- build:debug -->*/
+								if (in_array($task, array('task.export.html','main','html'))) {
+									if ($aeSettings->getDebugMode()) {
+										$aeDebug = \MarkNotes\Debug::getInstance();
+										$aeDebug->here('DEBUG MODE --- In file    '.$params['filename'].' ==> '.$filename.' NOT FOUND');
+									}
+								}
+								/*<!-- endbuild -->*/
+							}
+						}//if (strpos('//', $matches[2][$i])===FALSE)
+					}
+				}
+			} // if (preg_match_all('/'.$imgTag.'/'
+			// And process <img> tags
+			$imgTag = '<img (.*)src *= *["\']([^"\']+["\']*)[\'|"]';
 
-                                //$img = $url.$img;
+			$matches = array();
+			if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+				$j = count($matches);
+				for ($i = 0; $i <= $j; $i++) {
+					// Derive the image fullname ($folderNote.str_replace('/',DS,$matches[1][$i]))) and check if the file exists
+					if (isset($matches[2][$i])) {
+						// Add the fullpath only if the link to the image doesn't contains yet
+						// an hyperlink
+						if (strpos($matches[2][$i], '//') === false) {
+							// Relative name to the image
+							$img = $matches[2][$i];
 
-                                // If the link to the image contains \. double the slash
-                                // (otherwise the slash will be interpreted as
-                                // an escape character)
-                                $img = str_replace('\.', '\\\.', $img);
-                            } // if($task==='pdf')
+							if (in_array($task, $arrFilePaths)) {
+								// PDF => convert the / to the OS directory separator
+								$img = str_replace('/', DS, $img);
 
-                            if ($aeFiles->fileExists($filename)) {
-                                $markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
-                            } else {
+								// If the link to the image contains \. double the slash
+								// (otherwise the slash will be interpreted as
+								// an escape character)
+								$img = str_replace('\.', '\\\.', $img);
+							} // if($task==='pdf')
 
-                                /*<!-- build:debug -->*/
-                                if (in_array($task, array('display','main','html'))) {
-                                   if ($aeSettings->getDebugMode()) {
-                                       $aeDebug = \MarkNotes\Debug::getInstance();
-                                       $aeDebug->here('DEBUG MODE --- In file    '.$params['filename'].' ==> '.$filename.' NOT FOUND');
-                                   }
-							   }
-                                /*<!-- endbuild -->*/
-                            }
-                        }//if (strpos('//', $matches[2][$i])===FALSE)
-                    }
-                }
-            } // if (preg_match_all('/'.$imgTag.'/'
+							$filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
 
-            // And process <img> tags
-            $imgTag = '<img (.*)src *= *["\']([^"\']+["\']*)[\'|"]';
+							if ($aeFiles->fileExists($filename)) {
+								$img = $url.trim($matches[2][$i]);
+								$markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
+							}
+						}
+					}
+				}
+			} // if (preg_match_all('/'.$imgTag.'/'
+		} // if (isset($params['filename']))
 
-            $matches = array();
-            if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
-                $j = count($matches);
-                for ($i = 0; $i <= $j; $i++) {
-                    // Derive the image fullname ($folderNote.str_replace('/',DS,$matches[1][$i]))) and check if the file exists
-                    if (isset($matches[2][$i])) {
+		return $markdown;
+	}
 
-                        // Add the fullpath only if the link to the image doesn't contains yet
-                        // an hyperlink
-                        if (strpos($matches[2][$i], '//') === false) {
-
-                            // Relative name to the image
-                            $img = $matches[2][$i];
-
-                            if (in_array($task, $arrFilePaths)) {
-
-                                // PDF => convert the / to the OS directory separator
-                                $img = str_replace('/', DS, $img);
-
-                                // If the link to the image contains \. double the slash
-                                // (otherwise the slash will be interpreted as
-                                // an escape character)
-                                $img = str_replace('\.', '\\\.', $img);
-                            } // if($task==='pdf')
-
-                            $filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
-
-                            if ($aeFiles->fileExists($filename)) {
-                                $img = $url.trim($matches[2][$i]);
-                                $markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
-                            }
-                        }
-                    }
-                }
-            } // if (preg_match_all('/'.$imgTag.'/'
-        } // if (isset($params['filename']))
-
-        return $markdown;
-    }
-
-    /**
-     * Read a markdown file and return its content.
-     * Correctly handle encrypted informations
-     *
-     * $params['removeConfidential']    1 : when encrypted data should be displayed as "Confidential"
-     *                                  0 : encrypted infos will be displayed
-     */
-    public function read(string $filename, array $params = null) : string
-    {
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $aeDebug = \MarkNotes\Debug::getInstance();
+	/**
+	 * Read a markdown file and return its content.
+	 *
+	 * $params['encryption'] = 0 : encrypted data should be displayed unencrypted
+	 *                         1 : encrypted infos should stay encrypted
+	 */
+	public function read(string $filename, array $params = null) : string
+	{
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+		}
+		/*<!-- endbuild -->*/
 		$aeSession = \MarkNotes\Session::getInstance();
 
-        if ($aeFiles->fileExists($filename)) {
-
+		if ($aeFiles->fileExists($filename)) {
 			$task = $aeSession->get('task');
 
-            $markdown = file_get_contents(utf8_decode($filename));
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log("Process file ".$filename,"debug");
+			}
+			/*<!-- endbuild -->*/
 
-            // --------------------------------
-            // Call content plugins
-            $aeEvents->loadPlugins('markdown');
+			$markdown = file_get_contents(utf8_decode($filename));
 
-            $params['markdown'] = $markdown;
-            $params['filename'] = $filename;
-            $args = array(&$params);
-            $aeEvents->trigger('markdown.read', $args);
-            $markdown = $args[0]['markdown'];
+			// --------------------------------
+			// Call content plugins
+			$aeEvents->loadPlugins('markdown');
 
-            $aeFiles = \MarkNotes\Files::getInstance();
-            $aeFunctions = \MarkNotes\Functions::getInstance();
+			$params['markdown'] = $markdown;
+			$params['filename'] = $filename;
+			$args = array(&$params);
+			$aeEvents->trigger('markdown::markdown.read', $args);
+			$markdown = $args[0]['markdown'];
 
-            // Get the full path to this note
-            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-            $noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
-            // --------------------------------
+			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFunctions = \MarkNotes\Functions::getInstance();
 
-            // In the markdown file, two syntax are possible for images,
-            // the ![]() one or the <img src one
-            // Be sure to have the correct relative path i.e. pointing to the
-            // folder of the note
-            $matches = array();
-            $markdown = self::setImagesAbsolute($markdown, $params);
+			// Get the full path to this note
+			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+			// --------------------------------
 
-            // And do it too for links to the files folder
-            $markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
+			// In the markdown file, two syntax are possible for images,
+			// the ![]() one or the <img src one
+			// Be sure to have the correct relative path i.e. pointing to the
+			// folder of the note
+			if ($task!=='task.search.search') {
+				$markdown = self::setImagesAbsolute($markdown, $params);
+			}
 
-            if (isset($params['removeConfidential'])) {
-                if ($params['removeConfidential'] === '1') {
-                    $markdown = $this->ShowConfidential($markdown);
-                }
-            }
+			// And do it too for links to the files folder
+			$markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
 
-        } else {
+			//if (isset($params['removeConfidential'])) {
+			//	if ($params['removeConfidential'] === '1') {
+			//		$markdown = $this->ShowConfidential($markdown);
+			//	}
+			//}
+		} else {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log('Error while opening '.$filename, 'error');
+			}
+			/*<!-- endbuild -->*/
 
-            /*<!-- build:debug -->*/
-            if ($aeSettings->getDebugMode()) {
-                $aeDebug->log('Error while opening '.$filename, 'error');
-            }
-            /*<!-- endbuild -->*/
+			$markdown = '';
+		}
 
-            $markdown = '';
-        }
-
-        return $markdown;
-    }
+		return $markdown;
+	}
 }

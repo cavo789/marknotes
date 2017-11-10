@@ -1,7 +1,8 @@
 <?php
 
 /**
- * This plugin will scan the markdown content and retrieve every "Todo" like in
+ * This plugin will scan the markdown content and check for the presence
+ * of the "%TODOS%" tag. If found, try to retrieve every "Todo" like in
  *
  *   Ipso lorem
  *   Todo Christophe : Check if i's possible to ...
@@ -34,167 +35,161 @@ namespace MarkNotes\Plugins\Markdown;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Todos
+class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 {
-    /**
-     * The markdown file has been read, this function will get the content of the .md file and
-     * make some processing like data cleansing
-     *
-     * $params is a associative array with, as entries,
-     *		* markdown : the markdown string (content of the file)
-     *		* filename : the absolute filename on disk
-     */
-    public static function readMD(&$params = null)
-    {
-        if (trim($params['markdown']) === '') {
-            return true;
-        }
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.markdown.todos';
+	protected static $json_options = 'plugins.options.markdown.todos';
 
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	/**
+	 * Scan the markdown content, search every TODO occurences and generate
+	 * an array with the list of todos
+	 */
+	private static function getTodos(string $markdown) : array
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$task = $aeSession->get('task');
 
-        $file = $aeSession->get('filename');
-        $matches = array();
+		$file = $aeSession->get('filename');
+		$matches = array();
 
-        $bIntroAdded = false;
+		$bIntroAdded = false;
 
-        $url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
 
-        $urlHTML = '';
-        if ($file !== '') {
-            $urlHTML = $url.'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-            $urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($file, 'html'));
-            $urlHTML = str_replace(' ', '%20', $urlHTML);
-        }
+		$urlHTML = '';
+		if ($file !== '') {
+			$urlHTML = $url.'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($file, 'html'));
+			$urlHTML = str_replace(' ', '%20', $urlHTML);
+		}
 
-        // Retrieve the title for the section, from settings.json
-        //
-        // $arrSettings is an array like :
-        //      "todos" : {
-        //         "pattern" : "(Todo)( |\a|\t|:){1}(.*)",
-        //         "title": "## Todo's overview"
-        //      },
-        //      "decisions" : {
-        //         "pattern" : "(Decision)( |\a|\t|:){1}(.*)",
-        //         "title": "## Decision points"
-        //      }
+		// Retrieve the title for the section, from settings.json
+		//
+		// $arrSettings is an array like :
+		//      "todos" : {
+		//         "pattern" : "(Todo)( |\a|\t|:){1}(.*)",
+		//         "title": "## Todo's overview"
+		//      },
+		//      "decisions" : {
+		//         "pattern" : "(Decision)( |\a|\t|:){1}(.*)",
+		//         "title": "## Decision points"
+		//      }
 
-        $arrSettings = $aeSettings->getPlugins('options', 'todos');
+		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();
 
-        foreach ($arrSettings as $key => $value) {
+		$arrOptions = self::getOptions('tags', array());
 
-            // $prefix will f.i. contains "todos" or "decisions" i.e. the name of the key
-            // from settings.json->plugins->options->todos
+		$sTodo = '';
 
-            $prefix = $key;
+		for ($i=0; $i < count($arrOptions); $i++) {
 
-            // $pattern will contain the regex pattern
-            $pattern = trim($value['pattern'] ?? '');
 
-            // and $title the ... title for the summary table
+			$tmp = $aeRegex->removeMarkdownCodeBlock($markdown);
 
-            if ($pattern == '') {
-                continue;
-            }
+			// Get the pattern f.i. (Todo)( |\\a|\\t|:){1}(.*)"
+			$pattern = trim($arrOptions[$i]['pattern']);
 
-            // and $title the ... title for the summary table
-            $title = trim($value['title'] ?? '');
+			if ($pattern == '') {
+				continue;
+			}
 
-            // and $column the text to use as header of the table's column
-            $column = trim($value['column'] ?? '');
+			if (preg_match_all("/".$pattern."/im", $tmp, $matches)) {
+				// Get the title, column and anchor
+				// For instance,
+				//   "title": "### Todo's overview"
+				//   "column": "Action point"
+				//   "anchor": "todo"
+				$title = trim($arrOptions[$i]['title']);
+				$column = trim($arrOptions[$i]['column']);
+				$anchor = trim($arrOptions[$i]['anchor']);
 
-            if (preg_match_all("/".$pattern."/im", $params['markdown'], $matches)) {
-                $arrTodos = array();
+				$arrTodos = array();
 
-                // Get the number of groups in the regex
-                //
-                // Example : "Todo Christophe : make it rocks!"
-                //
-                // 0 : the matched string                        => "Todo Christophe : make it rocks!"
-                // 1 : The todo word                             => "Todo"
-                // 2 : Spaces or punctuation just after the word => ""
-                // 3 : After the punctuation                     => "Christophe : make it rocks!"
+				// Get the number of groups in the regex
+				//
+				// Example : "Todo Christophe : make it rocks!"
+				//
+				// 0 : the matched string    => "Todo Christophe : make it rocks!"
+				// 1 : The Todo word         => "Todo"
+				// 2 : Spaces or punctuation just after the word => ""
+				// 3 : After the punctuation => "Christophe : make it rocks!"
 
-                $j = count($matches);
+				$entries = count($matches[0]);
 
-                $entries = count($matches[0]);
+				for ($j = 0; $j < $entries; $j++) {
+					// Prepare the new line :
+					//   * Add a todo number (given by #$j)
+					//   * Add put the line in bold
 
-                for ($i = 0; $i < $entries; $i++) {
-
-                    // Prepare the new line :
-                    //   * Add a todo number (given by #$i)
-                    //   * Add put the line in bold
-
-                    $sWhoWhat = $matches[2][$i].($matches[3][$i] ?? '');
+					$sWhoWhat = $matches[2][$j].($matches[3][$j] ?? '');
 
 					if (!in_array($task, array("pdf","txt"))) {
-						$anchor = "<a name='".$prefix."_".($i + 1)."'></a>";
+						$link = "<a name='".$anchor."_".($j + 1)."'></a>";
 					} else {
-						$anchor = "";
+						$link = "";
 					}
 
-                    $sTodo = $anchor."**".$matches[1][$i].' #'.($i + 1).$sWhoWhat."**";
+					$tmp = $link."**".$matches[1][$j].' #'.($j + 1).$sWhoWhat."**";
 
-                    $params['markdown'] = str_replace($matches[0][$i], $sTodo, $params['markdown']);
-                    $arrTodos[$i] = $sWhoWhat;
-                }
+					$markdown = str_replace($matches[0][$j], $tmp, $markdown);
+					$arrTodos[$j] = $sWhoWhat;
+				}
 
-                // ----------------------------------------------------
-                // Add the Todo summary after the content
+				// ----------------------------------------------------
+				// Add the Todo summary after the content
 
-                $sTodo = '';
+				if ($bIntroAdded == false) {
+					$introduction = trim(self::getOptions('introduction', ''));
 
-                if ($bIntroAdded == false) {
-                    $introduction = $arrSettings['introduction'] ?? '';
+					if (trim($introduction) !== '') {
+						$bIntroAdded = true;
+						$sTodo .= PHP_EOL.PHP_EOL.trim($introduction);
+					}
+				}
 
-                    if (trim($introduction) !== '') {
-                        $bIntroAdded = true;
+				$sTodo .= PHP_EOL.PHP_EOL.$title.PHP_EOL.PHP_EOL."| ID | ".$column." |".PHP_EOL."| --- | --- |".PHP_EOL;
 
-                        $sTodo .= trim($introduction).PHP_EOL.PHP_EOL;
-                    }
-                }
-
-                $sTodo .= $title.PHP_EOL.PHP_EOL."| ID | ".$column." |".PHP_EOL."| --- | --- |".PHP_EOL;
-
-                foreach ($arrTodos as $key => $value) {
-
+				foreach ($arrTodos as $key => $value) {
 					if (!in_array($task, array("pdf","txt"))) {
-						$anchor="[".($key + 1)."](".$urlHTML."#".$prefix."_".($key + 1).")";
+						$link="[".($key + 1)."](#".$anchor."_".($key + 1).")";
 					} else {
-						 $anchor=$key + 1;
-					 }
+						 $link=$key + 1;
+					}
 
-                    $sTodo .= "| ".$anchor." | ".$value." |".PHP_EOL;
-                }
-                $sTodo .= PHP_EOL.PHP_EOL;
+					$sTodo .= "| ".$link." | ".trim($value, " :,!;")." |".PHP_EOL;
+				} // foreach ($arrTodos
+			} // if (preg_match_all("/".$pattern."/im"
+		} // foreach ($arrOptions as $key => $value)
 
-                $params['markdown'] .= PHP_EOL.$sTodo;
-            }
-        } // foreach ($arrSettings as $key => $value)
+		return array($markdown, trim($sTodo));
+	}
 
-        return true;
-    }
+	/**
+	 * The markdown file has been read, this function will get the content of the .md file and
+	 * make some processing like data cleansing
+	 *
+	 * $params is a associative array with, as entries,
+	 *		* markdown : the markdown string (content of the file)
+	 *		* filename : the absolute filename on disk
+	 */
+	public static function readMD(array &$params = array()) : bool
+	{
+		if (trim($params['markdown']) === '') {
+			return true;
+		}
 
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-    {
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
+		// The todos plugins only fires when the %TODOS% tag has been found
+		// in the note's content.
+		if (preg_match_all('/%TODOS%/', $params['markdown'], $matches)) {
+			list($params['markdown'], $todos) = self::getTodos($params['markdown']);
+			$params['markdown']=str_replace($matches[0], $todos, $params['markdown']);
+		}
 
-        $task = $aeSession->get('task');
-
-        // Don't fire this plugin when the task is edit.form or during a search
-        if (in_array($task, array('edit.form','search'))) {
-            return true;
-        }
-
-        $aeEvents->bind('markdown.read', __CLASS__.'::readMD');
-        return true;
-    }
+		return true;
+	}
 }

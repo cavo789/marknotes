@@ -1,79 +1,101 @@
 <?php
-/* REQUIRES PHP 7.x AT LEAST */
+/**
+ *  Convert the Markdown string into a HTML one, rely on parsedown for this
+ * @link https://github.com/erusev/parsedown
+ */
 namespace MarkNotes\Helpers;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class Convert
 {
-    protected static $_instance = null;
+	protected static $hInstance = null;
 
-    public function __construct()
-    {
-        return true;
-    }
+	public function __construct()
+	{
+		return true;
+	}
 
-    public static function getInstance()
-    {
-        if (self::$_instance === null) {
-            self::$_instance = new Convert();
-        }
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new Convert();
+		}
 
-        return self::$_instance;
-    }
+		return self::$hInstance;
+	}
 
-    /**
-     *  Convert the Markdown string into a HTML one
-     */
-    public function getHTML(string $markdown, array $params = null) : string
-    {
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	/**
+	 *  Convert the Markdown string into a HTML one
+	 */
+	public function getHTML(string $markdown, array $params = null,
+		bool $bRunContentPlugin = true) : string
+	{
 
-        // Call the Markdown parser (https://github.com/erusev/parsedown)
-        $file = "Parsedown";
-        $lib = "Parsedown";
-        $folder = $aeSettings->getFolderLibs()."parsedown/";
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        if (!file_exists($folder.$file.'.php')) {
-            self::ShowError(
-                str_replace(
-                    '%s',
-                    '<strong>'.$folder.$file.'.php</strong>',
-                    $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
-                ),
-                true
-            );
-        }
+		// Call the Markdown parser (https://github.com/erusev/parsedown)
+		$file = "Parsedown";
+		$lib = "Parsedown";
+		$folder = $aeSettings->getFolderLibs()."parsedown/";
 
-        // When the task isn't slides (or reveal/remark), the --- (or -----) shouldn't be taken into consideration
-        // Indeed, --- (or ------) are used in slideshows to create a new slide so ignore these characters
+		if (!file_exists($folder.$file.'.php')) {
+			self::ShowError(
+				str_replace(
+					'%s',
+					'<strong>'.$folder.$file.'.php</strong>',
+					$aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists')
+				),
+				true
+			);
+		}
 
-        $task = $params['task'] ?? '';
-        if (!in_array($task, array('reveal','remark','slides'))) {
-            $markdown = preg_replace('/('.NEW_SLIDE.')/m', '', $markdown);
-        }
+		// --------------------
+		$task = $params['task'] ?? '';
+		if (!in_array($task, array('task.export.reveal','task.export.remark'))) {
+			// When writing a note, the author can type, on a new line, --- or ----- to
+			// ask marknotes to insert a new slide break.
 
-        include_once $folder.$file.'.php';
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_REGEX);
+			$pageBreak = $arrSettings['page_break'] ?? '\n+^-{3,5}$\n+';
 
-        if (is_file($extra = $folder.$file.'Extra'.'.php')) {
-            $lib = "ParsedownExtra";
-            include_once $extra;
-        }
+			$markdown = preg_replace('/('.$pageBreak.')/m', '', $markdown);
+		}
 
-        if (is_file($extra = $folder.$file.'CheckBox'.'.php')) {
-            $lib = "ParsedownCheckbox";
-            include_once $extra;
-        }
+		include_once $folder.$file.'.php';
+
+		if (is_file($extra = $folder.$file.'Extra'.'.php')) {
+			$lib = "ParsedownExtra";
+			include_once $extra;
+		}
+
+		$parsedown = new \ParsedownCheckbox();
+		if (is_file($extra = $folder.'leblanc-simon/parsedown-checkbox/ParsedownCheckBox'.'.php')) {
+			$lib = "ParsedownCheckbox";
+			//include_once $extra;
+		}
 
 		if (is_file($extra = $aeSettings->getHelpersRoot().'markNotesParsedown.php')) {
 			$lib = "marknotesParsedown";
-            include_once $extra;
-        }
+			include_once $extra;
+		}
 
-        $parsedown = new $lib();
+		$parsedown = new $lib();
 
+		$html = $parsedown->text(trim($markdown));
 
-        return $parsedown->text(trim($markdown));
-    }
+		if ($bRunContentPlugin) {
+			// --------------------------------
+			// Call content plugins
+			$aeEvents = \MarkNotes\Events::getInstance();
+			$aeEvents->loadPlugins('content.html');
+			$args = array(&$html);
+			$aeEvents->trigger('content.html::render.content', $args);
+			$html = $args[0];
+		}
+
+		return $html;
+	}
 }

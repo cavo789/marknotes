@@ -1,0 +1,12 @@
+.actions {
+	list-style-type: none;
+}
+
+.actions li {
+	text-align: left;
+}
+
+.actions .title {
+	max-width: 350px;
+	display  : inline-block;
+}

@@ -15,18 +15,25 @@ namespace MarkNotes\Plugins\Markdown;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class DOCX
+class DOCX extends \MarkNotes\Plugins\Markdown\Plugin
 {
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.markdown.docx';
+	protected static $json_options = 'plugins.options.markdown.docx';
+
 	/**
 	 * Add image's width / height information after the image link
 	 * @link http://pandoc.org/MANUAL.html#extension-link_attributes
 	 */
-    public static function readMD(&$params = null)
-    {
+	public static function readMD(array &$params = array()) : bool
+	{
 
-        if (trim($params['markdown']) === '') {
-            return true;
-        }
+/*<!-- build:debug -->*/
+die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." S'assurer que ce plugin fonctionne toujours comme attendu</pre>");
+/*<!-- endbuild -->*/
+		if (trim($params['markdown']) === '') {
+			return true;
+		}
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
@@ -35,9 +42,9 @@ class DOCX
 		// than one image, use a counter. Not a dummy or random figure, just a
 		// counter (meaningless)
 		try {
-			$wID=intval($aeSession->get('img_id',0));
+			$wID=intval($aeSession->get('img_id', 0));
 		} catch (Exception $e) {
-		   $wID=0;
+			$wID=0;
 		}
 
 		/*<!-- build:debug -->*/
@@ -50,11 +57,8 @@ class DOCX
 		// Try to match things like ![img_ALT](http://site/my_image.png "32x20")
 		// The last part is optionnal and if mentionned if a width followed by a height
 		$pattern='/(\\!\\[.*](.* [\'"](\\d+|\\*)x(\\d+|\\*)[\'"]\)))(.*)/';
-        preg_match_all($pattern, $params['markdown'], $matches);
 
-        if (count($matches[0]) > 0) {
-
-
+		if (preg_match_all($pattern, $params['markdown'], $matches)) {
 			// $full the full string like ![img_ALT](http://site/my_image.png "32x20") ipso lorem
 			// $tag will be the ![img_ALT](http://site/my_image.png "32x20")
 			// $img will be set to (http://site/my_image.png "32x20")
@@ -66,8 +70,7 @@ class DOCX
 			$i=0;
 			$aeDebug = \MarkNotes\Debug::getInstance();
 
-    		for($i=0; $i<count($matches[0]); $i++) {
-
+			for ($i=0; $i<count($matches[0]); $i++) {
 				$bDoIt=true;
 
 				if ($after[$i]!=='') {
@@ -80,8 +83,7 @@ class DOCX
 				}
 
 				if ($bDoIt) {
-		   			if (($width[$i]!=='*') || ($height[$i]!=='*')) {
-
+					if (($width[$i]!=='*') || ($height[$i]!=='*')) {
 						$wID+=1;
 
 						// Add width / height for Pandoc conversion
@@ -98,31 +100,13 @@ class DOCX
 
 						$tmp.='}';
 
-						$params['markdown']=str_replace($full[$i],$tag[$i].$tmp.$after[$i],$params['markdown']);
+						$params['markdown']=str_replace($full[$i], $tag[$i].$tmp.$after[$i], $params['markdown']);
 
-						$aeSession->set('img_id',$wID);
+						$aeSession->set('img_id', $wID);
 					}
-
 				} // if ($bDoIt)
-
 			} // for
 		} // if (count($matches[0]) > 0)
-
-        return true;
-
-    }
-
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-	{
-		$aeEvents = \MarkNotes\Events::getInstance();
-		$aeSession = \MarkNotes\Session::getInstance();
-
-		if($aeSession->get('task', '')==='docx') {
-			$aeEvents->bind('markdown.read', __CLASS__.'::readMD');
-		}
 
 		return true;
 	}

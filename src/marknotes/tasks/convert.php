@@ -13,52 +13,63 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Convert
 {
-    protected static $hInstance = null;
+	protected static $hInstance = null;
 
 	private $_sourceFileName = ''; // File to convert
 	private $_layout = '';         // For instance docx
 	private $_method = '';         // For instance "pandoc"
 	private $_options = null;      // plugins options (f.i. the plugins->options->pandoc entry)
 
-    public function __construct(string $filename='', string $layout='', string $method='')
-    {
+	public function __construct(string $filename = '', string $layout = '', string $method = '')
+	{
 		$this->_sourceFileName=$filename;
 		$this->_layout=$layout;
 		$this->_method=$method;
 
 		$this->_options=self::getOptions();
 
-        return true;
-    }
+		return true;
+	}
 
-    public static function getInstance(string $filename, string $layout, string $method='')
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new Convert($filename, $layout, $method);
-        }
+	public static function getInstance(string $filename, string $layout, string $method = '')
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new Convert($filename, $layout, $method);
+		}
 
-        return self::$hInstance;
-    }
+		return self::$hInstance;
+	}
 
 	/**
 	 * Return the options from settings.json, f.i. then plugins->options->pandoc entry
 	 */
-	public function getOptions() : array {
-
+	public function getOptions() : array
+	{
 		if ($this->_options==null) {
-		   $aeSettings = \MarkNotes\Settings::getInstance();
-		   $this->_options=$aeSettings->getPlugins('options', $this->_method);
-	    }
-
-	   return $this->_options;
-
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$this->_options=$aeSettings->getPlugins('options.export.'.$this->_method);
+		}
+		return $this->_options;
 	}
 
-	public function isValid() : bool {
-
+	public function isValid() : bool
+	{
 		$bReturn=true;
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		if (($this->_options === array()) || (!isset($this->_options['script']))) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log('Error, options should be specified in '.
+				   'the settings.json file, in the plugins.options.export.pandoc '.
+				   'node, please verify your settings.json file.', 'error');
+			}
+			/*<!-- endbuild -->*/
+
+			$bReturn=false;
+		}
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
@@ -67,22 +78,11 @@ class Convert
 		}
 		/*<!-- endbuild -->*/
 
-		if ($this->_options === array()) {
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug->log('Error, options should be specified', 'error');
-			}
-			/*<!-- endbuild -->*/
-
-			$bReturn=false;
-
-		}
-
 		if (($bReturn) && ($this->_method==='pandoc')) {
-
 			// Be sure that the script pandoc.exe is well installed on the system
 
-	        $aeFiles = \MarkNotes\Files::getInstance();
+			$aeFiles = \MarkNotes\Files::getInstance();
+
 			// $sScriptName string Absolute filename to the pandoc.exe script
 			if (!$aeFiles->fileExists($sScriptName = $this->_options['script'])) {
 				/*<!-- build:debug -->*/
@@ -92,43 +92,40 @@ class Convert
 				/*<!-- endbuild -->*/
 
 				$bReturn=false;
-
 			}
-
 		}
 
 		return $bReturn;
 	}
 
-    /**
-     * Taking the name of the note, provide the name of the file that should be created
-     * F.i. for file c:\sites\marknotes\docs\so_nice_app.md return
+	/**
+	 * Taking the name of the note, provide the name of the file that should be created
+	 * F.i. for file c:\sites\marknotes\docs\so_nice_app.md return
 	 * c:\sites\marknotes\docs\so_nice_app.pdf when the layout is .pdf
-     */
-    public function getFileName() : string
-    {
-
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	 */
+	public function getFileName() : string
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$fname=$this->_sourceFileName;
 
-        // $fname should be an absolute filename; not a relative one
-        if (strpos($fname, $aeSettings->getFolderDocs(true)) === false) {
-            $fname = $aeSettings->getFolderDocs(true).ltrim($fname, DS);
-        }
+		// $fname should be an absolute filename; not a relative one
+		if (strpos($fname, $aeSettings->getFolderDocs(true)) === false) {
+			$fname = $aeSettings->getFolderDocs(true).ltrim($fname, DS);
+		}
 
-        $fname = $aeFiles->replaceExtension(str_replace('/', DS, $fname),$this->_layout);
+		$fname = $aeFiles->replaceExtension(str_replace('/', DS, $fname), $this->_layout);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log('Target file : '.$fname, 'info');
+			$aeDebug->log("Target file : ".$fname, "debug");
 		}
 		/*<!-- endbuild -->*/
 
-        return $fname;
-    }
+		return $fname;
+	}
 
 	/**
 	 * Return a "slug" from a filename (f.i. return "connectas" when the filename is
@@ -136,14 +133,13 @@ class Convert
 	 */
 	public function getSlugName() : string
 	{
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		$slug = $aeFiles->removeExtension(basename($this->_sourceFileName));
 		$slug = $aeFunctions->slugify($slug);
 
 		return $slug;
-
 	}
 
 	/**
@@ -158,15 +154,17 @@ class Convert
 	 * Read the note and call any plugins.
 	 * Generate a temporary version of the note in the temporary folder
 	 */
-	public function createTempNote() : string {
-
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
+	public function createTempNote() : string
+	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
 		$fname=$this->_sourceFileName;
-		if(!is_file($fname)) $fname=$aeSettings->getFolderDocs(true).$fname;
+		if (!is_file($fname)) {
+			$fname=$aeSettings->getFolderDocs(true).$fname;
+		}
 
 		// The read method is also responsible to run any markdown.read plugins
 		$content=$aeMarkdown->read($fname);
@@ -175,35 +173,33 @@ class Convert
 		$filename=$aeSettings->getFolderTmp().self::getSlugname($fname).'.md';
 
 		// Check if there is a YAML header and if so, add in back in the .md file
-        $yaml=trim($aeSession->get('yaml',''));
+		$yaml=trim($aeSession->get('yaml', ''));
 
-        if ($yaml!=='') {
-
+		if ($yaml!=='') {
 			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
 
 			if (is_file($lib)) {
-
 				include_once $lib;
 
 				// Yaml::dump will add double-quotes so remove them
 				$content=
 					"---".PHP_EOL.
-					str_replace('\\n',PHP_EOL,trim(Yaml::dump($yaml),'"')).PHP_EOL.
+					str_replace('\\n', PHP_EOL, trim(Yaml::dump($yaml), '"')).PHP_EOL.
 					"---".PHP_EOL.PHP_EOL.
 					$content;
 			}
-        }
-
-		/*<!-- build:debug -->*/
-		if ($aeSettings->getDevMode()) {
-			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->here("DEVELOPPER MODE - SHOW THE MARKDOWN CONTENT BEFORE PANDOC CONVERSION (".$filename.")",1);
-			die("<pre>".print_r($content, true)."</pre>");
 		}
 
-		// Return the temporary filename or an empty string
-		return $aeFiles->createFile($filename,$content) ? $filename : '';
+		/*<!-- build:debug -->*/
+		/*
+        $aeDebug = \MarkNotes\Debug::getInstance();
+        if ($aeDebug->getDevMode()) {
+			$aeDebug->here("DEVELOPPER MODE - SHOW THE MARKDOWN CONTENT BEFORE PANDOC CONVERSION (".$filename.")",1);
+			die("<pre>".print_r($content, true)."</pre>");
+		}*/
 
+		// Return the temporary filename or an empty string
+		return $aeFiles->createFile($filename, $content) ? $filename : '';
 	}
 
 	private function getPandocScript(string $InputFileName, string $TargetFileName) : string
@@ -216,9 +212,11 @@ class Convert
 		// Get the template to use, if any
 		$template = '';
 		if ($this->_layout==='docx') {
-           $template = $aeSettings->getTemplateFile($this->_layout);
-		   if ($template!=='') $template='--reference-docx="'.$template.'" ';
-	    }
+			$template = $aeSettings->getTemplateFile($this->_layout);
+			if ($template!=='') {
+				$template='--reference-docx="'.$template.'" ';
+			}
+		}
 
 		// Retrieve the options for this conversion
 		// Found in settings.json->plugins->options->METHOD->options
@@ -234,38 +232,41 @@ class Convert
 
 		$killFiles='';
 
-		if (!$aeSettings->getDevMode()) {
-			// Once copied, kill from temp
-			$killFiles=
-	            'if exist "'.$TargetFileName.'" ('.PHP_EOL.
-				'   del "'.basename($TargetFileName).'"'.PHP_EOL.
-				'   del "'.$debugFile.'"'.PHP_EOL.
-	            '   del "'.$inFile.'"'.PHP_EOL.
-				')';
-		} // if (!$aeSettings->getDevMode())
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			if (!$aeDebug->getDevMode()) {
+				// Once copied, kill from temp
+				$killFiles=
+					'if exist "'.$TargetFileName.'" ('.PHP_EOL.
+					'   del "'.basename($TargetFileName).'"'.PHP_EOL.
+					'   del "'.$debugFile.'"'.PHP_EOL.
+					'   del "'.$inFile.'"'.PHP_EOL.
+					')';
+			} // if (!$aeDebug->getDevMode())
+		}
+		/*<!-- endbuild -->*/
 
 		$sScript =
-            '@ECHO OFF'.PHP_EOL.
+			'@ECHO OFF'.PHP_EOL.
 			// Change default code page of Windows console to UTF-8
-	        // @link : https://superuser.com/questions/269818
-            'chcp 65001'.PHP_EOL.
+			// @link : https://superuser.com/questions/269818
+			'chcp 65001'.PHP_EOL.
 			// Make the temporary folder the working folder
 			'cd "'.$aeSettings->getFolderTmp().'"'.PHP_EOL.
 			// Kill the old debug informations
-            'if exist "'.$debugFile.'" del "'.$debugFile.'"'.PHP_EOL.
+			'if exist "'.$debugFile.'" del "'.$debugFile.'"'.PHP_EOL.
 			// run the tool
-            $script.$template.$options.$outFile.$inFile.'> '.$debugFile.' 2>&1'.PHP_EOL.
+			$script.$template.$options.$outFile.$inFile.'> '.$debugFile.' 2>&1'.PHP_EOL.
 			// Copy the result file in the correct folder
-            'copy "'.basename($TargetFileName).'" "'.$TargetFileName.'"'.PHP_EOL.
+			'copy "'.basename($TargetFileName).'" "'.$TargetFileName.'"'.PHP_EOL.
 			$killFiles;
 
 		return $sScript;
-
 	}
 
 	public function getScript(string $InputFileName, string $TargetFileName) : string
 	{
-
 		$sScript = '';
 
 		if ($this->_method==='pandoc') {
@@ -273,72 +274,57 @@ class Convert
 		}
 
 		return $sScript;
-
 	}
 
-    public function run(string $sScript, string $TargetFileName)
-    {
-
+	public function run(string $sScript, string $TargetFileName)
+	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        $fScriptFile = $aeSettings->getFolderTmp().self::getSlugName().'.bat';
+		$fScriptFile = $aeSettings->getFolderTmp().self::getSlugName().'.bat';
 
-		if (!$aeFiles->createFile($fScriptFile,$sScript)) {
+		if (!$aeFiles->createFile($fScriptFile, $sScript)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log('Error while creating file '.$fScriptFile,'error');
+				$aeDebug->log('Error while creating file '.$fScriptFile, 'error');
 			}
 			/*<!-- endbuild -->*/
-
 		}
 
-	    // Run the script.
+		if (!$aeFiles->fileExists($fScriptFile)) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				if ($aeDebug->getDevMode()) {
+					$aeDebug->here("The file [".$fScriptFile."] is missing; ".
+						"should be impossible", 10);
+				}
+				$aeDebug->log("The file [".$fScriptFile."] is missing", "error");
+
+			}
+			/*<!-- endbuild -->*/
+		} // if (!$aeFiles->fileExists($fScriptFile))
+
+		// Run the script.
 		// This part can be long depending on the size of the .md file
-	    $output = array();
-	    exec("start cmd /c ".$fScriptFile, $output);
+		$output = array();
+		exec("start cmd /c ".$fScriptFile, $output);
 
 		// Once the exec() statement is finished
 
-		if (!$aeFiles->fileExists($TargetFileName)) {
-
-			$msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
-			$msg = str_replace('%s', '<strong>'.$final.'</strong>', $msg);
-
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->here('#DebugMode# - File '.$TargetFileName.' not found', 10);
-			}
-			/*<!-- endbuild -->*/
-
-			echo $msg.PHP_EOL.PHP_EOL;
-
-			echo '<p>Check to start <strong>'.$fScriptFile.'</strong> manually; indeed, sometimes it doesn\'t work within PHP but well manually; with the user\'s OS credentials (PHP permissions problems). Then, just refresh this page.</p>';
-
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-
-				$debugFile=self::getDebugFileName();
-
-				if ($aeFiles->fileExists($debugFile)) {
-					$content = file_get_contents ($debugFile);
-					echo '<h3>Content of the debug file : '.$debugFile.'</h3>';
-					echo "<pre style='background-color:yellow;'>".$content."</pre>";
-				}
-			}
-			/*<!-- endbuild -->*/
-
-		} else { // if (!$aeFiles->fileExists($final))
-
+		if ($aeFiles->fileExists($TargetFileName)) {
 			// The file has been correctly exported, the batch is no more needed
 
-			if (!$aeSettings->getDevMode()) {
+			/*<!-- build:debug -->*/
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			if (!$aeDebug->getDevMode()) {
 				// Kill the script file only when not Developper mode
-				unlink ($fScriptFile);
+			/*<!-- endbuild -->*/
+				unlink($fScriptFile);
+			/*<!-- build:debug -->*/
 			}
-
+			/*<!-- endbuild -->*/
 		} // if (!$aeFiles->fileExists($final))
 
 /*
@@ -408,5 +394,5 @@ class Convert
 
         // Return the fullname of the file
         return $final;*/
-    }
+	}
 }

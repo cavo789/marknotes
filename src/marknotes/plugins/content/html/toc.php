@@ -5,66 +5,65 @@
  *
  * Just add a tag like %TOC_5% in your markdown note to tell : take every headings 2 till 5
  * (included), generate a table of content (toc) and replace the tag by the toc.
- *
- * This plugin doesn't have options to set in settings.json
  */
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class TOC
+class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 {
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.content.html.toc';
+	protected static $json_options = 'plugins.options.content.html.toc';
 
-    /**
-     * Modify the HTML rendering of the note
-     */
-    public static function doIt(&$content = null)
-    {
-        if (trim($content) === '') {
-            return true;
-        }
+	/**
+	 * Modify the HTML rendering of the note
+	 */
+	public static function doIt(&$content = null) : bool
+	{
+		if (trim($content) === '') {
+			return true;
+		}
 
-        // Try to find the tag : %TOC_9%  (where 9 is the deepest level to mention
-        // in the table of content (so, for headings 1 -> 4, mention %TOC_4%)
+		// Try to find the tag : %TOC_9%  (where 9 is the deepest level to mention
+		// in the table of content (so, for headings 1 -> 4, mention %TOC_4%)
 
-		if (preg_match("/%TOC_(\\d)%/", $content, $match)) {
+		if (preg_match("/%TOC_(\\d)%/m", $content, $match)) {
 
-            $aeSettings = \MarkNotes\Settings::getInstance();
+			$aeSettings = \MarkNotes\Settings::getInstance();
 
-            // Get the deepest level
-            $deepestLevel = (int)$match[1];
+			// Get the deepest level
+			$deepestLevel = (int)$match[1];
 
-            // Retrieve every h2 till the lowest level (f.i. 4)
-            $pattern = '/<h([2-'.$deepestLevel.']){1} *(id="(.*)")?[^>]*>(.*)<\/h[2-'.$deepestLevel.']>/i';
+			// Retrieve every h2 till the lowest level (f.i. 4)
+			$pattern = '/<h([2-'.$deepestLevel.']){1} *(id="(.*)")?[^>]*>(.*)<\/h[2-'.$deepestLevel.']>/i';
 
-            if (preg_match_all($pattern, $content, $matches)) {
+			if (preg_match_all($pattern, $content, $matches)) {
 
 				$aeFunctions = \MarkNotes\Functions::getInstance();
 
 				list($tags, $level, $id, $slug, $title) = $matches;
 
-	            // Retrieve the title for the section, from settings.json
-	            $arrSettings = $aeSettings->getPlugins('options', 'toc');
+				// Retrieve the title for the section, from settings.json
+				$text = trim(self::getOptions('text', '**Table of content**'));
 
-	            $text = $arrSettings['text'] ?? "**Table of content** : %s";
-
-				// $text is probably written in the markdown language, get html version
+				// $text is probably written in the markdown language,
+				// get html version
 				$file=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
 
 				if (is_file($file)) {
-		           include_once $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
-				   $parsedown = new \Parsedown();
-				   $text=$parsedown->text(trim($text));
-			   	}
+					include_once $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+					$parsedown = new \Parsedown();
+					$text=$parsedown->text(trim($text));
+				}
 
-			   	// Just add a carriage return after each entries
+				// Just add a carriage return after each entries
 				$heads = implode("\n", $matches[0]);
 
 				$j = count($matches[0]);
 
 				// Process every entries in the table of content
 				for ($i = 0; $i < $j; $i++) {
-
 					/*<!-- build:debug -->*/
 					// When the developper mode is enabled in settings.json, the
 					// INCLUDE plugin will add a sentence like
@@ -76,7 +75,7 @@ class TOC
 					// So, here in the Table of Content plugin, we should ignore
 					// headings when the title starts with the DEV_MODE_PREFIX and
 					// don't put them in the table of content.
-					if ($aeFunctions::startsWith($title[$i],DEV_MODE_PREFIX)) {
+					if ($aeFunctions::startsWith($title[$i], DEV_MODE_PREFIX)) {
 						$heads = str_replace($matches[0][$i], '', $heads);
 						continue;
 					}
@@ -88,51 +87,28 @@ class TOC
 					$heads = str_replace($matches[0][$i], $entry, $heads);
 				}
 
-                // Put everything in a navigation element
-                $heads = "<nav role='navigation' id='toc'><ul>\n".$heads."\n</ul></nav>";
+				// Put everything in a navigation element
+				$heads = "<nav role='navigation' id='toc'><ul>\n".$heads."\n</ul></nav>";
 
-                // And replace the tag (%TOC_3% f.i.) by the table of content
-				$text = sprintf($text, $heads);
-                $content = str_replace('<p>'.$match[0].'</p>', $text, $content);
+				// Does we only display the title of the TOC
+				// in a accordion ?
+				$collapse = boolval(self::getOptions('collapse', 0));
 
-            } // if (preg_match_all($pattern
+				if ($collapse) {
+					$text =
+					"<details>".
+						"<summary>".trim(strip_tags($text), ' ,;:')."</summary>".
+						$heads.
+					"</details>";
+				} else {
+					$text .= "\n".$heads;
+				}
+				// And replace the tag (%TOC_3% f.i.) by the table of content
+				//$text = sprintf($text, $heads);
+				$content = str_replace($match[0], $text, $content);
+			} // if (preg_match_all($pattern
+		} // if (preg_match("/%TOC_(\\d)%/"
 
-        } // if (preg_match("/%TOC_(\\d)%/"
-
-        return true;
-    }
-
-    /**
-     * Provide additionnal css
-     */
-    public static function addCSS(&$css = null)
-    {
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-
-        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-
-        $css .= "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/content/html/toc/toc.css\" />\n";
-
-        return true;
-    }
-
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-    {
-        $aeSession = \MarkNotes\Session::getInstance();
-        $task = $aeSession->get('task', '');
-
-        // This plugin is not needed when the task is f.i. 'pdf'
-
-        if (in_array($task, array('edit.form','pdf','remarks','reveal','search','slides'))) {
-            return false;
-        }
-
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('render.css', __CLASS__.'::addCSS');
-        $aeEvents->bind('render.content', __CLASS__.'::doIt');
-        return true;
-    }
+		return true;
+	}
 }

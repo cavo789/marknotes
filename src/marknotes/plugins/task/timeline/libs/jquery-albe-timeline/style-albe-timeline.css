@@ -1,0 +1,36 @@
+body { font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-size: 14px; line-height: 1em; color: #333; background-color: #EFEFEF; margin: 0; }
+h2,
+h3,
+h4,
+h5 { margin-top: 5px; margin-bottom: 5px; line-height: 1; }
+
+ul#timeline-menu { height: 50px; text-align: center; }
+    ul#timeline-menu li { position: relative; float: left; list-style: none; margin: 0px; padding: 0px; }
+        ul#timeline-menu li a { display: block; text-decoration: none; font-size: 16px; padding: 10px; padding-top: 20px; color: black; font-weight: bold; border-bottom: 5px solid transparent; }
+            ul#timeline-menu li a:hover { color: #EF693A; border-bottom: 5px solid #EF693A; font-weight: normal; }
+
+section#timeline { width: 90%; margin: 20px auto; padding-bottom: 20px; position: relative; }
+    section#timeline:before { top: 0; bottom: 0; position: absolute; content: " "; width: 2px; background-color: #EF693A; left: 50%; height: 100%; margin-left: -1.5px; }
+    section#timeline article { width: 100%; margin-bottom: 20px; position: relative; }
+        section#timeline article:after { content: ''; display: block; clear: both; }
+
+    section#timeline > article > div.panel { width: 45%; float: left; background: #FFF; border: none; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15); -moz-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15); box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15); }
+        section#timeline > article > div.panel .panel-heading { padding: 5px 10px; margin: 0; font-size: 1.2em; background-color: #EF693A; overflow: hidden; text-align: center; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; }
+            section#timeline > article > div.panel .panel-heading .panel-title { color: #FFF; }
+        section#timeline > article > div.panel .panel-body { padding: 15px; position: relative; }
+    section#timeline article div.panel-body:after { content: ''; position: absolute; top: 20px; right: -5px; width: 10px; height: 10px; -moz-transform: rotate(-45deg); -ms-transform: rotate(-45deg); -o-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); transform: rotate(-45deg); background: #FFF; }
+    section#timeline > article > div.panel .panel-body img { float: left; margin: 0 15px 15px 0; }
+    section#timeline > article > div.panel .panel-footer { padding: 15px; background-color: #EEE; }
+
+    section#timeline > article.inverted > div.panel { float: right; }
+        section#timeline > article.inverted > div.panel .panel-body:after { left: -5px; }
+        section#timeline > article.inverted > div.panel .panel-body img { float: right; }
+
+    section#timeline div[class*="group"],
+    section#timeline article div.panel div.badge { display: block; text-align: center; cursor: none; font-weight: bold; -moz-box-shadow: 0 0 0 2px #EF693A, inset 0 2px 0 rgba(0, 0, 0, 0.1), 0 3px 0 2px rgba(0, 0, 0, 0.15); -webkit-box-shadow: 0 0 0 2px #EF693A, inset 0 2px 0 rgba(0, 0, 0, 0.1), 0 3px 0 2px rgba(0, 0, 0, 0.15); box-shadow: 0 0 0 2px #EF693A, inset 0 2px 0 rgba(0, 0, 0, 0.1), 0 3px 0 2px rgba(0, 0, 0, 0.15); }
+    section#timeline div[class*="group"] { width: 65px; font-size: 1.3em; margin: 35px auto; padding: 5px; border-radius: 0px; background: #EF693A; color: #FFF; }
+    section#timeline article div.panel div.badge { position: absolute; top: 0; left: 50%; margin: 0 0 0 -15px; border-radius: 50%; font-size: 0.75em; width: 30px; height: 30px; background: #FFF; color: #EF693A; }
+        section#timeline article div.panel div.badge:last-child { background-color: #EF693A; width: 20px; height: 20px; margin: 0 0 0 -10px; }
+
+	a.mylink { color: #EF693A; font-weight: bold; }
+	a.mylink:hover { color: #DA3203; }

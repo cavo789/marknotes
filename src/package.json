@@ -1,16 +1,159 @@
 {
   "name": "marknotes",
-  "version": "1.1.1",
-  "description": "Script that will transform your notes taken in the Markdown format (.md files) into a rich website",
+  "version": "2.0",
+  "description": "marknotes will transform your notes taken in the markdown format (.md files) into a full featured website.",
   "main": "index.php",
+  "devDependencies": {
+    "csslint-stylish": "0.0.5",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-batch-replace": "0.0.0",
+    "gulp-clean-css": "^2.3.2",
+    "gulp-cssbeautify": "^0.1.3",
+    "gulp-csslint": "^1.0.0",
+    "gulp-header": "^1.8.8",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-htmlhint": "^0.3.1",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-if": "^2.0.2",
+    "gulp-jshint": "^2.0.4",
+    "gulp-json-format": "^1.0.0",
+    "gulp-jsonlint": "^1.2.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-phplint": "^0.3.4",
+    "gulp-remove-html-comments": "^1.0.1",
+    "gulp-shell": "^0.5.2",
+    "gulp-uglify": "^2.0.1",
+    "gulp-zip": "^4.0.0",
+    "gutil": "^1.6.4",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "phplint": "^1.7.1",
+    "require-dir": "^0.3.1",
+    "run-sequence": "^1.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cavo789/marknotes.git"
   },
+  "keywords": [
+    "markdown",
+    "marknotes",
+    "notes",
+    "documentations",
+    "evernote-like"
+  ],
   "author": "christophe@aesecure.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/cavo789/marknotes/issues"
   },
-  "homepage": "https://github.com/cavo789/marknotes"
+  "homepage": "https://github.com/cavo789/marknotes",
+  "gulp": {
+    "editor": {
+      "tab_size": 3,
+      "encoding": "utf-8"
+    },
+    "paths": {
+      "archives": "backups",
+      "exclude": "libs",
+      "logging": "logs",
+      "source": "src",
+      "target": "dist"
+    },
+    "tasks": {
+      "backup": {
+        "doit": 1
+      },
+      "source": {
+        "code_quality": {
+          "sniffer": {
+            "doit": 1
+          },
+          "mess_detector": {
+            "doit": 1
+          }
+        },
+        "lint": {
+          "css": {
+            "doit": 1
+          },
+          "js": {
+            "doit": 1
+          },
+          "json": {
+            "doit": 1
+          },
+          "php": {
+            "doit": 1
+          }
+        },
+        "beautifier": {
+          "css": {
+            "doit": 1
+          },
+          "js": {
+            "doit": 1
+          },
+          "json": {
+            "doit": 1
+          },
+          "php": {
+            "doit": 1
+          }
+        }
+      },
+      "dist": {
+        "delete": {
+          "doit": 1
+        },
+        "copy": {
+          "doit": 1
+        },
+        "removedebug": {
+          "js": {
+            "doit": 1
+          },
+          "php": {
+            "doit": 1
+          }
+        },
+        "minify": {
+          "css": {
+            "doit": 1
+          },
+          "js": {
+            "doit": 1
+          }
+        },
+        "banner": {
+          "header": [
+            "/**",
+            "* <%= info.name %> - <%= info.description %>",
+            "* @version   : <%= info.version %>",
+            "* @author    : <%= info.author %>",
+            "* @license   : <%= info.license %>",
+            "* @url       : <%= info.homepage %>",
+            "* @package   : <%= new Date().toISOString() %>",
+            "*/"
+          ],
+          "js": {
+            "doit": 1
+          },
+          "php": {
+            "doit": 1
+          }
+        },
+        "chmod": {
+          "doit": 1
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "reveal.js-menu": "^0.7.0"
+  }
 }

@@ -73,10 +73,10 @@ class Pandoc
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind(string $plugin)
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt');
+        $aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt', $plugin);
         return true;
     }
 }

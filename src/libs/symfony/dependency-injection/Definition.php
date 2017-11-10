@@ -71,6 +71,8 @@ class Definition
     /**
      * Sets the tracked changes for the Definition object.
      *
+     * @param array $changes An array of changes for this Definition
+     *
      * @return $this
      */
     public function setChanges(array $changes)
@@ -188,6 +190,13 @@ class Definition
         return $this;
     }
 
+    /**
+     * Sets the properties to define when creating the service.
+     *
+     * @param array $properties
+     *
+     * @return $this
+     */
     public function setProperties(array $properties)
     {
         $this->properties = $properties;
@@ -195,11 +204,24 @@ class Definition
         return $this;
     }
 
+    /**
+     * Gets the properties to define when creating the service.
+     *
+     * @return array
+     */
     public function getProperties()
     {
         return $this->properties;
     }
 
+    /**
+     * Sets a specific property.
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return $this
+     */
     public function setProperty($name, $value)
     {
         $this->properties[$name] = $value;
@@ -222,7 +244,7 @@ class Definition
     }
 
     /**
-     * Sets a specific argument.
+     * Replaces a specific argument.
      *
      * @param int|string $index
      * @param mixed      $argument
@@ -250,6 +272,14 @@ class Definition
         return $this;
     }
 
+    /**
+     * Sets a specific argument.
+     *
+     * @param int|string $key
+     * @param mixed      $value
+     *
+     * @return $this
+     */
     public function setArgument($key, $value)
     {
         $this->arguments[$key] = $value;
@@ -373,6 +403,8 @@ class Definition
      * Sets the definition templates to conditionally apply on the current definition, keyed by parent interface/class.
      *
      * @param $instanceof ChildDefinition[]
+     *
+     * @return $this
      */
     public function setInstanceofConditionals(array $instanceof)
     {
@@ -778,7 +810,7 @@ class Definition
     }
 
     /**
-     * Sets autowired.
+     * Enables/disables autowiring.
      *
      * @param bool $autowired
      *

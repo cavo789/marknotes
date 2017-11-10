@@ -30,7 +30,7 @@ ECHO  ==========================================================================
 
 ECHO.
 ECHO  This script can be used to quickly create a new local website for marknotes.
-ECHO  A copy of marknotes should be present in the %MASTER% 
+ECHO  A copy of marknotes should be present in the %MASTER%
 ECHO  folder (or edit and change this script for an another location) and symbolic
 ECHO  links will be created to that folder for marknotes files and folders.
 ECHO.
@@ -45,6 +45,8 @@ PAUSE
 REM ---------------------------------------------------------------------------------------------------------
 :DoIt
 mklink /D assets %MASTER%assets
+mklink /D cache %MASTER%cache
+mklink /D languages %MASTER%languages
 mklink /D libs %MASTER%libs
 mklink /D marknotes %MASTER%marknotes
 mklink /D templates %MASTER%templates
@@ -52,27 +54,22 @@ mklink /D templates %MASTER%templates
 if not exist "docs" mkdir docs
 
 mklink .editorconfig %MASTER%.editorconfig
-mklink .htaccess %MASTER%.htaccess
+if not exist ".htaccess" mklink .htaccess %MASTER%.htaccess.txt
 mklink .htmlhintrc %MASTER%.htmlhintrc
 mklink .ignore %MASTER%.ignore
 mklink .jsbeautifyrc %MASTER%.jsbeautifyrc
-mklink autoload.php %MASTER%autoload.php
 mklink browserconfig.xml %MASTER%browserconfig.xml
-mklink cli.php %MASTER%cli.php
 mklink custom.css.dist %MASTER%custom.css.dist
 mklink custom.js.dist %MASTER%custom.js.dist
-mklink error_php.html %MASTER%error_php.html
 mklink favicon.ico %MASTER%favicon.ico
 mklink index.php %MASTER%index.php
 mklink package.json %MASTER%package.json
 mklink readme.md %MASTER%readme.md
+mklink robots.txt.dist %MASTER%robots.txt.dist
 mklink router.php %MASTER%router.php
-mklink ruleset.xml %MASTER%ruleset.xml
 mklink settings.json.dist %MASTER%settings.json.dist
 
 if not exist "tags.json" echo {} > tags.json
-
-if not exist "settings.json" echo {"debug":1,"plugins":{"options":{"login":{"username":"","password":""},"optimisation":{"browser_cache":0,"localStorage":0,"server_session":0}}},"site_name":"Test site"} > settings.json
 
 REM ---------------------------------------------------------------------------------------------------------
 :END

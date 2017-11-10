@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Return the HTML rendering of a .md file
+ */
 namespace MarkNotes\Tasks;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -7,30 +9,26 @@ defined('_MARKNOTES') or die('No direct access allowed');
 // For third parties libraries
 include 'libs/autoload.php';
 
-/**
-* Return the HTML rendering of a .md file
-*/
 class Display
 {
-    protected static $hInstance = null;
+	protected static $hInstance = null;
 
-    public function __construct()
-    {
-        return true;
-    } // function __construct()
+	public function __construct()
+	{
+		return true;
+	} // function __construct()
 
-    public static function getInstance()
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new Display();
-        }
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new Display();
+		}
 
-        return self::$hInstance;
-    } // function getInstance()
+		return self::$hInstance;
+	} // function getInstance()
 
 	private function insertHR(&$markdown)
 	{
-
 		// Convert any '---' (or '-----') to a new line (<hr/>) only if
 		// preceded and followed by an empty line, so, like this :
 		//
@@ -43,13 +41,11 @@ class Display
 
 		$matches = array();
 		preg_match_all('/\n\r?-{3,5}(\s*(\n\r?)*)*/', $markdown, $matches);
-
 		foreach ($matches[0] as $tmp) {
 			$markdown = str_replace($tmp, '<hr/>'.PHP_EOL, $markdown);
 		}
 
 		return true;
-
 	}
 
 	private function insertPageBreak(&$markdown)
@@ -66,118 +62,68 @@ class Display
 
 		$matches = array();
 		preg_match_all('/\n\r?(\*{3,5}(\s*(\n\r?)*)*){2}(\s*\n\r?)*/', $markdown, $matches);
-
 		$break='<p style="page-break-after: always;">&nbsp;</p>'.
 		   '<p style="page-break-before: always;">&nbsp;</p>';
-
 		foreach ($matches[0] as $tmp) {
 			$markdown = str_replace($tmp, $break.PHP_EOL, $markdown);
 		}
 
 		return true;
-
 	}
 
-    public function run(array $params)
-    {
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
-        $aeMD = \MarkNotes\FileType\Markdown::getInstance();
+	public function run(array $params)
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
-        // If the filename doesn't mention the file's extension, add it.
-        if (substr($params['filename'], -3) != '.md') {
-            $params['filename'] .= '.md';
-        }
+		// If the filename doesn't mention the file's extension, add it.
+		if (substr($params['filename'], -3) != '.md') {
+			$params['filename'] = $aeFiles->removeExtension($params['filename']).'.md';
+		}
 
-        $fullname = str_replace(
-            '/',
-            DIRECTORY_SEPARATOR,
-            $aeSettings->getFolderDocs(true).
-                ltrim($params['filename'], DS)
-        );
+		$fullname = $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS);
+		$fullname = str_replace('/', DS, $fullname);
 
-        if (!$aeFiles->fileExists($fullname)) {
-            // Damned ! It's so difficult to work with accentuated chars and make the
-            // code works both on Windows and Unix...
-            $fullname = utf8_encode($fullname);
-            if (!$aeFiles->fileExists($fullname)) {
-                $aeFunctions->fileNotFound($fullname);
-            }
-        }
+		if (!$aeFiles->fileExists($fullname)) {
+			// Damned ! It's so difficult to work with accentuated chars and make the
+			// code works both on Windows and Unix...
+			$fullname = utf8_encode($fullname);
+			if (!$aeFiles->fileExists($fullname)) {
+				$aeFunctions->fileNotFound($fullname);
+			}
+		}
 
-        // Read the markdown file
-        $markdown = $aeMD->read($fullname, $params);
+		// Read the markdown file, $markdown will contains markdown content,
+		// not HTML one
+		$aeMD = \MarkNotes\FileType\Markdown::getInstance();
+		$markdown = $aeMD->read($fullname, $params);
 
 		self::insertHR($markdown);
 		self::insertPageBreak($markdown);
 
-        $fnameHTML = $aeFiles->replaceExtension($fullname, 'html');
+		$fnameHTML = $aeFiles->replaceExtension($fullname, 'html');
 
-        $fnameHTMLrel = str_replace(str_replace('/', DS, $aeSettings->getFolderWebRoot()), '', $fnameHTML);
+		$root = $aeSettings->getFolderWebRoot();
 
-        // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-        $urlHTML = rtrim($aeFunctions->getCurrentURL(false, true), '/').'/'.str_replace(DS, '/', $fnameHTMLrel);
+		// Get the relative filename (f.i. /docs/notes/markdown.html)
+		$fnameHTMLrel = str_replace(str_replace('/', DS, $root), '', $fnameHTML);
 
-        // Convert the Markdown text into an HTML text
-        $aeConvert = \MarkNotes\Helpers\Convert::getInstance();
-        $html = $aeConvert->getHTML($markdown, $params);
+		// Generate the URL (full) to the html file, f.i.
+		// http://localhost/docs/notes/markdown.html
+		$urlHTML = $aeFunctions->getCurrentURL(false, true).basename($fnameHTMLrel);
 
-        if (!$aeFunctions->isAjaxRequest()) {
-            $aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
-            $html = $aeConvert->run($html, $params);
-        } else { // if (!\MarkNotes\Functions::isAjaxRequest())
+		// Convert the Markdown text (.md file's content) into an HTML text
+		$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
+		$htmlNote = $aeConvert->getHTML($markdown, $params, true);
 
-            // Generate the URL (full) to the html file, f.i. http://localhost/docs/folder/file.html
-            $fnameHTML = str_replace('\\', '/', rtrim($aeFunctions->getCurrentURL(false, true), '/').str_replace(str_replace('/', DS, dirname($_SERVER['SCRIPT_FILENAME'])), '', $fnameHTML));
+		// Now, get the template and add the content (from $htmlNote)
+		// in the page
+		$aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
+		$html = $aeConvert->run($htmlNote, $params);
 
-            include_once dirname(__DIR__)."/view/toolbar.php";
-            $aeToolbar = \MarkNotes\View\Toolbar::getInstance();
-
-			//$html = $aeToolbar->getToolbar($params).'<div id="icon_separator" class="only_screen"/><div id="note_content">'.$html.'</div>';
-			$html = $aeToolbar->getToolbar($params).'<div id="note_content">'.$html.'</div>';
-
-            $html = '<div class="hidden filename">'.utf8_encode($fullname).'</div>'.$html.'<hr/>';
-
-            // --------------------------------
-            // Call content plugins
-            $aeEvents->loadPlugins('content', 'html');
-            $args = array(&$html);
-            $aeEvents->trigger('render.content', $args);
-            $html = $args[0];
-            // --------------------------------
-        } // if (!\MarkNotes\Functions::isAjaxRequest())
-
-        // ----------------------------------------------
-        //
-        // Add JS
-
-        $urlHTML = '';
-
-        $filename = $aeSession->get('filename', '');
-        if ($filename !== '') {
-            $url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
-            $urlHTML = $url.'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-            $urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($filename, 'html'));
-        }
-
-        $js = "";
-
-        if ($aeSettings->getDebugMode()) {
-            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-        }
-
-        $js .= "<script type=\"text/javascript\">\n".
-            "marknotes.note = {};\n".
-            "marknotes.note.url = '".$urlHTML."';\n".
-            "</script>\n";
-
-        if ($aeSettings->getDebugMode()) {
-            $js .= "<!-- End for ".__FILE__."-->";
-        }
-
-        return $html.$js;
-    }
+		return $html;
+	}
 }

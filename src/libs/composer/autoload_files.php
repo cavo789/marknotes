@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
+    '5e187b582b2b3bb26276f0085ef51bb1' => $vendorDir . '/leblanc-simon/parsedown-checkbox/ParsedownCheckbox.php',
 );

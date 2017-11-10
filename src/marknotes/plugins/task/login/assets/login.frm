@@ -1,5 +1,5 @@
 <div id="login-box" class="login-popup">
-	<a href="#" class="close"><img src="%ROOT%/assets/images/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>
+	<a href="#" class="close"><img src="%ROOT%/marknotes/plugins/page/html/login/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>
 	<form method="post" class="signin" action="#">
 		<fieldset class="textbox">
 			<label class="username">

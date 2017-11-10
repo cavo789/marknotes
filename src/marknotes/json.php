@@ -9,148 +9,148 @@ define('JSON_FILE_NOT_FOUND', 'The file [%s] doesn\'t exists (anymore)');
 
 class JSON
 {
-    protected static $hInstance = null;
+	protected static $hInstance = null;
 
-    private static $_debug = false;
+	private static $_debug = false;
 
-    public function __construct()
-    {
-        self::$_debug = false;
-        return true;
-    }
+	public function __construct()
+	{
+		self::$_debug = false;
+		return true;
+	}
 
-    public static function getInstance()
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new JSON();
-        }
-        return self::$hInstance;
-    }
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new JSON();
+		}
+		return self::$hInstance;
+	}
 
-    private static function showError(string $param, bool $die = true) : bool
-    {
-        if (trim($param) !== '') {
-            $param .= ' - ';
-        }
+	private static function showError(string $param, bool $die = true) : bool
+	{
+		if (trim($param) !== '') {
+			$param .= ' - ';
+		}
 
-        $msg = '';
+		$msg = '';
 
-        switch (json_last_error()) {
-            case JSON_ERROR_DEPTH:
-                $msg = $param.'Maximum stack depth exceeded [error code JSON_ERROR_DEPTH]';
-                break;
+		switch (json_last_error()) {
+			case JSON_ERROR_DEPTH:
+				$msg = $param.'Maximum stack depth exceeded [error code JSON_ERROR_DEPTH]';
+				break;
 
-            case JSON_ERROR_STATE_MISMATCH:
-                $msg = $param.'Underflow or the modes mismatch [error code JSON_ERROR_STATE_MISMATCH]';
-                break;
+			case JSON_ERROR_STATE_MISMATCH:
+				$msg = $param.'Underflow or the modes mismatch [error code JSON_ERROR_STATE_MISMATCH]';
+				break;
 
-            case JSON_ERROR_CTRL_CHAR:
-                $msg = $param.'Unexpected control character found [error code JSON_ERROR_CTRL_CHAR]';
-                break;
+			case JSON_ERROR_CTRL_CHAR:
+				$msg = $param.'Unexpected control character found [error code JSON_ERROR_CTRL_CHAR]';
+				break;
 
-            case JSON_ERROR_SYNTAX:
-                $msg = $param.'Syntax error, malformed JSON [error code JSON_ERROR_SYNTAX] '.
-                '(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
-                break;
+			case JSON_ERROR_SYNTAX:
+				$msg = $param.'Syntax error, malformed JSON [error code JSON_ERROR_SYNTAX] '.
+				'(be sure file is UTF8-NoBOM and is correct (use jsonlint.com to check validity))';
+				break;
 
-            case JSON_ERROR_UTF8:
-                $msg = $param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code JSON_ERROR_UTF8]';
-                break;
+			case JSON_ERROR_UTF8:
+				$msg = $param.'Malformed UTF-8 characters, possibly incorrectly encoded [error code JSON_ERROR_UTF8]';
+				break;
 
-            default:
-                $msg = $param.'Unknown error';
-                break;
-        } // switch (json_last_error())
+			default:
+				$msg = $param.'Unknown error';
+				break;
+		} // switch (json_last_error())
 
-        if (self::$_debug == true) {
-            $aeDebug = \MarkNotes\Debug::getInstance();
-            $aeDebug->here("", 4);
-        }
+		if (self::$_debug == true) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->here("", 4);
+		}
 
-        $msg = '<div class="error bg-danger">ERROR - '.$msg.'</div>';
+		$msg = '<div class="error bg-danger">ERROR - '.$msg.'</div>';
 
-        if ($die === true) {
-            die($msg);
-        } else {
-            echo $msg;
-            return true;
-        }
-    }
+		if ($die === true) {
+			die($msg);
+		} else {
+			echo $msg;
+			return true;
+		}
+	}
 
-    /**
-    * Enable or not the debug mode i.e. display additionnal infos in case of errors
-    *
-    * @param bool $bState TRUE/FALSE
-    */
-    public function debug(bool $bState)
-    {
-        self::$_debug = $bState;
-    }
+	/**
+	* Enable or not the debug mode i.e. display additionnal infos in case of errors
+	*
+	* @param bool $bState TRUE/FALSE
+	*/
+	public function debug(bool $bState)
+	{
+		self::$_debug = $bState;
+	}
 
-    /**
-    * json_decode with error handling.  Show error message in case of problem
-    *
-    * @param  string $fname Absolute filename
-    * @param  bool   $assoc [optional] When TRUE, returned objects will be converted into associative arrays.
-    * @return type
-    */
-    public static function json_decode(string $fname, bool $assoc = false)
-    {
-        if (!file_exists($fname)) {
-            $fname = utf8_decode($fname);
-        }
-        if (!file_exists($fname)) {
-            self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
-        }
+	/**
+	* json_decode with error handling.  Show error message in case of problem
+	*
+	* @param  string $fname Absolute filename
+	* @param  bool   $assoc [optional] When TRUE, returned objects will be converted into associative arrays.
+	* @return type
+	*/
+	public static function json_decode(string $fname, bool $assoc = false)
+	{
+		if (!file_exists($fname)) {
+			$fname = utf8_decode($fname);
+		}
+		if (!file_exists($fname)) {
+			self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
+		}
 
-        try {
-            // Trim() so we're sure there is no whitespace before the JSON content
-            $arr = json_decode(trim(file_get_contents($fname)), $assoc);
+		try {
+			// Trim() so we're sure there is no whitespace before the JSON content
+			$arr = json_decode(trim(file_get_contents($fname)), $assoc);
 
-            if (json_last_error() != JSON_ERROR_NONE) {
-                header('Content-Type: text/html; charset=utf-8');
+			if (json_last_error() != JSON_ERROR_NONE) {
+				header('Content-Type: text/html; charset=utf-8');
 
-                self::showError($fname, false);
+				self::showError($fname, false);
 
-                if (self::$_debug) {
-                    echo '<pre>'.file_get_contents($fname).'</pre>';
-                }
-            } // if (json_last_error()!==JSON_ERROR_NONE)
-        } catch (Exception $ex) {
-            self::showError($ex->getMessage(), true);
-        }
+				if (self::$_debug) {
+					echo '<pre>'.file_get_contents($fname).'</pre>';
+				}
+			} // if (json_last_error()!==JSON_ERROR_NONE)
+		} catch (Exception $ex) {
+			self::showError($ex->getMessage(), true);
+		}
 
-        return $arr;
-    }
+		return $arr;
+	}
 
-    public static function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
-    {
-        $return = '';
+	public static function json_encode($value, int $option = JSON_PRETTY_PRINT) : string
+	{
+		$return = '';
 
-        try {
-            $return = json_encode($value, $option);
+		try {
+			$return = json_encode($value, $option);
 
-            if (json_last_error() === JSON_ERROR_UTF8) {
-                // In case of UTF8 error, just try to encode the string and json_encode again
-                if (!is_array($value)) {
-                    $return = json_encode(iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($value)), $option);
-                }
-            }
+			if (json_last_error() === JSON_ERROR_UTF8) {
+				// In case of UTF8 error, just try to encode the string and json_encode again
+				if (!is_array($value)) {
+					$return = json_encode(iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($value)), $option);
+				}
+			}
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                header('Content-Type: text/html; charset=utf-8');
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				header('Content-Type: text/html; charset=utf-8');
 
-                self::showError('', false);
+				self::showError('', false);
 
-                if (self::$_debug) {
-                    echo '<pre style="background-color:yellow;">'.print_r($value, true).'</pre>';
-                }
+				if (self::$_debug) {
+					echo '<pre style="background-color:yellow;">'.print_r($value, true).'</pre>';
+				}
 
-                die();
-            } // if (json_last_error()!==JSON_ERROR_NONE)
-        } catch (Exception $ex) {
-            self::showError($ex->getMessage(), true);
-        }
-        return $return;
-    }
+				die();
+			} // if (json_last_error()!==JSON_ERROR_NONE)
+		} catch (Exception $ex) {
+			self::showError($ex->getMessage(), true);
+		}
+		return $return;
+	}
 }

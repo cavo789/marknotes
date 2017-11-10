@@ -1,99 +1,57 @@
 <?php
-
+/**
+ * Make tables responsive
+ *
+ * 	"plugins": {
+ * 		"options": {
+ *			"content": {
+ *	 			"html": {
+ *	 				"bootstrap": {
+ *		 				"tables": {
+ *		 				 	"extra-classes": "table table-bordered table-hover",
+ *	 				 		"responsive": 1
+ *	 					}
+ * 					}
+ * 				}
+ * 			}
+ * 		}
+ * 	}
+ */
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Bootstrap
+class Bootstrap extends \MarkNotes\Plugins\Content\HTML\Plugin
 {
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.content.html.bootstrap';
+	protected static $json_options = 'plugins.options.content.html.bootstrap';
 
-    /**
-     * Provide additionnal javascript
-     */
-    public static function addJS(&$js = null)
-    {
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
-
-        $root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
-
-        if ($aeSettings->getDebugMode()) {
-            $js .= "\n<!-- Lines below are added by ".__FILE__."-->";
-        }
-
-        $js .= "\n<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/content/html/bootstrap/bootstrap.js\"></script>\n";
-
-        if ($aeSettings->getDebugMode()) {
-            $js .= "<!-- End for ".__FILE__."-->";
-        }
-
-        return true;
-    }
-
-    /**
-     * Set the ul/li style to use Font-Awesome
-     */
-    private static function setBullets(string $html) : string
-    {
-        // Replace <li></li> but only if they're part of a <ul></ul> i.e. don't modify <li> for <ol>
-        // http://stackoverflow.com/a/4835671
-        $sReturn = preg_replace_callback(
-           "/(<ul>.*<\/ul>)/Ums",
-           function ($ol) {
-               // The anonymous function requires to declare the $aeSettings class
-               $aeSettings = \MarkNotes\Settings::getInstance();
-               $arrSettings = $aeSettings->getPlugins('options', 'bootstrap');
-               $icon = $arrSettings['bullet'] ?? 'check';
-               $extra = $arrSettings['extra_attribute'] ?? '';
-               return preg_replace("/(<li(|\s*\/)>)/", "<li><i class='fa-li fa fa-".$icon."' ".$extra."></i>", $ol[1]);
-           },
-           $html
-        );
-
-        return str_replace('<ul>', '<ul class="fa-ul">', $sReturn);
-    }
-
-    /**
-     * Add Bootstrap classes for tables and add a parent div so tables will be responsive
-     */
-    private static function setTables(string $html) : string
-    {
-        // Add bootstrap to tables
-        $html = str_replace('<table>', '<div class="table-responsive"><table>', $html);
-        $html = str_replace('</table>', '</table></div>', $html);
-
-        return $html;
-    }
-
-    public static function doIt(&$html = null)
-    {
-        if (trim($html) === '') {
-            return true;
-        }
-
-        $html = self::setBullets($html);
-        $html = self::setTables($html);
-
-        return true;
-    }
-
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-    {
-		$aeSession = \MarkNotes\Session::getInstance();
-		$task = $aeSession->get('task', '');
-
-		// This plugin is needed only for these tasks : main, display and html
-
-		if (!in_array($task, array('main', 'display', 'html'))) {
-			return false;
+	public static function doIt(&$content = null) : bool
+	{
+		if (trim($content) === '') {
+			return true;
 		}
 
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('render.js', __CLASS__.'::addJS');
-        $aeEvents->bind('render.content', __CLASS__.'::doIt');
-        return true;
-    }
+		$arrOptions = self::getOptions('tables', array());
+
+		$responsive = boolval($arrOptions['responsive'] ?? 1);
+		$classes = trim($arrOptions['extra-classes'] ?? 'table');
+
+		// Make tables responsive
+		if ($responsive) {
+			// It's safe to work on "<table>" because $content is the
+			// HTML conversion of a markdown file and no extra attributes
+			// are created for a table; just, yes, the <table> tag.
+			$content = str_replace('<table>', '<div class="table-responsive"><table>', $content);
+			$content = str_replace('</table>', '</table></div>', $content);
+		}
+
+		// Make tables responsive
+		if ($classes!=='') {
+			$content = str_replace('<table>', '<table class="'.$classes.'">', $content);
+		}
+
+		return true;
+	}
 }

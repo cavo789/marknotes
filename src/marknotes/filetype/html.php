@@ -32,7 +32,7 @@ class HTML
 		$title = '';
 
 		try {
-			preg_match_all('/<'.$heading.'>(.*)<\/'.$heading.'>/', $html, $matches);
+			preg_match_all('/<'.$heading.'[^>]*>(.*)<\/'.$heading.'>/', $html, $matches);
 			if (count($matches[1]) > 0) {
 				$title = ((count($matches) > 0)?rtrim(@$matches[1][0]):'');
 			}
@@ -51,36 +51,34 @@ class HTML
 	 */
 	public function addHeadingsID(string $html, bool $addGoTop = false) : string
 	{
-		/*
-		 * Create a table of content.  Loop each h2 and h3 and add an "id" like "h2_1", "h2_2", ... that will then
-		 * be used in javascript (see https://css-tricks.com/automatic-table-of-contents/)
+		/* Create a table of content.  Loop each h2 and h3 and
+		 * add an "id" like "h2_1", "h2_2", ... that will then
+		 * be used in javascript
+		 * (see https://css-tricks.com/automatic-table-of-contents/)
 		 */
 
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		try {
-
 			// Retrieve headings
-	        $matches = array();
-	        preg_match_all('|<h\d{1}[^>]?>(.*)</h\d{1}[^>]?>|iU', $html, $matches);
+			$matches = array();
+			preg_match_all('|<h\d{1}[^>]?>(.*)</h\d{1}[^>]?>|iU', $html, $matches);
 
 			// $matches contains the list of titles (including the tag so f.i. "<h2>Title</h2>"
-	        foreach ($matches[0] as $tmp) {
+			foreach ($matches[0] as $tmp) {
+				// In order to have nice URLs, extract the title (stored in $tmp)
+				// $tmp is equal, f.i., to <h2>My slide title</h2>
+				$id = $aeFunctions->slugify(strip_tags($tmp));
 
-	            // In order to have nice URLs, extract the title (stored in $tmp)
-	            // $tmp is equal, f.i., to <h2>My slide title</h2>
-	            $id = $aeFunctions->slugify(strip_tags($tmp));
+				// The ID can't start with a figure, remove it if any
+				// Remove also . - , ; if present at the beginning of the id
+				$id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
 
-	            // The ID can't start with a figure, remove it if any
-	            // Remove also . - , ; if present at the beginning of the id
-	            $id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
+				// The tag (like h2)
+				$head = substr($tmp, 1, 2);
 
-	            // The tag (like h2)
-	            $head = substr($tmp, 1, 2);
-
-	            $html = str_replace($tmp, '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
-	        }
-
+				$html = str_replace($tmp, '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
+			}
 		} catch (Exception $e) {
 		} // try
 
@@ -97,115 +95,40 @@ class HTML
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
 
-		// --------------------------------
-		// Call content plugins
-		$aeEvents->loadPlugins('content', 'html');
-		$args = array(&$html);
-		$aeEvents->trigger('render.content', $args);
-		$html = $args[0];
-		// --------------------------------
+		// The template can contains variables so call the variables
+		// plugins to translate them
+		// (the markdown.variables can be called even if, here, the
+		// content is a HTML string)
+		$aeEvents->loadPlugins('markdown.variables');
+		$tmp = array('markdown'=>$template, 'filename'=>$params['filename']);
+		$args = array(&$tmp);
+		$aeEvents->trigger('markdown.variables::markdown.read', $args);
+		$template = $args[0]['markdown'];
 
-		$template = str_replace('%LANGUAGE%', $aeSettings->getLanguage(), $template);
-		$template = str_replace('%DEBUG%', $aeSettings->getDebugMode(), $template);
-		$template = str_replace('%DOCS%', rtrim($aeSettings->getFolderDocs(false), DS), $template);
-
+		// Now add note's content
 		$template = str_replace('%TITLE%', $this->getHeadingText($html), $template);
 		$template = str_replace('%CONTENT%', $html, $template);
-		$template = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $template);
-		$template = str_replace('%ROBOTS%', $aeSettings->getPageRobots(), $template);
-		$template = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(true, false), '/'), $template);
-		$template = str_replace('%URL%', str_replace(' ', '%20', rtrim($aeFunctions->getCurrentURL(false, false), '/')), $template);
 
-		$template = str_replace('%APP_NAME%', $aeSettings->getAppName(), $template);
-		$template = str_replace('%APP_VERSION%', $aeSettings->getAppName(true), $template);
+		// Customization of the interface
+		$interface = $aeSettings->getPlugins('/interface');
 
-		$template = str_replace('%APP_WEBSITE%', $aeSettings->getAppHomepage(), $template);
-		$template = str_replace('%APP_NAME_64%', base64_encode($aeSettings->getAppName()), $template);
-		$template = str_replace('%IMG_MAXWIDTH%', $aeSettings->getPageImgMaxWidth(), $template);
+		$skin = $interface['skin'] ?? array('skin'=>'blue');
 
+		$skin = "skin-".$skin;
+		$template = str_replace('%SKIN%', $skin, $template);
 
-		$arrOptimize = $aeSettings->getPlugins('options','optimize');
+		$footer = $interface['footer'] ?? array('left'=>'', 'right'=>'');
+		$template = str_replace('%FOOTER_LEFT%', $footer['left'], $template);
+		$footer_right = $footer['right']??'';
+		$template = str_replace('%FOOTER_RIGHT%', $footer['right'], $template);
 
-		if (strpos($template, '<!--%META_CACHE%-->') !== false) {
-			$cache = '';
+		$github = $aeSettings->getPlugins('/github', array('url'=>''));
+		$template = str_replace('%GITHUB%', $github['url'], $template);
 
-			$bOptimize = $arrOptimize['browser_cache'] ?? false;
-			if ($bOptimize) {
-				// Define metadata for the cache
-				$cache =
-				'<meta http-equiv="cache-control" content="max-age=0" />'.PHP_EOL.
-				'<meta http-equiv="cache-control" content="no-cache" />'.PHP_EOL.
-				'<meta http-equiv="expires" content="0" />'.PHP_EOL.
-				'<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />'.PHP_EOL.
-				'<meta http-equiv="pragma" content="no-cache" />';
-			}
-			$template = str_replace('<!--%META_CACHE%-->', $cache, $template);
+		if (strpos($template, '%VERSION%') !== false) {
+			$version = $aeSettings->getPackageInfo('version');
+			$template = str_replace('%VERSION%', $version, $template);
 		}
-
-		if (isset($params['filename'])) {
-			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-			$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($params['filename'], 'html'));
-
-			$template = str_replace('%VERSION_HTML%', $aeFiles->replaceExtension($urlHTML, 'html'), $template);
-			$template = str_replace('%VERSION_HTML_TITLE%', $aeSettings->getText('action_html', 'View this slideshow like an article'), $template);
-
-			// The PDF format of the note can be retrieved by replacing the .html extension
-			// by .pdf
-			$URLpdf = $aeFiles->replaceExtension($urlHTML, 'pdf');
-			$template = str_replace('%VERSION_PDF%', utf8_encode($URLpdf), $template);
-			$template = str_replace('%VERSION_PDF_TITLE%', $aeSettings->getText('action_download', 'Download this file'), $template);
-
-			$template = str_replace('%VERSION_SLIDESHOW%', $aeFiles->replaceExtension($urlHTML, 'slides'), $template);
-			$template = str_replace('%VERSION_SLIDESHOW_TITLE%', $aeSettings->getText('action_slideshow', 'View this article like a slideshow'), $template);
-
-			$template = str_replace('%URL_PAGE%', $urlHTML, $template);
-		} // if (isset($params['filename']))
-
-		if (strpos($template, '<!--%FONT%-->') !== false) {
-			// Perhaps a Google font should be used.
-			$sFont = $aeSettings->getPageGoogleFont(true);
-			$template = str_replace('<!--%FONT%-->', $sFont, $template);
-		}
-
-		// --------------------------------
-		// Call content plugins
-		$aeEvents->loadPlugins('content', 'html');
-		$additionnalJS = '';
-		$args = array(&$additionnalJS);
-		$aeEvents->trigger('render.js', $args);
-		$template = str_replace('<!--%ADDITIONNAL_JS%-->', $args[0], $template);
-
-		$css = '';
-		$args = array(&$css);
-		$aeEvents->trigger('render.css', $args);
-		$template = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $template);
-
-		// --------------------------------
-		// Check if the template contains then URL_IMG tag and if so,
-		// retrieve the first image in the HTML string
-
-		if (strpos($template, '%URL_IMG%') !== false) {
-			// Retrieve the first image in the html
-			$urlImg = '';
-			$matches = array();
-			if (preg_match_all('/<img.*data-src *= *[\'|"]([^\'|"]*)/', $html, $matches)) {
-				foreach ($matches as $val) {
-					if (strpos($val[0], '/blank.png') === false) {
-						$template = str_replace('%URL_IMG%', $val[0], $template);
-						break;
-					}
-				}
-			} // if (preg_match)
-		} //if (strpos($template, '%URL_IMG%')!==false)
-
-		// --------------------------------
-		// Call content plugins
-		$aeEvents = \MarkNotes\Events::getInstance();
-		$aeEvents->loadPlugins('content', 'html');
-		$args = array(&$template);
-		$aeEvents->trigger('display.html', $args);
-		$template = $args[0];
-		// --------------------------------
 
 		return $template;
 	}

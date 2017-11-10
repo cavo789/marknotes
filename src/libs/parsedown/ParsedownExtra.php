@@ -272,7 +272,7 @@ class ParsedownExtra extends Parsedown
 
             if ( ! isset($this->DefinitionData['Footnote'][$name]['number']))
             {
-                $this->DefinitionData['Footnote'][$name]['number'] = ++ $this->footnoteCount; # » &
+                $this->DefinitionData['Footnote'][$name]['number'] = ++ $this->footnoteCount; # Â» &
             }
 
             $Element = array(

@@ -43,8 +43,8 @@ body {
 	margin: 0 0 0 2em;
 }
 
-div.reveal ul {
-	list-style-type: none;
+.reveal ul {
+	list-style-type: none !important;
 	margin-left    : none;
 }
 

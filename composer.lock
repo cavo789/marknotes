@@ -4,23 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "511984eafd7aecb2410d1ec4f5f73b01",
+    "content-hash": "0750586c73f393e747f8d7b6b3816b6b",
     "packages": [
         {
             "name": "cocur/slugify",
-            "version": "v3.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cocur/slugify.git",
-                "reference": "122998753e980d0223eea0bb957102a457a13bc1"
+                "reference": "1fdf2b1219a199301db3d7c60c16d895bba6ccde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cocur/slugify/zipball/122998753e980d0223eea0bb957102a457a13bc1",
-                "reference": "122998753e980d0223eea0bb957102a457a13bc1",
+                "url": "https://api.github.com/repos/cocur/slugify/zipball/1fdf2b1219a199301db3d7c60c16d895bba6ccde",
+                "reference": "1fdf2b1219a199301db3d7c60c16d895bba6ccde",
                 "shasum": ""
             },
             "require": {
+                "ext-mbstring": "*",
                 "php": ">=5.5.9"
             },
             "require-dev": {
@@ -68,7 +69,7 @@
                 "slug",
                 "slugify"
             ],
-            "time": "2017-08-11T20:28:15+00:00"
+            "time": "2017-09-24T10:29:04+00:00"
         },
         {
             "name": "components/jquery",
@@ -114,16 +115,16 @@
         },
         {
             "name": "datatables/datatables",
-            "version": "1.10.15",
+            "version": "1.10.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DataTables/DataTables.git",
-                "reference": "7494262db18b1cbc69dcc1d64a5a8d0cd757d58c"
+                "reference": "75a665f64f02982c0f4666b15a25c4670e5e6b18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DataTables/DataTables/zipball/7494262db18b1cbc69dcc1d64a5a8d0cd757d58c",
-                "reference": "7494262db18b1cbc69dcc1d64a5a8d0cd757d58c",
+                "url": "https://api.github.com/repos/DataTables/DataTables/zipball/75a665f64f02982c0f4666b15a25c4670e5e6b18",
+                "reference": "75a665f64f02982c0f4666b15a25c4670e5e6b18",
                 "shasum": ""
             },
             "type": "library",
@@ -133,7 +134,7 @@
             ],
             "description": "DataTables is a plug-in for the jQuery Javascript library. It is a highly flexible tool, based upon the foundations of progressive enhancement, which will add advanced interaction controls to any HTML table.",
             "homepage": "http://www.datatables.net/",
-            "time": "2017-04-18T08:24:18+00:00"
+            "time": "2017-08-31T13:52:17+00:00"
         },
         {
             "name": "dompdf/dompdf",
@@ -198,16 +199,16 @@
         },
         {
             "name": "drmonty/datatables-buttons",
-            "version": "1.3.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mrohnstock/datatables-buttons.git",
-                "reference": "c6af77b58eb53ef9973718e40f345ff261c823ba"
+                "reference": "4c310de2ba7e6e88c9ee058e91083a2d13181b5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mrohnstock/datatables-buttons/zipball/c6af77b58eb53ef9973718e40f345ff261c823ba",
-                "reference": "c6af77b58eb53ef9973718e40f345ff261c823ba",
+                "url": "https://api.github.com/repos/mrohnstock/datatables-buttons/zipball/4c310de2ba7e6e88c9ee058e91083a2d13181b5f",
+                "reference": "4c310de2ba7e6e88c9ee058e91083a2d13181b5f",
                 "shasum": ""
             },
             "require": {
@@ -266,20 +267,20 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Buttons is an extension for DataTables that adds control buttons to the table.",
             "homepage": "http://www.datatables.net/",
-            "time": "2017-04-18T07:29:49+00:00"
+            "time": "2017-09-13T06:25:21+00:00"
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.6.2",
+            "version": "1.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "1bf24f7334fe16c88bf9d467863309ceaf285b01"
+                "reference": "728952b90a333b5c6f77f06ea9422b94b585878d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/1bf24f7334fe16c88bf9d467863309ceaf285b01",
-                "reference": "1bf24f7334fe16c88bf9d467863309ceaf285b01",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/728952b90a333b5c6f77f06ea9422b94b585878d",
+                "reference": "728952b90a333b5c6f77f06ea9422b94b585878d",
                 "shasum": ""
             },
             "require": {
@@ -308,7 +309,51 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2017-03-29T16:04:15+00:00"
+            "time": "2017-05-14T14:47:48+00:00"
+        },
+        {
+            "name": "erusev/parsedown-extra",
+            "version": "0.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/erusev/parsedown-extra.git",
+                "reference": "0db5cce7354e4b76f155d092ab5eb3981c21258c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/erusev/parsedown-extra/zipball/0db5cce7354e4b76f155d092ab5eb3981c21258c",
+                "reference": "0db5cce7354e4b76f155d092ab5eb3981c21258c",
+                "shasum": ""
+            },
+            "require": {
+                "erusev/parsedown": "~1.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ParsedownExtra": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Emanuil Rusev",
+                    "email": "hello@erusev.com",
+                    "homepage": "http://erusev.com"
+                }
+            ],
+            "description": "An extension of Parsedown that adds support for Markdown Extra.",
+            "homepage": "https://github.com/erusev/parsedown-extra",
+            "keywords": [
+                "markdown",
+                "markdown extra",
+                "parsedown",
+                "parser"
+            ],
+            "time": "2015-11-01T10:19:22+00:00"
         },
         {
             "name": "fortawesome/font-awesome",
@@ -357,6 +402,55 @@
                 "icon"
             ],
             "time": "2016-10-24T15:52:54+00:00"
+        },
+        {
+            "name": "jaybizzle/crawler-detect",
+            "version": "v1.2.52",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JayBizzle/Crawler-Detect.git",
+                "reference": "bd6f1eef08645f1fe2fe79fb58d745e17670c3eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/bd6f1eef08645f1fe2fe79fb58d745e17670c3eb",
+                "reference": "bd6f1eef08645f1fe2fe79fb58d745e17670c3eb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.8.*",
+                "satooshi/php-coveralls": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jaybizzle\\CrawlerDetect\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Beech",
+                    "email": "m@rkbee.ch",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CrawlerDetect is a PHP class for detecting bots/crawlers/spiders via the user agent",
+            "homepage": "https://github.com/JayBizzle/Crawler-Detect/",
+            "keywords": [
+                "crawler",
+                "crawler detect",
+                "crawler detector",
+                "crawlerdetect",
+                "php crawler detect"
+            ],
+            "time": "2017-09-07T08:18:18+00:00"
         },
         {
             "name": "jolicode/jolitypo",
@@ -412,6 +506,160 @@
                 "typography"
             ],
             "time": "2017-04-02T17:22:10+00:00"
+        },
+        {
+            "name": "leblanc-simon/parsedown-checkbox",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/leblanc-simon/parsedown-checkbox.git",
+                "reference": "abd857aafc890f55421c87cb9b3cfe9b2791f23f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/leblanc-simon/parsedown-checkbox/zipball/abd857aafc890f55421c87cb9b3cfe9b2791f23f",
+                "reference": "abd857aafc890f55421c87cb9b3cfe9b2791f23f",
+                "shasum": ""
+            },
+            "require": {
+                "erusev/parsedown-extra": "^0.7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "ParsedownCheckbox.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Leblanc",
+                    "email": "contact@leblanc-simon.eu",
+                    "homepage": "https://www.leblanc-simon.fr"
+                }
+            ],
+            "description": "An extension of Parsedown and ParsedownExtra that adds support for checkbox",
+            "homepage": "https://github.com/leblanc-simon/parsedown-checkbox",
+            "keywords": [
+                "checkbox",
+                "markdown",
+                "markdown extra",
+                "parsedown",
+                "parser"
+            ],
+            "time": "2017-05-10T03:43:13+00:00"
+        },
+        {
+            "name": "matthiasmullie/minify",
+            "version": "1.3.52",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthiasmullie/minify.git",
+                "reference": "134b25a63d83a80ae128aedc9a99987e064b4382"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/134b25a63d83a80ae128aedc9a99987e064b4382",
+                "reference": "134b25a63d83a80ae128aedc9a99987e064b4382",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcre": "*",
+                "matthiasmullie/path-converter": "~1.1",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~1.0",
+                "matthiasmullie/scrapbook": "~1.0",
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "psr/cache-implementation": "Cache implementation to use with Minify::cache"
+            },
+            "bin": [
+                "bin/minifycss",
+                "bin/minifyjs"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MatthiasMullie\\Minify\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Mullie",
+                    "email": "minify@mullie.eu",
+                    "homepage": "http://www.mullie.eu",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CSS & JS minifier",
+            "homepage": "http://www.minifier.org",
+            "keywords": [
+                "JS",
+                "css",
+                "javascript",
+                "minifier",
+                "minify"
+            ],
+            "time": "2017-09-15T13:02:11+00:00"
+        },
+        {
+            "name": "matthiasmullie/path-converter",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthiasmullie/path-converter.git",
+                "reference": "08551ec1b156e923c242a10ab484bd4d6ead6631"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matthiasmullie/path-converter/zipball/08551ec1b156e923c242a10ab484bd4d6ead6631",
+                "reference": "08551ec1b156e923c242a10ab484bd4d6ead6631",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcre": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MatthiasMullie\\PathConverter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Mullie",
+                    "email": "pathconverter@mullie.eu",
+                    "homepage": "http://www.mullie.eu",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Relative path converter",
+            "homepage": "http://github.com/matthiasmullie/path-converter",
+            "keywords": [
+                "converter",
+                "path",
+                "paths",
+                "relative"
+            ],
+            "time": "2017-01-26T08:54:49+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -694,7 +942,7 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.3.8",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
@@ -1196,20 +1444,20 @@
         },
         {
             "name": "symfony/config",
-            "version": "v3.3.3",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "a094618deb9a3fe1c3cf500a796e167d0495a274"
+                "reference": "f9f19a39ee178f61bb2190f51ff7c517c2159315"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/a094618deb9a3fe1c3cf500a796e167d0495a274",
-                "reference": "a094618deb9a3fe1c3cf500a796e167d0495a274",
+                "url": "https://api.github.com/repos/symfony/config/zipball/f9f19a39ee178f61bb2190f51ff7c517c2159315",
+                "reference": "f9f19a39ee178f61bb2190f51ff7c517c2159315",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9",
+                "php": "^5.5.9|>=7.0.8",
                 "symfony/filesystem": "~2.8|~3.0"
             },
             "conflict": {
@@ -1254,24 +1502,24 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2017-06-16T12:40:34+00:00"
+            "time": "2017-09-04T16:28:07+00:00"
         },
         {
             "name": "symfony/console",
-            "version": "v3.3.3",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "a97e45d98c59510f085fa05225a1acb74dfe0546"
+                "reference": "a1e1b01293a090cb9ae2ddd221a3251a4a7e4abf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/a97e45d98c59510f085fa05225a1acb74dfe0546",
-                "reference": "a97e45d98c59510f085fa05225a1acb74dfe0546",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a1e1b01293a090cb9ae2ddd221a3251a4a7e4abf",
+                "reference": "a1e1b01293a090cb9ae2ddd221a3251a4a7e4abf",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9",
+                "php": "^5.5.9|>=7.0.8",
                 "symfony/debug": "~2.8|~3.0",
                 "symfony/polyfill-mbstring": "~1.0"
             },
@@ -1284,7 +1532,6 @@
                 "symfony/dependency-injection": "~3.3",
                 "symfony/event-dispatcher": "~2.8|~3.0",
                 "symfony/filesystem": "~2.8|~3.0",
-                "symfony/http-kernel": "~2.8|~3.0",
                 "symfony/process": "~2.8|~3.0"
             },
             "suggest": {
@@ -1323,24 +1570,24 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-07-03T13:19:36+00:00"
+            "time": "2017-09-06T16:40:18+00:00"
         },
         {
             "name": "symfony/debug",
-            "version": "v3.3.3",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "bcfd02728d9b776e5c2195a4750c813fe440402f"
+                "reference": "8beb24eec70b345c313640962df933499373a944"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/bcfd02728d9b776e5c2195a4750c813fe440402f",
-                "reference": "bcfd02728d9b776e5c2195a4750c813fe440402f",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/8beb24eec70b345c313640962df933499373a944",
+                "reference": "8beb24eec70b345c313640962df933499373a944",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9",
+                "php": "^5.5.9|>=7.0.8",
                 "psr/log": "~1.0"
             },
             "conflict": {
@@ -1379,24 +1626,24 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2017-06-06T14:51:55+00:00"
+            "time": "2017-09-01T13:23:39+00:00"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v3.3.3",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "986a633c92220ecb22ad06820a1df126c7a4f9eb"
+                "reference": "e593f06dd90a81c7b70ac1c49862a061b0ec06d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/986a633c92220ecb22ad06820a1df126c7a4f9eb",
-                "reference": "986a633c92220ecb22ad06820a1df126c7a4f9eb",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/e593f06dd90a81c7b70ac1c49862a061b0ec06d2",
+                "reference": "e593f06dd90a81c7b70ac1c49862a061b0ec06d2",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9",
+                "php": "^5.5.9|>=7.0.8",
                 "psr/container": "^1.0"
             },
             "conflict": {
@@ -1449,24 +1696,24 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2017-06-20T14:01:46+00:00"
+            "time": "2017-09-05T20:39:38+00:00"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.3.3",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "311fa718389efbd8b627c272b9324a62437018cc"
+                "reference": "b32a0e5f928d0fa3d1dd03c78d020777e50c10cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/311fa718389efbd8b627c272b9324a62437018cc",
-                "reference": "311fa718389efbd8b627c272b9324a62437018cc",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/b32a0e5f928d0fa3d1dd03c78d020777e50c10cb",
+                "reference": "b32a0e5f928d0fa3d1dd03c78d020777e50c10cb",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": "^5.5.9|>=7.0.8"
             },
             "type": "library",
             "extra": {
@@ -1498,24 +1745,24 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2017-06-24T09:29:48+00:00"
+            "time": "2017-07-29T21:54:42+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v3.3.3",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "baea7f66d30854ad32988c11a09d7ffd485810c4"
+                "reference": "b2260dbc80f3c4198f903215f91a1ac7fe9fe09e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/baea7f66d30854ad32988c11a09d7ffd485810c4",
-                "reference": "baea7f66d30854ad32988c11a09d7ffd485810c4",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/b2260dbc80f3c4198f903215f91a1ac7fe9fe09e",
+                "reference": "b2260dbc80f3c4198f903215f91a1ac7fe9fe09e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": "^5.5.9|>=7.0.8"
             },
             "type": "library",
             "extra": {
@@ -1547,20 +1794,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2017-06-01T21:01:25+00:00"
+            "time": "2017-07-29T21:54:42+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.4.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "f29dca382a6485c3cbe6379f0c61230167681937"
+                "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f29dca382a6485c3cbe6379f0c61230167681937",
-                "reference": "f29dca382a6485c3cbe6379f0c61230167681937",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
+                "reference": "7c8fae0ac1d216eb54349e6a8baa57d515fe8803",
                 "shasum": ""
             },
             "require": {
@@ -1572,7 +1819,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -1606,7 +1853,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-06-09T14:24:12+00:00"
+            "time": "2017-06-14T15:44:48+00:00"
         },
         {
             "name": "theseer/fdomdocument",

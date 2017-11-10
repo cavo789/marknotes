@@ -1,74 +1,48 @@
 <?php
 /**
- * Add extra security on the produced content like adding the rel=noopener attribute to links
+ * Add extra security on the produced content like adding the
+ * rel=noopener attribute to links
+ * (see https://mathiasbynens.github.io/rel-noopener/)
+ * See it in action : test with https://www.whatismyreferer.com/
  */
-
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Security
+class Security extends \MarkNotes\Plugins\Content\HTML\Plugin
 {
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.content.html.security';
+	protected static $json_options = '';
 
-    /**
-     * Add a rel="noopener" attribute to any URLs
-     * (see https://mathiasbynens.github.io/rel-noopener/)
-     */
-     private static function addRelNoOpener(string $content = null) : string
-     {
-         // Extract any <a> tags in the HTML content
-         // For instance <a href="https://www.marknotes.fr">MarkNotes</a>
-         // and explode the links in an array like this :
-         //
-         // [0] => <a href="https://www.marknotes.fr">MarkNotes</a>  (entire tag)
-         // [1] => href="https://www.marknotes.fr"                   (attributes of <a xxxx>)
-         // [2] => MarkNotes                                         (the caption)
-         //
-         // And add the rel="noopener" attribute and "noreferrer" for old browsers
+	/**
+	 * Modify the HTML rendering of the note
+	 */
+	public static function doIt(&$content = null) : bool
+	{
+		if (trim($content) === '') {
+			return true;
+		}
 
-         preg_match_all("/<a ([^\>]*)>(.*)<\/a>/siU", $content, $matches, PREG_SET_ORDER);
+		// Extract any <a> tags in the HTML content
+		// For instance <a href="https://www.marknotes.fr">MarkNotes</a>
+		// and explode the links in an array like this :
+		//
+		// [0] => <a href="https://www.marknotes.fr">MarkNotes</a>  (entire tag)
+		// [1] => href="https://www.marknotes.fr" (attributes of <a xxxx>)
+		// [2] => MarkNotes                       (the caption)
+		//
+		// And add the rel="noopener" attribute and "noreferrer" for old browsers
 
-         foreach ($matches as $match) {
-             $content = str_replace(
-                 $match[0],
-                 '<a '.$match[1].' rel="noopener noreferrer">'.$match[2].'</a>',
-                 $content
-             );
-         }
+		preg_match_all("/<a ([^\>]*)>(.*)<\/a>/siU", $content, $matches, PREG_SET_ORDER);
 
-         return $content;
-     }
-
-    /**
-     * Modify the HTML rendering of the note
-     */
-    public static function doIt(&$content = null)
-    {
-        if (trim($content) === '') {
-            return true;
-        }
-
-        $content = self::addRelNoOpener($content);
-
-        return true;
-    }
-
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-    {
-        $aeSession = \MarkNotes\Session::getInstance();
-        $task = $aeSession->get('task', '');
-
-        // This plugin is needed only for these tasks : main, display and html
-
-        if (!in_array($task, array('main', 'display', 'html'))) {
-            return false;
-        }
-
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('render.content', __CLASS__.'::doIt');
-        return true;
-    }
+		foreach ($matches as $match) {
+			$content = str_replace(
+				$match[0],
+				'<a '.$match[1].' rel="noopener noreferrer">'.$match[2].'</a>',
+				$content
+			);
+		}
+		return true;
+	}
 }

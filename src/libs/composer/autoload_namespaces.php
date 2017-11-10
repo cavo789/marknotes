@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
+    'ParsedownExtra' => array($vendorDir . '/erusev/parsedown-extra'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'PHPMD\\' => array($vendorDir . '/phpmd/phpmd/src/main/php'),
     'JoliTypo' => array($vendorDir . '/jolicode/jolitypo/src'),

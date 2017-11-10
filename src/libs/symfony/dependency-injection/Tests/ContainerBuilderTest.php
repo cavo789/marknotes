@@ -603,29 +603,55 @@ class ContainerBuilderTest extends TestCase
     public function testResolveEnvValues()
     {
         $_ENV['DUMMY_ENV_VAR'] = 'du%%y';
+        $_SERVER['DUMMY_SERVER_VAR'] = 'ABC';
+        $_SERVER['HTTP_DUMMY_VAR'] = 'DEF';
 
         $container = new ContainerBuilder();
-        $container->setParameter('bar', '%% %env(DUMMY_ENV_VAR)%');
+        $container->setParameter('bar', '%% %env(DUMMY_ENV_VAR)% %env(DUMMY_SERVER_VAR)% %env(HTTP_DUMMY_VAR)%');
+        $container->setParameter('env(HTTP_DUMMY_VAR)', '123');
 
-        $this->assertSame('%% du%%%%y', $container->resolveEnvPlaceholders('%bar%', true));
+        $this->assertSame('%% du%%%%y ABC 123', $container->resolveEnvPlaceholders('%bar%', true));
 
-        unset($_ENV['DUMMY_ENV_VAR']);
+        unset($_ENV['DUMMY_ENV_VAR'], $_SERVER['DUMMY_SERVER_VAR'], $_SERVER['HTTP_DUMMY_VAR']);
     }
 
     public function testCompileWithResolveEnv()
     {
-        $_ENV['DUMMY_ENV_VAR'] = 'du%%y';
+        putenv('DUMMY_ENV_VAR=du%%y');
+        $_SERVER['DUMMY_SERVER_VAR'] = 'ABC';
+        $_SERVER['HTTP_DUMMY_VAR'] = 'DEF';
 
         $container = new ContainerBuilder();
         $container->setParameter('env(FOO)', 'Foo');
-        $container->setParameter('bar', '%% %env(DUMMY_ENV_VAR)%');
+        $container->setParameter('env(DUMMY_ENV_VAR)', 'GHI');
+        $container->setParameter('bar', '%% %env(DUMMY_ENV_VAR)% %env(DUMMY_SERVER_VAR)% %env(HTTP_DUMMY_VAR)%');
         $container->setParameter('foo', '%env(FOO)%');
+        $container->setParameter('baz', '%foo%');
+        $container->setParameter('env(HTTP_DUMMY_VAR)', '123');
+        $container->register('teatime', 'stdClass')
+            ->setProperty('foo', '%env(DUMMY_ENV_VAR)%')
+        ;
         $container->compile(true);
 
-        $this->assertSame('% du%%y', $container->getParameter('bar'));
-        $this->assertSame('Foo', $container->getParameter('foo'));
+        $this->assertSame('% du%%y ABC 123', $container->getParameter('bar'));
+        $this->assertSame('Foo', $container->getParameter('baz'));
+        $this->assertSame('du%%y', $container->get('teatime')->foo);
 
-        unset($_ENV['DUMMY_ENV_VAR']);
+        unset($_SERVER['DUMMY_SERVER_VAR'], $_SERVER['HTTP_DUMMY_VAR']);
+        putenv('DUMMY_ENV_VAR');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\RuntimeException
+     * @expectedExceptionMessage A string value must be composed of strings and/or numbers, but found parameter "env(ARRAY)" of type array inside string value "ABC %env(ARRAY)%".
+     */
+    public function testCompileWithArrayResolveEnv()
+    {
+        $bag = new TestingEnvPlaceholderParameterBag();
+        $container = new ContainerBuilder($bag);
+        $container->setParameter('foo', '%env(ARRAY)%');
+        $container->setParameter('bar', 'ABC %env(ARRAY)%');
+        $container->compile(true);
     }
 
     /**
@@ -1082,6 +1108,27 @@ class ContainerBuilderTest extends TestCase
         // when called multiple times, the same instance is returned
         $this->assertSame($childDefA, $container->registerForAutoconfiguration('AInterface'));
     }
+
+    /**
+     * This test checks the trigger of a deprecation note and should not be removed in major releases.
+     *
+     * @group legacy
+     * @expectedDeprecation The "foo" service is deprecated. You should stop using it, as it will soon be removed.
+     */
+    public function testPrivateServiceTriggersDeprecation()
+    {
+        $container = new ContainerBuilder();
+        $container->register('foo', 'stdClass')
+            ->setPublic(false)
+            ->setDeprecated(true);
+        $container->register('bar', 'stdClass')
+            ->setPublic(true)
+            ->setProperty('foo', new Reference('foo'));
+
+        $container->compile();
+
+        $container->get('bar');
+    }
 }
 
 class FooClass
@@ -1096,5 +1143,13 @@ class B
 {
     public function __construct(A $a)
     {
+    }
+}
+
+class TestingEnvPlaceholderParameterBag extends EnvPlaceholderParameterBag
+{
+    public function get($name)
+    {
+        return 'env(array)' === strtolower($name) ? array(123) : parent::get($name);
     }
 }

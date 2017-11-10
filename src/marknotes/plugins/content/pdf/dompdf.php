@@ -51,8 +51,8 @@ class DomPDF
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
-			$aeDebug->log('Initialize Dompdf', 'debug');
-			$aeDebug->log('**Dompdf error logfile** : '.$debugFile, 'info');
+			$aeDebug->log("Initialize Dompdf", "debug");
+			$aeDebug->log("**Dompdf error logfile** : ".$debugFile, "debug");
 		}
 		/*<!-- endbuild -->*/
 
@@ -113,10 +113,10 @@ class DomPDF
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind(string $plugin)
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.pdf', __CLASS__.'::doIt');
+        $aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
         return true;
     }
 }

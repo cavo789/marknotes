@@ -28,16 +28,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
  *
  * Parameter and service keys are case insensitive.
  *
- * A service id can contain lowercased letters, digits, underscores, and dots.
- * Underscores are used to separate words, and dots to group services
- * under namespaces:
- *
- * <ul>
- *   <li>request</li>
- *   <li>mysql_session_storage</li>
- *   <li>symfony.mysql_session_storage</li>
- * </ul>
- *
  * A service can also be defined by creating a method named
  * getXXXService(), where XXX is the camelized version of the id:
  *
@@ -66,9 +56,13 @@ class Container implements ResettableContainerInterface
 
     protected $services = array();
     protected $methodMap = array();
-    protected $privates = array();
     protected $aliases = array();
     protected $loading = array();
+
+    /**
+     * @internal
+     */
+    protected $privates = array();
 
     /**
      * @internal
@@ -117,7 +111,7 @@ class Container implements ResettableContainerInterface
     /**
      * Returns true if the container parameter bag are frozen.
      *
-     * Deprecated since 3.3, to be removed in 4.0.
+     * @deprecated since version 3.3, to be removed in 4.0.
      *
      * @return bool true if the container parameter bag are frozen, false otherwise
      */
@@ -231,13 +225,13 @@ class Container implements ResettableContainerInterface
             if (isset($this->privates[$id])) {
                 @trigger_error(sprintf('Checking for the existence of the "%s" private service is deprecated since Symfony 3.2 and won\'t be supported anymore in Symfony 4.0.', $id), E_USER_DEPRECATED);
             }
-            if ('service_container' === $id) {
-                return true;
-            }
             if (isset($this->aliases[$id])) {
                 $id = $this->aliases[$id];
             }
             if (isset($this->services[$id])) {
+                return true;
+            }
+            if ('service_container' === $id) {
                 return true;
             }
 
@@ -289,9 +283,6 @@ class Container implements ResettableContainerInterface
             if (isset($this->privates[$id])) {
                 @trigger_error(sprintf('Requesting the "%s" private service is deprecated since Symfony 3.2 and won\'t be supported anymore in Symfony 4.0.', $id), E_USER_DEPRECATED);
             }
-            if ('service_container' === $id) {
-                return $this;
-            }
             if (isset($this->aliases[$id])) {
                 $id = $this->aliases[$id];
             }
@@ -299,6 +290,9 @@ class Container implements ResettableContainerInterface
             // Re-use shared service instance if it exists.
             if (isset($this->services[$id])) {
                 return $this->services[$id];
+            }
+            if ('service_container' === $id) {
+                return $this;
             }
 
             if (isset($this->loading[$id])) {
@@ -362,12 +356,12 @@ class Container implements ResettableContainerInterface
     {
         $id = $this->normalizeId($id);
 
-        if ('service_container' === $id) {
-            return false;
-        }
-
         if (isset($this->aliases[$id])) {
             $id = $this->aliases[$id];
+        }
+
+        if ('service_container' === $id) {
+            return false;
         }
 
         return isset($this->services[$id]);
@@ -433,9 +427,9 @@ class Container implements ResettableContainerInterface
     /**
      * Fetches a variable from the environment.
      *
-     * @param string The name of the environment variable
+     * @param string $name The name of the environment variable
      *
-     * @return scalar The value to use for the provided environment variable name
+     * @return mixed The value to use for the provided environment variable name
      *
      * @throws EnvNotFoundException When the environment variable is not found and has no default value
      */
@@ -444,10 +438,13 @@ class Container implements ResettableContainerInterface
         if (isset($this->envCache[$name]) || array_key_exists($name, $this->envCache)) {
             return $this->envCache[$name];
         }
+        if (isset($_SERVER[$name]) && 0 !== strpos($name, 'HTTP_')) {
+            return $this->envCache[$name] = $_SERVER[$name];
+        }
         if (isset($_ENV[$name])) {
             return $this->envCache[$name] = $_ENV[$name];
         }
-        if (false !== $env = getenv($name)) {
+        if (false !== ($env = getenv($name)) && null !== $env) { // null is a possible value because of thread safety issues
             return $this->envCache[$name] = $env;
         }
         if (!$this->hasParameter("env($name)")) {

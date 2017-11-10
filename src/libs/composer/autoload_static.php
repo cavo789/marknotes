@@ -8,6 +8,7 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '5e187b582b2b3bb26276f0085ef51bb1' => __DIR__ . '/..' . '/leblanc-simon/parsedown-checkbox/ParsedownCheckbox.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -35,6 +36,12 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         'M' => 
         array (
             'Monolog\\' => 8,
+            'MatthiasMullie\\PathConverter\\' => 29,
+            'MatthiasMullie\\Minify\\' => 22,
+        ),
+        'J' => 
+        array (
+            'Jaybizzle\\CrawlerDetect\\' => 24,
         ),
         'D' => 
         array (
@@ -99,6 +106,18 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'MatthiasMullie\\PathConverter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/matthiasmullie/path-converter/src',
+        ),
+        'MatthiasMullie\\Minify\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/matthiasmullie/minify/src',
+        ),
+        'Jaybizzle\\CrawlerDetect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
+        ),
         'Dompdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
@@ -119,6 +138,10 @@ class ComposerStaticInitfa47305051318900393057bc996cd4e5
         ),
         'P' => 
         array (
+            'ParsedownExtra' => 
+            array (
+                0 => __DIR__ . '/..' . '/erusev/parsedown-extra',
+            ),
             'Parsedown' => 
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',

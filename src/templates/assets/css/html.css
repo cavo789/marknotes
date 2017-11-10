@@ -4,20 +4,19 @@
 	}
 }
 
-#footer {
-	position        : fixed;
-	z-index         : 10;
-	color           : white;
-	right           : 0;
-	bottom          : 0;
-	left            : 0;
-	padding         : 10px;
-	background-color: rgba(90, 145, 199, 0.16);
+details {
+	padding-bottom: 1em;
 }
 
-#footer a {
+navigation.top {
+	top     : 10px;
+	position: fixed;
+	z-index : 10;
+}
+
+navigation.top a {
 	color       : green;
-	font-size   : 24px;
+	font-size   : 1.4em;
 	margin-right: 10px;
 }
 
@@ -96,14 +95,6 @@ h1 {
 	border-bottom : 2px solid #5091cd;
 }
 
-footer {
-	margin-top      : 25px;
-	width           : 100%;
-	display         : table;
-	background-color: rgba(87, 138, 213, 0.2);
-	border          : 2px solid #5091cd;
-}
-
 footer img {
 	margin : 25px auto;
 	display: block;
@@ -150,4 +141,8 @@ footer > ul.list-inline li {
 	padding         : 10px;
 	margin          : 5px;
 	color           : #f7eeee;
+}
+
+.markdown-body table {
+	display: inline-table !important;
 }

@@ -1,12 +1,10 @@
 <?php
-
 /**
  * Overide somes functions of Parsedown
  *
  * Function inlineImage : see https://stackoverflow.com/a/41609464/1065340
  */
-
-class markNotesParsedown extends ParsedownExtra
+class markNotesParsedown extends ParsedownCheckbox
 {
 	/**
 	 * This function will be called for each ![]() tag of the markdown source
@@ -23,46 +21,39 @@ class markNotesParsedown extends ParsedownExtra
 	 *
 	 * You can mention "*" if you don't force a width or a height; for instance :
 	 *
-	 *     ![my-img_alt](one_image.png "1200x*") => force width=1200px and don't set the height
-	 *        so will be automatically resized proportionnaly to the new width
+	 *     ![my-img_alt](one_image.png "1200x*") => force width=1200px
+	 *			and don't set the height
+	 *			so will be automatically resized proportionnaly to the new width
 	 *     ![my-img_alt](one_image.png "*x32") => force height=32px
 	 *
 	 */
+	protected function inlineImage($Excerpt)
+	{
+		$Inline = parent::inlineImage($Excerpt);
 
-    protected function inlineImage($Excerpt)
-    {
-
-        $Inline = parent::inlineImage($Excerpt);
-
-        if (!isset($Inline['element']['attributes']['title'])) {
-
+		if (!isset($Inline['element']['attributes']['title'])) {
 			// Nothing to do
 
 			return parent::inlineImage($Excerpt);
-
 		} else {
+			$size = $Inline['element']['attributes']['title'];
 
-	        $size = $Inline['element']['attributes']['title'];
+			if (preg_match('/^(\d+|\*)x(\d+|\*)$/', $size)) {
+				list($width, $height) = explode('x', $size);
 
-	        if (preg_match('/^(\d+|\*)x(\d+|\*)$/', $size)) {
-
-	            list($width, $height) = explode('x', $size);
-
-				if ($width!=='*'){
+				if ($width!=='*') {
 					$Inline['element']['attributes']['width'] = $width;
 				}
-				if ($height!=='*'){
-	            	$Inline['element']['attributes']['height'] = $height;
+				if ($height!=='*') {
+					$Inline['element']['attributes']['height'] = $height;
 				}
 
-	            unset ($Inline['element']['attributes']['title']);
-
-	        } else {
-
+				unset($Inline['element']['attributes']['title']);
+			} else {
 				$Inline = parent::inlineImage($Excerpt);
 			}
 		}
 
-        return $Inline;
-    }
+		return $Inline;
+	}
 }

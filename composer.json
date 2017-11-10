@@ -20,7 +20,11 @@
 		"monolog/monolog": "^1.22",
 		"drmonty/datatables-buttons": "^1.3",
 		"symfony/yaml": "^3.3",
-		"cocur/slugify": "^3.0"
+		"cocur/slugify": "^3.0",
+		"leblanc-simon/parsedown-checkbox": "^0.0.2",
+		"erusev/parsedown-extra": "^0.7.1",
+		"matthiasmullie/minify": "^1.3",
+		"jaybizzle/crawler-detect": "1.*"
 	},
 	"config": {
 		"preferred-install": "dist"

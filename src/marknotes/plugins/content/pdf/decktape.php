@@ -24,7 +24,7 @@ class DeckTape
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
 
-        $arrSettings = $aeSettings->getPlugins('options', 'decktape');
+        $arrSettings = $aeSettings->getPlugins('options.task.export.decktape');
 
         if ($arrSettings === array()) {
             return false;
@@ -66,7 +66,7 @@ class DeckTape
             $params['layout'] = $layout;
 
 			// true = stop on the first plugin which return "true" i.e. has done the job
-            $aeEvents->trigger('export.slides', $args, true);
+            $aeEvents->trigger('content::export.slides', $args, true);
 
             $html = $params['html'];
 
@@ -120,10 +120,10 @@ class DeckTape
     /**
      * Attach the function and responds to events
      */
-    public function bind()
+    public function bind(string $plugin)
     {
         $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.pdf', __CLASS__.'::doIt');
+        $aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
         return true;
     }
 }

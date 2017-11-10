@@ -1,4 +1,10 @@
 <?php
+/**
+ * Display the HTML rendering of the note in a nice HTML layout.
+ * Use the defined template, from settings.json->template->html
+ * Called when the URL is something like http://localhost/notes/docs/marknotes.html
+ * i.e. accessing the .html file
+ */
 
 namespace MarkNotes\Tasks\Converter;
 
@@ -6,68 +12,76 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-    protected static $hInstance = null;
+	protected static $hInstance = null;
 
-    public function __construct()
-    {
-        return true;
-    }
+	public function __construct()
+	{
+		return true;
+	}
 
-    public static function getInstance()
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new HTML();
-        }
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new HTML();
+		}
 
-        return self::$hInstance;
-    }
+		return self::$hInstance;
+	}
 
-    /**
-     * Display the HTML rendering of the note in a nice HTML layout. Called when the URL is something like
-     * http://localhost/notes/docs/Development/atom/Plugins.html i.e. accessing the .html file
-     *
-     * @param  string  $html [description]   html rendering of the .md file
-     * @return {[type]       Nothing
-     */
-    public function run(string $html, array $params = null)
-    {
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeHTML = \MarkNotes\FileType\HTML::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	/**
+	 * @param  string  $html [description]   html rendering of the .md file
+	 * @return {[type]       Nothing
+	 */
+	public function run(string $html, array $params = null) : string
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        // Add h2 and h3 id and don't add the "go to top" icon
-        $html = $aeHTML->addHeadingsID($html, false);
+		// Add h2 and h3 id and don't add the "go to top" icon
+		$html = $aeHTML->addHeadingsID($html, false);
 
-        // Check if a template has been specified in the parameters
-        // and if so, check that this file exists
+		// Check if a template has been specified in the parameters
+		// and if so, check that this file exists, default is html
+		$template = $aeSettings->getTemplateFile('html');
 
-        // Default is html
-        $template = $aeSettings->getTemplateFile('html');
+		if (isset($params['template'])) {
+			$template = $aeSettings->getTemplateFile($params['template']);
+			if (!$aeFiles->fileExists($template)) {
+				$template = $aeSettings->getTemplateFile('html');
+			}
+		}
 
-        if (isset($params['template'])) {
-            $template = $aeSettings->getTemplateFile($params['template']);
-            if (!$aeFiles->fileExists($template)) {
-                $template = $aeSettings->getTemplateFile('html');
-            }
-        }
+		if ($aeFiles->fileExists($template)) {
+			$html = $aeHTML->replaceVariables(file_get_contents($template), $html, $params);
+		}
 
-        if ($aeFiles->fileExists($template)) {
-            $html = $aeHTML->replaceVariables(file_get_contents($template), $html, $params);
-        }
+		// --------------------------------
+		// Get additionnal CSS and JS
 
-        $javascript =
-        "marknotes.message.on_this_page='".$aeSettings->getText('on_this_page', 'On this page', true)."';\n";
+		// Call render.html present in page HTML plugins
+		$aeEvents->loadPlugins('page.html');
+		$args = array(&$html);
+		$aeEvents->trigger('page.html::render.html', $args);
+		$html = $args[0];
 
-        $sQuerystring = "";
-        foreach ($_GET as $name => $value) {
-            $value = filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);
-            $value = str_replace("'", "\'", $value);
-            $sQuerystring .= "marknotes.querystring.".$name."='".$value."';\n";
-        }
+		if (strpos($html, '<!--%ADDITIONNAL_JS%-->') !== false) {
+			$aeEvents->loadPlugins('page.html');
+			$additionnalJS = '';
+			$args = array(&$additionnalJS);
+			$aeEvents->trigger('page.html::render.js', $args);
+			$html = str_replace('<!--%ADDITIONNAL_JS%-->', $args[0], $html);
+		}
 
-        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.$sQuerystring.'</script>', $html);
+		if (strpos($html, '<!--%ADDITIONNAL_CSS%-->') !== false) {
+			$aeEvents->loadPlugins('page.html');
+			$additionnalCSS = '';
+			$args = array(&$additionnalCSS);
+			$aeEvents->trigger('page.html::render.css', $args);
+			$html = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $html);
+		}
 
-        return $html;
-    }
+		return $html;
+	}
 }

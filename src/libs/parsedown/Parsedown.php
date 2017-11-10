@@ -37,7 +37,6 @@ class Parsedown
 
         # iterate through lines to identify blocks
         $markup = $this->lines($lines);
-
         # trim line breaks
         $markup = trim($markup, "\n");
 
@@ -274,7 +273,6 @@ class Parsedown
         $markup .= "\n";
 
         # ~
-
         return $markup;
     }
 
@@ -515,10 +513,10 @@ class Parsedown
                 ),
             );
 
-            if($name === 'ol') 
+            if($name === 'ol')
             {
                 $listStart = stristr($matches[0], '.', true);
-                
+
                 if($listStart !== '1')
                 {
                     $Block['element']['attributes'] = array('start' => $listStart);

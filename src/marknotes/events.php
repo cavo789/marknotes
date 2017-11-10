@@ -6,238 +6,371 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Events
 {
-    protected static $hInstance = null;
+	protected static $hInstance = null;
 
-    private static $arrEvents = array();
+	private static $arrEvents = array();
 
-    public function __construct()
-    {
-        self::$arrEvents = array();
-        return true;
-    }
+	public function __construct()
+	{
+		self::$arrEvents = array();
+		return true;
+	}
 
-    public static function getInstance()
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new Events();
-        }
-        return self::$hInstance;
-    }
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new Events();
+		}
+		return self::$hInstance;
+	}
 
-    /**
-     * Remove any bindings functions, reset events
-     */
-    public static function reset()
-    {
-        self::$arrEvents = array();
-        return true;
-    }
+	/**
+	 * Remove any bindings functions, reset events
+	 */
+	public static function reset()
+	{
+		self::$arrEvents = array();
+		return true;
+	}
 
-    /**
-     * Call an event and fires every attached functions if there are somes
+	public static function getEvents()
+	{
+		return self::$arrEvents;
+	}
+
+	/**
+	 * Call an event and fires every attached functions if there are somes
 	 *
 	 * $bStopOnFirstTrue : when a plugin is called (f.i. export.pdf), when the file has been
 	 * created, no need to call a second or a third export plugin when the job was
 	 * already done. So, when $bStopOnFirstTrue is set on True, this function will stop
 	 * to call plugins as soon as one plugin has returned True (which means "I've done the job")
 	 */
-    public static function trigger(string $event = '', array &$args = array(), bool $bStopOnFirstTrue = false) : bool
-    {
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	public static function trigger(string $event = '', array &$args = array(), bool $bStopOnFirstTrue = false) : bool
+	{
+		$plugin = 'main';
 
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDebugMode()) {
-            $aeDebug->log('Trigger started for ['.$event.']', 'debug');
-            if ($aeSettings->getDevMode()) {
-                if (!isset(self::$arrEvents[$event])) {
-                    $aeDebug->log('There is no listener for the '.$event, 'warning');
-                }
-            }
-        }
-        /*<!-- endbuild -->*/
+		$bReturn = true;
 
-        if (isset(self::$arrEvents[$event])) {
-            if (count(self::$arrEvents[$event]) > 0) {
-                foreach (self::$arrEvents[$event] as $func) {
-                    if (is_callable($func)) {
+		// We can fire "run" event and then every plugins who've implemented
+		// the "run" event will be fired or, better,
+		// we can fire "task.acls.load::run" to fire only that one.
+		//
+		// The syntax is therefore :
+		//		First part is the $type (as used in LoadPlugins) : f.i task.acls.load
+		//      Use "::" as separator
+		//		Then the event f.i. run
 
-                        /*<!-- build:debug -->*/
-                        if ($aeSettings->getDebugMode()) {
-                            $aeDebug->log('   call ['.$func.']', 'debug');
-                        }
-                        /*<!-- endbuild -->*/
+		if (strpos($event, '::') !== false) {
+			$plugin = substr($event, 0, strpos($event, '::'));
+			$event = substr($event, strpos($event, '::') + 2);
+		}
 
-						// Get the value returned by the function in $bReturn
-                        $bReturn = call_user_func_array($func, $args);
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-						if ($bReturn && $bStopOnFirstTrue) {
+		/*<!-- build:debug -->*/
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		/*<!-- endbuild -->*/
+
+		/*<!-- build:debug -->*/
+		//if ($aeDebug->getDevMode()) {
+		//	$aeDebug->here("Trigger ".$plugin.'::'.$event, 1);
+		//	$aeDebug->log("Trigger ".$plugin.'::'.$event, "debug");
+		//}
+		/*<!-- endbuild -->*/
+
+		// $event is, for instance, export.txt
+		// Check if there are attached events for this specific event but
+		// not only.  Check if there are events attached for 'export.*'
+		// i.e. whatever the format.
+		//
+		// In a global way, if there is a dot (like in export.txt), extract
+		// the first item (export) and add a wildcard (export.*)
+
+		$arr=array($event);
+		if (strpos($event, '.')) {
+			$tmp=substr($event, 0, strpos($event, '.'));
+			array_push($arr, $tmp.'.*');
+		}
+
+		foreach ($arr as $event) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log("Trigger started for [".$plugin."][".$event."]", "debug", 2);
+				//if ($aeDebug->getDevMode()) {
+				//	echo("<pre style='background-color:yellow;'>".
+				//		__FILE__." - ".__LINE__." ".
+				//		"<h4>List of binded functions for that event:</h4>".
+				//		print_r(self::$arrEvents, true).
+				//		"</pre>");
+				//}
+			}
+			/*<!-- endbuild -->*/
+
+			if (isset(self::$arrEvents[$plugin][$event])) {
+				if (count(self::$arrEvents[$plugin][$event]) > 0) {
+					foreach (self::$arrEvents[$plugin][$event] as $func) {
+						if (is_callable($func)) {
 							/*<!-- build:debug -->*/
-	                        if ($aeSettings->getDebugMode()) {
-	                            $aeDebug->log('   '.$func.' has done the job, stop', 'debug');
-	                        }
-	                        /*<!-- endbuild -->*/
+							//if ($aeDebug->getDevMode()) {
+							//	$aeDebug->here("   call [".$func."]", 1);
+							//}
+							if ($aeSettings->getDebugMode()) {
+								$aeDebug->log('   call ['.$func.']', 'debug');
+							}
+							/*<!-- endbuild -->*/
 
-							break;
+							// Get the value returned by the function in $bReturn
+							$bReturn = call_user_func_array($func, $args);
+							if ($bReturn && $bStopOnFirstTrue) {
+							/*<!-- build:debug -->*/
+								if ($aeSettings->getDebugMode()) {
+									$aeDebug->log('   '.$func.' has done the job, stop', 'debug');
+								}
+								/*<!-- endbuild -->*/
+
+								break;
+							}
+						} else {
+							// OUCH ! The function isn't callable
+							/*<!-- build:debug -->*/
+							if ($aeDebug->getDevMode()) {
+								$aeDebug->here('Event '.$event.', '.$func.' is not '.
+								' callable [plugin '.$plugin.']', 3);
+							}
+							/*<!-- endbuild -->*/
+						}
+					}
+				}
+			/*<!-- build:debug -->*/
+			} else {
+				// No listener => there is nothing to return.
+				$bReturn = false;
+
+				if ($aeSettings->getDebugMode()) {
+					if (!isset(self::$arrEvents[$plugin][$event])) {
+						// Don't output log info if the $event finish by ".*"
+						if (substr($event, -2) !== '.*') {
+							$aeDebug->log('There is no listener for '.
+								'the event ['.$plugin.'] ['.$event.']', 'notice');
+							//$aeDebug->here('There is no listener for '.
+							//	'the event ['.$plugin.'] ['.$event.']', 3);
+						}
+					}
+				}
+			/*<!-- endbuild -->*/
+			}
+		}
+
+		return $bReturn;
+	}
+
+	/**
+	 * Add a function (a "callable" one) into the list of listeners for a specific event,
+	 * like 'task.export.html' or 'render.js'.
+	 *
+	 * Use !in_array to be sure that the same function is there only once
+	 */
+	public static function bind(string $event, string $func, string $plugin)
+	{
+		/*<!-- build:debug -->*/
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		//if ($aeDebug->getDevMode()) {
+		//	$aeDebug->here("Binding event [".$plugin."][".$event."] in [".$func."]", 1);
+		//	$aeDebug->log("Binding event [".$plugin."][".$event."] in [".$func."]", "debug");
+		//}
+		/*<!-- endbuild -->*/
+
+		if (!isset(self::$arrEvents[$plugin])) {
+			self::$arrEvents[$plugin]=array();
+		}
+		if (isset(self::$arrEvents[$plugin][$event])) {
+			if (!in_array($func, self::$arrEvents[$plugin][$event])) {
+				self::$arrEvents[$plugin][$event][] = $func;
+			}
+		} else {
+			// This event isn't yet known
+			self::$arrEvents[$plugin][$event][] = $func;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Extract the name of the class from the .php file
+	 */
+	private static function getNameSpaceAndClassName($file)
+	{
+		$sReturn = null;
+
+		$content = file_get_contents($file);
+
+		if (preg_match('/^namespace (.*);/m', $content, $matches)) {
+			$sReturn = '\\'.trim($matches[1]);
+		}
+
+		if (preg_match('/^class ([^ \n]*).*$/m', $content, $matches)) {
+			$sReturn .= '\\'. trim($matches[1]);
+		}
+
+		return $sReturn;
+	}
+
+	/**
+	* $type = 'markdown'  			==> load every 'markdown' plugins
+	* $type = 'markdown.variables'  ==> load only the 'variables' plugin; not all
+	*/
+	public static function loadPlugins(string $type = 'content')
+	{
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		if ($type !== '') {
+			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+			// The plugins folder is under /marknotes
+			// Note : $type can contains dot like 'task.export', in that case
+			// it means folder task subfolder export so replace dot by /
+			$dir = rtrim(dirname(__DIR__), DS).'/marknotes/plugins/'.str_replace('.', DS, $type).DS;
+
+			// $dir is something like c:/site/marknotes/plugins/task/export/before/
+			// i.e. a folder where we can find plugins.
+
+			$plugins=array();
+
+			if (is_dir($dir)) {
+				// Get the list of plugins in that folder but, really, the ones
+				// that are specified in the settings.json file, so we'll only
+				// take the enabled ones.
+				$plugins = $aeSettings->getPlugins($type);
+
+				if ($plugins===array()) {
+					// No entry in the settings.json file but the directory
+					// exists on disk => get the list of .php files from
+					// that folder
+					$file=basename($dir);
+					$tmpdir=dirname($dir).DS;
+					if ($aeFiles->fileExists($fname = $tmpdir.$file.DS.$file.'.php')) {
+						$dir=$tmpdir.$file.DS;
+						$plugins=array($file=>array('enabled'=>1));
+					}
+				}
+			}
+
+			if ($plugins == array()) {
+				// But, perhaps, it isn't a folder but a file like
+				// in c:/site/marknotes/plugins/task/export/txt/
+				// here, txt is a plugin (txt.php), not a folder.
+
+				$file=basename($dir);
+				$dir=dirname($dir).DS;
+
+				if ($aeFiles->fileExists($fname = $dir.$file.'.php')) {
+					$plugins=array($file=>array('enabled'=>1));
+				} else {
+					// No... so, in the case of f.i. task.optimize.clear,
+					// optimize/clear.php was not found, detect if optimize.php
+					// exists and if so, probably that script will implement
+					// a functionnality for the even optimize.Clear
+
+					if ($aeFiles->fileExists($fname = $dir.basename($dir).'.php')) {
+						$plugins=array(basename($dir)=>array('enabled'=>1));
+					}
+				}
+			}
+
+			// And if the plugin exists on the filesystem, load it
+			if (count($plugins) > 0) {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log("Loading plugins for [".$type."]", "debug", 3);
+				}
+				/*<!-- endbuild -->*/
+
+				// Plugins extends a parent class stored in a file called
+				// .plugin and stored in the same folder so if that file is
+				// there, load it first.
+				if (is_file($file = $dir.'.plugin.php')) {
+					require_once($file);
+				} else {
+					// For task plugins, the .plugin.php file isn't stored in the
+					// same folder than the plugin (.i.e. not in /plugins/task/listfiles/get.php)
+					// but in the parent folder (in /plugins/task/)
+					if (is_file($file = dirname($dir).'/.plugin.php')) {
+						require_once($file);
+					}
+				}
+
+				// plugins is an array like this :
+				//		"anchor": {
+				//			"enabled": 1,
+				//			"not_if_task": [],
+				//			"only_if_task": []
+				//		}
+
+				// The name of the plugin (anchor here) and an array with
+				//		enabled = tell if the plugin is active (so should be loaded) or not
+				//		not_if_task and only_if_task to restrict his use to speficied tasks
+
+				foreach ($plugins as $name => $plgSettings) {
+					// Only if enabled
+					if (($plgSettings['enabled']??0) == 1) {
+						// Get the file name (f.i. anchor.php)
+
+						if (substr($name, -4) !== '.php') {
+							$name .= '.php';
 						}
 
-                    } else {
+						if ($aeFiles->fileExists($file = $dir.$name)) {
 
-                        // OUCH ! The function isn't callable
-                        // see the sample in /marknotes/plugins/content/html/replace.php
-                        // The call should be something like this :
-                        //    $aeEvents = \MarkNotes\Events::getInstance();
-                        //    $aeEvents->bind('display.html', __CLASS__.'::doIt');
-                        // The full qualified function name i.e. the name space, the class name
-                        // and the function name without the parenthesis
-                        /*<!-- build:debug -->*/
-                        if ($aeSettings->getDevMode()) {
-                            $aeDebug->here('Event '.$event.', '.$func.' is not callable, ERROR', 5);
-                        }
-                        /*<!-- endbuild -->*/
-                    }
-                }
-            }
-        }
+							// Load the plugin
+							require_once($file);
 
-        return true;
-    }
+							// And retrieve its namespace and class name
+							// f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
+							$class = self::getNameSpaceAndClassName($file);
 
-    /**
-     * Add a function (a "callable" one) into the list of listeners for a specific event,
-     * like 'display.html' or 'render.js'.
-     *
-     * Use !in_array to be sure that the same function is there only once
-     */
-    public static function bind(string $event = '', string $func)
-    {
-        /*<!-- build:debug -->*/
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        if ($aeSettings->getDevMode()) {
-            $aeDebug = \MarkNotes\Debug::getInstance();
-            //$aeDebug->log('Add a listener for '.$event);
-        }
-        /*<!-- endbuild -->*/
+							// Instanciate the class (plugin)
+							$plug = new $class;
 
-        if (isset(self::$arrEvents[$event])) {
-            if (!in_array($func, self::$arrEvents[$event])) {
-                self::$arrEvents[$event][] = $func;
-            }
-        } else {
-            // This event isn't yet known
-            self::$arrEvents[$event][] = $func;
-        }
-    }
-
-    private static function getNameSpaceAndClassName($file)
-    {
-        $sReturn = null;
-
-        $content = file_get_contents($file);
-
-        if (preg_match('/^namespace (.*);/m', $content, $matches)) {
-            $sReturn = '\\'.trim($matches[1]);
-        }
-
-        if (preg_match('/^class (.*)$/m', $content, $matches)) {
-            $sReturn .= '\\'. trim($matches[1]);
-        }
-
-        return $sReturn;
-    }
-
-    public static function loadPlugins(string $type = 'content', string $subtask = '')
-    {
-
-		$aeSession = \MarkNotes\Session::getInstance();
-        $task = $aeSession->get('task', '');
-
-        $aeSettings = \MarkNotes\Settings::getInstance();
-
-        if ($type !== '') {
-
-            // The plugins folder is under /marknotes
-            $dir = rtrim(dirname(__DIR__), DS).'/marknotes/plugins/'.$type.DS;
-
-            if ($subtask !== '') {
-
-                // can be edit.save => retrieve the first part : edit
-                if (($wPos = strpos($subtask, '.')) !== false) {
-                    $subtask = substr($subtask, 0, $wPos);
-                }
-                $dir = $dir.$subtask.DS;
-            }
-            if (is_dir($dir)) {
-                $aeFiles = \MarkNotes\Files::getInstance();
-
-                // Get the list of plugins (f.i. of type 'content')
-                if ($type !== 'task') {
-                    $plugins = $aeSettings->getPlugins($type, $subtask);
-                } else {
-                    $tmp = str_replace($dir, '', array_filter(glob($dir.'*'), 'is_file'));
-                    $plugins = array();
-                    foreach ($tmp as $plugin) {
-                        $plugins = array($plugin => 1);
-                    }
-                }
-
-                // And if the plugin exists on the filesystem, load it
-                if (count($plugins) > 0) {
-
-                    // plugins is an array with two entries : the name of the
-                    // plugin (f.i. gtranslate) and a boolean 1/0 for "is this
-                    // plugin enabled or not".
-
-                    foreach ($plugins as $name => $enabled) {
-
-                        if (substr($name, -4) !== '.php') {
-                            $name .= '.php';
-                        }
-
-                        if (($enabled === 1) && ($aeFiles->fileExists($file = $dir.$name))) {
-
-                            // Load the plugin
-                            require_once($file);
-
-                            // And retrieve its namespace and class name
-                            // f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
-                            $class = self::getNameSpaceAndClassName($file);
-
-                            // Instanciate the class (plugin)
-                            $plug = new $class;
-
-                            // and run the bind() function
+							// and run the bind() function
 							// return true when the plugin has bind a function
 							// return false f.i. when the plugin is for HTML output
 							//    and the task is pdf
-                            $return = $plug->bind();
+							$return = $plug->bind($type);
 
-                            /*<!-- build:debug -->*/
+							/*<!-- build:debug -->*/
 							if ($return) {
-	                            $aeSettings = \MarkNotes\Settings::getInstance();
-	                            if ($aeSettings->getDevMode()) {
-	                                $aeDebug = \MarkNotes\Debug::getInstance();
-	                                $aeDebug->log(' - Load plugin '.$file);
-	                            }
+								$aeSettings = \MarkNotes\Settings::getInstance();
+								$aeDebug = \MarkNotes\Debug::getInstance();
+								if ($aeDebug->getDevMode()) {
+									$aeDebug->log('   Load plugin '.$file);
+								}
 							}
-                            /*<!-- endbuild -->*/
+							/*<!-- endbuild -->*/
+						/*<!-- build:debug -->*/
+						} else {// foreach ($plugin as $name => $enabled)
+							if ($aeSettings->getDebugMode()) {
+								$aeDebug = \MarkNotes\Debug::getInstance();
+								$aeDebug->log("Plugin ".$name." has been disabled in ".
+									"settings.json", "debug");
+							}
+						/*<!-- endbuild -->*/
+						} // if  ($aeFiles->fileExists($file = $dir.$name))
+					/*<!-- build:debug -->*/
+					} else {// foreach ($plugin as $name => $enabled)
+						if ($aeSettings->getDebugMode()) {
+							$aeDebug = \MarkNotes\Debug::getInstance();
+							$aeDebug->log("Plugin ".$name." not enabled in settings.json", "debug");
+						}
+					/*<!-- endbuild -->*/
+					}
+				} // foreach
+			} // if(count($plugins)>0)
+		}
 
-                        } // foreach ($plugin as $name => $enabled)
-                    } // foreach
-                } // if(count($plugins)>0)
-            } else {
-
-                // Should be anormal
-
-                /*<!-- build:debug -->*/
-                if ($aeSettings->getDevMode()) {
-                    $aeDebug = \MarkNotes\Debug::getInstance();
-                    $aeDebug->here('Folder '.$dir.' not found', 5);
-                }
-                /*<!-- endbuild -->*/
-            }
-        }
-
-        return true;
-    }
+		return true;
+	}
 }

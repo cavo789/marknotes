@@ -1,0 +1,8 @@
+.definition {
+	background-color: rgba(214, 248, 255, 0.5);
+	padding         : 0;
+	margin-top      : 16px;
+	font-size       : 1em;
+	font-style      : italic;
+	font-weight     : 600;
+}

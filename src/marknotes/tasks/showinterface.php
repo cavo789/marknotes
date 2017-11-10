@@ -1,8 +1,6 @@
 <?php
 /**
-* Get the main interface of the application
-*
-* @return string  html content
+* Build the main interface of the application; without showing a note
 */
 
 namespace MarkNotes\Tasks;
@@ -11,95 +9,106 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class ShowInterface
 {
-    protected static $hInstance = null;
+	protected static $root = '';
+	protected static $hInstance = null;
 
-    public function __construct()
-    {
-        return true;
-    }
+	public function __construct()
+	{
+		self::$root = rtrim(dirname(__DIR__), DS).DS;
+		self::$root = str_replace('/', DS, self::$root);
+		return true;
+	}
 
-    public static function getInstance()
-    {
-        if (self::$hInstance === null) {
-            self::$hInstance = new ShowInterface();
-        }
+	public static function getInstance()
+	{
+		if (self::$hInstance === null) {
+			self::$hInstance = new ShowInterface();
+		}
 
-        return self::$hInstance;
-    }
+		return self::$hInstance;
+	}
 
-    public function run()
-    {
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	/**
+	 * Display a nice information screen and die
+	 */
+	private static function interfaceDisabled()
+	{
+		$fname = self::$root.'errors/error_interface_disabled.html';
+		$content = str_replace('%ROOT%', self::$root, file_get_contents($fname));
 
-        if (!$aeSettings->getShowTreeAllowed()) {
-            echo $aeSettings->getText('show_tree_not_allowed', 'Access to this screen has been disallowed, sorry');
-            return false;
-        }
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeHTML = \MarkNotes\FileType\HTML::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
+		$github = $aeSettings->getPlugins('/github', array('url'=>''));
+		$content = str_replace('%GITHUB%', $github['url'], $content);
 
-        // Read the template
-        $template = file_get_contents($aeSettings->getTemplateFile('screen'));
+		header('Content-Transfer-Encoding: ascii');
+		header('Content-Type: text/html; charset=utf-8');
 
-        if (strpos($template, '%ICONS%') !== false) {
+		die($content);
+	}
 
-            // Call plugins that are responsible to add icons to the treeview toolbar
-            $aeEvents->loadPlugins('buttons', 'treeview');
-            $buttons = '';
-            $args = array(&$buttons);
-            $aeEvents->trigger('add.buttons', $args);
+	public function run()
+	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-            // If all buttons are disabled, kill the toolbar button
-            if (trim($buttons) === '') {
-                $buttons = '<script>try { document.getElementById("toolbar-app").remove(); } catch (err) { }</script>';
-            }
+		$arrSettings = $aeSettings->getPlugins('/interface');
+		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
 
-            $template = str_replace('%ICONS%', $buttons, $template);
-        }
+		if (!$show_tree_allowed) {
+			// The access to the interface can be disabled in settings.json
+			self::interfaceDisabled();
+		}
 
-        if (strpos($template, '<!--%LOGIN%-->') !== false) {
-            // Get the login form
-            $aeEvents->loadPlugins('task', 'login');
-            $form = '';
-            $args = array(&$form);
-            $aeEvents->trigger('get.form', $args);
-            $template = str_replace('<!--%LOGIN%-->', $form, $template);
-        }
+		// @link https://github.com/JayBizzle/Crawler-Detect
+		// Check the user agent of the current 'visitor' : is it a human
+		// or a bot ?
+		$CrawlerDetect = new \Jaybizzle\CrawlerDetect\CrawlerDetect;
+		$isBot=$CrawlerDetect->isCrawler();  // return True when it's a crawler bot
+		unset($CrawlerDetect);
 
-        $html = $aeHTML->replaceVariables($template, '', null);
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
-        // replace variables
+		// Read the template (in first versions, the template was called "screen"
+		$template = file_get_contents($aeSettings->getTemplateFile('interface'));
 
-        $html = str_replace('%EDT_SEARCH_PLACEHOLDER%', $aeSettings->getText('search_placeholder', 'Search...'), $html);
-        $html = str_replace('%EDT_SEARCH_MAXLENGTH%', SEARCH_MAX_LENGTH, $html);
+		$html = $aeHTML->replaceVariables($template, '', null);
 
-        // Initialize the global marknotes variable (defined in /templates/screen.php)
-        $javascript =
-        "marknotes.autoload=1;\n".
-        "marknotes.message.allow_popup_please='".$aeSettings->getText('allow_popup_please', 'The new window has been blocked by your browser, please allow popups for your domain', true)."';\n".
-        "marknotes.message.apply_filter='".$aeSettings->getText('apply_filter', 'Filtering to [%s]', true)."';\n".
-        "marknotes.message.apply_filter_tag='".$aeSettings->getText('apply_filter_tag', 'Display notes containing this tag', true)."';\n".
-        "marknotes.message.cancel='".$aeSettings->getText('cancel', 'Cancel', true)."';\n".
-        "marknotes.message.display_that_note='".$aeSettings->getText('display_that_note', 'Display that note', true)."';\n".
-        "marknotes.message.filesfound='".$aeSettings->getText('files_found', '"%s has been retrieved', true)."';\n".
-        "marknotes.message.json_error='".$aeSettings->getText('json_error', 'The [%s] task has returned an invalid JSON result', true)."';\n".
-        "marknotes.message.loading_tree='".$aeSettings->getText('loading_tree', 'Loading the list of notes, please wait...', true)."';\n".
-        "marknotes.message.ok='".$aeSettings->getText('OK', 'Ok', true)."';\n".
-        "marknotes.message.open_html='".$aeSettings->getText('open_html', 'Open in a new window', true)."';\n".
-        "marknotes.message.pleasewait='".$aeSettings->getText('please_wait', 'Please wait...', true)."';\n".
+		// --------------------------------
+		// Call page.html plugins so the interface can be built
+		$aeEvents->loadPlugins('page.html');
+		$args = array(&$html);
+		$aeEvents->trigger('page.html::render.html', $args);
+		$html = $args[0];
 
-        "marknotes.message.tree_collapse='".$aeSettings->getText('tree_collapse', 'Collapse all', true)."';\n".
-        "marknotes.message.tree_expand='".$aeSettings->getText('tree_expand', 'Expand all', true)."';\n".
-        "marknotes.url='index.php';\n".
-        "marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
-        "marknotes.settings.development=".($aeSettings->getDevMode()?1:0).";\n".
-        "marknotes.settings.DS='".preg_quote(DS)."';\n".
-        "marknotes.settings.locale='".$aeSettings->getLocale()."';\n";
+		$additionnalJS = '';
+		$args = array(&$additionnalJS);
+		$aeEvents->trigger('page.html::render.js', $args);
+		$html = str_replace('<!--%ADDITIONNAL_JS%-->', $args[0], $html);
 
-        $html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript">'.$javascript.'</script>', $html);
+		$css = '';
+		$args = array(&$css);
+		$aeEvents->trigger('page.html::render.css', $args);
+		$html = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $html);
 
-        return $html;
-    }
+		// Initialize the global marknotes variable (defined in /templates/screen.php)
+		$javascript =
+		"marknotes.autoload=1;\n".
+		"marknotes.isBot=".($isBot?1:0).";\n".
+		"marknotes.url='index.php';\n".
+		"marknotes.note={};\n".
+		"marknotes.note.basename='';\n".
+		"marknotes.note.url='';\n".
+		"marknotes.note.md5='';\n".
+		// Don't use jQuery.i18n yet since at this stage,
+		// the plugin isn't yet loaded...
+		"marknotes.files_found = '".$aeSettings->getText('files_found', '', true)."';\n".
+		"marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
+		"marknotes.settings.DS='".preg_quote(DS)."';\n".
+		"marknotes.settings.locale='".$aeSettings->getLocale()."';\n";
+		$html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript" defer="defer">'.$javascript.'</script>', $html);
+
+		return $html;
+	}
 }

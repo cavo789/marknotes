@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /assets
+Allow: /%DOCS%
+Allow: /templates
+Disallow: /languages
+Disallow: /libs
+Disallow: /marknotes
+Disallow: /tmp
+Sitemap: %URL%/sitemap.xml

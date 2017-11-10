@@ -1,185 +1,279 @@
 <?php
-
 /**
- * Search engine, search for keywords in notes and return the md5 of the filename
- * Then, the treeview (jstree) will filter on that list and only show items with the same md5
+ * Search engine, search for keywords in notes and return the md5
+ * of the filename. Then, the treeview (jstree) will filter on that
+ * list and only show items with the same md5
  */
-
-namespace MarkNotes\Plugins\Task;
+namespace MarkNotes\Plugins\Task\Search;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class Search
 {
-    private static function getFiles() : array
-    {
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	/**
+	 * Get the list of notes, relies on the listFiles task plugin for this
+	 * in order to, among other things, be sure that only files that the
+	 * user can access are retrieved and not confidential ones
+	 */
+	private static function getFiles() : array
+	{
+		$arrFiles = array();
 
-        // get the list of files
-        $arrFiles = array();
+		// Call the listfiles.get event and initialize $arrFiles
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$args=array(&$arrFiles);
+		$aeEvents->loadPlugins('task.listfiles.get');
+		$aeEvents->trigger('task.listfiles.get::run', $args);
 
-		$arrOptimize = $aeSettings->getPlugins('options','optimize');
-		$bOptimize = $arrOptimize['server_session'] ?? false;
+		return $args[0];
+	}
+
+	/**
+	 * Used when no keyword has been mentionned on the url
+	 * (f.i. http://localhost/notes/search.php?str=)
+	 */
+	private static function noParam() : boolean
+	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeDebug = \MarkNotes\Debug::getInstance();
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug->log('No pattern has been specified. The str=keyword parameter was missing', 'debug');
+		}
+		/*<!-- endbuild -->*/
+
+		// Nothing should be returned, the list of files can be immediatly displayed
+		header('Content-Type: application/json');
+		die('[]');
+
+		return false;
+	}
+
+	/**
+	 * Get the content of the cache/search file if present
+	 * @return string
+	 */
+	private static function getFromCache(string $fname) : array
+	{
+		$return = array();
+
+		if (is_file($fname)) {
+			// If we can use the session, do it ! This will really improve speed
+			$json = file_get_contents($fname);
+
+			if ($json!=='') {
+				try {
+					$return = json_decode($json, true);
+
+					if ($return!=array()) {
+						$aeSettings = \MarkNotes\Settings::getInstance();
+
+						// Indicate it's coming from the cache
+						$return['message'] = $aeSettings->getText('search_from_cache');
+
+						/*<!-- build:debug -->*/
+						if ($aeSettings->getDebugMode()) {
+							$aeDebug = \MarkNotes\Debug::getInstance();
+							$aeDebug->log("Get search's results from the cached ".
+								"file ".$fname, "info");
+						}
+						/*<!-- endbuild -->*/
+					}
+				} catch (Exception $e) {
+				} // try
+			} // if ($json!=='')
+		} // if (is_file($fname))
+
+		return $return;
+	}
+
+	/**
+
+	* $params['encryption'] = 0 : encrypted data should be displayed unencrypted
+	*                         1 : encrypted infos should stay encrypted
+	 */
+	public static function run(&$params = null)
+	{
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+
+		// String to search (can be something like
+		// 'invoices,2017,internet') i.e. multiple keywords
+		$pattern = trim($aeFunctions->getParam('str', 'string', '', false, SEARCH_MAX_LENGTH));
+
+		if ($pattern==='') {
+			self::noParam();
+		}
+
+		// search will be case insensitive
+		$pattern = strtolower($pattern);
+
+		// $keywords can contains multiple terms like 'php,avonture,marknotes'.
+		// Search for these three keywords (AND)
+		$keywords = explode(',', rtrim($pattern, ','));
+
+		// Speed : be sure to have the same keyword only once
+		$keywords = $aeFunctions->array_iunique($keywords);
+
+		// Sort keywords so the pattern will always be sorted
+		// If $pattern was 'php,avonture,marknotes', thanks the sort, it will be
+		// avonture,php,marknotes. Whatever the order, as from here, the $pattern
+		// will always be sorted (=> optimization)
+		sort($keywords);
+		$pattern = implode($keywords, ',');
+
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug->log('Searching for ['.$pattern.']', 'debug');
+		}
+		/*<!-- endbuild -->*/
+
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+		$bOptimize = $arrSettings['cache_search_results'] ?? false;
+
+		// Can we use the cache system ? Default is true
+		$useCache = $aeFunctions->getParam('cache', 'bool', true);
+
+		$arr = array();
+
 		if ($bOptimize) {
-            // Get the list of files/folders from the session object if possible
-            $arrFiles = json_decode($aeSession->get('SearchFileList', ''));
-            if (!is_array($arrFiles)) {
-                $arrFiles = array();
-            }
-        }
+			// Get the cache/search folder and if not present, create it
+			$folder = $aeSettings->getFolderCache().'search';
 
-        if (count($arrFiles) == 0) {
-            $arrFiles = $aeFunctions->array_iunique($aeFiles->rglob('*.md', $aeSettings->getFolderDocs(true)));
+			if (!is_dir($folder)) {
+				mkdir($folder, CHMOD_FOLDER);
+			}
 
-            // Sort, case insensitve
-            natcasesort($arrFiles);
+			$fname = $folder.DS.md5($pattern).'.json';
 
-            if ($bOptimize) {
-                // Remember for the next call
-                $aeSession->set('SearchFileList', json_encode($arrFiles, JSON_PRETTY_PRINT));
-            }
-        }
-        if (count($arrFiles) == 0) {
-            return null;
-        }
+			if ($useCache) {
+				$arr = self::getFromCache($fname);
+			}
+		} // if ($bOptimize)
 
-        return $arrFiles;
-    }
+		if ($arr === array()) {
+			// Retrieve the list of files
+			$arrFiles = self::getFiles();
 
-    public static function run(&$params = null)
-    {
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSession = \MarkNotes\Session::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
-        $aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
+			// docs should be relative so $aeSettings->getFolderDocs(false) and not $aeSettings->getFolderDocs(true)
+			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
-        // String to search (can be something like 'invoices,2017,internet') i.e. multiple keywords
-        $pattern = trim($aeFunctions->getParam('str', 'string', '', false, SEARCH_MAX_LENGTH));
+			// This one will be absolute
+			$docFolder = $aeSettings->getFolderDocs(true);
 
-        /*<!-- build:debug -->*/
-        if ($aeSettings->getDebugMode()) {
-            $aeDebug->log('Searching for ['.$pattern.']', 'debug');
-        }
-        /*<!-- endbuild -->*/
+			$bDebug=false;
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$bDebug=true;
+			}
+			/*<!-- endbuild -->*/
 
-        // $keywords can contains multiple terms like 'invoices,2017,internet'.
-        // Search for these three keywords (AND)
-        $keywords = explode(',', rtrim($pattern, ','));
+			$return = array();
 
-        // Retrieve the list of files
-        $arrFiles = self::getFiles();
+			foreach ($arrFiles as $file) {
+				// Just keep relative filenames, relative from the /docs folder
+				$file = str_replace($docFolder, '', $file);
 
-        // Do we need to encode accents ?
-        $bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
-        if ($bEncodeAccents) {
-            $arrFiles = array_map('utf8_encode', $arrFiles);
-        }
+				// If the keyword can be found in the document title,
+				// yeah, it's the fatest solution,
+				// return that filename
+				foreach ($keywords as $keyword) {
+					$bFound = true;
+					if (stripos($file, $keyword) === false) {
+						// at least one term is not present in the filename, stop
+						$bFound = false;
+						break;
+					}
+				} // foreach ($keywords as $keyword)
 
-        // docs should be relative so $aeSettings->getFolderDocs(false) and not $aeSettings->getFolderDocs(true)
-        $docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
+				if ($bFound) {
+					// Found in the filename => stop process of this file
 
-        $return = array();
+					/*<!-- build:debug -->*/
+					if ($bDebug) {
+						$aeDebug->log("   FOUND IN [".$docs.$file."]", "debug");
+					}
+					/*<!-- endbuild -->*/
 
-        foreach ($arrFiles as $file) {
+					$return[] = $docs.$file;
+				} else { // if ($bFound)
+					// Open the file and check against its content
+					// (plain and encrypted)
+					$fullname = $docFolder.$file;
 
-            // Don't mention the full path, should be relative for security reason
-            $file = str_replace($aeSettings->getFolderDocs(true), '', $file);
+					// Read the note content
+					// The read() method will fires any plugin linked
+					// to the markdown.read event
+					// so encrypted notes will be automatically unencrypted
 
-            // If the keyword can be found in the document title, yeah, it's the fatest solution,
-            // return that filename
+					$params['filename']=$fullname;
+					$params['encryption'] = 0;
+					$content = $aeMarkdown->read($fullname, $params);
 
-            foreach ($keywords as $keyword) {
-                $bFound = true;
-                if (stripos($file, $keyword) === false) {
-                    // at least one term is not present in the filename, stop
-                    $bFound = false;
-                    break;
-                }
-            }
+					$bFound = true;
 
-            if ($bFound) {
+					foreach ($keywords as $keyword) {
+						/**
+						* Add "$file" which is the filename in the
+						* content, just for the search.
+						* Because when f.i. search for two words;
+						* one can be in the filename and one in the content
+						* By searching only in the content; that file won't
+						* appear while it should be the Collapse
+						* so "fake" and add the filename in the content,
+						* just for the search_no_result
+						*/
+						if (stripos($file.'#@#§§@'.$content, $keyword) === false) {
+							// at least one term is not present in the content, stop
+							$bFound = false;
+							break;
+						}
+					} // foreach($keywords as $keyword)
 
-                // Found in the filename => stop process of this file
+					if ($bFound) {
+						/*<!-- build:debug -->*/
+						if ($bDebug) {
+							$aeDebug->log("   FOUND IN [".$docs.$file."]", "debug");
+						}
+						/*<!-- endbuild -->*/
 
-                /*<!-- build:debug -->*/
-                if ($aeSettings->getDebugMode()) {
-                    $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'info');
-                }
-                /*<!-- endbuild -->*/
+						// Found in the filename => stop process of this file
+						$return[] = $docs.$file;
+					}  // if ($bFound)
+				} // if ($bFound) {
+			} // foreach ($arrFiles as $file)
 
-                $return[] = md5($docs.$file);
-            } else { // if ($bFound)
+			$arr = array();
+			$arr['pattern'] = $pattern;
+			$arr['files'] = json_encode(array_map("md5", $return));
 
-                // Open the file and check against its content (plain and encrypted)
+			if ($bOptimize) {
+				$aeFiles = \MarkNotes\Files::getInstance();
+				$aeFiles->fwriteANSI($fname, json_encode($arr));
+			}
+		}
 
-                /*$bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
-                if (!$bEncodeAccents) {
-                    $fullname = utf8_decode($aeSettings->getFolderDocs(true).$file);
-                } else {*/
-                    $fullname = $aeSettings->getFolderDocs(true).$file;
-                /*}*/
+		// Nothing should be returned, the list of files
+		// can be immediatly displayed
+		header('Content-Type: application/json');
+		// Don't return filenames but the md5() of these names
+		echo json_encode($arr);
 
-                // Read the note content
-                // The read() method will fires any plugin linked to the markdown.read event
-                // so encrypted notes will be automatically unencrypted
-                $content = $aeMarkdown->read($fullname);
+		return true;
+	}
 
-                $bFound = true;
-
-                foreach ($keywords as $keyword) {
-
-                    // Add "$file" which is the filename in the content, just for the search.
-                    // Because when f.i. search for two words; one can be in the filename and one in the content
-                    // By searching only in the content; that file won't appear while it should be the Collapse
-                    // so "fake" and add the filename in the content, just for the search_no_result
-
-                    if (stripos($file.'#@#§§@'.$content, $keyword) === false) {
-                        // at least one term is not present in the content, stop
-                        $bFound = false;
-                        break;
-                    }
-                } // foreach($keywords as $keyword)
-
-                if ($bFound) {
-
-                    /*<!-- build:debug -->*/
-                    if ($aeSettings->getDebugMode()) {
-                        $aeDebug->log('   FOUND IN ['.$docs.$file.']', 'info');
-                    }
-                    /*<!-- endbuild -->*/
-
-                    // Found in the filename => stop process of this file
-                    $return[] = md5($docs.$file);
-                }  // if ($bFound)
-            } // if ($bFound) {
-        } // foreach ($arrFiles as $file)
-
-        // Nothing should be returned, the list of files can be immediatly displayed
-        header('Content-Type: application/json');
-        echo json_encode($return, JSON_PRETTY_PRINT);
-
-        return true;
-    }
-
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind()
-    {
-        $aeSession = \MarkNotes\Session::getInstance();
-        $task = $aeSession->get('task', '');
-
-        // The search plugin is only for the interface so task="main" or by searching
-        if (!in_array($task, array('main','search'))) {
-            return false;
-        }
-
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('run.task', __CLASS__.'::run');
-        return true;
-    }
+	/**
+	 * Attach the function and responds to events
+	 */
+	public function bind(string $task)
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->bind('run', __CLASS__.'::run', $task);
+		return true;
+	}
 }
