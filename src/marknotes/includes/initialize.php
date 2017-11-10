@@ -17,204 +17,210 @@ define('ERROR_HTACCESS', 5002);
 
 class Initialize
 {
-	// Where marknotes source files are stored
-	// Can be different of the website root folder if the marknotes folder
-	// is a symbolic link
-	private static $appRootFolder = '';
+    // Where marknotes source files are stored
+    // Can be different of the website root folder if the marknotes folder
+    // is a symbolic link
+    private static $appRootFolder = '';
 
-	// Website root folder (f.i. c:\sites\notes)
-	private static $webRootFolder = '';
+    // Website root folder (f.i. c:\sites\notes)
+    private static $webRootFolder = '';
 
-	/**
-	 * Website root folder
-	 */
-	public function getWebRoot() : string
-	{
-		return self::$webRootFolder;
-	}
+    /**
+     * Website root folder
+     */
+    public function getWebRoot() : string
+    {
+        return self::$webRootFolder;
+    }
 
-	/**
-	 * Display an error message and die() since the installation isn't correct
-	 */
-	private static function die(int $code)
-	{
-		$fname = '';
+    /**
+     * Display an error message and die() since the installation isn't correct
+     */
+    private static function die(int $code)
+    {
+        $fname = '';
 
-		switch ($code) {
-			case ERROR_PHP_VERSION:
-				$fname = 'error_php_version';
-				break;
-			case ERROR_HTACCESS:
-				$fname = 'error_htaccess';
-				break;
-		}
+        switch ($code) {
+            case ERROR_PHP_VERSION:
+                $fname = 'error_php_version';
+                break;
+            case ERROR_HTACCESS:
+                $fname = 'error_htaccess';
+                break;
+        }
 
-		if ($fname!=='') {
-			$fname = self::$appRootFolder.'marknotes/errors/'.$fname.'.html';
+        if ($fname!=='') {
+            $fname = self::$appRootFolder.'marknotes/errors/'.$fname.'.html';
 
-			if (is_file($fname)) {
+            if (is_file($fname)) {
+                if (!defined('GITHUB_REPO')) {
+                    require_once(self::$appRootFolder.'marknotes/includes/constants.php');
+                }
 
-				if (!defined('GITHUB_REPO')) {
-					require_once(self::$appRootFolder.'marknotes/includes/constants.php');
-				}
+                $content = str_replace('%ROOT%', self::$appRootFolder, file_get_contents($fname));
+                $content = str_replace('%GITHUB%', GITHUB_REPO, $content);
+            } else {
+                echo '<h3><strong>'.$fname.' not found</strong></h3>';
+            }
+        } else {
+            $content = '<p><strong>Marknotes - Unknown error code '.
+            '['.$code.']</strong></p>';
+        } // if ($fname!=='')
 
-				$content = str_replace('%ROOT%', self::$appRootFolder, file_get_contents($fname));
-				$content = str_replace('%GITHUB%', GITHUB_REPO, $content);
-			} else {
-				echo '<h3><strong>'.$fname.' not found</strong></h3>';
-			}
-		} else {
-			$content = '<p><strong>Marknotes - Unknown error code '.
-			   '['.$code.']</strong></p>';
-		} // if ($fname!=='')
+            header('Content-Transfer-Encoding: ascii');
+            header('Content-Type: text/html; charset=utf-8');
 
-		header('Content-Transfer-Encoding: ascii');
-		header('Content-Type: text/html; charset=utf-8');
+            die($content);
+    }
 
-		die($content);
-	}
+    /**
+     * In order to make SEF URLs working, marknotes need a .htaccess file
+     * Check the presence of the .htaccess file; if not present, create it
+     * by getting a copy of htaccess.txt
+     */
+    private static function createHTAccess() : bool
+    {
+        $fname = self::$webRootFolder.'.htaccess';
 
-	/**
-	 * In order to make SEF URLs working, marknotes need a .htaccess file
-	 * Check the presence of the .htaccess file; if not present, create it
-	 * by getting a copy of htaccess.txt
-	 */
-	private static function createHTAccess() : bool
-	{
-		$fname = self::$webRootFolder.'.htaccess';
+        if (!is_file($fname)) {
+            $fSource = self::$webRootFolder.'htaccess.txt';
+            if (!is_file($fSource)) {
+                $fSource =self::$appRootFolder.'htaccess.txt';
+            }
 
-		if (!is_file($fname) && is_file(self::$webRootFolder.'htaccess.txt')) {
-			if (is_writeable(self::$webRootFolder)) {
-				copy(self::$webRootFolder.'htaccess.txt', $fname);
-				chmod($fname, 0444);
-			} else {
-				self::die(ERROR_HTACCESS);
-			}
-		}
+            if (!is_file($fname) && is_file($fSource)) {
+                if (is_writeable(self::$webRootFolder)) {
+                    copy($fSource, $fname);
+                    chmod($fname, 0444);
+                } else {
+                    self::die(ERROR_HTACCESS);
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Initialize the debug class
-	 */
-	private static function initDebug(string $fname) : bool
-	{
+    /**
+     * Initialize the debug class
+     */
+    private static function initDebug(string $fname) : bool
+    {
 
-		/*<!-- build:debug -->*/
-		$aeDebug = \MarkNotes\Debug::getInstance();
+        /*<!-- build:debug -->*/
+        $aeDebug = \MarkNotes\Debug::getInstance();
 
-		$aeJSON = \MarkNotes\JSON::getInstance();
-		$json = $aeJSON->json_decode($fname, true);
+        $aeJSON = \MarkNotes\JSON::getInstance();
+        $json = $aeJSON->json_decode($fname, true);
 
-		$arr = $json['debug'] ?? array('enabled'=>0,'development'=>0);
+        $arr = $json['debug'] ?? array('enabled'=>0,'development'=>0);
 
-		// Get the debug node of the settings.json file and if not present,
-		// create a "fake" ArrayAccess
-		//
-		// The node should be something like this :
-		//
-		//   	"debug": {
-		//   		"enabled": 1,
-		//   		"development": 1,
-		//   		"logfile": {
-		//   			"template": "[%datetime%] [%level_name%] %message% %context%"
-		//   		}
-		//   	}
+        // Get the debug node of the settings.json file and if not present,
+        // create a "fake" ArrayAccess
+        //
+        // The node should be something like this :
+        //
+        //   	"debug": {
+        //   		"enabled": 1,
+        //   		"development": 1,
+        //   		"logfile": {
+        //   			"template": "[%datetime%] [%level_name%] %message% %context%"
+        //   		}
+        //   	}
 
-		$debug = boolval($arr['enabled'] ?? 0);
+        $debug = boolval($arr['enabled'] ?? 0);
 
-		if (isset($arr['logfile'])) {
-			if (isset($arr['logfile']['template'])) {
-				$aeDebug->setTemplate(trim($arr['logfile']['template']));
-			}
-		}
+        if (isset($arr['logfile'])) {
+            if (isset($arr['logfile']['template'])) {
+                $aeDebug->setTemplate(trim($arr['logfile']['template']));
+            }
+        }
 
-		if (isset($arr['output'])) {
-			// Output defines which type of informations should be logged.
-			// By default, the output node is defined like this :
-			//
-			//	 	"output": {
-			//			"debug": 1,
-			//			"info": 1,
-			//			"notice": 1,
-			//			"warning": 1,
-			//			"error": 1,
-			//			"critical": 1,
-			//			"alert": 1,
-			//			"emergency": 1
-			//		}
+        if (isset($arr['output'])) {
+            // Output defines which type of informations should be logged.
+            // By default, the output node is defined like this :
+            //
+            //	 	"output": {
+            //			"debug": 1,
+            //			"info": 1,
+            //			"notice": 1,
+            //			"warning": 1,
+            //			"error": 1,
+            //			"critical": 1,
+            //			"alert": 1,
+            //			"emergency": 1
+            //		}
 
-			$aeDebug->setOutput($arr['output']);
-		}
+            $aeDebug->setOutput($arr['output']);
+        }
 
-		if (isset($json['timezone'])) {
-			$aeDebug->setTimezone($json['timezone']);
-		}
+        if (isset($json['timezone'])) {
+            $aeDebug->setTimezone($json['timezone']);
+        }
 
-		if ($debug) {
-			$aeDebug->enable();
-			$aeDebug->setDevMode(boolval($arr['development'] ?? 0));
-		}
+        if ($debug) {
+            $aeDebug->enable();
+            $aeDebug->setDevMode(boolval($arr['development'] ?? 0));
+        }
 
-		/*<!-- endbuild -->*/
+        /*<!-- endbuild -->*/
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Run initialization code like systems check
-	 * Initialize the Marknotes\Debug class
-	 */
-	public static function init()
-	{
-		$bReturn = false;
+    /**
+     * Run initialization code like systems check
+     * Initialize the Marknotes\Debug class
+     */
+    public static function init()
+    {
+        $bReturn = false;
 
-		include_once 'constants.php';
+        include_once 'constants.php';
 
-		// Application root folder.
-		self::$appRootFolder = rtrim(dirname(dirname(__DIR__)), DS).DS;
-		self::$appRootFolder = str_replace('/', DS, self::$appRootFolder);
+        // Application root folder.
+        self::$appRootFolder = rtrim(dirname(dirname(__DIR__)), DS).DS;
+        self::$appRootFolder = str_replace('/', DS, self::$appRootFolder);
 
-		self::$webRootFolder=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
-		self::$webRootFolder=str_replace('/', DS, self::$webRootFolder).DS;
+        self::$webRootFolder=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+        self::$webRootFolder=str_replace('/', DS, self::$webRootFolder).DS;
 
-		if (version_compare(phpversion(), '7.0.0', '<')) {
-			self::die(ERROR_PHP_VERSION);
-		} else { // if (version_compare(phpversion(), '7.0.0', '<'))
-			self::createHTAccess();
+        if (version_compare(phpversion(), '7.0.0', '<')) {
+            self::die(ERROR_PHP_VERSION);
+        } else { // if (version_compare(phpversion(), '7.0.0', '<'))
+            self::createHTAccess();
 
-			// Load third parties
+            // Load third parties
 
-			// ------------------------------------------------------------
-			// If Parsedown and ParsedownExtra aren't loaded *before*
-			// ParsedownCheckbox, autoload will fail. Is it possible to *prioritize*
-			// libraries in the autoload.php file generated by Composer ? No idea...
-			include_once self::$webRootFolder.'/libs/parsedown/Parsedown.php';
-			include_once self::$webRootFolder.'/libs/parsedown/ParsedownExtra.php';
-			// ------------------------------------------------------------
+            // ------------------------------------------------------------
+            // If Parsedown and ParsedownExtra aren't loaded *before*
+            // ParsedownCheckbox, autoload will fail. Is it possible to *prioritize*
+            // libraries in the autoload.php file generated by Composer ? No idea...
+            include_once self::$webRootFolder.'/libs/parsedown/Parsedown.php';
+            include_once self::$webRootFolder.'/libs/parsedown/ParsedownExtra.php';
+            // ------------------------------------------------------------
 
-			include_once self::$webRootFolder.'/libs/autoload.php';
+            include_once self::$webRootFolder.'/libs/autoload.php';
 
-			// Load marknotes's autoloader
-			include_once self::$webRootFolder.'/marknotes/includes/autoload.php';
-			\MarkNotes\Autoload::register();
+            // Load marknotes's autoloader
+            include_once self::$webRootFolder.'/marknotes/includes/autoload.php';
+            \MarkNotes\Autoload::register();
 
-			/*<!-- build:debug -->*/
-			// First the settings.json.dist if present
-			if (is_file($fname = dirname(self::$webRootFolder).DS.'settings.json.dist')) {
-				self::initDebug($fname);
-			}
+            /*<!-- build:debug -->*/
+            // First the settings.json.dist if present
+            if (is_file($fname = dirname(self::$webRootFolder).DS.'settings.json.dist')) {
+                self::initDebug($fname);
+            }
 
-			// Then the settings.json if present too
-			if (is_file($fname = dirname(self::$webRootFolder).DS.'settings.json')) {
-				self::initDebug($fname);
-			}
-			/*<!-- endbuild -->*/
+            // Then the settings.json if present too
+            if (is_file($fname = dirname(self::$webRootFolder).DS.'settings.json')) {
+                self::initDebug($fname);
+            }
+            /*<!-- endbuild -->*/
 
-			$bReturn = true;
-		} // if (version_compare(phpversion(), '7.0.0', '<'))
+            $bReturn = true;
+        } // if (version_compare(phpversion(), '7.0.0', '<'))
 
-		return $bReturn;
-	}
+        return $bReturn;
+    }
 }
