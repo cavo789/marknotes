@@ -855,7 +855,7 @@
 				"export": {
 					"after": {
 						"copy": {
-							"target_folder": "c:\\temp\\marknotes"
+							"target_folder": ""
 						}
 					},
 					"decktape": {

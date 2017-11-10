@@ -83,18 +83,18 @@ class Initialize
         $fname = self::$webRootFolder.'.htaccess';
 
         if (!is_file($fname)) {
-            $fSource = self::$webRootFolder.'htaccess.txt';
-            if (!is_file($fSource)) {
-                $fSource =self::$appRootFolder.'htaccess.txt';
-            }
-
-            if (!is_file($fname) && is_file($fSource)) {
-                if (is_writeable(self::$webRootFolder)) {
-                    copy($fSource, $fname);
-                    chmod($fname, 0444);
-                } else {
-                    self::die(ERROR_HTACCESS);
+            if (is_writable(dirname($fname))) {
+                $fSource = self::$webRootFolder.'htaccess.txt';
+                if (!is_file($fSource)) {
+                    $fSource = self::$appRootFolder.'htaccess.txt';
                 }
+
+                if (is_file($fSource)) {
+                    copy($fSource, $fname);
+                    chmod($fname, CHMOD_FILE);
+                }
+            } else {
+                self::die(ERROR_HTACCESS);
             }
         }
 
@@ -184,6 +184,11 @@ class Initialize
 
         self::$webRootFolder=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
         self::$webRootFolder=str_replace('/', DS, self::$webRootFolder).DS;
+
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            self::$webRootFolder = DS.ltrim(self::$webRootFolder, DS);
+            self::$appRootFolder = DS.ltrim(self::$appRootFolder, DS);
+        }
 
         if (version_compare(phpversion(), '7.0.0', '<')) {
             self::die(ERROR_PHP_VERSION);

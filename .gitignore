@@ -9,6 +9,7 @@ src/templates/jug_toulouse/
 src/templates/jug_wallonie.php
 vendor/
 vendor/**/.git
+vendor_manual/
 settings.json
 composer.log
 gulpfile.js

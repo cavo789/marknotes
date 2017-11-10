@@ -36,7 +36,8 @@
 }
 
 #search-flexdatalist {
-	width: 150px;
+	max-width: 150px;
+	min-width: 100px;
 }
 
 .flexdatalist-multiple li.value {
@@ -46,8 +47,8 @@
 	margin-top      : 5px !important;
 }
 
-.skin-blue .sidebar-form input[type="text"],
-.skin-blue .sidebar-form .btn {
+.skin-blue .sidebar-form .btn,
+.skin-blue .sidebar-form input[type="text"] {
 	background-color: #3c8dbc !important;
 	color           : white !important;
 }
@@ -79,9 +80,16 @@
 }
 
 #divSearch {
-	width  : 400px;
-	display: inline-block;
-	margin : 5px 0 0 !important;
-	border : 1px solid #f6e9e9;
-	color  : white;
+	max-width: 400px;
+	min-width: 100px;
+	float    : left;
+	display  : inline-block;
+	margin   : 5px 0 0 !important;
+	border   : 1px solid #f6e9e9;
+	color    : white;
+}
+@media (max-width: 767px) {
+	#divSearch {
+		max-width: 270px;
+	}
 }

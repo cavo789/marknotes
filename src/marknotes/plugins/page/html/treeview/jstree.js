@@ -81,6 +81,12 @@ function jstree_init($data) {
 						//var $fname = objNode.parent + objNode.text + '.md';
 						if (objNode.data !== null) {
 
+							// On small screen automatically hide the treeview
+							// when a note is being displayed
+							if ($(window).width() < 1024) {
+								$('body').removeClass('sidebar-open');
+							}
+
 							var $fname = objNode.data.url;
 
 							$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
