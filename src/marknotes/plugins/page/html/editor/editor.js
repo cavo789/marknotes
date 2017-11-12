@@ -20,7 +20,7 @@ function fnPluginButtonEdit($params) {
 		ajaxify({
 			task: 'task.edit.form',
 			param: marknotes.note.md5,
-			callback: 'afterEdit($data)',
+			callback: 'afterEdit($data, data)',
 			useStore: false,
 			target: 'CONTENT'
 		});
@@ -32,7 +32,7 @@ function fnPluginButtonEdit($params) {
 /**
  * EDIT MODE - Render the textarea in an editor
  */
-function afterEdit($data) {
+function afterEdit($ajax_request, $form) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -40,8 +40,10 @@ function afterEdit($data) {
 	}
 	/*<!-- endbuild -->*/
 
+	$('#CONTENT').html($form);
+
 	if (document.getElementById("sourceMarkDown") !== null) {
-		afterEditInitMDE($data);
+		afterEditInitMDE($ajax_request);
 	} else {
 		Noty({
 			message: $.i18n('not_authenticated'),
