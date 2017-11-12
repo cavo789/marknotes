@@ -158,6 +158,13 @@ function buttonSave($fname, $markdown) {
 	}
 	/*<!-- endbuild -->*/
 
+	// If LocalStorage is enabled, remove the old saved note since we've
+	// just modify it.
+	var $useStore = (typeof store === 'object');
+	if ($useStore && (typeof fnPluginTaskOptimizeStore_Remove === 'function')) {
+		fnPluginTaskOptimizeStore_Remove($fname);
+	}
+
 	var $data = {};
 	$data.task = 'task.edit.save';
 	$data.param = $fname;
