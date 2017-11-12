@@ -93,3 +93,7 @@
 		max-width: 270px;
 	}
 }
+@media (max-width: 400px) {
+	#divSearch {
+		max-width: 200px;
+	}

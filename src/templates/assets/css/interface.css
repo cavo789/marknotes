@@ -129,6 +129,16 @@ mark {
 		margin-left: 0;
 		position   : relative;
 	}
+
+	.fixed .content-wrapper,
+	.fixed .right-side {
+		padding-top: 50px;
+	}
+
+	a#mnLogo {
+		display: none;
+
+	}
 }
 
 .content-headerFixed > h1 {
