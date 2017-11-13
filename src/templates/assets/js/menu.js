@@ -74,8 +74,14 @@ function makeButtonLists(obj) {
 
 		list += '<li>' + anchor + '</li>';
 
+		// quickIcons is a parameter defined in settings.json and allows
+		// the webmaster to define which button can be immediatly visible
+		// (i.e. don't requires to click on the "COG" button, see the
+		// list of features, perhaps click first on a tab, ...)
 		if (value.quickIcons == '1') {
-			$('<li>' + value.button + '</li>').insertBefore('.control-sidebar-button');
+			// Add the icon directly in the interface, near the "COG"
+			// button but not on Extra small devices i.e. width<768px
+			$('<li class="hidden-xs">' + value.button + '</li>').insertBefore('.control-sidebar-button');
 		}
 	});
 	//} catch (e) {
