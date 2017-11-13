@@ -20,6 +20,7 @@ class Reveal extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['slideshow'][] = self::button(
 			array(
+				'name' => 'reveal',
 				'title' => 'export_reveal',
 				'default' => 'slideshow',
 				'id' => 'icon_reveal',

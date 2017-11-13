@@ -49,8 +49,8 @@
 
 					<!-- Navbar Right Menu -->
 					<div class="navbar-custom-menu">
-						<ul class="nav navbar-nav">
-							<li>
+						<ul class="nav navbar-nav" id="navBar">
+							<li class="control-sidebar-button">
 								<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
 							</li>
 						</ul>

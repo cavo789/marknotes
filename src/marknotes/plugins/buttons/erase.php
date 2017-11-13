@@ -18,6 +18,7 @@ class Erase extends \MarkNotes\Plugins\Button\Plugin
 	{
 		$buttons['app'][] = self::button(
 			array(
+				'name' => 'erase',
 				'title' => 'settings_erase',
 				'default' => 'Remove previous exported files',
 				'task' => 'fnPluginTaskListFilesKillExport',

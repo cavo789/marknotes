@@ -61,6 +61,7 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['export'][] = self::button(
 			array(
+				'name' => 'txt',
 				'title' => 'export_txt',
 				'default' => 'Export the note as a TXT document',
 				'id' => 'icon_txt',

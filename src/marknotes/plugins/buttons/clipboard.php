@@ -32,6 +32,7 @@ class Clipboard extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['clipboard'][] = self::button(
 			array(
+				'name' => 'clipboard',
 				'title' => 'copy_clipboard',
 				'default' => 'Copy the note&#39;s content, with page layout, in the clipboard',
 				'task' => 'fnPluginButtonClipboard',

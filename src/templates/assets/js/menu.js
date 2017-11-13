@@ -62,22 +62,26 @@ function makeButtonLists(obj) {
 
 	list = '';
 
-	try {
-		$.each(obj, function (i, value) {
-			content =
-				'<i class="menu-icon fa ' + value.icon + ' bg-red"></i>' +
-				'<div class="menu-info">' +
-				'<h4 class="control-sidebar-subheading">' + value.title + '</h4>' +
-				'</div>';
+	//	try {
+	$.each(obj, function (i, value) {
+		content =
+			'<i class="menu-icon fa ' + value.icon + ' bg-red"></i>' +
+			'<div class="menu-info">' +
+			'<h4 class="control-sidebar-subheading">' + value.title + '</h4>' +
+			'</div>';
 
-			anchor = value.anchor.replace('%1', content);
+		anchor = value.anchor.replace('%1', content);
 
-			list += '<li>' + anchor + '</li>';
-		});
-	} catch (e) {
-		console.warn(err.message);
-		list = '';
-	}
+		list += '<li>' + anchor + '</li>';
+
+		if (value.quickIcons == '1') {
+			$('<li>' + value.button + '</li>').insertBefore('.control-sidebar-button');
+		}
+	});
+	//} catch (e) {
+	//	console.warn(err.message);
+	//	list = '';
+	//	}
 
 	return list;
 }

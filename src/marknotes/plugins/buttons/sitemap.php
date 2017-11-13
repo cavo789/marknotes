@@ -16,6 +16,7 @@ class SiteMap extends \MarkNotes\Plugins\Button\Plugin
 	{
 		$buttons['app'][] = self::button(
 			array(
+				'name' => 'sitemap',
 				'title' => 'sitemap',
 				'default' => 'Get the sitemap',
 				'task' => 'file',

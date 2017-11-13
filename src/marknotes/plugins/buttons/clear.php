@@ -24,6 +24,7 @@ class Clear extends \MarkNotes\Plugins\Button\Plugin
 	{
 		$buttons['app'][] = self::button(
 			array(
+				'name' => 'clear',
 				'title' => 'settings_clean',
 				'default' => 'Clear cache',
 				'task' => 'fnPluginTaskOptimizeClearCache',

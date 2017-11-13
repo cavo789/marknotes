@@ -60,6 +60,7 @@ class DOCX extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['export'][] = self::button(
 			array(
+				'name' => 'docx',
 				'title' => 'export_docx',
 				'default' => 'Export the note as a Word document',
 				'id' => 'icon_docx',

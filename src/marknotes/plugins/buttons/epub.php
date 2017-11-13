@@ -19,6 +19,7 @@ class EPUB extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['export'][] = self::button(
 			array(
+				'name' => 'epub',
 				'title' => 'export_epub',
 				'default' => 'Export the note as a EPUB document',
 				'id' => 'icon_epub',

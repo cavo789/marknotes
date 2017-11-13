@@ -16,6 +16,7 @@ class Timeline extends \MarkNotes\Plugins\Button\Plugin
 	{
 		$buttons['app'][] = self::button(
 			array(
+				'name' => 'timeline',
 				'title' => 'timeline',
 				'default' => 'Display notes in a timeline view',
 				'task' => 'file',

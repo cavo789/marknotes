@@ -19,6 +19,7 @@ class CopyHTML extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['clipboard'][] = self::button(
 			array(
+				'name' => 'copy_html',
 				'title' => 'copy_html',
 				'default' => 'Copy the HTML of the note in the clipboard',
 				'icon' => 'code',

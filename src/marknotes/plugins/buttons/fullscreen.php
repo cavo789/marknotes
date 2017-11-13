@@ -18,6 +18,7 @@ class Fullscreen extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['utility'][] = self::button(
 			array(
+				'name' => 'fullscreen',
 				'title' => 'fullscreen',
 				'default' => 'Display the note in fullscreen',
 				'task' => 'fnPluginHTMLFullScreen',

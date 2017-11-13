@@ -19,6 +19,7 @@ class Remark extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['slideshow'][] = self::button(
 			array(
+				'name' => 'remark',
 				'title' => 'export_remark',
 				'default' => 'slideshow',
 				'id' => 'icon_remark',

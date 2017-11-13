@@ -42,61 +42,80 @@
 	"plugins": {
 		"buttons": {
 			"login": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 1
 			},
 			"clear": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 1
 			},
 			"sitemap": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"timeline": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"erase": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"fullscreen": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"print_preview": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"clipboard": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"copyhtml": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"md": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"new_window": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 1
 			},
 			"reveal": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"remark": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"txt": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"epub": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"odt": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"docx": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"pdf": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 0
 			},
 			"editor": {
-				"enabled": 1
+				"enabled": 1,
+				"quickIcons": 1
 			}
 		},
 		"content": {
@@ -780,7 +799,7 @@
 						]
 					},
 					"optimize": {
-						"localStorage": 1,
+						"localStorage": 0,
 						"server_session": 1,
 						"cache_search_results": 1,
 						"headers": {

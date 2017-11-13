@@ -16,6 +16,7 @@ class NewWindow extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['utility'][] = self::button(
 			array(
+				'name' => 'new_window',
 				'title' => 'open_html',
 				'default' => 'Open in a new window',
 				'icon' => 'external-link',

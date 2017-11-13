@@ -64,9 +64,12 @@ abstract class Plugin
 	 *		'default'	: if the 'title variable' isn't found, use a default
 	 *						title (in english)
 	 *		'id'		: (optionnal) if present, ID to use for the button
-	 '		'task'		: (optionnal) if present, data-task to assign to the button
+	 '		'task'		: (optionnal) if present, data-task to assign to the
+	 '					  button
 	 '		'extra'		: (optionnal) if present, will be added as is
 	 '		'icon'		: font-awesome icon (f.i. fa-cog, fa-print, ...)
+	 '		'quickIcons': (optionnal) 1 if the icon should be displayed
+	 ' 					  immediatly in the interface, near the "cog" button
 	 *
 	 */
 	protected static function button(array $params) : array
@@ -77,6 +80,13 @@ abstract class Plugin
 		$task = '';
 		$id = '';
 
+		// When 'name' is defined, retrieved the options from settings.json
+		$arrOptions = array();
+		if (isset($params['name'])) {
+			$name = $params['name'];
+			$arrOptions = $aeSettings->getPlugins('buttons.'.$name, array());
+		}
+
 		if (isset($params['id'])) {
 			$id = 'id="'.$params['id'].'" ';
 		}
@@ -85,9 +95,19 @@ abstract class Plugin
 			$task = 'data-task="'.$params['task'].'" ';
 		}
 
+		// If arrOptions is defined, get the QuickIcons flag from
+		// settings.json
+		$quickIcons = $arrOptions['quickIcons'] ?? 0;
+
+		// And perhaps overriden in the $params
+		if (isset($params['quickIcons'])) {
+			$quickIcons  = boolval($params['quickIcons'])?1:0;
+		}
+
 		$anchor = '<a '.
 			$id.' '.
 			$task.' '.
+			'title="'.ucfirst($title).'" '.
 			(isset($params['extra']) ? $params['extra'].' ' : '').'>'.
 			'%1'.
 			'</a>';
@@ -97,7 +117,8 @@ abstract class Plugin
 			'anchor' => $anchor,
 			'button' =>
 				str_replace('%1', '<i class="fa fa-'.$params['icon'].'" 	aria-hidden="true"></i>', $anchor),
-			'title'  => ucfirst($title)
+			'title'  => ucfirst($title),
+			'quickIcons' => $quickIcons
 		);
 
 		return $button;

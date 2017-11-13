@@ -19,6 +19,7 @@ class ODT extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['export'][] = self::button(
 			array(
+				'name' => 'odt',
 				'title' => 'export_odt',
 				'default' => 'Export the note as a ODT document',
 				'id' => 'icon_odt',

@@ -17,6 +17,7 @@ class Editor extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['utility'][] = self::button(
 			array(
+				'name' => 'editor',
 				'title' => 'edit_file',
 				'default' => 'Edit',
 				'id' => 'icon_edit',

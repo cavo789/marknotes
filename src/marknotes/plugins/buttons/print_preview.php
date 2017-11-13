@@ -18,6 +18,7 @@ class Print_Preview extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['utility'][] = self::button(
 			array(
+				'name' => 'print_preview',
 				'title' => 'print_preview',
 				'task' => 'fnPluginHTMLPrintPreview',
 				'default' => 'Print preview',

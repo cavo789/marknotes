@@ -19,6 +19,7 @@ class PDF extends \MarkNotes\Plugins\Button\Plugin
 		// Get the button HTML code
 		$buttons['export'][] = self::button(
 			array(
+				'name' => 'pdf',
 				'title' => 'export_pdf',
 				'default' => 'Export the note as a PDF document',
 				'id' => 'icon_pdf',
