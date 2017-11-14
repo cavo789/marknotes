@@ -103,39 +103,38 @@ class Beautify extends \MarkNotes\Plugins\Markdown\Plugin
 			} // foreach ($arrActions as $action)
 		} // if (count($arrActions)>0)
 
-		if (boolval(self::getOptions('rewrite_file', 0))) {
+		//if (boolval(self::getOptions('rewrite_file', 0))) {
 			// Rewrite the file as soon as the new content is
 			// different than the original one
 
-			if ($markdown!==$params['markdown']) {
-				// -----------------------------------------------------
-				// In case of a master file with a %INCLUDE chapter1.md%
-				// Backup the filename that is being displayed (f.i. master.md)
-				$originalFile=$aeSession->get('filename', '');
-
-				// While $params['filename'] is perhaps an included file
-				// (like chapter1.md).
-				// The markdown.write event should be done on that file, not the
-				// 'master' one.
-				$aeSession->set('filename', $params['filename']);
-
-				/*<!-- build:debug -->*/
-				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log('Rewrite '.$params['filename'], 'debug');
-				}
-				/*<!-- endbuild -->*/
-
-				// Rewrite the file on the disk
-				$aeEvents = \MarkNotes\Events::getInstance();
-				$aeEvents->loadPlugins('task.markdown.write');
-				$arr = array('markdown'=>$markdown);
-				$args = array(&$arr);
-				$aeEvents->trigger('task.markdown.write::run', $args);
-
-				// Restore the filename in the session object
-				$aeSession->set('filename', $originalFile);
-			} // if ($tmp!==$markdown)
-		}
+			// Disable because can cause errors (FATAL error when rewriting
+			// the file)
+			//if ($markdown!==$params['markdown']) {
+			//	// -----------------------------------------------------
+			//	// In case of a master file with a %INCLUDE chapter1.md%
+			//	// Backup the filename that is being displayed (f.i.
+			//	// master.md)
+			//	$originalFile=$aeSession->get('filename', '');
+			//	// While $params['filename'] is perhaps an included file
+			//	// (like chapter1.md).
+			//	// The markdown.write event should be done on that file,
+			//	// not the 'master' one.
+			//	$aeSession->set('filename', $params['filename']);
+			//	/*<!-- build:debug -->*/
+			//	if ($aeSettings->getDebugMode()) {
+			//		$aeDebug->log('Rewrite '.$params['filename'], 'debug');
+			//	}
+			//	/*<!-- endbuild -->*/
+			//	// Rewrite the file on the disk
+			//	$aeEvents = \MarkNotes\Events::getInstance();
+			//	$aeEvents->loadPlugins('task.markdown.write');
+			//	$arr = array('markdown'=>$markdown);
+			//	$args = array(&$arr);
+			//	$aeEvents->trigger('task.markdown.write::run', $args);
+			//	// Restore the filename in the session object
+			//	$aeSession->set('filename', $originalFile);
+			//} // if ($tmp!==$markdown)
+		//}
 
 		return true;
 	}

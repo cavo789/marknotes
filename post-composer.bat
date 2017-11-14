@@ -46,8 +46,9 @@ REM call :fnCopyCrawlerDetect
 REM call :fnCopyAnimateCSS
 REM call :fnCopyURLjs
 REM call :fnIonIcons
-call :fnAdminLTE
-call :fnSlimScroll
+REM call :fnAdminLTE
+REM call :fnSlimScroll
+call :fnJSONLint
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -383,6 +384,18 @@ ECHO    COPY TO %LIBS%jQuery-slimScroll
 ECHO.
 IF NOT EXIST %LIBS%jQuery-slimScroll MKDIR %LIBS%jQuery-slimScroll >> %LOG%
 COPY %VENDOR%jQuery-slimScroll\jquery.slimscroll.min.js %LIBS%jQuery-slimScroll\  /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnJSONLint
+::--------------------------------------------------------
+
+:fnJSONLint
+ECHO  === jsonlint===
+ECHO    COPY TO %LIBS%jsonlint
+ECHO.
+IF NOT EXIST %LIBS%jsonlint MKDIR %LIBS%jsonlint >> %LOG%
+XCOPY %VENDOR%jsonlint\src\*.php %LIBS%jsonlint\ /E /Y >> %LOG%
 goto:eof
 
 REM -----------------------------------------------

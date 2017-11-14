@@ -78,8 +78,7 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 			$checkFolder = $aeSettings->getFolderDocs(true).$checkFolder;
 		}
 
-		$checkFolder = rtrim($checkFolder,DS).DS;
-
+		$checkFolder = rtrim($checkFolder, DS).DS;
 		$arrOptions = self::getOptions('folders', array());
 
 		if (count($arrOptions) > 0) {
@@ -102,10 +101,12 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 				// Retrieve the fullname of the protected folder
 				// For instance : c:\sites\marknotes\docs\private\
 				$folder = $aeSettings->getFolderDocs().$folder.DS;
+				$folder = str_replace('/', DS, $folder);
+
 
 				// Both $folder and $checkFolder are absolute paths and
 				// have the final slash
-				if (substr($checkFolder, 0, strlen($folder)) === $folder) {
+				if (substr($checkFolder, 0, strlen($folder)) == $folder) {
 					// Yes ==> we've found a protected file
 					// Yes ==> we've found a protected file
 					// For instance c:\sites\marknotes\docs\private\secret.md

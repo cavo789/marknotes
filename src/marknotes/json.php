@@ -11,11 +11,15 @@ class JSON
 {
 	protected static $hInstance = null;
 
-	private static $_debug = false;
+	private static $hDebug = false;
+	private static $root = '';
 
 	public function __construct()
 	{
-		self::$_debug = false;
+		self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
+		self::$root = str_replace('/', DS, self::$root);
+
+		self::$hDebug = false;
 		return true;
 	}
 
@@ -25,6 +29,36 @@ class JSON
 			self::$hInstance = new JSON();
 		}
 		return self::$hInstance;
+	}
+
+	private static function showLintError(object $e, string $fname, string $json) : bool
+	{
+		if (self::$hDebug == true) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->here("", 4);
+		}
+
+		// Get the error message returned by JSON Lint
+		$msg = $e->getMessage();
+
+		header('Content-Type: text/html; charset=utf-8');
+		echo '<h2>The syntax of '.$fname.' is invalid</h2>';
+		echo '<h3>Error message</h3>';
+		echo $msg;
+
+		echo '<h3>JSON content</h3>';
+
+		$tmp = '';
+		$arr = preg_split("/((\r?\n)|(\r\n?))/", $json);
+		$wNbr = 0;
+		foreach ($arr as $line) {
+			$wNbr++;
+			$tmp .= sprintf('%05d', $wNbr).'  '.$line.PHP_EOL;
+		}
+
+		echo("<pre>".PHP_EOL.print_r($tmp, true)."</pre>");
+
+		die();
 	}
 
 	private static function showError(string $param, bool $die = true) : bool
@@ -62,7 +96,7 @@ class JSON
 				break;
 		} // switch (json_last_error())
 
-		if (self::$_debug == true) {
+		if (self::$hDebug == true) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->here("", 4);
 		}
@@ -84,7 +118,21 @@ class JSON
 	*/
 	public function debug(bool $bState)
 	{
-		self::$_debug = $bState;
+		self::$hDebug = $bState;
+	}
+
+	private static function loadLib()
+	{
+		// Load JsonLint library
+		$lib = self::$root.'libs/jsonlint/Seld/JsonLint/';
+
+		require_once($lib.'ParsingException.php');
+		require_once($lib.'DuplicateKeyException.php');
+		require_once($lib.'Undefined.php');
+		require_once($lib.'Lexer.php');
+		require_once($lib.'JsonParser.php');
+
+		return true;
 	}
 
 	/**
@@ -103,23 +151,34 @@ class JSON
 			self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
 		}
 
+		// Load JsonLint library
+		self::loadLib();
+
+		// Trim() so we're sure there is no whitespace
+		// before the JSON content
+		$value = trim(file_get_contents($fname));
+
+		// Load the JSON parser
+		// Because files settings.json can be manually changed by
+		// the user, the risk of syntax error is high so
+		$parser = new \Seld\JsonLint\JsonParser();
+
 		try {
-			// Trim() so we're sure there is no whitespace before the JSON content
-			$arr = json_decode(trim(file_get_contents($fname)), $assoc);
+			if (($e = $parser->lint($value))!==null) {
+				self::showLintError($e, $fname, $value);
+			} else {
+				$arr = json_decode($value, $assoc);
+			}
+		} catch (Exception $e) {
+			header('Content-Type: text/html; charset=utf-8');
 
-			if (json_last_error() != JSON_ERROR_NONE) {
-				header('Content-Type: text/html; charset=utf-8');
+			self::showError($fname, false);
 
-				self::showError($fname, false);
-
-				if (self::$_debug) {
-					echo '<pre>'.file_get_contents($fname).'</pre>';
-				}
-			} // if (json_last_error()!==JSON_ERROR_NONE)
-		} catch (Exception $ex) {
-			self::showError($ex->getMessage(), true);
+			if (self::$hDebug) {
+				echo '<pre>'.file_get_contents($fname).'</pre>';
+				echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($e->getMessage(), true)."</pre>";
+			}
 		}
-
 		return $arr;
 	}
 
@@ -142,7 +201,7 @@ class JSON
 
 				self::showError('', false);
 
-				if (self::$_debug) {
+				if (self::$hDebug) {
 					echo '<pre style="background-color:yellow;">'.print_r($value, true).'</pre>';
 				}
 

@@ -20,7 +20,8 @@
  *		$arrFiles = $args[0];
  *
  *		foreach ($arrFiles as $file) {
- *			echo "Dear visitor, the file " . $file . " is accessible to you</br>";
+ *			echo "Dear visitor, the file " . $file . " is accessible to ".
+ *				"you</br>";
  *		}
  *
  * Can answer to /index.php?task=task.listfiles.get
@@ -58,18 +59,22 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$args=array();
 			$aeEvents->trigger('task.acls.load::run', $args);
 
-			// $bACLsLoaded will be set true if at least one folder is protected
+			// $bACLsLoaded will be set true if at least one folder is
+			// protected
 			$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
 
 			$arrFiles = array();
-			// Due to the ACLs plugin, the list of folders that are returned by
-			// this script can vary from one user to an another so we can't store
-			// the information at the session level (or to a "user" level)
+			// Due to the ACLs plugin, the list of folders that are returned
+			// by this script can vary from one user to an another so we
+			// can't store the information at the session level (or to a
+			// "user" level)
 			if (!$bACLsLoaded) {
 				$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+
 				$bOptimize = $arrOptimize['server_session'] ?? false;
 				if ($bOptimize) {
-					// Get the list of files/folders from the session object if possible
+					// Get the list of files/folders from the session
+					// object if possible
 					$arrFiles = json_decode(trim($aeSession->get('ListFiles', '')), true);
 
 					if (count($arrFiles)==0) {
@@ -90,7 +95,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 
-				$arrFiles = $aeFunctions->array_iunique($aeFiles->rglob('*.md', $docs));
+				$ext = '*.{markdown,md}';
+				$arrFiles = $aeFunctions->array_iunique($aeFiles->rglob($ext, $docs));
 
 				if ($bACLsLoaded) {
 					// Run the filter_list task to remove any protected files

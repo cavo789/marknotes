@@ -84,11 +84,11 @@ class Load extends \MarkNotes\Plugins\Task\Plugin
 	final protected static function canRun() : bool
 	{
 		$bCanRun = parent::canRun();
-
 		if ($bCanRun) {
 			// This plugin is only needed when at least one folder
 			// has been protected
 			$arrOptions = self::getOptions('folders', array());
+
 			$bCanRun = (count($arrOptions) > 0);
 			if (!$bCanRun) {
 				$aeSession = \MarkNotes\Session::getInstance();

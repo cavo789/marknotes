@@ -61,7 +61,8 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 					$arrFiles = $aeFiles->rglob('*', $folder);
 
 					// Do we need to encode accent on that system ?
-					$bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+					$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
+					$bEncodeAccents = boolval($arr['encode_accent']);
 
 					$sList = '';
 					foreach ($arrFiles as $file) {

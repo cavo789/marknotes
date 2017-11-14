@@ -26,6 +26,13 @@ define('DEFAULT_TIMEZONE', 'Europe/London');
 
 define('DEBUG_LOG_NAME', 'debug.log');
 
+// When the filename is long, very long, the width of the
+// treeview can become really large (if set to auto).
+// Here, we're defining the max length and if a filename has
+// a greater size, the name will be truncated and followed by
+// three dots.
+define('TREEVIEW_MAX_FILENAME_LENGTH', 30);
+
 // Default text, english
 // Can be override : settings.json->languages->language_code (f.i. 'fr')
 define('ERROR', 'Error');

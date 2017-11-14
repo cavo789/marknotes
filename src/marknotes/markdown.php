@@ -76,7 +76,9 @@ class Markdown
 
 			if (!file_exists($filename)) {
 				// Do we need to encode accent on that system ?
-				$bEncodeAccents = boolval($aeSettings->getFiles('encode_accent', 0));
+				$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
+				$bEncodeAccents = boolval($arr['encode_accent']);
+
 				if (!$bEncodeAccents) {
 					$filename = utf8_decode($filename);
 				}
