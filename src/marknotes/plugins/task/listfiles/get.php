@@ -95,7 +95,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 
-				$ext = '*.{markdown,md}';
+				$ext = '*.md';
 				$arrFiles = $aeFunctions->array_iunique($aeFiles->rglob($ext, $docs));
 
 				if ($bACLsLoaded) {

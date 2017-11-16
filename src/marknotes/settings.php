@@ -125,7 +125,8 @@ class Settings
 		// 1. Get the settings.json.dist global file,
 		// shipped with each releases of MarkNotes
 
-		// From the application folder (special case when using symbolic paths)
+		// From the application folder (special case when
+		// using symbolic paths)
 		$noteJSON = $this->getFolderAppRoot().'settings.json.dist';
 
 		if ($aeFiles->fileExists($noteJSON)) {
@@ -215,6 +216,7 @@ class Settings
 			// and check if there is a settings.json file
 
 			$folder = $this->getFolderWebRoot();
+			$noteFolder = rtrim($noteFolder, DS);
 
 			do {
 				// $tree will be equal to docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
@@ -255,7 +257,7 @@ class Settings
 			// $noteJSON will be c:/sites/notes/docs/marknotes/userguide.json f.i.
 			$noteJSON = $this->getFolderDocs(true).$dir.$fname;
 
-			if (is_file($noteJSON)) {
+			if ($aeFiles->fileExists($noteJSON)) {
 				$arr = $aeJSON->json_decode($noteJSON, true);
 				$json = array_replace_recursive($json, $arr);
 

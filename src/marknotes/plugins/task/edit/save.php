@@ -85,6 +85,10 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		$args = array(&$params);
 		$aeEvents->trigger('task.markdown.write::run', $args);
 
+		// We can reset the last_added_note at the first save
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSession->set('last_added_note', '');
+
 		$status = array('status' => 1,'message' => $aeSettings->getText('button_save_done', 'The file has been successfully saved'));
 
 		header('Content-Type: application/json; charset=utf-8');

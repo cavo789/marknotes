@@ -317,9 +317,9 @@ function fnPluginTaskTreeView_reload(data) {
 	}
 	/*<!-- endbuild -->*/
 
-	var $select_node = '';
+	var $select_node = {};
 	if (data.hasOwnProperty('filename')) {
-		$select_node = data.md5;
+		$select_node.id = data.md5;
 	}
 
 	/*<!-- build:debug -->*/

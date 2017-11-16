@@ -27,9 +27,6 @@ class Create extends \MarkNotes\Plugins\Task\File
 
 		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
-		// Be sure to have the .md extension
-		$filename = $aeFiles->removeExtension($filename).'.md';
-
 		// Sanitize the filename
 		$filename = $aeFiles->sanitizeFileName($filename);
 
@@ -47,14 +44,23 @@ class Create extends \MarkNotes\Plugins\Task\File
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
 		if (intval($args[0]['return'])===1) {
-			// Only if the user can see the parent folder, he can create a file
+			// Only if the user can see the parent folder, he can
+			// create a file
 			if (!$aeFiles->fileExists($filename)) {
-				// Define the content : get the filename without the extension and set
-				// the content as heading 1.  Don't use PHP_EOL but well PHP_LF
+				// Define the content : get the filename without the
+				// extension and set the content as heading 1.
+				// Don't use PHP_EOL but well PHP_LF
 
 				$content = '# '.basename($aeFiles->removeExtension($filename)).PHP_LF;
 
 				$wReturn =  ($aeFiles->createFile($filename, $content, CHMOD_FILE) ? CREATE_SUCCESS : FILE_ERROR);
+
+				// Remember the last added note (f.i. /subfolder/note)
+				// (with the extension)
+				if ($wReturn === CREATE_SUCCESS) {
+					$aeSession = \MarkNotes\Session::getInstance();
+					$aeSession->set('last_added_note', basename($aeFiles->removeExtension($filename)));
+				}
 			} else {
 				// The file already exists
 				$wReturn =  ALREADY_EXISTS;
@@ -104,10 +110,16 @@ class Create extends \MarkNotes\Plugins\Task\File
 		} else {
 			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
-			// Relative filename
-			$rel_newname = str_replace($aeSettings->getFolderDocs(true), '', $filename);
+			// Be sure to have the .md extension
+			$filename = $aeFiles->removeExtension($filename).'.md';
 
 			$wReturn = self::create($filename);
+
+			// Relative filename; needed for the md5() function
+			// since the treeview is storing ID for each items
+			// this way : docs/subfolder/note.md
+			// The md5 returned below should do the same
+			$rel_newname = str_replace($aeSettings->getFolderDocs(true), $docs, $filename);
 
 			switch ($wReturn) {
 				case CREATE_SUCCESS:
@@ -129,10 +141,11 @@ class Create extends \MarkNotes\Plugins\Task\File
 					break;
 			}
 
+
 			$return = array(
 				'status' => (($wReturn == CREATE_SUCCESS) ? 1 : 0),
 				'action' => 'create',
-				'md5' => md5($docs.$filename),
+				'md5' => md5($rel_newname),
 				'msg' => $msg,
 				'filename' => utf8_encode($filename)
 			);

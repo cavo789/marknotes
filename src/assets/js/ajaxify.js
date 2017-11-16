@@ -142,7 +142,7 @@ function ajaxify_get_param($params, $bReload) {
  */
 function ajaxify_get_select_node($params, $bReload) {
 
-	$select_node = '';
+	$select_node = {};
 
 	if ($bReload) {
 		$select_node = ajaxify_Previous_Run('select_node');
@@ -160,7 +160,6 @@ function ajaxify_get_select_node($params, $bReload) {
 		}
 
 	}
-
 	return $select_node;
 }
 
@@ -288,8 +287,9 @@ function ajaxify($params) {
 	$filename = ajaxify_get_filename($params, $bReload);
 	$dataType = ajaxify_get_dataType($params, $bReload);
 	$target = ajaxify_get_target($params, $bReload);
-	$select_node = ''; //ajaxify_get_select_node($params, $bReload);
 	$callback = ajaxify_get_callback($params, $bReload);
+
+	$select_node = ajaxify_get_select_node($params, false);
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -384,15 +384,15 @@ function ajaxify($params) {
 				// the treeview should be reloaded and, then, a specific
 				// node should be selected (f.i. after the creation of
 				// a new note)
-				//if (typeof $select_node !== '') {
-
-				/*<!-- build:debug -->*/
-				//	if (marknotes.settings.debug) {
-				//		console.log('   Add data.select_node attribute');
-				//	}
-				/*<!-- endbuild -->*/
-				//	data.select_node = $select_node;
-				//}
+				if (!jQuery.isEmptyObject($select_node)) {
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						console.log('   Add data.select_node attribute');
+						console.log($select_node);
+					}
+					/*<!-- endbuild -->*/
+					data.select_node = $select_node;
+				}
 
 				if ($useStore) {
 					var storeVarName = ($data.task == 'task.export.html' ? $data.param : $data.task);
@@ -404,7 +404,6 @@ function ajaxify($params) {
 				}
 
 				if ($dataType === 'html') {
-
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
 						console.log('Output the result into target area');

@@ -94,10 +94,10 @@ function initFiles($data) {
 			});
 		}
 	} catch (err) {
-		console.warn(err.message + ' --- More info below ---');
-		console.log(err);
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
+			console.warn(err.message + ' --- More info below ---');
+			console.log(err);
 			Noty({
 				message: err.message,
 				type: 'error'
@@ -106,18 +106,36 @@ function initFiles($data) {
 		/*<!-- endbuild -->*/
 	}
 
+	// Initialize the jsTree and attach events
 	jstree_init($data);
 
+	if ($data.hasOwnProperty('select_node')) {
+		if (typeof $data.select_node.id !== 'undefined') {
+			// Needed otherwise the jstree's state plugin will
+			// reset the selected node
+			try {
+				// Select the node
+				$('#TOC').jstree('select_node', $data.select_node.id);
+			} catch (err) {
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.warn(err.message + ' --- More info below ---');
+					console.log(err);
+				}
+				/*<!-- endbuild -->*/
+			}
+		}
+	}
 	// See if the custominiFiles() function has been defined and if so, call it
 	try {
 		if (typeof custominiFiles !== 'undefined' && $.isFunction(custominiFiles)) {
 			custominiFiles();
 		}
 	} catch (err) {
-		console.warn(err.message + ' --- More info below ---');
-		console.log(err);
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
+			console.warn(err.message + ' --- More info below ---');
+			console.log(err);
 			Noty({
 				message: err.message,
 				type: 'error'
@@ -130,19 +148,31 @@ function initFiles($data) {
 	runPluginsFunctions();
 
 	// Automatically select a specific node when $data.select_node exists
-	if ($data.hasOwnProperty('select_node')) {
+	/*if ($data.hasOwnProperty('select_node')) {
+		if (typeof $data.select_node.id !== 'undefined') {
+			// Needed otherwise the jstree's state plugin will reset the selected node
+			try {
 
-		// Needed otherwise the jstree's state plugin will reset the selected node
-		try {
-			// Select the node
-			$('#TOC').jstree('select_node', $data.select_node);
-			$('#TOC').jstree(true).save_state();
-		} catch (err) {
-			console.warn(err.message + ' --- More info below ---');
-			console.log(err);
-		} finally {}
+				if ($data.select_node.task === 'task.edit.form') {
+					$('#TOC').jstree(true).get_node($data.select_node.id).data.task = $data.select_node.task;
+				}
+				// Select the node
+				$('#TOC').jstree('select_node', $data.select_node.id);
 
-	}
+				//if ($data.select_node.task === 'task.edit.form') {
+				//	$selected_node = $('#TOC').jstree('get_selected', true)[0];
+				//	fnPluginTaskTreeView_editNode($selected_node);
+				//}
+			} catch (err) {
+				/*<!-- build:debug -->
+				if (marknotes.settings.debug) {
+					console.warn(err.message + ' --- More info below ---');
+					console.log(err);
+				}
+				/*<!-- endbuild -->
+			}
+		}
+	}*/
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -151,7 +181,6 @@ function initFiles($data) {
 	/*<!-- endbuild -->*/
 
 	return true;
-
 }
 
 /**
@@ -236,9 +265,9 @@ function initializeTasks() {
 		default:
 
 			// The task is perhaps a function that was added by a plugin
-			// For instance the login form is a plugin and the data-task is set to
-			// "fnPluginTaskLogin", defined in login.js => try and call this function
-
+			// For instance the login form is a plugin and the data-task
+			// is set to "fnPluginTaskLogin", defined in login.js
+			// => try and call this function
 			try {
 
 				var fn = window[$task];
@@ -267,8 +296,12 @@ function initializeTasks() {
 					console.warn('Sorry, unknown task [' + $task + ']');
 				}
 			} catch (err) {
-				console.warn('Problem when trying to evaluate [' + $task + '][' + err.message + ']');
-				console.log(err);
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.warn('Problem when trying to evaluate [' + $task + '][' + err.message + ']');
+					console.log(err);
+				}
+				/*<!-- endbuild -->*/
 			}
 
 		} // switch($task)
@@ -309,13 +342,18 @@ function afterDisplay($fname) {
 			$('#footer').html('<strong style="text-transform:uppercase;">' + $fname + '</strong>');
 		}
 
-		// See if the customafterDisplay() function has been defined and if so, call it
+		// See if the customafterDisplay() function has
+		// been defined and if so, call it
 		if (typeof customafterDisplay !== 'undefined' && $.isFunction(customafterDisplay)) {
 			customafterDisplay($fname);
 		}
 	} catch (err) {
-		console.warn(err.message + ' --- More info below ---');
-		console.log(err);
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.warn(err.message + ' --- More info below ---');
+			console.log(err);
+		}
+		/*<!-- endbuild -->*/
 	}
 
 	// Call javascript functions there were added by plugins
@@ -356,9 +394,10 @@ function runPluginsFunctions() {
 	try {
 
 		// Duplicate the marknotes.arrPluginsFct array (use slice() for this)
-		// because some functions like f.i. fnPluginTaskTreeView_init() (in plugin task treeview)
-		// should be called only once and, that function, remove its entry from the
-		// marknotes.arrPluginsFct array.  Be sure to process every items so copy the array
+		// because some functions like f.i. fnPluginTaskTreeView_init() (in
+		// plugin task treeview) should be called only once and, that
+		// function, remove its entry from the marknotes.arrPluginsFct
+		// array.  Be sure to process every items so copy the array
 
 		$arrFct = marknotes.arrPluginsFct.slice();
 
@@ -380,9 +419,12 @@ function runPluginsFunctions() {
 
 		}
 	} catch (err) {
-		console.warn(err.message + ' --- More info below ---');
-		console.log(err);
-
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.warn(err.message + ' --- More info below ---');
+			console.log(err);
+		}
+		/*<!-- endbuild -->*/
 	}
 
 	/*<!-- build:debug -->*/

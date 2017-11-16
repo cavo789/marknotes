@@ -43,8 +43,34 @@ function afterEdit($ajax_request, $form) {
 	$('#CONTENT').html($form);
 
 	if (document.getElementById("sourceMarkDown") !== null) {
+		/**
+		  When a new note is created from marknotes (not on the
+		  filesystem), the defaut task for this note is assigned
+		  to "task.edit.form" in the listfile.json so, when the
+		  user will click on the just created new note, the editor
+		  will be displayed and not the HTML rendering (it's not
+		  usefull since the note is empty).
+
+		  When the editor is displayed, here in afterEdit, the
+		  default task can become task.export.html otherwise,
+		  each time the note is clicked in the treeview, the editor
+		  will be displayed.
+
+		  So, here below, the code will reset the task of the note
+		  under edition
+		*/
+		if (typeof marknotes.note.id !== 'undefined') {
+			$('#TOC').jstree(true).get_node(marknotes.note.id).data.task = 'task.export.html';
+		}
+
 		afterEditInitMDE($ajax_request);
 	} else {
+
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.warn('         DOM element id=sourceMarkDown is missing');
+		}
+		/*<!-- endbuild -->*/
 		Noty({
 			message: $.i18n('not_authenticated'),
 			type: 'error'

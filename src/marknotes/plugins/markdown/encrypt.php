@@ -304,8 +304,9 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 				$j = count($matches[0]);
 				for ($i=0; $i < $j; $i++) {
 					$decrypt = self::sslDecrypt($encrypted_portion[$i]);
+
 					$decrypt = ENCRYPT_MARKDOWN_TAG.$decrypt.ENCRYPT_MARKDOWN_TAG;
-					$params['markdown'] = str_replace($pattern, $decrypt, $params['markdown']);
+					$params['markdown'] = str_replace($pattern[$i], $decrypt, $params['markdown']);
 				}
 			}
 		}

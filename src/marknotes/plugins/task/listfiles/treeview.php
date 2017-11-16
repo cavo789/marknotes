@@ -16,7 +16,6 @@ namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-
 class Treeview extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
@@ -137,14 +136,11 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						}
 
 						$sFileText = substr($sFileText, 0, $wLen).' …';
-
-
 					} catch (Exception $e) {
-							/*<!-- build:debug -->*/
-							die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($sFileText,  true)."</pre>");
-							/*<!-- endbuild -->*/
+						/*<!-- build:debug -->*/
+						die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($sFileText, true)."</pre>");
+						/*<!-- endbuild -->*/
 					}
-
 				}
 
 				$dataFile = str_replace($root, '', $entry['name']);
@@ -156,6 +152,16 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				//	$id = utf8_encode($id);
 				//}
 
+				$default_task = 'task.export.html';
+
+				// In the list of files, help the jsTree plugin
+				// to know that the action should be EDIT and not DISPLAY
+				// when the user click on the note that was just created
+				$lastAddedNote = trim($aeSession->get('last_added_note', ''));
+				if ($dataBasename===$lastAddedNote) {
+					$default_task = 'task.edit.form';
+				}
+
 				$files[] = array(
 					'id' => md5($id),
 					'icon' => 'file file-md',
@@ -163,6 +169,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					'data' => array(
 						//'task' => 'display',
 						'basename' => $dataBasename,
+						'task' => $default_task,
 						'file' => $dataFile,
 						'url' => $dataURL
 					),

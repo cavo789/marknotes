@@ -14,7 +14,6 @@ function jsTree_ajax_search(str, node) {
  * @returns {undefined}
  */
 function jstree_init($data) {
-
 	try {
 		if ($.isFunction($.fn.jstree)) {
 
@@ -25,9 +24,9 @@ function jstree_init($data) {
 
 			try {
 				// Use the "state" plugin of jsTree to remember the state
-				// of the treeview between visits only if the LocalStore setting
-				// was set i.e. when the store.min.js script has been loaded and
-				// define the store object
+				// of the treeview between visits only if the LocalStore
+				// setting was set i.e. when the store.min.js script
+				// has been loaded and define the store object
 				if (typeof store === 'object') {
 					// Ok, localStore is set, use the state plugin
 					$arrPlugins.push('state');
@@ -42,8 +41,9 @@ function jstree_init($data) {
 
 			// Sometimes wholerow raise an error with the state plugin.
 			// Error can be "this.get node().find is not a function".
-			// By removing wholerow in the list below and refreshing the page will
-			// solve the issue. Then add wholerow back in the list.
+			// By removing wholerow in the list below and refreshing
+			// the page will solve the issue. Then add wholerow back
+			// in the list.
 			// Still occurs with jsTree 3.3.4 (2017-07-31)
 			//$arrPlugins.push('wholerow');
 
@@ -55,7 +55,6 @@ function jstree_init($data) {
 			/*<!-- endbuild -->*/
 
 			// Use jsTree for the display
-
 			$('#TOC')
 				.on('loaded.jstree', function () {
 					/*<!-- build:debug -->*/
@@ -66,10 +65,18 @@ function jstree_init($data) {
 				})
 				.on('changed.jstree', function (e, data) {
 					var objNode = data.instance.get_node(data.selected);
+
+					// Remember the ID of the note
+					// marknotes.node.id is defined in the template
+					if (typeof marknotes.note.id !== "undefined") {
+						marknotes.note.id = objNode.id;
+					}
+
 					if (typeof (objNode.parent) !== "undefined") {
 						// Get the filename : objNode.parent mention the
 						// relative parent folder (f.. /development/jquery/)
-						// and objNode.text the name of the file (f.i. jsTree.md)
+						// and objNode.text the name of the file (f.i.
+						// jsTree.md)
 
 						/*<!-- build:debug -->*/
 						if (marknotes.settings.debug) {
@@ -99,18 +106,29 @@ function jstree_init($data) {
 							// And remember the hash (md5) of the URL
 							marknotes.note.md5 = $fname;
 
+							// Default task
 							var task = 'task.export.html';
 							if (typeof (objNode.data.task) !== "undefined") {
 								task = objNode.data.task;
 							}
 
-							ajaxify({
-								task: task,
-								param: $fname,
-								callback: 'afterDisplay($data.param)',
-								target: 'CONTENT',
-								useStore: true
-							});
+							if (task == 'task.edit.form') {
+								ajaxify({
+									task: 'task.edit.form',
+									param: marknotes.note.md5,
+									callback: 'afterEdit($data, data)',
+									useStore: false,
+									target: 'CONTENT'
+								});
+							} else {
+								ajaxify({
+									task: task,
+									param: $fname,
+									callback: 'afterDisplay($data.param)',
+									target: 'CONTENT',
+									useStore: true
+								});
+							}
 						} // if (objNode.data !== null)
 					} // if (typeof(objNode.parent)!="undefined")
 				})
@@ -127,9 +145,13 @@ function jstree_init($data) {
 					// Not found a solution...
 					var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
 
-					if (objNode.data) {
-						console.log('changed.jstree - ' + objNode.data.file);
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						if (objNode.data) {
+							console.log('changed.jstree - ' + objNode.data.file);
+						}
 					}
+					/*<!-- endbuild -->*/
 
 				})
 				.on('search.jstree', function (nodes, str, res) {
@@ -193,9 +215,9 @@ function jstree_init($data) {
 								$('#TOC').hide().parent().append(loading);
 							}, // beforeSend()
 							success: function (data) {
-								console.log('Success');
 								/*<!-- build:debug -->*/
 								if (marknotes.settings.debug) {
+									console.log('Success');
 									console.timeEnd('Search time');
 									console.log('Search - success, list of IDs returned :');
 									console.log(data);
@@ -310,8 +332,9 @@ function jstree_context_menu(node) {
 
 	// ------------------------------------------------------------------------
 	// Plugin Task-Treeview
-	// The fnPluginTaskTreeViewContextMenu() is defined in the plugins task/treeview
-	// Check if that plugin has loaded the function and if so, get extra items for the context menu
+	// The fnPluginTaskTreeViewContextMenu() is defined in the plugins
+	// task/treeview Check if that plugin has loaded the function and
+	// if so, get extra items for the context menu
 	var fn = window.fnPluginTaskTreeViewContextMenu;
 
 	// is object a function?
