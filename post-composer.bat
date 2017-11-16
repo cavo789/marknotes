@@ -48,11 +48,12 @@ REM call :fnCopyURLjs
 REM call :fnIonIcons
 REM call :fnAdminLTE
 REM call :fnSlimScroll
-call :fnJSONLint
+REM call :fnJSONLint
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
-REM call :fnCopyjsTree
+call :fnCopyjsTree
+call :fnCopyjsTreeProton
 REM call :fnCopySimpleMDE
 REM call :fnCopyPrism
 REM call :fnCopyFlexDataList
@@ -433,6 +434,18 @@ COPY %VENDOR%vakata\jstree\dist\jstree.min.js %PAGE%html\treeview\libs\jstree\ /
 IF NOT EXIST %PAGE%html\treeview\libs\jstree\themes\ MKDIR %PAGE%html\treeview\libs\jstree\themes\ >> %LOG%
 XCOPY %VENDOR%vakata\jstree\dist\themes\default\*.* %PAGE%html\treeview\libs\jstree\themes\ /E /Y >> %LOG%
 COPY %VENDOR%vakata\jstree\demo\filebrowser\file_sprite.png %PAGE%html\treeview\libs\jstree\ /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyjsTreeProton
+::--------------------------------------------------------
+
+:fnCopyjsTreeProton
+ECHO  === jstreeProton ===
+ECHO    COPY TO %PAGE%html\treeview\libs\jstree\themes
+ECHO.
+IF NOT EXIST %PAGE%html\treeview\libs\jstree\themes\ MKDIR %PAGE%html\treeview\libs\jstree\themes\ >> %LOG%
+XCOPY %VENDOR%jstree-bootstrap-theme\dist\themes\proton\*.* %PAGE%html\treeview\libs\jstree\themes\proton\ /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

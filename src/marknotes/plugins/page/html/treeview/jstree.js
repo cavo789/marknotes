@@ -180,7 +180,9 @@ function jstree_init($data) {
 						multiple: false,
 						initially_open: ['phtml_1'], // Automatically open the root node
 						themes: {
-							dots: 0,
+							name: 'proton',
+							responsive: 0,
+							dots: 1,
 							ellipsis: 1,
 							stripes: 0,
 							variant: 'small'

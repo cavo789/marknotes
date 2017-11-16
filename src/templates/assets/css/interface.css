@@ -14,7 +14,8 @@
 }
 
 #TOC {
-	font-size: .8em;
+	font-size  : 1em;
+	padding-top: 10px;
 }
 
 #TOC .folder {
@@ -49,14 +50,14 @@ div.editor-wrapper .editor-toolbar a {
 	width        : auto;
 }
 
-.jstree-default .jstree-clicked {
-	background: transparent !important;
-	color     : #9ccbe1 !important;
+.jstree-proton .jstree-clicked {
+	color         : yellow !important;
+	text-transform: uppercase;
 }
 
 .jstree-open > .jstree-anchor {
-	color      : #00abfc !important;
-	font-weight: bolder;
+	/*color      : #00abfc !important;
+	font-weight: bolder;*/
 }
 
 .jstree-closed > .jstree-anchor {
