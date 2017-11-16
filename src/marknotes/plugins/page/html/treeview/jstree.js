@@ -72,6 +72,14 @@ function jstree_init($data) {
 						marknotes.note.id = objNode.id;
 					}
 
+					if (typeof marknotes.note.file !== "undefined") {
+						// Get the note's filename
+						// for instance subfolder/note.md
+						// and remove the extension
+						$fname = objNode.data.file.replace(/\.[^/.]+$/, "")
+						marknotes.note.file = $fname;
+					}
+
 					if (typeof (objNode.parent) !== "undefined") {
 						// Get the filename : objNode.parent mention the
 						// relative parent folder (f.. /development/jquery/)

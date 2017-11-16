@@ -87,7 +87,7 @@
 			},
 			"reveal": {
 				"enabled": 1,
-				"quickIcons": 0
+				"quickIcons": 1
 			},
 			"remark": {
 				"enabled": 1,

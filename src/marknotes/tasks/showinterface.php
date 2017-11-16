@@ -104,6 +104,7 @@ class ShowInterface
 		"marknotes.url='index.php';\n".
 		"marknotes.note={};\n".
 		"marknotes.note.basename='';\n".
+		"marknotes.note.file='';\n".
 		"marknotes.note.id='';\n".
 		"marknotes.note.url='';\n".
 		"marknotes.note.md5='';\n".
