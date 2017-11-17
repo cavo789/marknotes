@@ -43,6 +43,8 @@ class Markdown
 		// Be sure the task is lowercase
 		$task=strtolower($task);
 
+		$docFolder = $aeSettings->getFolderDocs(true);
+
 		// When no task is mentionned, suppose 'task.export.html'
 		if ($task=='') {
 			 $task='task.export.html';
@@ -66,6 +68,7 @@ class Markdown
 				$filename = substr($filename, strlen($docRoot));
 			}
 
+			$docRoot = $aeSettings->getFolderDocs(false);
 			// If the filename doesn't mention the file's extension, add it.
 			//if (substr($filename, -3) != '.md') {
 			//	$filename .= '.md';
@@ -74,7 +77,7 @@ class Markdown
 			//$filename=$aeFiles->removeExtension($filename).'.md';
 			//$full=$aeSettings->getFolderDocs(true).$filename;
 
-			if (!file_exists($filename)) {
+			if (!file_exists($docFolder.$filename)) {
 				// Do we need to encode accent on that system ?
 				$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
 				$bEncodeAccents = boolval($arr['encode_accent']);
@@ -84,7 +87,12 @@ class Markdown
 				}
 			}
 
-			$filename = $aeFiles->sanitizeFileName(trim($filename));
+			// It's a bad idea to sanitize here because if the filename
+			// already contains an invalid character (like a "+"), if we
+			// sanitize, we remove that character and, for sure, the file can't be
+			// retrieved. Sanitization should be made when we add notes through the
+			// interface, so in the task.file.create plugin; not here
+			//$filename = $aeFiles->sanitizeFileName(trim($filename));
 		}
 
 		/*<!-- build:debug -->*/
@@ -110,7 +118,7 @@ class Markdown
 		// Process "core" tasks i.e. not part of a plugin
 		switch ($task) {
 			case 'index':
-				// Displan a dynamic index page
+				// Display a dynamic index page
 				$aeTask = \MarkNotes\Tasks\Index::getInstance();
 				header('Content-Type: text/html; charset=utf-8');
 				echo $aeTask->run($params);
