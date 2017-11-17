@@ -103,12 +103,19 @@ mark {
 /* Override AdminLTE classes */
 
 .content {
-	padding-top: 15px;
-	margin-top : 10px;
+	padding: 10px 0;
+	margin : 10px 0 0 5px !important;
 }
 
 .content-wrapper {
+	background-color: #ecf0f5;
+}
+
+article {
 	background-color: white;
+	border          : 1px solid #f4f4f4;
+	padding         : 10px;
+
 }
 
 .content-headerFixed-left {
@@ -143,8 +150,9 @@ mark {
 }
 
 .content-headerFixed > h1 {
-	margin   : 0;
-	font-size: 24px;
+	margin     : 0;
+	font-size  : 24px;
+	margin-left: 10px;
 }
 
 .logo-lg img,

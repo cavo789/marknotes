@@ -34,7 +34,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			// Get the HTML content
 			$content = $aeTask->run($params);
 
-			if (!$aeFiles->createFile($final, $content)) {
+			if (!$aeFiles->createFile(utf8_decode($final), $content)) {
 				$final = '';
 
 				/*<!-- build:debug -->*/

@@ -1,7 +1,7 @@
 {
 	"debug": {
-		"enabled": 0,
-		"development": 0,
+		"enabled": 1,
+		"development": 1,
 		"logfile": {
 			"template": "[%level_name%] %message% %context%"
 		},
@@ -28,7 +28,7 @@
 		"url": "https://github.com/cavo789/marknotes"
 	},
 	"files": {
-		"encode_accent": 0
+		"encode_accent": 1
 	},
 	"folder": "docs",
 	"regional": {

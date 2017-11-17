@@ -331,11 +331,16 @@ function afterDisplay($fname) {
 
 		// Retrieve the heading 1 from the loaded file
 		var $title = $('#CONTENT h1').text();
+
 		if ($title !== '') {
-			$('title').text($title);
-			$('.content-header h1').text($title);
 			$('#CONTENT h1').hide();
 		}
+
+		// Even when there is no h1, we need to update the area otherwise
+		// the previous title (of the previous read note) will still be displayed
+		$('title').text($title);
+		$('.content-header h1').text($title);
+
 
 		$fname = $('div.filename').text();
 		if ($fname !== '') {

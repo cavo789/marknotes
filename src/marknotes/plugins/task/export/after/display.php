@@ -27,7 +27,7 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 			$filename = $params['output'] ?? '';
 
-			if (($filename!=='') && (is_file($filename))) {
+			if (($filename!=='') && (is_file(utf8_decode($filename)))) {
 				// Read content only if it's an ASCII file
 
 				if (in_array($format, array('html','md','remark','reveal','txt'))) {

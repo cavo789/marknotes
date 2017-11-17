@@ -67,13 +67,12 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$dataURL=str_replace(DS, '/', str_replace($root, '', $dir));
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
 
-		/*if ($bEncodeAccents) {
-			$sDirectoryText = '***'.$sDirectoryText;
-
+		if ($bEncodeAccents) {
+			$sDirectoryText = utf8_encode($sDirectoryText);
 			$sID = utf8_encode(str_replace($root, '', $dir).DS);
 			$dataURL = utf8_encode($dataURL);
 		}
-*/
+
 		$listDir = array
 		(
 			'id' => str_replace(DS, '/', $sID),
@@ -145,6 +144,13 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 				$dataFile = str_replace($root, '', $entry['name']);
 				$dataFile = str_replace(DS, '/', $dataFile);
+
+				if ($bEncodeAccents) {
+					$dataFile = utf8_encode($dataFile);
+					$dataURL = utf8_encode($dataURL);
+					$sFileText = utf8_encode($sFileText);
+				}
+
 				$dataBasename = $aeFiles->removeExtension(basename($dataURL));
 
 				//if ($bEncodeAccents) {
@@ -215,7 +221,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$fname = utf8_encode($fname);
 				}
 
-
 				// The canSeeFolder event will initialize the 'return'
 				// parameter to false when the current user can't see the
 				// folder i.e. don't have the permission to see it. This
@@ -249,7 +254,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 	/**
 	* Get an array that represents directory tree
-	* @param string $directory	 Directory path
+	* @param string $directory   Directory path
 	*/
 	private static function directoryToArray($directory)
 	{
@@ -365,6 +370,9 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				$return['tree'] = $arr;
 
 				$aeJSON = \MarkNotes\JSON::getInstance();
+				/*<!-- build:debug -->*/
+				$aeJSON->debug($aeSettings->getDebugMode());
+				/*<!-- endbuild -->*/
 
 				$sReturn = $aeJSON->json_encode($return);
 

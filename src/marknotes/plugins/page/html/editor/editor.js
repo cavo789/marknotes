@@ -1,3 +1,19 @@
+marknotes.arrPluginsFct.push("fnPluginEditInit");
+
+/**
+ * @returns boolean
+ */
+function fnPluginEditInit(params) {
+
+	// the btn-exit-editor is added in the edit form by task.edit.form
+	$(".btn-exit-editor").click(function (event) {
+		fnPluginButtonEdit_Exit(null);
+	});
+
+	return true;
+}
+
+
 /**
  * $params is a JSON object initiliazed by the /assets/js/marknotes.js file.
  */
@@ -64,6 +80,10 @@ function afterEdit($ajax_request, $form) {
 		}
 
 		afterEditInitMDE($ajax_request);
+
+		// Initialize events
+		fnPluginEditInit();
+
 	} else {
 
 		/*<!-- build:debug -->*/
@@ -141,22 +161,16 @@ function afterEditInitMDE($data) {
 				className: "fa fa-map-o",
 				title: $.i18n('button_addTOC')
 			},
-			"|",
-			{
-				// Add a custom button for saving
-				name: "Exit",
-				action: function customFunction(editor) {
-					$('#sourceMarkDown').parent().hide();
-					ajaxify({
-						task: 'task.export.html',
-						param: filename,
-						callback: 'afterDisplay($data.param)',
-						target: 'CONTENT'
-					});
-				},
-				className: "fa fa-sign-out",
-				title: $.i18n('button_exit_edit_mode')
-			},
+			//"|",
+			//{
+			//	// Add a custom button for saving
+			//	name: "Exit",
+			//	action: function customFunction(editor) {
+			//		fnPluginButtonEdit_Exit();
+			//	},
+			//	className: "fa fa-sign-out",
+			//	title: $.i18n('button_exit_edit_mode')
+			//},
 			"|", "preview", "side-by-side", "fullscreen", "|",
 			"bold", "italic", "strikethrough", "|", "heading", "heading-smaller", "heading-bigger", "|", "heading-1", "heading-2", "heading-3", "|",
 			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
@@ -165,6 +179,17 @@ function afterEditInitMDE($data) {
 
 	//	$('.editor-toolbar').addClass('fa-2x');
 
+	return true;
+}
+
+function fnPluginButtonEdit_Exit($params) {
+	$('#sourceMarkDown').parent().hide();
+	ajaxify({
+		task: 'task.export.html',
+		param: filename,
+		callback: 'afterDisplay($data.param)',
+		target: 'CONTENT'
+	});
 	return true;
 }
 
