@@ -445,7 +445,7 @@ ECHO  === jstreeProton ===
 ECHO    COPY TO %PAGE%html\treeview\libs\jstree\themes
 ECHO.
 IF NOT EXIST %PAGE%html\treeview\libs\jstree\themes\ MKDIR %PAGE%html\treeview\libs\jstree\themes\ >> %LOG%
-XCOPY %VENDOR%jstree-bootstrap-theme\dist\themes\proton\*.* %PAGE%html\treeview\libs\jstree\themes\proton\ /Y >> %LOG%
+XCOPY %VENDOR%jstree-bootstrap-theme\dist\themes\proton\*.* %PAGE%html\treeview\libs\jstree\themes\proton\ /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
