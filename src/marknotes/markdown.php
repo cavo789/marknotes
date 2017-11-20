@@ -78,20 +78,18 @@ class Markdown
 			//$full=$aeSettings->getFolderDocs(true).$filename;
 
 			if (!file_exists($docFolder.$filename)) {
-				// Do we need to encode accent on that system ?
-				$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
-				$bEncodeAccents = boolval($arr['encode_accent']);
-
-				if (!$bEncodeAccents) {
-					$filename = utf8_decode($filename);
+				$tmp = utf8_decode($filename);
+				if (file_exists($docFolder.$tmp)) {
+					$filename=$tmp;
 				}
 			}
 
 			// It's a bad idea to sanitize here because if the filename
 			// already contains an invalid character (like a "+"), if we
-			// sanitize, we remove that character and, for sure, the file can't be
-			// retrieved. Sanitization should be made when we add notes through the
-			// interface, so in the task.file.create plugin; not here
+			// sanitize, we remove that character and, for sure, the file
+			// can't be retrieved. Sanitization should be made when we
+			// add notes through the interface, so in the task.file.create
+			// plugin; not here
 			//$filename = $aeFiles->sanitizeFileName(trim($filename));
 		}
 

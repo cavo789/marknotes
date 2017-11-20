@@ -49,6 +49,8 @@ class ParsedownCheckbox extends ParsedownExtra
                 }
             }
         }
+
         return $block;
     }
 }
+

@@ -14,6 +14,7 @@ function jsTree_ajax_search(str, node) {
  * @returns {undefined}
  */
 function jstree_init($data) {
+
 	try {
 		if ($.isFunction($.fn.jstree)) {
 
@@ -188,7 +189,7 @@ function jstree_init($data) {
 						multiple: false,
 						initially_open: ['phtml_1'], // Automatically open the root node
 						themes: {
-							name: 'proton',
+							name: marknotes.jstree.theme,
 							responsive: 0,
 							dots: 1,
 							ellipsis: 1,
@@ -208,10 +209,17 @@ function jstree_init($data) {
 						}
 					},
 					search: {
-						close_opened_onclear: false,
+						// Indicates if all nodes opened to reveal the
+						// search result, should be closed when the
+						// search is cleared or a new search is performed.
+						close_opened_onclear: true,
 						case_insensitive: true,
-						show_only_matches: true, // Hide unmatched, show only matched records
-						search_leaves_only: true, // Only files, not folder
+						// Hide unmatched, show only matched records
+						// Indicates if the tree should be filtered
+						// to show only matching nodes
+						show_only_matches: true,
+						// Only files, not folder
+						search_leaves_only: true,
 						ajax: {
 							url: 'search.php', // This request will be fired with the '&str=SEARCH_TERM' parameter
 							dataType: 'json',

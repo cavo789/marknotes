@@ -38,11 +38,17 @@ class Treeview extends \MarkNotes\Plugins\Page\HTML\Plugin
 		if ($aeSession->get('authenticated', 0) === 1) {
 			// Add extra functionnalities like adding, renaming or removing
 			// a folder / a note
-
 			$script .= "<script type=\"text/javascript\"".
 				"src=\"".$url."treeview.js\"".
 				"defer=\"defer\"></script>";
 		} // if ($aeSession->get('authenticated', 0) === 1)
+
+		$theme = self::getOptions('theme','default');
+
+		$js .= "<script type=\"text/javascript\">\n".
+			"marknotes.jstree={};\n".
+			"marknotes.jstree.theme='".$theme."';\n".
+			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 
@@ -60,8 +66,18 @@ class Treeview extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 		$url .= '/marknotes/plugins/page/html/treeview/';
 
+		$theme = self::getOptions('theme','default');
+
+		// Load first the default.css style since not every styles
+		// have been overwritten
 		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/jstree/themes/proton/style.min.css\">\n";
+			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/jstree/themes/default/style.min.css\">\n";
+
+		if ($theme !=='default') {
+			$script .=
+				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
+				"href=\"".$url."libs/jstree/themes/".$theme."/style.min.css\">\n";
+		}
 
 		$css .= $aeFunctions->addStyleInline($script);
 

@@ -25,7 +25,6 @@ RegExp.quote = function (str) {
 };
 
 $(document).ready(function () {
-
 	if (marknotes.autoload === 1) {
 
 		// Be sure that this plugin is well part of the current

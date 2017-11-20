@@ -197,7 +197,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 
 		// Processing filename
 		// f.i. c:\sites\notes\docs\marknotes\french\userguide.md
-		$filename = str_replace('/', DS, $params['filename']);
+		$filename = str_replace('/', DS, urldecode($params['filename']));
 
 		// Get the relative folder; like docs/marknotes/french/
 		$sFolder = str_replace($aeSettings->getFolderDocs(true), '', dirname($filename)).'/';
@@ -228,6 +228,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			// it's a backslash \ which has special meaning in a regex)
 			$url = str_replace(DS, '\\'.DS, rtrim(dirname($filename)).DS);
 		}
+
 		$markdown = self::replaceVar('%URL%', $url, $markdown, array('abbr','code','pre'));
 
 		if (strpos($markdown, '%NOTE_FOLDER%')!==false) {

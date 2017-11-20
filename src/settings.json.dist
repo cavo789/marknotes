@@ -27,9 +27,6 @@
 	"github": {
 		"url": "https://github.com/cavo789/marknotes"
 	},
-	"files": {
-		"encode_accent": 1
-	},
 	"folder": "docs",
 	"regional": {
 		"locale": "en-UK",
@@ -864,6 +861,9 @@
 								"content": "index, follow"
 							}
 						]
+					},
+					"treeview": {
+						"theme": "proton"
 					}
 				}
 			},

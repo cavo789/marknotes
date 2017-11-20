@@ -52,8 +52,8 @@ REM call :fnJSONLint
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
-call :fnCopyjsTree
-call :fnCopyjsTreeProton
+REM call :fnCopyjsTree
+REM call :fnCopyjsTreeProton
 REM call :fnCopySimpleMDE
 REM call :fnCopyPrism
 REM call :fnCopyFlexDataList
@@ -432,7 +432,7 @@ ECHO.
 IF NOT EXIST %PAGE%html\treeview\libs\jstree\ MKDIR %PAGE%html\treeview\libs\jstree\ >> %LOG%
 COPY %VENDOR%vakata\jstree\dist\jstree.min.js %PAGE%html\treeview\libs\jstree\ /Y >> %LOG%
 IF NOT EXIST %PAGE%html\treeview\libs\jstree\themes\ MKDIR %PAGE%html\treeview\libs\jstree\themes\ >> %LOG%
-XCOPY %VENDOR%vakata\jstree\dist\themes\default\*.* %PAGE%html\treeview\libs\jstree\themes\ /E /Y >> %LOG%
+XCOPY %VENDOR%vakata\jstree\dist\themes\default\*.* %PAGE%html\treeview\libs\jstree\themes\default\ /E /Y >> %LOG%
 COPY %VENDOR%vakata\jstree\demo\filebrowser\file_sprite.png %PAGE%html\treeview\libs\jstree\ /Y >> %LOG%
 goto:eof
 
@@ -581,7 +581,7 @@ ECHO  === jquery-albe-timeline ===
 ECHO    COPY TO %TASK%timeline\libs\jquery-albe-timeline\
 ECHO.
 IF NOT EXIST %TASK%timeline\libs\jquery-albe-timeline\ MKDIR %TASK%timeline\libs\jquery-albe-timeline\ >> %LOG%
-COPY %VENDOR%jquery-albe-timeline\jquery-albe-timeline.min.js %TASK%timeline\libs\jquery-albe-timeline\ /Y 
+COPY %VENDOR%jquery-albe-timeline\jquery-albe-timeline.min.js %TASK%timeline\libs\jquery-albe-timeline\ /Y  >> %LOG%
 REM >> %LOG%
 COPY %VENDOR%jquery-albe-timeline\templates\vertical\style-albe-timeline.css %TASK%timeline\libs\jquery-albe-timeline\ /Y >> %LOG%
 goto:eof
@@ -605,10 +605,11 @@ goto:eof
 
 :fnCopyEmoji
 ECHO  === emoji ===
-ECHO    COPY TO %PAGE%markdown\emoji\libs\fakeLoader.js\
+ECHO    COPY TO %PAGE%markdown\emoji\libs\litemoji\
 ECHO.
 IF NOT EXIST %MARKDOWN%emoji\libs\litemoji\ MKDIR %MARKDOWN%emoji\libs\litemoji\ >> %LOG%
 COPY %VENDOR%litemoji\src\LitEmoji.php %MARKDOWN%emoji\libs\litemoji\ /Y >> %LOG%
+COPY %VENDOR%litemoji\src\shortcodes-array.php %MARKDOWN%emoji\libs\litemoji\ /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

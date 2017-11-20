@@ -88,7 +88,8 @@ class Display
 		$fullname = str_replace('/', DS, $fullname);
 
 		if (!$aeFiles->fileExists($fullname)) {
-			// Damned ! It's so difficult to work with accentuated chars and make the
+			// Damned ! It's so difficult to work with
+			// accentuated chars and make the
 			// code works both on Windows and Unix...
 			$fullname = utf8_encode($fullname);
 			if (!$aeFiles->fileExists($fullname)) {
@@ -103,17 +104,6 @@ class Display
 
 		self::insertHR($markdown);
 		self::insertPageBreak($markdown);
-
-		$fnameHTML = $aeFiles->replaceExtension($fullname, 'html');
-
-		$root = $aeSettings->getFolderWebRoot();
-
-		// Get the relative filename (f.i. /docs/notes/markdown.html)
-		$fnameHTMLrel = str_replace(str_replace('/', DS, $root), '', $fnameHTML);
-
-		// Generate the URL (full) to the html file, f.i.
-		// http://localhost/docs/notes/markdown.html
-		$urlHTML = $aeFunctions->getCurrentURL(false, true).basename($fnameHTMLrel);
 
 		// Convert the Markdown text (.md file's content) into an HTML text
 		$aeConvert = \MarkNotes\Helpers\Convert::getInstance();

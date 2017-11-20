@@ -50,8 +50,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		* I've created a files->encode_accent option in the settings.json
 		* file. By default, set to 0.
 		**/
-		$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
-		$bEncodeAccents = boolval($arr['encode_accent']);
+		//$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
+		//$bEncodeAccents = boolval($arr['encode_accent']);
 
 		$root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 		$rootNode = $aeSettings->getFolderDocs(false);
@@ -67,15 +67,15 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$dataURL=str_replace(DS, '/', str_replace($root, '', $dir));
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
 
-		if ($bEncodeAccents) {
+		/*if ($bEncodeAccents) {
 			$sDirectoryText = utf8_encode($sDirectoryText);
 			$sID = utf8_encode(str_replace($root, '', $dir).DS);
 			$dataURL = utf8_encode($dataURL);
-		}
+		}*/
 
 		$listDir = array
 		(
-			'id' => str_replace(DS, '/', $sID),
+			'id' => md5(str_replace(DS, '/', $sID)),
 			'type' => 'folder',
 			'icon' => 'folder',
 			'text' => str_replace(DS, '/', $sDirectoryText),
@@ -145,11 +145,11 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				$dataFile = str_replace($root, '', $entry['name']);
 				$dataFile = str_replace(DS, '/', $dataFile);
 
-				if ($bEncodeAccents) {
+			/*	if ($bEncodeAccents) {
 					$dataFile = utf8_encode($dataFile);
 					$dataURL = utf8_encode($dataURL);
 					$sFileText = utf8_encode($sFileText);
-				}
+				}*/
 
 				$dataBasename = $aeFiles->removeExtension(basename($dataURL));
 
@@ -217,9 +217,9 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$bReturn = true;
 				}
 
-				if ($bEncodeAccents) {
-					$fname = utf8_encode($fname);
-				}
+				//if ($bEncodeAccents) {
+				//	$fname = utf8_encode($fname);
+				//}
 
 				// The canSeeFolder event will initialize the 'return'
 				// parameter to false when the current user can't see the

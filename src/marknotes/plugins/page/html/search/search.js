@@ -61,7 +61,7 @@ function fnPluginTaskSearch_init() {
 
 				// Interface : put the cursor immediatly in the edit box
 				try {
-					$('#search-flexdatalist').focus();
+					$('#search').focus();
 				} catch (err) {
 					console.warn(err.message);
 				}

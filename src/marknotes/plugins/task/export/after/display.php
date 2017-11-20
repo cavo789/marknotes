@@ -23,7 +23,8 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 		if (trim($content) === '') {
 			// When no content has been directly given to this function,
-			// check the "output" variable; can contains a filename (absolute name)
+			// check the "output" variable; can contains a filename
+			// (absolute name)
 
 			$filename = $params['output'] ?? '';
 

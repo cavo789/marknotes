@@ -34,15 +34,23 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			// Get the HTML content
 			$content = $aeTask->run($params);
 
-			if (!$aeFiles->createFile(utf8_decode($final), $content)) {
-				$final = '';
+			// Accentuated char nightmare : try first without using
+			// the decode function. If not OK, then use utf8_decode
+			$bReturn = $aeFiles->createFile($final, $content);
 
-				/*<!-- build:debug -->*/
-				if ($aeSettings->getDebugMode()) {
-					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("Error while trying to create [".$final."]", "error");
+			if (!$bReturn) {
+				$bReturn = $aeFiles->createFile(utf8_decode($final), $content);
+
+				if (!$bReturn) {
+					$final = '';
+
+					/*<!-- build:debug -->*/
+					if ($aeSettings->getDebugMode()) {
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log("Error while trying to create [".$final."]", "error");
+					}
+					/*<!-- endbuild -->*/
 				}
-				/*<!-- endbuild -->*/
 			}
 		}  // 	if(!$aeFiles->fileExists($final))
 
