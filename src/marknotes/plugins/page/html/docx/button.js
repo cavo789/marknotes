@@ -48,7 +48,15 @@ function fnPluginHTMLDOCX() {
 		};
 
 		try {
+
+			// Googoose will not export the note's title if
+			// that title is hidden so, check if we need to show
+			// it => show it, export and hide it back
+			var $bVisible = $('#CONTENT h1').is(':visible');
+			if (!$bVisible) $('#CONTENT h1').show();
 			$(document).googoose(o);
+			if (!$bVisible) $('#CONTENT h1').hide();
+
 		} catch (e) {
 			console.warn('Error when trying to convert with Googoose : [' + e.message + ']');
 		}
