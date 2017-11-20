@@ -28,13 +28,18 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 			$filename = $params['output'] ?? '';
 
-			if (($filename!=='') && (is_file(utf8_decode($filename)))) {
-				// Read content only if it's an ASCII file
+			if ($filename!=='') {
+				$content = 'binary';
 
 				if (in_array($format, array('html','md','remark','reveal','txt'))) {
-					$content = trim(file_get_contents(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8")));
-				} else {
-					$content = 'binary';
+					// Read content only if it's an ASCII file
+					if (is_file($filename)) {
+						$content = trim(file_get_contents($filename));
+					} elseif (is_file(utf8_decode($filename))) {
+						// Arrrgh, sometimes with sometimes without utf8_decode,
+						// it's crazy
+						$content = trim(file_get_contents(utf8_decode($filename)));
+					}
 				}
 			} else {
 				/*<!-- build:debug -->*/

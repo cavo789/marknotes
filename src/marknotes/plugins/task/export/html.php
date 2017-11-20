@@ -37,13 +37,10 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			// Accentuated char nightmare : try first without using
 			// the decode function. If not OK, then use utf8_decode
 			$bReturn = $aeFiles->createFile($final, $content);
-
 			if (!$bReturn) {
 				$bReturn = $aeFiles->createFile(utf8_decode($final), $content);
-
 				if (!$bReturn) {
 					$final = '';
-
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug = \MarkNotes\Debug::getInstance();
@@ -53,6 +50,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 				}
 			}
 		}  // 	if(!$aeFiles->fileExists($final))
+
 
 		$params['output'] = $final;
 		return true;

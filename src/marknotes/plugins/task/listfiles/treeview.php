@@ -42,14 +42,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		/**
-		* @TODO: Understand why on somes Windows computer (my home one),
-		* this function shouldn't use utf8_encode() for returning
-		* files/folders name but on some other (my office computer) yes,
-		* utf8_encode should be used. Strange! June 2017 : for the moment,
-		* I've created a files->encode_accent option in the settings.json
-		* file. By default, set to 0.
-		**/
 		//$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
 		//$bEncodeAccents = boolval($arr['encode_accent']);
 
@@ -72,6 +64,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			$sID = utf8_encode(str_replace($root, '', $dir).DS);
 			$dataURL = utf8_encode($dataURL);
 		}*/
+
+		$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
+		$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
+		$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 
 		$listDir = array
 		(
@@ -145,18 +141,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				$dataFile = str_replace($root, '', $entry['name']);
 				$dataFile = str_replace(DS, '/', $dataFile);
 
-			/*	if ($bEncodeAccents) {
-					$dataFile = utf8_encode($dataFile);
-					$dataURL = utf8_encode($dataURL);
-					$sFileText = utf8_encode($sFileText);
-				}*/
-
 				$dataBasename = $aeFiles->removeExtension(basename($dataURL));
-
-				//if ($bEncodeAccents) {
-					// Use utf8_encode only under Windows OS
-				//	$id = utf8_encode($id);
-				//}
 
 				$default_task = 'task.export.html';
 
@@ -167,6 +152,11 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				if ($dataBasename===$lastAddedNote) {
 					$default_task = 'task.edit.form';
 				}
+
+				$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+				$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
+				$dataFile=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
+				$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 
 				$files[] = array(
 					'id' => md5($id),
@@ -186,12 +176,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				);
 			} elseif ($entry['type'] == 'folder') {
 				// It's a folder
-
-				// Check if the folder can be displayed or not
-				//$aeEvents->loadPlugins('task', 'acls');
-
-				$params = '';
-
 				// Derive the folder name
 				// From c:/sites/marknotes/docs/the_folder, keep /the_folder/
 				$fname = str_replace($root, '', $entry['name']);
@@ -217,10 +201,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$bReturn = true;
 				}
 
-				//if ($bEncodeAccents) {
-				//	$fname = utf8_encode($fname);
-				//}
-
 				// The canSeeFolder event will initialize the 'return'
 				// parameter to false when the current user can't see the
 				// folder i.e. don't have the permission to see it. This
@@ -232,7 +212,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				//
 				// $bReturn === false ==> there was no protected folder.
 				if (($bReturn===false) || ($args[0]['return'] === 1)) {
-					$dirs [] = $entry['name'];
+					$dirs [] = utf8_decode($entry['name']);
 				}
 			} // if ($entry['type']=='folder')
 		} // foreach
@@ -279,8 +259,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						$name = rtrim($directory, DS).DS.$file;
 						if (is_dir($name)) {
 							// It's a folder
-
-							$arr[] = array('name' => $name,'type' => 'folder');
+							$arr[] = array('name' => iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($name)),'type' => 'folder');
 						} else {
 							// it's a file, get it only if the
 							// extension is .md
