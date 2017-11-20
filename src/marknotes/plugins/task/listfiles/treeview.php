@@ -75,7 +75,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		$listDir = array
 		(
-			'id' => md5(str_replace(DS, '/', $sID)),
+			'id' => str_replace(DS, '/', $sID),
 			'type' => 'folder',
 			'icon' => 'folder',
 			'text' => str_replace(DS, '/', $sDirectoryText),
