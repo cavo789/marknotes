@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add a docx export button into the toolbar
+ * Add a Copy HTML source code button into the toolbar
  */
 
 namespace MarkNotes\Plugins\Buttons;

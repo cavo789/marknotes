@@ -22,11 +22,13 @@ class Markdown
 	} // function getInstance()
 
 	/**
-	 * From a markdown content, return an heading text (by default the ""# TEXT" i.e. the heading 1)
+	 * From a markdown content, return an heading text
+	 * (by default the ""# TEXT" i.e. the heading 1)
 	 */
 	public function getHeadingText(string $markdown, string $heading = '#') : string
 	{
-		// Try to find a heading 1 and if so use that text for the title tag of the generated page
+		// Try to find a heading 1 and if so use that text for the title
+		// tag of the generated page
 		$matches = array();
 		$title = '';
 
@@ -34,7 +36,9 @@ class Markdown
 			preg_match("/".$heading." ?(.*)/", $markdown, $matches);
 			$title = (count($matches) > 0) ? trim($matches[1]) : '';
 
-			// Be sure that the heading 1 wasn't type like   # MyHeadingOne # i.e. with a final #
+			// Be sure that the heading 1 wasn't type like
+			// # MyHeadingOne #
+			// i.e. with a final #
 
 			$title = ltrim(rtrim($title, $heading), $heading);
 		} catch (Exception $e) {
@@ -44,8 +48,8 @@ class Markdown
 	} //  function getHeadingText()
 
 	/**
-	 * Convert any links like ![alt](image/file.png) or <img src='image/file.php' /> to
-	 * an absolute link to the image
+	 * Convert any links like ![alt](image/file.png) or
+	 * <img src='image/file.php' /> to an absolute link to the image
 	 */
 	private function setImagesAbsolute(string $markdown, array $params = null) : string
 	{
@@ -60,10 +64,11 @@ class Markdown
 		}
 		return $markdown;
 		/*<!-- endbuild -->*/
-		// List of tasks (extensions) for which images should be referred locally
-		// i.e. not through a http:// syntax but like c:\folder, local on the filesystem
-		// so the convertor program can retrieve the file (the image)
-		$arrFilePaths = array('docx','epub','pdf');
+		// List of tasks (extensions) for which images should be referred
+		// locally i.e. not through a http:// syntax but like c:\folder,
+		// local on the filesystem so the convertor program can retrieve
+		// the file (the image)
+		$arrFilePaths = array('doc','epub','pdf');
 
 		$task = $aeSession->get('task');
 

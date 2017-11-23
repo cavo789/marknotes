@@ -32,15 +32,13 @@ class Pandoc
 		// Get the filename, once exported (f.i. notes.txt)
 		$final = $aeConvert->getFileName();
 
-		// Check if pandoc is installed; if not, check if the exported file already exists
+		// Check if pandoc is installed; if not, check if the
+		// exported file already exists
 		if (!$aeConvert->isValid()) {
 
 			if (!$aeFiles->fileExists($final)) {
-
 				// No, doesn't exists
-
-		        $bReturn = false;
-
+				$bReturn = false;
 			}
 
 		} else { // if (!$aeConvert->isValid())

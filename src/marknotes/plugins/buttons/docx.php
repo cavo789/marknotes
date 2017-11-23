@@ -37,9 +37,9 @@ class DOCX extends \MarkNotes\Plugins\Button\Plugin
 
 		// Check if the file, once converted (note.docx) exists
 		if (!$aeFiles->fileExists($filename)) {
-			// The file didn't exists so, if this plugin is called, we need to
-			// be able to run the Pandoc conversion utility, check that the utility is
-			// correctly configured
+			// The file didn't exists so, if this plugin is called,
+			// we need to be able to run the Pandoc conversion utility,
+			// check that the utility is correctly configured
 
 			$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), static::$layout, 'pandoc');
 			if ($aeConvert->isValid()) {
@@ -65,7 +65,8 @@ class DOCX extends \MarkNotes\Plugins\Button\Plugin
 				'default' => 'Export the note as a Word document',
 				'id' => 'icon_docx',
 				'icon' => 'file-word-o',
-				'task' => $task
+				'task' => $task,
+				'extension'=> self::$layout
 			)
 		);
 

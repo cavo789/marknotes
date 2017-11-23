@@ -1,10 +1,10 @@
 <?php
 /**
- * When exporting to pdf, txt, docx, ... before the exportation, if the debug mode
- * is set, delete the existing exported file if present.
+ * When exporting to pdf, txt, docx, ... before the exportation,
+ * if the debug mode is set, delete the existing exported file if present.
  *
- * So if my_note.docx exists, that file will be deleted so the export code run again.
- * Usefull when coding but not during normal use.
+ * So if my_note.docx exists, that file will be deleted so the export code
+ * run again. Usefull when coding but not during normal use.
  *
  * Only active when debug=1 in settings.json
  */

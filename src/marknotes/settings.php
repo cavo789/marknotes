@@ -541,11 +541,14 @@ class Settings
 	}
 
 	/**
-	 * Return the template to use for the screen display or the html output.
-	 * Get the template info from the settings.json when the node 'templates' is found there
+	 * Return the template to use for the screen display or
+	 * the html output.
+	 * Get the template info from the settings.json when the
+	 * node 'templates' is found there
 	 *
-	 * @param  string $default Default filename with extension (f.i. 'screen' or 'html')
-	 * @return string		   Full path to the file
+	 * @param  string $default Default filename with extension
+	 *					(f.i. 'screen' or 'html')
+	 * @return string	Full path to the file
 	 */
 	public function getTemplateFile(string $default = 'screen') : string
 	{
@@ -572,12 +575,16 @@ class Settings
 			}
 
 			if (!$aeFiles->fileExists($fname)) {
-				// The specified template doesn't exists. Back to the default one;
+				// The specified template doesn't exists.
+				// Back to the default one;
+				/*<!-- build:debug -->*/
 				if ($this->getDebugMode()) {
-					echo '<span style="font-size:0.8em;">Debug | '.__FILE__.'::'.__LINE__.'</span>&nbsp;-&nbsp;';
+				   $aeDebug = \MarkNotes\Debug::getInstance();
+				   $aeDebug->log("Template [".$fname."] not found, ".
+				   	"please review your settings.json file","warning");
 				}
-				echo '<strong><em>Template ['.$fname.'] not found, please review '.
-				   'your settings.json file.</em></strong>';
+				/*<!-- endbuild -->*/
+
 				$fname = '';
 			}
 		} else { // if ($tmpl!=='')

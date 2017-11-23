@@ -15,18 +15,26 @@ class Convert
 {
 	protected static $hInstance = null;
 
-	private $_sourceFileName = ''; // File to convert
-	private $_layout = '';         // For instance docx
-	private $_method = '';         // For instance "pandoc"
-	private $_options = null;      // plugins options (f.i. the plugins->options->pandoc entry)
+	private $sMDFileName = ''; // File to convert
+	private $sLayout = '';         // For instance "docx"
+	private $sMethod = '';         // For instance "pandoc" or "decktape"
+	private $arrConfig = null;      // plugins options (f.i. the plugins->options->pandoc entry)
 
 	public function __construct(string $filename = '', string $layout = '', string $method = '')
 	{
-		$this->_sourceFileName=$filename;
-		$this->_layout=$layout;
-		$this->_method=$method;
+		// The source file name i.e. the name of the .md file
+		// to convert
+		$this->sMDFileName=$filename;
 
-		$this->_options=self::getOptions();
+		// The output format (f.i. .docx, .epub, ...)
+		$this->sLayout=$layout;
+
+		// Method will be f.i. "pandoc"
+		$this->sMethod=$method;
+
+		// And retrieve the configuration to use for that method
+		// from settings.json (f.i. plugins.options.task.pandoc)
+		$this->arrConfig=self::getConfig();
 
 		return true;
 	}
@@ -41,15 +49,16 @@ class Convert
 	}
 
 	/**
-	 * Return the options from settings.json, f.i. then plugins->options->pandoc entry
+	 * Return the options from settings.json, f.i. then
+	 * plugins->options->task->pandoc entry
 	 */
-	public function getOptions() : array
+	public function getConfig() : array
 	{
-		if ($this->_options==null) {
+		if ($this->arrConfig==null) {
 			$aeSettings = \MarkNotes\Settings::getInstance();
-			$this->_options=$aeSettings->getPlugins('options.export.'.$this->_method);
+			$this->arrConfig=$aeSettings->getPlugins('options.task.export.'.$this->sMethod);
 		}
-		return $this->_options;
+		return $this->arrConfig;
 	}
 
 	public function isValid() : bool
@@ -58,13 +67,13 @@ class Convert
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		if (($this->_options === array()) || (!isset($this->_options['script']))) {
+		if (($this->arrConfig === array()) || (!isset($this->arrConfig['script']))) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
 				$aeDebug->log('Error, options should be specified in '.
-				   'the settings.json file, in the plugins.options.export.pandoc '.
-				   'node, please verify your settings.json file.', 'error');
+				   'the settings.json file, in the '.JSON_OPTIONS_PANDOC.
+				   ' node, please verify your settings.json file.', 'error');
 			}
 			/*<!-- endbuild -->*/
 
@@ -74,17 +83,17 @@ class Convert
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log('Plugin options : '.json_encode($this->_options), 'debug');
+			$aeDebug->log('Plugin options : '.json_encode($this->arrConfig), 'debug');
 		}
 		/*<!-- endbuild -->*/
 
-		if (($bReturn) && ($this->_method==='pandoc')) {
+		if (($bReturn) && ($this->sMethod==='pandoc')) {
 			// Be sure that the script pandoc.exe is well installed on the system
 
 			$aeFiles = \MarkNotes\Files::getInstance();
 
 			// $sScriptName string Absolute filename to the pandoc.exe script
-			if (!$aeFiles->fileExists($sScriptName = $this->_options['script'])) {
+			if (!$aeFiles->fileExists($sScriptName = $this->arrConfig['script'])) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug->log('File '.$sScriptName.' didn\'t exists', 'error');
@@ -108,14 +117,14 @@ class Convert
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$fname=$this->_sourceFileName;
+		$fname=$this->sMDFileName;
 
 		// $fname should be an absolute filename; not a relative one
 		if (strpos($fname, $aeSettings->getFolderDocs(true)) === false) {
 			$fname = $aeSettings->getFolderDocs(true).ltrim($fname, DS);
 		}
 
-		$fname = $aeFiles->replaceExtension(str_replace('/', DS, $fname), $this->_layout);
+		$fname = $aeFiles->replaceExtension(str_replace('/', DS, $fname), $this->sLayout);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
@@ -136,7 +145,7 @@ class Convert
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$slug = $aeFiles->removeExtension(basename($this->_sourceFileName));
+		$slug = $aeFiles->removeExtension(basename($this->sMDFileName));
 		$slug = $aeFunctions->slugify($slug);
 
 		return $slug;
@@ -161,12 +170,14 @@ class Convert
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
-		$fname=$this->_sourceFileName;
+		$fname=$this->sMDFileName;
+
 		if (!is_file($fname)) {
 			$fname=$aeSettings->getFolderDocs(true).$fname;
 		}
 
-		// The read method is also responsible to run any markdown.read plugins
+		// The read method is also responsible to run
+		// any markdown.read plugins
 		$content=$aeMarkdown->read($fname);
 
 		// Derive the temporary filename
@@ -210,21 +221,18 @@ class Convert
 		$slug=self::getSlugName();
 
 		// Get the template to use, if any
-		$template = '';
-		if ($this->_layout==='docx') {
-			$template = $aeSettings->getTemplateFile($this->_layout);
-			if ($template!=='') {
-				$template='--reference-docx="'.$template.'" ';
-			}
+		$template = $aeSettings->getTemplateFile($this->sLayout, '');
+		if ($template!=='') {
+			$template='--reference-'.$this->sLayout.'="'.$template.'" ';
 		}
 
 		// Retrieve the options for this conversion
 		// Found in settings.json->plugins->options->METHOD->options
 		// Method is a supported method like "pandoc"
-		$options = isset($this->_options[$this->_layout]) ? $this->_options[$this->_layout] : '';
+		$options = isset($this->arrConfig['options'][$this->sLayout]) ? $this->arrConfig['options'][$this->sLayout] : '';
 
 		// Executable (pandoc.exe)
-		$script = '"'.($this->_options['script']??'').'" ';
+		$script = '"'.($this->arrConfig['script']??'').'" ';
 
 		// Output filename
 		$outFile='-o "'.basename($TargetFileName).'" ';
@@ -257,7 +265,7 @@ class Convert
 			// Kill the old debug informations
 			'if exist "'.$debugFile.'" del "'.$debugFile.'"'.PHP_EOL.
 			// run the tool
-			$script.$template.$options.$outFile.$inFile.'> '.$debugFile.' 2>&1'.PHP_EOL.
+			$script.$template.$options.' '.$outFile.$inFile.'> '.$debugFile.' 2>&1'.PHP_EOL.
 			// Copy the result file in the correct folder
 			'copy "'.basename($TargetFileName).'" "'.$TargetFileName.'"'.PHP_EOL.
 			$killFiles;
@@ -269,7 +277,7 @@ class Convert
 	{
 		$sScript = '';
 
-		if ($this->_method==='pandoc') {
+		if ($this->sMethod==='pandoc') {
 			$sScript = self::getPandocScript($InputFileName, $TargetFileName);
 		}
 
@@ -301,7 +309,6 @@ class Convert
 						"should be impossible", 10);
 				}
 				$aeDebug->log("The file [".$fScriptFile."] is missing", "error");
-
 			}
 			/*<!-- endbuild -->*/
 		} // if (!$aeFiles->fileExists($fScriptFile))

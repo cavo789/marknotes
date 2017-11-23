@@ -26,24 +26,24 @@ class Treeview extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
 		$url .= '/marknotes/plugins/page/html/treeview/';
 
-		$script = "\n<script type=\"text/javascript\"".
-			"src=\"".$url."libs/jstree/jstree.min.js\"".
+		$script = "\n<script type=\"text/javascript\" ".
+			"src=\"".$url."libs/jstree/jstree.min.js\" ".
 			"defer=\"defer\"></script>\n";
 
-		$script .= "<script type=\"text/javascript\"".
-			"src=\"".$url."jstree.js\"".
+		$script .= "<script type=\"text/javascript\" ".
+			"src=\"".$url."jstree.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		// Only when the user is connected
 		if ($aeSession->get('authenticated', 0) === 1) {
 			// Add extra functionnalities like adding, renaming or removing
 			// a folder / a note
-			$script .= "<script type=\"text/javascript\"".
-				"src=\"".$url."treeview.js\"".
+			$script .= "<script type=\"text/javascript\" ".
+				"src=\"".$url."treeview.js\" ".
 				"defer=\"defer\"></script>";
 		} // if ($aeSession->get('authenticated', 0) === 1)
 
-		$theme = self::getOptions('theme','default');
+		$theme = self::getOptions('theme', 'default');
 
 		$js .= "<script type=\"text/javascript\">\n".
 			"marknotes.jstree={};\n".

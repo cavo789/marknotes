@@ -7,11 +7,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Session
 {
 	protected static $hInstance = null;
+	private static $prefix = 'MN_';
 
 	public function __construct(string $folder = '')
 	{
 		self::init($folder);
-
 		return true;
 	}
 
@@ -20,7 +20,6 @@ class Session
 		if (self::$hInstance === null) {
 			self::$hInstance = new Session($folder);
 		}
-
 		return self::$hInstance;
 	}
 
@@ -31,21 +30,22 @@ class Session
 		if (!isset($_SESSION)) {
 			// Store session informations in the /tmp/sessions/ folder
 			// Create that folder if needed
-
 			$folder = $aeSettings->getFolderTmp().DS.'sessions'.DS;
 			if (!is_dir($folder)) {
 				mkdir($folder, CHMOD_FOLDER);
 			}
 
-			//session_save_path will cause a white page on a few hosting company.
+			// session_save_path will cause a white page on a
+			// few hosting company.
 			@session_save_path($folder);
 			try {
 				if (session_id() == '') {
 					session_start();
 				}
 			} catch (Exception $e) {
-				// On some hoster the path where to store session is incorrectly set and this gives a fatal error
-			   // Handle this and use the /tmp folder in this case.
+				// On some hoster the path where to store session
+				// is incorrectly set and this gives a fatal error
+				// Handle this and use the /tmp folder in this case.
 				@session_destroy();
 				session_save_path(sys_get_temp_dir());
 				session_start();
@@ -68,31 +68,30 @@ class Session
 		return;
 	}
 
-   /**
+	/**
 	* Kill a session.
-	*
 	*/
 	public function destroy()
 	{
 		session_destroy();
 	}
 
-   /**
+	/**
 	* Add a property in the Session object
 	* @param type $name
 	* @param type $value
 	*/
 	public function set(string $name, $value)
 	{
-		$_SESSION['MN_'.$name] = $value;
+		$_SESSION[static::$prefix.$name] = $value;
 		return true;
 	}
 
-   /**
-	* Return the $_SESSION object (when $value is set on null) or return a
-	* specific property (when $value is initialized)
-	* Return always null when the $_SESSION object doesn't exists yet or when
-	* the $value is not found
+	/**
+	* Return the $_SESSION object (when $value is set on null)
+	* or return a specific property (when $value is initialized)
+	* Return always null when the $_SESSION object doesn't
+	* exists yet or when the $value is not found
 	*
 	* @param type $name
 	* @param type $default
@@ -100,10 +99,25 @@ class Session
 	*/
 	public function get(string $name = null, $default = null)
 	{
-		$return = isset($_SESSION) ? ($name == null ? $_SESSION : (isset($_SESSION['MN_'.$name])?$_SESSION['MN_'.$name]:$default)) : null;
+		$return = $default;
+
+		if ((isset($_SESSION)) && ($name!==null)) {
+			if (isset($_SESSION[static::$prefix.$name])) {
+				$return = $_SESSION[static::$prefix.$name];
+			}
+		}
 		return $return;
 	}
 
+	public function remove(string $name = null)
+	{
+		if ((isset($_SESSION)) && ($name!==null)) {
+			if (isset($_SESSION[static::$prefix.$name])) {
+				unset($_SESSION[static::$prefix.$name]);
+			}
+		}
+		return true;
+	}
 	/**
 	* The session has a timeout property.   By calling the extend() method,
 	* the session timeout will be reset to the current time() and therefore,

@@ -57,18 +57,21 @@ class Tags extends \MarkNotes\Plugins\Content\HTML\Plugin
 				list($pattern, $before, $tag, $after) = $matches;
 
 				for ($i=0; $i<count($matches[0]); $i++) {
-					// Prepare the new value : put the tag inside a span
-					$sText = '<span class="'.$class.'" title="'.$msg.'" '.
-						'data-task="fnPluginContentTag" '.
-						'data-param="'.$tag[$i].'">'.$tag[$i].'</span>';
+					// Don't if tag is empty
+					if (trim($tag[$i])!=='') {
+						// Prepare the new value : put the tag inside a span
+						$sText = '<span class="'.$class.'" title="'.$msg.'" '.
+							'data-task="fnPluginContentTag" '.
+							'data-param="'.$tag[$i].'">'.$tag[$i].'</span>';
 
-					// Get back what was before and after the tag
-					$sText = $before[$i].$sText.$after[$i];
+						// Get back what was before and after the tag
+						$sText = $before[$i].$sText.$after[$i];
 
-					// And replace it in the HTML string
-					$tmp = str_replace($pattern[$i], $sText, $tmp);
+						// And replace it in the HTML string
+						$tmp = str_replace($pattern[$i], $sText, $tmp);
 
-					$content = str_replace($pattern[$i], $sText, $content);
+						$content = str_replace($pattern[$i], $sText, $content);
+					}
 				} // for ($i=0; $i<count($pattern); $i++)
 			} // if (count($matches) > 0)
 		} // foreach ($arrTags as $tag) {

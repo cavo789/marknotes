@@ -38,9 +38,13 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		}
 		/*<!-- endbuild -->*/
 
+		// $params['filename'] is f.i. note.docx, retrieve the .md
+		// filename
+		$mdFilename = $aeFiles->removeExtension($params['filename']).'.md';
+
 		// ----------------------------------------
 		// Call the generic class for file conversion
-		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$extension, 'dompdf');
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($mdFilename, static::$extension, 'dompdf');
 
 		// Get the filename, once exported (f.i. notes.pdf)
 		$final = $aeConvert->getFileName();
@@ -196,7 +200,7 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
         $aeFiles = \MarkNotes\Files::getInstance();
         $aeFunctions = \MarkNotes\Functions::getInstance();
 
-        $arrSettings = $aeSettings->getPlugins('plugins.options.export.decktape');
+        $arrSettings = $aeSettings->getPlugins('plugins.options.task.export.decktape');
 
         if ($arrSettings === array()) {
             return false;

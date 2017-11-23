@@ -59,20 +59,6 @@ class Docx extends \MarkNotes\Plugins\Page\HTML\Plugin
 	final protected static function canRun() : bool
 	{
 		$bCanRun = parent::canRun();
-/*
-		if ($bCanRun) {
-			$aeSession = \MarkNotes\Session::getInstance();
-
-			$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), static::$layout, 'pandoc');
-
-			$bCanRun = false;
-
-			if (!$aeConvert->isValid()) {
-				// Pandoc isn't installed so this plugin will do the job
-				$bCanRun = true;
-			}
-		}
-*/
 		return $bCanRun;
 	}
 }

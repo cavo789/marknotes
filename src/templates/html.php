@@ -2,7 +2,6 @@
 <html lang="%LANGUAGE%">
 
 	<head>
-
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -41,45 +40,44 @@
 		<script type="text/javascript" src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
 		<script type="text/javascript" src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
 
-	</body>
+		<script type="text/javascript">
+			var marknotes = {};
+			marknotes.arrPluginsFct = [];
+			marknotes.note = {};
+			marknotes.note.url = '%ROOT%%DOCS%/%FILENAME%.html';
+			marknotes.note.basename = '%BASENAME%';
+			marknotes.plugins = {};
+			marknotes.settings = {};
+			marknotes.settings.debug='%DEBUG%';
+			marknotes.settings.language='%LANGUAGE%';
+			marknotes.webroot='%ROOT%';
+		</script>
 
-	<script type="text/javascript" >
-		var marknotes = {};
-		marknotes.arrPluginsFct = [];
-		marknotes.note = {};
-		marknotes.note.url = '%ROOT%%DOCS%/%FILENAME%.html';
-		marknotes.note.basename = '%BASENAME%';
-		marknotes.plugins = {};
-		marknotes.settings = {};
-		marknotes.settings.debug='%DEBUG%';
-		marknotes.settings.language='%LANGUAGE%';
-		marknotes.webroot='%ROOT%';
-	</script>
+		<!--%ADDITIONNAL_JS%-->
 
-	<!--%ADDITIONNAL_JS%-->
+		<script type="text/javascript">
+			$(document).ready(function () {
+				runPluginsFunctions();
 
-	<script type="text/javascript" >
-		$(document).ready(function () {
-			runPluginsFunctions();
+				try {
+					// Check on the querystring is 'fullscreen' has been specified
+					// and if so, check if fullscreen=1
+					if (typeof url('?fullscreen') !== "undefined") {
+						$fullscreen = (url('?fullscreen') == '1');
 
-			try {
-				// Check on the querystring is 'fullscreen' has been specified
-				// and if so, check if fullscreen=1
-				if (typeof url('?fullscreen') !== "undefined") {
-					$fullscreen = (url('?fullscreen') == '1');
-
-					if ($fullscreen) {
-						$('body').css('padding','0');
-						$('article').css('max-width','100%').css('margin','0');
-						$('.container').css('width','100%').css('margin','0').css('padding','0');
+						if ($fullscreen) {
+							$('body').css('padding','0');
+							$('article').css('max-width','100%').css('margin','0');
+							$('.container').css('width','100%').css('margin','0').css('padding','0');
+						}
 					}
+
+				} catch (err) {
+					console.warn(err.message);
 				}
 
-			} catch (err) {
-				console.warn(err.message);
-			}
+			});
+		</script>
 
-		});
-	</script>
-
+	</body>
 </html>

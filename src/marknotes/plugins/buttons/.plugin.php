@@ -66,6 +66,8 @@ abstract class Plugin
 	 *		'id'		: (optionnal) if present, ID to use for the button
 	 '		'task'		: (optionnal) if present, data-task to assign to the
 	 '					  button
+	 '		'extension' : (optionnal) if present, data-extension to assign to
+	 '					  the button
 	 '		'extra'		: (optionnal) if present, will be added as is
 	 '		'icon'		: font-awesome icon (f.i. fa-cog, fa-print, ...)
 	 '		'quickIcons': (optionnal) 1 if the icon should be displayed
@@ -77,6 +79,7 @@ abstract class Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$title = $aeSettings->getText($params['title'], $params['default']??'', false);
 
+		$extension = '';
 		$task = '';
 		$id = '';
 
@@ -95,6 +98,10 @@ abstract class Plugin
 			$task = 'data-task="'.$params['task'].'" ';
 		}
 
+		if (isset($params['extension'])) {
+			$extension = 'data-extension="'.$params['extension'].'" ';
+		}
+
 		// If arrOptions is defined, get the QuickIcons flag from
 		// settings.json
 		$quickIcons = $arrOptions['quickIcons'] ?? 0;
@@ -107,6 +114,7 @@ abstract class Plugin
 		$anchor = '<a '.
 			$id.' '.
 			$task.' '.
+			$extension.' '.
 			'title="'.ucfirst($title).'" '.
 			(isset($params['extra']) ? $params['extra'].' ' : '').'>'.
 			'%1'.

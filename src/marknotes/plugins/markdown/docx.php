@@ -1,10 +1,10 @@
 <?php
 
 /**
- * When exporting to docx (task=docx), add an extra attribute for Pandoc so images
- * will have the correct size
+ * When exporting to docx, make a few cleaning and special processing
  *
- * After each images, this JSON will be added : {#id .class width=999 height=999}
+ * After each images, this JSON will be added : {#id .class
+ * width=999 height=999}
  *
  * For instance : ![](image1.png "133x24"){#id .class width=133 height=24}
  *
@@ -27,10 +27,6 @@ class DOCX extends \MarkNotes\Plugins\Markdown\Plugin
 	 */
 	public static function readMD(array &$params = array()) : bool
 	{
-
-/*<!-- build:debug -->*/
-die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." S'assurer que ce plugin fonctionne toujours comme attendu</pre>");
-/*<!-- endbuild -->*/
 		if (trim($params['markdown']) === '') {
 			return true;
 		}
@@ -38,9 +34,12 @@ die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." S'assurer
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
-		// The code below will generate an #id tag. But, since we'll have more
-		// than one image, use a counter. Not a dummy or random figure, just a
-		// counter (meaningless)
+		// When exporting to a .docx file, don't keep the encrypt tag
+		$params['markdown'] = str_replace(ENCRYPT_MARKDOWN_TAG, '', $params['markdown']);
+
+		// The code below will generate an #id tag. But,
+		// since we'll have more than one image, use a counter.
+		// Not a dummy or random figure, just a counter (meaningless)
 		try {
 			$wID=intval($aeSession->get('img_id', 0));
 		} catch (Exception $e) {
@@ -54,8 +53,9 @@ die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." S'assurer
 		}
 		/*<!-- endbuild -->*/
 
-		// Try to match things like ![img_ALT](http://site/my_image.png "32x20")
-		// The last part is optionnal and if mentionned if a width followed by a height
+		// Try to match things like ![img_ALT](http://site/my_image.png
+		// "32x20"). The last part is optionnal and if mentionned
+		// if a width followed by a height
 		$pattern='/(\\!\\[.*](.* [\'"](\\d+|\\*)x(\\d+|\\*)[\'"]\)))(.*)/';
 
 		if (preg_match_all($pattern, $params['markdown'], $matches)) {
@@ -76,9 +76,9 @@ die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." S'assurer
 				if ($after[$i]!=='') {
 					// If something follow the image declaration and,
 					// if that thing starts with '{#id' don't continue since
-					// the image has already been processed. This is the case When
-					// we're working with a master document and included onces
-					// (i.e. with the %INCLUDE% tag)
+					// the image has already been processed. This is the
+					// case When we're working with a master document and
+					// included onces (i.e. with the %INCLUDE% tag)
 					$bDoIt = (substr($after[$i], 0, 4)!=='{#id');
 				}
 

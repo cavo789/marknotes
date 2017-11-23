@@ -27,9 +27,13 @@ class TXT extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
+		// $params['filename'] is f.i. note.docx, retrieve the .md
+		// filename
+		$mdFilename = $aeFiles->removeExtension($params['filename']).'.md';
+
 		// ----------------------------------------
 		// Call the generic class for file conversion
-		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$extension, 'pandoc');
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($mdFilename, static::$extension, 'pandoc');
 
 		// Get the filename, once exported (f.i. notes.txt)
 		$final = $aeConvert->getFileName();

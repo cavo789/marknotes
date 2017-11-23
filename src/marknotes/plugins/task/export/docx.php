@@ -26,7 +26,15 @@ class DOCX extends \MarkNotes\Plugins\Task\Plugin
 
 		// ----------------------------------------
 		// Call the generic class for file conversion
-		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$extension, 'pandoc');
+
+		// $params['filename'] is f.i. note.docx, retrieve the .md
+		// filename
+		$mdFilename = $aeFiles->removeExtension($params['filename']).'.md';
+
+		// ----------------------------------------
+		// Call the generic class for file conversion
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($mdFilename, static::$extension, 'pandoc');
+
 
 		// Get the filename, once exported (f.i. notes.txt)
 		$final = $aeConvert->getFileName();
@@ -47,9 +55,12 @@ class DOCX extends \MarkNotes\Plugins\Task\Plugin
 				$slug = $aeConvert->getSlugName();
 				$debugFile = $aeConvert->getDebugFileName();
 
-				// Get a copy of the .md note (in /temp folder), run any plugins
+				// Get a copy of the .md note
+				// (in /temp folder), run any plugins
 				$tempMD = $aeConvert->createTempNote();
+
 				$sScript = $aeConvert->getScript($tempMD, $final);
+
 				$aeConvert->Run($sScript, $final);
 			} // if (!$aeConvert->isValid())
 		} // if(!$aeFiles->fileExists($final))

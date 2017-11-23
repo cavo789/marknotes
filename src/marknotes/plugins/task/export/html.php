@@ -22,37 +22,45 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
 		$final = $aeFiles->removeExtension($params['filename']).'.'.static::$extension;
 		$final = $aeSettings->getFolderDocs(true).$final;
 
-		// Generate the file ... only if not yet there
-		if (!$aeFiles->fileExists($final)) {
-			// Display the HTML rendering of a note
-			$aeTask = \MarkNotes\Tasks\Display::getInstance();
+		// Get the HTML content
+		$aeTask = \MarkNotes\Tasks\Display::getInstance();
+		$content = $aeTask->run($params);
 
-			// Get the HTML content
-			$content = $aeTask->run($params);
-
-			// Accentuated char nightmare : try first without using
-			// the decode function. If not OK, then use utf8_decode
-			$bReturn = $aeFiles->createFile($final, $content);
-			if (!$bReturn) {
-				$bReturn = $aeFiles->createFile(utf8_decode($final), $content);
+		// Generate the .html file ... only if not yet there
+		// AND ONLY IF THE NOTE DOESN'T CONTAINS ENCRYPTED DATA
+		// (otherwise would be no more encrypted in the .html file)
+		// Display the HTML rendering of a note
+		if ($aeSession->get('NoteContainsEncryptedData',false)==false) {
+			if (!$aeFiles->fileExists($final)) {
+				// Accentuated char nightmare : try first without using
+				// the decode function. If not OK, then use utf8_decode
+				$bReturn = $aeFiles->createFile($final, $content);
 				if (!$bReturn) {
-					$final = '';
-					/*<!-- build:debug -->*/
-					if ($aeSettings->getDebugMode()) {
-						$aeDebug = \MarkNotes\Debug::getInstance();
-						$aeDebug->log("Error while trying to create [".$final."]", "error");
+					$bReturn = $aeFiles->createFile(utf8_decode($final), $content);
+					if (!$bReturn) {
+						$final = '';
+						/*<!-- build:debug -->*/
+						if ($aeSettings->getDebugMode()) {
+							$aeDebug = \MarkNotes\Debug::getInstance();
+							$aeDebug->log("Error while trying to create [".$final."]", "error");
+						}
+						/*<!-- endbuild -->*/
 					}
-					/*<!-- endbuild -->*/
 				}
-			}
-		}  // 	if(!$aeFiles->fileExists($final))
+			}  // 	if(!$aeFiles->fileExists($final))
+			// Store the filename so the export->after->display
+			// plugin knows which file should be displayed
+			$params['output'] = $final;
 
+		} else { // if ($aeSession->get('NoteContainsEncryptedData'
+			$params['content'] = $content;
+		}
 
-		$params['output'] = $final;
 		return true;
 	}
 }

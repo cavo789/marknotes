@@ -157,8 +157,8 @@ abstract class Plugin
 	/**
 	 * Based on the current running task (f.i. task.export.html,
 	 * task.search.search, task.listfiles.json, ...), verify if the plugin
-	 * can be fired or not. This based on the plugin settings (not the options)
-	 * as defined in the settings.json file.
+	 * can be fired or not. This based on the plugin settings (not the
+	 * options) as defined in the settings.json file.
 	 * For instance, check settings.json->plugins->markdown->variables
 	 *
 	 *		"plugins": {

@@ -43,7 +43,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		// Get the web root like http://localhost/notes/
 		$sRoot = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/';
 
-		// Add the /docs folder in the URL (so something like http://localhost:8080/notes/docs/)
+		// Add the /docs folder in the URL (so something like
+		// http://localhost:8080/notes/docs/)
 		$url = $sRoot.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
 		// Get the relative folder of the notes (from /docs)
@@ -52,7 +53,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 		$url.=rtrim(str_replace(DS, '/', $path), '/').'/';
 
-		// And return the url http://localhost:8080/notes/docs/marknotes/userguide)
+		// And return the url
+		// http://localhost:8080/notes/docs/marknotes/userguide)
 		return str_replace(' ', '%20', $url);
 	}
 

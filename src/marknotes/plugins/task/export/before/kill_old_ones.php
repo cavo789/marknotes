@@ -1,11 +1,11 @@
 <?php
 
 /**
- * When exporting to pdf, txt, docx, ... check if the exported file already
+ * When exporting to pdf, txt, doc, ... check if the exported file already
  * exists and, if so, check his creation date against the date of the note.
  *
- * If the note has been modified after the exportation was done (the exported file
- * is thus obsolete), remove that file and run the exportation code again.
+ * If the note has been modified after the exportation was done (the exported
+ * file is thus obsolete), remove that file and run the exportation code again.
  */
 
 namespace MarkNotes\Plugins\Task\Export\Before;

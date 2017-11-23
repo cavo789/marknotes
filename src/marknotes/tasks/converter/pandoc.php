@@ -23,7 +23,7 @@ class Pandoc
 	}
 
 	/**
-	 * Convert a HTML to an another format (docx, pdf, ...) thanks to pandoc
+	 * Convert a HTML to an another format (doc, pdf, ...) thanks to pandoc
 	 */
 	public static function run(array $params) : string
 	{

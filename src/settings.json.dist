@@ -68,7 +68,7 @@
 			},
 			"clipboard": {
 				"enabled": 1,
-				"quickIcons": 0
+				"quickIcons": 1
 			},
 			"copyhtml": {
 				"enabled": 1,
@@ -238,6 +238,12 @@
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
+				},
+				"banner": {
+					"description": "Add the marknotes ascii banner in html files",
+					"enabled": 1,
+					"not_if_task": ["task.search.search", "task.edit.form"],
+					"only_if_task": ["task.export.html", "task.export.reveal", "task.export.remark", "screen", "interface"]
 				},
 				"clipboard": {
 					"description": "Load clipboard.js to allow copy in clipboard features (used by the 'clipboard' plugin buttons of the content side)",
@@ -448,6 +454,12 @@
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
+				"upload": {
+					"description": "Add an upload form so the user can send local files to the server",
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
+				},
 				"custom": {
 					"description": "Load your own css and js files",
 					"enabled": 1,
@@ -554,7 +566,7 @@
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"docx": {
-				"description": "When exporting to docx (task=docx), add an extra attribute for Pandoc so images will have the correct size",
+				"description": "When exporting to docx, add an extra attribute for Pandoc so images will have the correct size",
 				"enabled": 1,
 				"not_if_task": [],
 				"only_if_task": ["task.export.docx"]
@@ -796,7 +808,7 @@
 						]
 					},
 					"optimize": {
-						"localStorage": 0,
+						"localStorage": 1,
 						"server_session": 1,
 						"cache_search_results": 1,
 						"headers": {
@@ -880,14 +892,14 @@
 					"decktape": {
 						"script": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
 					},
-					"DDpandoc": {
+					"pandoc": {
 						"script": "c:\\christophe\\tools\\pandoc\\pandoc.exe",
 						"options": {
-							"docx": "--from markdown --standalone -S --table-of-contents --smart --to docx",
+							"docx": "--from markdown --standalone -S --smart --columns 1000 --to docx",
 							"epub": "--from markdown --standalone -S --table-of-contents --smart --to epub",
 							"odt": "--from markdown --standalone -S --table-of-contents --smart --to odt",
 							"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=c:\\Christophe\\tools\\pandoc\\miktex\\miktex\\bin\\x64\\xelatex.exe -V geometry:margin=1in",
-							"txt": "--from markdown --ascii --to txt"
+							"txt": "--from markdown --ascii"
 						}
 					}
 				},
@@ -911,7 +923,7 @@
 					"debug": {
 						"enabled": 1,
 						"not_if_task": ["task.search.search"],
-						"only_if_task": ["interface", "main", "task.export.html"]
+						"only_if_task": ["interface", "main", "task.export.html", "task.export.reveal"]
 					},
 					"kill_old_ones": {
 						"enabled": 1,

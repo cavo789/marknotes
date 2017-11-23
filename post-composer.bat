@@ -78,6 +78,7 @@ REM call :fnCopyjqueryi18n
 REM call :fnCopyCLDRPluralRuleParser
 REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
+call :fnUpload
 
 REM call :fnFinalize
 GOTO END:
@@ -738,7 +739,6 @@ IF NOT EXIST %PAGE%html\txt\libs\FileSaver.js MKDIR %PAGE%html\txt\libs\FileSave
 COPY %VENDOR%FileSaver.js\FileSaver.min.js %PAGE%html\txt\libs\FileSaver.js /Y >> %LOG%
 goto:eof
 
-
 ::--------------------------------------------------------
 ::-- fnGitHubCorners
 ::--------------------------------------------------------
@@ -753,6 +753,20 @@ COPY %VENDOR%github-corners\css\styles.css %PAGE%html\github_banner\libs\github-
 goto:eof
 :fnGitHubCorners
 
+::--------------------------------------------------------
+::-- fnUpload
+::--------------------------------------------------------
+
+:fnUpload
+ECHO  === fnUpload ===
+ECHO    COPY TO %PAGE%html\upload\libs\dropzone
+ECHO.
+IF NOT EXIST %PAGE%html\upload\libs\dropzone MKDIR %PAGE%html\upload\libs\dropzone >> %LOG%
+COPY %VENDOR%dropzone\dist\min\dropzone.min.css %PAGE%html\upload\libs\dropzone /Y >> %LOG%
+COPY %VENDOR%dropzone\dist\min\dropzone.min.js %PAGE%html\upload\libs\dropzone /Y >> %LOG%
+
+goto:eof
+:fnGitHubCorners
 
 REM -----------------------------------------------
 REM -----------------------------------------------

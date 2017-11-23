@@ -23,6 +23,8 @@ class Encrypt extends \MarkNotes\Plugins\Content\HTML\Plugin
 			return true;
 		}
 
+		$aeSession = \MarkNotes\Session::getInstance();
+
 		// ----------------------------------------------------------------
 		//
 		// Add a three-stars icon (only for the display) to inform the
@@ -36,8 +38,12 @@ class Encrypt extends \MarkNotes\Plugins\Content\HTML\Plugin
 			'([\\S\\n\\r\\s]*?)'.
 			preg_quote(ENCRYPT_MARKDOWN_TAG);
 
+		$aeSession->remove('NoteContainsEncryptedData');
+
 		if (preg_match_all('/'.$pattern.'/mi', $content, $matches)) {
 			list($tag, $encrypted_portion) = $matches;
+
+			$aeSession->set('NoteContainsEncryptedData', true);
 
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$text = $aeSettings->getText('encrypted_hint', 'This information is encrypted in the original file and decoded here for screen display');

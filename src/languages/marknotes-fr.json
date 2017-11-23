@@ -116,5 +116,6 @@
 	"tree_new_folder_name": "Nouveau dossier",
 	"tree_new_note": "Cr\u00e9er une nouvelle note",
 	"tree_new_note_name": "Nouvelle note",
-	"unknown_error": "An error has occured, please try again"
+	"unknown_error": "An error has occured, please try again",
+	"upload_files": "T\u00e9l\u00e9verser des fichiers (notes, images, pdf, ...)"
 }

@@ -1,11 +1,12 @@
 <?php
 /**
- * When exporting a note to a DOCX, PDF, ... file, the %TOC_99% tag (=insert a table of
- * content) shouldn't be interpreted since the pandoc converter already add such
- * table so just remove the tag.
+ * When exporting a note to a DOCX, PDF, ... file, the %TOC_99% tag
+ * (=insert a table of content) shouldn't be interpreted since
+ * the pandoc converter already add such table so just remove the tag.
  *
- * This markdown content plugin will just disable the TOC tag (if needed), the
- * creation of the table will be done by the HTML content plugin
+ * This markdown content plugin will just disable the TOC tag
+ * (if needed), the creation of the table will be done by the HTML
+ * content plugin
  */
 namespace MarkNotes\Plugins\Markdown;
 
@@ -43,9 +44,9 @@ class TOC extends \MarkNotes\Plugins\Markdown\Plugin
 			if (trim($before)=='') {
 				// Only if nothing was before the tag so : the tag is active
 
-				// For DOCX / PDF / TXT : remove the tag; table of content will
-				// be added by the convertor (DOCX/PDF) or has no sense (TXT)
-
+				// For DOCX / PDF / TXT : remove the tag; table of content
+				// will be added by the convertor (DOCX/PDF) or has
+				// no sense (TXT)
 				$arr = array('task.export.docx','task.export.pdf','task.export.txt');
 				if (in_array($task, $arr)) {
 					$params['markdown'] = str_replace($tag, '', $params['markdown']);

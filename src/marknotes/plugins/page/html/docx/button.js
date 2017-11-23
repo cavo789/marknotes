@@ -1,7 +1,11 @@
 /**
  * Relies on Googoose for the basic exportation to Winword.
- * This javascript file is loaded by marknotes only when Pandoc isn't
- * correctly installed.
+ * This javascript file is loaded by marknotes **only when Pandoc isn't
+ * correctly installed.**
+ *
+ * When Pandoc is installed, this script isn't included by marknotes since
+ * the action behind the "Download as .docx file" will be immedialty a
+ * link to the note.docx file.
  *
  * The fnPluginHTMLDOCX will be called by the "Docx" button of the content's
  * toolbar
@@ -30,7 +34,7 @@ function fnPluginHTMLDOCX() {
 			type: 'error'
 		});
 	} else {
-		// The extension should be .DOC and not .DOCX
+		// The extension for Googoose should be .DOC and not .DOCX
 		var fname = marknotes.note.basename + '.doc';
 
 		/*<!-- build:debug -->*/

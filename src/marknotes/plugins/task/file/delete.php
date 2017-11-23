@@ -99,7 +99,7 @@ class Delete extends \MarkNotes\Plugins\Task\File
 		$oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
 		if ($oldname != '') {
-			$oldname = $aeFiles->sanitizeFileName(trim($oldname));
+			//$oldname = $aeFiles->sanitizeFileName(trim($oldname));
 		}
 
 		/*<!-- build:debug -->*/

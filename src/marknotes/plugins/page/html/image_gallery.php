@@ -25,9 +25,9 @@ class Image_Gallery extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url.= '/marknotes/plugins/page/html/image_gallery/';
 
 		$script =
-			"\n<script type=\"text/javascript\"". "src=\"".$url."libs/justified-gallery/jquery.justifiedGallery.min.js\" ".
+			"\n<script type=\"text/javascript\" ". "src=\"".$url."libs/justified-gallery/jquery.justifiedGallery.min.js\" ".
 			"defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" src=\"".$url."image_gallery.js\" ".
+			"<script type=\"text/javascript\" ". "src=\"".$url."image_gallery.js\" ".
 			"defer=\"defer\">".
 			"</script>\n";
 
@@ -48,7 +48,7 @@ class Image_Gallery extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url.= '/marknotes/plugins/page/html/image_gallery/';
 
 		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\"". "href=\"".$url."libs/justified-gallery/justifiedGallery.min.css\">\n";
+			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$url."libs/justified-gallery/justifiedGallery.min.css\">\n";
 
 		$css .= $aeFunctions->addStyleInline($script);
 
@@ -61,5 +61,49 @@ class Image_Gallery extends \MarkNotes\Plugins\Page\HTML\Plugin
 	public static function doIt(&$html = null) : bool
 	{
 		return true;
+	}
+
+	/**
+	 * Determine if this plugin is needed or not
+	 */
+	final protected static function canRun() : bool
+	{
+		$bCanRun = false;
+
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Open the .md file and check if the %GALLERY% tag is
+		// there. If yes, then the plugin has something to do.
+		// If not mentionned, it's not needed to add the .js and .css
+		// file of this plugin since they don't have any things to do
+
+		$filename = trim($aeSession->get('filename'));
+
+		if ($filename=='') {
+			return false;
+		}
+
+		$filename=$aeFiles->removeExtension($filename).'.md';
+		$filename=$aeSettings->getFolderDocs(true).$filename;
+
+		if (is_file($filename)) {
+			$content = trim(file_get_contents($filename));
+		} elseif (is_file(utf8_decode($filename))) {
+			// Arrrgh, sometimes with sometimes without utf8_decode,
+			// it's crazy
+			$content = trim(file_get_contents(utf8_decode($filename)));
+		}
+
+		// Search the plugin's tag
+		$pattern = '/%GALLERY ([^\\%]*)%/';
+
+		if (preg_match_all($pattern, $content, $matches)) {
+			// Ok, tag found => the plugin has added value
+			$bCanRun = true;
+		}
+
+		return $bCanRun;
 	}
 }

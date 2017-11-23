@@ -36,11 +36,11 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 		$filename  = $aeFiles->replaceExtension($filename, static::$layout);
 		$filename = str_replace('/', DS, $filename);
 
-		// Check if the file, once converted (note.docx) exists
+		// Check if the file, once converted (note.txt) exists
 		if (!$aeFiles->fileExists($filename)) {
-			// The file didn't exists so, if this plugin is called, we need to
-			// be able to run the Pandoc conversion utility, check that the utility is
-			// correctly configured
+			// The file didn't exists so, if this plugin is called, we need
+			// to be able to run the Pandoc conversion utility, check that
+			// the utility is correctly configured
 
 			$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), static::$layout, 'pandoc');
 			if ($aeConvert->isValid()) {
@@ -55,7 +55,7 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 			$bPandoc = true;
 		} // if (!$aeFiles->fileExists($filename))
 
-		// Call the fnPluginHTMLDOCX() function when Pandoc isn't installed
+		// Call the fnPluginHTMLTXT() function when Pandoc isn't installed
 		$task = ($bPandoc ? 'file' : 'fnPluginHTMLTXT');
 
 		// Get the button HTML code
@@ -69,71 +69,7 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 				'task' => $task
 			)
 		);
-		/*
-		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-		$aeSession = \MarkNotes\Session::getInstance();
 
-		$title = $aeSettings->getText('export_'.self::$layout, 'Export the note as a TXT document', true);
-
-		$aeSession = \MarkNotes\Session::getInstance();
-		$file = $aeSession->get('filename');
-		$file = str_replace(DS, '/', $aeFiles->replaceExtension($file, self::$layout));
-
-		// Get the default extension, as specified in the settings.json file
-		//$default = $aeSettings->getTask()['default'] ?? 'reveal';
-		//if ($default === self::$layout) {
-			// The default extension is txt ==> no need to mention the extension
-		//	$file = $aeFiles->removeExtension($file);
-		//}
-
-		$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-
-		$buttons .=
-			'<a id="icon_'.self::$layout.'" data-task="file" data-file="'.$url.$file.'" '.
-				'href="#" title="'.$title.'">'.
-				'<i class="fa fa-file-text-o" aria-hidden="true"></i>'.
-			'</a>';
-*/
 		return true;
 	}
-/*
-	protected static function canAdd() : bool
-	{
-		// Conversion requires that
-		//    	1. the .txt file already exists OR
-		//		2. the pandoc utility is present to allow the conversion
-
-		if ($bReturn = parent::canAdd()) {
-			// We can continue
-			$bReturn = false;
-
-			// Check if the .txt file already exists
-			$aeSession = \MarkNotes\Session::getInstance();
-			$aeSettings = \MarkNotes\Settings::getInstance();
-
-			if ($aeSession->get('filename', '')!=='') {
-				$aeFiles = \MarkNotes\Files::getInstance();
-
-				$filename = $aeSettings->getFolderDocs(true).$aeSession->get('filename');
-				$filename  = $aeFiles->replaceExtension($filename, static::$layout);
-				$filename = str_replace('/', DS, $filename);
-
-				$bReturn = $aeFiles->fileExists($filename);
-			}
-
-			if (!$bReturn) {
-				$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), static::$layout, 'pandoc');
-
-				if ($aeConvert->isValid()) {
-					// Yes, correctly configured, we'll be able
-					// to offer the conversion
-					$bReturn = true;
-				}
-			} // if (!$bReturn)
-		} // if ($bReturn = parent::canAdd())
-
-		return $bReturn;
-	}*/
 }

@@ -1,7 +1,7 @@
 <?php
 /**
- * Analyze each URLs in the note and add icons before when, f.i., the link points
- * to github, youtube, facebook, ... or to a file (.docx, .ppt, ...)
+ * Analyze each URLs in the note and add icons before when, f.i., the link
+ * points to github, youtube, facebook, ... or to a file (.docx, .ppt, ...)
  *
  * Patterns are stored in settings.json like this :
  *

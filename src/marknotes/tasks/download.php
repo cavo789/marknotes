@@ -28,7 +28,7 @@ class Download
 	}
 
 	/**
-	 *   $type contains the output format (docx, pdf, ...)
+	 *   $type contains the output format (doc, pdf, ...)
 	 */
 	public function run(string $fname, string $type) : bool
 	{
@@ -41,6 +41,7 @@ class Download
 		if ($aeFiles->fileExists($fname)) {
 			// And send the file to the browser
 			switch ($type) {
+				case 'doc':
 				case 'docx':
 					header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 					header('Content-Transfer-Encoding: binary');

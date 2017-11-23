@@ -56,8 +56,8 @@ $(document).ready(function () {
 });
 
 /**
- * The ajax request has returned the list of files.  Build the table and initialize
- * the #TOC DOM object
+ * The ajax request has returned the list of files.  Build the table and
+ * initialize the #TOC DOM object
  *
  * @param {json} $data  The return of the JSON returned by
  *		index.php?task=task.listfiles.treeview
@@ -125,7 +125,8 @@ function initFiles($data) {
 			}
 		}
 	}
-	// See if the custominiFiles() function has been defined and if so, call it
+	// See if the custominiFiles() function has been defined and
+	// if so, call it
 	try {
 		if (typeof custominiFiles !== 'undefined' && $.isFunction(custominiFiles)) {
 			custominiFiles();
@@ -145,33 +146,6 @@ function initFiles($data) {
 
 	// Call javascript functions there were added by plugins
 	runPluginsFunctions();
-
-	// Automatically select a specific node when $data.select_node exists
-	/*if ($data.hasOwnProperty('select_node')) {
-		if (typeof $data.select_node.id !== 'undefined') {
-			// Needed otherwise the jstree's state plugin will reset the selected node
-			try {
-
-				if ($data.select_node.task === 'task.edit.form') {
-					$('#TOC').jstree(true).get_node($data.select_node.id).data.task = $data.select_node.task;
-				}
-				// Select the node
-				$('#TOC').jstree('select_node', $data.select_node.id);
-
-				//if ($data.select_node.task === 'task.edit.form') {
-				//	$selected_node = $('#TOC').jstree('get_selected', true)[0];
-				//	fnPluginTaskTreeView_editNode($selected_node);
-				//}
-			} catch (err) {
-				/*<!-- build:debug -->
-				if (marknotes.settings.debug) {
-					console.warn(err.message + ' --- More info below ---');
-					console.log(err);
-				}
-				/*<!-- endbuild -->
-			}
-		}
-	}*/
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -220,12 +194,20 @@ function initializeTasks() {
 			event.stopImmediatePropagation();
 		}
 
-		// In case of a data-file parameter has been specified, get it
-		var $file = $(this).attr('data-file') ? $(this).data('file') : '';
+		// Get the relative filename; initialized by the
+		// onclick event of jstree. Relative from the /doc folder
+		// so, f.i., /folder/note (without extension) and not
+		// /docs/folder/note
+		var $file = marknotes.note.file;
+
+		if ($(this).attr('data-extension')) {
+			var $extension = $(this).data('extension');
+			$file = $file + '.' + $extension;
+		}
 
 		if (($file !== '') && ($task !== 'file')) {
-			// Don't base64 the filename when the task is 'file', the URL (file) should
-			// remains readable
+			// Don't base64 the filename when the task is
+			// 'file', the URL (file) should remains readable
 			$file = window.btoa(encodeURIComponent(JSON.stringify($file)));
 		}
 
@@ -236,7 +218,6 @@ function initializeTasks() {
 		/*<!-- endbuild -->*/
 
 		switch ($task) {
-
 		case 'task.export.html':
 
 			// export.html i.e. display the file by calling the Ajax function.
