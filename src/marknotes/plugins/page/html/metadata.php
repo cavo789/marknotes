@@ -41,7 +41,7 @@ class Metadata extends \MarkNotes\Plugins\Page\HTML\Plugin
 					// Replace some variables
 					$aeFunctions = \MarkNotes\Functions::getInstance();
 
-					$root = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+					$root = rtrim($aeFunctions->getCurrentURL(), '/');
 					$content = str_replace('%ROOT%', $root, $content);
 
 					/*<!-- build:debug -->*/

@@ -39,7 +39,7 @@ class PDF extends \MarkNotes\Plugins\Button\Plugin
 		$file = $aeSession->get('filename');
 		$file = str_replace(DS, '/', $aeFiles->replaceExtension($file, self::$layout));
 
-		$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
 		$buttons .=
 			'<a id="icon_'.self::$layout.'" data-task="file" data-file="'.$url.$file.'" '.

@@ -22,7 +22,7 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/search/';
 
 		// For highligthing content in a note : after a search,
@@ -60,7 +60,7 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/search/';
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".

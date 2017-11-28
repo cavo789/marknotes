@@ -25,7 +25,7 @@ class Optimize extends \MarkNotes\Plugins\Content\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		// URL to the blank image
-		$img = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$img = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$img .= 'marknotes/plugins/page/html/optimize/images/blank.png';
 
 		$pattern = '/(<img [^>]*)src=["|\']([^"|\']+)["|\']/';

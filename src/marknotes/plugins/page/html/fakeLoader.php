@@ -20,7 +20,7 @@ class FakeLoader extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/fakeLoader/';
 
 		$script = "<script type=\"text/javascript\" ".
@@ -46,7 +46,7 @@ class FakeLoader extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/fakeLoader/';
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". 	"href=\"".$url."libs/fakeLoader.js/fakeLoader.css\" />\n";

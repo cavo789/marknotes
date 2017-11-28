@@ -24,9 +24,9 @@ class DataTables extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Website rool URL like f.i. http://localhost/notes
-		$root = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
-		//$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		//$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url = $root. '/marknotes/plugins/page/html/datatables/';
 		$urlLib = $url.'libs/datatables/js/';
 
@@ -52,7 +52,7 @@ class DataTables extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/datatables/';
 		$urlLib = $url.'libs/datatables/css/';
 

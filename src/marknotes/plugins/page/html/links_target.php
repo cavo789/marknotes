@@ -22,7 +22,7 @@ class Links_Target extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/links_target/';
 
 		$script = "<script type=\"text/javascript\" src=\"".$url."links_target.js\" ".

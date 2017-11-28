@@ -19,7 +19,7 @@ class Font_Awesome extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". 	"href=\"".$root."/libs/font-awesome/css/font-awesome.min.css\" />\n";
 

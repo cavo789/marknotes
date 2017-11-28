@@ -23,7 +23,7 @@ class Anchor extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/anchor/';
 
 		$script = "<script type=\"text/javascript\" ".
@@ -44,7 +44,7 @@ class Anchor extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/anchor/';
 
 		$script =

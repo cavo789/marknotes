@@ -21,7 +21,7 @@ class FullScreen extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
 			"<script type=\"text/javascript\" ". "src=\"".$root."/marknotes/plugins/page/html/fullscreen/fullscreen.js\" ".

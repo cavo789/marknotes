@@ -32,7 +32,7 @@ class Images
 
 			if (is_dir($lib)) {
 				$aeFunctions = \MarkNotes\Functions::getInstance();
-				$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+				$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 				// Add the lazyload class to every images.
 				// The script /libs/lazysizes/lazysizes.min.js will do the rest

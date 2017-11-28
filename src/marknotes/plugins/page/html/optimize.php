@@ -36,7 +36,7 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$bServerSession = boolval($arrOptimize['server_session'] ?? false);
 			$bLazyLoad = boolval($arrOptimize['images']['lazyload'] ?? false);
 
-			$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+			$url = rtrim($aeFunctions->getCurrentURL(), '/');
 			$url .= '/marknotes/plugins/page/html/optimize/';
 
 			$script = "";

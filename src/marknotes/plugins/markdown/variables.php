@@ -193,7 +193,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 		$markdown = $params['markdown'];
 
 		// Get the web root like http://localhost/notes/
-		$sRoot = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/';
+		$sRoot = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 
 		// Processing filename
 		// f.i. c:\sites\notes\docs\marknotes\french\userguide.md
@@ -281,7 +281,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			$basename = $aeFiles->removeExtension($basename);
 			$markdown = self::replaceVar('%BASENAME%', $basename, $markdown);
 
-			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
 			$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($relname, 'html'));
 

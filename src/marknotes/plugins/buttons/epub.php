@@ -46,7 +46,7 @@ class EPUB extends \MarkNotes\Plugins\Button\Plugin
 		//	$file = $aeFiles->removeExtension($file);
 		//}
 
-		$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
 		$buttons .=
 			'<a id="icon_'.self::$layout.'"  data-task="file" data-file="'.$url.$file.'" '.

@@ -20,7 +20,7 @@ class Animate extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
 			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".

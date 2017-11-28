@@ -22,9 +22,9 @@ class Markdown
 	} // function getInstance()
 
 	/**
-	 * From a markdown content, return an heading text
-	 * (by default the ""# TEXT" i.e. the heading 1)
-	 */
+	* From a markdown content, return an heading text
+	* (by default the ""# TEXT" i.e. the heading 1)
+	*/
 	public function getHeadingText(string $markdown, string $heading = '#') : string
 	{
 		// Try to find a heading 1 and if so use that text for the title
@@ -48,9 +48,9 @@ class Markdown
 	} //  function getHeadingText()
 
 	/**
-	 * Convert any links like ![alt](image/file.png) or
-	 * <img src='image/file.php' /> to an absolute link to the image
-	 */
+	* Convert any links like ![alt](image/file.png) or
+	* <img src='image/file.php' /> to an absolute link to the image
+	*/
 	private function setImagesAbsolute(string $markdown, array $params = null) : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -59,8 +59,8 @@ class Markdown
 		$aeSession = \MarkNotes\Session::getInstance();
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
-		   $aeDebug = \MarkNotes\Debug::getInstance();
-		   $aeDebug->log("STILL NEEDED ?????","debug");
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log("STILL NEEDED ?????","debug");
 		}
 		return $markdown;
 		/*<!-- endbuild -->*/
@@ -82,7 +82,7 @@ class Markdown
 
 			// Get the full path to this note
 			// $url will be, f.i., http://localhost/notes/docs/
-			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
 			// Extract the subfolder f.i. private/home/dad/
 
@@ -126,8 +126,8 @@ class Markdown
 
 			// Get the list of images i.e. tags like :  ![My image](.images/local.jpg)
 			// and check if the file is local (in a subfolder of the note). If so, convert the relative
-			//     ![My image](.images/local.jpg) to an absolute path
-			//     ![My image](http://localhost/folder/subfolder/.images/local.jpg)
+			//	 ![My image](.images/local.jpg) to an absolute path
+			//	 ![My image](http://localhost/folder/subfolder/.images/local.jpg)
 
 			$matches = array();
 			if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
@@ -145,7 +145,7 @@ class Markdown
 
 							// Relative name to the image
 							$img = $matches[2][$i];
-// If the image url doesn't start with http, make the
+							// If the image url doesn't start with http, make the
 							// url absolute by adding the full url of the note
 							if (strpos($img, 'http')!== 0) {
 								$img=$url.$img;
@@ -170,7 +170,7 @@ class Markdown
 								if (in_array($task, array('task.export.html','main','html'))) {
 									if ($aeSettings->getDebugMode()) {
 										$aeDebug = \MarkNotes\Debug::getInstance();
-										$aeDebug->here('DEBUG MODE --- In file    '.$params['filename'].' ==> '.$filename.' NOT FOUND');
+										$aeDebug->here('DEBUG MODE --- In file	'.$params['filename'].' ==> '.$filename.' NOT FOUND');
 									}
 								}
 								/*<!-- endbuild -->*/
@@ -220,11 +220,11 @@ class Markdown
 	}
 
 	/**
-	 * Read a markdown file and return its content.
-	 *
-	 * $params['encryption'] = 0 : encrypted data should be displayed unencrypted
-	 *                         1 : encrypted infos should stay encrypted
-	 */
+	* Read a markdown file and return its content.
+	*
+	* $params['encryption'] = 0 : encrypted data should be displayed unencrypted
+	*						 1 : encrypted infos should stay encrypted
+	*/
 	public function read(string $filename, array $params = null) : string
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
@@ -263,7 +263,7 @@ class Markdown
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 
 			// Get the full path to this note
-			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 			$noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
 			// --------------------------------
 

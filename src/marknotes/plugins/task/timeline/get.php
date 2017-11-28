@@ -71,7 +71,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 				$relFileName = utf8_encode(str_replace($folder, '', $file));
 
-				$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
+				$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
 				$urlHTML = $url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
 				$json[] =

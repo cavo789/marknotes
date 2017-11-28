@@ -22,7 +22,7 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/remark/';
 
 		$task = $aeSession->get('task', '');
@@ -44,7 +44,7 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$hide = intval($arrSettings['HideUnnecessaryThings']) ?? 0;
 
 			// Get the note URL
-			$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
 			$filename = $aeSession->get('filename');
 			$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($filename, 'html'));
@@ -81,7 +81,7 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$appearance = $arrSettings['appearance'] ?? array('theme'=>'beige');
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/reveal/';
 
 		$script =

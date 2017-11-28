@@ -35,7 +35,7 @@ class GTranslate extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
 			"href=\"".$root."/marknotes/plugins/page/html/gtranslate/gtranslate.css\" />\n";
@@ -53,7 +53,7 @@ class GTranslate extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
 			"\n<script type=\"text/javascript\" ". "src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\" defer=\"defer\"></script>\n".

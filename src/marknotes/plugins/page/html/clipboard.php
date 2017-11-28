@@ -26,7 +26,7 @@ class Clipboard extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/clipboard/';
 
 		$script =

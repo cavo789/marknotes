@@ -19,7 +19,7 @@ class Clipboard extends \MarkNotes\Plugins\Button\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$title = $aeSettings->getText('copy_clipboard', 'Copy the note&#39;s content, with page layout, in the clipboard', true);
 

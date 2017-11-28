@@ -59,7 +59,7 @@ class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 
 		$bIntroAdded = false;
 
-		$url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$urlHTML = '';
 		if ($file !== '') {

@@ -52,7 +52,7 @@ class Add_Icons extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/add_icons/';
 
 		$position=strtolower(self::getOptions('position', 'before'));

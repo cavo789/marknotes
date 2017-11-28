@@ -23,7 +23,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 		$template = $aeSettings->getTemplateFile(static::$extension);
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();

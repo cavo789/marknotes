@@ -26,7 +26,7 @@ class GetModal extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($aeFiles->FileExists($filename)) {
 			// Get the root URL
-			$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 			$form = file_get_contents($filename);
 

@@ -83,7 +83,7 @@ class Remark
 
 			$html = str_replace('%CONTENT%', strip_tags($markdown), $slideshow);
 			$html = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $html);
-			$html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(true, false), '/'), $html);
+			$html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/'), $html);
 
 			// $slideshow contains the template : it's an html file with (from the /templates folder)
 			// and that file contains variables => convert them

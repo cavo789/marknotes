@@ -45,7 +45,7 @@ class Custom extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$root = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+			$root = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 
 			$sScript = '';
 
@@ -86,7 +86,7 @@ class Custom extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$root = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+			$root = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 
 			$sScript = '';
 

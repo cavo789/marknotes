@@ -20,7 +20,7 @@ class Tags extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$root."/marknotes/plugins/page/html/tags/tags.css\" />\n";
 
@@ -44,7 +44,7 @@ class Tags extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// Only needed when the note is displayed through the interface
 		if (in_array($task, array('main', 'interface'))) {
 			$aeFunctions = \MarkNotes\Functions::getInstance();
-			$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 			$script = "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/page/html/tags/tags.js\"></script>\n";
 

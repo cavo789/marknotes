@@ -68,7 +68,7 @@ class Image_Gallery extends \MarkNotes\Plugins\Markdown\Plugin
 					$imgFolder = str_replace($aeSettings->getFolderDocs(true), '', $imgFolder);
 
 					// Retrieve the note URL
-					$url = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+					$url = rtrim($aeFunctions->getCurrentURL(), '/');
 					$url .= '/'.$aeSettings->getFolderDocs(false);
 					$url .= $imgFolder.'/';
 					$url = str_replace(DS, '/', $url);

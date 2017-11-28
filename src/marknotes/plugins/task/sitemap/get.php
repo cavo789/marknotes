@@ -83,7 +83,7 @@ class Get
 			foreach ($arrFiles as $file) {
 				$relFileName = str_replace($folder, '', $file);
 
-				$url = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+				$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 				$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
 				if (!$aeFiles->fileExists($file)) {

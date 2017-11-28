@@ -41,7 +41,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Get the web root like http://localhost/notes/
-		$sRoot = rtrim($aeFunctions->getCurrentURL(false, false), '/').'/';
+		$sRoot = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 
 		// Add the /docs folder in the URL (so something like
 		// http://localhost:8080/notes/docs/)

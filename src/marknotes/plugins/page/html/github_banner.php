@@ -20,7 +20,7 @@ class github_banner extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/github_banner/';
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" ".
@@ -53,7 +53,7 @@ class github_banner extends \MarkNotes\Plugins\Page\HTML\Plugin
 		if (is_file($svg)) {
 			$svg = file_get_contents($svg);
 
-			$url = rtrim($aeFunctions->getCurrentURL(true, false), '/').'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 			$url .= 'marknotes/plugins/page/html/github_banner/';
 
 			$link='<a href="'.$aeSettings->getPlugins('/github')['url'].'" '.

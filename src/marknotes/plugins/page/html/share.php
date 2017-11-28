@@ -18,7 +18,7 @@ class Share extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(false, false), '/');
+		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$urlHTML = '';
 		if (isset($_REQUEST['file'])) {
 			$urlHTML = $url.'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
@@ -41,7 +41,7 @@ class Share extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
 			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$root."/libs/jquery-toolbar/jquery.toolbar.css\" />\n".
@@ -59,7 +59,7 @@ class Share extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script = "<script type=\"text/javascript\" ". "src=\"".$root."/libs/jquery-toolbar/jquery.toolbar.min.js\" ".
 		"defer=\"defer\"></script>\n".

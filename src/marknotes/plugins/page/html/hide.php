@@ -22,7 +22,7 @@ class Hide extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
 			"<script type=\"text/javascript\" ". "src=\"".$root."/marknotes/plugins/page/html/hide/hide.js\" ".
@@ -40,7 +40,7 @@ class Hide extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
 			"href=\"".$root."/marknotes/plugins/page/html/hide/hide.css\" />\n";

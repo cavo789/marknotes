@@ -26,11 +26,11 @@ class GetForm extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($aeFiles->FileExists($filename)) {
 			// Get the root URL
-			$root = rtrim($aeFunctions->getCurrentURL(true, false), '/');
+			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 			$form = file_get_contents($filename);
 
-			$form = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(false, false), '/'), $form);
+			$form = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/'), $form);
 
 			$form = str_replace('%LOGINFORM%', $aeSettings->getText('loginform', 'Login form'), $form);
 			$form = str_replace('%LOGIN%', $aeSettings->getText('login', 'Username'), $form);

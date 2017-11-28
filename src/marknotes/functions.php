@@ -69,8 +69,8 @@ class Functions
 	}
 
 	/**
-	 * Display an error message and, if the debug mode is enabled, gives info about the caller
-	 */
+	* Display an error message and, if the debug mode is enabled, gives info about the caller
+	*/
 	public static function showError(string $code, string $default, bool $bHTML = true) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -79,7 +79,7 @@ class Functions
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$caller = ' (called by '.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
-			   ', line '.debug_backtrace()[0]['line'].')';
+			', line '.debug_backtrace()[0]['line'].')';
 		}
 		/*<!-- endbuild -->*/
 
@@ -93,11 +93,11 @@ class Functions
 	}
 
 	/**
-	 * Remove any accentuated characters, dot, space, comma, ... and generate
-	 * a secure string (can be used for an alias or a filename)
-	 *
-	 * @link https://github.com/cocur/slugify
-	 */
+	* Remove any accentuated characters, dot, space, comma, ... and generate
+	* a secure string (can be used for an alias or a filename)
+	*
+	* @link https://github.com/cocur/slugify
+	*/
 	public static function slugify(string $text) : string
 	{
 
@@ -129,8 +129,8 @@ class Functions
 	}
 
 	/**
-	 * Check if a specific function (like exec or shell_execute) is disabled or not
-	 */
+	* Check if a specific function (like exec or shell_execute) is disabled or not
+	*/
 	public static function ifDisabled(string $fctname) : bool
 	{
 		$bReturn = false;
@@ -146,14 +146,11 @@ class Functions
 	/**
 	* Return the current URL
 	*
-	* @param  type $useURI        If true, use $_SERVER['REQUEST_URI'] otherwise use $_SERVER[PHP_SELF]
-	*                             (can be /site/router.php and not http://localhost/site/folder/subfolder/file.html in case of URLs rewriting)
-	* @param  type $useScriptName  If false, only return the URL and folders name but no script name (f.i. remove index.php and parameters if any)
-	*                              script name (f.i. remove index.php and parameters if any)
 	* @return type string
 	*/
-	public static function getCurrentURL(bool $useSELF = true, bool $useURI = false) : string
+	public static function getCurrentURL() : string
 	{
+
 		$ssl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
 		$protocol = 'http';
 		// SERVER_PROTOCOL isn't set when the script is fired through a php-cli
@@ -170,19 +167,20 @@ class Functions
 		}
 
 		$host =
-			(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '') .
-			(($useSELF && isset($_SERVER['PHP_SELF'])) ? dirname(dirname($_SERVER['PHP_SELF'])) : '');
+		(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
 
 		$host = isset($host) ? rtrim(str_replace(DS, '/', $host), '/') : $_SERVER['SERVER_NAME'].$port;
 
-		return $protocol.'://'.$host.($useURI ? dirname($_SERVER['REQUEST_URI']) : dirname($_SERVER['PHP_SELF'])).'/';
+		$return = $protocol.'://'.$host.dirname($_SERVER['PHP_SELF']).'/';
+
+		return $return;
 	}
 
 	/**
 	* Safely read posted variables
 	*
-	* @param  type $name    f.i. "password"
-	* @param  type $type    f.i. "string"
+	* @param  type $name	f.i. "password"
+	* @param  type $type	f.i. "string"
 	* @param  type $default f.i. "default"
 	* @return type
 	*/
@@ -247,9 +245,9 @@ class Functions
 		return $return;
 	}
 	/**
-	 * Add CSS inline and, in case of debugging mode, add information's
-	 * about the caller
-	 */
+	* Add CSS inline and, in case of debugging mode, add information's
+	* about the caller
+	*/
 	public static function addStyleInline(string $css) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -263,16 +261,16 @@ class Functions
 
 		if ($aeSettings->getDebugMode()) {
 			$css = "\n<!-- Lines below are added by ".$caller."-->\n".
-			   trim($css, "\n")."\n".
-			   "<!-- End for ".$caller."-->\n";
+			trim($css, "\n")."\n".
+			"<!-- End for ".$caller."-->\n";
 		}
 
 		return $css;
 	}
 	/**
-	 * Add JS script inline and, in case of debugging mode, add information's
-	 * about the caller
-	 */
+	* Add JS script inline and, in case of debugging mode, add information's
+	* about the caller
+	*/
 	public static function addJavascriptInline(string $js) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -286,8 +284,8 @@ class Functions
 
 		if ($aeSettings->getDebugMode()) {
 			$js = "\n<!-- Lines below are added by ".$caller."-->\n".
-			   trim($js, "\n")."\n".
-			   "<!-- End for ".$caller."-->\n";
+			trim($js, "\n")."\n".
+			"<!-- End for ".$caller."-->\n";
 		}
 
 		return $js;
@@ -295,7 +293,7 @@ class Functions
 
 	/**
 	* Generic function for adding a js in the HTML response
-	 *
+	*
 	* @param  type $localfile
 	* @param  type $weblocation
 	* @return string
@@ -309,15 +307,15 @@ class Functions
 
 		if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
 			$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'">'.
-			   '</script>';
+			'</script>';
 		} elseif (is_file($localfile)) {
 			// It's a full, local, filename
-			   $localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
+			$localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
 			$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
 		} else {
 			if ($weblocation != '') {
 				$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$weblocation.'">'.
-				   '</script>';
+				'</script>';
 			}
 		}
 
@@ -326,7 +324,7 @@ class Functions
 
 	/**
 	* Generic function for adding a css in the HTML response
-	 *
+	*
 	* @param  type $localfile
 	* @param  type $weblocation
 	* @return string
@@ -356,8 +354,8 @@ class Functions
 
 	/**
 	* Wrapper for array_unique but for insensitive comparaison  (Images or images should be considered as one value)
-	 *
-	* @link   http://stackoverflow.com/a/2276400
+	*
+	* @link	http://stackoverflow.com/a/2276400
 	* @param  array $array
 	* @return array
 	*/
@@ -368,7 +366,7 @@ class Functions
 
 	/**
 	* Return true when the call to the php script has been done through an ajax request
-	 *
+	*
 	* @return type
 	*/
 	public static function isAjaxRequest() : bool
@@ -379,12 +377,12 @@ class Functions
 	}
 
 	/**
-	 * For instance :
-	 *     if (startsWith("Debug - This is a test", "Debug")) {
-	 *         // Debug mode ...
-	 *     }
-	 *
-	 */
+	* For instance :
+	*	 if (startsWith("Debug - This is a test", "Debug")) {
+	*		 // Debug mode ...
+	*	 }
+	*
+	*/
 	public static function startsWith(string $sLine, string $sPattern) : bool
 	{
 		$length = strlen($sPattern);
