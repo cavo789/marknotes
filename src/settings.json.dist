@@ -636,7 +636,7 @@
 					},
 					"toc": {
 						"text": "**Table of content**",
-						"collapse": 1
+						"collapse": 0
 					}
 				}
 			},
