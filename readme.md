@@ -7,16 +7,16 @@
 ## Table of Contents
 
 1. **[Description](#description)**
-	1.1. **[What is marknotes ?](#what-is-marknotes)**
-	1.2. **[Notes are yours !](#notes-are-yours)**
-	1.3. **[Background](#background)**
+1.1. **[What is marknotes ?](#what-is-marknotes)**
+1.2. **[Notes are yours !](#notes-are-yours)**
+1.3. **[Background](#background)**
 2. **[:game_die: Demo](#demo)**
 3. **[How to install](#how-to-install-or-update)**
-	3.1. **[:smile: Easy way](#easy-way)**
-	3.2. **[Hard way](#hard-way)**
+3.1. **[:smile: Easy way](#easy-way)**
+3.2. **[Hard way](#hard-way)**
 4. **[:book: Documentation](#documentation)**
 5. **[:hammer: Configuration](#configuration)**
-	5.1. **[Plugins](#plugins)**
+5.1. **[Plugins](#plugins)**
 6. **[:man: Author](#author)**
 7. **[Follow us](#follow-us)**
 8. **[License](#license)**
