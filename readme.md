@@ -2,24 +2,20 @@
 
 >If you like marknotes, please give him a :star: and fork it.
 
-![License MIT](https://www.marknotes.fr/assets/images/license.png)
+![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
 ## Table of Contents
 
 1. **[Description](#description)**
-1.1. **[What is marknotes ?](#what-is-marknotes)**
-1.2. **[Notes are yours !](#notes-are-yours)**
-1.3. **[Background](#background)**
 2. **[:game_die: Demo](#demo)**
 3. **[How to install](#how-to-install-or-update)**
-3.1. **[:smile: Easy way](#easy-way)**
-3.2. **[Hard way](#hard-way)**
 4. **[:book: Documentation](#documentation)**
-5. **[:hammer: Configuration](#configuration)**
-5.1. **[Plugins](#plugins)**
-6. **[:man: Author](#author)**
-7. **[Follow us](#follow-us)**
-8. **[License](#license)**
+5. **[Features](#features)
+6. **[:hammer: Configuration](#configuration)**
+7. **[Tips](#tips)**
+8. **[:man: Author](#author)**
+9. **[Follow us](#follow-us)**
+10. **[License](#license)**
 
 ## 1. Description
 
@@ -39,6 +35,7 @@ Want to move to an another application and leave marknotes ? No problem ! Notes 
 
 Even if I'd be really sad to see you leave, you'll certainly not have any problem to do it. Just move your .md files and that's all.
 
+And remember : notes are yours ! Unlike Evernote, Google, Microsoft of others companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on internet at all.
 ### 1.3 Background
 
 During years, I've used Evernotes™ to manage my notes (can be documentation, user guide, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
@@ -93,7 +90,34 @@ You can also find the previous documentation (for the version 1 of the tool) on 
 
 **[⬆ back to top](#table-of-contents)**
 
-## 5. :hammer: Configuration
+## 5. Features
+
+Thanks to his dozens of plugins, there are many functionalities like :
+
+* Works perfectly in offline mode (since all notes are files stored on your disk)
+* Login screen to get access to feature like add / delete / rename notes or folder
+* Online editor for allowed people
+* Cache mode enable (on the server and on the local browser)
+* Note's encryption to hide sensitive data's and show it only to logged in people
+* ACLs to restrict some notes to a few users
+* Automatic rendering of tables : table of content, todos list, decisions taken list, ...
+* Variables replacement : create your own variable like f.i. %VERSION%, %AUTHOR%, %CUSTOMER_NAME%, ...
+* File inclusions so you can write very big documentations in smaller files and publish the master document without effort
+* Image gallery plugin
+* Exportation to .docx, .epub, .odt, .pdf, .txt, ...
+* Slideshows mode (Reveal.JS or Remark)
+* Each templates can be overriden; define yours
+* Powerfull search functionnalities allowing multi words search and using caching functionnality too
+* Multiple languages support
+* and much more
+
+And, if a feature is missing, consider to write your own plugin, it's really easy.
+
+---
+
+**[⬆ back to top](#table-of-contents)**
+
+## 6. :hammer: Configuration
 
 Marknotes will fit yours needs, without any exceptions : you can change everything by overwriting the [settings.json](https://github.com/cavo789/marknotes/blob/master/src/settings.json.dist) file.
 
@@ -193,7 +217,7 @@ And one more step : you can name the file `my_note.json` and store it in the sam
 
 **[⬆ back to top](#table-of-contents)**
 
-### 5.1 Plugins
+### 6.1 Plugins
 
 There are dozens of plugins for marknotes, you can choose to enable them or not just by updating the `settings.json`. The example below disable the plugin called "font-awesome" (this plugin will replace f.i. `:fa-star:` by a star (thanks the integration of [Font-awesome](https://github.com/FortAwesome/Font-Awesome))
 
@@ -219,15 +243,35 @@ Each plugin can be enabled / disabled and configured directly in the `settings.j
 
 **[⬆ back to top](#table-of-contents)**
 
-## 6. :man: Author
+## 7. Tips
+
+### Github - Synchronization
+
+Thanks to github, you can synchronize your documentation folder (by default, folder called `/docs`) with your online site.
+
+The idea is to manage your notes on your localhost, the /docs folder can be a specific repository saved on github. By updating yours notes, simply push changes to github.
+
+There, on github.com, in the `settings` of your repository, add a webhook. This mecanism will can a specific URL on every changes of the repository.
+
+On my own, I use the `deploy.php` script (you'll find the script [here](https://github.com/cavo789/git_scripts/tree/master/deploy)) of [Marko Marković](https://github.com/markomarkovic). This script will download the repo and install the latest version.
+
+So, by pushing yours notes from your computer to github, github.com will call your website and the site will download and install the latest version. So simple.
+
+---
+
+**[⬆ back to top](#table-of-contents)**
+
+## 8. :man: Author
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-## 7. Follow us
+## 9. Follow us
 
 Follow us on [Facebook](https://www.facebook.com/marknotes789/) to stay up-to-date
 
-## 8. License
+## 10. License
+
+![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
 [MIT](https://github.com/cavo789/marknotes/blob/master/LICENSE)
 
