@@ -60,7 +60,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
 		$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
 
-		//$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
+		$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
 		$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 
 		$listDir = array
@@ -147,7 +147,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$default_task = 'task.edit.form';
 				}
 
-				//$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+				$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
 				$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
 				$dataFile=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
 				$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
