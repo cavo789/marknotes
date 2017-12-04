@@ -1,42 +1,35 @@
 /*
 #CONTENT img {
 	max-width: 100%;
-	height   : auto;
+	height	: auto;
 }
 */
 #icon_lock {
 	margin-left: 2px;
-	color      : #abe0ab;
+	color	  : #abe0ab;
 }
-
 .icon_file {
 	padding-left: 5px;
 }
-
 #TOC {
 	font-size  : 1em;
 	padding-top: 10px;
 }
-
 #TOC .folder {
 	background: url('../../../marknotes/plugins/page/html/treeview/file_sprite.png') right bottom no-repeat;
 }
-
 #TOC .file {
 	background: url('../../../marknotes/plugins/page/html/treeview/file_sprite.png') -254px -18px no-repeat;
 }
-
 /* Don't display informations that are targeted for printers only */
 .onlyprint {
 	display: none;
 }
-
 /* Use by the jQuery highlight plugin, highlight searched keywords */
 .highlight {
 	background-color: yellow !important;
-	border-radius   : .125em;
+	border-radius	: .125em;
 }
-
 /* Edit - Toolbar size */
 /*
 div.editor-wrapper .editor-toolbar a {
@@ -47,119 +40,98 @@ div.editor-wrapper .editor-toolbar a {
 	margin-left  : 0;
 	padding-left : 15px;
 	padding-right: 15px;
-	width        : auto;
+	width		: auto;
 }
-
 .jstree-proton .jstree-clicked {
-	color         : yellow !important;
+	color		 : yellow !important;
 	text-transform: uppercase;
 }
-
 .jstree-open > .jstree-anchor {
-	/*color      : #00abfc !important;
+	/*color	  : #00abfc !important;
 	font-weight: bolder;*/
 }
-
 .jstree-closed > .jstree-anchor {
 	/*font-style: italic;*/
 }
-
 .debug {
 	background-color: yellow;
 }
-
 .devmode {
 	background-color: #f78272;
-	padding         : 10px;
-	margin          : 5px;
-	color           : #f7eeee;
+	padding		 : 10px;
+	margin		  : 5px;
+	color			: #f7eeee;
 }
-
 .yellow {
 	background-color: rgba(255, 255, 0, 0.29);
-	padding         : 10px;
-	margin          : 5px;
+	padding		 : 10px;
+	margin		  : 5px;
 }
-
 .red {
 	background-color: #fd8888;
-	padding         : 10px;
-	margin          : 5px;
-	color           : white;
+	padding		 : 10px;
+	margin		  : 5px;
+	color			: white;
 }
-
 .green {
 	background-color: #76c376;
-	padding         : 10px;
-	margin          : 5px;
-	color           : white;
+	padding		 : 10px;
+	margin		  : 5px;
+	color			: white;
 }
 
 mark {
 	background-color: yellow;
-	border          : 1px dotted blue;
+	border		  : 1px dotted blue;
 }
-
 /* Override AdminLTE classes */
-
 .content {
 	padding: 10px 0;
 	margin : 10px 0 0 5px !important;
 }
-
 .content-wrapper {
 	background-color: #ecf0f5;
 }
-
 article {
 	background-color: white;
-	border          : 1px solid #f4f4f4;
-	padding         : 10px;
-
+	border		  : 1px solid #f4f4f4;
+	padding		 : 10px;
 }
-
 .content-headerFixed-left {
 	margin-left: auto !important;
 }
-
 .content-headerFixed {
 	background-color: rgb(194, 139, 137) !important;
-	color           : white;
-	padding         : 5px;
-	position        : fixed;
-	margin-left     : 300px;
-	left            : 0;
-	right           : 0;
-	z-index         : 3;
+	color			: white;
+	padding		 : 5px;
+	position		: fixed;
+	margin-left	 : 300px;
+	left			: 0;
+	right			: 0;
+	z-index		 : 3;
 }
 @media (max-width: 767px) {
 	.content-headerFixed {
 		margin-left: 0;
-		position   : relative;
+		position	: relative;
 	}
-
 	.fixed .content-wrapper,
 	.fixed .right-side {
 		padding-top: 50px;
 	}
-
 	a#mnLogo {
 		display: none;
-
 	}
 }
-
 .content-headerFixed > h1 {
-	margin     : 0;
+	margin	 : 0;
 	font-size  : 24px;
 	margin-left: 10px;
 }
-
 .logo-lg img,
 .logo-mini img {
 	/*width: 100%;*/
 }
-
 /*
   The side-bar shouldn't be "above" the jstree context menu
   (i.e. vakata-context) side-bar z-index is 810 so use a

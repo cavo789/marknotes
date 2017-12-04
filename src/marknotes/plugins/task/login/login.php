@@ -34,11 +34,20 @@ class Login extends \MarkNotes\Plugins\Task\Plugin
 		// Get the username / password from settings.json
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
 
-		$bLogin = ($login === $arrSettings['username']);
-		$bPassword = ($password === $arrSettings['password']);
+		// Should the login plugin be active ?
+		$bEnabled = boolval($arrSettings['enabled'] ?? 0);
 
-		// OK only if a strict equality
-		$status = ($bLogin && $bPassword) ? 1 : 0;
+		if ($bEnabled) {
+			// Yes
+			$bLogin = ($login === $arrSettings['username']);
+			$bPassword = ($password === $arrSettings['password']);
+
+			// OK only if a strict equality
+			$status = ($bLogin && $bPassword) ? 1 : 0;
+		} else {
+			// The login plugin isn't active => authenticate by default
+			$status = 1;
+		}
 
 		$aeSession->set('authenticated', $status);
 

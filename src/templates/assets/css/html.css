@@ -9,36 +9,36 @@ details {
 }
 
 navigation.top {
-	top     : 10px;
+	top	 : 10px;
 	position: fixed;
 	z-index : 10;
 }
 
 navigation.top a {
-	color       : green;
-	font-size   : 1.4em;
+	color		: green;
+	font-size	: 1.4em;
 	margin-right: 10px;
 }
 
 body {
 	background: #eee;
-	padding   : 20px;
+	padding	: 20px;
 }
 
 article {
 	max-width : 50em;
 	background: white;
-	padding   : 2em;
-	margin    : 1em auto;
+	padding	: 2em;
+	margin	: 1em auto;
 }
 
 .table-of-contents {
-	float     : right;
-	width     : 40%;
+	float	 : right;
+	width	 : 40%;
 	background: #eee;
 	font-size : .8em;
-	padding   : 1em 2em;
-	margin    : 0 0 .5em .5em;
+	padding	: 1em 2em;
+	margin	: 0 0 .5em .5em;
 }
 
 .table-of-contents ul {
@@ -80,13 +80,13 @@ h3:target {
 }
 
 .btnTop {
-	float     : right;
+	float	 : right;
 	margin-top: 14px;
 }
 
 .fullimg {
 	max-width: 100%;
-	height   : auto;
+	height	: auto;
 }
 
 h1 {
@@ -109,7 +109,7 @@ footer > ul.list-inline li {
 }
 
 /* Small classes that can be used with a markdown_extra notation */
-/* For instance :   ### This is my title {.green}  */
+/* For instance :	### This is my title {.green}  */
 /* That h3 will receive the .green CSS class */
 
 .strikeout {
@@ -118,29 +118,42 @@ footer > ul.list-inline li {
 
 .yellow {
 	background-color: rgba(255, 255, 0, 0.29);
-	padding         : 10px;
-	margin          : 5px;
+	padding		 : 10px;
+	margin		  : 5px;
 }
 
 .red {
 	background-color: #fd8888;
-	padding         : 10px;
-	margin          : 5px;
-	color           : white;
+	padding		 : 10px;
+	margin		  : 5px;
+	color			: white;
 }
 
 .green {
 	background-color: #76c376;
-	padding         : 10px;
-	margin          : 5px;
-	color           : white;
+	padding		 : 10px;
+	margin		  : 5px;
+	color			: white;
 }
 
+.note::before {
+	content: 'Note: ';
+	font-weight: bold;
+}
+
+.note {
+	color: #616E14;
+	border: solid 1px #BFD62F;
+	background-color: #DAE691;
+	border-radius: 6px;
+	padding: 14px 20px;
+
+}
 .devmode {
 	background-color: #f78272;
-	padding         : 10px;
-	margin          : 5px;
-	color           : #f7eeee;
+	padding		 : 10px;
+	margin		  : 5px;
+	color			: #f7eeee;
 }
 
 .markdown-body table {

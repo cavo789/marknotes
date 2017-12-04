@@ -139,7 +139,7 @@ class JSON
 	* json_decode with error handling.  Show error message in case of problem
 	*
 	* @param  string $fname Absolute filename
-	* @param  bool   $assoc [optional] When TRUE, returned objects will be converted into associative arrays.
+	* @param  bool	$assoc [optional] When TRUE, returned objects will be converted into associative arrays.
 	* @return type
 	*/
 	public static function json_decode(string $fname, bool $assoc = false)

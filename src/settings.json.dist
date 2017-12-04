@@ -579,7 +579,7 @@
 						"dom_elements": "a, code, div, h1, h2, h3, h4, h5, h6, img, p, span"
 					},
 					"balloon": {
-						"attributes": "data-balloon-length=\"xlarge\" style=\"    text-decoration:underline dotted;\" data-balloon-pos=\"up\""
+						"attributes": "data-balloon-length=\"xlarge\" style=\"text-decoration:underline dotted;\" data-balloon-pos=\"up\""
 					},
 					"bootstrap": {
 						"tables": {
@@ -905,7 +905,8 @@
 				},
 				"login": {
 					"username": "admin",
-					"password": "marknotes"
+					"password": "marknotes",
+					"enabled" : 1
 				},
 				"robots-txt": {
 					"bots_only": 0,

@@ -88,6 +88,8 @@ class Image_Gallery extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$filename=$aeFiles->removeExtension($filename).'.md';
 		$filename=$aeSettings->getFolderDocs(true).$filename;
 
+		$content = '';
+
 		if (is_file($filename)) {
 			$content = trim(file_get_contents($filename));
 		} elseif (is_file(utf8_decode($filename))) {

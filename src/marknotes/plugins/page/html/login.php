@@ -70,24 +70,31 @@ class Login  extends \MarkNotes\Plugins\Page\HTML\Plugin
 		if ($bCanRun) {
 			$bCanRun = false;
 
-			$login = trim(self::getOptions('username', ''));
-			$password = trim(self::getOptions('password', ''));
+			// Should the login plugin be active ?
+			$bEnabled = boolval(self::getOptions('enabled', false));
 
-			// If both login and password are empty (will probably be the
-			// case on a localhost server), there is no need to add
-			// the Login button
-			if (($login !== '') && ($password !== '')) {
-				$bCanRun = true;
-			/*<!-- build:debug -->*/
-			} else {
-				$aeSettings = \MarkNotes\Settings::getInstance();
-				if ($aeSettings->getDebugMode()) {
-					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("The login and/or the password is empty, ".
-						"the login form is therefore disabled", "warning");
+			if ($bEnabled) {
+				// Yes
+
+				$login = trim(self::getOptions('username', ''));
+				$password = trim(self::getOptions('password', ''));
+
+				// If both login and password are empty (will probably be the
+				// case on a localhost server), there is no need to add
+				// the Login button
+				if (($login !== '') && ($password !== '')) {
+					$bCanRun = true;
+				/*<!-- build:debug -->*/
+				} else {
+					$aeSettings = \MarkNotes\Settings::getInstance();
+					if ($aeSettings->getDebugMode()) {
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log("The login and/or the password is empty, ".
+							"the login form is therefore disabled", "warning");
+					}
+				/*<!-- endbuild -->*/
 				}
-			/*<!-- endbuild -->*/
-			}
+			} // if ($bEnabled)
 		}
 
 		return $bCanRun;

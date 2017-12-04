@@ -51,23 +51,30 @@ class Login extends \MarkNotes\Plugins\Button\Plugin
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
 
-			$login = trim($arrSettings['username'] ?? '');
-			$password = trim($arrSettings['password'] ?? '');
+			// Should the login plugin be active ?
+			$bEnabled = boolval($arrSettings['enabled'] ?? 0);
 
-			// If both login and password are empty (will probably be the
-			// case on a localhost server), there is no need to add
-			// the Login button
-			if (($login !== '') && ($password !== '')) {
-				$bReturn = true;
-			/*<!-- build:debug -->*/
-			} else {
-				if ($aeSettings->getDebugMode()) {
-					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("The login and/or the password is empty, ".
-						"the login form is therefore disabled", "warning");
+			if ($bEnabled) {
+				// Yes
+
+				$login = trim($arrSettings['username'] ?? '');
+				$password = trim($arrSettings['password'] ?? '');
+
+				// If both login and password are empty (will probably be the
+				// case on a localhost server), there is no need to add
+				// the Login button
+				if (($login !== '') && ($password !== '')) {
+					$bReturn = true;
+				/*<!-- build:debug -->*/
+				} else {
+					if ($aeSettings->getDebugMode()) {
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log("The login and/or the password is empty, ".
+							"the login form is therefore disabled", "warning");
+					}
+				/*<!-- endbuild -->*/
 				}
-			/*<!-- endbuild -->*/
-			}
+			} // if ($bEnabled)
 		} // if ($bReturn = parent::canAdd())
 
 		return $bReturn;

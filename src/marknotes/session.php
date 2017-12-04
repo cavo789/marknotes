@@ -54,16 +54,29 @@ class Session
 			self::set('marknotes', 1);
 		}
 
+		// Get informations about the login plugin
 		$arr = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
-		$login = isset($arr['username']) ? trim($arr['username']) : '';
-		$password = isset($arr['password']) ? trim($arr['password']) : '';
 
-		// If both login and password are empty (will probably be the
-		// case on a localhost server), consider the user
-		// already authenticated
-		if (($login === '') && ($password === '')) {
+		// Check if the plugin is enabled ?
+		$bEnabled = boolval($arr['enabled'] ?? 0);
+
+		if ($bEnabled) {
+			// Yes, he is
+			$login = isset($arr['username']) ? trim($arr['username']) : '';
+			$password = isset($arr['password']) ? trim($arr['password']) : '';
+
+			// If both login and password are empty (will probably be the
+			// case on a localhost server), consider the user
+			// already authenticated; no login form needed
+			if (($login === '') && ($password === '')) {
+				self::set('authenticated', 1);
+			}
+		} else {
+			// The login plugin isn't enabled
+			// So if no login process it means that the user is
+			// authenticated by default (no login form needed)
 			self::set('authenticated', 1);
-		}
+		} // if ($bEnabled)
 
 		return;
 	}
@@ -119,7 +132,7 @@ class Session
 		return true;
 	}
 	/**
-	* The session has a timeout property.   By calling the extend() method,
+	* The session has a timeout property.	By calling the extend() method,
 	* the session timeout will be reset to the current time() and therefore,
 	* his lifetime will be prolongated.
 	*/
