@@ -79,7 +79,19 @@ div.editor-wrapper .editor-toolbar a {
 	margin		  : 5px;
 	color			: white;
 }
+.note::before {
+	content: 'Note: ';
+	font-weight: bold;
+}
 
+.note {
+	color: #616E14;
+	border: solid 1px #BFD62F;
+	background-color: #DAE691;
+	border-radius: 6px;
+	padding: 14px 20px;
+
+}
 mark {
 	background-color: yellow;
 	border		  : 1px dotted blue;
