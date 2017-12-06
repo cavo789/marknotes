@@ -7,7 +7,7 @@ function fnPluginTaskTreeView_init() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Initialization');
+		console.log('	  Plugin Page html - Treeview - Initialization');
 	}
 	/*<!-- endbuild -->*/
 
@@ -15,7 +15,7 @@ function fnPluginTaskTreeView_init() {
 		if ($.isFunction($.fn.jstree)) {
 			/*<!-- build:debug -->*/
 			/*if (marknotes.settings.debug) {
-				console.log('      fnPluginTaskTreeView_init - Add events to the treeview - This function will be called only once');
+				console.log('	  fnPluginTaskTreeView_init - Add events to the treeview - This function will be called only once');
 			}*/
 			/*<!-- endbuild -->*/
 
@@ -25,7 +25,7 @@ function fnPluginTaskTreeView_init() {
 
 			/*<!-- build:debug -->*/
 			/*if (marknotes.settings.debug) {
-				console.log('      fnPluginTaskTreeView_init has been removed from marknotes.arrPluginsFct');
+				console.log('	  fnPluginTaskTreeView_init has been removed from marknotes.arrPluginsFct');
 			}*/
 			/*<!-- endbuild -->*/
 
@@ -67,7 +67,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Show ContextMenu');
+		console.log('	  Plugin Page html - Treeview - Show ContextMenu');
 	}
 	/*<!-- endbuild -->*/
 
@@ -200,7 +200,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 	} else {
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('      The user isn\'t connected so no actions like create a note added in the treeview');
+			console.log('	  The user isn\'t connected so no actions like create a note added in the treeview');
 		}
 		/*<!-- endbuild -->*/
 	} // if (marknotes.settings.authenticated === 1)
@@ -212,7 +212,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 function fnPluginTaskTreeView_upload(node) {
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Upload');
+		console.log('	  Plugin Page html - Treeview - Upload');
 		console.log(node);
 	}
 	/*<!-- endbuild -->*/
@@ -262,20 +262,19 @@ function fnPluginTaskTreeView_upload_droparea(data) {
  *
  * @param {type} e
  * @param {type} data
- * @param {string} $task    'rename' or 'delete'
+ * @param {string} $task	'rename' or 'delete'
  * @returns {undefined}
  */
 function fnPluginTaskTreeView_CRUD(e, data, $task) {
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - CRUD');
-		console.log('         Running task = ' + $task);
+		console.log('	  Plugin Page html - Treeview - CRUD');
+		console.log('		 Running task = ' + $task);
 	}
 	/*<!-- endbuild -->*/
 
 	try {
 		// The user has just click on "Create..." (folder or note)
-
 		var $type = "file";
 
 		try {
@@ -286,9 +285,9 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 		var $root = data.node.parent;
 
-		// In case of the creation of a new note, the "oldname" is something like
-		// "new note" (and "new folder" for a folder) i.e. the default name suggested by jsTree.
-		//
+		// In case of the creation of a new note, the "oldname" is
+		// something like "new note" (and "new folder" for a folder)
+		// i.e. the default name suggested by jsTree.
 		// The real name will be $newname; the one typed by the user
 
 		var $oldname = $root + data.old;
@@ -296,7 +295,15 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 		// Get the name of the file; use the node.data.file info
 		// and not node.text which is the displayed name (and
 		// can be truncated)
-		var $newname = $root + data.node.data.file;
+		var $newname = $root;
+
+		if (data.node.data !== null) {
+			if (data.node.data.hasOwnProperty('file')) {
+				$newname = $newname + data.node.data.file;
+			}
+		} else {
+			$newname = $newname + data.node.text;
+		}
 
 		// Remove the starting slash character if present
 		if ($newname.charAt(0) === marknotes.settings.DS) {
@@ -310,9 +317,9 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
 			if ($task !== 'create') {
-				console.log('          old name = ' + $oldname);
+				console.log('		  old name = ' + $oldname);
 			}
-			console.log('          new name = ' + $newname);
+			console.log('		  new name = ' + $newname);
 		}
 		/*<!-- endbuild -->*/
 
@@ -328,7 +335,7 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 			if (typeof store === 'object') {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
-					console.log('          Clear localStorage');
+					console.log('		  Clear localStorage');
 				}
 				/*<!-- endbuild -->*/
 
@@ -379,7 +386,7 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 function fnPluginTaskTreeView_reload(data) {
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Reload');
+		console.log('	  Plugin Page html - Treeview - Reload');
 	}
 	/*<!-- endbuild -->*/
 
@@ -390,7 +397,7 @@ function fnPluginTaskTreeView_reload(data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Reload the treeview after a creation or a rename');
+		console.log('	  Reload the treeview after a creation or a rename');
 	}
 	/*<!-- endbuild -->*/
 
@@ -413,7 +420,7 @@ function fnPluginTaskTreeView_reload(data) {
  * terminated.
  *
  * @param {type} $data  JSON string returned by the ajax request (can be
- *                      index.php?task=rename or ?task=delete)
+ *					  index.php?task=rename or ?task=delete)
  * @returns {undefined}
  */
 function fnPluginTaskTreeView_showStatus($data) {
@@ -425,7 +432,7 @@ function fnPluginTaskTreeView_showStatus($data) {
 	// data-file and data-url and perhaps others in the future
 	/*<!-- build:debug -->*/
 	//if (marknotes.settings.debug) {
-	//	console.log('      Plugin Page html - Treeview - Showstatus');
+	//	console.log('	  Plugin Page html - Treeview - Showstatus');
 	//	console.log($data);
 	//}
 	/*<!-- endbuild -->*/
@@ -480,7 +487,7 @@ function fnPluginTaskTreeView_renameNode(e, data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Rename node');
+		console.log('	  Plugin Page html - Treeview - Rename node');
 	}
 	/*<!-- endbuild -->*/
 
@@ -516,7 +523,7 @@ function fnPluginTaskTreeView_renameNode(e, data) {
 function fnPluginTaskTreeView_removeNode(e, data) {
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Remove node');
+		console.log('	  Plugin Page html - Treeview - Remove node');
 	}
 	/*<!-- endbuild -->*/
 
@@ -532,7 +539,7 @@ function fnPluginTaskTreeView_removeNode(e, data) {
 function fnPluginTaskTreeView_editNode($node) {
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Treeview - Edit node');
+		console.log('	  Plugin Page html - Treeview - Edit node');
 		console.log($node);
 	}
 	/*<!-- endbuild -->*/

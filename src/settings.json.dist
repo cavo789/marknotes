@@ -1,7 +1,7 @@
 {
 	"debug": {
-		"enabled": 1,
-		"development": 1,
+		"enabled": 0,
+		"development": 0,
 		"logfile": {
 			"template": "[%level_name%] %message% %context%"
 		},
@@ -17,6 +17,7 @@
 		}
 	},
 	"interface": {
+		"accent_conversion": 1,
 		"footer": {
 			"left": "<strong>markNotes © 2017<strong>",
 			"right": "<a href='https://github.com/cavo789/marknotes' target='blank'>Fork me on GitHub</a>"

@@ -13,56 +13,58 @@
  * file /listfiles.json
  */
 namespace MarkNotes\Plugins\Task\ListFiles;
-
 defined('_MARKNOTES') or die('No direct access allowed');
-
 class Treeview extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.task.listfiles';
 	protected static $json_options = 'plugins.options.task.listfiles';
-
 	private static $bACLsLoaded = 0;
-
 	/**
 	* Called by ListFiles().  Populate an array with the list of .md files.
 	* The structure of the array match the needed definition of the jsTree
 	* jQuery plugin
 	* http://stackoverflow.com/a/23679146/1065340
 	*
-	* @param  type   $dir   Root folder to scan
+	* @param  type	$dir	Root folder to scan
 	* @return array
 	*/
 	private static function makeJSON(string $dir) : array
 	{
 		static $index = 0;
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
-
 		//$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
 		//$bEncodeAccents = boolval($arr['encode_accent']);
-
 		$root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 		$rootNode = $aeSettings->getFolderDocs(false);
-
 		// Get the list of files and folders for the treeview
 		$arrEntries = self::directoryToArray($dir);
-
 		// Now, prepare the JSON return
 		$sDirectoryText = basename($dir);
 		$sID = str_replace($root, '', $dir).DS;
-
 		// It's a folder node
 		$dataURL=str_replace(DS, '/', str_replace($root, '', $dir));
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
 		$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
 
-		$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
-		$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
+		// I really didn't understand why on some Windows computers
+		// the problem with accentuated character is there (i.e.
+		// the function iconv('UTF-8', 'UTF-8//IGNORE', string)
+		// should be called and not on some others; really really
+		// strange)
+		$arrSettings = $aeSettings->getPlugins('/interface');
+		$bConvert  = boolval($arrSettings['accent_conversion']??1);
 
+		if ($bConvert) {
+			// accent_conversion in settings.json has been initialized
+			// to 1 => make the conversion
+			$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
+		}
+
+		$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 		$listDir = array
 		(
 			'id' => str_replace(DS, '/', $sID),
@@ -80,29 +82,21 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			),
 			'children' => array()
 		);
-
 		$dirs = array();
 		$files = array();
-
 		foreach ($arrEntries as $entry) {
 			if ($entry['type'] == 'file') {
 				// We're processing a filename
-
 				$index += 1;
-
 				//Filename but without the extension (and no path)
 				$filename = str_replace('.md', '', basename($entry['name']));
-
 				// Relative filename like f.i.  docs/the_folder/a_note.md
 				$id = str_replace($root, $rootNode, $entry['name']);
-
 				// Right-click on a file = open it's HTML version
 				$dataURL=str_replace($root, '', $entry['name']);
 				$dataURL=str_replace(DS, '/', $dataURL);
 				$dataURL=str_replace('.md', '.html', $dataURL);
-
 				$sFileText = $filename;
-
 				// If the title is really long, …
 				// 30 characters in the treeview are enough
 				if (strlen($sFileText) > TREEVIEW_MAX_FILENAME_LENGTH) {
@@ -123,7 +117,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 							$wLen--;
 							$tmp = json_encode(substr($sFileText, 0, $wLen));
 						}
-
 						$sFileText = substr($sFileText, 0, $wLen).' …';
 					} catch (Exception $e) {
 						/*<!-- build:debug -->*/
@@ -131,14 +124,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						/*<!-- endbuild -->*/
 					}
 				}
-
 				$dataFile = str_replace($root, '', $entry['name']);
 				$dataFile = str_replace(DS, '/', $dataFile);
-
 				$dataBasename = $aeFiles->removeExtension(basename($dataURL));
-
 				$default_task = 'task.export.html';
-
 				// In the list of files, help the jsTree plugin
 				// to know that the action should be EDIT and not DISPLAY
 				// when the user click on the note that was just created
@@ -147,11 +136,14 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$default_task = 'task.edit.form';
 				}
 
-				$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+				if ($bConvert) {
+					// accent_conversion in settings.json has
+					// been initialized to 1 => make the conversion
+					$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+				}
 				$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
 				$dataFile=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
 				$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
-
 				$files[] = array(
 					'id' => md5($id),
 					'icon' => 'file file-md',
@@ -163,7 +155,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						'url' => $dataURL
 					),
 					'state' => array(
-						'opened' => 0,   // A file isn't opened
+						'opened' => 0,	// A file isn't opened
 						'selected' => 0  // and isn't selected by default
 					)
 				);
@@ -173,7 +165,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// From c:/sites/marknotes/docs/the_folder, keep /the_folder/
 				$fname = str_replace($root, '', $entry['name']);
 				$fname = DS.ltrim(rtrim($fname, DS), DS).DS;
-
 				// The folder should start and end with the slash
 				// so "/the_folder/" and not something else.
 				$tmp = array(
@@ -181,7 +172,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					'return' => true
 				);
 				$args = array(&$tmp);
-
 				// If the task.acls.cansee wasn't fired i.e. when there was
 				// no folder to protect, the trigger even return False.
 				// Otherwise, trigger return True : the plugin has been fired
@@ -193,7 +183,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$args[0]['return'] = 1;
 					$bReturn = true;
 				}
-
 				// The canSeeFolder event will initialize the 'return'
 				// parameter to false when the current user can't see the
 				// folder i.e. don't have the permission to see it. This
@@ -209,7 +198,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				}
 			} // if ($entry['type']=='folder')
 		} // foreach
-
 		// The current folder has been processed, are there subfolders in it ?
 		if (count($dirs) > 0) {
 			foreach ($dirs as $d) {
@@ -217,31 +205,24 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				$listDir['children'][] = $arrChildren;
 			}
 		}
-
 		foreach ($files as $file) {
 			$listDir['children'][] = $file;
 		}
-
 		return array($listDir, $index);
 	}
-
 	/**
 	* Get an array that represents directory tree
-	* @param string $directory   Directory path
+	* @param string $directory	Directory path
 	*/
 	private static function directoryToArray($directory)
 	{
 		static $root = '';
-
 		$aeFiles = \MarkNotes\Files::getInstance();
-
 		if ($root === '') {
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 		}
-
 		$arr = array();
-
 		if (is_dir($directory)) {
 			$handle = opendir($directory);
 			if ($handle) {
@@ -256,7 +237,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						} else {
 							// it's a file, get it only if the
 							// extension is .md
-
 							$extension = pathinfo($name, PATHINFO_EXTENSION);
 							if ($extension==='md') {
 								$arr[] = array('name' => $name,'type' => 'file');
@@ -264,23 +244,17 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						} // if (is_dir($directory.DS.$file))
 					} // if (substr($file, 0, 1) !== '.')
 				} // while
-
 				closedir($handle);
 			} // if ($handle)
 		} // if ($aeFiles->folderExists($directory))
-
 		$name = array();
-
 		// Sort the array by name
 		foreach ($arr as $key => $row) {
 			$name[$key] = $row['name'];
 		} // foreach
-
 		array_multisort($name, SORT_ASC | SORT_NATURAL | SORT_FLAG_CASE, $arr);
-
 		return $arr;
 	}
-
 	public static function run(&$params = null) : bool
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
@@ -288,10 +262,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
-
 		$arrSettings = $aeSettings->getPlugins('/interface');
 		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
-
 		if (!$show_tree_allowed) {
 			// The webmaster has disabled to right to see
 			// the interface so, it seems coherent to also
@@ -307,47 +279,35 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			$aeEvents->loadPlugins('task.acls.load');
 			$args=array();
 			$aeEvents->trigger('task.acls.load::run', $args);
-
 			// $bACLsLoaded will be set true if at least one folder is
 			// protected
 			static::$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
-
 			$sReturn = '';
-
 			if (!static::$bACLsLoaded) {
 				$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
-
 				$bOptimize = $arrOptimize['server_session'] ?? false;
-
 				if ($bOptimize) {
 					$sReturn = trim($aeSession->get('treeview_json', ''));
 				}
 			} // if (static::!$bACLsLoaded)
-
 			if ($sReturn === '') {
 				$docs = $aeSettings->getFolderDocs(true);
-
 				$aeEvents = \MarkNotes\Events::getInstance();
 				$aeEvents->loadPlugins('task.acls.cansee');
-
 				// Populate the tree that will be used for jsTree
 				// (see https://www.jstree.com/docs/json/)
 				list ($arr, $count) = self::makeJSON(str_replace('/', DS, $docs));
-
 				// Build the json
 				$return = array();
 				//$return['settings'] = array('root' => str_replace(DS, '/',
 				// $docs));
 				$return['count'] = $count;
 				$return['tree'] = $arr;
-
 				$aeJSON = \MarkNotes\JSON::getInstance();
 				/*<!-- build:debug -->*/
 				$aeJSON->debug($aeSettings->getDebugMode());
 				/*<!-- endbuild -->*/
-
 				$sReturn = $aeJSON->json_encode($return);
-
 				if (!static::$bACLsLoaded) {
 					if ($bOptimize) {
 						// Remember for the next call
@@ -356,11 +316,9 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				} // if (!static::$bACLsLoaded)
 			} // if ($sReturn === '')
 		} // if (!$show_tree_allowed)
-
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');
 		die($sReturn);
-
 		return true;
 	}
 }

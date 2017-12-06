@@ -21,14 +21,14 @@ abstract class Plugin
 	public function __construct()
 	{
 		// The child class should have a line like below in his definition
-		//     protected static $me = __CLASS__;
+		//	 protected static $me = __CLASS__;
 		if (!isset(static::$me)) {
 			throw new \Exception(get_class($this).' must have a $me '.
 				'property and must initialize it exactly like this : "protected static $me = __CLASS__"');
 		}
 
 		// The child class should have a line like below in his definition
-		//     protected static $json_settings = 'plugins.buttons.page.content.edito';
+		//	 protected static $json_settings = 'plugins.buttons.page.content.edito';
 		if (!isset(static::$json_settings)) {
 			throw new \Exception(get_class($this).' must have a $json_settings '.
 				'property and must initialize it (f.i. '. '"plugins.buttons.page.content.editor"). '.
@@ -38,7 +38,7 @@ abstract class Plugin
 		}
 
 		// The child class should have a line like below in his definition
-		//     protected static $json_linked = 'plugins.page.html.editor';
+		//	 protected static $json_linked = 'plugins.page.html.editor';
 		if (!isset(static::$json_linked)) {
 			throw new \Exception(get_class($this).' must have a $json_linked '.
 				'property and must initialize it to the "linked_plugin" '.
@@ -121,7 +121,7 @@ abstract class Plugin
 			'</a>';
 
 		$button = array(
-			'icon'   =>'fa-'.$params['icon'],
+			'icon'	=>'fa-'.$params['icon'],
 			'anchor' => $anchor,
 			'button' =>
 				str_replace('%1', '<i class="fa fa-'.$params['icon'].'" 	aria-hidden="true"></i>', $anchor),
@@ -147,8 +147,8 @@ abstract class Plugin
 			// Check that the linked plugin is also enabled
 
 			$aeSettings = \MarkNotes\Settings::getInstance();
-			$arrSetings = $aeSettings->getPlugins(static::$json_linked);
-			$bReturn = boolval($arrSetings['enabled']?? 0);
+			$arrSettings = $aeSettings->getPlugins(static::$json_linked);
+			$bReturn = boolval($arrSettings['enabled']?? 0);
 
 			if (!$bReturn) {
 				/*<!-- build:debug -->*/
