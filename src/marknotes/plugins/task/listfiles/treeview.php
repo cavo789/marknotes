@@ -262,34 +262,60 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$arrSettings = $aeSettings->getPlugins('/interface');
+
 		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
+
 		if (!$show_tree_allowed) {
 			// The webmaster has disabled to right to see
 			// the interface so, it seems coherent to also
 			// disable the listfiles task.
 			$return = array();
+
 			$return['count'] = 0;
 			$return['status'] = 0;
 			$return['message'] = 'The administrator has disabled access to the interface.';
+
 			$sReturn = json_encode($return);
+
 		} else {
 			// Call the ACLs plugin
+
 			$aeEvents = \MarkNotes\Events::getInstance();
 			$aeEvents->loadPlugins('task.acls.load');
+
 			$args=array();
+
 			$aeEvents->trigger('task.acls.load::run', $args);
-			// $bACLsLoaded will be set true if at least one folder is
-			// protected
+
+			// $bACLsLoaded will be set true if at least one
+			// folder is protected
 			static::$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
-			$sReturn = '';
+
+			$sReturn =  '';
+			$bOptimize=false;
+
 			if (!static::$bACLsLoaded) {
 				$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+
+				// Get the Server_Session parameter i.e. if the
+				// list of folder should be retrieved and stored
+				// in a $_SESSION variable
 				$bOptimize = $arrOptimize['server_session'] ?? false;
 				if ($bOptimize) {
-					$sReturn = trim($aeSession->get('treeview_json', ''));
+					// If the ?reload parameter is on the
+					// QUERY_STRING don't use retrieve from
+					// $_SESSION. This is the case when the user
+					// has added/delete a file/folder from the
+					// treeview (right-click -> add folder f.i.)
+					$bReload = isset($_GET['reload'])??false;
+					if (!$bReload) {
+						$sReturn = trim($aeSession->get('treeview_json', ''));
+					}
 				}
 			} // if (static::!$bACLsLoaded)
+
 			if ($sReturn === '') {
 				$docs = $aeSettings->getFolderDocs(true);
 				$aeEvents = \MarkNotes\Events::getInstance();
@@ -316,9 +342,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				} // if (!static::$bACLsLoaded)
 			} // if ($sReturn === '')
 		} // if (!$show_tree_allowed)
+
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');
 		die($sReturn);
-		return true;
+
 	}
 }

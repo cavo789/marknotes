@@ -1,7 +1,7 @@
 var jsTree_Search_Result = '';
 
-// Used by the search plugin to filter on notes having an ID as returned
-// by the ajax search task
+// Used by the search plugin to filter on notes having an ID as
+// returned by the ajax search task
 function jsTree_ajax_search(str, node) {
 	return $.inArray(node.id, jsTree_Search_Result) >= 0;
 }
@@ -24,10 +24,11 @@ function jstree_init($data) {
 			var $arrPlugins = ['contextmenu', 'types', 'search', 'types', 'unique'];
 
 			try {
-				// Use the "state" plugin of jsTree to remember the state
-				// of the treeview between visits only if the LocalStore
-				// setting was set i.e. when the store.min.js script
-				// has been loaded and define the store object
+				// Use the "state" plugin of jsTree to remember
+				// the state of the treeview between visits only
+				// if the LocalStore setting was set i.e. when
+				// the store.min.js script has been loaded and
+				// define the store object
 				if (typeof store === 'object') {
 					// Ok, localStore is set, use the state plugin
 					$arrPlugins.push('state');
@@ -40,11 +41,13 @@ function jstree_init($data) {
 				/*<!-- endbuild -->*/
 			}
 
-			// Sometimes wholerow raise an error with the state plugin.
-			// Error can be "this.get node().find is not a function".
-			// By removing wholerow in the list below and refreshing
-			// the page will solve the issue. Then add wholerow back
-			// in the list.
+			// Sometimes wholerow raise an error with the state
+			// plugin.
+			// Error can be "this.get node().find is not a
+			// function".
+			// By removing wholerow in the list below and
+			// refreshing the page will solve the issue.
+			// Then add wholerow back in the list.
 			// Still occurs with jsTree 3.3.4 (2017-07-31)
 			//$arrPlugins.push('wholerow');
 
@@ -82,10 +85,11 @@ function jstree_init($data) {
 					}
 
 					if (typeof (objNode.parent) !== "undefined") {
-						// Get the filename : objNode.parent mention the
-						// relative parent folder (f.. /development/jquery/)
-						// and objNode.text the name of the file (f.i.
-						// jsTree.md)
+						// Get the filename : objNode.parent
+						// mention the relative parent folder
+						// (f.. /development/jquery/)
+						// and objNode.text the name of the file
+						// (f.i. jsTree.md)
 
 						/*<!-- build:debug -->*/
 						if (marknotes.settings.debug) {
@@ -97,8 +101,9 @@ function jstree_init($data) {
 						//var $fname = objNode.parent + objNode.text + '.md';
 						if (objNode.data !== null) {
 
-							// On small screen automatically hide the treeview
-							// when a note is being displayed
+							// On small screen automatically hide
+							// the treeview when a note is
+							// being displayed
 							if ($(window).width() < 1024) {
 								$('body').removeClass('sidebar-open');
 							}
@@ -112,7 +117,8 @@ function jstree_init($data) {
 							marknotes.note.url = marknotes.docs + '/' + objNode.data.url;
 							marknotes.note.basename = objNode.data.basename;
 
-							// And remember the hash (md5) of the URL
+							// And remember the hash (md5) of
+							// the URL
 							marknotes.note.md5 = $fname;
 
 							// Default task
@@ -149,8 +155,12 @@ function jstree_init($data) {
 				})
 				.on('keydown.jstree', '.jstree-anchor', function (e) {
 
-					// @TODO : Problem : e.currentTarget is not yet the current one but the one when the move was done.
-					// If I was on chidl3 and press the down key, I need to capture child4 (the next one) and e.currentTarget is still on child3.
+					// @TODO : Problem : e.currentTarget is not
+					// yet the current one but the one when the
+					// move was done.
+					// If I was on child3 and press the down key,
+					// I need to capture child4 (the next one)
+					// and e.currentTarget is still on child3.
 					// Not found a solution...
 					var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
 
@@ -179,15 +189,20 @@ function jstree_init($data) {
 						data: $data.tree,
 						check_callback: function (operation, node, node_parent, node_position, more) {
 
-							// Return true to allow the operation, return false otherwise
+							// Return true to allow the
+							// operation, return false otherwise
 							//
-							// Allow changes on the jsTree by javascript
-							// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
+							// Allow changes on the jsTree by
+							// javascript operation can be
+							// 'create_node', 'rename_node',
+							// 'delete_node', 'move_node' or
+							// 'copy_node'
 
 							return operation === 'move_node' ? false : true;
 						},
 						multiple: false,
-						initially_open: ['phtml_1'], // Automatically open the root node
+						// Automatically open the root node
+						initially_open: ['phtml_1'],
 						themes: {
 							name: marknotes.jstree.theme,
 							responsive: 0,
@@ -209,26 +224,29 @@ function jstree_init($data) {
 						}
 					},
 					search: {
-						// Indicates if all nodes opened to reveal the
-						// search result, should be closed when the
-						// search is cleared or a new search is performed.
+						// Indicates if all nodes opened to
+						// reveal the search result, should be
+						// closed when the search is cleared or
+						//a new search is performed.
 						close_opened_onclear: true,
 						case_insensitive: true,
-						// Hide unmatched, show only matched records
-						// Indicates if the tree should be filtered
-						// to show only matching nodes
+						// Hide unmatched, show only matched
+						// records. Indicates if the tree should
+						// be filtered to show only matching nodes
 						show_only_matches: true,
 						// Only files, not folder
 						search_leaves_only: true,
 						ajax: {
-							url: 'search.php', // This request will be fired with the '&str=SEARCH_TERM' parameter
+							// This request will be fired with
+							// the '&str=SEARCH_TERM' parameter
+							url: 'search.php',
 							dataType: 'json',
 							type: (marknotes.settings.debug ? 'GET' : 'POST'),
 							beforeSend: function () {
 								/*<!-- build:debug -->*/
 								console.time('Search time');
-
 								/*<!-- endbuild -->*/
+
 								var loading = '<div id="ajax_loading" class="lds-css"><div style="width:100%;height:100%" class="lds-ellipsis"><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div></div>';
 								$('#TOC').hide().parent().append(loading);
 							}, // beforeSend()
@@ -252,13 +270,18 @@ function jstree_init($data) {
 									});
 								}
 
-								// data is a JSON string with a 'files' entry
-								// That entry contains md5 of matched filenames
-								// Store these md5 in the jsTree_Search_Result
-								// variable that is used by the callback :
+								// data is a JSON string with a
+								// 'files' entry. That entry
+								// contains md5 of matched
+								// filenames.
+								// Store these md5 in the
+								// jsTree_Search_Result
+								// variable that is used by the
+								// callback :
 								// jsTree_ajax_search
-								// data.files is a JSON array, convert it to
-								// a javascript array thanks to $.parseJSON
+								// data.files is a JSON array,
+								// convert it to a javascript
+								// array thanks to $.parseJSON
 								jsTree_Search_Result = $.parseJSON(data.files);
 							} // success
 						},
@@ -284,12 +307,15 @@ function jstree_init($data) {
 }
 
 /**
- * Context menu for the treeview.  This function will build the contextual menu
+ * Context menu for the treeview.
+ * This function will build the contextual menu
  * and return the list of entries of that menu
  *
- * This function will ask call the Task-Treeview plugin for populating the menu
+ * This function will ask call the Task-Treeview plugin
+ * for populating the menu
  *
- * @param {type} node             The node on which the user has right-clicked
+ * @param {type} node	The node on which the user has
+ *						 right-clicked
  * @returns {context_menu.items}
  */
 function jstree_context_menu(node) {
@@ -326,7 +352,8 @@ function jstree_context_menu(node) {
 		}
 	};
 
-	// Open the note in a new window or, too, the folder (open then index.html)
+	// Open the note in a new window or, too, the folder
+	// (open then index.html)
 	$items.Open_NewWindow = {
 		separator_before: false,
 		separator_after: true,
@@ -348,11 +375,30 @@ function jstree_context_menu(node) {
 		}
 	};
 
-	// ------------------------------------------------------------------------
+	// Add a login menu item if the plugin page->html->login
+	// is well enabled (it's the case when the fnPluginTaskLogin
+	// js function has been defined)
+	var fn = window.fnPluginTaskLogin;
+	if (typeof fn === "function") {
+
+		$type = (marknotes.settings.authenticated === 0 ? 'in' : 'out');
+
+		$items.Login = {
+			separator_before: true,
+			separator_after: false,
+			label: $.i18n('loginform_'+$type),
+			icon: 'fa fa-sign-'+$type,
+			action: function () {
+				contextMenuLogin(node);
+			}
+		};
+	}
+
+	// ------------------------------------------------------
 	// Plugin Task-Treeview
-	// The fnPluginTaskTreeViewContextMenu() is defined in the plugins
-	// task/treeview Check if that plugin has loaded the function and
-	// if so, get extra items for the context menu
+	// The fnPluginTaskTreeViewContextMenu() is defined in the
+	// plugins task/treeview Check if that plugin has loaded the
+	// function and if so, get extra items for the context menu
 	var fn = window.fnPluginTaskTreeViewContextMenu;
 
 	// is object a function?
@@ -407,8 +453,34 @@ function contextMenuNewWindow(node) {
 
 	window.open(node.data.url);
 }
+
 /**
- * The treeview context menu - Open in a new window function has been clicked
+ * Display the login form or just log out
+ * These two functions are implemented by the
+ * plugin-page->>html->login
+ */
+function contextMenuLogin(node) {
+
+ 	/*<!-- build:debug -->*/
+ 	if (marknotes.settings.debug) {
+ 		console.log('Context menu - Login');
+ 		console.log(node);
+ 	}
+ 	/*<!-- endbuild -->*/
+
+	if (marknotes.settings.authenticated === 0) {
+		fnPluginTaskLogin();
+	} else {
+		fnPluginTaskLogout();
+	}
+
+	return true;
+
+}
+
+/**
+ * The treeview context menu - Open in a new window
+ * function has been clicked
  */
 function contextMenuSlideshow(node) {
 

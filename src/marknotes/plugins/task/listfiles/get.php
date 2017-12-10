@@ -64,9 +64,10 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
 
 			$arrFiles = array();
-			// Due to the ACLs plugin, the list of folders that are returned
-			// by this script can vary from one user to an another so we
-			// can't store the information at the session level (or to a
+			// Due to the ACLs plugin, the list of folders that
+			// are returned by this script can vary from one
+			// user to an another so we can't store the
+			// information at the session level (or to a
 			// "user" level)
 			if (!$bACLsLoaded) {
 				$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);

@@ -3,10 +3,11 @@
  * used by the last Ajaxify call.
  *
  * In the ajaxify() function, we can set things like :
- *      ajaxify_Previous_Run.task = $data.task;
+ *	  ajaxify_Previous_Run.task = $data.task;
  *
  * Then, in a future call of ajaxify(), we can make f.i.
- *		alert("Last running task was : " + ajaxify_Previous_Run('task'));
+ *		alert("Last running task was : " +
+ *			ajaxify_Previous_Run('task'));
  */
 function ajaxify_Previous_Run($info) {
 	if ($info == 'callback') {
@@ -33,11 +34,11 @@ function ajaxify_Previous_Run($info) {
 /**
  * Logic for retrieving the callback parameter
  */
-function ajaxify_get_callback($params, $bReload) {
+function ajaxify_get_callback($params, $bTaskReload) {
 
 	$callback = '';
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		$callback = ajaxify_Previous_Run('callback');
 
 		/*<!-- build:debug -->*/
@@ -58,11 +59,11 @@ function ajaxify_get_callback($params, $bReload) {
 /**
  * Logic for retrieving the dataType parameter
  */
-function ajaxify_get_dataType($params, $bReload) {
+function ajaxify_get_dataType($params, $bTaskReload) {
 
 	$dataType = (($params.task == 'task.export.html') ? 'html' : '');
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		$dataType = ajaxify_Previous_Run('dataType');
 
 		/*<!-- build:debug -->*/
@@ -88,11 +89,11 @@ function ajaxify_get_dataType($params, $bReload) {
 /**
  * Logic for retrieving the filename parameter
  */
-function ajaxify_get_filename($params, $bReload) {
+function ajaxify_get_filename($params, $bTaskReload) {
 
 	$filename = '';
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		$filename = ajaxify_Previous_Run('filename');
 		$params.filename = ajaxify_Previous_Run('filename');
 
@@ -119,9 +120,9 @@ function ajaxify_get_filename($params, $bReload) {
 /**
  * Logic for retrieving the task parameter
  */
-function ajaxify_get_param($params, $bReload) {
+function ajaxify_get_param($params, $bTaskReload) {
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		$param = ajaxify_Previous_Run('param');
 		$params.param = $param;
 		/*<!-- build:debug -->*/
@@ -140,11 +141,11 @@ function ajaxify_get_param($params, $bReload) {
 /**
  * Logic for retrieving the select_node parameter
  */
-function ajaxify_get_select_node($params, $bReload) {
+function ajaxify_get_select_node($params, $bTaskReload) {
 
 	$select_node = {};
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		$select_node = ajaxify_Previous_Run('select_node');
 
 		/*<!-- build:debug -->*/
@@ -166,9 +167,9 @@ function ajaxify_get_select_node($params, $bReload) {
 /**
  * Logic for retrieving the target parameter
  */
-function ajaxify_get_target($params, $bReload) {
+function ajaxify_get_target($params, $bTaskReload) {
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		$target = ajaxify_Previous_Run('target');
 
 		/*<!-- build:debug -->*/
@@ -193,7 +194,7 @@ function ajaxify_get_task($params) {
 
 	$task = (typeof $params.task === 'undefined') ? '' : $params.task;
 
-	if ($bReload) {
+	if ($bTaskReload) {
 		// $params.task is reload so
 		$params.task = ajaxify_Previous_Run('task');
 		$task = $params.task;
@@ -220,11 +221,11 @@ function ajaxify_get_task($params) {
 /**
  * Logic for retrieving the useStore parameter
  */
-function ajaxify_get_useStore($params, $bReload) {
+function ajaxify_get_useStore($params, $bTaskReload) {
 
 	$useStore = false;
 
-	if (!$bReload) {
+	if (!$bTaskReload) {
 		// Allow to use the navigator's localStorage ?
 		// The "store" object is created by the store.js file that
 		// is included by the /page/html/optimize plugin when the
@@ -259,12 +260,15 @@ function ajaxify_get_useStore($params, $bReload) {
  * Run an ajax query
  *
  * @param {json} $params
- *      task = which task should be fired
- *      param = (optional) parameter to provide for the calling task
- *      callback = (optional) Function to call once the ajax call
+ *	  task = which task should be fired
+ *	  param = (optional) parameter to provide for the calling task
+ *	  callback = (optional) Function to call once the ajax call
  *		is successfully done
- *      useStore = (optional) Tell if the localStorage object can be used
- *			or not. Implemented by the page/html/optimize plugin
+ *	  useStore = (optional) Tell if the localStorage object can
+ *			be used or not.
+ *			Implemented by the page/html/optimize plugin
+ *		reload = (optional) True/False. If set, the ?reload parameter
+ *			will be added to the querystring
  *
  * @returns {undefined}
  */
@@ -272,24 +276,29 @@ function ajaxify($params) {
 
 	var $data = {};
 
-	$bReload = false;
+	$bTaskReload = false;
 	if ((typeof $params.task !== 'undefined') && ($params.task == 'reload')) {
-		$bReload = true;
+		$bTaskReload = true;
 	}
 
 	// Get parameters. This is a little more complex than just reading
 	// the $params parameter because, when $params.task is "reload",
 	// ajaxify should retrieve the $params used during the last call
 	// so we need to retrieve, parameter by parameter the old value.
-	$useStore = ajaxify_get_useStore($params, $bReload);
-	$data.task = ajaxify_get_task($params, $bReload);
-	$data.param = ajaxify_get_param($params, $bReload);
-	$filename = ajaxify_get_filename($params, $bReload);
-	$dataType = ajaxify_get_dataType($params, $bReload);
-	$target = ajaxify_get_target($params, $bReload);
-	$callback = ajaxify_get_callback($params, $bReload);
+	$useStore = ajaxify_get_useStore($params, $bTaskReload);
+	$data.task = ajaxify_get_task($params, $bTaskReload);
+	$data.param = ajaxify_get_param($params, $bTaskReload);
+	$filename = ajaxify_get_filename($params, $bTaskReload);
+	$dataType = ajaxify_get_dataType($params, $bTaskReload);
+	$target = ajaxify_get_target($params, $bTaskReload);
+	$callback = ajaxify_get_callback($params, $bTaskReload);
 
 	$select_node = ajaxify_get_select_node($params, false);
+
+	$reload=false;
+	if (typeof $params.reload !== 'undefined') {
+		$reload = $params.reload;
+	}
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -361,7 +370,22 @@ function ajaxify($params) {
 			$data.type = $params.type;
 		}
 
-		$url = (typeof $filename !== 'undefined') ? $filename : marknotes.url;
+		if ($reload==1) {
+			// Add the reload parameter to inform PHP code
+			// to not use $_SESSION
+			$data.reload = 1;
+		}
+
+		$url = ($filename !== '') ? $filename : marknotes.url;
+
+		// If a filename is specified (like listfiles.json), there
+		// is no querystring (the $data variable) except the ?reload
+		// parameter if needed (when $reload is set to 1).
+		// This will ask to the PHP code to not use the $_SESSION
+		// object in case of the optimize plugin is active.
+		if ($filename !== '') {
+			$data = ($reload==1) ? 'reload' : '';
+		}
 
 		$.ajax({
 			beforeSend: function () {
@@ -375,7 +399,7 @@ function ajaxify($params) {
 			cache: true,
 			type: (marknotes.settings.debug ? 'GET' : 'POST'),
 			url: $url,
-			data: ($filename === '') ? $data : '',
+			data: $data,
 			datatype: $dataType,
 			success: function (data) {
 				// If "select_node" has been set by the caller
@@ -387,7 +411,7 @@ function ajaxify($params) {
 				if (!jQuery.isEmptyObject($select_node)) {
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
-						console.log('   Add data.select_node attribute');
+						console.log('	Add data.select_node attribute');
 						console.log($select_node);
 					}
 					/*<!-- endbuild -->*/

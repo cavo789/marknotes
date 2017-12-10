@@ -84,6 +84,8 @@
 	"login_error": "Incorrect login, please try again",
 	"login_success": "Login successfull",
 	"loginform": "Login form",
+	"loginform_in": "Log in",
+	"loginform_out": "Log out",
 	"no_save_allowed": "Error, saving notes isn&#39;t allowed.",
 	"not_authenticated": "You need first to authenticate",
 	"open_html": "Open in a new window",
