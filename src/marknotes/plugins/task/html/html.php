@@ -1,7 +1,7 @@
 <?php
 /**
- * What are the actions to fired when MarkNotes is running the "html" task ?
- */
+* What are the actions to fired when MarkNotes is running the "html" task ?
+*/
 
 namespace MarkNotes\Plugins\Task;
 
@@ -28,17 +28,17 @@ class HTML
 	}
 
 	/**
-	 * Attach the function and responds to events
-	 */
+	* Attach the function and responds to events
+	*/
 	public function bind(string $task)
 	{
-/*<!-- build:debug -->*/
-$aeDebug = \MarkNotes\Debug::getInstance();
-$aeDebug->here("TOUJOURS UTILISÉ ???",1);
-/*<!-- build:debug -->*/
-die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
-/*<!-- endbuild -->*/
-/*<!-- endbuild -->*/
+		/*<!-- build:debug -->*/
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeDebug->here("TOUJOURS UTILISÉ ???",1);
+		/*<!-- build:debug -->*/
+		die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+		/*<!-- endbuild -->*/
+		/*<!-- endbuild -->*/
 		/*<!-- build:debug -->*/
 		die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
 		/*<!-- endbuild -->*/

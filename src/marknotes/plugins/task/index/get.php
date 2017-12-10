@@ -1,25 +1,25 @@
 <?php
 /**
- * Gererate a fake index.html file i.e. return the list of files
- * present in the folder; just like if an "index.html" was foresee
- *
- * Return a dynamic index.html page : the user will be able to address any
- * folders just by typing the URL like http://site/docs/folder/subfolder
- * and followed by index.html.
- *
- * That index.html file doesn't exists and will be generated (html rendering)
- * by this class.
- *
- * The content of the /templates/index.php file will be taken (as template)
- * and the list of .md files immediatly in the adressed folder (and not
- * in subfolders) will be collected.
- *
- * This task will generate a <ul><li> list and append in into the template
- * then return the html.
- *
- * Example : http://localhost/marknotes/docs/CMS/Joomla/index.html
- * will display the list of .md notes of /docs/CMS/Joomla
- */
+* Gererate a fake index.html file i.e. return the list of files
+* present in the folder; just like if an "index.html" was foresee
+*
+* Return a dynamic index.html page : the user will be able to address any
+* folders just by typing the URL like http://site/docs/folder/subfolder
+* and followed by index.html.
+*
+* That index.html file doesn't exists and will be generated (html rendering)
+* by this class.
+*
+* The content of the /templates/index.php file will be taken (as template)
+* and the list of .md files immediatly in the adressed folder (and not
+* in subfolders) will be collected.
+*
+* This task will generate a <ul><li> list and append in into the template
+* then return the html.
+*
+* Example : http://localhost/marknotes/docs/CMS/Joomla/index.html
+* will display the list of .md notes of /docs/CMS/Joomla
+*/
 namespace MarkNotes\Plugins\Task\Index;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -31,10 +31,10 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = 'plugins.options.task.index';
 
 	/**
-	 * This function is called when the folder contains a file called
-	 * index.md i.e. when no index.html should be "generated" but when
-	 * the plugin just need to read the index.md and convert it to html.
-	 */
+	* This function is called when the folder contains a file called
+	* index.md i.e. when no index.html should be "generated" but when
+	* the plugin just need to read the index.md and convert it to html.
+	*/
 	private static function readIndexMD(&$params = null) : bool
 	{
 		$aeFiles = new \MarkNotes\Files();

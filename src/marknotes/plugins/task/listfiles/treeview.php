@@ -1,17 +1,17 @@
 <?php
 /**
- * Build the JSON answer required by jsTree in order to display the
- * list of folders (empty folder are taken) and files.
- *
- * The list will NOT include protected folders i.e. when the ACLs plugin
- * is enabled and configured for not showing somes folders to everyone.
- *
- * When the visitor isn't allowed to see a folder, that folder won't appear
- * in the JSON answer
- *
- * Answer to /index.php?task=task.listfiles.treeview or the "fake"
- * file /listfiles.json
- */
+* Build the JSON answer required by jsTree in order to display the
+* list of folders (empty folder are taken) and files.
+*
+* The list will NOT include protected folders i.e. when the ACLs plugin
+* is enabled and configured for not showing somes folders to everyone.
+*
+* When the visitor isn't allowed to see a folder, that folder won't appear
+* in the JSON answer
+*
+* Answer to /index.php?task=task.listfiles.treeview or the "fake"
+* file /listfiles.json
+*/
 namespace MarkNotes\Plugins\Task\ListFiles;
 defined('_MARKNOTES') or die('No direct access allowed');
 class Treeview extends \MarkNotes\Plugins\Task\Plugin
@@ -36,6 +36,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		//$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
 		//$bEncodeAccents = boolval($arr['encode_accent']);
 		$root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
@@ -72,12 +73,14 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			'icon' => 'folder',
 			'text' => str_replace(DS, '/', $sDirectoryText),
 			'state' => array(
-				'opened' => (($root == $dir)?1:0), // Opened only if the top root folder
+				// Opened only if the top root folder
+				'opened' => (($root == $dir)?1:0),
 				'disabled' => 1
 			),
 			'data' => array(
 				//'task' => 'display',
-				// Right clic on the node ? Open the_folder/index.html page
+				// Right clic on the node ?
+				// Open the_folder/index.html page
 				'url' => $dataURL
 			),
 			'children' => array()
@@ -101,14 +104,14 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// 30 characters in the treeview are enough
 				if (strlen($sFileText) > TREEVIEW_MAX_FILENAME_LENGTH) {
 					/* We'll truncate the filename to only the first ...
-					  thirty ... characters
-					  But, special case, when the filename is truncated,
-					  if the very last position is an accentuated char.,
-					  we can't truncate exactly at that size because such
-					  character is on two bytes. We can only keep the first
-					  one otherwise we'll have an encoding problem.
-					  So, in this case, truncate one more char (so keep
-					  29 f.i.)
+					thirty ... characters
+					But, special case, when the filename is truncated,
+					if the very last position is an accentuated char.,
+					we can't truncate exactly at that size because such
+					character is on two bytes. We can only keep the first
+					one otherwise we'll have an encoding problem.
+					So, in this case, truncate one more char (so keep
+					29 f.i.)
 					*/
 					try {
 						$wLen = TREEVIEW_MAX_FILENAME_LENGTH;

@@ -1,32 +1,32 @@
 <?php
 /**
- * Get the list of .md files present in the /docs folder.
- * This plugin will make sure, thanks to ACLs plugin, that
- * files are accessible to the visitor
- *
- * This task won't return a visible output (no json, no html, ...)
- * but will initialize an array in his run() function.
- *
- * Example of a call :
- *
- *		$arrFiles = array();
+* Get the list of .md files present in the /docs folder.
+* This plugin will make sure, thanks to ACLs plugin, that
+* files are accessible to the visitor
+*
+* This task won't return a visible output (no json, no html, ...)
+* but will initialize an array in his run() function.
+*
+* Example of a call :
+*
+*		$arrFiles = array();
 
- *		// Call the listfiles.get event and initialize $arrFiles
- *		$aeEvents = \MarkNotes\Events::getInstance();
- *		$args=array(&$arrFiles);
- *		$aeEvents->loadPlugins('task.listfiles.get');
- *		$aeEvents->trigger('task.listfiles.get::run', $args);
- *
- *		$arrFiles = $args[0];
- *
- *		foreach ($arrFiles as $file) {
- *			echo "Dear visitor, the file " . $file . " is accessible to ".
- *				"you</br>";
- *		}
- *
- * Can answer to /index.php?task=task.listfiles.get
- * (but there is no output)
- */
+*		// Call the listfiles.get event and initialize $arrFiles
+*		$aeEvents = \MarkNotes\Events::getInstance();
+*		$args=array(&$arrFiles);
+*		$aeEvents->loadPlugins('task.listfiles.get');
+*		$aeEvents->trigger('task.listfiles.get::run', $args);
+*
+*		$arrFiles = $args[0];
+*
+*		foreach ($arrFiles as $file) {
+*			echo "Dear visitor, the file " . $file . " is accessible to ".
+*				"you</br>";
+*		}
+*
+* Can answer to /index.php?task=task.listfiles.get
+* (but there is no output)
+*/
 namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
