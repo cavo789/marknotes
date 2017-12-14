@@ -14,6 +14,7 @@
 	"apply_filter": "Limite la liste des notes \u00e0 [$1]",
 	"apply_filter_tag": "Affiche les notes reprennant ce mot",
 	"button_addTOC": "Ins\u00e8re une table des mati\u00e8res",
+	"button_curlBlog": "R\u00e9cup\u00e8re le code HTML d'une page sur le web",
 	"button_encrypt": "Encrypte la s\u00e9lection",
 	"button_exit_edit_mode": "Quitte le mode \u00e9dition",
 	"button_save": "Enregistre vos modifications sur le serveur",

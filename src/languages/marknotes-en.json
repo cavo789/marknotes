@@ -14,6 +14,7 @@
 	"apply_filter": "Filtering to [$1]",
 	"apply_filter_tag": "Display notes containing this tag",
 	"button_addTOC": "Add a table of content",
+	"button_curlBlog": "Get the HTML of a page (from an URL)",
 	"button_encrypt": "Add encryption for the selection",
 	"button_exit_edit_mode": "Exit the editing mode",
 	"button_save": "Submit your changes",

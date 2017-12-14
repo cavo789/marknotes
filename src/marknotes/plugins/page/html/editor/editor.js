@@ -161,6 +161,15 @@ function afterEditInitMDE($data) {
 				className: "fa fa-map-o",
 				title: $.i18n('button_addTOC')
 			},
+			{
+				// Retrieve the HTML of an article on the web
+				name: "curlBlog",
+				action: function customFunction(editor) {
+					buttonCurlBlog(editor);
+				},
+				className: "fa fa-download",
+				title: $.i18n('button_curlBlog')
+			},
 			//"|",
 			//{
 			//	// Add a custom button for saving
@@ -288,4 +297,26 @@ function buttonAddTOC(editor) {
 	var cm = editor.codemirror;
 	// Just add the tag where the cursor is located
 	cm.replaceSelection('%TOC_5%');
+}
+
+function buttonCurlBlog(editor) {
+
+	var $url = 'https://www.marknotes.fr/docs/marknotes/'+
+		'Plugins/content/html/microdata.html';
+
+	var $data = {};
+	$data.task = 'task.fetch.gethtml';
+	//$data.param = window.btoa(encodeURIComponent(JSON.stringify($url)));
+
+	$.ajax({
+		async: true,
+		type: 'GET',
+		url: marknotes.url,
+		data: $data,
+		datatype: 'html',
+		success: function (data) {
+			editor.codemirror.setValue(data);
+		}
+	}); // $.ajax()
+
 }

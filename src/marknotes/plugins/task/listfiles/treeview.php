@@ -13,13 +13,17 @@
 * file /listfiles.json
 */
 namespace MarkNotes\Plugins\Task\ListFiles;
+
 defined('_MARKNOTES') or die('No direct access allowed');
+
 class Treeview extends \MarkNotes\Plugins\Task\Plugin
 {
+
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.task.listfiles';
 	protected static $json_options = 'plugins.options.task.listfiles';
 	private static $bACLsLoaded = 0;
+
 	/**
 	* Called by ListFiles().  Populate an array with the list of .md files.
 	* The structure of the array match the needed definition of the jsTree

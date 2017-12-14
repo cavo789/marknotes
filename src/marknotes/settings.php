@@ -41,16 +41,16 @@ class Settings
 	}
 
 	/**
-	 * $arr is the debug node of the settings.json file, something like :
-	 *
-	 *  "debug": {
-	 *	  "enabled": 1,
-	 *	  "development": 1,
-	 *	  "logfile": {
-	 *		  "template": "%message% %context%"
-	 *	  }
-	 *  }
-	 */
+	* $arr is the debug node of the settings.json file, something like :
+	*
+	*  "debug": {
+	*	  "enabled": 1,
+	*	  "development": 1,
+	*	  "logfile": {
+	*		  "template": "%message% %context%"
+	*	  }
+	*  }
+	*/
 	private function enableDebugMode(array $arr, string $fname) : bool
 	{
 		/*<!-- build:debug -->*/
@@ -98,23 +98,23 @@ class Settings
 	}
 
 	/**
-	 * Read settings.json in this order :
-	 *   1. the settings.json.dist file to initialize all parameters
-	 *   2. If present, the settings.json file i.e. the user settings
-	 *	  for the application
-	 *   3. If present, the settings.json file that can be found in
-	 *	  the note folder
-	 *	  (so if the note /docs/marknotes/userguide.md if displayed,
-	 *	  check if a file /docs/settings.json and
-	 *	  /docs/marknotes/settings.json exists and if so,
-	 *	  use it) (check from the parent folder till the deepest one),
-	 *   4. Finally, a very specific note.json file : if the note
-	 *	  /docs/marknotes/userguide.md if displayed, check if the file
-	 *	  /docs/marknotes/userguide.json exists and if so, use it.
-	 *
-	 * In this order so the file loaded in step 4 will have the priority
-	 * and can overwrite global settings
-	 */
+	* Read settings.json in this order :
+	*	1. the settings.json.dist file to initialize all parameters
+	*	2. If present, the settings.json file i.e. the user settings
+	*	  for the application
+	*	3. If present, the settings.json file that can be found in
+	*	  the note folder
+	*	  (so if the note /docs/marknotes/userguide.md if displayed,
+	*	  check if a file /docs/settings.json and
+	*	  /docs/marknotes/settings.json exists and if so,
+	*	  use it) (check from the parent folder till the deepest one),
+	*	4. Finally, a very specific note.json file : if the note
+	*	  /docs/marknotes/userguide.md if displayed, check if the file
+	*	  /docs/marknotes/userguide.json exists and if so, use it.
+	*
+	* In this order so the file loaded in step 4 will have the priority
+	* and can overwrite global settings
+	*/
 	private function loadJSON(array $params = null) : array
 	{
 		$aeJSON = \MarkNotes\JSON::getInstance();
@@ -179,8 +179,8 @@ class Settings
 
 				if (!is_array($json['debug'])) {
 					$arr=array(
-					   'enabled'=>$json['debug']??0,
-					   'development'=>$json['development']??0
+						'enabled'=>$json['debug']??0,
+						'development'=>$json['development']??0
 					);
 				} else {
 					$arr=$json['debug'];
@@ -295,7 +295,7 @@ class Settings
 
 	/**
 	* Return the translation of a given text
-	 *
+	*
 	* @param string $variable
 	*/
 	public function getText(string $variable, string $default = '', bool $jsProtect = false) : string
@@ -337,12 +337,12 @@ class Settings
 	}
 
 	/**
-	 * Small sanitization function to be sure that the user willn't type anything in the settings.json file
-	 * for filename properties
-	 *
-	 * @param  string $fname
-	 * @return string
-	 */
+	* Small sanitization function to be sure that the user willn't type anything in the settings.json file
+	* for filename properties
+	*
+	* @param  string $fname
+	* @return string
+	*/
 	private function sanitizeFileName(string $fname) : string
 	{
 		$fname = trim($fname);
@@ -412,11 +412,11 @@ class Settings
 	}
 
 	/**
-	 * The application root folder (due to the use of symbolic links, the .php source files can
-	 * be in an another folder than the website itself
-	 *
-	 * @return string
-	 */
+	* The application root folder (due to the use of symbolic links, the .php source files can
+	* be in an another folder than the website itself
+	*
+	* @return string
+	*/
 	public function getFolderAppRoot() : string
 	{
 		return $this->folderAppRoot;
@@ -434,12 +434,12 @@ class Settings
 	}
 
 	/**
-	 * Return the name of the folder (relative) of the documents folder
-	 *
-	 * @param  bool  True  : return the full path (f.i. 'C:\Repository\notes\docs\')
-	 *			   False : return the relative one (f.i. 'docs')
-	 * @return string
-	 */
+	* Return the name of the folder (relative) of the documents folder
+	*
+	* @param  bool  True  : return the full path (f.i. 'C:\Repository\notes\docs\')
+	*				False : return the relative one (f.i. 'docs')
+	* @return string
+	*/
 	public function getFolderDocs(bool $absolute = true) : string
 	{
 		return ($absolute?$this->getFolderWebRoot():'').$this->folderDocs;
@@ -458,11 +458,11 @@ class Settings
 	} // function setFolderDocs
 
 	/**
-	 * Return the path to the tmp folder at the webroot.
-	 * If the folder doesn't exist yet, create it
-	 *
-	 * @return string
-	 */
+	* Return the path to the tmp folder at the webroot.
+	* If the folder doesn't exist yet, create it
+	*
+	* @return string
+	*/
 	public function getFolderTmp() : string
 	{
 		$folder = rtrim($this->folderWebRoot, DS).DS.'tmp';
@@ -485,11 +485,11 @@ class Settings
 	}
 
 	/**
-	 * Return the path to the tmp folder at the webroot.
-	 * If the folder doesn't exist yet, create it
-	 *
-	 * @return string
-	 */
+	* Return the path to the tmp folder at the webroot.
+	* If the folder doesn't exist yet, create it
+	*
+	* @return string
+	*/
 	public function getFolderCache() : string
 	{
 		$folder = rtrim($this->folderWebRoot, DS).DS.'cache';
@@ -511,10 +511,10 @@ class Settings
 		return $folder.DS;
 	}
 	/**
-	 * Return the root folder of the website (f.i. 'C:\Repository\notes\')
-	 *
-	 * @return string
-	 */
+	* Return the root folder of the website (f.i. 'C:\Repository\notes\')
+	*
+	* @return string
+	*/
 	public function getFolderWebRoot() : string
 	{
 		return $this->folderWebRoot;
@@ -541,15 +541,15 @@ class Settings
 	}
 
 	/**
-	 * Return the template to use for the screen display or
-	 * the html output.
-	 * Get the template info from the settings.json when the
-	 * node 'templates' is found there
-	 *
-	 * @param  string $default Default filename with extension
-	 *					(f.i. 'screen' or 'html')
-	 * @return string	Full path to the file
-	 */
+	* Return the template to use for the screen display or
+	* the html output.
+	* Get the template info from the settings.json when the
+	* node 'templates' is found there
+	*
+	* @param  string $default Default filename with extension
+	*					(f.i. 'screen' or 'html')
+	* @return string	Full path to the file
+	*/
 	public function getTemplateFile(string $default = 'screen') : string
 	{
 
@@ -579,9 +579,9 @@ class Settings
 				// Back to the default one;
 				/*<!-- build:debug -->*/
 				if ($this->getDebugMode()) {
-				   $aeDebug = \MarkNotes\Debug::getInstance();
-				   $aeDebug->log("Template [".$fname."] not found, ".
-				   	"please review your settings.json file","warning");
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log("Template [".$fname."] not found, ".
+					"please review your settings.json file","warning");
 				}
 				/*<!-- endbuild -->*/
 
@@ -610,39 +610,39 @@ class Settings
 	}
 
 	/**
-	 * Return the max width size for images (from settings.json)
-	 *
-	 * @return string
-	 */
+	* Return the max width size for images (from settings.json)
+	*
+	* @return string
+	*/
 	public function getPageImgMaxWidth() : string
 	{
 		return $this->json['page']['img_maxwidth'] ?? IMG_MAX_WIDTH;
 	} // function getPageImgMaxWidth()
 
 	/**
-	 * Return the name of the website
-	 *
-	 * @return string
-	 */
+	* Return the name of the website
+	*
+	* @return string
+	*/
 	public function getSiteName() : string
 	{
 		return trim($this->json['site_name'] ?? '');
 	}
 
 	/**
-	 * Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
-	 *
-	 * The json "convert" entry looks like this :
-	 *	 "convert": {
-	 *		 "pandoc": {
-	 *			 "script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
-	 *			 "options" : "--latex-engine=xelatex -V geometry:margin=1in -o"
-	 *		 }
-	 *
-	 * This function will return an array with every entries below the name of the converting tool but
-	 * only if the tool is found i.e. if the "script" file exists on the disk
-	 *
-	 */
+	* Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
+	*
+	* The json "convert" entry looks like this :
+	*	 "convert": {
+	*		 "pandoc": {
+	*			 "script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
+	*			 "options" : "--latex-engine=xelatex -V geometry:margin=1in -o"
+	*		 }
+	*
+	* This function will return an array with every entries below the name of the converting tool but
+	* only if the tool is found i.e. if the "script" file exists on the disk
+	*
+	*/
 	public function getConvert(string $sTool) : array
 	{
 		/*<!-- build:debug -->*/
@@ -668,18 +668,18 @@ class Settings
 	}
 
 	/**
-	 * Return a node from the "Page" JSON entry
-	 */
+	* Return a node from the "Page" JSON entry
+	*/
 	public function getPage(string $node = '', $default = '')
 	{
 		return $this->json['page'][$node] ?? $default;
 	} // function getPage()
 
 	/**
-	 * Get locale
-	 *
-	 * @return bool
-	 */
+	* Get locale
+	*
+	* @return bool
+	*/
 	public function getLocale() : string
 	{
 		// Set regional settings, language and locale
@@ -690,28 +690,28 @@ class Settings
 	}
 
 	/**
-	 * Get timezone
-	 *
-	 * @return bool
-	 */
+	* Get timezone
+	*
+	* @return bool
+	*/
 	public function getTimezone() : string
 	{
 		return $this->json['regional']['timezone'] ?? 'Europe/London';
 	}
 
 	/**
-	 * Return an information of the plugins node
-	 *
-	 * $info can be, f.i,
-	 *
-	 *	plugins.content.html = will return the list of all plugins
-	 *		  under content->html
-	 *	plugins.options.bootstrap.bullet = will return the value of the
-	 *		  bullet attribute
-	 *	/regex : by specifying the /; this indicate to not search inside
-	 *		  the "plugins" node which is the default
-	 *
-	 */
+	* Return an information of the plugins node
+	*
+	* $info can be, f.i,
+	*
+	*	plugins.content.html = will return the list of all plugins
+	*		  under content->html
+	*	plugins.options.bootstrap.bullet = will return the value of the
+	*		  bullet attribute
+	*	/regex : by specifying the /; this indicate to not search inside
+	*		  the "plugins" node which is the default
+	*
+	*/
 	public function getPlugins(string $info = '', array $default = array()) : array
 	{
 		$arr = $default;
@@ -764,11 +764,11 @@ class Settings
 	}
 
 	/**
-	 * Open the package.json file and retrieve an
-	 * information like the version number from there
-	 *
-	 * @return string
-	 */
+	* Open the package.json file and retrieve an
+	* information like the version number from there
+	*
+	* @return string
+	*/
 	public function getPackageInfo(string $info = 'version') : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
