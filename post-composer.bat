@@ -78,7 +78,8 @@ REM call :fnCopyjqueryi18n
 REM call :fnCopyCLDRPluralRuleParser
 REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
-call :fnUpload
+REM call :fnUpload
+REM call :fnHTML2MD
 
 REM call :fnFinalize
 GOTO END:
@@ -749,9 +750,7 @@ ECHO    COPY TO %PAGE%html\github_banner\libs\github-corners
 ECHO.
 IF NOT EXIST %PAGE%html\github_banner\libs\github-corners MKDIR %PAGE%html\github_banner\libs\github-corners >> %LOG%
 COPY %VENDOR%github-corners\css\styles.css %PAGE%html\github_banner\libs\github-corners /Y >> %LOG%
-
 goto:eof
-:fnGitHubCorners
 
 ::--------------------------------------------------------
 ::-- fnUpload
@@ -765,8 +764,18 @@ IF NOT EXIST %PAGE%html\upload\libs\dropzone MKDIR %PAGE%html\upload\libs\dropzo
 COPY %VENDOR%dropzone\dist\min\dropzone.min.css %PAGE%html\upload\libs\dropzone /Y >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.js %PAGE%html\upload\libs\dropzone /Y >> %LOG%
 
+::--------------------------------------------------------
+::-- fnHTML2MD
+::--------------------------------------------------------
+
+:fnHTML2MD
+ECHO  === fnHTML2MD ===
+ECHO    COPY TO %TASK%convert\libs\html2md
+ECHO.
+IF NOT EXIST %TASK%convert\libs\html2md MKDIR %TASK%convert\libs\html2md >> %LOG%
+XCOPY %VENDOR%html-to-markdown\src\*.* %TASK%convert\libs\html2md /E /Y >> %LOG%
+
 goto:eof
-:fnGitHubCorners
 
 REM -----------------------------------------------
 REM -----------------------------------------------
