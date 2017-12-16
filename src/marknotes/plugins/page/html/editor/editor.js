@@ -170,6 +170,15 @@ function afterEditInitMDE($data) {
 				className: "fa fa-download",
 				title: $.i18n('button_curlBlog')
 			},
+			{
+				// Convert the content (HTML) to markdown
+				name: "convertMD",
+				action: function customFunction(editor) {
+					button_convertMD(editor);
+				},
+				className: "fa fa-download",
+				title: $.i18n('button_convertMD')
+			},
 			//"|",
 			//{
 			//	// Add a custom button for saving
@@ -299,18 +308,47 @@ function buttonAddTOC(editor) {
 	cm.replaceSelection('%TOC_5%');
 }
 
+/**
+ * Call the "task.fetch.gethtml" task and specify an URL
+ * A cURL action will be fired and try to retrieve the HTML content
+ * of that page
+ */
 function buttonCurlBlog(editor) {
 
-	var $url = 'https://www.marknotes.fr/docs/marknotes/'+
-		'Plugins/content/html/microdata.html';
+	var $url = prompt("Which URL please ?", "");
+
+	if ($url != null) {
+		var $data = {};
+		$data.task = 'task.fetch.gethtml';
+		$data.param = $url;
+
+		$.ajax({
+			async: true,
+			type: 'POST',
+			url: marknotes.url,
+			data: $data,
+			datatype: 'html',
+			success: function (data) {
+				editor.codemirror.setValue(data);
+			}
+		}); // $.ajax()
+	}
+
+}
+
+/**
+ * Call the task "task.convert.fromHTML" so the content of the
+ * editor can be converted (best try) to a markdown string
+ */
+function button_convertMD(editor) {
 
 	var $data = {};
-	$data.task = 'task.fetch.gethtml';
-	//$data.param = window.btoa(encodeURIComponent(JSON.stringify($url)));
+	$data.task = 'task.convert.fromHTML';
+	$data.param = editor.codemirror.getValue();
 
 	$.ajax({
 		async: true,
-		type: 'GET',
+		type: 'POST',
 		url: marknotes.url,
 		data: $data,
 		datatype: 'html',

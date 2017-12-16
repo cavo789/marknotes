@@ -482,6 +482,12 @@
 				"not_if_task": ["task.search.search", "task.timeline.get", "task.edit.form"],
 				"only_if_task": []
 			},
+			"csv": {
+				"description": "Allow to insert a .csv file in the note; convert the .csv into an array",
+				"enabled": 1,
+				"not_if_task": [],
+				"only_if_task": ["main", "interface", "task.export.html"]
+			},
 			"encrypt": {
 				"description": "Add encryption. **The preferred order for this plugin is #2, after the beautify plugin**",
 				"enabled": 1,
@@ -648,6 +654,11 @@
 				"beautify": {
 					"remove_html_comments": 1,
 					"rewrite_file": 0
+				},
+				"csv": {
+					"separator": ";",
+					"value_separator" : "",
+					"md_column_separator": "| "
 				},
 				"definitions": {
 					"title": "## Glossary",
@@ -903,6 +914,27 @@
 							"txt": "--from markdown --ascii"
 						}
 					}
+				},
+				"fetch": {
+					"querystring": "?tmpl=component",
+					"timeout" : 5,
+					"user-agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36 FirePHP/4Chrome",
+					"selector": [
+						"//body",
+						"//article[@id='CONTENT']",
+						"//div[@class='item-page']",
+						"//div[@id='k2Container']"
+					],
+					"remove": [
+						"//div[@class='share-container']",
+						"//div[@class='middleSocialSharing']",
+						"//dl[@class='article-info muted']",
+						"//ul[@class='pager pagenav']",
+						"//div[@class='blogDate pull-left']",
+						"//div[@class='clr']",
+						"//div[@class='itemComments']",
+						"//div[@class='itemBackToTop']"
+					]
 				},
 				"login": {
 					"username": "admin",

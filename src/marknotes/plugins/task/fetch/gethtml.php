@@ -9,25 +9,47 @@ namespace MarkNotes\Plugins\Task\Fetch;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-use League\HTMLToMarkdown\HtmlConverter;
-
 class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
-	protected static $json_settings = ''; //'plugins.task.fetch';
-	protected static $json_options = '';
+	protected static $json_settings = 'plugins.task.fetch';
+	protected static $json_options = 'plugins.options.task.fetch';
+
+	// Default user-agent if not specified in the settings.json,
+	// in plugins->options->task->fetch->user-agent
+	protected static $ua = 'Mozilla/5.0 (Windows NT 6.1; WOW64) '.
+		'AppleWebKit/537.36 (KHTML, like Gecko) '.
+		'Chrome/35.0.1916.153 Safari/537.36 FirePHP/4Chrome';
 
 	private static function getHTML(string $url) : string
 	{
+		// Get the User-agent to use
+		$ua = self::getOptions('user-agent', static::$ua);
+		if (trim($ua) == '') {
+			$ua = static::$ua;
+		}
+
+		// For the Joomla CMS for instance, the ?tmpl=component
+		// parameter allow to only get the content without any
+		// additionnals stuffs (modules, template, ...).
+		$addQuerystring = trim(self::getOptions('querystring', ''));
+		if ($addQuerystring !== '') {
+			$url .= $addQuerystring;
+		}
+
+		// Timeout delay in seconds
+		// plugins->options->task->fetch->timeout
+		$timeout = self::getOptions('timeout', 5);
+		if (trim($timeout) == '') {
+			$timeout = 5;
+		}
+
 		$ch = curl_init($url);
 
-		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) '.
-			'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 '.
-			'Safari/537.36 FirePHP/4Chrome');
-
+		curl_setopt($ch, CURLOPT_USERAGENT, $ua);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // Timeout delay in seconds
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
@@ -36,89 +58,103 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 
 		curl_close($ch);
 
-		$dom = new \DOMDocument();
-		@$dom->loadHTML($content);
-		$xpath = new \DOMXPath($dom);
-
-		// The article is within the <div class="item-page">content</div>
-		$selector = '//body';
-
-		//$selector = '//article[@id="CONTENT"]';
-		//REMOVE ALL <script> and <style>
-		//$selector = '//div[@class="item-page"]';
-		$div = $xpath->query($selector);
-		$div = $div->item(0);
-		$content = $dom->saveXML($div);
-
-		// In the Joomla content, there is a lot of unneeded parts like
-		// social network links, written by, ... Remove them
-		$div = $xpath->query('//div[@class="share-container"]');
-		$div = $div->item(0);
-		$share = $dom->saveXML($div);
-		$content = str_replace($share, '', $content);
-
-		$div = $xpath->query('//dl[@class="article-info muted"]');
-		$div = $div->item(0);
-		$writtenBy = $dom->saveXML($div);
-		$content = str_replace($writtenBy, '', $content);
-
-		$div = $xpath->query('//ul[@class="pager pagenav"]');
-		$div = $div->item(0);
-		$navigation = $dom->saveXML($div);
-		$content = str_replace($navigation, '', $content);
-
-		return '<h1>Test from '.__FILE__.'</h1>'.
-			'<p>Get from '.$url.'</p>'.
-			'<hr/>'.
-			$content;
+		return trim($content);
 	}
 
-	private static function HTML2MD(string $html) : string
+	private static function cleanHTML(string $html) : string
 	{
-		require_once(__DIR__.'/htmltomd/ConfigurationAwareInterface.php');
-		require_once(__DIR__.'/htmltomd/Converter/ConverterInterface.php');
+		// To retrieve only the desired content from the HTML,
+		// we need "selectors" : do we need to take the body,
+		// a specific div, an article node, ...
+		// The Selector entry is there for this purpose
+		$arrSelector = self::getOptions('selector', array("//body"));
 
-		$dir = glob(__DIR__.'/htmltomd/Converter/*.php');
-		foreach ($dir as $file) {
-			require_once($file);
+		// When we've the content, we can probably make a few
+		// cleaning like removing social networks f.i.
+		// The Remove entry is there for this.
+		$arrRemove = self::getOptions('remove', array());
+
+		$dom = new \DOMDocument();
+		$dom->validateOnParse = false;
+		@$dom->loadHTML($html);
+		$xpath = new \DOMXPath($dom);
+
+		$content = '';
+
+		foreach ($arrSelector as $selector) {
+			$div = $xpath->query($selector);
+			$div = $div->item(0);
+			$tmp = $dom->saveXML($div);
+
+			// Do we've found that selector ? (f.i. //body)
+			if ($tmp !== '')  {
+				// Yes => great, we can remember that part
+				$content = $tmp;
+				@$dom->loadHTML($content);
+				$xpath = new \DOMXPath($dom);
+			}
+		} // foreach()
+
+		// We don't need the doctype; just the html of the article
+		$regex = '~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i';
+		$content = preg_replace($regex, '', $content);
+
+		if (trim($content) !== '') {
+			foreach ($arrRemove as $selector) {
+				$div = $xpath->query($selector);
+				$div = $div->item(0);
+				$tmp = $dom->saveXML($div);
+
+				// Do we've found that selector ?
+				if ($tmp !== '') {
+					// Yes => it means that, since we're in the
+					// remove selector, that part should be removed
+					// from the content
+					$content = str_replace($tmp, '', $content);
+				}
+			} // foreach()
 		}
 
-		require_once(__DIR__.'/htmltomd/Environment.php');
-		require_once(__DIR__.'/htmltomd/ElementInterface.php');
-		require_once(__DIR__.'/htmltomd/Element.php');
-		require_once(__DIR__.'/htmltomd/Configuration.php');
-		require_once(__DIR__.'/htmltomd/HtmlConverter.php');
+		// Don't keep inline script
+		$regex = '/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/i';
+		$content = preg_replace($regex, '', $content);
 
-		$converter = new HtmlConverter();
+		// Don't keep the xml tag
+		$regex = '~<\?xml[^>]*>\s*~i';
+		$content = preg_replace($regex, '', $content);
 
-		$converter->getConfig()->setOption('header_style', 'atx');
-		$converter->getConfig()->setOption('italic_style', '*');
-		$converter->getConfig()->setOption('bold_style', '**');
-		$converter->getConfig()->setOption('strip_tags', false);
+		// Don't keep HTML comments
+		$content = preg_replace('/<!--(.*)-->/Uis', '', $content);
 
-		//$html = getContent($url);
+		// Carriage return
+		$content = preg_replace('/&#13;/Uis', '', $content);
 
-		$markdown = $converter->convert($html);
+		// Remove spaces between tags (not inside tags)
+		$content = preg_replace('/(\>)\s*(\<)/m', '$1$2', $content);
 
-		return $markdown;
+		// From here, $content contains only the article's content
+		// We can send it back to the requestor
+
+		return $content;
 	}
 
 	public static function run(&$params = null) : bool
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		//$url = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
+		$url = $aeFunctions->getParam('param', 'string', '', false);
+		$url = trim($url);
 
-		$url='https://www.marknotes.fr/docs/marknotes/'.
-			'Plugins/content/html/microdata.html';
+		$sHTML = self::getHTML($url);
 
-		$sHTML = self::HTML2MD(self::getHTML($url));
+		if ($sHTML !== '') {
+			$sHTML = self::cleanHTML($sHTML);
+		}
 
 		header('Content-Type: text/plain; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');
 		echo $sHTML;
 
-die();
 		return true;
 	}
 }
