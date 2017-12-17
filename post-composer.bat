@@ -80,7 +80,8 @@ REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
 REM call :fnUpload
 REM call :fnHTML2MD
-
+call :fnGuzzle
+call :fnGoogleTranslate
 REM call :fnFinalize
 GOTO END:
 
@@ -774,6 +775,30 @@ ECHO    COPY TO %TASK%convert\libs\html2md
 ECHO.
 IF NOT EXIST %TASK%convert\libs\html2md MKDIR %TASK%convert\libs\html2md >> %LOG%
 XCOPY %VENDOR%html-to-markdown\src\*.* %TASK%convert\libs\html2md /E /Y >> %LOG%
+
+::--------------------------------------------------------
+::-- fnGuzzle
+::--------------------------------------------------------
+
+:fnGuzzle
+ECHO  === fnGuzzle ===
+ECHO    COPY TO %TASK%fetch\libs\guzzle
+ECHO.
+IF NOT EXIST %TASK%fetch\libs\guzzle MKDIR %TASK%fetch\libs\guzzle >> %LOG%
+XCOPY %VENDOR%guzzlehttp\guzzle\src\*.* %TASK%fetch\libs\guzzle /E /Y >> %LOG%
+
+goto:eof
+
+::--------------------------------------------------------
+::-- fnGoogleTranslate
+::--------------------------------------------------------
+
+:fnGoogleTranslate
+ECHO  === fnGoogleTranslate ===
+ECHO    COPY TO %TASK%translate\libs\google-translate-php
+ECHO.
+IF NOT EXIST %TASK%translate\libs\google-translate-php MKDIR %TASK%translate\libs\google-translate-php >> %LOG%
+XCOPY %VENDOR%stichoza\google-translate-php\src\Stichoza\GoogleTranslate\*.* %TASK%translate\libs\google-translate-php /E /Y >> %LOG%
 
 goto:eof
 
