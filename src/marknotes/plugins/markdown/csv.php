@@ -147,9 +147,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 		$rows = self::createRows($arrCSV);
 
 		$markdown = $header. self::createRows($arrCSV);
-/*<!-- build:debug -->*/
-//die("<pre>".print_r($markdown,  true)."</pre>");
-/*<!-- endbuild -->*/
+
 		return $markdown;
 	}
 
@@ -161,7 +159,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 
 		$aeDebug = \MarkNotes\Debug::getInstance();
 
-		if (!(preg_match('/%CSV ([^{\\n]*)%/m', $markdown, $match))) {
+		if (!(preg_match('/^%CSV ([^{\\n]*)%/m', $markdown, $match))) {
 			// No CSV found; return
 			return true;
 		}
@@ -173,7 +171,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 		$filename = $aeSettings->getFolderDocs(true).$aeSession->get('filename');
 
 		// Retrieve every occurences of %CSV filename%
-		if (preg_match_all('/%CSV ([^{\\n]*)%/m', $markdown, $matches)) {
+		if (preg_match_all('/^%CSV ([^{\\n]*)%/m', $markdown, $matches)) {
 
 			$aeFiles = \MarkNotes\Files::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();

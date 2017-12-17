@@ -2,8 +2,8 @@
 /**
  * Use CURL to retrieve the HTML content of a page
  *
- * Anwser to URL like the one below (names are base64_encoded)
- * index.php?task=task.fetch.gethtml&param=
+ * Anwser to URL like the one below
+ * index.php?task=task.fetch.gethtml&param=https://www.xxxxx
  */
 namespace MarkNotes\Plugins\Task\Fetch;
 
@@ -21,6 +21,10 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 		'AppleWebKit/537.36 (KHTML, like Gecko) '.
 		'Chrome/35.0.1916.153 Safari/537.36 FirePHP/4Chrome';
 
+	/**
+	 * Establish a CURL transaction and retrieve the HTML of
+	 * the specified URL
+	 */
 	private static function getHTML(string $url) : string
 	{
 		// Get the User-agent to use
@@ -61,83 +65,6 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 		return trim($content);
 	}
 
-	private static function cleanHTML(string $html) : string
-	{
-		// To retrieve only the desired content from the HTML,
-		// we need "selectors" : do we need to take the body,
-		// a specific div, an article node, ...
-		// The Selector entry is there for this purpose
-		$arrSelector = self::getOptions('selector', array("//body"));
-
-		// When we've the content, we can probably make a few
-		// cleaning like removing social networks f.i.
-		// The Remove entry is there for this.
-		$arrRemove = self::getOptions('remove', array());
-
-		$dom = new \DOMDocument();
-		$dom->validateOnParse = false;
-		@$dom->loadHTML($html);
-		$xpath = new \DOMXPath($dom);
-
-		$content = '';
-
-		foreach ($arrSelector as $selector) {
-			$div = $xpath->query($selector);
-			$div = $div->item(0);
-			$tmp = $dom->saveXML($div);
-
-			// Do we've found that selector ? (f.i. //body)
-			if ($tmp !== '')  {
-				// Yes => great, we can remember that part
-				$content = $tmp;
-				@$dom->loadHTML($content);
-				$xpath = new \DOMXPath($dom);
-			}
-		} // foreach()
-
-		// We don't need the doctype; just the html of the article
-		$regex = '~<(?:!DOCTYPE|/?(?:html|body))[^>]*>\s*~i';
-		$content = preg_replace($regex, '', $content);
-
-		if (trim($content) !== '') {
-			foreach ($arrRemove as $selector) {
-				$div = $xpath->query($selector);
-				$div = $div->item(0);
-				$tmp = $dom->saveXML($div);
-
-				// Do we've found that selector ?
-				if ($tmp !== '') {
-					// Yes => it means that, since we're in the
-					// remove selector, that part should be removed
-					// from the content
-					$content = str_replace($tmp, '', $content);
-				}
-			} // foreach()
-		}
-
-		// Don't keep inline script
-		$regex = '/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/i';
-		$content = preg_replace($regex, '', $content);
-
-		// Don't keep the xml tag
-		$regex = '~<\?xml[^>]*>\s*~i';
-		$content = preg_replace($regex, '', $content);
-
-		// Don't keep HTML comments
-		$content = preg_replace('/<!--(.*)-->/Uis', '', $content);
-
-		// Carriage return
-		$content = preg_replace('/&#13;/Uis', '', $content);
-
-		// Remove spaces between tags (not inside tags)
-		$content = preg_replace('/(\>)\s*(\<)/m', '$1$2', $content);
-
-		// From here, $content contains only the article's content
-		// We can send it back to the requestor
-
-		return $content;
-	}
-
 	public static function run(&$params = null) : bool
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -145,10 +72,32 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 		$url = $aeFunctions->getParam('param', 'string', '', false);
 		$url = trim($url);
 
-		$sHTML = self::getHTML($url);
+		$sHTML = '';
+
+		if ($url !== '') {
+			$sHTML = self::getHTML($url);
+		}
 
 		if ($sHTML !== '') {
-			$sHTML = self::cleanHTML($sHTML);
+			// List of nodes that can be removed since are not
+			// part of the content we want to keep
+
+			$arrRemoveDOM = self::getOptions('remove_DOM', array());
+
+			// List of attributes that can be removed from html
+			// tags once the desired content is isolated
+			$arrRemoveAttribs = self::getOptions('remove_Attributes', array());
+
+			require_once('helpers/clean_html.php');
+
+			$aeClean = new Helpers\CleanHTML($sHTML);
+
+			$aeClean->setRemoveDOM($arrRemoveDOM);
+			$aeClean->setRemoveAttributes($arrRemoveAttribs);
+
+			$sHTML = $aeClean->doIt();
+
+			unset($aeClean);
 		}
 
 		header('Content-Type: text/plain; charset=utf-8');

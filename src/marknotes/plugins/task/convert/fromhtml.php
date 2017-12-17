@@ -16,6 +16,10 @@ class FromHTML extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_settings = 'plugins.task.convert';
 	protected static $json_options = 'plugins.options.task.convert';
 
+	/**
+	 * Call the html-to-markdown library and make the conversion
+	 * https://github.com/thephpleague/html-to-markdown
+	 */
 	private static function convert(string $HTML) : string
 	{
 
@@ -52,10 +56,21 @@ class FromHTML extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$html = trim($aeFunctions->getParam('param', 'unsafe', '', false));
+		if (is_file($filename = __DIR__.DS.'test.html')) {
+			$sHTML = utf8_encode(file_get_contents($filename));
+		} else {
+			$sHTML = trim($aeFunctions->getParam('param', 'unsafe', '', false));
+		}
 
-		$sMD = self::convert($html);
+		// Call html-to-markdown and make the conversion to MD
+		$sMD = self::convert($sHTML);
 
+		// Remove tags not proessed by html-to-markdown
+		// The returned markdown string should no more contains
+		// html tags
+		$sMD = strip_tags($sMD);
+
+		// Return the string
 		header('Content-Type: text/plain; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');
 		echo $sMD;

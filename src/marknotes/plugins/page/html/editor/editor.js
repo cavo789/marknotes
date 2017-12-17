@@ -315,7 +315,9 @@ function buttonAddTOC(editor) {
  */
 function buttonCurlBlog(editor) {
 
-	var $url = prompt("Which URL please ?", "");
+	var $default = 'https://www.joomla.org/announcements/general-news/5721-joomla-response-to-overturning-net-neutrality-in-the-united-states.html';
+
+	var $url = prompt("Which URL please ?", $default);
 
 	if ($url != null) {
 		var $data = {};
