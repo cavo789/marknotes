@@ -355,7 +355,7 @@ function button_convertMD(editor) {
 
 	var $data = {};
 	$data.task = 'task.convert.fromHTML';
-	$data.param = editor.codemirror.getValue();
+	$data.content = editor.codemirror.getValue();
 
 	$.ajax({
 		async: true,
@@ -374,7 +374,7 @@ function button_translate(editor) {
 
 	var $data = {};
 	$data.task = 'task.translate.run';
-	$data.param = editor.codemirror.getValue();
+	$data.content = editor.codemirror.getValue();
 
 	$.ajax({
 		async: true,

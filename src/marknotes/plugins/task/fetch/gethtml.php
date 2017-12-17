@@ -45,8 +45,6 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$lib = $aeSettings->getFolderLibs().'GuzzleHttp'.DS;
 
-//require_once($lib.'guzzle\src\ClientInterface.php');
-//require_once($lib.'psr7\src\Uri.php');
 		if (is_dir($lib)) {
 			// Use GuzzleHttp
 			$client = new \GuzzleHttp\Client(
@@ -94,13 +92,9 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 
 		$sHTML = '';
 
-if (is_file($filename = __DIR__.DS.'test.html')) {
-	$sHTML = utf8_encode(file_get_contents($filename));
-} else {
-			if ($url !== '') {
-				$sHTML = self::getHTML($url);
-			}
-}
+		if ($url !== '') {
+			$sHTML = self::getHTML($url);
+		}
 
 		if ($sHTML !== '') {
 			// List of nodes that can be removed since are not

@@ -55,7 +55,7 @@ class Markdown
 			$filename=((json_decode($tmp)!='')?json_decode($tmp):$tmp);
 		}
 
-		if ($filename != '') {
+		if (trim($filename) !== '') {
 			$filename = str_replace('/', DS, $filename);
 
 			// The filename shouldn't mention the docs folders, just the filename

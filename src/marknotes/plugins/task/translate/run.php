@@ -2,7 +2,7 @@
 /**
  * Translate
  *
- * @Link https://github.com/Stichoza/google-translate-php/tree/master/tests
+ * @Link https://github.com/Stichoza/google-translate-php/
  */
 namespace MarkNotes\Plugins\Task\Translate;
 
@@ -17,8 +17,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = 'plugins.options.task.translate';
 
 	/**
-	 * Call the html-to-markdown library and make the conversion
-	 * https://github.com/thephpleague/html-to-markdown
+	 * Call Google API translation library
 	 */
 	private static function translate(string $content) : string
 	{
@@ -55,12 +54,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-
-		if (is_file($filename = __DIR__.DS.'test.html')) {
-	$content = utf8_encode(file_get_contents($filename));
-} else {
-			$content = trim($aeFunctions->getParam('param', 'unsafe', '', false));
-}
+		$content = trim($aeFunctions->getParam('content', 'unsafe', '', false));
 
 		// Call html-to-markdown and make the conversion to MD
 		$content = self::translate($content);

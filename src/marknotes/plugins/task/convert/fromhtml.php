@@ -57,11 +57,11 @@ class FromHTML extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 
-if (is_file($filename = __DIR__.DS.'test.html')) {
-	$sHTML = utf8_encode(file_get_contents($filename));
-} else {
-			$sHTML = trim($aeFunctions->getParam('param', 'unsafe', '', false));
-}
+		//if (is_file($filename = __DIR__.DS.'test.html')) {
+			$sHTML = utf8_encode(file_get_contents($filename));
+		//} else {
+		$sHTML = trim($aeFunctions->getParam('content', 'unsafe', '', false));
+		//}
 
 		// Call html-to-markdown and make the conversion to MD
 		$sMD = self::convert($sHTML);
