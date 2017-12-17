@@ -179,6 +179,15 @@ function afterEditInitMDE($data) {
 				className: "fa fa-download",
 				title: $.i18n('button_convertMD')
 			},
+			{
+				// Translate the content
+				name: "translate",
+				action: function customFunction(editor) {
+					button_translate(editor);
+				},
+				className: "fa fa-download",
+				title: $.i18n('button_translate')
+			},
 			//"|",
 			//{
 			//	// Add a custom button for saving
@@ -346,6 +355,25 @@ function button_convertMD(editor) {
 
 	var $data = {};
 	$data.task = 'task.convert.fromHTML';
+	$data.param = editor.codemirror.getValue();
+
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: marknotes.url,
+		data: $data,
+		datatype: 'html',
+		success: function (data) {
+			editor.codemirror.setValue(data);
+		}
+	}); // $.ajax()
+
+}
+
+function button_translate(editor) {
+
+	var $data = {};
+	$data.task = 'task.translate.run';
 	$data.param = editor.codemirror.getValue();
 
 	$.ajax({

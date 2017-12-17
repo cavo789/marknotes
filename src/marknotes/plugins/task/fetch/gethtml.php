@@ -1,6 +1,6 @@
 <?php
 /**
- * Use CURL to retrieve the HTML content of a page
+ * Use GuzzleHttp or CURL to retrieve the HTML content of a page
  *
  * Anwser to URL like the one below
  * index.php?task=task.fetch.gethtml&param=https://www.xxxxx
@@ -27,12 +27,6 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function getHTML(string $url) : string
 	{
-		// Get the User-agent to use
-		$ua = self::getOptions('user-agent', static::$ua);
-		if (trim($ua) == '') {
-			$ua = static::$ua;
-		}
-
 		// For the Joomla CMS for instance, the ?tmpl=component
 		// parameter allow to only get the content without any
 		// additionnals stuffs (modules, template, ...).
@@ -48,19 +42,45 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			$timeout = 5;
 		}
 
-		$ch = curl_init($url);
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$lib = $aeSettings->getFolderLibs().'GuzzleHttp'.DS;
 
-		curl_setopt($ch, CURLOPT_USERAGENT, $ua);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-		curl_setopt($ch, CURLOPT_HEADER, false);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-		curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+//require_once($lib.'guzzle\src\ClientInterface.php');
+//require_once($lib.'psr7\src\Uri.php');
+		if (is_dir($lib)) {
+			// Use GuzzleHttp
+			$client = new \GuzzleHttp\Client(
+				array('curl'=>array(CURLOPT_SSL_VERIFYPEER=>false))
+			);
 
-		$content = curl_exec($ch);
+			$res = $client->request('GET', $url,
+				['connect_timeout' => $timeout]);
 
-		curl_close($ch);
+			$content = $res->getBody();
+
+		} else {
+			// Use cURL
+
+			// Get the User-agent to use
+			$ua = self::getOptions('user-agent', static::$ua);
+			if (trim($ua) == '') {
+				$ua = static::$ua;
+			}
+
+			$ch = curl_init($url);
+
+			curl_setopt($ch, CURLOPT_USERAGENT, $ua);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+			curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+
+			$content = curl_exec($ch);
+
+			curl_close($ch);
+		}
 
 		return trim($content);
 	}
@@ -74,9 +94,13 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 
 		$sHTML = '';
 
-		if ($url !== '') {
-			$sHTML = self::getHTML($url);
-		}
+if (is_file($filename = __DIR__.DS.'test.html')) {
+	$sHTML = utf8_encode(file_get_contents($filename));
+} else {
+			if ($url !== '') {
+				$sHTML = self::getHTML($url);
+			}
+}
 
 		if ($sHTML !== '') {
 			// List of nodes that can be removed since are not

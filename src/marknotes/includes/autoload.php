@@ -52,6 +52,7 @@ class Autoload
 			}
 
 			require $filepath;
+
 		}
 	}
 }

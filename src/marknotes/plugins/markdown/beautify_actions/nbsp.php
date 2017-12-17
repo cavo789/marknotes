@@ -12,11 +12,12 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class NBSP
 {
-	public function doIt(array $params) : string
+	public function doIt(array $params) // : string
 	{
 		$markdown = $params['markdown'];
+
 		try {
-			$markdown = preg_replace('/\x{00a0}/siu', ' ', $markdown);
+			$markdown = str_replace("\xc2\xa0", " ", $markdown);
 		} catch (Exception $e) {
 			/*<!-- build:debug -->*/
 			$aeDebug = \MarkNotes\Debug::getInstance();

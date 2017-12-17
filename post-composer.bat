@@ -25,7 +25,7 @@ SET PAGE=%SRC%marknotes\plugins\page\
 SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
-REM call :fnCopyComposer
+call :fnCopyComposer
 REM call :fnCopyBootstrap
 REM call :fnCopyjQuery
 REM call :fnCopySymfony
@@ -49,6 +49,8 @@ REM call :fnIonIcons
 REM call :fnAdminLTE
 REM call :fnSlimScroll
 REM call :fnJSONLint
+REM call :fnCopyGuzzle
+REM call :fnCopyPSR
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -80,8 +82,7 @@ REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
 REM call :fnUpload
 REM call :fnHTML2MD
-call :fnGuzzle
-call :fnGoogleTranslate
+REM call :fnGoogleTranslate
 REM call :fnFinalize
 GOTO END:
 
@@ -217,9 +218,27 @@ ECHO  === monolog ===
 ECHO    COPY TO %LIBS%monolog\
 ECHO.
 XCOPY %VENDOR%monolog\monolog\src\*.* %LIBS%monolog\monolog\src\ /E /Y >> %LOG%
-XCOPY %VENDOR%psr\*.* %LIBS%psr\*.* /E /Y >> %LOG%
-
 goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyPSR
+::--------------------------------------------------------
+
+:fnCopyPSR
+
+ECHO  === PSR ===
+ECHO    COPY TO %LIBS%psr\
+ECHO.
+XCOPY %VENDOR%psr\*.* %LIBS%psr\*.* /E /Y >> %LOG%
+goto:eof
+REM ----------------------------------------------------------------------
+REM SET LIB=psr\
+REM IF EXIST %VENDOR%%LIB% (
+REM    ECHO  === %LIB% === >> %LOG%
+REM    ECHO  === %LIB% ===
+REM    XCOPY %VENDOR%%LIB%*.* %LIBS%%LIB%*.* /E /Y >> %LOG%
+REM )
+
    
 ::--------------------------------------------------------
 ::-- fnCopyParsedown
@@ -400,6 +419,18 @@ ECHO    COPY TO %LIBS%jsonlint
 ECHO.
 IF NOT EXIST %LIBS%jsonlint MKDIR %LIBS%jsonlint >> %LOG%
 XCOPY %VENDOR%jsonlint\src\*.php %LIBS%jsonlint\ /E /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyGuzzle
+::--------------------------------------------------------
+
+:fnCopyGuzzle
+ECHO  === fnGuzzle ===
+ECHO    COPY TO %LIBS%GuzzleHttp
+ECHO.
+IF NOT EXIST %LIBS%GuzzleHttp MKDIR %LIBS%GuzzleHttp >> %LOG%
+XCOPY %VENDOR%GuzzleHttp\*.php %LIBS%GuzzleHttp\ /E /Y >> %LOG%
 goto:eof
 
 REM -----------------------------------------------
@@ -764,6 +795,7 @@ ECHO.
 IF NOT EXIST %PAGE%html\upload\libs\dropzone MKDIR %PAGE%html\upload\libs\dropzone >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.css %PAGE%html\upload\libs\dropzone /Y >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.js %PAGE%html\upload\libs\dropzone /Y >> %LOG%
+goto:eof
 
 ::--------------------------------------------------------
 ::-- fnHTML2MD
@@ -775,18 +807,6 @@ ECHO    COPY TO %TASK%convert\libs\html2md
 ECHO.
 IF NOT EXIST %TASK%convert\libs\html2md MKDIR %TASK%convert\libs\html2md >> %LOG%
 XCOPY %VENDOR%html-to-markdown\src\*.* %TASK%convert\libs\html2md /E /Y >> %LOG%
-
-::--------------------------------------------------------
-::-- fnGuzzle
-::--------------------------------------------------------
-
-:fnGuzzle
-ECHO  === fnGuzzle ===
-ECHO    COPY TO %TASK%fetch\libs\guzzle
-ECHO.
-IF NOT EXIST %TASK%fetch\libs\guzzle MKDIR %TASK%fetch\libs\guzzle >> %LOG%
-XCOPY %VENDOR%guzzlehttp\guzzle\src\*.* %TASK%fetch\libs\guzzle /E /Y >> %LOG%
-
 goto:eof
 
 ::--------------------------------------------------------
@@ -799,7 +819,6 @@ ECHO    COPY TO %TASK%translate\libs\google-translate-php
 ECHO.
 IF NOT EXIST %TASK%translate\libs\google-translate-php MKDIR %TASK%translate\libs\google-translate-php >> %LOG%
 XCOPY %VENDOR%stichoza\google-translate-php\src\Stichoza\GoogleTranslate\*.* %TASK%translate\libs\google-translate-php /E /Y >> %LOG%
-
 goto:eof
 
 REM -----------------------------------------------
@@ -834,13 +853,6 @@ REM    XCOPY %VENDOR%symfony\%LIB%*.* %LIBS%symfony\%LIB%*.* /E /Y >> %LOG%
 REM )
 
 
-REM ----------------------------------------------------------------------
-REM SET LIB=psr\
-REM IF EXIST %VENDOR%%LIB% (
-REM    ECHO  === %LIB% === >> %LOG%
-REM    ECHO  === %LIB% ===
-REM    XCOPY %VENDOR%%LIB%*.* %LIBS%%LIB%*.* /E /Y >> %LOG%
-REM )
 
 :END
 ECHO.
