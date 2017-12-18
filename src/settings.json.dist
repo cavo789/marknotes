@@ -116,7 +116,7 @@
 				"quickIcons": 1
 			},
 			"update": {
-				"enabled": 0,
+				"enabled": 1,
 				"quickIcons": 1
 			}
 		},
@@ -1000,6 +1000,9 @@
 				"tags": {
 					"min_chars": 6,
 					"min_occurences": 10
+				},
+				"update": {
+					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php"
 				}
 			}
 		},

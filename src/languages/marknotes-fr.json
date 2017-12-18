@@ -122,6 +122,7 @@
 	"tree_new_note_name": "Nouvelle note",
 	"unknown_error": "Une erreur est survenue, merci d'essayer \u00e0 nouveau",
 	"update_newer": "Une nouvelle version de Marknotes est disponible en t\u00e9l\u00e9chargement, cliquez sur ce bouton pour t\u00e9l\u00e9charger et installer la nouvelle version",
+	"update_redirect":"Vous allez \u00eatre redirig\u00e9 vers le script d'installation pour poursuivre la mise-\u00e0-jour de marknotes",
 	"update_software":"Mettre \u00e0 jour Marknotes, installe la derni\u00e8re version du logiciel",
 	"upload_files": "T\u00e9l\u00e9verser des fichiers (notes, images, pdf, ...)"
 }

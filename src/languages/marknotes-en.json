@@ -122,6 +122,7 @@
 	"tree_new_note_name": "New note",
 	"unknown_error": "An error has occured, please try again",
 	"update_newer": "A newer version of Marknotes is available, click on this button to download and install that newer version",
+	"update_redirect": "You'll be redirected to the installation script to contine the update process of marknotes",
 	"update_software":"Update Marknotes, instal the latest version of the software",
 	"upload_files": "Upload files (notes, images, pdf, ...)"
 }
