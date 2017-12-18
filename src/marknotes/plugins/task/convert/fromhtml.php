@@ -1,6 +1,7 @@
 <?php
 /**
  * Convert HTML to markdown
+ * Answer to the url index.php?task=task.convert.fromhtml&content=....
  *
  * @Link https://github.com/thephpleague/html-to-markdown
  */
@@ -22,8 +23,15 @@ class FromHTML extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function convert(string $HTML) : string
 	{
-
 		$libs = str_replace('/', DS, __DIR__.'/libs/html2md/');
+
+		/*<!-- build:debug -->*/
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log("Call html-to-markdown library","debug");
+		}
+		/*<!-- endbuild -->*/
 
 		require_once($libs.'ConfigurationAwareInterface.php');
 		require_once($libs.'Converter/ConverterInterface.php');
@@ -45,9 +53,22 @@ class FromHTML extends \MarkNotes\Plugins\Task\Plugin
 		$converter->getConfig()->setOption('header_style', 'atx');
 		$converter->getConfig()->setOption('italic_style', '*');
 		$converter->getConfig()->setOption('bold_style', '**');
-		$converter->getConfig()->setOption('strip_tags', false);
+		$converter->getConfig()->setOption('strip_tags', true);
 
 		$markdown = trim($converter->convert($HTML));
+
+		return $markdown;
+	}
+
+	/**
+	 * Misc updates
+	 */
+	private static function miscUpdate(string $markdown) : string {
+
+		// No need to have more than three linefeed (no empty lines)
+		$markdown=preg_replace('/\n{3,}/si', "\n\n", $markdown);
+		// and no need to have a line with space characters
+		$markdown=preg_replace('/\n {1,}\n/si', "\n\n", $markdown);
 
 		return $markdown;
 	}
@@ -56,20 +77,33 @@ class FromHTML extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
+		$sHTML = trim($aeFunctions->getParam('content', 'unsafe',
+			'', false));
 
-		//if (is_file($filename = __DIR__.DS.'test.html')) {
-			$sHTML = utf8_encode(file_get_contents($filename));
-		//} else {
-		$sHTML = trim($aeFunctions->getParam('content', 'unsafe', '', false));
-		//}
+		if ($sHTML == '') {
+			$sMD = 'ERROR - The convert task has been called but '.
+				'no content has been provided. That task requires '.
+				'a mandatory content parameter';
 
-		// Call html-to-markdown and make the conversion to MD
-		$sMD = self::convert($sHTML);
+			/*<!-- build:debug -->*/
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log($sMD,"error");
+			}
+			/*<!-- endbuild -->*/
+		} else {
+			// Call html-to-markdown and make the conversion to MD
+			$sMD = self::convert($sHTML);
 
-		// Remove tags not proessed by html-to-markdown
-		// The returned markdown string should no more contains
-		// html tags
-		$sMD = strip_tags($sMD);
+			// Remove tags not proessed by html-to-markdown
+			// The returned markdown string should no more contains
+			// html tags
+			$sMD = trim(strip_tags($sMD));
+
+			$sMD = self::miscUpdate($sMD);
+
+		}
 
 		// Return the string
 		header('Content-Type: text/plain; charset=utf-8');

@@ -57,6 +57,7 @@
 	"export_txt": "Format .txt",
 	"export_reveal": "Reveal.JS",
 	"export_remark": "Remark",
+	"fetch_specify_url": "Cette option va r\u00e9cup\u00e9rer le code HTML d'une page accessible publiquement sur internet, veuillez sp\u00e9cifier ci-apr\u00e8s l'URL de la page",
 	"file_already_exists": "La note [$1] existe d\u00e9j\u00e0",
 	"file_cant_delete": "Vous ne pouvez pas supprimer le fichier [$1] \u00e9tant donn\u00e9 que vous n'avez pas les permissions requises pour voir le dossier parent",
 	"file_created": "La note [$1] a \u00e9t\u00e9 cr\u00e9\u00e9 sur le disque",
@@ -119,6 +120,8 @@
 	"tree_new_folder_name": "Nouveau dossier",
 	"tree_new_note": "Cr\u00e9er une nouvelle note",
 	"tree_new_note_name": "Nouvelle note",
-	"unknown_error": "An error has occured, please try again",
+	"unknown_error": "Une erreur est survenue, merci d'essayer \u00e0 nouveau",
+	"update_newer": "Une nouvelle version de Marknotes est disponible en t\u00e9l\u00e9chargement, cliquez sur ce bouton pour t\u00e9l\u00e9charger et installer la nouvelle version",
+	"update_software":"Mettre \u00e0 jour Marknotes, installe la derni\u00e8re version du logiciel",
 	"upload_files": "T\u00e9l\u00e9verser des fichiers (notes, images, pdf, ...)"
 }

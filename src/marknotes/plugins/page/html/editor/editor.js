@@ -100,6 +100,9 @@ function afterEdit($ajax_request, $form) {
 	return true;
 }
 
+/**
+ * Initialize the editor
+ */
 function afterEditInitMDE($data) {
 
 	/*<!-- build:debug -->*/
@@ -120,7 +123,7 @@ function afterEditInitMDE($data) {
 		autosave: {
 			enabled: false
 		},
-		codeSyntaxHighlighting: true,
+		codeSyntaxHighlighting: false,
 		element: document.getElementById("sourceMarkDown"),
 		indentWithTabs: true,
 		insertTexts: {
@@ -161,6 +164,7 @@ function afterEditInitMDE($data) {
 				className: "fa fa-map-o",
 				title: $.i18n('button_addTOC')
 			},
+			"|",
 			{
 				// Retrieve the HTML of an article on the web
 				name: "curlBlog",
@@ -176,7 +180,7 @@ function afterEditInitMDE($data) {
 				action: function customFunction(editor) {
 					button_convertMD(editor);
 				},
-				className: "fa fa-download",
+				className: "fa fa-flash",
 				title: $.i18n('button_convertMD')
 			},
 			{
@@ -185,21 +189,12 @@ function afterEditInitMDE($data) {
 				action: function customFunction(editor) {
 					button_translate(editor);
 				},
-				className: "fa fa-download",
+				className: "fa fa-book",
 				title: $.i18n('button_translate')
 			},
-			//"|",
-			//{
-			//	// Add a custom button for saving
-			//	name: "Exit",
-			//	action: function customFunction(editor) {
-			//		fnPluginButtonEdit_Exit();
-			//	},
-			//	className: "fa fa-sign-out",
-			//	title: $.i18n('button_exit_edit_mode')
-			//},
 			"|", "preview", "side-by-side", "fullscreen", "|",
-			"bold", "italic", "strikethrough", "|", "heading", "heading-smaller", "heading-bigger", "|", "heading-1", "heading-2", "heading-3", "|",
+			"bold", "italic", "strikethrough", "|",
+			"heading-1", "heading-2", "heading-3", "|",
 			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
 		] // toolbar
 	});
@@ -209,6 +204,9 @@ function afterEditInitMDE($data) {
 	return true;
 }
 
+/*
+ * Exit, quit the editor and display the note as an html content
+ */
 function fnPluginButtonEdit_Exit($params) {
 	$('#sourceMarkDown').parent().hide();
 	ajaxify({
@@ -324,14 +322,18 @@ function buttonAddTOC(editor) {
  */
 function buttonCurlBlog(editor) {
 
-	var $default = 'https://www.joomla.org/announcements/general-news/5721-joomla-response-to-overturning-net-neutrality-in-the-united-states.html';
+	var $default_url = '';
 
-	var $url = prompt("Which URL please ?", $default);
+	var $url = prompt($.i18n('fetch_specify_url'), $default_url);
 
-	if ($url != null) {
+	if (($url != null) && ($url != $default_url)) {
+		// Start the ajax request and fetch the HTML of that page.
+		// The gethtml task will also clean the code and only
+		// keep content's HTML and not footer, navigation, comments,
+		// ...
 		var $data = {};
 		$data.task = 'task.fetch.gethtml';
-		$data.param = $url;
+		$data.url = $url;
 
 		$.ajax({
 			async: true,

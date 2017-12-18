@@ -35,6 +35,15 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			$url .= $addQuerystring;
 		}
 
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log("Fetch URL : ".$url,"debug");
+		}
+		/*<!-- endbuild -->*/
+
 		// Timeout delay in seconds
 		// plugins->options->task->fetch->timeout
 		$timeout = self::getOptions('timeout', 5);
@@ -42,10 +51,15 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			$timeout = 5;
 		}
 
-		$aeSettings = \MarkNotes\Settings::getInstance();
 		$lib = $aeSettings->getFolderLibs().'GuzzleHttp'.DS;
 
 		if (is_dir($lib)) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log("Fetch using GuzzleHttp","debug");
+			}
+			/*<!-- endbuild -->*/
+
 			// Use GuzzleHttp
 			$client = new \GuzzleHttp\Client(
 				array('curl'=>array(CURLOPT_SSL_VERIFYPEER=>false))
@@ -55,9 +69,12 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 				['connect_timeout' => $timeout]);
 
 			$content = $res->getBody();
-
 		} else {
-			// Use cURL
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log("Fetch using cURL","debug");
+			}
+			/*<!-- endbuild -->*/
 
 			// Get the User-agent to use
 			$ua = self::getOptions('user-agent', static::$ua);
@@ -83,39 +100,174 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 		return trim($content);
 	}
 
+	private static function miscUpdate(string $sHTML) : string {
+		// Replace a few characters because we'll be displayed
+		// as a "?" in the HTML content
+		$arr = array(
+			array('’', "'"),
+			array('“', '"'),
+			array('”', '"'),
+			array('–', '-'),
+			array('…', '...')
+		);
+
+		foreach ($arr as $char) {
+			$sHTML = str_replace($char[0], $char[1], $sHTML);
+		}
+
+		// Sometimes the <a> is immediatly after a character
+		// like (click here<a> link </a>to ...) and it's not really
+		// correct (syntax) and won't be great once converted into
+		// markdown so add a space before and after an obtain :
+		// like (click here <a>link</a> to ...)
+
+		// text<a> ==> text <a>
+		$regex = '~([^\s])(<a[^>]*>)~im';
+		$sHTML = preg_replace($regex, "$1 $2", $sHTML);
+
+		// </a>text ==> </a> text
+		$regex = '~(<\/a>)([^\s])~im';
+		$sHTML = preg_replace($regex, "$1 $2", $sHTML);
+
+		// -----------------------
+		// <p and <div should be on new line so the Markdown
+		// conversion will give a better result
+		// 1. <p> (on a new line) will be change to have two LF
+		$regex = '~\n(<[div|p][^>]*>)~im';
+		$sHTML = preg_replace($regex, "\n\n$1", $sHTML);
+		// 2.  someting<p>  ==> something followed by two LF <p>
+		$regex = '~([^\n])(<[div|p][^>]*>)~im';
+		$sHTML = preg_replace($regex, "$1\n\n$2", $sHTML);
+		// -----------------------
+
+		// Add <p> ... </p> if the line doesn't contains them
+		// and contains f.i. an anchor.
+		// Convert <a>....</a> on a single line to
+		// <p><a>....</a></p>
+		// REGEX : DON'T USE $ BUT WELL \n? (otherwise it won't work)
+		$regex = '~^(<a[^>]*>.*<\/a>\n?)~im';
+		$sHTML = preg_replace($regex, "<p>$1</p>", $sHTML);
+
+		return $sHTML;
+	}
+
+	/**
+	 * Run the task
+	 */
 	public static function run(&$params = null) : bool
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$url = $aeFunctions->getParam('param', 'string', '', false);
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+		}
+		/*<!-- endbuild -->*/
+
+		$url = $aeFunctions->getParam('url', 'string', '', false);
 		$url = trim($url);
 
 		$sHTML = '';
 
-		if ($url !== '') {
-			$sHTML = self::getHTML($url);
-		}
+		if ($url=='') {
+			$sHTML = 'ERROR - The fetch task has been called but '.
+				'no URL has been provided. That task requires '.
+				'a mandatory url parameter';
 
-		if ($sHTML !== '') {
-			// List of nodes that can be removed since are not
-			// part of the content we want to keep
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log($sHTML,"error");
+			}
+			/*<!-- endbuild -->*/
+		} else {
 
-			$arrRemoveDOM = self::getOptions('remove_DOM', array());
+			// A temporary filename will be created in the /tmp folder
+			// The name will be the URL ressources and be sure it will
+			// be correct so use the slugify() function.
+			// f.i. C:\site\tmp\fetched_5667-joomla-3-6-2-released.html
+			// That file is created for debugging purposes but also
+			// for cache objectives : don't access multiple times to
+			// that URL if already processed once.
+			$ftemp = $aeSettings->getFolderTmp().'fetched_'.
+				$aeFunctions->slugify(basename($url)).'.html';
 
-			// List of attributes that can be removed from html
-			// tags once the desired content is isolated
-			$arrRemoveAttribs = self::getOptions('remove_Attributes', array());
+			// Reuse the cache
+			if (is_file($ftemp)) {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug->log("Since that URL was already ".
+						"fetched, reuse the cache, retrieve content ".
+						"from ".$ftemp,"debug");
+				}
+				/*<!-- endbuild -->*/
+				$sHTML = trim(file_get_contents(utf8_decode($ftemp)));
+			}
 
-			require_once('helpers/clean_html.php');
+			if ($sHTML == '') {
+				$sHTML = self::getHTML($url);
+			}
 
-			$aeClean = new Helpers\CleanHTML($sHTML);
+			if ($sHTML !== '') {
 
-			$aeClean->setRemoveDOM($arrRemoveDOM);
-			$aeClean->setRemoveAttributes($arrRemoveAttribs);
+				$sHTML = self::miscUpdate($sHTML);
 
-			$sHTML = $aeClean->doIt();
+				// Remember the retrieved content
+				// This for debugging purposes and for
+				// cache optimization
+				try {
+					$aeFiles = \MarkNotes\Files::getInstance();
+					$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
+				} catch (\Exception $e) {
+				}
 
-			unset($aeClean);
+				// List of nodes where the content is placed.
+				// That list will allow to faster retrieved desired
+				// content and not pollute content by additionnal
+				// elements like comments, navigation, ...
+				$arrContentDOM = self::getOptions('content_DOM',
+					array());
+
+				// List of nodes that can be removed since are not
+				// part of the content we want to keep
+				$arrRemoveDOM = self::getOptions('remove_DOM', array());
+
+				// List of attributes that can be removed from html
+				// tags once the desired content is isolated
+				$arrRemoveAttribs = self::getOptions('remove_Attributes',
+					array());
+
+				// The regex entry of plugins->options->task->fetch
+				// contains search&replace expression for the content
+				// f.i. Search a specific content and replace it by
+				// a new value
+				$arrRegex = self::getOptions('regex',
+					array());
+
+				require_once('helpers/clean_html.php');
+
+				$aeClean = new Helpers\CleanHTML($sHTML);
+
+				$aeClean->setContentDOM($arrContentDOM);
+				$aeClean->setRemoveDOM($arrRemoveDOM);
+				$aeClean->setRemoveAttributes($arrRemoveAttribs);
+				$aeClean->setRegex($arrRegex);
+
+				$sHTML = $aeClean->doIt();
+
+				unset($aeClean);
+
+				// Remember the HTML after cleaning
+				// for debugging purposes only (not used at all)
+				$ftemp = $aeSettings->getFolderTmp().'cleaned_'.
+					$aeFunctions->slugify(basename($url)).'.html';
+				try {
+					$aeFiles = \MarkNotes\Files::getInstance();
+					$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
+				} catch (\Exception $e) {
+				}
+			}
 		}
 
 		header('Content-Type: text/plain; charset=utf-8');

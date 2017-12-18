@@ -57,6 +57,7 @@
 	"export_txt": "Format .txt",
 	"export_reveal": "Reveal.JS",
 	"export_remark": "Remark",
+	"fetch_specify_url": "This option will retrieve the HTML source from a page publicly accessible on the internet, please specify the URL of the desired content",
 	"file_already_exists": "The note [$1] already exists",
 	"file_cant_delete": "You can't delete the file [$1] since you don't have the right to see the parent folder",
 	"file_created": "The note [$1] has been successfully created on the disk",
@@ -120,5 +121,7 @@
 	"tree_new_note": "Create a new note",
 	"tree_new_note_name": "New note",
 	"unknown_error": "An error has occured, please try again",
+	"update_newer": "A newer version of Marknotes is available, click on this button to download and install that newer version",
+	"update_software":"Update Marknotes, instal the latest version of the software",
 	"upload_files": "Upload files (notes, images, pdf, ...)"
 }

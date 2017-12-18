@@ -23,7 +23,8 @@ class Files
 	}
 
 	/**
-	 * Rename will first remove the existing "new" file if the file already exists
+	 * Rename will first remove the existing "new" file if the
+	 * file already exists
 	 */
 	public function renameFile(string $oldname, string $newname) : bool
 	{
@@ -66,7 +67,8 @@ class Files
 	}
 
 	/**
-	* Check if a file exists and return FALSE if not.  Disable temporarily errors to avoid warnings f.i. when the file
+	* Check if a file exists and return FALSE if not.
+	* Disable temporarily errors to avoid warnings f.i. when the file
 	* isn't reachable due to open_basedir restrictions
 	*
 	* @param  type $filename
@@ -81,8 +83,10 @@ class Files
 		$errorlevel = error_reporting();
 		error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
 
-		// mb_convert_encoding to support accentuated characters in name
-		$wReturn = is_dir(mb_convert_encoding($folderName, "ISO-8859-1", "UTF-8"));
+		// mb_convert_encoding to support accentuated characters
+		// in name
+		$wReturn = is_dir(mb_convert_encoding($folderName,
+			"ISO-8859-1", "UTF-8"));
 
 		error_reporting($errorlevel);
 
@@ -92,7 +96,8 @@ class Files
 	/**
 	 * Write a content into a UTF8-BOM file
 	 */
-	public static function fwriteUTF8BOM(string $sFileName, string $sContent)
+	public static function fwriteUTF8BOM(string $sFileName,
+		string $sContent)
 	{
 		$f = fopen($sFileName, "wb");
 		fputs($f, "\xEF\xBB\xBF".$sContent);
@@ -100,7 +105,8 @@ class Files
 	}
 
 	/**
-	 * Under Windows, create a text file with the support of UTF8 in his content.
+	 * Under Windows, create a text file with the support of
+	 * UTF8 in his content.
 	 */
 	public static function fwriteANSI(string $sFileName, string $sContent)
 	{

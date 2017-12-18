@@ -1,6 +1,9 @@
 <?php
 /**
- * Translate
+ * Translate : receive a MD string and call an online translation
+ * application like Google Translate.
+ *
+ * Answer to URL index.php?task=task.translate.run&content=....
  *
  * @Link https://github.com/Stichoza/google-translate-php/
  */
@@ -21,11 +24,17 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function translate(string $content) : string
 	{
-
 		// Retrieve the language used for marknotes
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$arrSettings = $aeSettings->getPlugins('/regional');
 		$language = trim($arrSettings['language'] ?? 'en');
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log("Translate into ".$language,"debug");
+		}
+		/*<!-- endbuild -->*/
 
 		$libs = __DIR__.DS.'libs/google-translate-php/';
 
@@ -54,15 +63,30 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$content = trim($aeFunctions->getParam('content', 'unsafe', '', false));
+		$content = trim($aeFunctions->getParam('content', 'unsafe',
+			'', false));
 
-		// Call html-to-markdown and make the conversion to MD
-		$content = self::translate($content);
+		if ($content == '') {
+			$content = 'ERROR - The translate task has been called '.
+				'but no content has been provided. '.
+				'That task requires a mandatory content parameter';
+
+			/*<!-- build:debug -->*/
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log($content,"error");
+			}
+			/*<!-- endbuild -->*/
+		} else {
+			// Call html-to-markdown and make the conversion to MD
+			$content = self::translate($content);
+		}
 
 		header('Content-Type: text/plain; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');
 		echo $content;
 
-		return true;
+		die();
 	}
 }

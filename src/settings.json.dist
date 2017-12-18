@@ -114,6 +114,10 @@
 			"editor": {
 				"enabled": 1,
 				"quickIcons": 1
+			},
+			"update": {
+				"enabled": 0,
+				"quickIcons": 1
 			}
 		},
 		"content": {
@@ -454,6 +458,12 @@
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
+				},
+				"update": {
+					"description": "Load the JS script for the update button",
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
 				},
 				"upload": {
 					"description": "Add an upload form so the user can send local files to the server",
@@ -919,6 +929,12 @@
 					"querystring": "?tmpl=component",
 					"timeout" : 5,
 					"user-agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36 FirePHP/4Chrome",
+					"content_DOM":[
+						"//article",
+						"//main",
+						"//div[contains(attribute::class, 'item-page')]",
+						"//div[contains(attribute::class, 'itemBody')]"
+					],
 					"remove_Attributes": [
 						"class",
 						"id",
@@ -951,6 +967,7 @@
 						"//div[contains(attribute::class, 'blocauteur')]",
 						"//div[contains(attribute::class, 'blogInfo')]",
 						"//div[contains(attribute::class, 'itemNavigation')]",
+						"//div[contains(attribute::class, 'itemRelated')]",
 						"//div[(attribute::class) = 'itemLinks']",
 						"//div[(attribute::class) = 'itemComments']",
 						"//div[(attribute::class) = 'itemBackToTop']",
@@ -960,7 +977,15 @@
 						"//dl[contains(attribute::class, 'article-info')]",
 						"//dd[(attribute::class) = 'create']",
 						"//*[@id='system-message-container']",
-						"//*[@id='itemCommentsAnchor']"
+						"//*[@id='itemCommentsAnchor']",
+						"//*[(attribute::data-mce-bogus)]"
+
+					],
+					"regex": [
+						{
+							"search": "~<sup>\\s*Spécial\\s*<\/sup>~im",
+							"replace_by": ""
+						}
 					]
 				},
 				"login": {
