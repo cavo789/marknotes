@@ -25,13 +25,20 @@ function fnPluginHTMLUpdate() {
 	} // try
 
 	if ($version_url!=='') {
-		// Get the file
+		// Get the file and check if the current installed version
+		// is older than the latest publicly available
 		$.ajax({
 			async: true,
 			cache: true,
 			type: (marknotes.settings.debug ? 'GET' : 'POST'),
 			url: $version_url,
 			datatype: 'json',
+			beforeSend: function () {
+				// The button can be hidden when there is no
+				// update to install. So we can spare a few space
+				// on the screen
+				$('#icon_update').hide();
+			},
 			success: function (data) {
 				try {
 					// data is a JSON string with, at the root level,
@@ -51,7 +58,7 @@ function fnPluginHTMLUpdate() {
 						$bNeedUpdate = (fnPluginTaskUpdateVersionCompare(json.version, marknotes.settings.version) == 1);
 
 						if ($bNeedUpdate) {
-							$('#icon_update').css('color','yellow');
+							$('#icon_update').css('color','yellow').show();
 							document.getElementById('icon_update').title = $.i18n('update_newer');
 						}
 					} // if (json.hasOwnProperty('version'))
@@ -65,7 +72,7 @@ function fnPluginHTMLUpdate() {
 					}
 					/*<!-- endbuild -->*/
 				} // try
-			} // success
+			}, // success
 			error: function (Request, textStatus, errorThrown) {
 				// Do nothing; this feature is not really important.
 				//ajaxify_show_error($target, Request, textStatus, errorThrown);
