@@ -89,7 +89,7 @@
 	"loginform_in": "Se connecter",
 	"loginform_out": "Se d\u00e9connecter",
 	"no_save_allowed": "Erreur, l'\u00e9dition des notes n'est pas autoris\u00e9e.",
-	"not_authenticated": "Vous devez d'abord vous authentifier",
+	"not_authenticated": "Cette fonctionnalit\u00e9 n'est accessible qu'une fois connect\u00e9; merci de vous authentifier gr\u00e2ce au formulaire de connexion",
 	"open_html": "Ouvrir dans une nouvelle fen\u00eatre",
 	"open_slideshow": "Lancer le mode pr\u00e9sentation",
 	"ok": "Oui",

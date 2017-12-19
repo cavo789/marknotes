@@ -89,7 +89,7 @@
 	"loginform_in": "Log in",
 	"loginform_out": "Log out",
 	"no_save_allowed": "Error, saving notes isn&#39;t allowed.",
-	"not_authenticated": "You need first to authenticate",
+	"not_authenticated": "This feature is only accessible once connected, please use the login form first.",
 	"open_html": "Open in a new window",
 	"open_slideshow": "Start the slideshow",
 	"ok": "Ok",

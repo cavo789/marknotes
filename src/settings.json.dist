@@ -1002,7 +1002,9 @@
 					"min_occurences": 10
 				},
 				"update": {
-					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php"
+					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",
+					"version_url":"https://raw.githubusercontent.com/cavo789/marknotes/master/package.json"
+
 				}
 			}
 		},

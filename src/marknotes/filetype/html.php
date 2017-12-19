@@ -130,6 +130,14 @@ class HTML
 			$template = str_replace('%VERSION%', $version, $template);
 		}
 
+		if (strpos($template, '%VERSION_URL%') !== false) {
+			$node = 'plugins.options.task.update';
+			$arr = $aeSettings->getPlugins($node);
+
+			$url = $arr['version_url'];
+			$template = str_replace('%VERSION_URL%', $url, $template);
+		}
+
 		return $template;
 	}
 }

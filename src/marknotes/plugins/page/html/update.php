@@ -20,13 +20,31 @@ class Update extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
-		$url .= 'marknotes/plugins/page/html/update/';
+		// Only when a valid user is logged on
+		$bContinue = boolval($aeSession->get('authenticated', 0));
 
-		$script =
-			"<script type=\"text/javascript\" src=\"".$url."update.js\" ".
-			"defer=\"defer\"></script>\n";
+		if ($bContinue) {
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
+			$url .= 'marknotes/plugins/page/html/update/';
+
+			$script =
+				"<script type=\"text/javascript\" src=\"".$url."update.js\" ".
+				"defer=\"defer\"></script>\n";
+		} else {
+			// Because fnPluginTaskUpdate() is also defined in the
+			// template, we need to have that function in the HTML
+			$script =
+				"<script type=\"text/javascript\" defer=\"defer\">\n".
+				"function fnPluginTaskUpdate() {\n".
+					"Noty({\n".
+					"	message: $.i18n('not_authenticated'),\n".
+					"	type: 'warning'\n".
+					"});\n".
+				"}\n".
+				"</script>\n";
+		}
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

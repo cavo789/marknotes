@@ -27,4 +27,18 @@ class Update extends \MarkNotes\Plugins\Button\Plugin
 
 		return true;
 	}
+
+	/**
+	 * The update button can be displayed only if a valid user
+	 * is logged on. Don't show the button to everyone
+	 */
+	protected static function canAdd() : bool
+	{
+		if ($bReturn = parent::canAdd()) {
+			$aeSession = \MarkNotes\Session::getInstance();
+			$bReturn = boolval($aeSession->get('authenticated', 0));
+		}
+
+		return $bReturn;
+	}
 }

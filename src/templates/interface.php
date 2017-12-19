@@ -125,6 +125,7 @@
 						<p>marknotes is an OpenSource software coded and maintained by <a href="https://github.com/cavo789" target="_blank">Christophe Avonture</a>.</p>
 						<p>marknotes will transform your notes taken in the markdown format (.md files) into a full featured website.</p>
 						<p>Get your copy of marknotes on <a href="%GITHUB%" target="_blank">GitHub <i class="fa fa-github" aria-hidden="true"></i></a></p>
+						<p>Click <a href="javascript:fnPluginTaskUpdate()">here</a> to install a newer version of marknotes.</p>
 					</div>
 				</div>
 			</aside>
@@ -151,6 +152,8 @@
 			marknotes.settings = {};
 			marknotes.settings.debug='%DEBUG%';
 			marknotes.settings.language='%LANGUAGE%';
+			marknotes.settings.version='%VERSION%';
+			marknotes.settings.version_url='%VERSION_URL%';
 			marknotes.treeview = {};
 			marknotes.docs='%ROOT%%DOCS%';
 			marknotes.webroot='%ROOT%';
