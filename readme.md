@@ -16,9 +16,10 @@
 6. **[:hammer: Configuration](#configuration)**
 7. **[Tips](#tips)**
 8. **[Debugging](#debugging)**
-9. **[:man: Author](#author)**
-10. **[Follow us](#follow-us)**
-11. **[License](#license)**
+9. **[:closed_lock_with_key: Privacy and protection](#privacy-and-protection)**
+10. **[:man: Author](#author)**
+11. **[Follow us](#follow-us)**
+12. **[License](#license)**
 
 ## 1. Description
 
@@ -270,15 +271,21 @@ So, by pushing yours notes from your computer to github, github.com will call yo
 
 If you wish to debug marknotes, please [read the documentation](readme_debugging.md)
 
-## 9. :man: Author
+## 9. :closed_lock_with_key: Privacy and protection
+
+>Everything is yours, for now and always
+
+Please read [Privacy and protection : everything is yours, for now and always](readme_privacy.md) to obtain a lot of informations concerning privacy and how to secure access to your notes.
+
+## 10. :man: Author
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-## 10. Follow us
+## 11. Follow us
 
 Follow us on [Facebook](https://www.facebook.com/marknotes789/) to stay up-to-date
 
-## 11. License
+## 12. License
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
