@@ -4,6 +4,8 @@
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
+**Remark : marknotes requires PHP 7+. If you try to run marknotes on a PHP5 environment, you'll have a lot of syntax errors.**
+
 ## Table of Contents
 
 1. **[Description](#description)**
@@ -13,9 +15,10 @@
 5. **[Features](#features)
 6. **[:hammer: Configuration](#configuration)**
 7. **[Tips](#tips)**
-8. **[:man: Author](#author)**
-9. **[Follow us](#follow-us)**
-10. **[License](#license)**
+8. **[Debugging](#debugging)**
+9. **[:man: Author](#author)**
+10. **[Follow us](#follow-us)**
+11. **[License](#license)**
 
 ## 1. Description
 
@@ -59,6 +62,8 @@ marknotes is available in French and in English. The configuration on the demo s
 **[⬆ back to top](#table-of-contents)**
 
 ## 3. How to install or update ?
+
+Please take in consideration that marknotes needs PHP 7. You'll perhaps needs to enable PHP 7 on your server; this can be done through a specific line in the `.htaccess` file or from your control panel (see your hoster if you need more information).
 
 >If you already have a version of marknotes, if this is the old version 1; I recommand to remove all files **except the /docs folder** (don't loose your notes!). Otherwise, let files there and overwrite them by using the easy or hard way here below
 
@@ -261,15 +266,19 @@ So, by pushing yours notes from your computer to github, github.com will call yo
 
 **[⬆ back to top](#table-of-contents)**
 
-## 8. :man: Author
+## 8. Debugging
+
+If you wish to debug marknotes, please [read the documentation](readme_debugging.md)
+
+## 9. :man: Author
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-## 9. Follow us
+## 10. Follow us
 
 Follow us on [Facebook](https://www.facebook.com/marknotes789/) to stay up-to-date
 
-## 10. License
+## 11. License
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
