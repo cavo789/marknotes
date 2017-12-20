@@ -12,10 +12,12 @@ class CleanHTML
 	private $_arrRegex = array();
 
 	private $html = '';
+	private $source_url = '';
 
-	public function __construct(string $html)
+	public function __construct(string $html, string $source_url)
 	{
 		$this->html = $html;
+		$this->source_url = $source_url;
 
 		// Initialization
 		$this->_arrContentDOM = array();
@@ -222,8 +224,44 @@ class CleanHTML
 	}
 
 	/**
+	 * Make the src image link absolute
+	 * Convert /image/img.jpg to https://website/image/img.jpg
+	 *
+	 * $rel  = relative link to the image (from the img src attribute)
+	 * $base = base URL, URL of the page.
+	 *
+	 * @link https://stackoverflow.com/a/5653947
+	 */
+	private function makeImgURLAbsolute(string $rel, string $base) : string
+	{
+		if (parse_url($rel, PHP_URL_SCHEME) != '') {
+			return $rel;
+		}
+
+		if ($rel[0]=='#' || $rel[0]=='?') {
+			return $base.$rel;
+		}
+
+		extract(parse_url($base));
+
+		$path = preg_replace('#/[^/]*$#', '', $path);
+
+		if ($rel[0] == '/') {
+			$path = '';
+		}
+
+		$abs = "$host$path/$rel";
+		$re = array('#(/\.?/)#', '#/(?!\.\.)[^/]+/\.\./#');
+
+		for($n=1; $n>0; $abs=preg_replace($re, '/', $abs, -1, $n)) {
+		}
+
+		return $scheme.'://'.$abs;
+	}
+
+	/**
 	 * Process every img tags, analyze the src attribute and
-	 * add the %URL% variable used by Marknotes
+	 * make img link absolute
 	 */
 	private function updateDOMImages()
 	{
@@ -245,16 +283,12 @@ class CleanHTML
 
 		foreach ($images as $img) {
 			// Get the src
-			$src = ltrim($img->value, '/');
+			$src = $img->value;
 
-			// If the src starts with "images/", remove that part
-			if (substr($src, 0, strlen('images/')) === 'images/') {
-				$src = substr($src, strlen('images/'));
-			}
+			$src = self::makeImgURLAbsolute($src,$this->source_url);
 
-			// Use Marknotes syntax, %URL%.images (presume
-			// that images are stored in such folder
-			$img->value = '%URL%.images/' . $src;
+			// Set the img source absolute (with the full http://)
+			$img->value = $src;
 		}
 
 		$this->html = $dom->saveHTML($dom->documentElement);

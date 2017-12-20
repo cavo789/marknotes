@@ -247,7 +247,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 
 				require_once('helpers/clean_html.php');
 
-				$aeClean = new Helpers\CleanHTML($sHTML);
+				$aeClean = new Helpers\CleanHTML($sHTML, $url);
 
 				$aeClean->setContentDOM($arrContentDOM);
 				$aeClean->setRemoveDOM($arrRemoveDOM);
