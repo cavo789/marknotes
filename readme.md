@@ -4,22 +4,22 @@
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
-**Remark : marknotes requires PHP 7+. If you try to run marknotes on a PHP5 environment, you'll have a lot of syntax errors.**
+**marknotes requires PHP 7+.**
 
 ## Table of Contents
 
-1. **[Description](#description)**
-2. **[:game_die: Demo](#demo)**
-3. **[How to install](#how-to-install-or-update)**
-4. **[:book: Documentation](#documentation)**
-5. **[Features](#features)
-6. **[:hammer: Configuration](#configuration)**
-7. **[Tips](#tips)**
-8. **[Debugging](#debugging)**
-9. **[:closed_lock_with_key: Privacy and protection](#privacy-and-protection)**
-10. **[:man: Author](#author)**
-11. **[Follow us](#follow-us)**
-12. **[License](#license)**
+1. **[Description](#1-description)**
+2. **[:game_die: Demo](#2-game_die-demo-site)**
+3. **[How to install](#3-how-to-install-or-update-)**
+4. **[:book: Documentation](#4-book-documentation)**
+5. **[Features](#5-features)
+6. **[:hammer: Configuration](#6-hammer-configuration)**
+7. **[Tips](#7-tips)**
+8. **[Debugging](#8-debugging)**
+9. **[:closed_lock_with_key: Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
+10. **[:man: Author](#10-man-author)**
+11. **[Follow us](#11-follow-us)**
+12. **[License](#12-license)**
 
 ## 1. Description
 

@@ -53,7 +53,7 @@ The first time the note will be displayed in marknotes, any `<encrypt>` tag will
 
 The encrypted line will become : 
 
-`<encrypt data-encrypt="true">U%0B%87L%B7%A3%8D%BEKC%09%0E%F7s%A1%80Y8VuAjvD6HN1DiE0H7G1w2USVSeiWTKHQR2c4iTbiDrcZj1bk8w6DvfCzL5Yrsw5gM69UTDRWmV4I9w%3D</encrypt>`
+> `<encrypt data-encrypt="true">U%0B%87L%B7%A3%8D%BEKC%09%0E%F7s%A1%80Y8VuAjvD6HN1DiE0H7G1w2USVSeiWTKHQR2c4iTbiDrcZj1bk8w6DvfCzL5Yrsw5gM69UTDRWmV4I9w%3D</encrypt>`
 
 No one will be able to read the sentence anymore ... except by starting marknotes and displaying the note through marknotes's interface.
 
