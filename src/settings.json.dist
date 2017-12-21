@@ -283,7 +283,7 @@
 					"description": "Add the js file for the Edit feature",
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface", "task.export.html"]
+					"only_if_task": ["main", "interface", "task.export.html", "task.edit.form"]
 				},
 				"encrypt": {
 					"description": "Show a lock icon for encrypted portion of text",
@@ -804,6 +804,9 @@
 					"custom": {
 						"css": [],
 						"js": []
+					},
+					"editor": {
+						"spellchecker": 1
 					},
 					"fakeLoader": {
 						"bgColor": "#3c8dbc",
