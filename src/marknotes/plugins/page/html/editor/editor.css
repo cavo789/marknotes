@@ -1,0 +1,8 @@
+.toolbar-fixed {
+  z-index: 100;
+  position: fixed;
+  border-bottom: 1px solid #f00;
+  opacity: 0.9;
+  background: #fff;
+  background: rgba(255, 255, 255, 0.95);
+}

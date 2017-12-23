@@ -25,18 +25,18 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// Get the options for the plugin
 		$bSpellCheck = boolval(self::getOptions('spellchecker', true));
 
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/editor/';
+		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
+		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
 
+		// Add Simple Markdown Editor
 		$script =
 			"\n<script type=\"text/javascript\" ". "src=\"".$url."libs/simplemde-markdown-editor/simplemde.min.js\" defer=\"defer\"></script>\n";
 
-		//if ($bSpellCheck) {
-		//	$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
-		//	$script .= "<script type=\"text/javascript\" ".
-		//		"src=\"".$rootURL."/JavaScriptSpellCheck/include.js\">".
-		//		"</script>\n";
-		//}
+		// Add the dropzone library to allow image upload
+		$script.="<script type=\"text/javascript\" ".
+			"src=\"".$rootURL."/marknotes/plugins/page/html/upload".
+			"/libs/dropzone/dropzone.min.js\" ".
+			"defer=\"defer\"></script>\n";
 
 		$script .= "<script type=\"text/javascript\" ".
 			"src=\"".$url."editor.js\" ".
@@ -58,11 +58,21 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/editor/';
+		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
+		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
 
+		// Simple Markdown Editor
 		$script =
 			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$url."libs/simplemde-markdown-editor/simplemde.min.css\" />\n";
+
+		// Dropzone
+		$script .=
+			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
+			"href=\"".$rootURL."/marknotes/plugins/page/html/".
+			"upload/libs/dropzone/dropzone.min.css\">\n";
+
+		$script .=
+			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$url."editor.css\" />\n";
 
 		$css .= $aeFunctions->addStyleInline($script);
 

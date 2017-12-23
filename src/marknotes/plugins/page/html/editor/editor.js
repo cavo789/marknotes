@@ -1,18 +1,65 @@
 marknotes.arrPluginsFct.push("fnPluginEditInit");
 
+var toolbarAffixAt = 0;
+var toolbarFixedTop= 0;
+var cmPaperTop = 0;
+
 /**
  * @returns boolean
  */
 function fnPluginEditInit(params) {
+
+	// Initialize the spellchecker
+	//if (marknotes.editor.spellChecker) {
+	//	if (marknotes.settings.language==='fr') {
+	//		$Spelling.DefaultDictionary='Francais';
+	//	}
+	//
+	//	$Spelling.SpellCheckAsYouType('sourceMarkDown');
+	//}
 
 	// the btn-exit-editor is added in the edit form by task.edit.form
 	$(".btn-exit-editor").click(function (event) {
 		fnPluginButtonEdit_Exit(null);
 	});
 
+	// Hide the upload area, show back the editor
+	$(".btn-exit-upload-droparea").click(function (event) {
+		$('#divEditUpload').hide();
+	});
+
 	return true;
 }
 
+/**
+ * Fix toolbar at set distance from top and adjust toolbar width
+ * @link https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
+ */
+function fnAffix() {
+
+	if ($(document).scrollTop() > toolbarAffixAt) {
+		$(".editor-toolbar").addClass("toolbar-fixed");
+		$(".editor-toolbar").css({top: toolbarFixedTop + "px"});
+		$(".CodeMirror.cm-s-paper.CodeMirror-wrap").css({
+			top: cmPaperTop + "px"
+		});
+		fnSetWidth();
+	} else {
+		$(".editor-toolbar").removeClass("toolbar-fixed");
+		$(".editor-toolbar").css({top: ""});
+		$(".CodeMirror.cm-s-paper.CodeMirror-wrap").css({top: ""});
+	}
+}
+
+/**
+ * Adjust fixed toolbar width to the width of CodeMirror
+ * @link https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
+ */
+function fnSetWidth() {
+	$(".toolbar-fixed").width(
+		$(".CodeMirror.cm-s-paper.CodeMirror-wrap").width()
+	);
+}
 
 /**
  * $params is a JSON object initiliazed by the /assets/js/marknotes.js file.
@@ -116,7 +163,6 @@ function afterEditInitMDE($data) {
 
 	// Create the Simple Markdown Editor
 	// @link https://github.com/NextStepWebs/simplemde-markdown-editor
-
 	var simplemde = new SimpleMDE({
 		autoDownloadFontAwesome: false,
 		autofocus: true,
@@ -132,7 +178,12 @@ function afterEditInitMDE($data) {
 			link: ["[", "](https://)"],
 			table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| --- | --- | --- |\n| Text | Text | Text |\n\n"],
 		},
-		spellChecker: true,
+		// marknotes.editor.spellChecker is read from settings.json,
+		// plugins.options.page.html.editor.spellchecker
+		// Note : SimpleMDE only support english. Other languages seems
+		// to be downloadable from https://github.com/titoBouzout/Dictionaries
+		// but SimpleMDE don't support them at this time.
+		spellChecker: marknotes.editor.spellChecker,
 		status: ["autosave", "lines", "words", "cursor"], // Optional usage
 		styleSelectedText: false,
 		tabSize: 4,
@@ -164,6 +215,15 @@ function afterEditInitMDE($data) {
 				className: "fa fa-map-o",
 				title: $.i18n('button_addTOC')
 			},
+			//{
+			//	// Spell check
+			//	name: "SpellCheck",
+			//	action: function customFunction(editor) {
+			//		buttonSpellCheck(editor);
+			//	},
+			//	className: "fa fa-check",
+			//	title: $.i18n('button_spellcheck')
+			//},
 			"|",
 			{
 				// Retrieve the HTML of an article on the web
@@ -192,6 +252,15 @@ function afterEditInitMDE($data) {
 				className: "fa fa-book",
 				title: $.i18n('button_translate')
 			},
+			"|",
+			{
+				name: "uploadImage",
+				action: function customFunction(editor) {
+					buttonUploadImage(editor);
+				},
+				className: "fa fa-picture-o",
+				title: $.i18n('button_upload_image')
+			},
 			"|", "preview", "side-by-side", "fullscreen", "|",
 			"bold", "italic", "strikethrough", "|",
 			"heading-1", "heading-2", "heading-3", "|",
@@ -199,7 +268,30 @@ function afterEditInitMDE($data) {
 		] // toolbar
 	});
 
-	//	$('.editor-toolbar').addClass('fa-2x');
+	// --------------------------------------------------------------
+	//
+	// Fixed the toolbar when scrolling
+	// @https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
+
+	toolbarInitialTop = $(".editor-toolbar").offset().top;
+	toolbarOuterHeight = $(".editor-toolbar").outerHeight();
+
+	toolbarFixedTop = 0;
+	if ($(".main-header").length != 0) {
+		toolbarFixedTop += $(".main-header").outerHeight();
+	}
+	if ($(".content-headerFixed").length != 0) {
+		toolbarFixedTop += $(".content-headerFixed").outerHeight();
+	}
+	cmPaperTop = toolbarFixedTop + toolbarOuterHeight;
+
+	toolbarAffixAt = toolbarInitialTop - toolbarFixedTop;
+
+	$(document).scroll(fnAffix);
+	$(document).resize(fnSetWidth);
+
+	//
+	// --------------------------------------------------------------
 
 	return true;
 }
@@ -274,6 +366,36 @@ function buttonSave($fname, $markdown) {
 
 }
 
+function buttonUploadImage(editor) {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('      Plugin Page html - Editor - Upload');
+	}
+	/*<!-- endbuild -->*/
+
+	$('#divEditUpload').toggle();
+
+	// And initialize DropZone
+	var myDropzone = new Dropzone("#upload_droparea", {
+		url: "index.php?task=task.upload.save"
+	});
+
+	var $imgFileName = '';
+
+	// Get filenames and add them into the editor
+	myDropzone.on("addedfile", function (file) {
+		$img = file.name;
+		$imgFileName = "!["+$img+"](%URL%.images/"+$img+")\n\n";
+
+		var cm = editor.codemirror;
+		// Just add the img tag where the cursor is located
+		cm.replaceSelection($imgFileName);
+	});
+
+	return true;
+}
+
 /**
  * EDIT MODE - Encrypt the selection.  Add the <encrypt> tag
  *
@@ -314,6 +436,17 @@ function buttonAddTOC(editor) {
 	// Just add the tag where the cursor is located
 	cm.replaceSelection('%TOC_5%');
 }
+
+/**
+ * The suer has clicked on the spell check button
+ */
+//function buttonSpellCheck(editor) {
+//	if (marknotes.editor.spellChecker) {
+//		$Spelling.DefaultDictionary = "Francais";
+//		$Spelling.SpellCheckInWindow('sourceMarkDown');
+//	}
+//	return true;
+//}
 
 /**
  * Call the "task.fetch.gethtml" task and specify an URL
@@ -372,6 +505,9 @@ function button_convertMD(editor) {
 
 }
 
+/**
+ * Call the translate task and get the translated content
+ */
 function button_translate(editor) {
 
 	var $data = {};

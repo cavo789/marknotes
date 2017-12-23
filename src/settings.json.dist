@@ -806,7 +806,7 @@
 						"js": []
 					},
 					"editor": {
-						"spellchecker": 1
+						"spellchecker": 0
 					},
 					"fakeLoader": {
 						"bgColor": "#3c8dbc",

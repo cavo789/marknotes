@@ -20,6 +20,7 @@
 	"button_save": "Submit your changes",
 	"button_save_done": "The note has been successfully saved",
 	"button_save_error": "There was an error while saving the note",
+	"button_upload_image": "Upload an image and insert the tag where the cursor is located",
 	"cancel": "Cancel",
 	"copy_clipboard": "Copy the note&#39;s content, with page layout, in the clipboard",
 	"copy_html": "Copy the HTML of the note in the clipboard",

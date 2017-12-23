@@ -99,7 +99,30 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		$bSpellCheck = boolval(self::getOptions('spellchecker', true));
 		$spellcheck = ($bSpellCheck ? 'spellcheck="true"' : '');
 
-		$sEditForm =
+		$imageFolder = dirname($fullname);
+		$sEditForm = '';
+
+		$docs = $aeSettings->getFolderDocs(true);
+		$imageFolder = rtrim(str_replace($docs, '', $imageFolder),DS);
+		$imageFolder .= DS.'.images';
+
+		// Upload form
+		$sUploadForm =
+			'<div class="box-body pad" style="display:none;" '.
+				'id="divEditUpload">'.
+				'<div class="editor-wrapper">'.
+					'<div class="pull-right box-tools" style="margin:5px;">
+						<button type="button" class="btn btn-default btn-sm btn-exit-upload-droparea">
+						<i class="fa fa-times"></i></button>
+					</div>'.
+					'<form class="dropzone" id="upload_droparea">'.
+						'<input type="hidden" name="folder" '.
+						'value="'.base64_encode($imageFolder).'">'.
+					'</form>'.
+				'</div>'.
+			'</div>';
+
+		$sEditForm .=
 		'<div class="row">'.
 			'<div class="col-md-12">'.
 				'<div class="box">'.
@@ -110,7 +133,8 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 							<i class="fa fa-times"></i></button>
 						</div>'.
 					'</div>'.
-					'<div class="box-body pad">'.
+					$sUploadForm.
+					'<div class="box-body pad" id="divEditEditor">'.
 						'<div class="editor-wrapper">'.
 							'<textarea id="sourceMarkDown" '.
 								'lang="'.$lang.'" '.

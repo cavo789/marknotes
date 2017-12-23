@@ -20,6 +20,7 @@
 	"button_save": "Enregistre vos modifications sur le serveur",
 	"button_save_done": "Le fichier a \u00e9t\u00e9 enregistr\u00e9 avec succ\u00e8s",
 	"button_save_error": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la sauvegarde",
+	"button_upload_image": "T\u00e9l\u00e9verse une image et ins\u00e8re le tag d'affichage de l'image \u00e0 l'endroit o\u00f9 se situe le curseur",
 	"cancel": "Annuler",
 	"copy_html": "Copier le code source HTML de la note dans le presse-papier",
 	"copy_html_done": "Le code source HTML de la note a \u00e9t\u00e9 copi\u00e9. Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
