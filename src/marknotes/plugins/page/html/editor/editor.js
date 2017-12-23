@@ -1,5 +1,7 @@
 marknotes.arrPluginsFct.push("fnPluginEditInit");
 
+// Variables used in order to be able to fixed the toolbar
+// when scrolling then page.
 var toolbarAffixAt = 0;
 var toolbarFixedTop= 0;
 var cmPaperTop = 0;
@@ -19,9 +21,9 @@ function fnPluginEditInit(params) {
 	//}
 
 	// the btn-exit-editor is added in the edit form by task.edit.form
-	$(".btn-exit-editor").click(function (event) {
-		fnPluginButtonEdit_Exit(null);
-	});
+	//$(".btn-exit-editor").click(function (event) {
+	//	fnPluginButtonEdit_Exit(null);
+	//});
 
 	// Hide the upload area, show back the editor
 	$(".btn-exit-upload-droparea").click(function (event) {
@@ -226,6 +228,16 @@ function afterEditInitMDE($data) {
 			//},
 			"|",
 			{
+				// Add a custom button for saving
+				name: "Exit",
+				action: function customFunction(editor) {
+					fnPluginButtonEdit_Exit()
+				},
+				className: "fa fa-sign-out",
+				title: $.i18n('button_exit_edit_mode')
+			},
+			"|",
+			{
 				// Retrieve the HTML of an article on the web
 				name: "curlBlog",
 				action: function customFunction(editor) {
@@ -261,7 +273,7 @@ function afterEditInitMDE($data) {
 				className: "fa fa-picture-o",
 				title: $.i18n('button_upload_image')
 			},
-			"|", "preview", "side-by-side", "fullscreen", "|",
+			"|", "preview", "side-by-side", "|", //"fullscreen"
 			"bold", "italic", "strikethrough", "|",
 			"heading-1", "heading-2", "heading-3", "|",
 			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
@@ -384,13 +396,38 @@ function buttonUploadImage(editor) {
 	var $imgFileName = '';
 
 	// Get filenames and add them into the editor
-	myDropzone.on("addedfile", function (file) {
-		$img = file.name;
-		$imgFileName = "!["+$img+"](%URL%.images/"+$img+")\n\n";
+	myDropzone.on("success", function (file) {
 
-		var cm = editor.codemirror;
-		// Just add the img tag where the cursor is located
-		cm.replaceSelection($imgFileName);
+		// The upload is successfull, retrieve the size of the image
+		var $data = {};
+		$data.task = 'task.image.getsize';
+		$data.file = file.name;
+		$data.note = marknotes.note.file;
+
+		$size = "";
+
+		$.ajax({
+			url: marknotes.url,
+			data: $data,
+			method: 'POST',
+			success: function(data){
+				if (data.hasOwnProperty("width")) {
+					// Get the JSON answer with width and height
+					$size = data['width']+"x"+data['height'];
+					$size = " \"" + $size + "\"";
+				}
+
+				// Generate the tag
+				$img = file.name;
+				$imgFileName = "!["+$img+"](%URL%.images/"+$img+$size+")\n\n";
+
+				var cm = editor.codemirror;
+				// Just add the img tag where the cursor is located
+				cm.replaceSelection($imgFileName);
+			}
+		});
+
+
 	});
 
 	return true;

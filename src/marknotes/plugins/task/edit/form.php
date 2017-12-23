@@ -128,10 +128,10 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 				'<div class="box">'.
 					'<div class="box-header">'.
 						'<h3 class="box-title">'.utf8_encode($fullname).'</h3>'.
-						'<div class="pull-right box-tools">
-							<button type="button" class="btn btn-default btn-sm btn-exit-editor">
-							<i class="fa fa-times"></i></button>
-						</div>'.
+					//	'<div class="pull-right box-tools">
+					//		<button type="button" class="btn btn-default btn-sm //btn-exit-editor">
+					//		<i class="fa fa-times"></i></button>
+					//	</div>'.
 					'</div>'.
 					$sUploadForm.
 					'<div class="box-body pad" id="divEditEditor">'.
