@@ -125,6 +125,12 @@ class HTML
 		$github = $aeSettings->getPlugins('/github', array('url'=>''));
 		$template = str_replace('%GITHUB%', $github['url'], $template);
 
+		if (strpos($template, '%SHOW_TIPS%') !== false) {
+			$arr = $aeSettings->getPlugins('/interface', array('show_tips'=>1));
+			$show_tips = boolval($arr['show_tips']);
+			$template = str_replace('%SHOW_TIPS%', $show_tips?1:0, $template);
+		}
+
 		if (strpos($template, '%VERSION%') !== false) {
 			$version = $aeSettings->getPackageInfo('version');
 			$template = str_replace('%VERSION%', $version, $template);

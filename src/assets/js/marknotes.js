@@ -8,6 +8,7 @@ Array.prototype.contains = function (v) {
 	}
 	return false;
 };
+
 // Extract unique values of an array
 Array.prototype.unique = function () {
 	var arr = [];
@@ -18,6 +19,7 @@ Array.prototype.unique = function () {
 	}
 	return arr;
 };
+
 // http://stackoverflow.com/a/2593661/1065340
 RegExp.quote = function (str) {
 	return (str + '')
@@ -103,7 +105,7 @@ function initFiles($data) {
 			});
 		}
 		/*<!-- endbuild -->*/
-	}
+	} // try
 
 	// Initialize the jsTree and attach events
 	jstree_init($data);
@@ -125,6 +127,7 @@ function initFiles($data) {
 			}
 		}
 	}
+
 	// See if the custominiFiles() function has been defined and
 	// if so, call it
 	try {
@@ -142,7 +145,7 @@ function initFiles($data) {
 			});
 		}
 		/*<!-- endbuild -->*/
-	}
+	} // try
 
 	// Call javascript functions there were added by plugins
 	runPluginsFunctions();
@@ -152,6 +155,19 @@ function initFiles($data) {
 		console.log('******** initFiles - END ***************');
 	}
 	/*<!-- endbuild -->*/
+
+	// If nothing has been loaded, show a quick userguide
+	if (marknotes.settings.hasOwnProperty('show_tips')) {
+		$('#CONTENT').addClass('show_tip');
+		ajaxify({
+			task: 'task.tips.show',
+			param: 'homepage',
+			callback: 'afterDisplay("")',
+			dataType: 'html',
+			useStore: 0,
+			target: 'CONTENT'
+		});
+	}
 
 	return true;
 }
@@ -236,12 +252,6 @@ function initializeTasks() {
 			window.open($file);
 			break;
 
-			/*case 'fullscreen':
-
-				toggleFullScreen();
-
-				break;*/
-
 		default:
 
 			// The task is perhaps a function that was added by a plugin
@@ -320,7 +330,6 @@ function afterDisplay($fname) {
 		// the previous title (of the previous read note) will still be displayed
 		$('title').text($title);
 		$('.content-header h1').text($title);
-
 
 		$fname = $('div.filename').text();
 		if ($fname !== '') {

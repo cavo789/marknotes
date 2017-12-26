@@ -81,8 +81,11 @@ function ajaxify_get_dataType($params, $bTaskReload) {
 				var re = /(?:\.([^.]+))?$/;
 				$dataType = re.exec($params.filename)[1];
 			}
+		} else {
+			$dataType = $params.dataType;
 		}
 	}
+
 	return $dataType;
 }
 
@@ -428,6 +431,7 @@ function ajaxify($params) {
 				}
 
 				if ($dataType === 'html') {
+
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
 						console.log('Output the result into target area');

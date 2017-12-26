@@ -26,6 +26,9 @@ ECHO  =                                                                         
 ECHO  = Under Windows OS, the mklink command allow to create a symlink (like a  =
 ECHO  = shortcut) and files should only be there once on your system.           =
 ECHO  =                                                                         =
+ECHO  = NOTE : THIS SCRIPT  SHOULD BE EXECUTED IN A COMMAND  PROMPT BUT ONLY IF =
+ECHO  = YOU'VE STARTED THE PROMPT WITH "RUN AS AN ADMIN"                        =
+ECHO  =                                                                         =
 ECHO  ===========================================================================
 
 ECHO.
@@ -52,20 +55,11 @@ mklink /D marknotes %MASTER%marknotes
 mklink /D templates %MASTER%templates
 
 if not exist "docs" mkdir docs
+if not exist "tmp" mkdir tmp
 
-mklink .editorconfig %MASTER%.editorconfig
-if not exist ".htaccess" mklink .htaccess %MASTER%.htaccess.txt
-mklink .htmlhintrc %MASTER%.htmlhintrc
-mklink .ignore %MASTER%.ignore
-mklink .jsbeautifyrc %MASTER%.jsbeautifyrc
+if not exist ".htaccess.txt" copy %MASTER%.htaccess.txt .htaccess
 mklink browserconfig.xml %MASTER%browserconfig.xml
-mklink custom.css.dist %MASTER%custom.css.dist
-mklink custom.js.dist %MASTER%custom.js.dist
-mklink favicon.ico %MASTER%favicon.ico
 mklink index.php %MASTER%index.php
-mklink package.json %MASTER%package.json
-mklink readme.md %MASTER%readme.md
-mklink robots.txt.dist %MASTER%robots.txt.dist
 mklink router.php %MASTER%router.php
 mklink settings.json.dist %MASTER%settings.json.dist
 
