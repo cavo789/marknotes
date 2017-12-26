@@ -1,11 +1,15 @@
 <?php
 /**
- * Show tips - Homepage
+ * Show tips
  *
- * The interface is displayed and no note is displayed so,
- * to help new users, display a quick userguide
+ * Show tip will allow to show extra informations and guidance
+ * to the user who start with marknotes.
  *
- * Answer to index.php?task=task.tips.show&tip=homepage
+ * The "which tip should be displayed" is answered by the &tip
+ * parameter (f.i. &tip=homepage). The text of the tip can then
+ * be retrieved in the /tips subfolder.
+ *
+ * Answer to URL like index.php?task=task.tips.show&tip=homepage
  */
 namespace MarkNotes\Plugins\Task\Tips;
 
@@ -29,8 +33,11 @@ class Show
 		$html = '';
 
 		if (is_file($filename)) {
-			$html = '<h1>Quick user guide</h1>';
-			$html .= file_get_contents($filename);
+			$html =
+				'<h1>Quick user guide</h1>'.
+				'<div class="show_tip">'.
+					file_get_contents($filename).
+				'</div>';
 
 			// Replace variables
 			$docs = rtrim($aeSettings->getFolderDocs(true), DS);

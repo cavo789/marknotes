@@ -158,17 +158,30 @@ function initFiles($data) {
 
 	// If nothing has been loaded, show a quick userguide
 	if (marknotes.settings.hasOwnProperty('show_tips')) {
-		$('#CONTENT').addClass('show_tip');
+		//$('#CONTENT').addClass('show_tip');
 		ajaxify({
 			task: 'task.tips.show',
 			param: 'homepage',
-			callback: 'afterDisplay("")',
+			callback: 'afterShowTip()',
 			dataType: 'html',
 			useStore: 0,
 			target: 'CONTENT'
 		});
 	}
 
+	return true;
+}
+
+/**
+ * A tip has been displayed
+ */
+function afterShowTip() {
+	// First process afterDisplay in order to process content's
+	// related features
+	afterDisplay("");
+
+	// Add the show_tip class
+	$('#CONTENT').addClass('show_tip');
 	return true;
 }
 
@@ -315,6 +328,12 @@ function afterDisplay($fname) {
 			console.log('--- Start - Running afterDisplay() ---');
 		}
 		/*<!-- endbuild -->*/
+
+		// Be sure to remove the show_tip class which is only for
+		// tips (task.tips.show) and not for other content.
+		if ($('#CONTENT').hasClass('show_tip')) {
+			$('#CONTENT').removeClass('show_tip');
+		}
 
 		// Initialize each action buttons of the displayed note
 		initializeTasks();
