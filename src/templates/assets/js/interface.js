@@ -24,19 +24,28 @@ $(document).ready(function () {
 
 	// By clicking anywhere on the document, collapse the sidebar
 	// (the sidebar should be closed when f.i. the user click in the note itself)
-	$('body,html').click(function (e) {
-		$('.control-sidebar').removeClass('control-sidebar-open');
-	});
+	//$('body,html').click(function (e) {
+	//	$('.control-sidebar').removeClass('control-sidebar-open');
+	//});
 
 	// By showing the sidebar with options (at the right of the screen),
 	// the sidebar should "push" the note's content i.e. make place for
 	// its own content and not, as by default, show it's content "over"
 	// the note's content.
 	// (seems very complicult way to do this)
-	$('[data-toggle="control-sidebar"]').controlSidebar()
-	var $controlSidebar = $('[data-toggle="control-sidebar"]').data('lte.controlsidebar')
+	//
+	// --------
+	// BUG IF ENABLED : By clicking on a button in the right sidebar,
+	// the sidebar should be closed. This is the initializeTasks()
+	// function() in marknotes.js. But, if the line here below are
+	// uncommented (and ideally should be), then the "hide on click"
+	// won't work anymore
+	// --------
+	//
+	//$('[data-toggle="control-sidebar"]').controlSidebar()
+	//var $controlSidebar = $('[data-toggle="control-sidebar"]').data('lte.controlsidebar')
 	// Set the data-slide option to false ==> push the content
-	$controlSidebar.options.slide = false;
+	//$controlSidebar.options.slide = false;
 
 	initializeTasks();
 

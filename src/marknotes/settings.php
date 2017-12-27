@@ -293,6 +293,11 @@ class Settings
 		return true;
 	}
 
+	public function getAll() : array
+	{
+		return $this->json;
+	}
+
 	/**
 	* Return the translation of a given text
 	*
@@ -412,7 +417,8 @@ class Settings
 	}
 
 	/**
-	* The application root folder (due to the use of symbolic links, the .php source files can
+	* The application root folder (due to the use of symbolic
+	* links, the .php source files can
 	* be in an another folder than the website itself
 	*
 	* @return string
@@ -436,8 +442,10 @@ class Settings
 	/**
 	* Return the name of the folder (relative) of the documents folder
 	*
-	* @param  bool  True  : return the full path (f.i. 'C:\Repository\notes\docs\')
-	*				False : return the relative one (f.i. 'docs')
+	* @param  bool
+	*		True  : return the full path
+	*			(f.i. 'C:\Repository\notes\docs\')
+	*		False : return the relative one (f.i. 'docs')
 	* @return string
 	*/
 	public function getFolderDocs(bool $absolute = true) : string
@@ -510,6 +518,7 @@ class Settings
 
 		return $folder.DS;
 	}
+
 	/**
 	* Return the root folder of the website (f.i. 'C:\Repository\notes\')
 	*

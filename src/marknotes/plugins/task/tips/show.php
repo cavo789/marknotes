@@ -23,31 +23,44 @@ class Show
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$tip = trim($aeFunctions->getParam('param', 'string', '', false));
-		$tip = $aeFiles->sanitizeFileName($tip);
+		$arr = $aeSettings->getPlugins('/interface', array('show_tips'=>1));
+		$show_tips = boolval($arr['show_tips']);
 
-		header('Content-Transfer-Encoding: ascii');
-		header('Content-Type: text/html; charset=utf-8');
+		if ($show_tips) {
 
-		$filename = __DIR__.'/tips/'.$tip.'.html';
-		$html = '';
+			$tip = trim($aeFunctions->getParam('param', 'string', '', false));
+			$tip = $aeFiles->sanitizeFileName($tip);
 
-		if (is_file($filename)) {
-			$html =
-				'<h1>Quick user guide</h1>'.
-				'<div class="show_tip">'.
-					file_get_contents($filename).
-				'</div>';
+			$filename = __DIR__.'/tips/'.$tip.'.html';
+			$html = '';
 
-			// Replace variables
-			$docs = rtrim($aeSettings->getFolderDocs(true), DS);
-			$html = str_replace('%DOCS%', $docs, $html);
-			$html = str_replace('%GITHUB%', GITHUB_REPO, $html);
-		} else {
-			$html = '<p class="error">Sorry the '.str_replace(__DIR__, '', $filename).' doesn\'t exists</p>';
+			if (is_file($filename)) {
+				$html =
+					'<h1>Quick user guide</h1>'.
+					'<div class="show_tip">'.
+						file_get_contents($filename).
+					'</div>';
+
+				$html .= '<hr/><input type="checkbox" id="show_tips" '.
+				 	'checked="checked" data-task="settings" '.
+					'data-key="interface.show_tips"> '.
+					'Click here to hide tips in '.
+					'the future';
+
+				// Replace variables
+				$docs = rtrim($aeSettings->getFolderDocs(true), DS);
+				$html = str_replace('%DOCS%', $docs, $html);
+				$html = str_replace('%GITHUB%', GITHUB_REPO, $html);
+
+			} else {
+				$html = '<p class="error">Sorry the '.str_replace(__DIR__, '', $filename).' doesn\'t exists</p>';
+			}
+
+			header('Content-Transfer-Encoding: ascii');
+			header('Content-Type: text/html; charset=utf-8');
+
+			echo $html;
 		}
-
-		echo $html;
 		die();
 	}
 

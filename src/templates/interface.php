@@ -165,6 +165,8 @@
 		<!--%MARKDOWN_GLOBAL_VARIABLES%-->
 		<script type="text/javascript" src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
 
+		<script type="text/javascript" src="%ROOT%assets/js/settings.js" defer="defer"></script>
+
 		<script type="text/javascript" src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
 
 		<script type="text/javascript" src="%ROOT%assets/js/marknotes.js" defer="defer"></script>

@@ -206,6 +206,10 @@ function initializeTasks() {
 	}
 	/*<!-- endbuild -->*/
 
+	if ($.isFunction(initializeSettings)) {
+		initializeSettings();
+	}
+
 	// Get all DOM objects having a data-task attribute
 	$("[data-task]").click(function (event) {
 		//event.preventDefault();
@@ -242,7 +246,12 @@ function initializeTasks() {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('Running task [' + $task + '] for [' + $file + ']');
+			if ($file!=='') {
+				console.log('Running task [' + $task + '] for ' +
+					'file [' + $file + ']');
+			} else {
+				console.log('Running task [' + $task + ']');
+			}
 		}
 		/*<!-- endbuild -->*/
 
@@ -360,6 +369,7 @@ function afterDisplay($fname) {
 		if (typeof customafterDisplay !== 'undefined' && $.isFunction(customafterDisplay)) {
 			customafterDisplay($fname);
 		}
+
 	} catch (err) {
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {

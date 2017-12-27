@@ -119,6 +119,10 @@
 			"update": {
 				"enabled": 1,
 				"quickIcons": 1
+			},
+			"settings": {
+				"enabled": 1,
+				"quickIcons": 0
 			}
 		},
 		"content": {

@@ -105,6 +105,8 @@
 	"settings_erase": "Supprime les fichiers ayant \u00e9t\u00e9 pr\u00e9c\u00e9demment g\u00e9n\u00e9r\u00e9s par marknotes comme les fichiers .epub, .docx, .html, .pdf, ...",
 	"settings_erase_done": "Les fichiers ont \u00e9t\u00e9 supprim\u00e9s",
 	"settings_erase_nofile": "Il n'y a rien \u00e0 supprimer; aucun fichier n'a \u00e9t\u00e9 trouv\u00e9",
+	"settings_form_title": "Configuration de marknotes",
+	"settings_saved": "Les donn\u00e9es de configuration ont \u00e9t\u00e9 sauv\u00e9es",
 	"show_tree_not_allowed": "L'acc\u00e8s a cet \u00e9cran a \u00e9t\u00e9 d\u00e9sactiv\u00e9, d\u00e9sol\u00e9",
 	"signin": "Se connecter",
 	"sitemap": "Afficher la carte du site",
@@ -124,6 +126,7 @@
 	"unknown_error": "Une erreur est survenue, merci d'essayer \u00e0 nouveau",
 	"update_newer": "Une nouvelle version de Marknotes est disponible en t\u00e9l\u00e9chargement, cliquez sur ce bouton pour t\u00e9l\u00e9charger et installer la nouvelle version",
 	"update_redirect":"Vous allez \u00eatre redirig\u00e9 vers le script d'installation pour poursuivre la mise-\u00e0-jour de marknotes",
+	"update_settings": "\u00c9dite la configuration de marknotes",
 	"update_software":"Mettre \u00e0 jour Marknotes, installe la derni\u00e8re version du logiciel",
 	"upload_files": "T\u00e9l\u00e9verser des fichiers (notes, images, pdf, ...)"
 }

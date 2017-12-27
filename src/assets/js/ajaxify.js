@@ -424,10 +424,12 @@ function ajaxify($params) {
 				if ($useStore) {
 					var storeVarName = ($data.task == 'task.export.html' ? $data.param : $data.task);
 
-					fnPluginTaskOptimizeStore_Set({
-						"name": storeVarName,
-						"data": data
-					});
+					if (storeVarName !== undefined) {
+						fnPluginTaskOptimizeStore_Set({
+							"name": storeVarName,
+							"data": data
+						});
+					}
 				}
 
 				if ($dataType === 'html') {

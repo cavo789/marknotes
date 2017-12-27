@@ -31,7 +31,7 @@ function jstree_init($data) {
 				// define the store object
 				if (typeof store === 'object') {
 					// Ok, localStore is set, use the state plugin
-					$arrPlugins.push('state');
+					//$arrPlugins.push('state');
 				}
 			} catch (e) {
 				/*<!-- build:debug -->*/
