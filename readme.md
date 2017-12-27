@@ -12,7 +12,7 @@
 2. **[:game_die: Demo](#2-game_die-demo-site)**
 3. **[How to install](#3-how-to-install-or-update-)**
 4. **[:book: Documentation](#4-book-documentation)**
-5. **[Features](#5-features)
+5. **[Features](#5-features)**
 6. **[:hammer: Configuration](#6-hammer-configuration)**
 7. **[Tips](#7-tips)**
 8. **[Debugging](#8-debugging)**
@@ -262,6 +262,12 @@ There, on github.com, in the `settings` of your repository, add a webhook. This 
 On my own, I use the `deploy.php` script (you'll find the script [here](https://github.com/cavo789/git_scripts/tree/master/deploy)) of [Marko Marković](https://github.com/markomarkovic). This script will download the repo and install the latest version.
 
 So, by pushing yours notes from your computer to github, github.com will call your website and the site will download and install the latest version. So simple.
+
+### Convert Word or ODT files
+
+[Marknotes_convert](https://github.com/cavo789/marknotes_convert) is a script for Windows that will convert, in a batch mode, every single `.docx` and `.odt` files into `.md`.
+
+So, if you already have a lot of documentation, **good news**, you can convert them to the markdown language and use them in the marknotes's interface.
 
 ---
 
