@@ -2,6 +2,8 @@
 
 namespace MarkNotes\Plugins\Markdown;
 
+use \Symfony\Component\Yaml\Yaml;
+
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class Write extends \MarkNotes\Plugins\Task\Plugin
@@ -34,9 +36,31 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 				$filename = $aeSettings->getFolderDocs(true).$filename;
 			}
 
+			$content = trim($params['markdown']);
+
+			// Check if there is a YAML header and if so,
+			// add in back in the .md file
+			$yaml=trim($aeSession->get('yaml', ''), "'");
+			$yaml=trim($yaml, '"');
+
+			if ($yaml!=='') {
+				$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
+
+				if (is_file($lib)) {
+					include_once $lib;
+
+					// Yaml::dump will add double-quotes so remove them
+					$content=
+						"---".PHP_EOL.
+						str_replace('\\n', PHP_EOL, trim(Yaml::dump($yaml), '"')).PHP_EOL.
+						"---".PHP_EOL.PHP_EOL.
+						$content;
+				}
+			}
+
 			// And write the file
 			$aeFiles = \MarkNotes\Files::getInstance();
-			$aeFiles->rewriteFile($filename, trim($params['markdown']));
+			$aeFiles->rewriteFile($filename, $content);
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {

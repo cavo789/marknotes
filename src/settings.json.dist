@@ -961,6 +961,7 @@
 						"//aside",
 						"//nav",
 						"//div[contains(attribute::class, 'footer-menu')]",
+						"//ul[contains(attribute::class, 'pagenav')]",
 						"//ul[(attribute::class) = 'nav']",
 						"//ul[(attribute::class) = 'breadcrumb']",
 						"//ul[(attribute::class) = 'pagination-list']",
@@ -1008,6 +1009,11 @@
 				"tags": {
 					"min_chars": 6,
 					"min_occurences": 10
+				},
+				"translate": {
+					"include" : {
+						"after" : "Free translation of the article  %YAML_ORIGINAL_URL%"
+					}
 				},
 				"update": {
 					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",

@@ -241,7 +241,7 @@ function afterEditInitMDE($data) {
 				// Retrieve the HTML of an article on the web
 				name: "curlBlog",
 				action: function customFunction(editor) {
-					buttonCurlBlog(editor);
+					buttonCurlBlog(filename, editor);
 				},
 				className: "fa fa-download",
 				title: $.i18n('button_curlBlog')
@@ -490,7 +490,7 @@ function buttonAddTOC(editor) {
  * A cURL action will be fired and try to retrieve the HTML content
  * of that page
  */
-function buttonCurlBlog(editor) {
+function buttonCurlBlog($fname, editor) {
 
 	var $default_url = '';
 
@@ -503,11 +503,12 @@ function buttonCurlBlog(editor) {
 		// ...
 		var $data = {};
 		$data.task = 'task.fetch.gethtml';
+		$data.param = $fname;
 		$data.url = $url;
 
 		$.ajax({
 			async: true,
-			type: 'POST',
+			type: 'GET',
 			url: marknotes.url,
 			data: $data,
 			datatype: 'html',

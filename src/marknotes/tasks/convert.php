@@ -183,7 +183,8 @@ class Convert
 		// Derive the temporary filename
 		$filename=$aeSettings->getFolderTmp().self::getSlugname($fname).'.md';
 
-		// Check if there is a YAML header and if so, add in back in the .md file
+		// Check if there is a YAML header and if so,
+		// add in back in the .md file
 		$yaml=trim($aeSession->get('yaml', ''));
 
 		if ($yaml!=='') {

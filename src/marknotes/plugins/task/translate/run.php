@@ -59,6 +59,33 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 		return $return;
 	}
 
+	private static function getVariable(string $line) : string
+	{
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Try to retrieve the original_url,
+		// this from the YAML block if present
+		$yaml = $aeSession->get('yaml', array());
+		$arrYAML = array();
+
+		if ($yaml !== array()) {
+			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
+			if (is_file($lib)) {
+				include_once $lib;
+				$arrYAML =  \Symfony\Component\Yaml\Yaml::parse($yaml);
+			}
+		}
+
+		if (stripos($line, '%yaml_original_url%')!==false) {
+			$value = $arrYAML['original_url']??'';
+			$line = str_ireplace('%yaml_original_url%', $value, $line);
+		}
+
+		return $line;
+
+	}
+
 	public static function run(&$params = null) : bool
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -81,6 +108,16 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 		} else {
 			// Call html-to-markdown and make the conversion to MD
 			$content = self::translate($content);
+
+			// Get options from settings.json
+			$arr = self::getOptions('include', array());
+
+			// Is there a text to add at the end ?
+			$after = $arr['after']??'';
+
+			if ($after!=='') {
+				$content.=PHP_EOL.PHP_EOL.self::getVariable($after);
+			}
 		}
 
 		header('Content-Type: text/plain; charset=utf-8');

@@ -156,6 +156,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -164,6 +165,15 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			$aeDebug = \MarkNotes\Debug::getInstance();
 		}
 		/*<!-- endbuild -->*/
+
+		// Note being edited
+		$filename = $aeFunctions->getParam('param', 'string', '', true);
+		$filename = json_decode(urldecode($filename));
+		$filename = $aeFiles->removeExtension($filename).'.md';
+
+		// Derive the fullname
+		$doc = $aeSettings->getFolderDocs(true);
+		$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
 
 		$url = $aeFunctions->getParam('url', 'string', '', false);
 		$url = trim($url);
@@ -257,6 +267,18 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 				$sHTML = $aeClean->doIt();
 
 				unset($aeClean);
+
+				$yaml = "original_url: ".$url;
+
+				$aeSession = \MarkNotes\Session::getInstance();
+				$aeSession->set('yaml', $yaml);
+
+				// Rewrite the file on the disk
+				$aeEvents = \MarkNotes\Events::getInstance();
+				$aeEvents->loadPlugins('task.markdown.write');
+				$params = array('markdown'=>$yaml.$sHTML);
+				$args = array(&$params);
+				$aeEvents->trigger('task.markdown.write::run', $args);
 
 				// Remember the HTML after cleaning
 				// for debugging purposes only (not used at all)
