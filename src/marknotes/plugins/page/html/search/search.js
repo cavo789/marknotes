@@ -68,7 +68,7 @@ function fnPluginTaskSearch_init() {
 
 			} // if ($.isFunction($.fn.flexdatalist))
 
-		} catch (e) {
+		} catch (err) {
 			console.warn(err.message);
 		}
 	} catch (err) {

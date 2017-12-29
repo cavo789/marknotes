@@ -88,7 +88,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 
 		try {
 			$type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
-		} catch (e) {
+		} catch (err) {
 			console.warn(err.message);
 		}
 
@@ -285,7 +285,7 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 		try {
 			$type = (data.node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
-		} catch (e) {
+		} catch (err) {
 			console.warn(err.message);
 		}
 

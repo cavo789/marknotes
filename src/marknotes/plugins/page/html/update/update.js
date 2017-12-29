@@ -27,57 +27,65 @@ function fnPluginHTMLUpdate() {
 	if ($version_url!=='') {
 		// Get the file and check if the current installed version
 		// is older than the latest publicly available
-		$.ajax({
-			async: true,
-			cache: true,
-			type: (marknotes.settings.debug ? 'GET' : 'POST'),
-			url: $version_url,
-			datatype: 'json',
-			beforeSend: function () {
-				// The button can be hidden when there is no
-				// update to install. So we can spare a few space
-				// on the screen
-				$('#icon_update').hide();
-			},
-			success: function (data) {
-				try {
-					// data is a JSON string with, at the root level,
-					// a version entry that will mention the latest,
-					// publicly available, version of marknotes
-					var json = $.parseJSON(data);
+		try {
+			$.ajax({
+				async: true,
+				cache: true,
+				type: 'GET', // Always GET; never POST
+				url: $version_url,
+				datatype: 'json',
+				beforeSend: function () {
+					// The button can be hidden when there is no
+					// update to install. So we can spare a few space
+					// on the screen
+					$('#icon_update').hide();
+				},
+				success: function (data) {
+					try {
+						// data is a JSON string with, at the root level,
+						// a version entry that will mention the latest,
+						// publicly available, version of marknotes
+						var json = $.parseJSON(data);
 
-					if (json.hasOwnProperty('version')) {
-						// json.version is the latest version; from
-						// the github repository (f.i. "3.0")
-						// marknotes.settings.version is the current,
-						// installed, version (f.i. "2.0").
-						//
-						// $bNeedUpdate will be set to True when the
-						// json.version (latest) if greater and thus,
-						// when an update is available.
-						$bNeedUpdate = (fnPluginTaskUpdateVersionCompare(json.version, marknotes.settings.version) == 1);
+						if (json.hasOwnProperty('version')) {
+							// json.version is the latest version; from
+							// the github repository (f.i. "3.0")
+							// marknotes.settings.version is the current,
+							// installed, version (f.i. "2.0").
+							//
+							// $bNeedUpdate will be set to True when the
+							// json.version (latest) if greater and thus,
+							// when an update is available.
+							$bNeedUpdate = (fnPluginTaskUpdateVersionCompare(json.version, marknotes.settings.version) == 1);
 
-						if ($bNeedUpdate) {
-							$('#icon_update').css('color','yellow').show();
-							document.getElementById('icon_update').title = $.i18n('update_newer');
+							if ($bNeedUpdate) {
+								$('#icon_update').css('color','yellow').show();
+								document.getElementById('icon_update').title = $.i18n('update_newer');
+							}
+						} // if (json.hasOwnProperty('version'))
+					} catch (e) {
+						/*<!-- build:debug -->*/
+						if (marknotes.settings.debug) {
+							console.log('Error when parsing the result ' +
+								'returned by ' + $version_url);
+							console.warn(e.message);
+							console.log(data);
 						}
-					} // if (json.hasOwnProperty('version'))
-				} catch (e) {
-					/*<!-- build:debug -->*/
-					if (marknotes.settings.debug) {
-						console.log('Error when parsing the result ' +
-							'returned by ' + $version_url);
-						console.warn(e.message);
-						console.log(data);
-					}
-					/*<!-- endbuild -->*/
-				} // try
-			}, // success
-			error: function (Request, textStatus, errorThrown) {
-				// Do nothing; this feature is not really important.
-				//ajaxify_show_error($target, Request, textStatus, errorThrown);
-			} // error
-		}); // $.ajax()
+						/*<!-- endbuild -->*/
+					} // try
+				}, // success
+				error: function (Request, textStatus, errorThrown) {
+					// Do nothing; this feature is not really important.
+					//ajaxify_show_error($target, Request, textStatus, errorThrown);
+				} // error
+			}); // $.ajax()
+		} catch (e) {
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log(e.message);
+			}
+			/*<!-- endbuild -->*/
+		} // try
 	}
 
 	return true;

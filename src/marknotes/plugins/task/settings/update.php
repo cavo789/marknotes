@@ -26,6 +26,20 @@ class Update
 		return $arr;
 	}
 
+	/**
+	 * Recursive ksort() function.
+	 * Allow to sort an array based on keys, recursively
+	 * @link https://gist.github.com/cdzombak/601849#file-ksortrecursive-php
+	 */
+	private static function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
+		if (!is_array($array)) return false;
+		ksort($array, $sort_flags);
+		foreach ($array as &$arr) {
+			self::ksortRecursive($arr, $sort_flags);
+		}
+		return true;
+	}
+
 	public static function run(&$params = null)
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -55,6 +69,9 @@ class Update
 		} else {
 			$arrSettings = $arrNew;
 		}
+
+		// Sort the array by key, recursively
+		self::ksortRecursive($arrSettings);
 
 		// Write the file
 		$fp = fopen($json, 'w');

@@ -326,7 +326,7 @@ function jstree_context_menu(node) {
 
 	try {
 		$type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
-	} catch (e) {
+	} catch (err) {
 		console.warn(err.message);
 	}
 

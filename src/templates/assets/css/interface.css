@@ -4,6 +4,18 @@
 	height	: auto;
 }
 */
+
+/* When scrolling down, hide the Fixed header (containing the
+ * title of the note and show it back when scrolling up.
+ */
+[data-scrolldir="down"] .content-headerFixed {
+	display : none;
+}
+
+[data-scrolldir="up"] .content-headerFixed {
+	display : inline;
+}
+
 #icon_lock {
 	margin-left: 2px;
 	color	  : #abe0ab;
@@ -115,12 +127,12 @@ article {
 .content-headerFixed {
 	background-color: rgb(194, 139, 137) !important;
 	color			: white;
-	padding		 : 5px;
+	padding			: 5px;
 	position		: fixed;
-	margin-left	 : 300px;
+	margin-left		: 300px;
 	left			: 0;
 	right			: 0;
-	z-index		 : 3;
+	z-index			: 3;
 }
 @media (max-width: 767px) {
 	.content-headerFixed {

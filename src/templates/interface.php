@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="%LANGUAGE%">
+<html lang="%LANGUAGE%" >
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -170,6 +170,8 @@
 		<script type="text/javascript" src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
 
 		<script type="text/javascript" src="%ROOT%assets/js/marknotes.js" defer="defer"></script>
+
+		<script type="text/javascript" src="%ROOT%libs/scrolldir/scrolldir.min.js" defer="defer"></script>
 
 		<script type="text/javascript" src="%ROOT%templates/assets/js/interface.js" defer="defer"></script>
 

@@ -354,6 +354,12 @@ class Files
 		$errorlevel = error_reporting();
 		error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
 
+		// Be sure that the filename starts with a "/" on non Windows
+		// environment (the filename is thus absolute, not relative)
+		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+			$filename = DS.ltrim($filename, DS);
+		}
+
 		$bReturn = false;
 		try {
 			if ($handle = fopen($filename, 'w')) {

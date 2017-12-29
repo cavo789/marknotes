@@ -41,6 +41,12 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 		$arr = array('folder' => $foldername,'return' => true);
 		$args = array(&$arr);
 
+		// Be sure that the foldername starts with a "/" on non Windows
+		// environment (the foldername is thus absolute, not relative)
+		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+			$foldername = DS.ltrim($foldername, DS);
+		}
+
 		$aeEvents->trigger('task.acls.cansee::run', $args);
 
 		// cansee will initialize return to 0 if the user can't

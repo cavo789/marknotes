@@ -1,21 +1,3 @@
-// Called by the i18n plugin when that plugin is enabled
-function fnTranslateInterface(params) {
-	try {
-
-		// This function should only be fired once
-		// So, now, remove it from the arri18nFct array
-		marknotes.arri18nFct.splice(marknotes.arri18nFct.indexOf('fnTranslateInterface'), 1);
-
-		$('#mnLogo').prop('title', $.i18n('app_download'));
-		$('#mnWebsite').prop('href', $.i18n('app_website'));
-		$('body').i18n();
-	} catch (e) {
-		console.warn(err.message);
-	}
-
-	return true;
-}
-
 $(document).ready(function () {
 
 	$(".sidebar-toggle").click(function (e) {
@@ -53,5 +35,26 @@ $(document).ready(function () {
 		marknotes.arri18nFct.push("fnTranslateInterface");
 	}
 
+	// scrollDir is a function added by the Scrolldir library
+	// @link : https://github.com/dollarshaveclub/scrolldir
+	//scrollDir({ direction: 'up' }); // change the default to "UP"
 
 });
+
+// Called by the i18n plugin when that plugin is enabled
+function fnTranslateInterface(params) {
+	try {
+
+		// This function should only be fired once
+		// So, now, remove it from the arri18nFct array
+		marknotes.arri18nFct.splice(marknotes.arri18nFct.indexOf('fnTranslateInterface'), 1);
+
+		$('#mnLogo').prop('title', $.i18n('app_download'));
+		$('#mnWebsite').prop('href', $.i18n('app_website'));
+		$('body').i18n();
+	} catch (e) {
+		console.warn(e.message);
+	}
+
+	return true;
+}

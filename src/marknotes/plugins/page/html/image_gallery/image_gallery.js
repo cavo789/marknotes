@@ -31,7 +31,7 @@ function fnPluginHTMLImageGallery() {
 					}
 				});
 			}
-		} catch (e) {
+		} catch (err) {
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
 				console.warn(err.message);

@@ -119,7 +119,7 @@
 					$('#mnLogo').prop('title', $.i18n('app_download'));
 					$('#mnWebsite').prop('href', $.i18n('app_website'));
 					$('body').i18n();
-				} catch (e) {
+				} catch (err) {
 					console.warn(err.message);
 				}
 

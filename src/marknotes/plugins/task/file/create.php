@@ -44,16 +44,18 @@ class Create extends \MarkNotes\Plugins\Task\File
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
 		if (intval($args[0]['return'])===1) {
+
 			// Only if the user can see the parent folder, he can
 			// create a file
 			if (!$aeFiles->fileExists($filename)) {
+
 				// Define the content : get the filename without the
 				// extension and set the content as heading 1.
 				// Don't use PHP_EOL but well PHP_LF
 
 				$content = '# '.basename($aeFiles->removeExtension($filename)).PHP_LF;
 
-				$wReturn =  ($aeFiles->createFile($filename, $content, CHMOD_FILE) ? CREATE_SUCCESS : FILE_ERROR);
+				$wReturn = ($aeFiles->createFile($filename, $content, CHMOD_FILE) ? CREATE_SUCCESS : FILE_ERROR);
 
 				// Remember the last added note (f.i. /subfolder/note)
 				// (with the extension)
@@ -110,9 +112,11 @@ class Create extends \MarkNotes\Plugins\Task\File
 		} else {
 			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
-			// Be sure to have the .md extension
-			$filename = $aeFiles->removeExtension($filename).'.md';
+			if (!$aeFunctions->endsWith($filename, '.md')) {
+				$filename.='.md';
+			}
 
+			// Be sure to have the .md extension
 			$wReturn = self::create($filename);
 
 			// Relative filename; needed for the md5() function
@@ -140,7 +144,6 @@ class Create extends \MarkNotes\Plugins\Task\File
 					$msg = str_replace('$1', $rel_newname, $msg);
 					break;
 			}
-
 
 			$return = array(
 				'status' => (($wReturn == CREATE_SUCCESS) ? 1 : 0),

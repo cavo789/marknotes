@@ -84,7 +84,7 @@ function makeButtonLists(obj) {
 			$('<li class="hidden-xs">' + value.button + '</li>').insertBefore('.control-sidebar-button');
 		}
 	});
-	//} catch (e) {
+	//} catch (err) {
 	//	console.warn(err.message);
 	//	list = '';
 	//	}
