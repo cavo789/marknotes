@@ -129,7 +129,7 @@ class Settings
 		// using symbolic paths)
 		$noteJSON = $this->getFolderAppRoot().'settings.json.dist';
 
-		if ($aeFiles->fileExists($noteJSON)) {
+		if ($aeFiles->exists($noteJSON)) {
 			$json = $aeJSON->json_decode($noteJSON, true);
 		}
 
@@ -139,7 +139,7 @@ class Settings
 
 		// From the root folder of the web application
 		$noteJSON = $this->getFolderWebRoot().'settings.json.dist';
-		if ($aeFiles->fileExists($noteJSON)) {
+		if ($aeFiles->exists($noteJSON)) {
 			$arr = $aeJSON->json_decode($noteJSON, true);
 
 			/*<!-- build:debug -->*/
@@ -154,7 +154,7 @@ class Settings
 		// 2. Get the settings.json user's file
 		$noteJSON = $this->getFolderWebRoot().'settings.json';
 
-		if ($aeFiles->fileExists($noteJSON)) {
+		if ($aeFiles->exists($noteJSON)) {
 			$arr = $aeJSON->json_decode($noteJSON, true);
 
 			/*<!-- build:debug -->*/
@@ -229,7 +229,7 @@ class Settings
 
 				$noteJSON = rtrim($folder, DS).DS.'settings.json';
 
-				if ($aeFiles->fileExists($noteJSON)) {
+				if ($aeFiles->exists($noteJSON)) {
 					// Read the settings.json file and merge
 					$arr = $aeJSON->json_decode($noteJSON, true);
 					$json = array_replace_recursive($json, $arr);
@@ -257,7 +257,7 @@ class Settings
 			// $noteJSON will be c:/sites/notes/docs/marknotes/userguide.json f.i.
 			$noteJSON = $this->getFolderDocs(true).$dir.$fname;
 
-			if ($aeFiles->fileExists($noteJSON)) {
+			if ($aeFiles->exists($noteJSON)) {
 				$arr = $aeJSON->json_decode($noteJSON, true);
 				$json = array_replace_recursive($json, $arr);
 
@@ -348,7 +348,7 @@ class Settings
 	* @param  string $fname
 	* @return string
 	*/
-	private function sanitizeFileName(string $fname) : string
+	private function sanitize(string $fname) : string
 	{
 		$fname = trim($fname);
 
@@ -567,7 +567,7 @@ class Settings
 		$tmpl = $default;
 		if (isset($this->json['templates'])) {
 			if (isset($this->json['templates'][$default])) {
-				$tmpl = $this->sanitizeFileName($this->json['templates'][$default]);
+				$tmpl = $this->sanitize($this->json['templates'][$default]);
 			}
 		}
 
@@ -577,13 +577,13 @@ class Settings
 
 			// The file isn't found; perhaps the extension wasn't mentionned
 			// If no extension mentionned; default is .php
-			if (!$aeFiles->fileExists($fname)) {
-				if ($aeFiles->fileExists($fname.'.php')) {
+			if (!$aeFiles->exists($fname)) {
+				if ($aeFiles->exists($fname.'.php')) {
 					$fname.='.php';
 				}
 			}
 
-			if (!$aeFiles->fileExists($fname)) {
+			if (!$aeFiles->exists($fname)) {
 				// The specified template doesn't exists.
 				// Back to the default one;
 				/*<!-- build:debug -->*/
@@ -597,7 +597,7 @@ class Settings
 				$fname = '';
 			}
 		} else { // if ($tmpl!=='')
-			if ($aeFiles->fileExists($this->getFolderTemplates().$tmpl.'.php')) {
+			if ($aeFiles->exists($this->getFolderTemplates().$tmpl.'.php')) {
 				$fname = $this->getFolderTemplates().$tmpl.'.php';
 			} else {
 				// No template at all
@@ -667,7 +667,7 @@ class Settings
 
 		if (isset($this->json['convert'])) {
 			if (isset($this->json['convert'][$sTool])) {
-				if ($aeFiles->fileExists($this->json['convert'][$sTool]['script'])) {
+				if ($aeFiles->exists($this->json['convert'][$sTool]['script'])) {
 					$arr = $this->json['convert'][$sTool];
 				}
 			}
@@ -785,7 +785,7 @@ class Settings
 		$sReturn = '';
 
 		$fname = $this->getFolderAppRoot().'package.json';
-		if ($aeFiles->fileExists($fname)) {
+		if ($aeFiles->exists($fname)) {
 			$json = $aeJSON->json_decode($fname, true);
 			$sReturn = $json[$info];
 		}

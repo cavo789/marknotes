@@ -86,7 +86,7 @@ class Get
 				$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 				$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
-				if (!$aeFiles->fileExists($file)) {
+				if (!$aeFiles->exists($file)) {
 					$file = utf8_decode($file);
 				}
 

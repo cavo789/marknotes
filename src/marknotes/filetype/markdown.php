@@ -163,7 +163,7 @@ class Markdown
 								$img = str_replace('\.', '\\\.', $img);
 							} // if($task==='pdf')
 
-							if ($aeFiles->fileExists($filename)) {
+							if ($aeFiles->exists($filename)) {
 								$markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
 							} else {
 								/*<!-- build:debug -->*/
@@ -206,7 +206,7 @@ class Markdown
 
 							$filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
 
-							if ($aeFiles->fileExists($filename)) {
+							if ($aeFiles->exists($filename)) {
 								$img = $url.trim($matches[2][$i]);
 								$markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
 							}
@@ -238,7 +238,7 @@ class Markdown
 		/*<!-- endbuild -->*/
 		$aeSession = \MarkNotes\Session::getInstance();
 
-		if ($aeFiles->fileExists($filename)) {
+		if ($aeFiles->exists($filename)) {
 			$task = $aeSession->get('task');
 
 			/*<!-- build:debug -->*/

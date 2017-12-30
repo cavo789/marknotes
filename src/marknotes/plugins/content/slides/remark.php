@@ -19,7 +19,7 @@ class Remark
 		if ($params['filename'] !== "") {
 			$fullname = $aeSettings->getFolderDocs(true).$params['filename'];
 
-			if (!$aeFiles->fileExists($fullname)) {
+			if (!$aeFiles->exists($fullname)) {
 				$aeFunctions->fileNotFound($fullname);
 			}
 

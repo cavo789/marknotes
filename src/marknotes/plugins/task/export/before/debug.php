@@ -39,7 +39,7 @@ class Debug extends \MarkNotes\Plugins\Task\Plugin
 
 		// Never kill .md files !!!
 		if ($params['extension']!=='md') {
-			if ($aeFiles->fileExists($filename)) {
+			if ($aeFiles->exists($filename)) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
 				$aeDebug->log("Debug mode set, kill the previous ".
 				$filename." so a new version will be created", "debug");
@@ -53,7 +53,7 @@ class Debug extends \MarkNotes\Plugins\Task\Plugin
 						$aeDebug->log($e->getMessage(), "error");
 					}
 				}
-			} // if ($aeFiles->fileExists($filename))
+			} // if ($aeFiles->exists($filename))
 		} // if ($params['extension']!=='md')
 		return true;
 	}

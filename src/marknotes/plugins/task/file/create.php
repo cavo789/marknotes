@@ -28,7 +28,7 @@ class Create extends \MarkNotes\Plugins\Task\File
 		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
 		// Sanitize the filename
-		$filename = $aeFiles->sanitizeFileName($filename);
+		$filename = $aeFiles->sanitize($filename);
 
 		// Try to remove the folder, first, be sure that the user
 		// can see the folder : if he can't, he can't delete it too
@@ -47,7 +47,8 @@ class Create extends \MarkNotes\Plugins\Task\File
 
 			// Only if the user can see the parent folder, he can
 			// create a file
-			if (!$aeFiles->fileExists($filename)) {
+
+			if (!$aeFiles->exists($filename)) {
 
 				// Define the content : get the filename without the
 				// extension and set the content as heading 1.
@@ -55,7 +56,7 @@ class Create extends \MarkNotes\Plugins\Task\File
 
 				$content = '# '.basename($aeFiles->removeExtension($filename)).PHP_LF;
 
-				$wReturn = ($aeFiles->createFile($filename, $content, CHMOD_FILE) ? CREATE_SUCCESS : FILE_ERROR);
+				$wReturn = ($aeFiles->create($filename, $content, CHMOD_FILE) ? CREATE_SUCCESS : FILE_ERROR);
 
 				// Remember the last added note (f.i. /subfolder/note)
 				// (with the extension)
@@ -92,7 +93,7 @@ class Create extends \MarkNotes\Plugins\Task\File
 		// The folder name is stored in $params['filename']
 		$filename = trim($params['filename']);
 		if ($filename != '') {
-			$filename = $aeFiles->sanitizeFileName(trim($filename));
+			$filename = $aeFiles->sanitize(trim($filename));
 		}
 
 		/*<!-- build:debug -->*/

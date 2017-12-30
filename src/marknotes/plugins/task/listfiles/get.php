@@ -96,6 +96,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 
+
 				$ext = '*.md';
 				$arrFiles = $aeFunctions->array_iunique($aeFiles->rglob($ext, $docs));
 

@@ -34,7 +34,7 @@ class Metadata extends \MarkNotes\Plugins\Page\HTML\Plugin
 		foreach ($arrOptions as $key => $value) {
 			// Verify if the pattern can be found in the html
 			if (stripos($html, $value['pattern'])!==false) {
-				if ($aeFiles->fileExists($filename = $root.$value['filename'])) {
+				if ($aeFiles->exists($filename = $root.$value['filename'])) {
 					// Read the meta file and inject its content in the HTML
 					$content = trim(file_get_contents($filename));
 

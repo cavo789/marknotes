@@ -52,7 +52,7 @@ class Copy extends \MarkNotes\Plugins\Task\Plugin
 
 		$filename = $params['output'] ?? '';   // output filename (fullname)
 
-		if ($aeFiles->fileExists($filename)) {
+		if ($aeFiles->exists($filename)) {
 			// Get the folder where the file should be copied
 			$target_folder = self::getOptions('target_folder', '');
 

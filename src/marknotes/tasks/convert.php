@@ -93,7 +93,7 @@ class Convert
 			$aeFiles = \MarkNotes\Files::getInstance();
 
 			// $sScriptName string Absolute filename to the pandoc.exe script
-			if (!$aeFiles->fileExists($sScriptName = $this->arrConfig['script'])) {
+			if (!$aeFiles->exists($sScriptName = $this->arrConfig['script'])) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug->log('File '.$sScriptName.' didn\'t exists', 'error');
@@ -211,7 +211,7 @@ class Convert
 		}*/
 
 		// Return the temporary filename or an empty string
-		return $aeFiles->createFile($filename, $content) ? $filename : '';
+		return $aeFiles->create($filename, $content) ? $filename : '';
 	}
 
 	private function getPandocScript(string $InputFileName, string $TargetFileName) : string
@@ -292,7 +292,7 @@ class Convert
 
 		$fScriptFile = $aeSettings->getFolderTmp().self::getSlugName().'.bat';
 
-		if (!$aeFiles->createFile($fScriptFile, $sScript)) {
+		if (!$aeFiles->create($fScriptFile, $sScript)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
@@ -301,7 +301,7 @@ class Convert
 			/*<!-- endbuild -->*/
 		}
 
-		if (!$aeFiles->fileExists($fScriptFile)) {
+		if (!$aeFiles->exists($fScriptFile)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
@@ -312,7 +312,7 @@ class Convert
 				$aeDebug->log("The file [".$fScriptFile."] is missing", "error");
 			}
 			/*<!-- endbuild -->*/
-		} // if (!$aeFiles->fileExists($fScriptFile))
+		} // if (!$aeFiles->exists($fScriptFile))
 
 		// Run the script.
 		// This part can be long depending on the size of the .md file
@@ -321,7 +321,7 @@ class Convert
 
 		// Once the exec() statement is finished
 
-		if ($aeFiles->fileExists($TargetFileName)) {
+		if ($aeFiles->exists($TargetFileName)) {
 			// The file has been correctly exported, the batch is no more needed
 
 			/*<!-- build:debug -->*/
@@ -333,7 +333,7 @@ class Convert
 			/*<!-- build:debug -->*/
 			}
 			/*<!-- endbuild -->*/
-		} // if (!$aeFiles->fileExists($final))
+		} // if (!$aeFiles->exists($final))
 
 /*
 		die(__FILE__." - ".__LINE__. " -  called, is this still needed ?");
@@ -353,7 +353,7 @@ class Convert
         $final = self::getFileName($params['filename'], $params['task']);
 
         // And check if the file already exists => faster than creating on-the-fly
-        if ($aeFiles->fileExists($final)) {
+        if ($aeFiles->exists($final)) {
             $fMD = $aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'md');
             if (filemtime($final) < filemtime($fMD)) {
                 // The note has been modified after the generation of the .pdf => no more up-to-date
@@ -362,7 +362,7 @@ class Convert
         }
 
         // Doesn't exists yet ? Create it
-        if (($final === '') || (!$aeFiles->fileExists($final))) {
+        if (($final === '') || (!$aeFiles->exists($final))) {
 
             // Try to use the best Converter
             $converter = '';

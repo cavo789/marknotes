@@ -49,7 +49,7 @@ class Update
 		$key = trim($aeFunctions->getParam('key', 'string', '', false));
 		$value = trim($aeFunctions->getParam('value', 'string', '', false));
 
-		$key = $aeFiles->sanitizeFileName($key);
+		$key = $aeFiles->sanitize($key);
 
 		$arrNew = array();
 		$arrNew = self::buildArray($key, $value, $arrNew);

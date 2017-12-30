@@ -32,7 +32,7 @@ class DeckTape
 
         $sScriptName = $arrSettings['script'];
 
-        if (!$aeFiles->fileExists($sScriptName)) {
+        if (!$aeFiles->exists($sScriptName)) {
             /*<!-- build:debug -->*/
             if ($aeSettings->getDebugMode()) {
                 $aeDebug->here('Decktape, file '.$sScriptName.' didn\'t exists', 5);
@@ -53,11 +53,11 @@ class DeckTape
         // Just in case of the file was already created in the /tmp folder but, for one
         // or an another reason, not yet copied in the final folder.
 
-        if ($aeFiles->fileExists($tmpPDF)) {
+        if ($aeFiles->exists($tmpPDF)) {
 
             // Remane the temporary with its final name
             // Note : the PDF file was perhaps already moved by the convert script
-            $aeFiles->renameFile($tmpPDF, $finalPDF);
+            $aeFiles->rename($tmpPDF, $finalPDF);
         } else {
             $aeEvents = \MarkNotes\Events::getInstance();
             $aeEvents->loadPlugins('content', 'slides');
@@ -102,10 +102,10 @@ class DeckTape
             exec($fScriptFile, $output);
 
             try {
-                if ($aeFiles->fileExists($tmpPDF)) {
+                if ($aeFiles->exists($tmpPDF)) {
                     // Remane the temporary with its final name
                     // Note : the PDF file was perhaps already moved by the convert script
-                    $aeFiles->renameFile($tmpPDF, $finalPDF);
+                    $aeFiles->rename($tmpPDF, $finalPDF);
                 }
             } catch (Exception $e) {
                 $finalPDF = '';

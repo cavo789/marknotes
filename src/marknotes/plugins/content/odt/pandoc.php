@@ -35,7 +35,7 @@ class Pandoc
 		// Check if pandoc is installed; if not, check if the exported file already exists
 		if (!$aeConvert->isValid()) {
 
-			if (!$aeFiles->fileExists($final)) {
+			if (!$aeFiles->exists($final)) {
 
 				// No, doesn't exists
 

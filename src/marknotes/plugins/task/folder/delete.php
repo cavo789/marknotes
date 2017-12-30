@@ -17,38 +17,34 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 	protected static $json_settings = 'plugins.task.folder';
 	protected static $json_options = '';
 
-	private static function is_dir_empty($foldername) : bool
-	{
-		if (!is_readable($foldername)) {
-			return false;
-		}
-		return ((count(scandir($foldername)) == 2) ? true : false);
-	}
-
 	/**
-	 * Kill a folder recursively
+	 * Remove a folder and his subfolders if any
 	 */
 	private static function delete(string $foldername) : float
 	{
-		$aeDebug = \MarkNotes\Debug::getInstance();
-		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-
 		if (trim($foldername) === '') {
 			return FILE_ERROR;
 		}
 
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		// Sanitize foldersname
-		$foldername = $aeFiles->sanitizeFileName($foldername);
+		$foldername = $aeFiles->sanitize($foldername);
 		$foldername = str_replace('/', DS, $aeSettings->getFolderDocs().$foldername);
 
-		if (!$aeFiles->folderExists($foldername)) {
+		if (!$aeFolders->exists($foldername)) {
 			// The folder is not found
 			return FOLDER_NOT_FOUND;
 		} else {
-			// $foldername will be something like c:\websites\notes\docs\folder\folder_to_kill
-			// So be really sure that the $foldername absolute path is well within the $docs
-			// folder (strcmp should strictly give 0).  if so, continue and allow the deletion
+			// $foldername will be something like
+			// c:\websites\notes\docs\folder\folder_to_kill
+			// So be really sure that the $foldername absolute
+			// path is well within the $docs
+			// folder (strcmp should strictly give 0).
+			// If so, continue and allow the deletion
 			// If not, stop and return an error.
 
 			$docs = $aeSettings->getFolderDocs(true);
@@ -56,108 +52,24 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 			if (strcmp($docs, substr($foldername, 0, strlen($docs))) !== 0) {
 				// Outside the /docs folder, prohibited
 				return FOLDER_NOT_DELETED;
-			} elseif (!is_writable(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"))) {
+			} elseif (!is_writable($foldername)) {
 				// Don't start and kill files if the folder is read-only
 				return FOLDER_IS_READONLY;
 			} else {
 				// Ok, recursively kill the folder and its content
-
-				$it = new \RecursiveDirectoryIterator(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8").DS, \RecursiveDirectoryIterator::SKIP_DOTS);
-
-				$files = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-				foreach ($files as $file) {
-					$name = utf8_encode($file->getRealPath());
-
-					if ($file->isDir()) {
-						/*<!-- build:debug -->*/
-						if ($aeSettings->getDebugMode()) {
-							$aeDebug->log('Killing folder ['.utf8_encode($name).']', 'debug');
-						}
-						/*<!-- endbuild -->*/
-						if (is_writable(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"))) {
-							try {
-								if (self::is_dir_empty($name)) {
-									@rmdir($name);
-								} else {
-									/*<!-- build:debug -->*/
-									if ($aeSettings->getDebugMode()) {
-										$aeDebug->log($name.' isn\'t empty', 'debug');
-									}
-									/*<!-- endbuild -->*/
-								}
-							} catch (Exception $ex) {
-								/*<!-- build:debug -->*/
-								if ($aeSettings->getDebugMode()) {
-									$aeDebug->log($ex->getMessage(), 'error');
-								}
-								/*<!-- endbuild -->*/
-							}
-						}
-
-						if ($aeFiles->folderExists($name)) {
-							// Still exists
-
-							/*<!-- build:debug -->*/
-							if ($aeSettings->getDebugMode()) {
-								$aeDebug->log('   Error, folder ['.utf8_encode($name).'] still present', 'debug');
-							}
-							/*<!-- endbuild -->*/
-						}
-					} else { // if ($file->isDir())
-						/*<!-- build:debug -->*/
-						if ($aeSettings->getDebugMode()) {
-							$aeDebug->log('Killing file ['.utf8_encode($name).']', 'debug');
-						}
-						/*<!-- endbuild -->*/
-
-						if (is_writable(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"))) {
-							unlink(mb_convert_encoding($name, "ISO-8859-1", "UTF-8"));
-						}
-
-						if ($aeFiles->fileExists($name)) {
-							/*<!-- build:debug -->*/
-							if ($aeSettings->getDebugMode()) {
-								$aeDebug->log('   Error, file ['.utf8_encode($name).'] still present', 'debug');
-							}
-							/*<!-- endbuild -->*/
-						}
-					} // if ($file->isDir())
-				} // foreach
-
-				/*<!-- build:debug -->*/
-				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log('Killing file ['.utf8_encode($foldername).']', 'debug');
-				}
-				/*<!-- endbuild -->*/
-
-				// And kill the folder itself
-				try {
-					if (self::is_dir_empty(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"))) {
-						rmdir(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"));
-					}
-				} catch (Exception $ex) {
-					/*<!-- build:debug -->*/
-					if ($aeSettings->getDebugMode()) {
-						$aeDebug->log($ex->getMessage(), 'error');
-					}
-					/*<!-- endbuild -->*/
-				}
-
-				if ($aeFiles->folderExists(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"))) {
+				if (!($aeFolders->delete($foldername))) {
 					// Still exists
-
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug->log('   Error, folder ['.utf8_encode($foldername).'] still present', 'debug');
 					}
 					/*<!-- endbuild -->*/
-
 					return FILE_ERROR;
-				} else { // if ($aeFiles->folderExists($foldername))
+				} else {
 					return KILL_SUCCESS;
 				}
 			}
-		} // if (!$aeFiles->folderExists($foldername))
+		} // if (!$aeFolders->exists($foldername)) {
 	}
 
 	/**
@@ -176,7 +88,7 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 		$foldername = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
 		if ($foldername != '') {
-			$foldername = $aeFiles->sanitizeFileName(trim($foldername));
+			$foldername = $aeFiles->sanitize(trim($foldername));
 		}
 
 		/*<!-- build:debug -->*/

@@ -4,7 +4,9 @@
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
-**marknotes requires PHP 7+.**
+**marknotes requires PHP 7.1 or greater**
+
+*(There is a [bug in PHP 7.0](https://github.com/php/php-src/blob/PHP-7.1.0beta2/UPGRADING#L321) when working with filenames having accentuated characters (UTF8) so if you wish to use such name, please be sure to use at least PHP 7.1)*
 
 ## Table of Contents
 

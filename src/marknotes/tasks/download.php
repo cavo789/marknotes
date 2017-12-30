@@ -38,7 +38,7 @@ class Download
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($fname))).'.'.$type;
 
-		if ($aeFiles->fileExists($fname)) {
+		if ($aeFiles->exists($fname)) {
 			// And send the file to the browser
 			switch ($type) {
 				case 'doc':

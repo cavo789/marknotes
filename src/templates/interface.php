@@ -20,6 +20,8 @@
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/AdminLTE/css/AdminLTE.min.css">
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/AdminLTE/css/skins/%SKIN%.min.css">
 
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/sweetalert2/sweetalert2.min.css">
+
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/interface.css" />
 
   		<!--%ADDITIONNAL_CSS%-->
@@ -144,6 +146,8 @@
 		<script type="text/javascript" src="%ROOT%libs/jQuery-slimScroll/jquery.slimscroll.min.js"></script>
 
 		<script type="text/javascript" src="%ROOT%libs/noty/jquery.noty.packaged.min.js" defer="defer"></script>
+
+		<script type="text/javascript" src="%ROOT%libs/sweetalert2/sweetalert2.min.js" defer="defer"></script>
 
 		<script type="text/javascript" defer="defer">
 			var marknotes = {};

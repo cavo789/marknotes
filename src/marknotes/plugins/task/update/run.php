@@ -53,7 +53,7 @@ class Update extends \MarkNotes\Plugins\Task\Plugin
 				/*<!-- endbuild -->*/
 
 				$aeFiles = \MarkNotes\Files::getInstance();
-				$aeFiles->createFile($root.'install.php', $content);
+				$aeFiles->create($root.'install.php', $content);
 
 				// True if the file has been created
 				$bStatus = (is_file($root.'install.php'));

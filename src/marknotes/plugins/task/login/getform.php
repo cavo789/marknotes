@@ -24,7 +24,7 @@ class GetForm extends \MarkNotes\Plugins\Task\Plugin
 
 		$filename = __DIR__.'/assets/login.frm';
 
-		if ($aeFiles->FileExists($filename)) {
+		if ($aeFiles->exists($filename)) {
 			// Get the root URL
 			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
@@ -38,13 +38,13 @@ class GetForm extends \MarkNotes\Plugins\Task\Plugin
 			$form = str_replace('%SIGNIN%', $aeSettings->getText('signin', 'Sign in'), $form);
 
 		/*<!-- build:debug -->*/
-		} else { // if ($aeFiles->FileExists($filename))
+		} else { // if ($aeFiles->exists($filename))
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
 				$aeDebug->log("The file [".$filename."] is missing", "error");
 			}
 		/*<!-- endbuild -->*/
-		} // if ($aeFiles->FileExists($filename))
+		} // if ($aeFiles->exists($filename))
 
 		header('Content-Type: application/json');
 		echo json_encode(array('form'=>$form));

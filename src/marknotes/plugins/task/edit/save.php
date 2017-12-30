@@ -67,7 +67,7 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 
 		$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
 
-		if (!$aeFiles->fileExists($fullname)) {
+		if (!$aeFiles->exists($fullname)) {
 			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
 			die();
 		}

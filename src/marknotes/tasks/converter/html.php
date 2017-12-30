@@ -48,12 +48,12 @@ class HTML
 
 		if (isset($params['template'])) {
 			$template = $aeSettings->getTemplateFile($params['template']);
-			if (!$aeFiles->fileExists($template)) {
+			if (!$aeFiles->exists($template)) {
 				$template = $aeSettings->getTemplateFile('html');
 			}
 		}
 
-		if ($aeFiles->fileExists($template)) {
+		if ($aeFiles->exists($template)) {
 			$html = $aeHTML->replaceVariables(file_get_contents($template), $html, $params);
 		}
 

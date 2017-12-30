@@ -60,7 +60,7 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 
 			// And write the file
 			$aeFiles = \MarkNotes\Files::getInstance();
-			$aeFiles->rewriteFile($filename, $content);
+			$aeFiles->rewrite($filename, $content);
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {

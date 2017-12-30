@@ -1,16 +1,74 @@
 <?php
-/* REQUIRES PHP 7.x AT LEAST */
+/**
+ * Working with files.
+ *
+ * Note : this class will handle two types of paths, real or
+ * symbolic.
+ *
+ * Symbolic link concern the files that are not "really" in the
+ * web folder (f.i. c:\sites\notes) but elsewhere (f.i.
+ * c:\repo\marknotes). In the web folder, we can have a folder like
+ * the "marknotes" folder (which contains the source code of marknotes)
+ * and that folder is a symbolic link to c:\repo\marknotes.
+ *
+ * By checking if the folder "marknotes" exists in "c:\sites\notes",
+ * the result will be False. We need to check "c:\repo\marknotes".
+ *
+ * Therefore, before checking if a file/folder exists, we need to
+ * check if the path is for the "web folder" or the
+ * "application folder".
+ *
+ * Using Flysystem : @https://github.com/thephpleague/flysystem
+ */
 
 namespace MarkNotes;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+use League\Flysystem\Filesystem;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\AdapterInterface;
+
 class Files
 {
 	protected static $hInstance = null;
+	protected static $flyWebRoot = null; // web root
+	protected static $flyAppRoot = null; // application root
+	protected static $sWebRoot = '';
+	protected static $sAppRoot = '';
 
+	/**
+	 * Create an instance of MarkNotes\Files and Initialize
+	 * the $flyWebRoot object and, if needed, $flyAppRoot
+	 */
 	public function __construct()
 	{
+		// Get the root folder of marknotes (f.i. C:\sites\marknotes\
+		// or /home/html/sites/marknotes/)
+		self::$sWebRoot=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+		self::$sWebRoot=str_replace('/', DS, self::$sWebRoot).DS;
+
+		// Application root folder.
+		self::$sAppRoot = rtrim(dirname(dirname(__DIR__)), DS).DS;
+		self::$sAppRoot = str_replace('/', DS, self::$sAppRoot);
+
+		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+			self::$sWebRoot = DS.ltrim(self::$sWebRoot, DS);
+			self::$sAppRoot = DS.ltrim(self::$sAppRoot, DS);
+		}
+
+		$adapter = new Local(static::$sWebRoot);
+		static::$flyWebRoot = new Filesystem($adapter);
+
+		// When using symbolic link, the application root (i.e.
+		// the folder when marknotes source files are stored) is
+		// perhaps different than the web root (where the notes
+		// are stored). We then need to have two objects
+		if (self::$sWebRoot!==self::$sAppRoot) {
+			$adapter = new Local(static::$sAppRoot);
+			static::$flyAppRoot = new Filesystem($adapter);
+		}
+
 		return true;
 	}
 
@@ -23,75 +81,128 @@ class Files
 	}
 
 	/**
-	 * Rename will first remove the existing "new" file if the
-	 * file already exists
+	 * Check if a file exists and return FALSE if not.
+	 *
+	 * @param  type $filename
+	 * @return boolean
 	 */
-	public function renameFile(string $oldname, string $newname) : bool
-	{
-		if ((self::fileExists($oldname)) && ($oldname !== $newname)) {
-			// Remove the old version if already there
-			if (self::fileExists($newname)) {
-				unlink($newname);
-			}
-
-			// And rename the temporary PDF to its final name
-			rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
-		}
-
-		return self::fileExists($newname);
-	}
-
-	/**
-	* Check if a file exists and return FALSE if not.
-	* Disable temporarily errors to avoid warnings f.i. when the file
-	* isn't reachable due to open_basedir restrictions
-	*
-	* @param  type $filename
-	* @return boolean
-	*/
-	public static function fileExists(string $filename) : bool
+	public static function exists(string $filename) : bool
 	{
 		if ($filename == '') {
 			return false;
 		}
 
-		$errorlevel = error_reporting();
-		error_reporting(0);
+		$filename = str_replace('/', DS, $filename);
 
-		$filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
-		$wReturn = (file_exists($filename) || @fopen($filename, "r") != FALSE);
-
-		error_reporting($errorlevel);
+		if (strpos($filename, static::$sAppRoot)!==FALSE) {
+			// The file is stored in the application folder
+			$filename = str_replace(static::$sAppRoot, '', $filename);
+			$wReturn = static::$flyAppRoot->has($filename);
+		}  else {
+			// The file is stored in the webroot folder
+			$filename = str_replace(static::$sWebRoot, '', $filename);
+			$wReturn = static::$flyWebRoot->has($filename);
+		}
 
 		return $wReturn;
 	}
 
 	/**
-	* Check if a file exists and return FALSE if not.
-	* Disable temporarily errors to avoid warnings f.i. when the file
-	* isn't reachable due to open_basedir restrictions
-	*
-	* @param  type $filename
-	* @return boolean
-	*/
-	public static function folderExists(string $folderName) : bool
+	 * Create a file
+	 */
+	public static function create(string $filename, string $content) : bool
 	{
-		if ($folderName == '') {
-			return false;
+		$wReturn = 0;
+		$filename = str_replace('/', DS, $filename);
+		$arr = array('visibility' => AdapterInterface::VISIBILITY_PUBLIC);
+
+		try {
+			if (strpos($filename, static::$sAppRoot)!==FALSE) {
+				// The file should be stored in the application folder
+				$filename = str_replace(static::$sAppRoot, '', $filename);
+				static::$flyAppRoot->write($filename, $content, $arr);
+				$wReturn = static::$flyAppRoot->has($filename);
+			} else {
+				// The file should be stored in the webroot folder
+				$filename = str_replace(static::$sWebRoot, '', $filename);
+				static::$flyWebRoot->write($filename, $content, $arr);
+				$wReturn = static::$flyWebRoot->has($filename);
+			}
+		} catch (Exception $ex) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				echo $ex->getMessage();
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->here("", 99);
+			}
+			/*<!-- endbuild -->*/
 		}
-
-		$errorlevel = error_reporting();
-		error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
-
-		// mb_convert_encoding to support accentuated characters
-		// in name
-		$wReturn = is_dir(mb_convert_encoding($folderName,
-			"ISO-8859-1", "UTF-8"));
-
-		error_reporting($errorlevel);
 
 		return $wReturn;
 	}
+
+	/**
+	 * Rename an existing file
+	 */
+	public static function rename(string $oldname, string $newname) : bool
+	{
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$wReturn = false;
+
+		if ((self::exists($oldname)) && ($oldname !== $newname)) {
+			try {
+				if (strpos($filename, static::$sAppRoot)!==FALSE) {
+					// The file should be stored in the application folder
+					$oldname = str_replace(static::$sAppRoot, '', $oldname);
+					$newname = str_replace(static::$sAppRoot, '', $newname);
+					static::$flyAppRoot->rename($oldname, $newname);
+					$wReturn = static::$flyAppRoot->has($newname);
+				} else {
+					// The file should be stored in the webroot folder
+					$oldname = str_replace(static::$sWebRoot, '', $oldname);
+					$newname = str_replace(static::$sWebRoot, '', $newname);
+					static::$flyWebRoot->rename($oldname, $newname);
+					$wReturn = static::$flyWebRoot->has($newname);
+				}
+			} catch (Exception $ex) {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					echo $ex->getMessage();
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->here("", 99);
+				}
+				/*<!-- endbuild -->*/
+			}
+		}
+
+		return $wReturn;
+	}
+
+	public static function delete(string $filename) : bool
+	{
+		if ($filename == '') {
+			return false;
+		}
+
+		$filename = str_replace('/', DS, $filename);
+
+		if (strpos($filename, static::$sWebRoot)!==FALSE) {
+			// The file is stored in the webroot folder
+			$filename = str_replace(static::$sWebRoot, '', $filename);
+			$wReturn = static::$flyWebRoot->delete($filename);
+		}  else {
+			// The file is stored in the application folder
+			$filename = str_replace(static::$sAppRoot, '', $filename);
+			$wReturn = static::$flyAppRoot->delete($filename);
+		}
+
+		return $wReturn;
+	}
+
+
+
+
+
 
 	/**
 	 * Write a content into a UTF8-BOM file
@@ -115,17 +226,22 @@ class Files
 	}
 
 	/**
-	* Recursive glob : retrieve all files that are under $path (if empty, $path is the root folder of the website)
+	* Recursive glob : retrieve all files that are under
+	* $path (if empty, $path is the root folder of the website)
 	*
-	* For instance : aeSecureFct::rglob($pattern='.htaccess',$path=$rootFolder); to find every .htaccess files on
-	* the server
+	* For instance :
+	*		aeSecureFct::rglob('.htaccess', $rootFolder);
+	* 		to find every .htaccess files on the server
+	*
 	* If folders should be skipped :
-	*	aeSecureFct::rglob('.htaccess',$rootFolder,0,array('aesecure','administrator'))
+	*
+	*		aeSecureFct::rglob('.htaccess', $rootFolder,
+	*			0, array('aesecure','administrator'))
 	*
 	* @param  type $pattern
 	* @param  type $path
 	* @param  type $flags
-	* @param  type $arrSkipFolder Folders to skip... (subfolders will be also skipped)
+	* @param  type $arrSkipFolder Folders to skip...
 	* @return type
 	*/
 	public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array
@@ -254,9 +370,8 @@ class Files
 	*
 	* @link http://stackoverflow.com/a/2021729/1065340
 	*/
-	public static function sanitizeFileName(string $filename) : string
+	public static function sanitize(string $filename) : string
 	{
-
 		// Remove anything which isn't a word, whitespace, number
 		// or any of the following caracters -_~,;[]().
 		// If you don't need to handle multi-byte characters
@@ -290,86 +405,25 @@ class Files
 	* If the write action is successfull, the .old file is removed
 	*
 	* @param  string $filename	Absolute filename
-	* @param  string $new_content The new content
+	* @param  string $content	The new content
 	* @return bool				return False in case of error
 	*/
-	public static function rewriteFile(string $filename, string $new_content) : bool
+	public static function rewrite(string $filename, string $content) : bool
 	{
 		$bReturn = false;
 
-		/*<!-- build:debug -->*/
-		$aeDebug = \MarkNotes\Debug::getInstance();
-		/*<!-- endbuild -->*/
-
-		$aeSettings = \MarkNotes\Settings::getInstance();
 		$filename = str_replace('/', DS, $filename);
-
-		/*if (mb_detect_encoding($filename)) {
-			if (!file_exists($filename)) {
-				$filename = utf8_decode($filename);
-			}
-		}*/
-
-		/*<!-- build:debug -->*/
-		if ($aeSettings->getDebugMode()) {
-			$aeDebug->log('Rewriting file ['.$filename.']', 'debug');
-		}
-		/*<!-- endbuild -->*/
-
-		if (self::fileExists($filename)) {
-			$filename = mb_convert_encoding($filename, "ISO-8859-1", "UTF-8");
-
-			rename($filename, $filename.'.old');
-
-			try {
-				if ($handle = fopen($filename, 'w')) {
-					fwrite($handle, $new_content);
-					fclose($handle);
-
-					if (filesize($filename) > 0) {
-						unlink($filename.'.old');
-						$bReturn = true;
-					}
-				}
-			} catch (Exception $ex) {
-				/*<!-- build:debug -->*/
-				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log($e->getMessage(), 'error');
-				}
-				/*<!-- endbuild -->*/
-			}
-		} else { // if (file_exists($filename))
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug->log('Oups, file ['.$filename.'] not found', 'error');
-			}
-			/*<!-- endbuild -->*/
-		} // if (file_exists($filename))
-
-		return $bReturn;
-	}
-
-	public static function createFile(string $filename, string $content) : bool
-	{
-		$errorlevel = error_reporting();
-		error_reporting($errorlevel & ~E_NOTICE & ~E_WARNING);
-
-		// Be sure that the filename starts with a "/" on non Windows
-		// environment (the filename is thus absolute, not relative)
-		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-			$filename = DS.ltrim($filename, DS);
-		}
-
-		$bReturn = false;
 		try {
-			if ($handle = fopen($filename, 'w')) {
-				fwrite($handle, $content);
-				fclose($handle);
-
-				if (filesize($filename) > 0) {
-					chmod($filename, CHMOD_FILE);
-					$bReturn = true;
-				}
+			if (strpos($filename, static::$sAppRoot)!==FALSE) {
+				// The file should be stored in the application folder
+				$filename = str_replace(static::$sAppRoot, '', $filename);
+				static::$flyAppRoot->update($filename, $content);
+				$wReturn = static::$flyAppRoot->has($filename);
+			} else {
+				// The file should be stored in the webroot folder
+				$filename = str_replace(static::$sWebRoot, '', $filename);
+				static::$flyWebRoot->update($filename, $content);
+				$wReturn = static::$flyWebRoot->has($filename);
 			}
 		} catch (Exception $ex) {
 			/*<!-- build:debug -->*/
@@ -380,8 +434,8 @@ class Files
 			}
 			/*<!-- endbuild -->*/
 		}
-		error_reporting($errorlevel);
-
 		return $bReturn;
 	}
+
+
 }

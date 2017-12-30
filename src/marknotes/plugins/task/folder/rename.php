@@ -23,6 +23,7 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 	private static function rename(string $oldname, string $newname) : float
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if ((trim($oldname) === '') || (trim($newname) === '')) {
@@ -30,10 +31,10 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 		}
 
 		// Sanitize foldersname
-		$oldname = $aeFiles->sanitizeFileName($oldname);
+		$oldname = $aeFiles->sanitize($oldname);
 		$oldname = $aeSettings->getFolderDocs().$oldname;
 
-		$newname = $aeFiles->sanitizeFileName($newname);
+		$newname = $aeFiles->sanitize($newname);
 		$newname = $aeSettings->getFolderDocs().$newname;
 
 		// Try to remove a file, first, be sure that the user
@@ -51,18 +52,21 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 		// see the folder so can't see the note too
 		if (intval($args[0]['return'])===1) {
 			// Only if the user can see the folder, he can rename it
-			if (!$aeFiles->folderExists($oldname)) {
+			if (!$aeFolders->exists($oldname)) {
 				// The "old" folder is not found
 				return FOLDER_NOT_FOUND;
 			} else {
-				if ($aeFiles->folderExists($newname)) {
+				if ($aeFolders->exists($newname)) {
 					// The new folder already exists
 					return ALREADY_EXISTS;
 				} else {
 					try {
-						rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
 
-						return ($aeFiles->folderExists($newname) ? RENAME_SUCCESS : FILE_ERROR);
+						$aeFolders->rename($oldname, $newname);
+
+						//rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
+
+						return ($aeFolders->exists($newname) ? RENAME_SUCCESS : FILE_ERROR);
 					} catch (Exception $ex) {
 						/*<!-- build:debug -->*/
 						if ($aeSettings->getDebugMode()) {
@@ -73,8 +77,8 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 
 						return FILE_ERROR;
 					} // try
-				} // if ($aeFiles->folderExists($newname))
-			} // if ($aeFiles->folderExists($newname))
+				} // if ($aeFolders->exists($newname))
+			} // if ($aeFolders->exists($newname))
 		} else { // if (intval($args[0]['return'])===1)
 			return NO_ACCESS;
 		}
@@ -95,13 +99,13 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 
 		$newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
 		if ($newname != '') {
-			$newname = $aeFiles->sanitizeFileName(trim($newname));
+			$newname = $aeFiles->sanitize(trim($newname));
 		}
 
 		$oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
 		if ($oldname != '') {
-			$oldname = $aeFiles->sanitizeFileName(trim($oldname));
+			$oldname = $aeFiles->sanitize(trim($oldname));
 		}
 
 		/*<!-- build:debug -->*/

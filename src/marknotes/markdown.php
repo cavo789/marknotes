@@ -90,7 +90,7 @@ class Markdown
 			// can't be retrieved. Sanitization should be made when we
 			// add notes through the interface, so in the task.file.create
 			// plugin; not here
-			//$filename = $aeFiles->sanitizeFileName(trim($filename));
+			//$filename = $aeFiles->sanitize(trim($filename));
 		}
 
 		/*<!-- build:debug -->*/

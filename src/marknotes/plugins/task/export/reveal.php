@@ -115,14 +115,14 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 		}
 
 		// Generate the file ... only if not yet there
-		if (!$aeFiles->fileExists($final)) {
+		if (!$aeFiles->exists($final)) {
 			// Display the HTML rendering of a note
 			//$aeTask = \MarkNotes\Tasks\Display::getInstance();
 
 			// Get the HTML content
 			//$content = $params['html']; //$aeTask->run($params);
 
-			if (!$aeFiles->createFile($final, $html)) {
+			if (!$aeFiles->create($final, $html)) {
 				$final = '';
 
 				/*<!-- build:debug -->*/
@@ -132,7 +132,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 			}
-		}  // 	if(!$aeFiles->fileExists($final))
+		}  // 	if(!$aeFiles->exists($final))
 
 		$params['output'] = $final;
 

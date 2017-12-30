@@ -208,7 +208,7 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 
         $sScriptName = $arrSettings['script'];
 
-        if (!$aeFiles->fileExists($sScriptName)) {
+        if (!$aeFiles->exists($sScriptName)) {
             / *<!-- build:debug -->* /
             if ($aeSettings->getDebugMode()) {
                 $aeDebug->here('Decktape, file '.$sScriptName.' didn\'t exists', 5);
@@ -229,11 +229,11 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
         // Just in case of the file was already created in the /tmp folder but, for one
         // or an another reason, not yet copied in the final folder.
 
-        if ($aeFiles->fileExists($tmpPDF)) {
+        if ($aeFiles->exists($tmpPDF)) {
 
             // Remane the temporary with its final name
             // Note : the PDF file was perhaps already moved by the convert script
-            $aeFiles->renameFile($tmpPDF, $finalPDF);
+            $aeFiles->rename($tmpPDF, $finalPDF);
         } else {
             $aeEvents = \MarkNotes\Events::getInstance();
             $aeEvents->loadPlugins('content.slides');
@@ -278,10 +278,10 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
             exec($fScriptFile, $output);
 
             try {
-                if ($aeFiles->fileExists($tmpPDF)) {
+                if ($aeFiles->exists($tmpPDF)) {
                     // Remane the temporary with its final name
                     // Note : the PDF file was perhaps already moved by the convert script
-                    $aeFiles->renameFile($tmpPDF, $finalPDF);
+                    $aeFiles->rename($tmpPDF, $finalPDF);
                 }
             } catch (Exception $e) {
                 $final = '';
@@ -305,7 +305,7 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		$final = $aeConvert->getFileName();
 
 		// Generate the file ... only if not yet there
-		if (!$aeFiles->fileExists($final)) {
+		if (!$aeFiles->exists($final)) {
 			$layout = $params['layout'] ?? '';
 			if (in_array($layout, array('remark','reveal'))) {
 			// This is a slideshow => use deckTape for the exportation
@@ -313,13 +313,13 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 			} else {
 			// Check if domPDF is installed
 				$domPDF = $aeSettings->getFolderLibs().'Dompdf/dompdf/autoload.inc.php';
-				if ($aeFiles->fileExists($domPDF)) {
+				if ($aeFiles->exists($domPDF)) {
 					list($bReturn, $final) = self::domPDF($params);
 				} else {
 					list($bReturn, $final) = self::pandoc($params);
 				}
 			} // if (in_array($layout, array('remark','reveal')))
-		} //if(!$aeFiles->fileExists($final))
+		} //if(!$aeFiles->exists($final))
 
 		// In case of error, there is no output at all
 		$params['output'] = ($bReturn ? $final : '');

@@ -29,7 +29,7 @@ class Show
 		if ($show_tips) {
 
 			$tip = trim($aeFunctions->getParam('param', 'string', '', false));
-			$tip = $aeFiles->sanitizeFileName($tip);
+			$tip = $aeFiles->sanitize($tip);
 
 			$filename = __DIR__.'/tips/'.$tip.'.html';
 			$html = '';

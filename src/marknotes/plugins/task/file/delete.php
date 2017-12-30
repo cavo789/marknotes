@@ -23,17 +23,19 @@ class Delete extends \MarkNotes\Plugins\Task\File
 	private static function delete(string $filename) : float
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if (trim($filename) === '') {
 			return FILE_ERROR;
 		}
 
-		$filename = $aeFiles->sanitizeFileName($filename);
+		$filename = $aeFiles->sanitize($filename);
 		$filename = str_replace('/', DS, $aeSettings->getFolderDocs().$filename);
 
 		// Try to remove a file, first, be sure that the user
-		// can see the parent folder : if he can't, he can't delete the file
+		// can see the parent folder : if he can't, he can't
+		// delete the file
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeEvents->loadPlugins('task.acls.cansee');
 
@@ -48,31 +50,38 @@ class Delete extends \MarkNotes\Plugins\Task\File
 		if (intval($args[0]['return'])===1) {
 			// Continue only if the user can see the parent folder
 
-			if (!$aeFiles->fileExists($filename)) {
+			if (!$aeFiles->exists($filename)) {
 				return FILE_NOT_FOUND;
 			} elseif (!is_writable(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"))) {
 				return FILE_IS_READONLY;
 			} else {
-				// Before removing the file (f.i. note.md), check if we've another
-				// files with the same name but with other extensions (like note.json,
+				// Before removing the file (f.i. note.md),
+				// check if we've another files with the same
+				// name but with other extensions (like note.json,
 				// note.html, ...) and remove them too.
-				$tmp = $aeFiles->removeExtension($filename);
-				$arrFiles = glob($tmp.'.*');
+				$name = $aeFiles->removeExtension(basename($filename));
+				$arrFiles = $aeFolders->getContent(dirname($filename));
 
 				$wReturn = true;
 				foreach ($arrFiles as $file) {
-					try {
-						unlink(mb_convert_encoding($file, "ISO-8859-1", "UTF-8"));
-						$wReturn = (!$aeFiles->fileExists($filename) ? KILL_SUCCESS : FILE_ERROR);
-					} catch (Exception $ex) {
-						/*<!-- build:debug -->*/
-						if ($aeSettings->getDebugMode()) {
-							$aeDebug = \MarkNotes\Debug::getInstance();
-							$aeDebug->log($ex->getMessage(), 'error');
+
+
+					if ($file['type'] == 'file') {
+						if ($file['filename'] == $name) {
+							try {
+								unlink($file['path']);
+								$wReturn = (!$aeFiles->exists($file['path']) ? KILL_SUCCESS : FILE_ERROR);
+							} catch (Exception $ex) {
+								/*<!-- build:debug -->*/
+								if ($aeSettings->getDebugMode()) {
+									$aeDebug = \MarkNotes\Debug::getInstance();
+									$aeDebug->log($ex->getMessage(), 'error');
+								}
+								/*<!-- endbuild -->*/
+								$wReturn = FILE_ERROR;
+							} // try
 						}
-						/*<!-- endbuild -->*/
-						$wReturn = FILE_ERROR;
-					} // try
+					}
 				} // foreach
 			}
 		} else {
@@ -93,13 +102,14 @@ class Delete extends \MarkNotes\Plugins\Task\File
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Be sure that filenames doesn't already start with the /docs folder
+		// Be sure that filenames doesn't already start with
+		// the /docs folder
 		self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
 		$oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
 		if ($oldname != '') {
-			//$oldname = $aeFiles->sanitizeFileName(trim($oldname));
+			//$oldname = $aeFiles->sanitize(trim($oldname));
 		}
 
 		/*<!-- build:debug -->*/

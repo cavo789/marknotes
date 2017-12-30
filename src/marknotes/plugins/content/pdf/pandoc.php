@@ -35,7 +35,7 @@ class Pandoc
 		// Check if pandoc is installed; if not, check if the exported file already exists
 		if (!$aeConvert->isValid()) {
 
-			if (!$aeFiles->fileExists($final)) {
+			if (!$aeFiles->exists($final)) {
 
 				// No, doesn't exists
 
@@ -107,7 +107,7 @@ class Pandoc
 
         $sScriptName = $arrPandoc['script'];
 
-        if (!$aeFiles->fileExists($sScriptName)) {
+        if (!$aeFiles->exists($sScriptName)) {
             if ($aeSettings->getDebugMode()) {
                 $aeDebug->here('Pandoc, file '.$sScriptName.' didn\'t exists', 5);
             }
@@ -135,7 +135,7 @@ class Pandoc
 		// So, escape it before converting to PDF
 		$content=str_replace('_', '\_', $content);
 
-        $aeFiles->createFile($tmpMD,$content);
+        $aeFiles->create($tmpMD,$content);
 
 		// ----------------------------------------
 		//
@@ -155,7 +155,7 @@ class Pandoc
 
         $debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
 
-		if ($aeFiles->fileExists($debugFile)) unlink($debugFile);
+		if ($aeFiles->exists($debugFile)) unlink($debugFile);
 
         $sProgram =
             '@ECHO OFF'.PHP_EOL.
@@ -167,7 +167,7 @@ class Pandoc
 
         $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 
-		$aeFiles->createFile($fScriptFile, $sProgram);
+		$aeFiles->create($fScriptFile, $sProgram);
         //$aeFiles->fwriteANSI($fScriptFile, $sProgram);
 
 		// ----------------------------------------
@@ -182,7 +182,7 @@ class Pandoc
 
         exec("start cmd /c ".$fScriptFile, $output);
 
-		if (!$aeFiles->fileExists($final)) {
+		if (!$aeFiles->exists($final)) {
 
 			$msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
 			$msg = str_replace('%s', '<strong>'.$final.'</strong>', $msg);
@@ -198,7 +198,7 @@ class Pandoc
 
 
 			if ($aeSettings->getDebugMode()) {
-				if ($aeFiles->fileExists($debugFile)) {
+				if ($aeFiles->exists($debugFile)) {
 					$content = file_get_contents ($debugFile);
 					echo '<h3>Content of the debug file : '.$debugFile.'</h3>';
 					echo "<pre style='background-color:yellow;'>".$content."</pre>";
@@ -208,7 +208,7 @@ class Pandoc
 
 			die();
 
-		} // if (!$aeFiles->fileExists($final))
+		} // if (!$aeFiles->exists($final))
 
         $params['output'] = $final;
         $params['stop_processing'] = true;

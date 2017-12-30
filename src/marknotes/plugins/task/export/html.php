@@ -36,12 +36,12 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 		// (otherwise would be no more encrypted in the .html file)
 		// Display the HTML rendering of a note
 		if ($aeSession->get('NoteContainsEncryptedData',false)==false) {
-			if (!$aeFiles->fileExists($final)) {
+			if (!$aeFiles->exists($final)) {
 				// Accentuated char nightmare : try first without using
 				// the decode function. If not OK, then use utf8_decode
-				$bReturn = $aeFiles->createFile($final, $content);
+				$bReturn = $aeFiles->create($final, $content);
 				if (!$bReturn) {
-					$bReturn = $aeFiles->createFile(utf8_decode($final), $content);
+					$bReturn = $aeFiles->create(utf8_decode($final), $content);
 					if (!$bReturn) {
 						$final = '';
 						/*<!-- build:debug -->*/
@@ -52,7 +52,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 						/*<!-- endbuild -->*/
 					}
 				}
-			}  // 	if(!$aeFiles->fileExists($final))
+			}  // 	if(!$aeFiles->exists($final))
 			// Store the filename so the export->after->display
 			// plugin knows which file should be displayed
 			$params['output'] = $final;

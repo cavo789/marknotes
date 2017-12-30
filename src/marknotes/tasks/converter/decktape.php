@@ -95,10 +95,10 @@ die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
         }*/
 
 		try {
-			if ($aeFiles->fileExists($tmpPDF)) {
+			if ($aeFiles->exists($tmpPDF)) {
 				// Remane the temporary with its final name
 				// Note : the PDF file was perhaps already moved by the convert script
-				$aeFiles->renameFile($tmpPDF, $finalPDF);
+				$aeFiles->rename($tmpPDF, $finalPDF);
 			}
 		} catch (Exception $e) {
 			$finalPDF = '';

@@ -53,7 +53,7 @@ class Custom extends \MarkNotes\Plugins\Page\HTML\Plugin
 				// Remove the directory separator if any
 				$file = ltrim($file, "/\\");
 
-				if ($aeFiles->fileExists($fname = $aeSettings->getFolderWebRoot().$file)) {
+				if ($aeFiles->exists($fname = $aeSettings->getFolderWebRoot().$file)) {
 					$sScript .= "<script type=\"text/javascript\" src=\"".$root.$file."\" ".
 						"defer=\"defer\"></script>\n";
 				/*<!-- build:debug -->*/
@@ -95,7 +95,7 @@ class Custom extends \MarkNotes\Plugins\Page\HTML\Plugin
 				// Remove the directory separator if any
 				$file = ltrim($file, "/\\");
 
-				if ($aeFiles->fileExists($fname = $aeSettings->getFolderWebRoot().$file)) {
+				if ($aeFiles->exists($fname = $aeSettings->getFolderWebRoot().$file)) {
 					$sScript = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
 						"href=\"".$root.$file."\"/>";
 				/*<!-- build:debug -->*/

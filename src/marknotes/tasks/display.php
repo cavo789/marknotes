@@ -87,12 +87,12 @@ class Display
 		$fullname = $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS);
 		$fullname = str_replace('/', DS, $fullname);
 
-		if (!$aeFiles->fileExists($fullname)) {
+		if (!$aeFiles->exists($fullname)) {
 			// Damned ! It's so difficult to work with
 			// accentuated chars and make the
 			// code works both on Windows and Unix...
 			$fullname = utf8_encode($fullname);
-			if (!$aeFiles->fileExists($fullname)) {
+			if (!$aeFiles->exists($fullname)) {
 				$aeFunctions->fileNotFound($fullname);
 			}
 		}

@@ -251,7 +251,7 @@ class Events
 					// that folder
 					$file=basename($dir);
 					$tmpdir=dirname($dir).DS;
-					if ($aeFiles->fileExists($fname = $tmpdir.$file.DS.$file.'.php')) {
+					if ($aeFiles->exists($fname = $tmpdir.$file.DS.$file.'.php')) {
 						$dir=$tmpdir.$file.DS;
 						$plugins=array($file=>array('enabled'=>1));
 					}
@@ -266,7 +266,7 @@ class Events
 				$file=basename($dir);
 				$dir=dirname($dir).DS;
 
-				if ($aeFiles->fileExists($fname = $dir.$file.'.php')) {
+				if ($aeFiles->exists($fname = $dir.$file.'.php')) {
 					$plugins=array($file=>array('enabled'=>1));
 				} else {
 					// No... so, in the case of f.i. task.optimize.clear,
@@ -274,7 +274,7 @@ class Events
 					// exists and if so, probably that script will implement
 					// a functionnality for the even optimize.Clear
 
-					if ($aeFiles->fileExists($fname = $dir.basename($dir).'.php')) {
+					if ($aeFiles->exists($fname = $dir.basename($dir).'.php')) {
 						$plugins=array(basename($dir)=>array('enabled'=>1));
 					}
 				}
@@ -323,7 +323,7 @@ class Events
 							$name .= '.php';
 						}
 
-						if ($aeFiles->fileExists($file = $dir.$name)) {
+						if ($aeFiles->exists($file = $dir.$name)) {
 
 							// Load the plugin
 							require_once($file);
@@ -358,7 +358,7 @@ class Events
 									"settings.json", "debug");
 							}
 						/*<!-- endbuild -->*/
-						} // if  ($aeFiles->fileExists($file = $dir.$name))
+						} // if  ($aeFiles->exists($file = $dir.$name))
 					/*<!-- build:debug -->*/
 					} else {// foreach ($plugin as $name => $enabled)
 						if ($aeSettings->getDebugMode()) {

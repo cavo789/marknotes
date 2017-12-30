@@ -344,7 +344,7 @@ class Show_Form
 
 		// -------------------------
 		// Replace common variables
-		$root = rtrim($aeFunctions->getCurrentURL(), DS);
+		$root = rtrim($aeFunctions->getCurrentURL(), DS).DS;
 		$html = str_replace('%ROOT%', $root, $html);
 
 		$title = $aeSettings->getText("settings_form_title", "Global configuration");

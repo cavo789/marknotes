@@ -177,29 +177,36 @@ function fnPluginTaskTreeViewContextMenu(node) {
 			label: ($type === 'folder' ? $.i18n('tree_delete_folder', node.text) : $.i18n('tree_delete_file', node.text)),
 			icon: 'fa fa-trash',
 			action: function () {
-				noty({
-					theme: 'relax',
-					timeout: 0,
-					layout: 'center',
+				swal({
+					title: $.i18n('are_you_sure'),
+					text: ($type === 'folder' ? $.i18n('tree_delete_folder_confirm', node.text) : $.i18n('tree_delete_file_confirm', node.text)),
 					type: 'warning',
-					text: '<strong>' + ($type === 'folder' ? $.i18n('tree_delete_folder_confirm', node.text) : $.i18n('tree_delete_file_confirm', node.text)) + '</strong>',
-					buttons: [{
-							addClass: 'btn btn-primary',
-							text: $.i18n('ok'),
-							onClick: function ($noty) {
-								$noty.close();
-								tree.delete_node(node);
-							}
-					},
-						{
-							addClass: 'btn btn-danger',
-							text: $.i18n('cancel'),
-							onClick: function ($noty) {
-								$noty.close();
-							}
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: $.i18n('ok'),
+					cancelButtonText: $.i18n('cancel'),
+					confirmButtonClass: 'btn btn-success',
+					cancelButtonClass: 'btn btn-danger',
+					buttonsStyling: false,
+					reverseButtons: false
+					}).then((result) => {
+						if (result.value) {
+							tree.delete_node(node);
+							swal(
+								$.i18n('deleted'),
+								$.i18n('tree_delete_file_done'),
+								'success'
+							);
+						} else if (result.dismiss === 'cancel') {
+							swal(
+								$.i18n('cancelled'),
+								$.i18n('tree_delete_cancelled'),
+								'error'
+							);
+						}
 					}
-							]
-				}); // noty()
+				);
 			} // action()
 		};
 	} else {
@@ -303,15 +310,17 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 		// can be truncated)
 		var $newname = $root;
 
-		if (data.node.data !== null) {
-			if (data.node.data.hasOwnProperty('file')) {
-				$newname = $newname + data.node.data.file;
-			} else {
-				$newname = $newname + data.node.text;
-			}
-		} else {
+//		if (data.node.data !== null) {
+//			if (data.node.data.hasOwnProperty('file')) {
+//alert('1');
+//				$newname = $newname + data.node.data.file;
+//			} else {
+//alert('2');
+//				$newname = $newname + data.node.text;
+//			}
+//		} else {
 			$newname = $newname + data.node.text;
-		}
+//		}
 
 		// Remove the starting slash character if present
 		if ($newname.charAt(0) === marknotes.settings.DS) {

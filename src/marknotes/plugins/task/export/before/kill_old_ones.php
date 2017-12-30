@@ -35,12 +35,12 @@ class KillOldOnes extends \MarkNotes\Plugins\Task\Plugin
 
 		// Never kill .md files !!!
 		if ($params['extension']!=='md') {
-			if ($aeFiles->fileExists($filename)) {
+			if ($aeFiles->exists($filename)) {
 				// If already there, check if that file is most recent than the .md file
 				$filenameMD = $aeFiles->removeExtension($filename).'.md';
 
 				try {
-					if ($aeFiles->fileExists($filename)) {
+					if ($aeFiles->exists($filename)) {
 						if (filemtime($filenameMD) > filemtime($filename)) {
 							/*<!-- build:debug -->*/
 							if ($aeSettings->getDebugMode()) {
@@ -72,7 +72,7 @@ class KillOldOnes extends \MarkNotes\Plugins\Task\Plugin
 					}
 					/*<!-- endbuild -->*/
 				}
-			} else { // if ($aeFiles->fileExists($filename))
+			} else { // if ($aeFiles->exists($filename))
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();

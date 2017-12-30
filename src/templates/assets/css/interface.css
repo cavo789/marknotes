@@ -54,6 +54,13 @@ div.editor-wrapper .editor-toolbar a {
 	padding-right: 15px;
 	width		: auto;
 }
+
+/* Color used by jsTree when adding/renaming a node */
+.jstree-rename-input  {
+	color: #00abfc;
+	background-color : #222d32;
+}
+
 .jstree-proton .jstree-clicked {
 	color		 : yellow !important;
 	text-transform: uppercase;

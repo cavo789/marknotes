@@ -78,7 +78,7 @@ class ODT extends \MarkNotes\Plugins\Button\Plugin
 				$filename  = $aeFiles->replaceExtension($filename, static::$layout);
 				$filename = str_replace('/', DS, $filename);
 
-				$bReturn = $aeFiles->fileExists($filename);
+				$bReturn = $aeFiles->exists($filename);
 			}
 
 			if (!$bReturn) {
