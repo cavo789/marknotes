@@ -25,7 +25,7 @@ SET PAGE=%SRC%marknotes\plugins\page\
 SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
-call :fnCopyComposer
+REM call :fnCopyComposer
 REM call :fnCopyBootstrap
 REM call :fnCopyjQuery
 REM call :fnCopySymfony
@@ -49,8 +49,10 @@ REM call :fnIonIcons
 REM call :fnAdminLTE
 REM call :fnSlimScroll
 REM call :fnJSONLint
-REM call :fnCopyGuzzle
-REM call :fnCopyPSR
+REM call :fnFlySystem
+REM call :fnScrollDir
+REM call :fnCSSCheckboxLib
+call :fnSweetAlert
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -82,6 +84,7 @@ REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
 REM call :fnUpload
 REM call :fnHTML2MD
+REM call :fnGuzzle
 REM call :fnGoogleTranslate
 REM call :fnFinalize
 GOTO END:
@@ -98,7 +101,7 @@ REM -----------------------------------------------
 
 :fnCopyComposer
 ECHO  === composer ===
-ECHO    COPY TO %LIBS%composer\
+ECHO	COPY TO %LIBS%composer\
 ECHO.
 COPY %VENDOR%autoload.php %LIBS% >> %LOG%
 XCOPY %VENDOR%composer\*.* %LIBS%composer\ /E /Y  >> %LOG%
@@ -110,7 +113,7 @@ goto:eof
 
 :fnCopyBootstrap
 ECHO  === bootstrap ===
-ECHO    COPY TO %LIBS%bootstrap\
+ECHO	COPY TO %LIBS%bootstrap\
 ECHO.
 IF NOT EXIST %LIBS%bootstrap\css MKDIR %LIBS%bootstrap\css >> %LOG%
 COPY %VENDOR%twitter\bootstrap\dist\css\bootstrap.min.css %LIBS%bootstrap\css\ /Y >> %LOG%
@@ -126,7 +129,7 @@ goto:eof
 
 :fnCopyjQuery
 ECHO  === jQuery ===
-ECHO    COPY TO %LIBS%jquery\
+ECHO	COPY TO %LIBS%jquery\
 ECHO.
 IF NOT EXIST %LIBS%jquery\ MKDIR %LIBS%jquery\ >> %LOG%
 COPY %VENDOR%components\jquery\jquery.min.js %LIBS%jquery\jquery.min.js /Y >> %LOG%
@@ -139,7 +142,7 @@ goto:eof
 
 :fnCopySymfony
 ECHO  === symfony ===
-ECHO    COPY TO %LIBS%symfony\
+ECHO	COPY TO %LIBS%symfony\
 ECHO.
 XCOPY %VENDOR%symfony\*.* %LIBS%symfony\ /E /Y >> %LOG%
 goto:eof
@@ -150,7 +153,7 @@ goto:eof
 
 :fnCopySlugify
 ECHO  === slugify ===
-ECHO    COPY TO %LIBS%slugify\
+ECHO	COPY TO %LIBS%slugify\
 ECHO.
 XCOPY %VENDOR%cocur\slugify\src\*.* %LIBS%slugify\ /E /Y >> %LOG%
 goto:eof
@@ -161,7 +164,7 @@ goto:eof
 
 :fnCopydompdf
 ECHO  === dompdf ===
-ECHO    COPY TO %LIBS%dompdf\
+ECHO	COPY TO %LIBS%dompdf\
 ECHO.
 XCOPY %VENDOR%dompdf\*.* %LIBS%dompdf\ /E /Y >> %LOG%
 IF EXIST %LIBS%dompdf\dompdf\tests\ RMDIR %LIBS%dompdf\dompdf\tests\ /S /Q >> %LOG%
@@ -173,7 +176,7 @@ goto:eof
 
 :fnCopyfontAwesome
 ECHO  === font-awesome ===
-ECHO    COPY TO %LIBS%font-awesome\
+ECHO	COPY TO %LIBS%font-awesome\
 ECHO.
 IF NOT EXIST %LIBS%font-awesome\css\ MKDIR %LIBS%font-awesome\css\ >> %LOG%
 COPY %VENDOR%fortawesome\font-awesome\css\font-awesome.css.map %LIBS%font-awesome\css\ /Y >> %LOG%
@@ -189,7 +192,7 @@ goto:eof
 :fnCopyJolicode
 
 ECHO  === jolicode ===
-ECHO    COPY TO %LIBS%jolicode\
+ECHO	COPY TO %LIBS%jolicode\
 ECHO.
 XCOPY %VENDOR%jolicode\*.* %LIBS%jolicode\ /E /Y >> %LOG%
 IF EXIST %LIBS%jolicode\jolitypo\tests RMDIR %LIBS%jolicode\jolitypo\tests\ /S /Q >> %LOG%
@@ -202,7 +205,7 @@ goto:eof
 :fnCopyNoty
 
 ECHO  === noty ===
-ECHO    COPY TO %LIBS%noty\
+ECHO	COPY TO %LIBS%noty\
 ECHO.
 IF NOT EXIST %LIBS%noty\ MKDIR %LIBS%noty\ >> %LOG%
 COPY %VENDOR%needim\noty\js\noty\packaged\jquery.noty.packaged.min.js %LIBS%noty\jquery.noty.packaged.min.js /Y >> %LOG%
@@ -215,31 +218,13 @@ goto:eof
 :fnCopyMonolog
 
 ECHO  === monolog ===
-ECHO    COPY TO %LIBS%monolog\
+ECHO	COPY TO %LIBS%monolog\
 ECHO.
 XCOPY %VENDOR%monolog\monolog\src\*.* %LIBS%monolog\monolog\src\ /E /Y >> %LOG%
-goto:eof
-
-::--------------------------------------------------------
-::-- fnCopyPSR
-::--------------------------------------------------------
-
-:fnCopyPSR
-
-ECHO  === PSR ===
-ECHO    COPY TO %LIBS%psr\
-ECHO.
 XCOPY %VENDOR%psr\*.* %LIBS%psr\*.* /E /Y >> %LOG%
-goto:eof
-REM ----------------------------------------------------------------------
-REM SET LIB=psr\
-REM IF EXIST %VENDOR%%LIB% (
-REM    ECHO  === %LIB% === >> %LOG%
-REM    ECHO  === %LIB% ===
-REM    XCOPY %VENDOR%%LIB%*.* %LIBS%%LIB%*.* /E /Y >> %LOG%
-REM )
 
-   
+goto:eof
+
 ::--------------------------------------------------------
 ::-- fnCopyParsedown
 ::--------------------------------------------------------
@@ -247,13 +232,13 @@ REM )
 :fnCopyParsedown
 
 ECHO  === parsedown ===
-ECHO    COPY TO %LIBS%parsedown\
+ECHO	COPY TO %LIBS%parsedown\
 ECHO.
 IF NOT EXIST %LIBS%parsedown\ MKDIR %LIBS%parsedown\ >> %LOG%
 COPY %VENDOR%erusev\parsedown\Parsedown.php %LIBS%parsedown\ /Y >> %LOG%
 COPY %VENDOR%erusev\parsedown-extra\ParsedownExtra.php %LIBS%parsedown\ /Y >> %LOG%
 goto:eof
-   
+
 ::--------------------------------------------------------
 ::-- fnCopyParsedownCheckbox
 ::--------------------------------------------------------
@@ -261,7 +246,7 @@ goto:eof
 :fnCopyParsedownCheckbox
 
 ECHO  === parsedown-checkbox ===
-ECHO    COPY TO %LIBS%leblanc-simon\
+ECHO	COPY TO %LIBS%leblanc-simon\
 ECHO.
 IF NOT EXIST %LIBS%leblanc-simon\parsedown-checkbox\ MKDIR %LIBS%leblanc-simon\parsedown-checkbox\ >> %LOG%
 COPY %VENDOR%leblanc-simon\parsedown-checkbox\ParsedownCheckbox.php %LIBS%leblanc-simon\parsedown-checkbox\ /Y >> %LOG%
@@ -273,7 +258,7 @@ goto:eof
 
 :fnCopyMinify
 ECHO  === matthiasmullie ===
-ECHO    COPY TO %LIBS%matthiasmullie\
+ECHO	COPY TO %LIBS%matthiasmullie\
 ECHO.
 XCOPY %VENDOR%matthiasmullie\*.* %LIBS% /E /Y >> %LOG%
 goto:eof
@@ -284,12 +269,11 @@ goto:eof
 
 :fnCopyGitHubMarkdownCSS
 ECHO  === github-markdown-css ===
-ECHO    COPY TO %LIBS%github-markdown-css\
+ECHO	COPY TO %LIBS%github-markdown-css\
 ECHO.
 IF NOT EXIST %LIBS%github-markdown-css\ MKDIR %LIBS%github-markdown-css\ >> %LOG%
 COPY %VENDOR%github-markdown-css\github-markdown.css %LIBS%github-markdown-css\ /Y >> %LOG%
 goto:eof
-
 
 ::--------------------------------------------------------
 ::-- fnCopyPHPFONT
@@ -297,7 +281,7 @@ goto:eof
 
 :fnCopyPHPFONT
 ECHO  === PHP-FONT-LIB (used by dompdf) ===
-ECHO    COPY TO %LIBS%php-font-lib\
+ECHO	COPY TO %LIBS%php-font-lib\
 ECHO.
 IF NOT EXIST %LIBS%php-font-lib MKDIR %LIBS%php-font-lib >> %LOG%
 XCOPY %VENDOR%php-font-lib\*.* %LIBS%php-font-lib /E /Y >> %LOG%
@@ -311,7 +295,7 @@ goto:eof
 
 :fnCopyPHPSVG
 ECHO  === PHP-SVG-LIB (used by dompdf) ===
-ECHO    COPY TO %LIBS%php-svg-lib\
+ECHO	COPY TO %LIBS%php-svg-lib\
 ECHO.
 IF NOT EXIST %LIBS%php-svg-lib MKDIR %LIBS%php-svg-lib >> %LOG%
 XCOPY %VENDOR%php-svg-lib\*.* %LIBS%php-svg-lib /E /Y >> %LOG%
@@ -324,7 +308,7 @@ goto:eof
 
 :fnCopyPHP_error
 ECHO  === php_error ===
-ECHO    COPY TO %LIBS%php_error\
+ECHO	COPY TO %LIBS%php_error\
 ECHO.
 IF NOT EXIST %LIBS%php_error MKDIR %LIBS%php_error >> %LOG%
 COPY %VENDOR%PHP-Error\src\php_error.php %LIBS%php_error\ /Y >> %LOG%
@@ -336,7 +320,7 @@ goto:eof
 
 :fnCopyCrawlerDetect
 ECHO  === crawler-detect ===
-ECHO    COPY TO %LIBS%Jaybizzle\crawler-detect\src
+ECHO	COPY TO %LIBS%Jaybizzle\crawler-detect\src
 ECHO.
 IF NOT EXIST %LIBS%Jaybizzle\crawler-detect\src MKDIR %LIBS%Jaybizzle\crawler-detect\src >> %LOG%
 XCOPY %VENDOR%jaybizzle\crawler-detect\src\*.* %LIBS%Jaybizzle\crawler-detect\src /E /Y >> %LOG%
@@ -348,7 +332,7 @@ goto:eof
 
 :fnCopyAnimateCSS
 ECHO  === animate.css
-ECHO    COPY TO %LIBS%animate.css
+ECHO	COPY TO %LIBS%animate.css
 ECHO.
 IF NOT EXIST %LIBS%animate.css MKDIR %LIBS%animate.css>> %LOG%
 COPY %VENDOR%animate.css\animate.min.css %LIBS%animate.css /Y >> %LOG%
@@ -360,7 +344,7 @@ goto:eof
 
 :fnCopyURLjs
 ECHO  === js-url ===
-ECHO    COPY TO %LIBS%js-url
+ECHO	COPY TO %LIBS%js-url
 ECHO.
 IF NOT EXIST %LIBS%js-url MKDIR %LIBS%js-url>> %LOG%
 COPY %VENDOR%js-url\url.min.js %LIBS%\js-url /Y >> %LOG%
@@ -372,7 +356,7 @@ goto:eof
 
 :fnIonIcons
 ECHO  === ionicons ===
-ECHO    COPY TO %LIBS%ionicons
+ECHO	COPY TO %LIBS%ionicons
 ECHO.
 IF NOT EXIST %LIBS%ionicons MKDIR %LIBS%ionicons >> %LOG%
 XCOPY %VENDOR%ionicons\css\*.css %LIBS%ionicons\css\ /E /Y >> %LOG%
@@ -385,7 +369,7 @@ goto:eof
 
 :fnAdminLTE
 ECHO  === AdminLTE ===
-ECHO    COPY TO %LIBS%AdminLTE
+ECHO	COPY TO %LIBS%AdminLTE
 ECHO.
 IF NOT EXIST %LIBS%AdminLTE MKDIR %LIBS%AdminLTE >> %LOG%
 IF NOT EXIST %LIBS%AdminLTE\css MKDIR %LIBS%AdminLTE\css >> %LOG%
@@ -403,7 +387,7 @@ goto:eof
 
 :fnSlimScroll
 ECHO  === SlimScroll===
-ECHO    COPY TO %LIBS%jQuery-slimScroll
+ECHO	COPY TO %LIBS%jQuery-slimScroll
 ECHO.
 IF NOT EXIST %LIBS%jQuery-slimScroll MKDIR %LIBS%jQuery-slimScroll >> %LOG%
 COPY %VENDOR%jQuery-slimScroll\jquery.slimscroll.min.js %LIBS%jQuery-slimScroll\  /Y >> %LOG%
@@ -415,22 +399,59 @@ goto:eof
 
 :fnJSONLint
 ECHO  === jsonlint===
-ECHO    COPY TO %LIBS%jsonlint
+ECHO	COPY TO %LIBS%jsonlint
 ECHO.
 IF NOT EXIST %LIBS%jsonlint MKDIR %LIBS%jsonlint >> %LOG%
 XCOPY %VENDOR%jsonlint\src\*.php %LIBS%jsonlint\ /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnCopyGuzzle
+::-- fnFlySystem
 ::--------------------------------------------------------
 
-:fnCopyGuzzle
-ECHO  === fnGuzzle ===
-ECHO    COPY TO %LIBS%GuzzleHttp
+:fnFlySystem
+ECHO  === flysystem ===
+ECHO	COPY TO %LIBS%league/flysystem
 ECHO.
-IF NOT EXIST %LIBS%GuzzleHttp MKDIR %LIBS%GuzzleHttp >> %LOG%
-XCOPY %VENDOR%GuzzleHttp\*.php %LIBS%GuzzleHttp\ /E /Y >> %LOG%
+IF NOT EXIST %LIBS%league\flysystem MKDIR %LIBS%league\flysystem >> %LOG%
+XCOPY %VENDOR%league\flysystem\src\*.php %LIBS%league\flysystem\ /E /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnScrollDir
+::--------------------------------------------------------
+
+:fnScrollDir
+ECHO  === scrolldir ===
+ECHO	COPY TO %LIBS%scrolldir
+ECHO.
+IF NOT EXIST %LIBS%scrolldir MKDIR %LIBS%scrolldir >> %LOG%
+COPY %VENDOR%scrolldir\dist\scrolldir.min.js %LIBS%scrolldir\ /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCSSCheckboxLib
+::--------------------------------------------------------
+
+:fnCSSCheckboxLib
+ECHO  === CSS-Checkbox-Library ===
+ECHO	COPY TO %LIBS%CSS-Checkbox-Library
+ECHO.
+IF NOT EXIST %LIBS%CSS-Checkbox-Library MKDIR %LIBS%CSS-Checkbox-Library >> %LOG%
+COPY %VENDOR%CSS-Checkbox-Library\dist\css\checkboxes.min.css %LIBS%CSS-Checkbox-Library\ /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnSweetAlert
+::--------------------------------------------------------
+
+:fnSweetAlert
+ECHO  === SweetAlert ===
+ECHO	COPY TO %LIBS%sweetalert2
+ECHO.
+IF NOT EXIST %LIBS%sweetalert2 MKDIR %LIBS%sweetalert2 >> %LOG%
+COPY %VENDOR%sweetalert2\dist\sweetalert2.min.js %LIBS%sweetalert2\ /Y >> %LOG%
+COPY %VENDOR%sweetalert2\dist\sweetalert2.min.css %LIBS%sweetalert2\ /Y >> %LOG%
 goto:eof
 
 REM -----------------------------------------------
@@ -445,7 +466,7 @@ REM -----------------------------------------------
 
 :fnCopyDatatables
 ECHO  === datatables ===
-ECHO    COPY TO %PAGE%html\datatables\libs\datatables\
+ECHO	COPY TO %PAGE%html\datatables\libs\datatables\
 ECHO.
 IF NOT EXIST %PAGE%html\datatables\libs\datatables\ MKDIR %PAGE%html\datatables\libs\datatables\ >> %LOG%
 XCOPY %VENDOR%datatables\datatables\media\*.* %PAGE%html\datatables\libs\datatables\ /E /Y >> %LOG%
@@ -461,7 +482,7 @@ goto:eof
 
 :fnCopyjsTree
 ECHO  === jstree ===
-ECHO    COPY TO %PAGE%html\treeview\libs\jstree\
+ECHO	COPY TO %PAGE%html\treeview\libs\jstree\
 ECHO.
 IF NOT EXIST %PAGE%html\treeview\libs\jstree\ MKDIR %PAGE%html\treeview\libs\jstree\ >> %LOG%
 COPY %VENDOR%vakata\jstree\dist\jstree.min.js %PAGE%html\treeview\libs\jstree\ /Y >> %LOG%
@@ -476,7 +497,7 @@ goto:eof
 
 :fnCopyjsTreeProton
 ECHO  === jstreeProton ===
-ECHO    COPY TO %PAGE%html\treeview\libs\jstree\themes
+ECHO	COPY TO %PAGE%html\treeview\libs\jstree\themes
 ECHO.
 IF NOT EXIST %PAGE%html\treeview\libs\jstree\themes\ MKDIR %PAGE%html\treeview\libs\jstree\themes\ >> %LOG%
 XCOPY %VENDOR%jstree-bootstrap-theme\dist\themes\proton\*.* %PAGE%html\treeview\libs\jstree\themes\proton\ /E /Y >> %LOG%
@@ -488,7 +509,7 @@ goto:eof
 
 :fnCopySimpleMDE
 ECHO  === simplemde-markdown-editor ===
-ECHO    COPY TO %PAGE%html\editor\libs\simplemde-markdown-editor\
+ECHO	COPY TO %PAGE%html\editor\libs\simplemde-markdown-editor\
 ECHO.
 IF NOT EXIST %PAGE%html\editor\libs\simplemde-markdown-editor\ MKDIR %PAGE%html\editor\libs\simplemde-markdown-editor\ >> %LOG%
 COPY %VENDOR%simplemde-markdown-editor\dist\simplemde.min.css %PAGE%html\editor\libs\simplemde-markdown-editor\ /Y >> %LOG%
@@ -501,7 +522,7 @@ goto:eof
 
 :fnCopyPrism
 ECHO  === prism ===
-ECHO    COPY TO %PAGE%html\prism\libs\prism\
+ECHO	COPY TO %PAGE%html\prism\libs\prism\
 ECHO.
 IF NOT EXIST %PAGE%html\prism\libs\prism\ MKDIR %PAGE%html\prism\libs\prism\ >> %LOG%
 COPY %VENDOR_MANUAL%prism\prism.css %PAGE%html\prism\libs\prism\ /Y >> %LOG%
@@ -514,7 +535,7 @@ goto:eof
 
 :fnCopyFlexDataList
 ECHO  === jquery-flexdatalist ===
-ECHO    COPY TO %PAGE%html\search\libs\jquery-flexdatalist\
+ECHO	COPY TO %PAGE%html\search\libs\jquery-flexdatalist\
 ECHO.
 IF NOT EXIST %PAGE%html\search\libs\jquery-flexdatalist\ MKDIR %PAGE%html\search\libs\jquery-flexdatalist\ >> %LOG%
 COPY %VENDOR%jquery-flexdatalist\jquery.flexdatalist.min.css %PAGE%html\search\libs\jquery-flexdatalist\ /Y >> %LOG%
@@ -527,7 +548,7 @@ goto:eof
 
 :fnCopyjQueryHighLight
 ECHO  === jquery-highlight ===
-ECHO    COPY TO %PAGE%html\search\libs\jquery-highlight\
+ECHO	COPY TO %PAGE%html\search\libs\jquery-highlight\
 ECHO.
 IF NOT EXIST %PAGE%html\search\libs\jquery-highlight\ MKDIR %PAGE%html\search\libs\jquery-highlight\ >> %LOG%
 COPY %VENDOR%jquery-highlight\jquery.highlight.js %PAGE%html\search\libs\jquery-highlight\ /Y >> %LOG%
@@ -539,7 +560,7 @@ goto:eof
 
 :fnCopyPrintPreview
 ECHO  === print-preview ===
-ECHO    COPY TO %PAGE%html\print_preview\libs\\printThis\
+ECHO	COPY TO %PAGE%html\print_preview\libs\\printThis\
 ECHO.
 IF NOT EXIST %PAGE%html\printThis\libs\print_preview\ MKDIR %PAGE%html\print_preview\libs\printThis\ >> %LOG%
 COPY %VENDOR%printThis\printThis.js %PAGE%html\print_preview\libs\printThis\ /Y >> %LOG%
@@ -551,7 +572,7 @@ goto:eof
 
 :fnCopyLinkify
 ECHO  === linkify ===
-ECHO    COPY TO %PAGE%html\linkify\libs\linkify\
+ECHO	COPY TO %PAGE%html\linkify\libs\linkify\
 ECHO.
 IF NOT EXIST %PAGE%html\linkify\libs\linkify\ MKDIR %PAGE%html\linkify\libs\linkify\ >> %LOG%
 COPY %VENDOR%linkify-shim\linkify.min.js %PAGE%html\linkify\libs\linkify\ /Y >> %LOG%
@@ -564,7 +585,7 @@ goto:eof
 
 :fnCopyStoreJS
 ECHO  === store-js ===
-ECHO    COPY TO %PAGE%html\optimize\libs\store-js\
+ECHO	COPY TO %PAGE%html\optimize\libs\store-js\
 ECHO.
 IF NOT EXIST %PAGE%html\optimize\libs\store-js\ MKDIR %PAGE%html\optimize\libs\store-js\ >> %LOG%
 COPY %VENDOR%store.js\dist\store.everything.min.js %PAGE%html\optimize\libs\store-js\ /Y >> %LOG%
@@ -576,7 +597,7 @@ goto:eof
 
 :fnCopyLazySizes
 ECHO  === lazysizes ===
-ECHO    COPY TO %PAGE%html\optimize\libs\lazysizes\
+ECHO	COPY TO %PAGE%html\optimize\libs\lazysizes\
 ECHO.
 IF NOT EXIST %PAGE%html\optimize\libs\lazysizes\ MKDIR %PAGE%html\optimize\libs\lazysizes\ >> %LOG%
 COPY %VENDOR%lazysizes\lazysizes.min.js %PAGE%html\optimize\libs\lazysizes\ /Y >> %LOG%
@@ -588,7 +609,7 @@ goto:eof
 
 :fnCopyAnchor
 ECHO  === anchor.js ===
-ECHO    COPY TO %PAGE%html\anchor\libs\anchor-js\
+ECHO	COPY TO %PAGE%html\anchor\libs\anchor-js\
 ECHO.
 IF NOT EXIST %PAGE%html\anchor\libs\anchor-js\ MKDIR %PAGE%html\anchor\libs\anchor-js\ >> %LOG%
 COPY %VENDOR%anchorjs\anchor.min.js %PAGE%html\anchor\libs\anchor-js\ /Y >> %LOG%
@@ -600,7 +621,7 @@ goto:eof
 
 :fnCopyClipboardJS
 ECHO  === clipboard.js ===
-ECHO    COPY TO %PAGE%html\clipboard\libs\clipboard-js\
+ECHO	COPY TO %PAGE%html\clipboard\libs\clipboard-js\
 ECHO.
 IF NOT EXIST %PAGE%html\clipboard\libs\clipboard-js\ MKDIR %PAGE%html\clipboard\libs\clipboard-js\ >> %LOG%
 COPY %VENDOR%clipboard.js\dist\clipboard.min.js %PAGE%html\clipboard\libs\clipboard-js\ /Y >> %LOG%
@@ -612,7 +633,7 @@ goto:eof
 
 :fnCopyTimeline
 ECHO  === jquery-albe-timeline ===
-ECHO    COPY TO %TASK%timeline\libs\jquery-albe-timeline\
+ECHO	COPY TO %TASK%timeline\libs\jquery-albe-timeline\
 ECHO.
 IF NOT EXIST %TASK%timeline\libs\jquery-albe-timeline\ MKDIR %TASK%timeline\libs\jquery-albe-timeline\ >> %LOG%
 COPY %VENDOR%jquery-albe-timeline\jquery-albe-timeline.min.js %TASK%timeline\libs\jquery-albe-timeline\ /Y  >> %LOG%
@@ -626,7 +647,7 @@ goto:eof
 
 :fnCopyFakeLoader
 ECHO  === fakeLoader ===
-ECHO    COPY TO %PAGE%html\fakeLoader\libs\fakeLoader.js\
+ECHO	COPY TO %PAGE%html\fakeLoader\libs\fakeLoader.js\
 ECHO.
 IF NOT EXIST %PAGE%html\fakeLoader\libs\fakeLoader.js\ MKDIR %PAGE%html\fakeLoader\libs\fakeLoader.js\ >> %LOG%
 COPY %VENDOR%fakeLoader.js\fakeLoader.min.js %PAGE%html\fakeLoader\libs\fakeLoader.js\ /Y >> %LOG%
@@ -639,7 +660,7 @@ goto:eof
 
 :fnCopyEmoji
 ECHO  === emoji ===
-ECHO    COPY TO %PAGE%markdown\emoji\libs\litemoji\
+ECHO	COPY TO %PAGE%markdown\emoji\libs\litemoji\
 ECHO.
 IF NOT EXIST %MARKDOWN%emoji\libs\litemoji\ MKDIR %MARKDOWN%emoji\libs\litemoji\ >> %LOG%
 COPY %VENDOR%litemoji\src\LitEmoji.php %MARKDOWN%emoji\libs\litemoji\ /Y >> %LOG%
@@ -652,7 +673,7 @@ goto:eof
 
 :fnCopyGoogoose
 ECHO  === Googoose ===
-ECHO    COPY TO %PAGE%html\docx\libs\googoose\
+ECHO	COPY TO %PAGE%html\docx\libs\googoose\
 ECHO.
 IF NOT EXIST %PAGE%html\docx\libs\googoose\ MKDIR %PAGE%html\docx\libs\googoose\ >> %LOG%
 COPY %VENDOR%googoose\jquery.googoose.js %PAGE%html\docx\libs\googoose\ /Y >> %LOG%
@@ -664,7 +685,7 @@ goto:eof
 
 :fnCopyReveajJS
 ECHO  === Reveal.js ===
-ECHO    COPY TO %PAGE%html\reveal\libs\reveal.js\
+ECHO	COPY TO %PAGE%html\reveal\libs\reveal.js\
 ECHO.
 IF NOT EXIST %PAGE%html\reveal\libs\reveal.js MKDIR %PAGE%html\reveal\libs\reveal.js >> %LOG%
 XCOPY %VENDOR%reveal.js\*.* %PAGE%html\reveal\libs\reveal.js\ /E /Y >> %LOG%
@@ -679,7 +700,7 @@ goto:eof
 
 :fnCopyReveajJS-Menu
 ECHO  === reveal.js-menu ===
-ECHO    COPY TO %PAGE%html\reveal\libs\reveal.js\plugin
+ECHO	COPY TO %PAGE%html\reveal\libs\reveal.js\plugin
 ECHO.
 IF NOT EXIST %PAGE%html\reveal\libs\reveal.js\plugin\reveal.js-menu\ MKDIR %PAGE%html\reveal\libs\reveal.js\plugin\reveal.js-menu\ >> %LOG%
 COPY %VENDOR%reveal.js-menu\menu.css %PAGE%html\reveal\libs\reveal.js\plugin\reveal.js-menu\ /Y >> %LOG%
@@ -692,7 +713,7 @@ goto:eof
 
 :fnCopyReveajJS-ElapsedTimeBar
 ECHO  === reveal.js-ElapsedTimeBar ===
-ECHO    COPY TO %PAGE%html\reveal\libs\reveal.js\plugin
+ECHO	COPY TO %PAGE%html\reveal\libs\reveal.js\plugin
 ECHO.
 IF NOT EXIST %PAGE%html\reveal\libs\reveal.js\plugin\elapsed-time-bar\ MKDIR %PAGE%html\reveal\libs\reveal.js\plugin\elapsed-time-bar\ >> %LOG%
 COPY %VENDOR%reveal.js-elapsed-time-bar\plugin\elapsed-time-bar\elapsed-time-bar.js %PAGE%html\reveal\libs\reveal.js\plugin\elapsed-time-bar\ /Y >> %LOG%
@@ -704,7 +725,7 @@ goto:eof
 
 :fnCopyReveajJS-TitleFooter
 ECHO  === reveal.js-TitleFooter ===
-ECHO    COPY TO %PAGE%html\reveal\libs\reveal.js\plugin
+ECHO	COPY TO %PAGE%html\reveal\libs\reveal.js\plugin
 ECHO.
 IF NOT EXIST %PAGE%html\reveal\libs\reveal.js\plugin\title-footer\ MKDIR %PAGE%html\reveal\libs\reveal.js\plugin\title-footer\ >> %LOG%
 COPY %VENDOR%Reveal.js-Title-Footer\plugin\title-footer\title-footer.js %PAGE%html\reveal\libs\reveal.js\plugin\title-footer\ /Y >> %LOG%
@@ -718,7 +739,7 @@ goto:eof
 :fnCopyRemark
 
 ECHO  === Remark ===
-ECHO    COPY TO %PAGE%html\remark\libs\remark\
+ECHO	COPY TO %PAGE%html\remark\libs\remark\
 ECHO.
 IF NOT EXIST %PAGE%html\remark\libs\remark MKDIR %PAGE%html\remark\libs\remark >> %LOG%
 COPY %MANUAL%remark\remark.min.js %PAGE%html\remark\libs\remark /Y >> %LOG%
@@ -730,7 +751,7 @@ goto:eof
 
 :fnCopyBalloon
 ECHO  === Balloon ===
-ECHO    COPY TO %PAGE%html\balloon\libs\
+ECHO	COPY TO %PAGE%html\balloon\libs\
 ECHO.
 IF NOT EXIST %PAGE%html\balloon\libs\ MKDIR %PAGE%html\balloon\libs\ >> %LOG%
 COPY %VENDOR%balloon.css\balloon.min.css %PAGE%html\balloon\libs\ /Y >> %LOG%
@@ -742,7 +763,7 @@ goto:eof
 
 :fnCopyjqueryi18n
 ECHO  === jquery.i18n ===
-ECHO    COPY TO %PAGE%html\i18n\libs\jquery.i18n
+ECHO	COPY TO %PAGE%html\i18n\libs\jquery.i18n
 ECHO.
 IF NOT EXIST %PAGE%html\i18n\libs\jquery.i18n MKDIR %PAGE%html\i18n\libs\jquery.i18n\ >> %LOG%
 XCOPY %VENDOR%jquery.i18n\src\*.* %PAGE%html\i18n\libs\jquery.i18n /E /Y >> %LOG%
@@ -754,7 +775,7 @@ goto:eof
 
 :fnCopyCLDRPluralRuleParser
 ECHO  === CLDRPluralRuleParser ===
-ECHO    COPY TO %PAGE%html\i18n\libs\CLDRPluralRuleParser
+ECHO	COPY TO %PAGE%html\i18n\libs\CLDRPluralRuleParser
 ECHO.
 IF NOT EXIST %PAGE%html\i18n\libs\CLDRPluralRuleParser MKDIR %PAGE%html\i18n\libs\CLDRPluralRuleParser >> %LOG%
 COPY %VENDOR%CLDRPluralRuleParser\src\CLDRPluralRuleParser.js %PAGE%html\i18n\libs\CLDRPluralRuleParser /Y >> %LOG%
@@ -766,7 +787,7 @@ goto:eof
 
 :fnCopyFileSaver
 ECHO  === FileSaver ===
-ECHO    COPY TO %PAGE%html\txt\libs\FileSaver.js
+ECHO	COPY TO %PAGE%html\txt\libs\FileSaver.js
 ECHO.
 IF NOT EXIST %PAGE%html\txt\libs\FileSaver.js MKDIR %PAGE%html\txt\libs\FileSaver.js >> %LOG%
 COPY %VENDOR%FileSaver.js\FileSaver.min.js %PAGE%html\txt\libs\FileSaver.js /Y >> %LOG%
@@ -778,7 +799,7 @@ goto:eof
 
 :fnGitHubCorners
 ECHO  === fnGitHubCorners ===
-ECHO    COPY TO %PAGE%html\github_banner\libs\github-corners
+ECHO	COPY TO %PAGE%html\github_banner\libs\github-corners
 ECHO.
 IF NOT EXIST %PAGE%html\github_banner\libs\github-corners MKDIR %PAGE%html\github_banner\libs\github-corners >> %LOG%
 COPY %VENDOR%github-corners\css\styles.css %PAGE%html\github_banner\libs\github-corners /Y >> %LOG%
@@ -790,12 +811,11 @@ goto:eof
 
 :fnUpload
 ECHO  === fnUpload ===
-ECHO    COPY TO %PAGE%html\upload\libs\dropzone
+ECHO	COPY TO %PAGE%html\upload\libs\dropzone
 ECHO.
 IF NOT EXIST %PAGE%html\upload\libs\dropzone MKDIR %PAGE%html\upload\libs\dropzone >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.css %PAGE%html\upload\libs\dropzone /Y >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.js %PAGE%html\upload\libs\dropzone /Y >> %LOG%
-goto:eof
 
 ::--------------------------------------------------------
 ::-- fnHTML2MD
@@ -803,10 +823,22 @@ goto:eof
 
 :fnHTML2MD
 ECHO  === fnHTML2MD ===
-ECHO    COPY TO %TASK%convert\libs\html2md
+ECHO	COPY TO %TASK%convert\libs\html2md
 ECHO.
 IF NOT EXIST %TASK%convert\libs\html2md MKDIR %TASK%convert\libs\html2md >> %LOG%
 XCOPY %VENDOR%html-to-markdown\src\*.* %TASK%convert\libs\html2md /E /Y >> %LOG%
+
+::--------------------------------------------------------
+::-- fnGuzzle
+::--------------------------------------------------------
+
+:fnGuzzle
+ECHO  === fnGuzzle ===
+ECHO	COPY TO %TASK%fetch\libs\guzzle
+ECHO.
+IF NOT EXIST %TASK%fetch\libs\guzzle MKDIR %TASK%fetch\libs\guzzle >> %LOG%
+XCOPY %VENDOR%guzzlehttp\guzzle\src\*.* %TASK%fetch\libs\guzzle /E /Y >> %LOG%
+
 goto:eof
 
 ::--------------------------------------------------------
@@ -815,10 +847,11 @@ goto:eof
 
 :fnGoogleTranslate
 ECHO  === fnGoogleTranslate ===
-ECHO    COPY TO %TASK%translate\libs\google-translate-php
+ECHO	COPY TO %TASK%translate\libs\google-translate-php
 ECHO.
 IF NOT EXIST %TASK%translate\libs\google-translate-php MKDIR %TASK%translate\libs\google-translate-php >> %LOG%
 XCOPY %VENDOR%stichoza\google-translate-php\src\Stichoza\GoogleTranslate\*.* %TASK%translate\libs\google-translate-php /E /Y >> %LOG%
+
 goto:eof
 
 REM -----------------------------------------------
@@ -836,7 +869,6 @@ ECHO Kill %LIBS%*.exe files because GitHub will complain about binary files in t
 DEL %LIBS%*.exe /Q /S >> %LOG%
 goto:eof
 
-
 REM -- OLD --
 REM -- OLD --
 REM -- OLD --
@@ -847,12 +879,18 @@ REM -- OLD --
 REM ----------------------------------------------------------------------
 REM SET LIB=yaml\
 REM IF EXIST %VENDOR%symfony\%LIB% (
-REM    ECHO  === %LIB% === >> %LOG%
-REM    ECHO  === %LIB% ===
-REM    XCOPY %VENDOR%symfony\%LIB%*.* %LIBS%symfony\%LIB%*.* /E /Y >> %LOG%
+REM	ECHO  === %LIB% === >> %LOG%
+REM	ECHO  === %LIB% ===
+REM	XCOPY %VENDOR%symfony\%LIB%*.* %LIBS%symfony\%LIB%*.* /E /Y >> %LOG%
 REM )
 
-
+REM ----------------------------------------------------------------------
+REM SET LIB=psr\
+REM IF EXIST %VENDOR%%LIB% (
+REM	ECHO  === %LIB% === >> %LOG%
+REM	ECHO  === %LIB% ===
+REM	XCOPY %VENDOR%%LIB%*.* %LIBS%%LIB%*.* /E /Y >> %LOG%
+REM )
 
 :END
 ECHO.
