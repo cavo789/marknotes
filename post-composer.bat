@@ -25,7 +25,7 @@ SET PAGE=%SRC%marknotes\plugins\page\
 SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
-REM call :fnCopyComposer
+call :fnCopyComposer
 REM call :fnCopyBootstrap
 REM call :fnCopyjQuery
 REM call :fnCopySymfony
