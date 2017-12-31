@@ -26,6 +26,7 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 		// Check the presence of the LISTFILES tag
 		if (preg_match_all('/%LISTFILES ([^\\%]*)%/', $params['markdown'], $matches)) {
 			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFolders = \MarkNotes\Folders::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$aeSession = \MarkNotes\Session::getInstance();
@@ -47,16 +48,16 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 					$folder = str_replace('/', DS, $arrFolders[$i]);
 				}
 
-				if (!(is_dir($folder))) {
+				if (!($aeFolders->exists($folder))) {
 					$folder = $root.$folder.DS;
 				}
 
-				if (!(is_dir($folder))) {
+				if (!($aeFolders->exists($folder))) {
 					// Correctly handle accentuated characters
 					$folder = utf8_decode($folder);
 				}
 
-				if (is_dir($folder)) {
+				if ($aeFolders->exists($folder)) {
 					// Retrieve the list of files under that $folder
 					$arrFiles = $aeFiles->rglob('*', $folder);
 
@@ -66,7 +67,7 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 
 					$sList = '';
 					foreach ($arrFiles as $file) {
-						if (is_file($file)) {
+						if ($aeFiles->exists($file)) {
 							// Don't take files starting with a dot
 							if (substr(basename($file), 0, 1) !== '.') {
 								//if ($bEncodeAccents) {
@@ -79,11 +80,11 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 
 								$sList .= "* [".$file."](".str_replace(' ', '%20', $relURL).")".PHP_EOL;
 							}
-						} // if (is_file($file))
+						} // if ($aeFiles->exists($file))
 					} // foreach ($arrFiles as $file)
 
 					$params['markdown'] = str_replace($arrTags[$i], $sList, $params['markdown']);
-				} // if (is_dir($folder))
+				} // if ($aeFolders->exists($folder))
 			} // for
 		} // if (preg_match_all('/%LISTFILES
 

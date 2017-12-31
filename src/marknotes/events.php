@@ -204,7 +204,8 @@ class Events
 	{
 		$sReturn = null;
 
-		$content = file_get_contents($file);
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$content = $aeFiles->getContent($file);
 
 		if (preg_match('/^namespace (.*);/m', $content, $matches)) {
 			$sReturn = '\\'.trim($matches[1]);
@@ -223,26 +224,29 @@ class Events
 	*/
 	public static function loadPlugins(string $type = 'content')
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if ($type !== '') {
-			$aeFiles = \MarkNotes\Files::getInstance();
-			$aeFunctions = \MarkNotes\Functions::getInstance();
 			// The plugins folder is under /marknotes
-			// Note : $type can contains dot like 'task.export', in that case
-			// it means folder task subfolder export so replace dot by /
+			// Note : $type can contains dot like 'task.export',
+			// in that case it means folder task subfolder
+			// export so replace dot by /
 			$dir = rtrim(dirname(__DIR__), DS).'/marknotes/plugins/'.str_replace('.', DS, $type).DS;
 
-			// $dir is something like c:/site/marknotes/plugins/task/export/before/
+			// $dir is something like
+			// c:/site/marknotes/plugins/task/export/before/
 			// i.e. a folder where we can find plugins.
-
 			$plugins=array();
 
-			if (is_dir($dir)) {
-				// Get the list of plugins in that folder but, really, the ones
-				// that are specified in the settings.json file, so we'll only
-				// take the enabled ones.
+			if ($aeFolders->exists($dir)) {
+				// Get the list of plugins in that folder but,
+				// really, the ones that are specified in the
+				// settings.json file, so we'll only take the
+				// enabled ones.
 				$plugins = $aeSettings->getPlugins($type);
 
 				if ($plugins===array()) {
@@ -269,10 +273,12 @@ class Events
 				if ($aeFiles->exists($fname = $dir.$file.'.php')) {
 					$plugins=array($file=>array('enabled'=>1));
 				} else {
-					// No... so, in the case of f.i. task.optimize.clear,
-					// optimize/clear.php was not found, detect if optimize.php
-					// exists and if so, probably that script will implement
-					// a functionnality for the even optimize.Clear
+					// No... so, in the case of f.i.
+					// task.optimize.clear, optimize/clear.php
+					// was not found, detect if optimize.php
+					// exists and if so, probably that script
+					// will implement a functionnality for
+					// the event optimize.Clear
 
 					if ($aeFiles->exists($fname = $dir.basename($dir).'.php')) {
 						$plugins=array(basename($dir)=>array('enabled'=>1));
@@ -292,13 +298,14 @@ class Events
 				// Plugins extends a parent class stored in a file called
 				// .plugin and stored in the same folder so if that file is
 				// there, load it first.
-				if (is_file($file = $dir.'.plugin.php')) {
+				if ($aeFiles->exists($file = $dir.'.plugin.php')) {
 					require_once($file);
 				} else {
-					// For task plugins, the .plugin.php file isn't stored in the
-					// same folder than the plugin (.i.e. not in /plugins/task/listfiles/get.php)
+					// For task plugins, the .plugin.php file isn't
+					// stored in the same folder than the plugin
+					// (.i.e. not in /plugins/task/listfiles/get.php)
 					// but in the parent folder (in /plugins/task/)
-					if (is_file($file = dirname($dir).'/.plugin.php')) {
+					if ($aeFiles->exists($file = dirname($dir).'/.plugin.php')) {
 						require_once($file);
 					}
 				}
@@ -310,9 +317,11 @@ class Events
 				//			"only_if_task": []
 				//		}
 
-				// The name of the plugin (anchor here) and an array with
-				//		enabled = tell if the plugin is active (so should be loaded) or not
-				//		not_if_task and only_if_task to restrict his use to speficied tasks
+				// The name of the plugin (anchor here) and an
+				// array with enabled = tell if the plugin is
+				// active (so should be loaded) or not not_if_task
+				// and only_if_task to restrict his use to
+				// speficied tasks
 
 				foreach ($plugins as $name => $plgSettings) {
 					// Only if enabled
@@ -336,9 +345,10 @@ class Events
 							$plug = new $class;
 
 							// and run the bind() function
-							// return true when the plugin has bind a function
-							// return false f.i. when the plugin is for HTML output
-							//    and the task is pdf
+							// return true when the plugin has bind a
+							// function return false f.i. when the
+							// plugin is for HTML output and the
+							// task is pdf
 							$return = $plug->bind($type);
 
 							/*<!-- build:debug -->*/

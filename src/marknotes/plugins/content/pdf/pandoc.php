@@ -10,24 +10,24 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Pandoc
 {
-    private static $layout = 'pdf';
+	private static $layout = 'pdf';
 
 	/**
-     * Make the conversion
-     */
-    public static function doIt(&$params = null)
-    {
+	 * Make the conversion
+	 */
+	public static function doIt(&$params = null)
+	{
 
 		$bReturn = true;
 
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// ----------------------------------------
 		// Call the generic class for file conversion
-        $aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$layout, 'pandoc');
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$layout, 'pandoc');
 
 		// Get the filename, once exported (f.i. notes.txt)
 		$final = $aeConvert->getFileName();
@@ -39,13 +39,13 @@ class Pandoc
 
 				// No, doesn't exists
 
-		        $bReturn = false;
+				$bReturn = false;
 
 			}
 
 		} else { // if (!$aeConvert->isValid())
 
-	        $arrPandoc = $aeSettings->getPlugins('options', 'pandoc');
+			$arrPandoc = $aeSettings->getPlugins('options', 'pandoc');
 
 			// Read the content of the .md file
 			$filename = $aeSettings->getFolderDocs(true).$params['filename'];
@@ -66,19 +66,19 @@ class Pandoc
 
 		if ($bReturn) $params['output'] = $final;
 
-        return $bReturn;
+		return $bReturn;
 
-    }
+	}
 
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind(string $plugin)
-    {
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt', $plugin);
-        return true;
-    }
+	/**
+	 * Attach the function and responds to events
+	 */
+	public function bind(string $plugin)
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->bind('export.'.static::$layout, __CLASS__.'::doIt', $plugin);
+		return true;
+	}
 }
 
 
@@ -91,31 +91,31 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Pandoc
 {
-    public static function doIt(&$params = null)
-    {
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	public static function doIt(&$params = null)
+	{
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        // $sScriptName string Absolute filename to the pandoc.exe script
-        $arrPandoc = $aeSettings->getPlugins('options', 'pandoc');
+		// $sScriptName string Absolute filename to the pandoc.exe script
+		$arrPandoc = $aeSettings->getPlugins('options', 'pandoc');
 
-        if ($arrPandoc === array()) {
-            return false;
-        }
+		if ($arrPandoc === array()) {
+			return false;
+		}
 
-        $sScriptName = $arrPandoc['script'];
+		$sScriptName = $arrPandoc['script'];
 
-        if (!$aeFiles->exists($sScriptName)) {
-            if ($aeSettings->getDebugMode()) {
-                $aeDebug->here('Pandoc, file '.$sScriptName.' didn\'t exists', 5);
-            }
-            return false;
-        }
+		if (!$aeFiles->exists($sScriptName)) {
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->here('Pandoc, file '.$sScriptName.' didn\'t exists', 5);
+			}
+			return false;
+		}
 
 		// Get a slug of the filename
-        $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+		$slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
 
 		// Display a .md file, call plugins and output note's content
 		$filename = $aeSettings->getFolderDocs(true).$params['filename'];
@@ -135,52 +135,54 @@ class Pandoc
 		// So, escape it before converting to PDF
 		$content=str_replace('_', '\_', $content);
 
-        $aeFiles->create($tmpMD,$content);
+		$aeFiles->create($tmpMD,$content);
 
 		// ----------------------------------------
 		//
 
-        $aeTask = \MarkNotes\Tasks\Convert::getInstance();
+		$aeTask = \MarkNotes\Tasks\Convert::getInstance();
 
-        $final = $aeTask->getFileName($params['filename'], $params['task']);
+		$final = $aeTask->getFileName($params['filename'], $params['task']);
 
-        // $params['task'] is the output format (f.i. pdf), check if there are options to use
-        // for that format
-        $options = isset($arrPandoc['options'][$params['task']]) ? $arrPandoc['options'][$params['task']] : '';
+		// $params['task'] is the output format (f.i. pdf), check if there are options to use
+		// for that format
+		$options = isset($arrPandoc['options'][$params['task']]) ? $arrPandoc['options'][$params['task']] : '';
 
-        // Create a script on the disk
-        // Use 'chcp 65001' command, accentuated characters won't be correctly understand if
-        // the file should be executable (like a .bat file)
-        // see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
+		// Create a script on the disk
+		// Use 'chcp 65001' command, accentuated characters won't be correctly understand if
+		// the file should be executable (like a .bat file)
+		// see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
 
-        $debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
+		$debugFile = $aeSettings->getFolderTmp().$slug.'_debug.log';
 
-		if ($aeFiles->exists($debugFile)) unlink($debugFile);
+		if ($aeFiles->exists($debugFile)) {
+			$aeFiles->delete($debugFile);
+		}
 
-        $sProgram =
-            '@ECHO OFF'.PHP_EOL.
-            'chcp 65001'.PHP_EOL.
+		$sProgram =
+			'@ECHO OFF'.PHP_EOL.
+			'chcp 65001'.PHP_EOL.
 			'cd "'.$aeSettings->getFolderTmp().'"'.PHP_EOL.
-            '"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
-            '"'.$tmpMD.'" > '.$debugFile.' 2>&1'.PHP_EOL.
-            'copy "'.basename($final).'" "'.rtrim(dirname($final),DS).DS.'"'.PHP_EOL;
+			'"'. $sScriptName.'" -s '. $options . ' -o "'.basename($final).'" '.
+			'"'.$tmpMD.'" > '.$debugFile.' 2>&1'.PHP_EOL.
+			'copy "'.basename($final).'" "'.rtrim(dirname($final),DS).DS.'"'.PHP_EOL;
 
-        $fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
+		$fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 
 		$aeFiles->create($fScriptFile, $sProgram);
-        //$aeFiles->fwriteANSI($fScriptFile, $sProgram);
+		//$aeFiles->	($fScriptFile, $sProgram);
 
 		// ----------------------------------------
 		//
 		// Run the script
 
-        // No timeout
-        set_time_limit(0);
+		// No timeout
+		set_time_limit(0);
 
-        // Run the script
-        $output = array();
+		// Run the script
+		$output = array();
 
-        exec("start cmd /c ".$fScriptFile, $output);
+		exec("start cmd /c ".$fScriptFile, $output);
 
 		if (!$aeFiles->exists($final)) {
 
@@ -199,7 +201,7 @@ class Pandoc
 
 			if ($aeSettings->getDebugMode()) {
 				if ($aeFiles->exists($debugFile)) {
-					$content = file_get_contents ($debugFile);
+					$content = $aeFiles->getContent ($debugFile);
 					echo '<h3>Content of the debug file : '.$debugFile.'</h3>';
 					echo "<pre style='background-color:yellow;'>".$content."</pre>";
 				}
@@ -210,17 +212,17 @@ class Pandoc
 
 		} // if (!$aeFiles->exists($final))
 
-        $params['output'] = $final;
-        $params['stop_processing'] = true;
+		$params['output'] = $final;
+		$params['stop_processing'] = true;
 
-        return true;
-    }
+		return true;
+	}
 
-    public function bind(string $plugin)
-    {
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
-        return true;
-    }
+	public function bind(string $plugin)
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
+		return true;
+	}
 }
 */

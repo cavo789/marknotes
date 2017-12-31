@@ -13,6 +13,7 @@ class CSS
 
 	public static function run(string $str, array $arrOptimize) : string
 	{
+		$aeFolders = \MarkNotes\Folders::getInstance();
 
 		if ($arrOptimize['minify']??0) {
 			$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -27,7 +28,7 @@ class CSS
 
 			$lib=$aeSettings->getFolderLibs().'minify/src/';
 
-			if (is_dir($lib)) {
+			if ($aeFolders->exists($lib)) {
 				/*
 				$aeDebug = \MarkNotes\Debug::getInstance();
 				if ($aeDebug->getDevMode()) {

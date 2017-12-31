@@ -27,7 +27,6 @@ class Decktape
 	 */
 	public static function run(array $params) : string
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -51,7 +50,7 @@ class Decktape
 		$html = $aeTask->run($params);
 
 		// And store that HTML to the disk
-		file_put_contents($tmpHTML, $html);
+		$aeFiles->rewrite($tmpHTML, $html);
 /*<!-- build:debug -->*/
 die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
 /*<!-- endbuild -->*/
@@ -79,7 +78,7 @@ die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
 
 		$fScriptFile = dirname($tmpHTML).DS.$slug.'.bat';
 
-		$aeFiles->fwriteANSI($fScriptFile, $sProgram);
+		$aeFiles->rewrite($fScriptFile, $sProgram);
 
 		// Run the script. This part can be long depending on the number of slides in the HTML file to convert
 		$output = array();

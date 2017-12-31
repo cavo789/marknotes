@@ -79,7 +79,7 @@ class Remark
 
 			// -----------------------
 			// Get the remark template
-			$slideshow = file_get_contents($aeSettings->getTemplateFile('remark'));
+			$slideshow = $aeFiles->getContent($aeSettings->getTemplateFile('remark'));
 
 			$html = str_replace('%CONTENT%', strip_tags($markdown), $slideshow);
 			$html = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $html);

@@ -25,14 +25,15 @@ class Session
 
 	private function init(string $folder = '')
 	{
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance($folder);
 
 		if (!isset($_SESSION)) {
 			// Store session informations in the /tmp/sessions/ folder
 			// Create that folder if needed
 			$folder = $aeSettings->getFolderTmp().DS.'sessions'.DS;
-			if (!is_dir($folder)) {
-				mkdir($folder, CHMOD_FOLDER);
+			if (!$aeFolders->exists($folder)) {
+				$aeFolders->create($folder);
 			}
 
 			// session_save_path will cause a white page on a

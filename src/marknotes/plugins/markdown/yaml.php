@@ -83,10 +83,12 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 		// Get the separator used for the YAML block
 		$yaml_separator = self::getOptions('yaml_separator', '---');
 
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Only if the library is installed otherwise nothing to do
-		if (is_file($lib = $aeSettings->getFolderLibs()."symfony/yaml/Yaml.php")) {
+		$lib = $aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
+		if ($aeFiles->exists($lib)) {
 			// Load the library
 			include_once $lib;
 
@@ -129,7 +131,7 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 					$yaml = YAML::dump($params['yaml']);
 				} // if ($add)
 			}
-		} else { // if (is_file($lib))
+		} else { // if ($aeFiles->exists($lib))
 			// The YAML library isn't found
 		}
 

@@ -59,8 +59,8 @@ class Update
 		$arrSettings = array();
 
 		// If there is already a settings.json file, get its content
-		if (is_file($json = $rootFolder.'settings.json')) {
-			$arrSettings = json_decode(file_get_contents($json), true);
+		if ($aeFiles->exists($json = $rootFolder.'settings.json')) {
+			$arrSettings = json_decode($aeFiles->getContent($json), true);
 		}
 
 		// And merge it with the new settings
@@ -74,9 +74,7 @@ class Update
 		self::ksortRecursive($arrSettings);
 
 		// Write the file
-		$fp = fopen($json, 'w');
-		fwrite($fp, json_encode($arrSettings, JSON_PRETTY_PRINT));
-		fclose($fp);
+		$aeFiles->rewrite($json, json_encode($arrSettings, JSON_PRETTY_PRINT));
 
 		header('Content-Type: application/json');
 		echo json_encode(

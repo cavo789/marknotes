@@ -305,13 +305,15 @@ class Settings
 	*/
 	public function getText(string $variable, string $default = '', bool $jsProtect = false) : string
 	{
-
 		static $json_lang=array();
 
 		if ($json_lang === array()) {
+
+			$aeFiles = \MarkNotes\Files::getInstance();
+
 			// Load, always, the file in English
 			$fname = $this->getFolderAppRoot().'languages/marknotes-'.DEFAULT_LANGUAGE.'.json';
-			$json_lang = json_decode(file_get_contents($fname), true);
+			$json_lang = json_decode($aeFiles->getContent($fname), true);
 
 			// Now, if present, load the second file, the selected language
 			// (for instance French).
@@ -320,12 +322,12 @@ class Settings
 			if ($lang!==DEFAULT_LANGUAGE) {
 				$fname = $this->getFolderAppRoot().'languages/marknotes-'.$lang.'.json';
 
-				if (is_file($fname)) {
+				if ($aeFiles->exists($fname)) {
 					// array_replace_recursive so keys in marknotes-en.json
 					// and not in the second file (marknotes-fr.json) are
 					// keep and not override. Doing this will allow to be able
 					// to show text in english even if not yet translated
-					$arr = json_decode(file_get_contents($fname), true);
+					$arr = json_decode($aeFiles->getContent($fname), true);
 					$json_lang = array_replace_recursive($json_lang, $arr);
 				}
 			}
@@ -342,7 +344,8 @@ class Settings
 	}
 
 	/**
-	* Small sanitization function to be sure that the user willn't type anything in the settings.json file
+	* Small sanitization function to be sure that the user
+	* won't type anything in the settings.json file
 	* for filename properties
 	*
 	* @param  string $fname
@@ -376,7 +379,8 @@ class Settings
 		$fname = $this->getFolderAppRoot().'languages/marknotes-'.$lang.'.json';
 
 		// If no, use the default language
-		$this->language = (is_file($fname) ? $lang : DEFAULT_LANGUAGE);
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$this->language = ($aeFiles->exists($fname) ? $lang : DEFAULT_LANGUAGE);
 	}
 
 	public function getDebugMode() : bool
@@ -455,7 +459,6 @@ class Settings
 
 	public function setFolderDocs($folder)
 	{
-
 		// Respect OS directory separator
 		$folder = str_replace('/', DS, $folder);
 
@@ -473,19 +476,22 @@ class Settings
 	*/
 	public function getFolderTmp() : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+
 		$folder = rtrim($this->folderWebRoot, DS).DS.'tmp';
 
-		if (!is_dir($folder)) {
-			mkdir($folder, CHMOD_FOLDER);
+		if (!$aeFolders->exists($folder)) {
+			$aeFolders->create($folder);
 		}
 
-		if (is_dir($folder)) {
-			if (!file_exists($fname = $folder.'/.gitignore')) {
-				file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+		if ($aeFolders->exists($folder)) {
+			if (!$aeFiles->exists($fname = $folder.'/.gitignore')) {
+				$aeFiles->create($fname, '# Ignore everything'.PHP_EOL.'*');
 			}
 
-			if (!file_exists($fname = $folder.'/.htaccess')) {
-				file_put_contents($fname, 'deny from all');
+			if (!$aeFiles->exists($fname = $folder.'/.htaccess')) {
+				$aeFiles->create($fname, 'deny from all');
 			}
 		}
 
@@ -500,19 +506,22 @@ class Settings
 	*/
 	public function getFolderCache() : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+
 		$folder = rtrim($this->folderWebRoot, DS).DS.'cache';
 
-		if (!is_dir($folder)) {
-			mkdir($folder, CHMOD_FOLDER);
+		if (!$aeFolders->exists($folder)) {
+			$aeFolders->create($folder, CHMOD_FOLDER);
 		}
 
-		if (is_dir($folder)) {
-			if (!file_exists($fname = $folder.'/.gitignore')) {
-				file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+		if ($aeFolders->exists($folder)) {
+			if (!$aeFiles->exists($fname = $folder.'/.gitignore')) {
+				$aeFiles->create($fname, '# Ignore everything'.PHP_EOL.'*');
 			}
 
-			if (!file_exists($fname = $folder.'/.htaccess')) {
-				file_put_contents($fname, 'deny from all');
+			if (!$aeFiles->exists($fname = $folder.'/.htaccess')) {
+				$aeFiles->create($fname, 'deny from all');
 			}
 		}
 
@@ -561,7 +570,6 @@ class Settings
 	*/
 	public function getTemplateFile(string $default = 'screen') : string
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 
 		$tmpl = $default;
@@ -597,11 +605,9 @@ class Settings
 				$fname = '';
 			}
 		} else { // if ($tmpl!=='')
-			if ($aeFiles->exists($this->getFolderTemplates().$tmpl.'.php')) {
-				$fname = $this->getFolderTemplates().$tmpl.'.php';
-			} else {
+			$fname = $this->getFolderTemplates().$tmpl.'.php';
+			if (!$aeFiles->exists($fname)) {
 				// No template at all
-
 				$fname='';
 			}
 		} // if ($tmpl!=='')

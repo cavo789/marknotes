@@ -61,6 +61,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 
 	private static function getVariable(string $line) : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -71,7 +72,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($yaml !== array()) {
 			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
-			if (is_file($lib)) {
+			if ($aeFiles->exists($lib)) {
 				include_once $lib;
 				$arrYAML =  \Symfony\Component\Yaml\Yaml::parse($yaml);
 			}

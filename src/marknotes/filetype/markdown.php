@@ -247,7 +247,7 @@ class Markdown
 			}
 			/*<!-- endbuild -->*/
 
-			$markdown = file_get_contents(utf8_decode($filename));
+			$markdown = $aeFiles->getContent(utf8_decode($filename));
 
 			// --------------------------------
 			// Call content plugins

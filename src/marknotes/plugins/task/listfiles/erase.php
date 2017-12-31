@@ -79,14 +79,14 @@ class Erase extends \MarkNotes\Plugins\Task\Plugin
 
 						$tmp = $file_no_ext.$ext;
 
-						if (is_file($tmp)) {
+						if ($aeFiles->exists($tmp)) {
 							if (is_writable($tmp)) {
 								$error = '';
 
 								// Remove the file
 								try {
-									unlink($tmp);
-									if (is_file($tmp)) {
+									$aeFiles->delete($tmp);
+									if ($aeFiles->exists($tmp)) {
 										// Still there ? Not normal
 										$status = 0;
 									}

@@ -65,11 +65,10 @@ class Delete extends \MarkNotes\Plugins\Task\File
 				$wReturn = true;
 				foreach ($arrFiles as $file) {
 
-
 					if ($file['type'] == 'file') {
 						if ($file['filename'] == $name) {
 							try {
-								unlink($file['path']);
+								$aeFiles->delete($file['path']);
 								$wReturn = (!$aeFiles->exists($file['path']) ? KILL_SUCCESS : FILE_ERROR);
 							} catch (Exception $ex) {
 								/*<!-- build:debug -->*/

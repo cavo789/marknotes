@@ -16,6 +16,12 @@ namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+// There is a bug with PHP 7.0 and filenames with accent so
+// a specific procedure should be written otherwise the JSON
+// encoding of the list of files will fails
+// https://github.com/php/php-src/blob/PHP-7.1.0beta2/UPGRADING#L321
+define('PHP_7_0', ((PHP_MAJOR_VERSION == 7) && (PHP_MINOR_VERSION == 0)));
+
 class Treeview extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
@@ -57,19 +63,17 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
 		$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
 
-		// I really didn't understand why on some Windows computers
-		// the problem with accentuated character is there (i.e.
-		// the function iconv('UTF-8', 'UTF-8//IGNORE', string)
-		// should be called and not on some others; really really
-		// strange)
-		//$arrSettings = $aeSettings->getPlugins('/interface');
-		//$bConvert  = boolval($arrSettings['accent_conversion']??1);
+		if (PHP_7_0) {
+			// Avoid PHP 7.0.x bug : handle accents
+			$arrSettings = $aeSettings->getPlugins('/interface');
+			$bConvert  = boolval($arrSettings['accent_conversion']??1);
 
-		/*if ($bConvert) {
-			// accent_conversion in settings.json has been initialized
-			// to 1 => make the conversion
-			$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
-		}*/
+			if ($bConvert) {
+				// accent_conversion in settings.json has been initialized
+				// to 1 => make the conversion
+				$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
+			}
+		}
 
 		$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 		$listDir = array
@@ -154,11 +158,13 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					$default_task = 'task.edit.form';
 				}
 
-				/*if ($bConvert) {
-					// accent_conversion in settings.json has
-					// been initialized to 1 => make the conversion
-					$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
-				}*/
+				if (PHP_7_0) {
+					if ($bConvert) {
+						// accent_conversion in settings.json has
+						// been initialized to 1 => make the conversion
+						$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+					}
+				}
 
 				$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
 
@@ -251,6 +257,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 	private static function directoryToArray($directory)
 	{
 		static $root = '';
+
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFolders = \MarkNotes\Folders::getInstance();
 
@@ -261,7 +268,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		$arr = array();
 
-		if (is_dir($directory)) {
+		if ($aeFolders->exists($directory)) {
 			// Get the list of files/folders under $directory
 			// Only the folder, not subfolders
 			$items = $aeFolders->getContent($directory);
@@ -280,7 +287,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						if ($item['extension']==='md') {
 							$arr[] = array('name' => $item['filename'],'type' => 'file');
 						}
-					} // if (is_dir($directory.DS.$file))
+					} // if ($aeFolders->exists($directory.DS.$file))
 				} // if (substr($file, 0, 1) !== '.')
 			} // foreach
 		} // if ($aeFiles->folderExists($directory))

@@ -13,11 +13,11 @@ class GetModal extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = '';
 
 	/**
-	 * Return the code for showing the login form and respond to the login action
+	 * Return the code for showing the login form and respond to
+	 * the login action
 	 */
 	public static function run(&$params = null) : bool
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -28,7 +28,7 @@ class GetModal extends \MarkNotes\Plugins\Task\Plugin
 			// Get the root URL
 			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
-			$form = file_get_contents($filename);
+			$form = $aeFiles->getContent($filename);
 
 			$close = $aeSettings->getText('close', 'close');
 

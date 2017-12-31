@@ -204,7 +204,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 					continue;
 				}
 
-				if (is_file($sFile)) {
+				if ($aeFiles->exists($sFile)) {
 
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
@@ -213,7 +213,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 					/*<!-- endbuild -->*/
 
 					// Read the file
-					$sCSVContent = trim(file_get_contents($sFile));
+					$sCSVContent = trim($aeFiles->getContent($sFile));
 
 					// A non breaking space is U+00A0 (Unicode)
 					// but encoded as C2A0 in UTF-8
@@ -230,7 +230,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 					/*<!-- endbuild -->*/
 
 					$sCSVContent = '';
-				} // if (is_file($sFile)) {
+				} // if ($aeFiles->exists($sFile)) {
 
 				$markdown = str_replace($tag[$i], $sCSV2MD,
 					$markdown);

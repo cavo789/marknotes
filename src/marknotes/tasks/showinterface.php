@@ -33,8 +33,10 @@ class ShowInterface
 	 */
 	private static function interfaceDisabled()
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+
 		$fname = self::$root.'errors/error_interface_disabled.html';
-		$content = str_replace('%ROOT%', self::$root, file_get_contents($fname));
+		$content = str_replace('%ROOT%', self::$root, $aeFiles->getContent($fname));
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -49,6 +51,10 @@ class ShowInterface
 
 	public function run()
 	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
@@ -71,12 +77,8 @@ class ShowInterface
 		$isBot=$CrawlerDetect->isCrawler();  // return True when it's a crawler bot
 		unset($CrawlerDetect);
 
-		$aeEvents = \MarkNotes\Events::getInstance();
-		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
-		$aeSession = \MarkNotes\Session::getInstance();
-
 		// Read the template (in first versions, the template was called "screen"
-		$template = file_get_contents($aeSettings->getTemplateFile('interface'));
+		$template = $aeFiles->getContent($aeSettings->getTemplateFile('interface'));
 
 		$html = $aeHTML->replaceVariables($template, '', null);
 

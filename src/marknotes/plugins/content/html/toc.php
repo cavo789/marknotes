@@ -40,6 +40,7 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 
 			if (preg_match_all($pattern, $content, $matches)) {
 
+				$aeFiles = \MarkNotes\Files::getInstance();
 				$aeFunctions = \MarkNotes\Functions::getInstance();
 
 				list($tags, $level, $id, $slug, $title) = $matches;
@@ -51,7 +52,7 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 				// get html version
 				$file=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
 
-				if (is_file($file)) {
+				if ($aeFiles->exists($file)) {
 					include_once $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
 					$parsedown = new \Parsedown();
 					$text=$parsedown->text(trim($text));
@@ -65,16 +66,20 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 				// Process every entries in the table of content
 				for ($i = 0; $i < $j; $i++) {
 					/*<!-- build:debug -->*/
-					// When the developper mode is enabled in settings.json, the
-					// INCLUDE plugin will add a sentence like
+					// When the developper mode is enabled in
+					// settings.json, the INCLUDE plugin will add a
+					// sentence like
 					//
 					//   ###### DEV_MODE_PREFIX INCLUDE FILE filename {.devmode}
 					//
-					// (DEV_MODE_PREFIX is a prefiw defined in includes/constants.php)
+					// (DEV_MODE_PREFIX is a prefiw defined in
+					// includes/constants.php)
 					//
-					// So, here in the Table of Content plugin, we should ignore
-					// headings when the title starts with the DEV_MODE_PREFIX and
-					// don't put them in the table of content.
+					// So, here in the Table of Content plugin, we should
+					// ignore headings when the title starts with the
+					// DEV_MODE_PREFIX and don't put them in
+					// the table of content.
+
 					if ($aeFunctions::startsWith($title[$i], DEV_MODE_PREFIX)) {
 						$heads = str_replace($matches[0][$i], '', $heads);
 						continue;
@@ -103,7 +108,8 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 				} else {
 					$text .= "\n".$heads;
 				}
-				// And replace the tag (%TOC_3% f.i.) by the table of content
+				// And replace the tag (%TOC_3% f.i.) by the
+				// table of content
 				//$text = sprintf($text, $heads);
 				$content = str_replace($match[0], $text, $content);
 			} // if (preg_match_all($pattern

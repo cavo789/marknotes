@@ -56,7 +56,7 @@ class Update extends \MarkNotes\Plugins\Task\Plugin
 				$aeFiles->create($root.'install.php', $content);
 
 				// True if the file has been created
-				$bStatus = (is_file($root.'install.php'));
+				$bStatus = ($aeFiles->exists($root.'install.php'));
 
 			} // if ($res->getStatusCode() == 200)
 		} // if ($url !== '')

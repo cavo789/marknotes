@@ -19,6 +19,19 @@
  * "application folder".
  *
  * Using Flysystem : @https://github.com/thephpleague/flysystem
+ *
+ * IMPORTANT NOTES CONCERNING FOLDERS WITH FLYSYSTEM :
+ * https://flysystem.thephpleague.com/core-concepts/
+ *
+ * "Flysystem has a files first approach. Storage systems like
+ * AWS S3 are linear file systems, this means the path to a file
+ * is used as an identifier, rather than a representation of all
+ * the directories it’s nested in."
+ * "This means directories are second class citizens. Because of
+ * this, directories will be automatically created on file systems
+ * that require them when writing files. Not only does this make
+ * handling writes a lot easier, it also ensures a consistent
+ * behaviors across all file system types."
  */
 
 namespace MarkNotes;
@@ -58,6 +71,13 @@ class Folders
 		}
 
 		$adapter = new Local(static::$sWebRoot);
+
+		// With Flysystem (https://flysystem.thephpleague.com),
+		// we can use multiple adapter for, for instance, the local
+		// system (FileSystem), for Azure, Dropbox, FTP, WebDAV, ...
+		// See https://flysystem.thephpleague.com/adapter/local/
+		// So, here below, we are choising for FileSystem i.e. local
+		// folder
 		static::$flyWebRoot = new Filesystem($adapter);
 
 		// When using symbolic link, the application root (i.e.
@@ -81,9 +101,11 @@ class Folders
 	}
 
 	/**
-	* Check if a file exists and return FALSE if not.
-	* Disable temporarily errors to avoid warnings f.i. when the file
-	* isn't reachable due to open_basedir restrictions
+	* Check if a folder exists and return FALSE if not.
+	* With FlySystem. Note : with FlySystem, if a folder doesn't
+	* exists, it will be created automatically when a file is
+	* created so, for that usage, it isn't really important to check
+	* if the folder already exists
 	*
 	* @param  type $filename
 	* @return boolean
@@ -111,6 +133,10 @@ class Folders
 
 	/**
 	 * Create a folder
+	 * With FlySystem. Note : with FlySystem, if a folder doesn't
+	 * exists, it will be created automatically when a file is
+	 * created so, for that usage, it isn't really important to check
+	 * if the folder already exists
 	 */
 	public static function create(string $foldername) : bool
 	{
@@ -145,6 +171,7 @@ class Folders
 
 	/**
 	 * Rename an existing folder
+	 * With FlySystem.
 	 */
 	public static function rename(string $oldname, string $newname) : bool
 	{
@@ -188,6 +215,8 @@ class Folders
 
 	/**
 	 * Delete a folder and his subfolders if any
+	 * With FlySystem : the deletion is recursive, nothing to
+	 * code for this
 	 */
 	public static function delete(string $name) : bool
 	{
@@ -210,9 +239,6 @@ class Folders
 		return $wReturn;
 	}
 
-
-
-
 	/**
 	 * Get the list of files/folders under $path, recursively or not
 	 *
@@ -220,12 +246,17 @@ class Folders
 	 */
 	public static function getContent(string $path, bool $recursive = false) : array
 	{
-		// Should be relative to the webroot
 		$path = str_replace('/', DS, $path);
-		$path = str_replace(static::$sWebRoot, '', $path);
 
-		// Get the full list of files/folders
-		$items = static::$flyWebRoot->listContents($path, false);
+		if (strpos($path, static::$sWebRoot)!==FALSE) {
+			// The folder is stored in the webroot folder
+			$path = str_replace(static::$sWebRoot, '', $path);
+			$items = static::$flyWebRoot->listContents($path, false);
+		}  else {
+			// The folder is stored in the application folder
+			$path = str_replace(static::$sAppRoot, '', $path);
+			$items = static::$flyAppRoot->listContents($path, false);
+		}
 
 		return $items;
 	}

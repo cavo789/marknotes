@@ -31,7 +31,7 @@ class Convert
 	public function getHTML(string $markdown, array $params = null,
 		bool $bRunContentPlugin = true) : string
 	{
-
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -40,7 +40,7 @@ class Convert
 		$lib = "Parsedown";
 		$folder = $aeSettings->getFolderLibs()."parsedown/";
 
-		if (!file_exists($folder.$file.'.php')) {
+		if (!$aeFiles->exists($folder.$file.'.php')) {
 			self::ShowError(
 				str_replace(
 					'%s',
@@ -66,18 +66,19 @@ class Convert
 
 		include_once $folder.$file.'.php';
 
-		if (is_file($extra = $folder.$file.'Extra'.'.php')) {
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->exists($extra = $folder.$file.'Extra'.'.php')) {
 			$lib = "ParsedownExtra";
 			include_once $extra;
 		}
 
 		$parsedown = new \ParsedownCheckbox();
-		if (is_file($extra = $folder.'leblanc-simon/parsedown-checkbox/ParsedownCheckBox'.'.php')) {
+		if ($aeFiles->exists($extra = $folder.'leblanc-simon/parsedown-checkbox/ParsedownCheckBox'.'.php')) {
 			$lib = "ParsedownCheckbox";
 			//include_once $extra;
 		}
 
-		if (is_file($extra = $aeSettings->getHelpersRoot().'markNotesParsedown.php')) {
+		if ($aeFiles->exists($extra = $aeSettings->getHelpersRoot().'markNotesParsedown.php')) {
 			$lib = "marknotesParsedown";
 			include_once $extra;
 		}

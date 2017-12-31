@@ -20,11 +20,15 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function getTemplate(array $params = array()) : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$root = rtrim($aeFunctions->getCurrentURL(), '/');
+
 		$template = $aeSettings->getTemplateFile(static::$extension);
+
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->log('Template used : '.$root.$template);
@@ -34,7 +38,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 			$aeFunctions->fileNotFound($template);
 		}
 
-		$template = file_get_contents($template);
+		$template = $aeFiles->getContent($template);
 
 		return $template;
 	}
@@ -85,7 +89,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 
 		// Get the markdown content
 		$aeEvents->loadPlugins('markdown');
-		$content = file_get_contents($fullname);
+		$content = $aeFiles->getContent($fullname);
 		$params['markdown'] = $content;
 		$params['filename'] = $fullname;
 		$args = array(&$params);

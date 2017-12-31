@@ -67,7 +67,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				//$content = $aeMarkDown->read($file);
 
 				// Optimization : just read file on disk, without plugin support
-				$content = file_get_contents($file);
+				$content = $aeFiles->getContent($file);
 
 				$relFileName = utf8_encode(str_replace($folder, '', $file));
 
@@ -145,12 +145,14 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	private static function getHTML(array $params = array()) : bool
 	{
 		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+
 		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
 		$bOptimize = $arrOptimize['localStorage'] ?? false;
 
-		$template = file_get_contents($aeSettings->getTemplateFile('timeline'));
+		$template = $aeFiles->getContent($aeSettings->getTemplateFile('timeline'));
 
 		// The template can contains variables so call the variables
 		// plugins to translate them
@@ -185,8 +187,6 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
-
-		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
 		// filename will be timeline.html or timeline.json, keep only the extension

@@ -35,6 +35,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			$url .= $addQuerystring;
 		}
 
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		/*<!-- build:debug -->*/
@@ -53,7 +54,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 
 		$lib = $aeSettings->getFolderLibs().'GuzzleHttp'.DS;
 
-		if (is_dir($lib)) {
+		if($aeFolders->exists($lib)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug->log("Fetch using GuzzleHttp","debug");
@@ -61,9 +62,9 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- endbuild -->*/
 
 			// Use GuzzleHttp
-			$client = new \GuzzleHttp\Client(
-				array('curl'=>array(CURLOPT_SSL_VERIFYPEER=>false))
-			);
+			// Don't verify SSL to prevent errors on localhost
+			// Error can be "SSL certificate problem: unable to get local issuer certificate"
+			$client = new \GuzzleHttp\Client(['verify'=>false]);
 
 			$res = $client->request('GET', $url,
 				['connect_timeout' => $timeout]);
@@ -204,7 +205,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 				$aeFunctions->slugify(basename($url)).'.html';
 
 			// Reuse the cache
-			if (is_file($ftemp)) {
+			if ($aeFiles->exists($ftemp)) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug->log("Since that URL was already ".
@@ -212,7 +213,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 						"from ".$ftemp,"debug");
 				}
 				/*<!-- endbuild -->*/
-				$sHTML = trim(file_get_contents(utf8_decode($ftemp)));
+				$sHTML = trim($aeFiles->getContent(utf8_decode($ftemp)));
 			}
 
 			if ($sHTML == '') {
@@ -228,7 +229,8 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 				// cache optimization
 				try {
 					$aeFiles = \MarkNotes\Files::getInstance();
-					$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
+					$aeFiles->create($ftemp, $sHTML);
+				//	$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
 				} catch (\Exception $e) {
 				}
 
@@ -286,7 +288,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 					$aeFunctions->slugify(basename($url)).'.html';
 				try {
 					$aeFiles = \MarkNotes\Files::getInstance();
-					$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
+					$aeFiles->create($ftemp, $sHTML);
 				} catch (\Exception $e) {
 				}
 			}

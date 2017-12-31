@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+		<style>
+			summary { outline:none; padding:5px; }
+			#CONTENT_PRE, #CONTENT_CODE, #CONTENT_HTML {display:none;}
+			#CONTENT_HTML {width:100%; min-height:800px;}
+		</style>
+		<title>DEBUG - Make debugging easy</title>
+	</head>
+	<body class="container">
+		<h1 class="jumbotron">marknotes - Make debugging easy</h1>
+		<div class="row">
+			<div class="col-sm-3">%CONTENT%</div>
+			<div class="col-sm-9">
+				<strong id="URL">&nbsp;</strong>
+				<pre id="CONTENT_PRE">&nbsp;</pre>
+				<code id="CONTENT_CODE">&nbsp;</code>
+				<iframe id="CONTENT_HTML">&nbsp;</iframe>
+			</div>
+		</div>
+
+	</body>
+
+	<script src="../libs/jquery/jquery.min.js"></script>
+	<script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" defer="defer">
+
+		// Display XML
+		function displayXML($xml) {
+
+			var xml_serializer = new XMLSerializer();
+			$xml = xml_serializer.serializeToString($xml);
+
+			var textNode = document.createTextNode($xml);
+			$('#CONTENT_PRE').empty();
+			document.getElementById('CONTENT_PRE').appendChild(textNode)
+		}
+
+		$("[data-task]").click(function (e) {
+			e.preventDefault();
+
+			if ($(this).data('task') == 'ajax') {
+				var $url = $(this).attr('href');
+				var $type = $(this).data('type');
+				var $result = 'CONTENT_PRE';
+
+				$("#URL").html($url);
+				$('#CONTENT_PRE').hide();
+				$('#CONTENT_CODE').hide();
+				$('#CONTENT_HTML').hide();
+
+				if ($type=='html') {
+					$result = 'CONTENT_HTML';
+					$('#'+$result).attr('src',$url);
+				} else {
+					$.ajax({
+						beforeSend: function () {
+						}, // beforeSend()
+						async: true,
+						cache: false,
+						type: 'GET',
+						url: $url,
+						datatype: $type,
+						success: function (data) {
+							if (($type=='json') || ($type=='text')) {
+								// Output correctly JSON
+								if ($type=='json') {
+									document.getElementById($result).innerHTML = JSON.stringify(data, undefined, 2);
+								} else {
+									$("#"+$result).html(data);
+								}
+							} else {
+								$result = 'CONTENT_CODE';
+								if ($type=='xml') {
+									displayXML(data);
+								} else {
+									$("#"+$result).html(data);
+								}
+							}
+						} // success
+					}); // $.ajax()
+				}
+
+				$("#"+$result).show();
+			}
+		});
+
+	</script>
+</html>

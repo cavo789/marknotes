@@ -77,9 +77,9 @@ class Markdown
 			//$filename=$aeFiles->removeExtension($filename).'.md';
 			//$full=$aeSettings->getFolderDocs(true).$filename;
 
-			if (!file_exists($docFolder.$filename)) {
+			if (!$aeFiles->exists($docFolder.$filename)) {
 				$tmp = utf8_decode($filename);
-				if (file_exists($docFolder.$tmp)) {
+				if ($aeFiles->exists($docFolder.$tmp)) {
 					$filename=$tmp;
 				}
 			}

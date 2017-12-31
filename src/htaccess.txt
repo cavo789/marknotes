@@ -85,7 +85,7 @@ DirectoryIndex index.php
 	RewriteRule "(^|/)\.(?!(files|images|well-known))" - [R=403,NC,L]
 
 	# Block access to somes files
-	RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
+	RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|htaccess.txt|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
 	RewriteCond %{SCRIPT_FILENAME} -f
 	RewriteRule .* - [R=403,NC,L]
 

@@ -34,11 +34,11 @@ class Show
 			$filename = __DIR__.'/tips/'.$tip.'.html';
 			$html = '';
 
-			if (is_file($filename)) {
+			if ($aeFiles->exists($filename)) {
 				$html =
 					'<h1>Quick user guide</h1>'.
 					'<div class="show_tip">'.
-						file_get_contents($filename).
+						$aeFiles->getContent($filename).
 					'</div>';
 
 				$html .= '<hr/><input type="checkbox" id="show_tips" '.

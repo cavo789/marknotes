@@ -46,7 +46,7 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 			if ($yaml!=='') {
 				$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
 
-				if (is_file($lib)) {
+				if ($aeFiles->exists($lib)) {
 					include_once $lib;
 
 					// Yaml::dump will add double-quotes so remove them
@@ -59,7 +59,6 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 			}
 
 			// And write the file
-			$aeFiles = \MarkNotes\Files::getInstance();
 			$aeFiles->rewrite($filename, $content);
 
 			/*<!-- build:debug -->*/

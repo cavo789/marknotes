@@ -61,7 +61,7 @@ class Debug extends \MarkNotes\Plugins\Task\Plugin
 			$debugFile=$aeSettings->getFolderTmp().$aeConvert->getDebugFileName();
 
 			if ($aeFiles->exists($debugFile)) {
-				$content = file_get_contents($debugFile);
+				$content = $aeFiles->getContent($debugFile);
 				echo '<h3>Content of the debug file : '.$debugFile.'</h3>';
 				echo "<pre style='background-color:yellow;'>".$content."</pre>";
 			}

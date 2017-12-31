@@ -22,6 +22,7 @@ class GetSize
 	 */
 	public static function run(&$params = null)
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -38,7 +39,7 @@ class GetSize
 
 		$arrReturn = array();
 
-		if (file_exists($file)) {
+		if ($aeFiles->exists($file)) {
 			// Get image size and return this info
 			list($width, $height, $type, $attr) = getimagesize($file);
 			$arrReturn['width'] = $width;

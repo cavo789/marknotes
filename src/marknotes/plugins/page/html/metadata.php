@@ -17,7 +17,6 @@ class Metadata extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 	public static function doIt(&$html = null) : bool
 	{
-
 		if (trim($html) === '') {
 			return true;
 		}
@@ -36,7 +35,7 @@ class Metadata extends \MarkNotes\Plugins\Page\HTML\Plugin
 			if (stripos($html, $value['pattern'])!==false) {
 				if ($aeFiles->exists($filename = $root.$value['filename'])) {
 					// Read the meta file and inject its content in the HTML
-					$content = trim(file_get_contents($filename));
+					$content = trim($aeFiles->getContent($filename));
 
 					// Replace some variables
 					$aeFunctions = \MarkNotes\Functions::getInstance();

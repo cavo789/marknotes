@@ -87,7 +87,7 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($yaml !== array()) {
 			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
-			if (is_file($lib)) {
+			if ($aeFiles->exists($lib)) {
 				include_once $lib;
 				$arrYAML =  \Symfony\Component\Yaml\Yaml::parse($yaml);
 				$lang = $arrYAML['language']??$lang;

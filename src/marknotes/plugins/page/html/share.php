@@ -25,8 +25,8 @@ class Share extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$urlHTML .= str_replace(DS, '/', $aeFiles->replaceExtension($_REQUEST['file'], 'html'));
 		}
 
-		if (file_exists($fname = __DIR__.'/share/template.html')) {
-			$tmpl = str_replace('%URL%', $urlHTML, file_get_contents($fname));
+		if ($aeFiles->exists($fname = __DIR__.'/share/template.html')) {
+			$tmpl = str_replace('%URL%', $urlHTML, $aeFiles->getContent($fname));
 			$tmpl = str_replace('%ROOT%', $url, $tmpl);
 			$html = str_replace('</article>', '</article>'.$tmpl, $html);
 		}

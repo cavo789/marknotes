@@ -17,7 +17,6 @@ class GetForm extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	public static function run(&$params = null) : bool
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -28,7 +27,7 @@ class GetForm extends \MarkNotes\Plugins\Task\Plugin
 			// Get the root URL
 			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
-			$form = file_get_contents($filename);
+			$form = $aeFiles->getContent($filename);
 
 			$form = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/'), $form);
 

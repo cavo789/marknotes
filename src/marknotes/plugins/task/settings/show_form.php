@@ -339,7 +339,7 @@ class Show_Form
 		// -------------------------
 		// Done, we've our form with all elements (checkboxes,
 		// text boxes, ...). Add them in the template
-		$html = file_get_contents(__DIR__.'/form/show_form.html');
+		$html = $aeFiles->getContent(__DIR__.'/form/show_form.html');
 		$html = str_replace('%CONFIGURATION%', $boxes, $html);
 
 		// -------------------------

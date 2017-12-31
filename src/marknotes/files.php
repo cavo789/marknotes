@@ -58,6 +58,13 @@ class Files
 		}
 
 		$adapter = new Local(static::$sWebRoot);
+
+		// With Flysystem (https://flysystem.thephpleague.com),
+		// we can use multiple adapter for, for instance, the local
+		// system (FileSystem), for Azure, Dropbox, FTP, WebDAV, ...
+		// See https://flysystem.thephpleague.com/adapter/local/
+		// So, here below, we are choising for FileSystem i.e. local
+		// folder
 		static::$flyWebRoot = new Filesystem($adapter);
 
 		// When using symbolic link, the application root (i.e.
@@ -82,6 +89,7 @@ class Files
 
 	/**
 	 * Check if a file exists and return FALSE if not.
+	 * With FlySystem
 	 *
 	 * @param  type $filename
 	 * @return boolean
@@ -109,6 +117,7 @@ class Files
 
 	/**
 	 * Create a file
+	 * With FlySystem
 	 */
 	public static function create(string $filename, string $content) : bool
 	{
@@ -143,6 +152,7 @@ class Files
 
 	/**
 	 * Rename an existing file
+	 * With FlySystem
 	 */
 	public static function rename(string $oldname, string $newname) : bool
 	{
@@ -178,6 +188,10 @@ class Files
 		return $wReturn;
 	}
 
+	/**
+	 * Remove a file
+	 * With FlySystem
+	 */
 	public static function delete(string $filename) : bool
 	{
 		if ($filename == '') {
@@ -199,31 +213,108 @@ class Files
 		return $wReturn;
 	}
 
+	/**
+	 * Get the list of files/folders under $path, recursively or not
+	 *
+	 * $path should be a folder, can't be a pattern like 'file.*'
+	 */
+	public static function getContent(string $filename, bool $recursive = false) : string
+	{
+		$filename = str_replace('/', DS, $filename);
 
+		if (strpos($filename, static::$sWebRoot)!==FALSE) {
+			// The file is stored in the webroot folder
+			$filename = str_replace(static::$sWebRoot, '', $filename);
+			$content = static::$flyWebRoot->read($filename);
+		}  else {
+			// The file is stored in the application folder
+			$filename = str_replace(static::$sAppRoot, '', $filename);
+			$content = static::$flyAppRoot->read($filename);
+		}
 
+		return $content;
+	}
 
+	/**
+	 * Rewrite an existing file : update his content by a new one
+	 * With FlySystem
+	 *
+	 * @param  string $filename	Absolute filename
+	 * @param  string $content	The new content
+	 * @return bool				return False in case of error
+	 */
+	public static function rewrite(string $filename, string $content) : bool
+	{
+		$bReturn = false;
 
+		$filename = str_replace('/', DS, $filename);
+		try {
+			if (strpos($filename, static::$sAppRoot)!==FALSE) {
+				// The file should be stored in the application folder
+				$filename = str_replace(static::$sAppRoot, '', $filename);
+				static::$flyAppRoot->update($filename, $content);
+				$wReturn = static::$flyAppRoot->has($filename);
+			} else {
+				// The file should be stored in the webroot folder
+				$filename = str_replace(static::$sWebRoot, '', $filename);
+				static::$flyWebRoot->update($filename, $content);
+				$wReturn = static::$flyWebRoot->has($filename);
+			}
+		} catch (Exception $ex) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				echo $ex->getMessage();
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->here("", 99);
+			}
+			/*<!-- endbuild -->*/
+		}
+		return $bReturn;
+	}
+
+	/**
+	 * Get the timestamp (last modification date) of a file
+	 * With FlySystem
+	 */
+	public static function timestamp(string $filename) : string
+	{
+		if ($filename == '') {
+			return false;
+		}
+
+		$filename = str_replace('/', DS, $filename);
+
+		if (strpos($filename, static::$sWebRoot)!==FALSE) {
+			// The file is stored in the webroot folder
+			$filename = str_replace(static::$sWebRoot, '', $filename);
+			$wReturn = static::$flyWebRoot->getTimestamp($filename);
+		}  else {
+			// The file is stored in the application folder
+			$filename = str_replace(static::$sAppRoot, '', $filename);
+			$wReturn = static::$flyAppRoot->getTimestamp($filename);
+		}
+		return $wReturn;
+	}
 
 	/**
 	 * Write a content into a UTF8-BOM file
 	 */
-	public static function fwriteUTF8BOM(string $sFileName,
+	/*public static function fwriteUTF8BOM(string $sFileName,
 		string $sContent)
 	{
 		$f = fopen($sFileName, "wb");
 		fputs($f, "\xEF\xBB\xBF".$sContent);
 		fclose($f);
-	}
-
+	}*/
 	/**
 	 * Under Windows, create a text file with the support of
 	 * UTF8 in his content.
 	 */
-	public static function fwriteANSI(string $sFileName, string $sContent)
+	/*public static function fwriteANSI(string $sFileName, string $sContent)
 	{
 		file_put_contents($sFileName, utf8_encode($sContent));
 		return true;
-	}
+	}*/
 
 	/**
 	* Recursive glob : retrieve all files that are under
@@ -399,43 +490,4 @@ class Files
 
 		return $filename;
 	}
-
-	/**
-	* Rewrite an existing file.  The function will first take a backup of the file (with new .old suffix).
-	* If the write action is successfull, the .old file is removed
-	*
-	* @param  string $filename	Absolute filename
-	* @param  string $content	The new content
-	* @return bool				return False in case of error
-	*/
-	public static function rewrite(string $filename, string $content) : bool
-	{
-		$bReturn = false;
-
-		$filename = str_replace('/', DS, $filename);
-		try {
-			if (strpos($filename, static::$sAppRoot)!==FALSE) {
-				// The file should be stored in the application folder
-				$filename = str_replace(static::$sAppRoot, '', $filename);
-				static::$flyAppRoot->update($filename, $content);
-				$wReturn = static::$flyAppRoot->has($filename);
-			} else {
-				// The file should be stored in the webroot folder
-				$filename = str_replace(static::$sWebRoot, '', $filename);
-				static::$flyWebRoot->update($filename, $content);
-				$wReturn = static::$flyWebRoot->has($filename);
-			}
-		} catch (Exception $ex) {
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				echo $ex->getMessage();
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->here("", 99);
-			}
-			/*<!-- endbuild -->*/
-		}
-		return $bReturn;
-	}
-
-
 }

@@ -165,14 +165,14 @@ class Convert
 	 */
 	public function createTempNote() : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
-		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
 		$fname=$this->sMDFileName;
 
-		if (!is_file($fname)) {
+		if (!$aeFiles->exists($fname)) {
 			$fname=$aeSettings->getFolderDocs(true).$fname;
 		}
 
@@ -190,7 +190,7 @@ class Convert
 		if ($yaml!=='') {
 			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
 
-			if (is_file($lib)) {
+			if ($aeFiles->exists($lib)) {
 				include_once $lib;
 
 				// Yaml::dump will add double-quotes so remove them
@@ -329,7 +329,7 @@ class Convert
 			if (!$aeDebug->getDevMode()) {
 				// Kill the script file only when not Developper mode
 			/*<!-- endbuild -->*/
-				unlink($fScriptFile);
+				$aeFiles->delete($fScriptFile);
 			/*<!-- build:debug -->*/
 			}
 			/*<!-- endbuild -->*/

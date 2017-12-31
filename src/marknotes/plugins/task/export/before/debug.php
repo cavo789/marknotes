@@ -46,7 +46,7 @@ class Debug extends \MarkNotes\Plugins\Task\Plugin
 
 				// During the development mode, always recreate the file
 				try {
-					unlink(utf8_decode($filename));
+					$aeFiles->delete(utf8_decode($filename));
 				} catch (Exception $e) {
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug = \MarkNotes\Debug::getInstance();

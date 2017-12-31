@@ -1,6 +1,7 @@
 <?php
 /**
- * Parse the markdown content and replace emoji's thanks to the LitEmoji library
+ * Parse the markdown content and replace emoji's thanks to
+ * the LitEmoji library
  * @link https://github.com/elvanto/litemoji
  */
 namespace MarkNotes\Plugins\Markdown;
@@ -34,8 +35,10 @@ class Emoji extends \MarkNotes\Plugins\Markdown\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
+			$aeFiles = \MarkNotes\Files::getInstance();
 			// Be sure the library is there
-			$bCanRun = is_file($lib=__DIR__.'/emoji/libs/litemoji/LitEmoji.php');
+			$lib=__DIR__.'/emoji/libs/litemoji/LitEmoji.php';
+			$bCanRun = $aeFiles->exists($lib);
 		}
 
 		return $bCanRun;

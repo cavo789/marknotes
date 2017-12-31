@@ -254,6 +254,16 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 		// Check if, in the markdown string, there is encrypt tags
 		// like <encrypt>SOMETHING</encrypt> i.e. unencrypted content.
 		if (preg_match_all(static::$regex, $params['markdown'], $matches)) {
+
+			if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+				// mcrypt_get_iv_size doesn't exists anymore !!!
+				// http://php.net/manual/fr/function.mcrypt-get-iv-size.php
+
+				$params['markdown'] = "## Encrypt plugin\nmcrypt_get_iv_size ".
+					"doesn't exists anymore since PHP 7.1 !!! {style='font-size:2em;color:red;' class='animated infinite flash'}\n".$params['markdown'];
+				return false;
+			}
+
 			// Yes => encrypt these contents
 			$params['markdown'] = self::encrypt($params['markdown'], $matches);
 		}

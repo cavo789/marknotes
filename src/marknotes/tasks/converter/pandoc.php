@@ -27,7 +27,6 @@ class Pandoc
 	 */
 	public static function run(array $params) : string
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -63,7 +62,7 @@ class Pandoc
 
 		$fScriptFile = $aeSettings->getFolderTmp().$slug.'.bat';
 
-		$aeFiles->fwriteANSI($fScriptFile, $sProgram);
+		$aeFiles->rewrite($fScriptFile, $sProgram);
 
 		echo '<pre>'.$sProgram.'</pre>';
 

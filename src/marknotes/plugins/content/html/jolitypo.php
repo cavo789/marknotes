@@ -22,9 +22,10 @@ class JoliTypo extends \MarkNotes\Plugins\Content\HTML\Plugin
 			return true;
 		}
 
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
+		if ($aeFolders->exists($aeSettings->getFolderLibs()."jolicode")) {
 			$locale = $aeSettings->getLocale();
 
 			// See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale

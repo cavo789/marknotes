@@ -60,6 +60,7 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeMD = \MarkNotes\FileType\Markdown::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
@@ -75,7 +76,7 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 		// with the list of .md Files found in the
 		// c:\site\docs\docs\CMS\Joomla\ folder.
 
-		if (!$aeFiles->folderExists($folder)) {
+		if (!$aeFolders->exists($folder)) {
 			$aeFunctions->folderNotFound($folder);
 		}
 
@@ -96,11 +97,11 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 
 			$arr=array();
 			foreach ($files as $file) {
-				$markdown = file_get_contents($file);
+				$markdown = $aeFiles->getContent($file);
 
 				$arr[] = array(
-					'fmtime' => filectime($file),
-					'time' => date("Y-m-d", filectime($file)),
+					'fmtime' => $aeFiles->timestamp($file),
+					'time' => date("Y-m-d", $aeFiles->timestamp($file)),
 					'file' => utf8_encode($aeFiles->removeExtension(basename($file))),
 					'text' => $aeMD->getHeadingText($markdown)
 				);
@@ -132,7 +133,7 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 		$list .= '</ul>';
 
 		// Read the template
-		$template = file_get_contents($aeSettings->getTemplateFile('index'));
+		$template = $aeFiles->getContent($aeSettings->getTemplateFile('index'));
 
 		// And generate the output : template + list of files
 		$html = str_replace('%CONTENT%', $list, $template);
@@ -210,7 +211,7 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 		// Check if an index.md file exists in the folder, if yes,
 		// read it and convert it into HTML
 		$md = $aeFiles->removeExtension($fullname).'.md';
-		if (is_file($md)) {
+		if ($aeFiles->exists($md)) {
 			self::readIndexMD($params);
 		} else {
 			self::makeIndexHTML($params);

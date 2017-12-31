@@ -31,6 +31,7 @@ class Image_Gallery extends \MarkNotes\Plugins\Markdown\Plugin
 
 		if (preg_match_all('/%GALLERY ([^\\%]*)%/', $params['markdown'], $matches)) {
 			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFolders = \MarkNotes\Folders::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$aeSession = \MarkNotes\Session::getInstance();
@@ -57,12 +58,12 @@ class Image_Gallery extends \MarkNotes\Plugins\Markdown\Plugin
 					$folder = str_replace('/', DS, $arrFolders[$i]);
 				}
 
-				if (!(is_dir(realpath($root.$folder)))) {
+				if (!($aeFolders->exists(realpath($root.$folder)))) {
 					// Correctly handle accentuated characters
 					$folder = utf8_decode($folder);
 				}
 
-				if (is_dir(realpath($root.$folder))) {
+				if ($aeFolders->exists(realpath($root.$folder))) {
 					// image folder
 					$imgFolder = realpath($root.$folder);
 					$imgFolder = str_replace($aeSettings->getFolderDocs(true), '', $imgFolder);

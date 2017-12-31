@@ -65,6 +65,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// get the list of folders and generate a "tags" node
@@ -107,8 +108,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			// Get tags.json if the file exists
 			$fname = $aeSettings->getFolderWebRoot().'tags.json';
-			if (is_file($fname)) {
-				$content = json_decode(file_get_contents($fname), true);
+			if ($aeFiles->exists($fname)) {
+				$content = json_decode($aeFiles->getContent($fname), true);
 				foreach ($content as $tag) {
 					$arrTags[] = array('name'=>$tag);
 				}

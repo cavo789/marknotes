@@ -54,7 +54,7 @@ class HTML
 		}
 
 		if ($aeFiles->exists($template)) {
-			$html = $aeHTML->replaceVariables(file_get_contents($template), $html, $params);
+			$html = $aeHTML->replaceVariables($aeFiles->getContent($template), $html, $params);
 		}
 
 		// --------------------------------

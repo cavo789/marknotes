@@ -62,6 +62,7 @@ class Make extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Get the list of files
@@ -71,7 +72,7 @@ class Make extends \MarkNotes\Plugins\Task\Plugin
 
 		// Process each files
 		foreach ($arrFiles as $file) {
-			$content = str_replace("\n", " ", file_get_contents(utf8_decode($file)));
+			$content = str_replace("\n", " ", $aeFiles->getContent(utf8_decode($file)));
 			$arrIndex = self::makeIndex($content, $arrIndex);
 		}
 

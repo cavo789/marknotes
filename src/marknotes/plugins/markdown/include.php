@@ -159,7 +159,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					// Ok, no space before the tag => it's enabled => run it
 					$bContinue=1;
 
-					if (is_file($sFile)) {
+					if ($aeFiles->exists($sFile)) {
 						if ($json[$i]!=="") {
 							$tmp=json_decode($json[$i], true);
 
@@ -183,7 +183,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							$arrLoaded[]=$sFile;
 
 							// Read the file
-							$sContent = trim(file_get_contents($sFile));
+							$sContent = trim($aeFiles->getContent($sFile));
 
 							// We're including a file. Headings will be
 							// incremented by one
@@ -249,13 +249,13 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 						} // if ($bContinue)
 
 						$markdown = str_replace($tag[$i], $sContent, $markdown);
-					} else { // if (is_file($sFile))
+					} else { // if ($aeFiles->exists($sFile))
 						/*<!-- build:debug -->*/
 						if ($aeSettings->getDebugMode()) {
 							$aeDebug->log('	Failure : file ['.$sFile.'] not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
 						}
 						/*<!-- endbuild -->*/
-					}// if (is_file($sFile))
+					}// if ($aeFiles->exists($sFile))
 				} else { // if ($before[$i]=='')
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {

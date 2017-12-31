@@ -14,6 +14,7 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -33,12 +34,12 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 				if (in_array($format, array('html','md','remark','reveal','txt'))) {
 					// Read content only if it's an ASCII file
-					if (is_file($filename)) {
-						$content = trim(file_get_contents($filename));
-					} elseif (is_file(utf8_decode($filename))) {
-						// Arrrgh, sometimes with sometimes without utf8_decode,
-						// it's crazy
-						$content = trim(file_get_contents(utf8_decode($filename)));
+					if ($aeFiles->exists($filename)) {
+						$content = trim($aeFiles->getContent($filename));
+					} elseif ($aeFiles->exists(utf8_decode($filename))) {
+						// Arrrgh, sometimes with sometimes
+						// without utf8_decode, it's crazy
+						$content = trim($aeFiles->getContent(utf8_decode($filename)));
 					}
 				}
 			} else {
@@ -57,7 +58,7 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					$aeDebug->log("The file [".$filename."] is missing", "error");
 				}
 				/*<!-- endbuild -->*/
-			} // if (($filename!=='') && (is_file($filename)))
+			} // if (($filename!=='') && ($aeFiles->exists($filename)))
 		} // if (trim($content) === '')
 
 		if ($content !== '') {

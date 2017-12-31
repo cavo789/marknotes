@@ -305,10 +305,11 @@ class Functions
 		// Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the
 		// real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
 
-		if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->exists(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
 			$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'">'.
 			'</script>';
-		} elseif (is_file($localfile)) {
+		} elseif ($aeFiles->exists($localfile)) {
 			// It's a full, local, filename
 			$localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
 			$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
@@ -336,10 +337,11 @@ class Functions
 		// Perhaps the script (aesecure_quickscan.php) is a symbolic link so __DIR__ is the folder where the
 		// real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
 
-		if (is_file(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->exists(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
 			// It's a relative filename
 			$return = '<link media="screen" rel="stylesheet" type="text/css" href="'.$localfile.'" />';
-		} elseif (is_file($localfile)) {
+		} elseif ($aeFiles->exists($localfile)) {
 			// It's a full, local, filename
 			$localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
 			$return = '<link media="screen" rel="stylesheet" type="text/css" href="'.$localfile.'" />';

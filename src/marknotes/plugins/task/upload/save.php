@@ -16,6 +16,7 @@ class Save
 	{
 		// Only if a file was indeed sent to the server
 		if (!empty($_FILES)) {
+			$aeFolders = \MarkNotes\Folders::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -54,10 +55,10 @@ class Save
 
 			// Retrieve the original name
 			// Like note.md
-			if (!is_dir(dirname($folder.$relativeName))) {
+			if (!$aeFolders->exists(dirname($folder.$relativeName))) {
 				// Create the folder and, if needed, create subfolders
 				// too (recursive)
-				mkdir(dirname($folder.$relativeName), CHMOD_FOLDER, true);
+				$aeFolders->create(dirname($folder.$relativeName));
 			}
 
 			$targetFile = str_replace('/', DS, $folder.$relativeName);

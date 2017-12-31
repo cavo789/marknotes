@@ -58,9 +58,12 @@ class Search
 	{
 		$return = array();
 
-		if (is_file($fname)) {
-			// If we can use the session, do it ! This will really improve speed
-			$json = file_get_contents($fname);
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->exists($fname)) {
+			// If we can use the session, do it ! This will
+			// really improve speed
+
+			$json = $aeFiles->getContent($fname);
 
 			if ($json!=='') {
 				try {
@@ -83,14 +86,13 @@ class Search
 				} catch (Exception $e) {
 				} // try
 			} // if ($json!=='')
-		} // if (is_file($fname))
+		} // if ($aeFiles->exists($fname))
 
 		return $return;
 	}
 
 	/**
-
-	* $params['encryption'] = 0 : encrypted data should be displayed unencrypted
+	* $params['encryption'] = 0 : encrypted data should be unencrypted
 	*                         1 : encrypted infos should stay encrypted
 	 */
 	public static function run(&$params = null)
@@ -145,8 +147,9 @@ class Search
 			// Get the cache/search folder and if not present, create it
 			$folder = $aeSettings->getFolderCache().'search';
 
-			if (!is_dir($folder)) {
-				mkdir($folder, CHMOD_FOLDER);
+			$aeFolders = \MarkNotes\Folders::getInstance();
+			if (!$aeFolders->exists($folder)) {
+				$aeFolders->create($folder);
 			}
 
 			$fname = $folder.DS.md5($pattern).'.json';
@@ -254,7 +257,7 @@ class Search
 
 			if ($bOptimize) {
 				$aeFiles = \MarkNotes\Files::getInstance();
-				$aeFiles->fwriteANSI($fname, json_encode($arr));
+				$aeFiles->create($fname, json_encode($arr));
 			}
 		}
 
