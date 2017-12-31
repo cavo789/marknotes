@@ -1,5 +1,11 @@
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
 
+By **Christophe Avonture**
+
+Marknotes is a tool that will exploit your documents through a powerfull web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
+
+By adopting Marknotes, you'll never ask yourself, "Where did I save my document ?" or "I had read an interesting piece of information but I don't know where it is anymore". The answer will be, of course, "The information is saved in Marknotes and will really fast retrieved."
+
 >If you like marknotes, please give him a :star: and fork it.
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
@@ -297,7 +303,7 @@ Follow us on [Facebook](https://www.facebook.com/marknotes789/) to stay up-to-da
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
-[MIT](https://github.com/cavo789/marknotes/blob/master/LICENSE)
+You are free to copy, modify, and distribute Marknotes with attribution under the terms of the MIT license. See the [LICENSE](LICENSE) file for details.
 
 **[⬆ back to top](#table-of-contents)**
 
