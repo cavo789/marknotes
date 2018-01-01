@@ -145,9 +145,11 @@ class JSON
 	public static function json_decode(string $fname, bool $assoc = false)
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
-		if (!$aeFiles->exists($fname)) {
-			$fname = utf8_decode($fname);
-		}
+
+		//if (!$aeFiles->exists($fname)) {
+		//	$fname = utf8_decode($fname);
+		//}
+
 		if (!$aeFiles->exists($fname)) {
 			self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
 		}

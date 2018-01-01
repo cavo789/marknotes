@@ -34,16 +34,31 @@ define('_MARKNOTES', 1);
 		$task = rawurldecode($aeFunctions->getParam('task', 'string', '', false));
 
 		$params = array('filename' => $filename);
-	    $aeSettings = \MarkNotes\Settings::getInstance($root, $params);
+		$aeSettings = \MarkNotes\Settings::getInstance($root, $params);
 
-	    $aeSession = \MarkNotes\Session::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSession->set('filename',$filename);
 		$aeSession->set('img_id',0);
 
-	    $aeFiles = \MarkNotes\Files::getInstance();
-	    $aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeEvents = \MarkNotes\Events::getInstance();
 
-	    if ($filename !== '') {
+		// Check if notes should be stored in the cloud (Dropbox, ...)
+		$arrSettings = $aeSettings->getPlugins('/cloud', array('platform'=>''));
+		$platform = $arrSettings['platform']??'';
+		if(trim($platform)!=='') {
+			$enabled = $arrSettings['enabled']??0;
+			if (boolval($enabled)) {
+				// Get the doc folder
+				$docs = $aeSettings->getFolderDocs(true);
+				// Initialize the cloud
+				$aeFolders = \MarkNotes\Folders::getInstance();
+				$aeFiles->setCloud($arrSettings, $docs);
+				$aeFolders->setCloud($arrSettings, $docs);
+			}
+		} // if(trim($platform)!=='')
+
+		if ($filename !== '') {
 			// The filename shouldn't mention the docs folders, just the filename
 			// So, $filename should not be docs/markdown.md but only markdown.md because the
 			// folder name will be added later on
@@ -54,7 +69,7 @@ define('_MARKNOTES', 1);
 			}
 		} // if ($filename !== '')
 
-        $aeMarkDown = new \MarkNotes\Markdown();
+		$aeMarkDown = new \MarkNotes\Markdown();
 		$aeMarkDown->process($task, $filename, $params);
 		unset($aeMarkDown);
 

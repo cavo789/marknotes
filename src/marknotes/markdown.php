@@ -77,12 +77,12 @@ class Markdown
 			//$filename=$aeFiles->removeExtension($filename).'.md';
 			//$full=$aeSettings->getFolderDocs(true).$filename;
 
-			if (!$aeFiles->exists($docFolder.$filename)) {
-				$tmp = utf8_decode($filename);
-				if ($aeFiles->exists($docFolder.$tmp)) {
-					$filename=$tmp;
-				}
-			}
+			//if (!$aeFiles->exists($docFolder.$filename)) {
+			//	$tmp = utf8_decode($filename);
+			//	if ($aeFiles->exists($docFolder.$tmp)) {
+			//		$filename=$tmp;
+			//	}
+			//}
 
 			// It's a bad idea to sanitize here because if the filename
 			// already contains an invalid character (like a "+"), if we

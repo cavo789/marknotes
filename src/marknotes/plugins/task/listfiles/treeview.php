@@ -3,11 +3,12 @@
 * Build the JSON answer required by jsTree in order to display the
 * list of folders (empty folder are taken) and files.
 *
-* The list will NOT include protected folders i.e. when the ACLs plugin
-* is enabled and configured for not showing somes folders to everyone.
+* The list will NOT include protected folders i.e. when the ACLs
+* plugin is enabled and configured for not showing somes folders to
+* everyone.
 *
-* When the visitor isn't allowed to see a folder, that folder won't appear
-* in the JSON answer
+* When the visitor isn't allowed to see a folder, that folder won't
+* appear in the JSON answer
 *
 * Answer to /index.php?task=task.listfiles.treeview or the "fake"
 * file /listfiles.json
@@ -30,9 +31,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 	private static $bACLsLoaded = 0;
 
 	/**
-	* Called by ListFiles().  Populate an array with the list of .md files.
-	* The structure of the array match the needed definition of the jsTree
-	* jQuery plugin
+	* Called by ListFiles().  Populate an array with the list of
+	* .md files.
+	* The structure of the array match the needed definition
+	* of the jsTree jQuery plugin
 	* http://stackoverflow.com/a/23679146/1065340
 	*
 	* @param  type	$dir	Root folder to scan
@@ -41,6 +43,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 	private static function makeJSON(string $dir) : array
 	{
 		static $index = 0;
+
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
@@ -64,10 +67,11 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
 
 		if (PHP_7_0) {
+
 			// Avoid PHP 7.0.x bug : handle accents
 			$arrSettings = $aeSettings->getPlugins('/interface');
 			$bConvert  = boolval($arrSettings['accent_conversion']??1);
-
+$bConvert=1;
 			if ($bConvert) {
 				// accent_conversion in settings.json has been initialized
 				// to 1 => make the conversion
@@ -272,6 +276,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			// Get the list of files/folders under $directory
 			// Only the folder, not subfolders
 			$items = $aeFolders->getContent($directory);
+
 			foreach ($items as $item) {
 				// Don't take files/folders starting with a dot
 				if (substr($item['basename'], 0, 1) !== '.') {
@@ -284,8 +289,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					} else {
 						// it's a file, get it only if the
 						// extension is .md
-						if ($item['extension']==='md') {
-							$arr[] = array('name' => $item['filename'],'type' => 'file');
+						if (isset($item['extension'])) {
+							if ($item['extension']==='md') {
+								$arr[] = array('name' => $item['filename'],'type' => 'file');
+							}
 						}
 					} // if ($aeFolders->exists($directory.DS.$file))
 				} // if (substr($file, 0, 1) !== '.')
@@ -367,22 +374,29 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 			if ($sReturn === '') {
 				$docs = $aeSettings->getFolderDocs(true);
+
 				$aeEvents = \MarkNotes\Events::getInstance();
 				$aeEvents->loadPlugins('task.acls.cansee');
+
 				// Populate the tree that will be used for jsTree
 				// (see https://www.jstree.com/docs/json/)
 				list ($arr, $count) = self::makeJSON(str_replace('/', DS, $docs));
+
 				// Build the json
 				$return = array();
 				//$return['settings'] = array('root' => str_replace(DS, '/',
 				// $docs));
 				$return['count'] = $count;
 				$return['tree'] = $arr;
+
 				$aeJSON = \MarkNotes\JSON::getInstance();
+
 				/*<!-- build:debug -->*/
 				$aeJSON->debug($aeSettings->getDebugMode());
 				/*<!-- endbuild -->*/
+
 				$sReturn = $aeJSON->json_encode($return);
+
 				if (!static::$bACLsLoaded) {
 					if ($bOptimize) {
 						// Remember for the next call

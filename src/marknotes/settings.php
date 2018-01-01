@@ -191,9 +191,10 @@ class Settings
 			}
 		}
 
-		// 3. The filename shouldn't mention the docs folders, just the filename
-		// So, $filename should not be docs/markdown.md but only
-		// markdown.md because the folder name will be added later on
+		// 3. The filename shouldn't mention the docs folders,
+		// just the filename. So, $filename should not be
+		// docs/markdown.md but only markdown.md because the folder
+		// name will be added later on
 
 		if (isset($params['filename'])) {
 			$docRoot = $json['folder'].DS;
@@ -206,45 +207,53 @@ class Settings
 			// 3. Get the settings.json file that is, perhaps,
 			// present in the folder of the note
 
-			// First, be sure that the doc folder has been set
+			if (!dirname($params['filename'])=='.') {
+				// Only when the file isn't directly under the root
+				// First, be sure that the doc folder has been set
 
-			$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
-			$noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
+				$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
+				$noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
 
-			// $noteFolder is perhaps C:\notes\docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
-			// Process from C:\notes\docs\ till that (so from the top to the deepest)
-			// and check if there is a settings.json file
+				// $noteFolder is perhaps
+				// C:\notes\docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+				// Process from C:\notes\docs\ till that (so from
+				// the top to the deepest)
+				// and check if there is a settings.json file
 
-			$folder = $this->getFolderWebRoot();
-			$noteFolder = rtrim($noteFolder, DS);
+				$folder = $this->getFolderWebRoot();
+				$noteFolder = rtrim($noteFolder, DS);
 
-			do {
-				// $tree will be equal to docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
-				$tree = str_replace($folder, '', $noteFolder);
+				do {
+					// $tree will be equal to docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+					$tree = str_replace($folder, '', $noteFolder);
 
-				// Process docs, then Folder, then Sub1, ...
-				$subFolder = strrev(basename(strrev($tree)));
+					// Process docs, then Folder, then Sub1, ...
+					$subFolder = strrev(basename(strrev($tree)));
 
-				$folder = rtrim($folder, DS).DS.$subFolder;
+					$folder = rtrim($folder, DS).DS.$subFolder;
 
-				$noteJSON = rtrim($folder, DS).DS.'settings.json';
+					$noteJSON = rtrim($folder, DS).DS.'settings.json';
 
-				if ($aeFiles->exists($noteJSON)) {
-					// Read the settings.json file and merge
-					$arr = $aeJSON->json_decode($noteJSON, true);
-					$json = array_replace_recursive($json, $arr);
+					if ($aeFiles->exists($noteJSON)) {
+						// Read the settings.json file and merge
+						$arr = $aeJSON->json_decode($noteJSON, true);
+						$json = array_replace_recursive($json, $arr);
 
-					/*<!-- build:debug -->*/
-					self::enableDebugMode($json['debug']??array(), $noteJSON);
-					/*<!-- endbuild -->*/
-				}
-			} while ($folder !== $noteFolder);
+						/*<!-- build:debug -->*/
+						self::enableDebugMode($json['debug']??array(), $noteJSON);
+						/*<!-- endbuild -->*/
+					}
+
+				} while ($folder !== $noteFolder);
+			}
 
 			// 4. Get the note_name.json file that is, perhaps,
 			// present in the folder of the note.
-			// note_name is the note filename with the .json extension of .md
+			// note_name is the note filename with the .json
+			// extension of .md
 
-			// if $params['filename'] is equal to /marknotes/userguide.md
+			// if $params['filename'] is equal to
+			// /marknotes/userguide.md
 
 			// $dir will be "marknotes/"
 			$dir = dirname($params['filename']);
@@ -254,7 +263,8 @@ class Settings
 			$aeFiles = \MarkNotes\Files::getInstance();
 			$fname=$aeFiles->removeExtension(basename($params['filename'])).'.json';
 
-			// $noteJSON will be c:/sites/notes/docs/marknotes/userguide.json f.i.
+			// $noteJSON will be
+			// c:/sites/notes/docs/marknotes/userguide.json f.i.
 			$noteJSON = $this->getFolderDocs(true).$dir.$fname;
 
 			if ($aeFiles->exists($noteJSON)) {

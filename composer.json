@@ -27,7 +27,8 @@
 		"jaybizzle/crawler-detect": "1.*",
 		"guzzlehttp/guzzle": "^6.3",
 		"stichoza/google-translate-php": "^3.2",
-		"league/flysystem": "^1.0"
+		"league/flysystem": "^1.0",
+		"spatie/flysystem-dropbox": "^1.0"
 	},
 	"config": {
 		"preferred-install": "dist"

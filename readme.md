@@ -26,14 +26,14 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document 
 8. **[Debugging](#8-debugging)**
 9. **[:closed_lock_with_key: Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
 10. **[:man: Author](#10-man-author)**
-11. **[Follow us](#11-follow-us)**
+11. **[Want to help](#11-want-to-help)
 12. **[License](#12-license)**
 
 ## 1. Description
 
 ### 1.1 What is marknotes ?
 
-Marknotes is a PHP application that you can self-hosted and who will help you to manage your "notes" : documentations, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
+Marknotes is a PHP application that you can **self-hosted** and who will help you to manage your "notes" : documentations, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
 
 Notes are written in pure [Markdown](https://daringfireball.net/projects/markdown/syntax) : this is a plain text language with only a few codes (like `#` or `*`) for text formatting. Yes !!!  You'll write your notes with a very stupid text editor (`Notepad` on Windows will do the work) (note : marknotes provide an online editor) and save them as a flatfile on your server.
 
@@ -47,10 +47,11 @@ Want to move to an another application and leave marknotes ? No problem ! Notes 
 
 Even if I'd be really sad to see you leave, you'll certainly not have any problem to do it. Just move your .md files and that's all.
 
-And remember : notes are yours ! Unlike Evernote, Google, Microsoft of others companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on internet at all.
+And remember : notes are yours ! Unlike Evernote®, Google®, Microsoft® of others companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on internet at all.
+
 ### 1.3 Background
 
-During years, I've used Evernotes™ to manage my notes (can be documentation, user guide, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
+During years, I've used Evernotes® to manage my notes (can be documentation, user guide, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
 
 In 2016, Evernote has introduced more restriction with the Free version and by the end of the year, has stated that somes employees will have access to **our** notes for administration tasks.
 
@@ -295,9 +296,13 @@ Please read [Privacy and protection : everything is yours, for now and always](r
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-## 11. Follow us
+11. Want to help
 
-Follow us on [Facebook](https://www.facebook.com/marknotes789/) to stay up-to-date
+Great! Jump in. Feel free to play around, open an issue with new feature ideas or open PRs for fixes and improvements. 
+
+Before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
+
+Contributions are very welcome in any domain : templating, CSS, PHP, images, documentation, ... and testing / suggestions too.
 
 ## 12. License
 

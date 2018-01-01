@@ -370,13 +370,13 @@ class Events
 						/*<!-- endbuild -->*/
 						} // if  ($aeFiles->exists($file = $dir.$name))
 					/*<!-- build:debug -->*/
-					} else {// foreach ($plugin as $name => $enabled)
-						if ($aeSettings->getDebugMode()) {
-							$aeDebug = \MarkNotes\Debug::getInstance();
-							$aeDebug->log("Plugin ".$name." not enabled in settings.json", "debug");
-						}
+					//} else {// foreach ($plugin as $name => $enabled)
+					//	if ($aeSettings->getDebugMode()) {
+					//		$aeDebug = \MarkNotes\Debug::getInstance();
+					//		$aeDebug->log("Plugin ".$name." not enabled in //settings.json", "debug");
+					//	}
 					/*<!-- endbuild -->*/
-					}
+					} // // foreach ($plugin as $name => $enabled)
 				} // foreach
 			} // if(count($plugins)>0)
 		}

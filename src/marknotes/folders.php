@@ -41,6 +41,8 @@ defined('_MARKNOTES') or die('No direct access allowed');
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\AdapterInterface;
+use Spatie\Dropbox\Client;
+use Spatie\FlysystemDropbox\DropboxAdapter;
 
 class Folders
 {
@@ -49,6 +51,11 @@ class Folders
 	protected static $flyAppRoot = null; // application root
 	protected static $sWebRoot = '';
 	protected static $sAppRoot = '';
+
+	// Root folder to the /docs folder i.e. where notes are stored
+	protected static $sDocsRoot = '';
+	// "FlySystem" for the documentation (can be on Dropbox f.i.)
+	protected static $flyDocsRoot = null;
 
 	/**
 	 * Create an instance of MarkNotes\Folders and Initialize
@@ -64,6 +71,9 @@ class Folders
 		// Application root folder.
 		self::$sAppRoot = rtrim(dirname(dirname(__DIR__)), DS).DS;
 		self::$sAppRoot = str_replace('/', DS, self::$sAppRoot);
+
+		// Default : empty; will be initialized by setCloud()
+		self::$sDocsRoot = '';
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 			self::$sWebRoot = DS.ltrim(self::$sWebRoot, DS);
@@ -101,6 +111,81 @@ class Folders
 	}
 
 	/**
+	 * Initialize the "cloud filesystem" that will then allow to
+	 * work with Dropbox, Amazon S3, ...
+	 */
+	public static function setCloud(array $arr, string $docFolder) : bool
+	{
+		$platform = strtolower($arr['platform']);
+		self::$sDocsRoot = $docFolder;
+
+		if ($platform!=='') {
+			// Be sure that we've a token
+			if (!isset($arr['token'])) {
+				throw new \Exception('FATAL ERROR - No token '.
+					'has been provided; you need to specify one '.
+					'in the settings.json file, node cloud->token '.
+					'as soon as a value has been specified for '.
+					'cloud->platform. If you don\'t use a cloud '.
+					'system, leave cloud->platform empty.');
+			}
+
+			// Get it
+			$token = trim($arr['token']);
+
+			if ($platform=='dropbox') {
+				$client = new Client($token);
+				$adapter = new DropboxAdapter($client);
+				static::$flyDocsRoot = new Filesystem($adapter);
+			}
+		} // if ($platform!=='')
+		return true;
+	}
+
+	/**
+	 * Based on the $path, determine which "filesystem" should
+	 * be used.
+	 *
+	 * In January 2018, three are three filesystems :
+	 *
+	 *	- One for the documentation folder i.e. where the notes are
+	 *		stored (path is something like c:\site\marknotes\docs)
+	 *	- One for the webroot folder i.e. the root folder
+	 *		(path is something like c:\site\marknotes)
+	 *	- One for the application folder i.e. where the application
+	 *		is stored (path can be something like
+	 *		c:\repository\marknotes). This is only usefull when
+	 *		some folders are not real in the webfolder but are symlinks
+	 *
+	 * The function below will receive an absolute path
+	 * (f.i. c:\site\marknotes\docs\subfolder\note.md) and will
+	 * decide which "filesystem" should be used.
+	 * The function will also modify the $path absolute variable and
+	 * make it relative (f.i. subfolder\note.md)
+	 */
+	private static function getFileSystem(string &$foldername, &$obj)
+	{
+		$foldername = str_replace('/', DS, $foldername);
+
+		if ((self::$sDocsRoot!=='') && (strpos($foldername, self::$sDocsRoot)!==FALSE)) {
+			// The folder is stored in the /docs folder
+			// ==> can be on a cloud
+			$foldername = str_replace(static::$sDocsRoot, '', $foldername);
+			$obj = static::$flyDocsRoot;
+		} else if (strpos($foldername, static::$sWebRoot)!==FALSE) {
+			// The folder is stored in the webroot folder
+			$foldername = str_replace(static::$sWebRoot, '', $foldername);
+			$obj = static::$flyWebRoot;
+		} else {
+			// The folder is stored in the application folder
+			$foldername = str_replace(static::$sAppRoot, '', $foldername);
+			$obj = static::$flyAppRoot;
+		}
+
+		return true;
+	}
+
+	/**
 	* Check if a folder exists and return FALSE if not.
 	* With FlySystem. Note : with FlySystem, if a folder doesn't
 	* exists, it will be created automatically when a file is
@@ -116,19 +201,11 @@ class Folders
 			return false;
 		}
 
-		$foldername = str_replace('/', DS, $foldername);
-
-		if (strpos($foldername, static::$sAppRoot)!==FALSE) {
-			// The folder is stored in the application folder
-			$foldername = str_replace(static::$sAppRoot, '', $foldername);
-			$wReturn = static::$flyAppRoot->has($foldername);
-		}  else {
-			// The folder is stored in the webroot folder
-			$foldername = str_replace(static::$sWebRoot, '', $foldername);
-			$wReturn = static::$flyWebRoot->has($foldername);
-		}
-
-		return $wReturn;
+		self::getFileSystem($foldername, $obj);
+		// when $foldername is empty, this means that the folder
+		// is f.i. c:\sites\marknotes\docs i.e. a root folder
+		// (of one of the "filesystem" so the folder exists)
+		return ($foldername=='' ? true : $obj->has($foldername));
 	}
 
 	/**
@@ -140,33 +217,27 @@ class Folders
 	 */
 	public static function create(string $foldername) : bool
 	{
-		$wReturn = 0;
-		$foldername = str_replace('/', DS, $foldername);
+		if ($foldername == '') {
+			return false;
+		}
+
 		$arr = array('visibility' => AdapterInterface::VISIBILITY_PUBLIC);
 
+		self::getFileSystem($foldername, $obj);
+
 		try {
-			if (strpos($foldername, static::$sAppRoot)!==FALSE) {
-				// The folder should be created in the application folder
-				$foldername = str_replace(static::$sAppRoot, '', $foldername);
-				static::$flyAppRoot->createDir($foldername, $arr);
-				$wReturn = static::$flyAppRoot->has($foldername);
-			} else {
-				// The folder should be created in the webroot folder
-				$foldername = str_replace(static::$sWebRoot, '', $foldername);
-				static::$flyWebRoot->createDir($foldername, $arr);
-				$wReturn = static::$flyWebRoot->has($foldername);
-			}
+			$bReturn = $obj->createDir($foldername, $arr);
 		} catch (Exception $ex) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				echo $ex->getMessage();
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->here("", 99);
+				$aeDebug->here("", 10);
 			}
 			/*<!-- endbuild -->*/
 		}
 
-		return $wReturn;
+		return $bReturn;
 	}
 
 	/**
@@ -175,36 +246,26 @@ class Folders
 	 */
 	public static function rename(string $oldname, string $newname) : bool
 	{
-		$aeDebug = \MarkNotes\Debug::getInstance();
-
-		$oldname = str_replace('/', DS, $oldname);
-		$newname = str_replace('/', DS, $newname);
+		if (($oldname == '') && ($oldname!==$newname)) {
+			return false;
+		}
 
 		$bReturn = false;
+		$old = $oldname;
+		$new = $newname;
 
-		if (self::exists($oldname) && ($oldname !== $newname)) {
+		self::getFileSystem($newname, $obj);
+		self::getFileSystem($oldname, $obj);
+
+		if (self::exists($old)) {
 			try {
-				if (strpos($oldname, static::$sAppRoot)!==FALSE) {
-					// The folder should be renamed in the application
-					// folder
-					$oldname = str_replace(static::$sAppRoot, '', $oldname);
-					$newname = str_replace(static::$sAppRoot, '', $newname);
-					static::$flyAppRoot->rename($oldname, $newname);
-					$bReturn = static::$flyAppRoot->has($newname);
-				} else {
-					// The folder should be renamed in the webroot folder
-					$oldname = str_replace(static::$sWebRoot, '', $oldname);
-					$newname = str_replace(static::$sWebRoot, '', $newname);
-
-					static::$flyWebRoot->rename($oldname, $newname);
-					$bReturn = static::$flyWebRoot->has($newname);
-				}
+				$bReturn = $obj->rename($oldname, $newname);
 			} catch (Exception $ex) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					echo $ex->getMessage();
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->here("", 99);
+					$aeDebug->here("", 10);
 				}
 				/*<!-- endbuild -->*/
 			}
@@ -218,25 +279,14 @@ class Folders
 	 * With FlySystem : the deletion is recursive, nothing to
 	 * code for this
 	 */
-	public static function delete(string $name) : bool
+	public static function delete(string $foldername) : bool
 	{
-		if ($name == '') {
+		if ($foldername == '') {
 			return false;
 		}
 
-		$name = str_replace('/', DS, $name);
-
-		if (strpos($name, static::$sWebRoot)!==FALSE) {
-			// The folder is stored in the webroot folder
-			$name = str_replace(static::$sWebRoot, '', $name);
-			$wReturn = static::$flyWebRoot->deleteDir($name);
-		}  else {
-			// The folder is stored in the application folder
-			$name = str_replace(static::$sAppRoot, '', $name);
-			$wReturn = static::$flyAppRoot->deleteDir($name);
-		}
-
-		return $wReturn;
+		self::getFileSystem($foldername, $obj);
+		return $obj->deleteDir($foldername);
 	}
 
 	/**
@@ -244,20 +294,10 @@ class Folders
 	 *
 	 * $path should be a folder, can't be a pattern like 'file.*'
 	 */
-	public static function getContent(string $path, bool $recursive = false) : array
+	public static function getContent(string $foldername, bool $recursive = false) : array
 	{
-		$path = str_replace('/', DS, $path);
-
-		if (strpos($path, static::$sWebRoot)!==FALSE) {
-			// The folder is stored in the webroot folder
-			$path = str_replace(static::$sWebRoot, '', $path);
-			$items = static::$flyWebRoot->listContents($path, false);
-		}  else {
-			// The folder is stored in the application folder
-			$path = str_replace(static::$sAppRoot, '', $path);
-			$items = static::$flyAppRoot->listContents($path, false);
-		}
-
+		self::getFileSystem($foldername, $obj);
+		$items = $obj->listContents($foldername, false);
 		return $items;
 	}
 

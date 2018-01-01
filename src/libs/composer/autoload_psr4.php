@@ -15,6 +15,8 @@ return array(
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
     'Stichoza\\GoogleTranslate\\' => array($vendorDir . '/stichoza/google-translate-php/src/Stichoza/GoogleTranslate'),
+    'Spatie\\FlysystemDropbox\\' => array($vendorDir . '/spatie/flysystem-dropbox/src'),
+    'Spatie\\Dropbox\\' => array($vendorDir . '/spatie/dropbox-api/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),

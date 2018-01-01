@@ -31,7 +31,7 @@ class Session
 		if (!isset($_SESSION)) {
 			// Store session informations in the /tmp/sessions/ folder
 			// Create that folder if needed
-			$folder = $aeSettings->getFolderTmp().DS.'sessions'.DS;
+			$folder = rtrim($aeSettings->getFolderTmp(),DS).DS.'sessions'.DS;
 			if (!$aeFolders->exists($folder)) {
 				$aeFolders->create($folder);
 			}
