@@ -149,6 +149,8 @@
 
 		<script type="text/javascript" src="%ROOT%libs/sweetalert2/sweetalert2.min.js" defer="defer"></script>
 
+		<script type="text/javascript" src="%ROOT%libs/js-cookie/js.cookie.js" defer="defer"></script>
+
 		<script type="text/javascript" defer="defer">
 			var marknotes = {};
 			marknotes.arrPluginsFct = [];

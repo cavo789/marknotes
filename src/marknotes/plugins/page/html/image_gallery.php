@@ -90,13 +90,13 @@ class Image_Gallery extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$content = '';
 
-		if ($aeFiles->exists($filename)) {
+		//if ($aeFiles->exists($filename)) {
 			$content = trim($aeFiles->getContent($filename));
-		} elseif ($aeFiles->exists(utf8_decode($filename))) {
+		//} elseif ($aeFiles->exists(utf8_decode($filename))) {
 			// Arrrgh, sometimes with sometimes without utf8_decode,
 			// it's crazy
-			$content = trim($aeFiles->getContent(utf8_decode($filename)));
-		}
+		//	$content = trim($aeFiles->getContent(utf8_decode($filename)));
+		//}
 
 		// Search the plugin's tag
 		$pattern = '/%GALLERY ([^\\%]*)%/';

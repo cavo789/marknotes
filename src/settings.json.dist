@@ -23,7 +23,7 @@
 			"right": "<a href='https://github.com/cavo789/marknotes' target='blank'>Fork me on GitHub</a>"
 		},
 		"show_tips": 1,
-		"show_tree_allowed": 1,
+		"can_see": 1,
 		"skin": "blue"
 	},
 	"github": {
@@ -845,7 +845,14 @@
 					"optimize": {
 						"localStorage": 1,
 						"server_session": 1,
-						"cache_search_results": 1,
+						"cache": {
+							"enabled" : 1,
+							"duration": {
+								"default" : 86400,
+								"html" : 2678400,
+								"sitemap" : 604800
+							}
+						},
 						"headers": {
 							"browser_cache": 0
 						},

@@ -51,6 +51,8 @@ if ($bReturn) {
 	}
 	/*<!-- endbuild -->*/
 
+	$aeSession = \MarkNotes\Session::getInstance($root);
+
 	// Check if notes should be stored in the cloud (Dropbox, ...)
 	$arrSettings = $aeSettings->getPlugins('/cloud', array('platform'=>''));
 	$platform = $arrSettings['platform']??'';

@@ -58,9 +58,9 @@ class ShowInterface
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
-		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
+		$canSee = boolval($arrSettings['can_see'] ?? 1);
 
-		if (!$show_tree_allowed) {
+		if (!$canSee) {
 			// The access to the interface can be disabled in settings.json
 			self::interfaceDisabled();
 		}

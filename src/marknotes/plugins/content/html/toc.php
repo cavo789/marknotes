@@ -50,10 +50,10 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 
 				// $text is probably written in the markdown language,
 				// get html version
-				$file=$aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+				$file=$aeSettings->getFolderLibs()."erusev/parsedown/Parsedown.php";
 
 				if ($aeFiles->exists($file)) {
-					include_once $aeSettings->getFolderLibs()."parsedown/Parsedown.php";
+					include_once $aeSettings->getFolderLibs()."erusev/parsedown/Parsedown.php";
 					$parsedown = new \Parsedown();
 					$text=$parsedown->text(trim($text));
 				}

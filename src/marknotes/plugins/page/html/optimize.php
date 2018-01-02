@@ -23,9 +23,12 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
 		$bLocalStorage = boolval($arrOptimize['localStorage'] ?? false);
 		$bServerSession = boolval($arrOptimize['server_session'] ?? false);
+		$bCache  = boolval($arrOptimize['cache']['enabled'] ?? false);
 		$bLazyLoad = boolval($arrOptimize['images']['lazyload'] ?? false);
 
-		if ($bLocalStorage || $bServerSession || $bLazyLoad) {
+		// If at least one is set, the button Clear cache is
+		// usefull so show it
+		if ($bLocalStorage || $bServerSession || $bCache || $bLazyLoad) {
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -41,9 +44,10 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$script = "";
 
-			// If there is a cache (on the client-side with localStorage
-			// or on the server side), add the needed scripts
-			if (($bLocalStorage !== false) || ($bServerSession !== false)) {
+			// If at least one is set, the button Clear cache is
+			// usefull so show it
+			if ($bLocalStorage || $bServerSession || $bCache) {
+
 				if ($bLocalStorage) {
 					$script.="<script type=\"text/javascript\" ".
 					"src=\"".$url."libs/store-js/store.everything.min.js\" ".

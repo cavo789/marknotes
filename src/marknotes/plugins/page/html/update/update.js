@@ -8,9 +8,51 @@ function fnPluginHTMLUpdate() {
 		return false;
 	}
 
+	// The check will be done only once a day and certainly
+	// not each time the page is displayed
+	try {
+		$name = 'marknotes_check_version';
+		if (!Cookies.get($name)) {
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log('Check newer version of MarkNotes');
+			}
+			/*<!-- endbuild -->*/
+			var date = new Date();
+
+			// One day
+			date.setTime(date.getTime() + 24 * 60 * 60 * 1000);
+
+			// Create the cookie, expiration : tomorrow.
+			// From now till tomorrow, this code won't be executed
+			// anymore
+			Cookies.set($name, true, { expires: date });
+
+			// Make the control
+			fnPluginTaskUpdateGetVersion();
+		}
+	} catch (e) {
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.warn(e.message);
+		}
+		/*<!-- endbuild -->*/
+	}
+
+	return true;
+}
+
+/**
+ * Make an ajax call to $version_url and retrieve the package
+ * json file of marknotes, in order to retrieve the latest
+ * version.
+ */
+function fnPluginTaskUpdateGetVersion() {
+
 	// Default URL; the definitive URL should be mentionned in the
 	// settings.json file, in the plugins.page.html.update node.
-	$version_url = 'https://raw.githubusercontent.com/cavo789/marknotes/master/package.json';
+	$version_url = 'https://raw.githubusercontent.com/cavo789/'
+		+'marknotes/master/package.json';
 
 	try {
 		$version_url = marknotes.settings.version_url;

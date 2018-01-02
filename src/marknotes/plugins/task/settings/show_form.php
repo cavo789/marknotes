@@ -213,10 +213,10 @@ class Show_Form
 			$arr['accent_conversion']);
 		$content .= self::getRadio($key.'show_tips',
 			'Show <strong>tips</strong>',
-			$arr['show_tree_allowed']);
-		$content .= self::getRadio($key.'show_tree_allowed',
+			$arr['can_see']);
+		$content .= self::getRadio($key.'can_see',
 			'Allow the user to access to the interface',
-			$arr['show_tree_allowed']);
+			$arr['can_see']);
 		$content .= self::getCombo($key.'skin',
 				'Color of header area', $arr['skin'],
 				'black;black-light;blue;blue-light;green;green-light;purple;purple-ligth;red;red-light;yellow;yellow-light');

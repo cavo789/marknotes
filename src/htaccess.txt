@@ -90,7 +90,7 @@ DirectoryIndex index.php
 	RewriteRule .* - [R=403,NC,L]
 
 	# Only deploy.php, index.php or router.php are allowed; whatever the script location
-	RewriteCond %{REQUEST_FILENAME} !(deploy|index|install|router)\.php
+	RewriteCond %{REQUEST_FILENAME} !(debug|deploy|index|install|router)\.php
 	RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 

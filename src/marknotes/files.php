@@ -157,6 +157,9 @@ class Files
 		if ((self::$sDocsRoot!=='') && (strpos($filename, self::$sDocsRoot)!==FALSE)) {
 			// The folder is stored in the /docs folder
 			// ==> can be on a cloud
+//require_once('includes/debug_here.php');
+//here($filename,4);
+
 			$filename = str_replace(self::$sDocsRoot, '', $filename);
 			$obj = self::$flyDocsRoot;
 		}  else if (strpos($filename, self::$sWebRoot)!==FALSE) {

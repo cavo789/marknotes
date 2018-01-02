@@ -17,7 +17,7 @@
 *		$aeEvents->loadPlugins('task.listfiles.get');
 *		$aeEvents->trigger('task.listfiles.get::run', $args);
 *
-*		$arrFiles = $args[0];
+*		$arrFiles = $args[0]['files'];
 *
 *		foreach ($arrFiles as $file) {
 *			echo "Dear visitor, the file " . $file . " is accessible to ".
@@ -37,94 +37,127 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_settings = 'plugins.task.listfiles';
 	protected static $json_options = 'plugins.options.task.listfiles';
 
-	public static function run(&$params = null) : bool
+	/**
+	 * Get the list of files
+	 */
+	private static function doGetList() : array
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
-		$arrSettings = $aeSettings->getPlugins('/interface');
-		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
+		$docs = $aeSettings->getFolderDocs(true);
 
-		if (!$show_tree_allowed) {
-			// The webmaster has disabled to right to see
-			// the interface so, it seems coherent to also
-			// disable the listfiles task.
-			$arrFiles = array();
-		} else {
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug->log('Get list of files in ['.$docs.']', 'debug');
+		}
+		/*<!-- endbuild -->*/
+
+		$ext = '*.md';
+
+		$arr = array();
+
+		$aeFolders = \MarkNotes\Folders::getInstance();
+		$arr = $aeFolders->getContent($docs, true);
+
+		$arrFiles = array();
+		if (count($arr)>0) {
+			foreach ($arr as $item) {
+				$type = $item['type']??'';
+				if ($type=='file') {
+					$extension = $item['extension']??'';
+					if ($extension == 'md') {
+						$arrFiles[] = $docs.str_replace('/',DS,$item['path']);
+					}
+				}
+			}
+		}
+
+		// $bACLsLoaded will be set true if at least
+		// one folder is protected
+		$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
+
+		if ($bACLsLoaded) {
+			// Run the filter_list task to remove any protected files
+			// not allowed for the current user
+			$aeEvents->loadPlugins('task.acls.filter_list');
+			$args=array(&$arrFiles);
+			$aeEvents->trigger('task.acls.filter_list::run', $args);
+
+			// Retrieve the filtered array i.e. that Files
+			// well accessible to the current user
+			$arrFiles=$args[0];
+		} // if ($bACLsLoaded)
+
+		return $arrFiles;
+	}
+
+	public static function run(&$params = null) : bool
+	{
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug->log('Get the list of files for the treeview', 'debug');
+		}
+		/*<!-- endbuild -->*/
+
+		$arr = array();
+
+		$arrSettings = $aeSettings->getPlugins('/interface');
+		$canSee = boolval($arrSettings['can_see'] ?? 1);
+
+		if ($canSee) {
 			// Call the ACLs plugin
 			$aeEvents = \MarkNotes\Events::getInstance();
 			$aeEvents->loadPlugins('task.acls.load');
 			$args=array();
 			$aeEvents->trigger('task.acls.load::run', $args);
 
-			// $bACLsLoaded will be set true if at least one folder is
-			// protected
-			$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
+			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+			$bCache = $arrSettings['enabled'] ?? false;
 
-			$arrFiles = array();
-			// Due to the ACLs plugin, the list of folders that
-			// are returned by this script can vary from one
-			// user to an another so we can't store the
-			// information at the session level (or to a
-			// "user" level)
-			if (!$bACLsLoaded) {
-				$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+			if ($bCache) {
+				$aeCache = \MarkNotes\Cache::getInstance();
 
-				$bOptimize = $arrOptimize['server_session'] ?? false;
-				if ($bOptimize) {
-					// Get the list of files/folders from the session
-					// object if possible
-					$arrFiles = json_decode(trim($aeSession->get('ListFiles', '')), true);
+				// The list of files can vary from one user to an
+				// another so we need to use his username
+				$key = $aeSession->getUser().'###listfiles';
 
-					if (count($arrFiles)==0) {
-						$arrFiles = array();
-					}
+				$cached = $aeCache->getItem(md5($key));
+				$arr = $cached->get();
+			}
+
+			if (is_null($arr)) {
+				$arr['files'] = self::doGetList();
+
+				if ($bCache) {
+					// Save the list in the cache
+					$arr['from_cache'] = 1;
+					$duration = $arrSettings['duration']['default'];
+					$cached->set($arr)->expiresAfter($duration);
+					$aeCache->save($cached);
+					$arr['from_cache'] = 0;
 				}
-			} // if (!$bACLsLoaded)
-
-			if ($arrFiles === array()) {
-				// The array is empty
-				$aeFiles = \MarkNotes\Files::getInstance();
-
-				$docs = $aeSettings->getFolderDocs(true);
-
+			} else {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log('Get list of files in ['.$docs.']', 'debug');
+					$aeDebug->log('   Retrieving from the cache', 'debug');
 				}
 				/*<!-- endbuild -->*/
-
-
-				$ext = '*.md';
-				$arrFiles = $aeFunctions->array_iunique($aeFiles->rglob($ext, $docs));
-
-				if ($bACLsLoaded) {
-					// Run the filter_list task to remove any protected files
-					// not allowed for the current user
-
-					$aeEvents->loadPlugins('task.acls.filter_list');
-					$args=array(&$arrFiles);
-					$aeEvents->trigger('task.acls.filter_list::run', $args);
-
-					// Retrieve the filtered array i.e. that Files
-					// well accessible to the current user
-					$arrFiles=$args[0];
-				} // if ($bACLsLoaded)
-
-				if (!$bACLsLoaded) {
-					if ($bOptimize) {
-						// Get the list of files/folders from the session object if possible
-						$aeSession->set('ListFiles', json_encode($arrFiles));
-					}
-				}
-			} // if ($arrFiles === array())
-		} // if (!$show_tree_allowed)
+			} // if (is_null($arr))
+		} // if ($can_see)
 
 		// Return the array with files accessible to the current user
-		$params = $arrFiles;
+		$params = $arr['files'];
 
+		// This task has no visible output
 		return true;
 	}
 }

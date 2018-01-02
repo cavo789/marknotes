@@ -26,6 +26,7 @@ SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
 call :fnCopyComposer
+call :fnCopyPSR
 REM call :fnCopyBootstrap
 REM call :fnCopyjQuery
 REM call :fnCopySymfony
@@ -36,6 +37,7 @@ REM call :fnCopyJolicode
 REM call :fnCopyNoty
 REM call :fnCopyMonolog
 REM call :fnCopyParsedown
+REM call :fnCopyParsedownExtra
 REM call :fnCopyParsedownCheckbox
 REM call :fnCopyMinify
 REM call :fnCopyGitHubMarkdownCSS
@@ -52,7 +54,8 @@ REM call :fnJSONLint
 REM call :fnFlySystem
 REM call :fnScrollDir
 REM call :fnCSSCheckboxLib
-call :fnSweetAlert
+REM call :fnSweetAlert
+call :fnphpFastCache
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -105,6 +108,17 @@ ECHO	COPY TO %LIBS%composer\
 ECHO.
 COPY %VENDOR%autoload.php %LIBS% >> %LOG%
 XCOPY %VENDOR%composer\*.* %LIBS%composer\ /E /Y  >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyPSR
+::--------------------------------------------------------
+
+:fnCopyPSR
+ECHO  === PSR ===
+ECHO	COPY TO %LIBS%psr\
+ECHO.
+XCOPY %VENDOR%psr\*.* %LIBS%psr\ /E /Y  >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
@@ -232,11 +246,24 @@ goto:eof
 :fnCopyParsedown
 
 ECHO  === parsedown ===
-ECHO	COPY TO %LIBS%parsedown\
+ECHO	COPY TO %LIBS%erusev\parsedown\
 ECHO.
-IF NOT EXIST %LIBS%parsedown\ MKDIR %LIBS%parsedown\ >> %LOG%
-COPY %VENDOR%erusev\parsedown\Parsedown.php %LIBS%parsedown\ /Y >> %LOG%
-COPY %VENDOR%erusev\parsedown-extra\ParsedownExtra.php %LIBS%parsedown\ /Y >> %LOG%
+IF NOT EXIST %LIBS%erusev\parsedown\ MKDIR %LIBS%erusev\parsedown\ >> %LOG%
+COPY %VENDOR%erusev\parsedown\Parsedown.php %LIBS%erusev\parsedown\ /Y >> %LOG%
+goto:eof
+
+
+::--------------------------------------------------------
+::-- fnCopyParsedownExtra
+::--------------------------------------------------------
+
+:fnCopyParsedownExtra
+
+ECHO  === parsedown ===
+ECHO	COPY TO %LIBS%erusev\parsedown-extra
+ECHO.
+IF NOT EXIST %LIBS%erusev\parsedown-extra\ MKDIR %LIBS%erusev\parsedown-extra\ >> %LOG%
+COPY %VENDOR%erusev\parsedown-extra\ParsedownExtra.php %LIBS%erusev\parsedown-extra\ParsedownExtra.php /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
@@ -452,6 +479,20 @@ ECHO.
 IF NOT EXIST %LIBS%sweetalert2 MKDIR %LIBS%sweetalert2 >> %LOG%
 COPY %VENDOR%sweetalert2\dist\sweetalert2.min.js %LIBS%sweetalert2\ /Y >> %LOG%
 COPY %VENDOR%sweetalert2\dist\sweetalert2.min.css %LIBS%sweetalert2\ /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnphpFastCache
+::--------------------------------------------------------
+
+:fnphpFastCache
+ECHO  === phpFastCache ===
+ECHO	COPY TO %LIBS%phpFastCache\
+ECHO.
+IF NOT EXIST %LIBS%phpfastcache MKDIR %LIBS%phpfastcache >> %LOG%
+XCOPY %VENDOR%phpfastcache\*.* %LIBS%phpfastcache /E /Y >> %LOG%
+REM IF EXIST %LIBS%php-font-lib\sample-fonts RMDIR %LIBS%php-font-lib\sample-fonts /S /Q >> %LOG%
+REM IF EXIST %LIBS%php-font-lib\tests RMDIR %LIBS%php-font-lib\tests /S /Q >> %LOG%
 goto:eof
 
 REM -----------------------------------------------
@@ -884,13 +925,6 @@ REM	ECHO  === %LIB% ===
 REM	XCOPY %VENDOR%symfony\%LIB%*.* %LIBS%symfony\%LIB%*.* /E /Y >> %LOG%
 REM )
 
-REM ----------------------------------------------------------------------
-REM SET LIB=psr\
-REM IF EXIST %VENDOR%%LIB% (
-REM	ECHO  === %LIB% === >> %LOG%
-REM	ECHO  === %LIB% ===
-REM	XCOPY %VENDOR%%LIB%*.* %LIBS%%LIB%*.* /E /Y >> %LOG%
-REM )
 
 :END
 ECHO.

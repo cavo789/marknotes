@@ -1,7 +1,7 @@
 <?php
 /**
- * Return a timeline with the list of notes displayed in a descending
- * chronological order
+ * Return a timeline with the list of notes displayed in
+ * a descending chronological order
  */
 namespace MarkNotes\Plugins\Task\Timeline;
 
@@ -31,110 +31,150 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		return $args[0];
 	}
 
+	private static function doGetTimeline() : array
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeMarkDown = \MarkNotes\FileType\MarkDown::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		$json = array();
+
+		$folder = str_replace('/', DS, $aeSettings->getFolderDocs(true));
+
+		$arrFiles = self::getFiles();
+
+		// -------------------------------------------------------
+		// Based on https://github.com/Albejr/jquery-albe-timeline
+		// -------------------------------------------------------
+
+		foreach ($arrFiles as $file) {
+			// Calling $aeMarkDown->read will, also, fire
+			// markdown::read event and thus plugins. This for
+			// every files in $arrFiles ==> can be really slow.
+			// $content = $aeMarkDown->read($file);
+
+			// Optimization : just read file on disk,
+			// without plugin support
+			$content = $aeFiles->getContent($file);
+
+			$relFileName = utf8_encode(str_replace($folder, '', $file));
+
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
+
+			$urlHTML = $url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
+
+			$json[] =
+				array(
+					'fmtime' => $aeFiles->timestamp($file),
+					'time' => date("Y-m-d", $aeFiles->timestamp($file)),
+					'header' => htmlentities($aeMarkDown->getHeadingText($content)),
+					'body' => array(
+						array(
+							'tag' => 'a',
+							'content' => $relFileName,
+							'attr' => array(
+								'href' => $urlHTML,
+								'target' => '_blank',
+								'title' => $relFileName
+							) // attr
+						),
+						array(
+							'tag' => 'span',
+							'content' => ' ('
+						),
+						array(
+							'tag' => 'a',
+							'content' => 'slide',
+							'attr' => array(
+								'href' => $urlHTML.'?format=slides',
+								'target' => '_blank',
+								'title' => $relFileName
+							) // attr
+						),
+						array(
+							'tag' => 'span',
+							'content' => ' - '
+						),
+						array(
+							'tag' => 'a',
+							'content' => 'pdf',
+							'attr' => array(
+								'href' => $urlHTML.'?format=pdf',
+								'target' => '_blank',
+								'title' => $relFileName
+							) // attr
+						),
+						array(
+							'tag' => 'span',
+							'content' => ')'
+						)
+					) // body
+				); //
+		} // foreach
+
+		usort($json, function ($a, $b) {
+			//return strtotime($a['start_date']) - strtotime($b['start_date']);
+			return strcmp($b['fmtime'], $a['fmtime']);
+		});
+
+		return $json;
+	}
+
 	private static function getJSON() : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeJSON = \MarkNotes\JSON::getInstance();
-		$aeMarkDown = \MarkNotes\FileType\MarkDown::getInstance();
 
 		$sReturn = '';
 
-		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
-		$bOptimize = $arrOptimize['server_session'] ?? false;
-		if ($bOptimize) {
-			// Get the list of files/folders from the session object if possible
-			$aeSession = \MarkNotes\Session::getInstance();
-			$sReturn = $aeSession->get('timeline', '');
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = $arrSettings['enabled'] ?? false;
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log("Get the timeline","debug");
+		}
+		/*<!-- endbuild -->*/
+
+		if ($bCache) {
+			$aeCache = \MarkNotes\Cache::getInstance();
+
+			// The list of files can vary from one user to an
+			// another so we need to use his username
+			$key = $aeSession->getUser().'###timeline';
+
+			$cached = $aeCache->getItem(md5($key));
+			$arr = $cached->get();
 		}
 
-		if ($sReturn === '') {
-			$json = array();
+		if (is_null($arr)) {
+			$arr['timeline'] = self::doGetTimeline();
 
-			$folder = str_replace('/', DS, $aeSettings->getFolderDocs(true));
-
-			$arrFiles = self::getFiles();
-
-			// -------------------------------------------------------
-			// Based on https://github.com/Albejr/jquery-albe-timeline
-			// -------------------------------------------------------
-
-			foreach ($arrFiles as $file) {
-				// Calling $aeMarkDown->read will, also, fire markdown::read
-				// event and thus plugins. This for every files in $arrFiles
-				// ==> can be really slow.
-				//$content = $aeMarkDown->read($file);
-
-				// Optimization : just read file on disk, without plugin support
-				$content = $aeFiles->getContent($file);
-
-				$relFileName = utf8_encode(str_replace($folder, '', $file));
-
-				$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
-				$urlHTML = $url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
-
-				$json[] =
-				  array(
-				'fmtime' => filectime($file),
-				'time' => date("Y-m-d", filectime($file)),
-				'header' => htmlentities($aeMarkDown->getHeadingText($content)),
-				'body' => array(
-				  array(
-					'tag' => 'a',
-					'content' => $relFileName,
-					'attr' => array(
-					  'href' => $urlHTML,
-					  'target' => '_blank',
-					  'title' => $relFileName
-					) // attr
-				  ),
-				  array(
-					'tag' => 'span',
-					'content' => ' ('
-				  ),
-				  array(
-				  'tag' => 'a',
-				  'content' => 'slide',
-				  'attr' => array(
-					'href' => $urlHTML.'?format=slides',
-					'target' => '_blank',
-					'title' => $relFileName
-					) // attr
-				  ),
-				  array(
-					'tag' => 'span',
-					'content' => ' - '
-				  ),
-				  array(
-				  'tag' => 'a',
-				  'content' => 'pdf',
-				  'attr' => array(
-					'href' => $urlHTML.'?format=pdf',
-					'target' => '_blank',
-					'title' => $relFileName
-					) // attr
-				  ),
-				  array(
-					'tag' => 'span',
-					'content' => ')'
-				  )
-				  ) // body
-				); //
-			} // foreach
-
-			usort($json, function ($a, $b) {
-				//return strtotime($a['start_date']) - strtotime($b['start_date']);
-				return strcmp($b['fmtime'], $a['fmtime']);
-			});
-
-			$sReturn = $aeJSON->json_encode($json, JSON_PRETTY_PRINT);
-
-			if ($bOptimize) {
-				// Remember for the next call
-				$aeSession->set('timeline', $sReturn);
+			if ($bCache) {
+				// Save the list in the cache
+				$arr['from_cache'] = 1;
+				// Default : 7 days.
+				$duration = $arrSettings['duration']['sitemap'];
+				$cached->set($arr)->expiresAfter($duration);
+				$aeCache->save($cached);
+				$arr['from_cache'] = 0;
 			}
-		}
+		} else {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log('   Retrieving from the cache', 'debug');
+			}
+			/*<!-- endbuild -->*/
+		} // if (is_null($arr))
+
+		$json = $arr['timeline'];
+
+		$sReturn = $aeJSON->json_encode($json, JSON_PRETTY_PRINT);
 
 		header('Content-Type: application/json');
 		echo $sReturn;

@@ -4,21 +4,25 @@ namespace MarkNotes;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+define('DEFAULT_USERNAME', 'public');
+
 class Session
 {
 	protected static $hInstance = null;
 	private static $prefix = 'MN_';
 
-	public function __construct(string $folder = '')
+	public function __construct(string $folder)
 	{
-		self::init($folder);
+		if ($folder!=='') {
+			self::init($folder);
+		}
 		return true;
 	}
 
 	public static function getInstance(string $folder = '')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new Session($folder);
+			self::$hInstance = new Session(trim($folder));
 		}
 		return self::$hInstance;
 	}
@@ -26,7 +30,7 @@ class Session
 	private function init(string $folder = '')
 	{
 		$aeFolders = \MarkNotes\Folders::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance($folder);
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if (!isset($_SESSION)) {
 			// Store session informations in the /tmp/sessions/ folder
@@ -53,6 +57,20 @@ class Session
 			} // try
 
 			self::set('marknotes', 1);
+
+			// ---------------------------------------------------
+			// Get the username used when, if applicable, accessing
+			// to the site. This is the .htpasswd authentication
+			// layer.
+			// If none was used, the username will be set to
+			// "public"
+			$username = trim($_SERVER['PHP_AUTH_USER'] ?? '');
+			if ($username == '') {
+				$username = trim($_SERVER['REMOTE_USER'] ?? DEFAULT_USERNAME);
+			}
+			self::set('htpasswd_username', $username);
+			// ---------------------------------------------------
+
 		}
 
 		// Get informations about the login plugin
@@ -132,6 +150,7 @@ class Session
 		}
 		return true;
 	}
+
 	/**
 	* The session has a timeout property.	By calling the extend() method,
 	* the session timeout will be reset to the current time() and therefore,
@@ -139,8 +158,28 @@ class Session
 	*/
 	public function extend()
 	{
-		session_regenerate_id();
+		if (session_id() == '') {
+			session_start();
+		} else {
+			session_regenerate_id();
+		}
 		self::set('timeout', time());
 		return;
+	}
+
+	/**
+	 * Return the username used on Apache level.
+	 * Be sure to return the DEFAULT_USERNAME when the
+	 * variable is empty
+	 */
+	public function getUser() : string
+	{
+		$user = self::get('htpasswd_username', DEFAULT_USERNAME);
+
+		if (trim($user)=='') {
+			$user = DEFAULT_USERNAME;
+		}
+
+		return $user;
 	}
 }

@@ -1,0 +1,58 @@
+#
+# This file is part of phpFastCache.
+#
+# @license MIT License (MIT)
+#
+# For full copyright and license information, please see the docs/CREDITS.txt file.
+#
+# @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> http://www.phpfastcache.com
+# @author Georges.L (Geolim4)  <contact@geolim4.com>
+#
+
+engines:
+  duplication:
+    enabled: false
+    checks:
+      Similar code:
+        enabled: false
+      UnusedFormalParameter:
+        enabled: false
+      Controversial/CamelCaseClassName:
+        enabled: false
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  fixme:
+    enabled: true
+  phpmd:
+    enabled: true
+    checks:
+      CleanCode/ElseExpression:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+      Controversial/Superglobals:
+        enabled: false
+      Controversial/CamelCaseVariableName:
+        enabled: false
+      Design/TooManyPublicMethods:
+        enabled: false
+      Design/NpathComplexity:
+        enabled: false
+ratings:
+  paths:
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.module"
+  - "**.php"
+  - "**.py"
+  - "**.rb"
+exclude_paths:
+- "bin/**"
+- "examples/**"
+- "docs/**"
+- "tests/**"

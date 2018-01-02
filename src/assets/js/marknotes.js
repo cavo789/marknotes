@@ -206,7 +206,7 @@ function initializeTasks() {
 	}
 	/*<!-- endbuild -->*/
 
-	if ($.isFunction(initializeSettings)) {
+	if (typeof initializeSettings !== 'undefined') {
 		initializeSettings();
 	}
 

@@ -7,9 +7,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="../libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+		<link href="../marknotes/plugins/page/html/balloon/libs/balloon.min.css" rel="stylesheet" />
 		<style>
 			summary { outline:none; padding:5px; }
-			#CONTENT_PRE, #CONTENT_CODE, #CONTENT_HTML {display:none;}
+			.important {border: 1px dotted yellow;background-color:rgba(255, 255, 0, 0.29); padding:10px;}
+			.red {color:red;}
+			#LOADING, #CONTENT_PRE, #CONTENT_CODE, #CONTENT_HTML {display:none;}
 			#CONTENT_HTML {width:100%; min-height:800px;}
 		</style>
 		<title>DEBUG - Make debugging easy</title>
@@ -20,9 +23,10 @@
 			<div class="col-sm-3">%CONTENT%</div>
 			<div class="col-sm-9">
 				<strong id="URL">&nbsp;</strong>
+				<div id="LOADING">Please wait...</div>
 				<pre id="CONTENT_PRE">&nbsp;</pre>
-				<code id="CONTENT_CODE">&nbsp;</code>
 				<iframe id="CONTENT_HTML">&nbsp;</iframe>
+				<code id="CONTENT_CODE">&nbsp;</code>
 			</div>
 		</div>
 
@@ -44,8 +48,16 @@
 			document.getElementById('CONTENT_PRE').appendChild(textNode)
 		}
 
+		// Close the previous details area, keep only one
+		// opened at the same time
+		$('details').click(function (event) {
+			$('details').not(this).removeAttr("open");
+		});
+
 		$("[data-task]").click(function (e) {
 			e.preventDefault();
+
+			$('#LOADING').show();
 
 			if ($(this).data('task') == 'ajax') {
 				var $url = $(this).attr('href');
@@ -53,41 +65,44 @@
 				var $result = 'CONTENT_PRE';
 
 				$("#URL").html($url);
-				$('#CONTENT_PRE').hide();
-				$('#CONTENT_CODE').hide();
 				$('#CONTENT_HTML').hide();
 
 				if ($type=='html') {
-					$result = 'CONTENT_HTML';
-					$('#'+$result).attr('src',$url);
-				} else {
-					$.ajax({
-						beforeSend: function () {
-						}, // beforeSend()
-						async: true,
-						cache: false,
-						type: 'GET',
-						url: $url,
-						datatype: $type,
-						success: function (data) {
-							if (($type=='json') || ($type=='text')) {
-								// Output correctly JSON
-								if ($type=='json') {
-									document.getElementById($result).innerHTML = JSON.stringify(data, undefined, 2);
-								} else {
-									$("#"+$result).html(data);
-								}
-							} else {
-								$result = 'CONTENT_CODE';
-								if ($type=='xml') {
-									displayXML(data);
-								} else {
-									$("#"+$result).html(data);
-								}
-							}
-						} // success
-					}); // $.ajax()
+					$('#CONTENT_HTML').show();
+					$('#CONTENT_HTML').attr('src',$url);
 				}
+
+				$.ajax({
+					beforeSend: function () {
+						$('#CONTENT_PRE').empty().hide();
+						$('#CONTENT_CODE').empty().hide();
+					}, // beforeSend()
+					async: true,
+					cache: false,
+					type: 'GET',
+					url: $url,
+					datatype: $type,
+					success: function (data) {
+						$('#LOADING').hide();
+						if (($type=='json') || ($type=='html') || ($type=='text')) {
+							// Output correctly JSON
+							if ($type=='json') {
+								document.getElementById($result).innerHTML = JSON.stringify(data, undefined, 2);
+							} else if ($type=='html') {
+								$("#"+$result).text(data);
+							} else {
+								$("#"+$result).html(data);
+							}
+						} else {
+							$result = 'CONTENT_CODE';
+							if ($type=='xml') {
+								displayXML(data);
+							} else {
+								$("#"+$result).html(data);
+							}
+						}
+					} // success
+				}); // $.ajax()
 
 				$("#"+$result).show();
 			}

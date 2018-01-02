@@ -297,7 +297,7 @@ class Folders
 	public static function getContent(string $foldername, bool $recursive = false) : array
 	{
 		self::getFileSystem($foldername, $obj);
-		$items = $obj->listContents($foldername, false);
+		$items = $obj->listContents($foldername, $recursive);
 		return $items;
 	}
 

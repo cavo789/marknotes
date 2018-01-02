@@ -15,6 +15,10 @@ class ComposerStaticInit7502b490652858ac65238728d501e88f
     );
 
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'phpFastCache\\' => 13,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
@@ -31,9 +35,11 @@ class ComposerStaticInit7502b490652858ac65238728d501e88f
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'Psr\\Cache\\' => 10,
             'PDepend\\' => 8,
         ),
         'O' => 
@@ -71,6 +77,10 @@ class ComposerStaticInit7502b490652858ac65238728d501e88f
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpFastCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpfastcache/phpfastcache/src/phpFastCache',
+        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
@@ -115,6 +125,10 @@ class ComposerStaticInit7502b490652858ac65238728d501e88f
         array (
             0 => __DIR__ . '/..' . '/spatie/dropbox-api/src',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -126,6 +140,10 @@ class ComposerStaticInit7502b490652858ac65238728d501e88f
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
         'PDepend\\' => 
         array (

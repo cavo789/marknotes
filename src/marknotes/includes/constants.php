@@ -112,6 +112,9 @@ define('JSON_OPTIONS_MICRODATA', 'plugins.options.content.html.microdata');
 // ... where are defined options for optimizations
 define('JSON_OPTIONS_OPTIMIZE', 'plugins.options.page.html.optimize');
 
+// ... where are defined options for the cache
+define('JSON_OPTIONS_CACHE', 'plugins.options.page.html.optimize.cache');
+
 // ... where are defined options for tags
 define('JSON_OPTIONS_TAGS', 'plugins.options.content.html.tags');
 

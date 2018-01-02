@@ -1,0 +1,50 @@
+#
+# This file is part of phpFastCache.
+#
+# @license MIT License (MIT)
+#
+# For full copyright and license information, please see the docs/CREDITS.txt file.
+#
+# @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> http://www.phpfastcache.com
+# @author Georges.L (Geolim4)  <contact@geolim4.com>
+#
+sudo: false
+
+dist: trusty
+
+language: php
+
+services:
+  - memcached
+  - redis-server
+  - couchdb
+before_script:
+  - |
+    if [[ $TRAVIS_PHP_VERSION = "hhv"* ]]; then
+      cat bin/ci/php_phpfastcache.ini >> /etc/hhvm/php.ini
+    else
+      phpenv config-add bin/ci/php_phpfastcache.ini
+    fi
+
+php:
+  # - 5.3
+  # - 5.4
+  # - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+  - hhvm
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+    - php: hhvm
+
+install:
+  - ./bin/ci/install_dependencies.sh
+
+script:
+  - php -f bin/ci/run_tests.php

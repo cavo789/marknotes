@@ -32,7 +32,6 @@ class Settings
 
 	public static function getInstance(string $folder = '', array $params = null)
 	{
-
 		if (self::$hInstance === null) {
 			self::$hInstance = new Settings($folder, $params);
 		}

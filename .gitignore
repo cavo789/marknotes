@@ -9,8 +9,8 @@ src/templates/Jug_Toulouse/*
 src/templates/JUGW/*
 vendor/
 vendor/**/.git
-vendor_manual/
-vendor_manual/**/.git
+ZZZvendor_manual/
+ZZZvendor_manual/**/.git
 settings.json
 composer.log
 gulpfile.js

@@ -51,12 +51,13 @@ class Markdown
 	* Convert any links like ![alt](image/file.png) or
 	* <img src='image/file.php' /> to an absolute link to the image
 	*/
-	private function setImagesAbsolute(string $markdown, array $params = null) : string
+	private static function setImagesAbsolute(string $markdown, array $params = null) : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
@@ -220,26 +221,19 @@ class Markdown
 	}
 
 	/**
-	* Read a markdown file and return its content.
-	*
-	* $params['encryption'] = 0 : encrypted data should be displayed unencrypted
-	*						 1 : encrypted infos should stay encrypted
-	*/
-	public function read(string $filename, array $params = null) : string
+	 * Get the content of the file. Use the cache system to
+	 * speed up the retrieving.
+	 */
+	private static function doReadContent(string $filename) : string
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-		/*<!-- build:debug -->*/
-		if ($aeSettings->getDebugMode()) {
-			$aeDebug = \MarkNotes\Debug::getInstance();
-		}
-		/*<!-- endbuild -->*/
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if ($aeFiles->exists($filename)) {
-			$task = $aeSession->get('task');
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
@@ -259,30 +253,22 @@ class Markdown
 			$aeEvents->trigger('markdown::markdown.read', $args);
 			$markdown = $args[0]['markdown'];
 
-			$aeFiles = \MarkNotes\Files::getInstance();
-			$aeFunctions = \MarkNotes\Functions::getInstance();
-
 			// Get the full path to this note
 			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 			$noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
 			// --------------------------------
 
-			// In the markdown file, two syntax are possible for images,
-			// the ![]() one or the <img src one
-			// Be sure to have the correct relative path i.e. pointing to the
-			// folder of the note
+			// In the markdown file, two syntax are possible
+			// for images, the ![]() one or the <img src one
+			// Be sure to have the correct relative path i.e.
+			// pointing to the folder of the note
+			$task = $aeSession->get('task');
 			if ($task!=='task.search.search') {
 				$markdown = self::setImagesAbsolute($markdown, $params);
 			}
 
 			// And do it too for links to the files folder
 			$markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
-
-			//if (isset($params['removeConfidential'])) {
-			//	if ($params['removeConfidential'] === '1') {
-			//		$markdown = $this->ShowConfidential($markdown);
-			//	}
-			//}
 		} else {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
@@ -292,6 +278,61 @@ class Markdown
 
 			$markdown = '';
 		}
+
+		return $markdown;
+	}
+
+	/**
+	* Read a markdown file and return its content.
+	*
+	* $params['encryption'] = 0 : encrypted data should
+	*			be displayed unencrypted
+	*						 1 : encrypted infos should
+	*			stay encrypted
+	*/
+	public function read(string $filename, array $params = null) : string
+	{
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+		}
+		/*<!-- endbuild -->*/
+
+		$aeSession = \MarkNotes\Session::getInstance();
+
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = $arrSettings['enabled'] ?? false;
+		$task = $aeSession->get('task');
+
+		if ($bCache) {
+			// The content isn't the same, depending on the task
+			$key = $task.'###'.$filename;
+
+			$aeCache = \MarkNotes\Cache::getInstance();
+			$cached = $aeCache->getItem(md5($key));
+			$arr = $cached->get();
+		}
+
+		if (is_null($arr)) {
+			$arr = array();
+			$arr['markdown'] = self::doReadContent($filename);
+
+			if ($bCache) {
+				// Save the content in the cache
+				$arr['from_cache'] = 1;
+				$duration = $arrSettings['duration']['html'];
+				$cached->set($arr)->expiresAfter($duration);
+				$aeCache->save($cached);
+				$arr['from_cache'] = 0;
+			}
+		}
+
+		$markdown = $arr['markdown'];
 
 		return $markdown;
 	}

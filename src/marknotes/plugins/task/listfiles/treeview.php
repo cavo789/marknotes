@@ -71,7 +71,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			// Avoid PHP 7.0.x bug : handle accents
 			$arrSettings = $aeSettings->getPlugins('/interface');
 			$bConvert  = boolval($arrSettings['accent_conversion']??1);
-$bConvert=1;
+
 			if ($bConvert) {
 				// accent_conversion in settings.json has been initialized
 				// to 1 => make the conversion
@@ -311,6 +311,94 @@ $bConvert=1;
 		return $arr;
 	}
 
+	/**
+	 * The webmaster has disabled to right to see the interface
+	 * so, it seems coherent to also disable the listfiles task.
+	 */
+	private static function notAllowed() : array
+	{
+		$return = array();
+
+		$return['count'] = 0;
+		$return['status'] = 0;
+		$return['message'] = 'The administrator has disabled '.
+			'access to the interface.';
+		return $return;
+	}
+
+	private static function doGetList() : array
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Call the ACLs plugin
+
+		$aeEvents->loadPlugins('task.acls.load');
+
+		$args=array();
+
+		$aeEvents->trigger('task.acls.load::run', $args);
+
+		// $bACLsLoaded will be set true if at least one
+		// folder is protected
+		static::$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
+
+		$sReturn = '';
+		/*$bOptimize=false;
+
+		if (!static::$bACLsLoaded) {
+			$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+
+			// Get the Server_Session parameter i.e. if the
+			// list of folder should be retrieved and stored
+			// in a $_SESSION variable
+			$bOptimize = $arrOptimize['server_session'] ?? false;
+			if ($bOptimize) {
+				// If the ?reload parameter is on the
+				// QUERY_STRING don't use retrieve from
+				// $_SESSION. This is the case when the user
+				// has added/delete a file/folder from the
+				// treeview (right-click -> add folder f.i.)
+				$bReload = isset($_GET['reload'])??false;
+				if (!$bReload) {
+					$sReturn = trim($aeSession->get('treeview_json', ''));
+				}
+			}
+		} // if (static::!$bACLsLoaded)*/
+
+		if ($sReturn === '') {
+			$docs = $aeSettings->getFolderDocs(true);
+
+			$aeEvents->loadPlugins('task.acls.cansee');
+
+			// Populate the tree that will be used for jsTree
+			// (see https://www.jstree.com/docs/json/)
+			list($arr, $count) = self::makeJSON(str_replace('/', DS, $docs));
+
+			// Build the json
+			$return = array();
+			//$return['settings'] = array('root' => str_replace(DS, '/',
+			// $docs));
+			$return['from_cache'] = 0;
+			$return['count'] = $count;
+			$return['tree'] = $arr;
+/*
+			$aeJSON = \MarkNotes\JSON::getInstance();
+
+			$sReturn = $aeJSON->json_encode($return);
+
+			if (!static::$bACLsLoaded) {
+				if ($bOptimize) {
+					// Remember for the next call
+					$aeSession->set('treeview_json', $sReturn);
+				}
+			} // if (!static::$bACLsLoaded)*/
+		} // if ($sReturn === '')
+
+		return $return;
+	}
+
 	public static function run(&$params = null) : bool
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
@@ -319,96 +407,60 @@ $bConvert=1;
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
+		$arr = null;
+
+		// Does the interface can be visible ?
 		$arrSettings = $aeSettings->getPlugins('/interface');
+		$canSee = boolval($arrSettings['can_see'] ?? 1);
 
-		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
-
-		if (!$show_tree_allowed) {
-			// The webmaster has disabled to right to see
-			// the interface so, it seems coherent to also
-			// disable the listfiles task.
-			$return = array();
-
-			$return['count'] = 0;
-			$return['status'] = 0;
-			$return['message'] = 'The administrator has disabled access to the interface.';
-
-			$sReturn = json_encode($return);
-
+		if (!$canSee) {
+			$sReturn = json_encode(self::notAllowed());
 		} else {
-			// Call the ACLs plugin
 
-			$aeEvents = \MarkNotes\Events::getInstance();
-			$aeEvents->loadPlugins('task.acls.load');
+			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+			$bCache = boolval($arrSettings['enabled'] ?? false);
 
-			$args=array();
+			if ($bCache) {
+				// The list of files can vary from one user to an
+				// another so we need to use his username
+				$key = $aeSession->getUser().'###listfiles.json';
 
-			$aeEvents->trigger('task.acls.load::run', $args);
+				$aeCache = \MarkNotes\Cache::getInstance();
+				$cached = $aeCache->getItem(md5($key));
+				$arr = $cached->get();
+			}
 
-			// $bACLsLoaded will be set true if at least one
-			// folder is protected
-			static::$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
+			if (is_null($arr)) {
+				// Not yet in the cache, retrieve the list of files
+				$arr = self::doGetList();
 
-			$sReturn =  '';
-			$bOptimize=false;
-
-			if (!static::$bACLsLoaded) {
-				$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
-
-				// Get the Server_Session parameter i.e. if the
-				// list of folder should be retrieved and stored
-				// in a $_SESSION variable
-				$bOptimize = $arrOptimize['server_session'] ?? false;
-				if ($bOptimize) {
-					// If the ?reload parameter is on the
-					// QUERY_STRING don't use retrieve from
-					// $_SESSION. This is the case when the user
-					// has added/delete a file/folder from the
-					// treeview (right-click -> add folder f.i.)
-					$bReload = isset($_GET['reload'])??false;
-					if (!$bReload) {
-						$sReturn = trim($aeSession->get('treeview_json', ''));
-					}
+				if ($bCache) {
+					// Save the list in the cache
+					$arr['from_cache'] = 1;
+					$duration = $arrSettings['duration']['default'];
+					$cached->set($arr)->expiresAfter($duration);
+					$aeCache->save($cached);
+					$arr['from_cache'] = 0;
 				}
-			} // if (static::!$bACLsLoaded)
-
-			if ($sReturn === '') {
-				$docs = $aeSettings->getFolderDocs(true);
-
-				$aeEvents = \MarkNotes\Events::getInstance();
-				$aeEvents->loadPlugins('task.acls.cansee');
-
-				// Populate the tree that will be used for jsTree
-				// (see https://www.jstree.com/docs/json/)
-				list ($arr, $count) = self::makeJSON(str_replace('/', DS, $docs));
-
-				// Build the json
-				$return = array();
-				//$return['settings'] = array('root' => str_replace(DS, '/',
-				// $docs));
-				$return['count'] = $count;
-				$return['tree'] = $arr;
-
-				$aeJSON = \MarkNotes\JSON::getInstance();
-
+			} else {
 				/*<!-- build:debug -->*/
-				$aeJSON->debug($aeSettings->getDebugMode());
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug->log('   Retrieving from the cache', 'debug');
+				}
 				/*<!-- endbuild -->*/
+			}
+		} // if (!$canSee)
 
-				$sReturn = $aeJSON->json_encode($return);
+		$aeJSON = \MarkNotes\JSON::getInstance();
 
-				if (!static::$bACLsLoaded) {
-					if ($bOptimize) {
-						// Remember for the next call
-						$aeSession->set('treeview_json', $sReturn);
-					}
-				} // if (!static::$bACLsLoaded)
-			} // if ($sReturn === '')
-		} // if (!$show_tree_allowed)
+		/*<!-- build:debug -->*/
+		$aeJSON->debug($aeSettings->getDebugMode());
+		/*<!-- endbuild -->*/
+
+		$sReturn = $aeJSON->json_encode($arr);
 
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');
 		die($sReturn);
-
 	}
 }

@@ -73,7 +73,7 @@ class Convert
 				$aeDebug = \MarkNotes\Debug::getInstance();
 				$aeDebug->log('Error, options should be specified in '.
 				   'the settings.json file, in the '.JSON_OPTIONS_PANDOC.
-				   ' node, please verify your settings.json file.', 'error');
+				   ' node, please verify your settings.json file.', 'warning');
 			}
 			/*<!-- endbuild -->*/
 
@@ -96,7 +96,7 @@ class Convert
 			if (!$aeFiles->exists($sScriptName = $this->arrConfig['script'])) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log('File '.$sScriptName.' didn\'t exists', 'error');
+					$aeDebug->log('File '.$sScriptName.' didn\'t exists', 'warning');
 				}
 				/*<!-- endbuild -->*/
 
@@ -296,7 +296,7 @@ class Convert
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log('Error while creating file '.$fScriptFile, 'error');
+				$aeDebug->log('Error while creating file '.$fScriptFile, 'warning');
 			}
 			/*<!-- endbuild -->*/
 		}
@@ -309,7 +309,7 @@ class Convert
 					$aeDebug->here("The file [".$fScriptFile."] is missing; ".
 						"should be impossible", 10);
 				}
-				$aeDebug->log("The file [".$fScriptFile."] is missing", "error");
+				$aeDebug->log("The file [".$fScriptFile."] is missing", "warning");
 			}
 			/*<!-- endbuild -->*/
 		} // if (!$aeFiles->exists($fScriptFile))

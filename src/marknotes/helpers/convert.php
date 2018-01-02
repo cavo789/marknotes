@@ -38,7 +38,7 @@ class Convert
 		// Call the Markdown parser (https://github.com/erusev/parsedown)
 		$file = "Parsedown";
 		$lib = "Parsedown";
-		$folder = $aeSettings->getFolderLibs()."parsedown/";
+		$folder = $aeSettings->getFolderLibs()."erusev/parsedown/";
 
 		if (!$aeFiles->exists($folder.$file.'.php')) {
 			self::ShowError(
