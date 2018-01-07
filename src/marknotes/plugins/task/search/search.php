@@ -25,7 +25,7 @@ class Search
 		$aeEvents->loadPlugins('task.listfiles.get');
 		$aeEvents->trigger('task.listfiles.get::run', $args);
 
-		return $args[0]['files'];
+		return $args[0];
 	}
 
 	/**

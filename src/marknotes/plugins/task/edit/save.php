@@ -65,7 +65,7 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		// Derive the fullname
 		$doc = $aeSettings->getFolderDocs(true);
 
-		$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
+		$fullname = $doc.ltrim(str_replace('/', DS, $filename), DS);
 
 		if (!$aeFiles->exists($fullname)) {
 			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
@@ -85,9 +85,34 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		$args = array(&$params);
 		$aeEvents->trigger('task.markdown.write::run', $args);
 
+		// Remember the markdown content
+		$content = $args[0]['markdown'];
+
 		// We can reset the last_added_note at the first save
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSession->set('last_added_note', '');
+
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = $arrSettings['enabled'] ?? false;
+
+		if ($bCache) {
+			$aeCache = \MarkNotes\Cache::getInstance();
+
+			// Clear the cache for this note : clear every cached
+			// items with a tag equal to $fullname i.e. the fullname
+			// of the note
+			$aeCache->deleteItemsByTag(md5($fullname));
+
+			// And create a new markdown content in the cache
+			$key = 'task.markdown.read###'.$fullname;
+			$cached = $aeCache->getItem(md5($key));
+			$arr = array();
+			$arr['markdown'] = $content;
+			$arr['from_cache'] = 1;
+			$duration = $arrSettings['duration']['html'];
+			$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
+			$aeCache->save($cached);
+		}
 
 		$status = array('status' => 1,'message' => $aeSettings->getText('button_save_done', 'The file has been successfully saved'));
 

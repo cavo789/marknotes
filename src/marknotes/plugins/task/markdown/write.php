@@ -38,24 +38,21 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 
 			$content = trim($params['markdown']);
 
+			// Add the YAML block if allowed by settings.json
+			$aeEvents = \MarkNotes\Events::getInstance();
+			$params['markdown'] = $content;
+			$params['yaml'] = '';
+			$aeEvents->loadPlugins('markdown.yaml');
+			$args = array(&$params);
+			$aeEvents->trigger('markdown.yaml::markdown.read', $args);
+			$html = $args[0]['markdown'];
+
 			// Check if there is a YAML header and if so,
 			// add in back in the .md file
-			$yaml=trim($aeSession->get('yaml', ''), "'");
-			$yaml=trim($yaml, '"');
-
-			if ($yaml!=='') {
-				$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
-
-				if ($aeFiles->exists($lib)) {
-					include_once $lib;
-
-					// Yaml::dump will add double-quotes so remove them
-					$content=
-						"---".PHP_EOL.
-						str_replace('\\n', PHP_EOL, trim(Yaml::dump($yaml), '"')).PHP_EOL.
-						"---".PHP_EOL.PHP_EOL.
-						$content;
-				}
+			if ($params['yaml']!=='') {
+				$yaml = $aeSession->get('yaml');
+				$content = "---".PHP_EOL.$yaml."---".PHP_EOL.
+					PHP_EOL.$content;
 			}
 
 			// And write the file

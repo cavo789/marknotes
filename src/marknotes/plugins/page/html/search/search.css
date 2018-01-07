@@ -80,7 +80,7 @@
 }
 
 #divSearch {
-	max-width: 300px;
+	max-width: 100px;
 	min-width: 100px;
 	float    : left;
 	display  : inline-block;
@@ -88,12 +88,3 @@
 	border   : 1px solid #f6e9e9;
 	color    : white;
 }
-@media (max-width: 767px) {
-	#divSearch {
-		max-width: 270px;
-	}
-}
-@media (max-width: 400px) {
-	#divSearch {
-		max-width: 200px;
-	}

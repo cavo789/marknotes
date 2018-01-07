@@ -47,8 +47,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$args=array(&$arrFiles);
 		$aeEvents->loadPlugins('task.listfiles.get');
 		$aeEvents->trigger('task.listfiles.get::run', $args);
-		$arrFiles = $args[0]['files'];
-
+		$arrFiles = $args[0];
 
 		// Now, only keep directory name, not files
 		$arrFiles = array_map("dirname", $arrFiles);

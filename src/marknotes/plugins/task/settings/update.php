@@ -40,7 +40,7 @@ class Update
 		return true;
 	}
 
-	public static function run(&$params = null)
+	private static function doIt(&$params = null)
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -76,13 +76,49 @@ class Update
 		// Write the file
 		$aeFiles->rewrite($json, json_encode($arrSettings, JSON_PRETTY_PRINT));
 
-		header('Content-Type: application/json');
-		echo json_encode(
-			array(
-				'status'=>1,
-				'message'=>$aeSettings->getText('settings_saved')
-				)
-			);
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = boolval($arrSettings['enabled'] ?? false);
+
+		if ($bCache) {
+			// Refresh the cache for what concerns the interface
+			$aeCache = \MarkNotes\Cache::getInstance();
+			// Clear the cache for this note : clear every cached
+			// items with a tag equal to $fullname i.e. the fullname
+			// of the note
+			$aeCache->deleteItemsByTag(md5('interface'));
+		}
+
+		return true;
+	}
+
+	public static function run(&$params = null)
+	{
+		// The update requires to be authenticated
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		if (boolval($aeSession->get('authenticated', 0))) {
+
+			self::doIt($params);
+
+			header('Content-Type: application/json');
+			echo json_encode(
+				array(
+					'status'=>1,
+					'message'=>$aeSettings->getText('settings_saved')
+					)
+				);
+		} else {
+			// The user isn't logged in, he can't modify settings
+
+			header('Content-Type: application/json');
+			echo json_encode(
+				array(
+					'status'=>0,
+					'message'=>$aeSettings->getText('not_authenticated')
+					)
+				);
+		} // if (boolval($aeSession->get('authenticated', 0)))
 
 		die();
 	}

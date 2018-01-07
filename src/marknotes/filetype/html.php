@@ -95,6 +95,9 @@ class HTML
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
 
+		// Retrieve the URL to the website
+		$url = $aeFunctions->getCurrentURL();
+
 		// The template can contains variables so call the variables
 		// plugins to translate them
 		// (the markdown.variables can be called even if, here, the
@@ -116,6 +119,10 @@ class HTML
 
 		$skin = "skin-".$skin;
 		$template = str_replace('%SKIN%', $skin, $template);
+
+		$logo = $interface['logo'] ?? array('logo'=>'marknotes.svg');
+		$logo = $url.'assets/images/'.$logo;
+		$template = str_replace('%LOGO%', $logo, $template);
 
 		$footer = $interface['footer'] ?? array('left'=>'', 'right'=>'');
 		$template = str_replace('%FOOTER_LEFT%', $footer['left'], $template);

@@ -103,6 +103,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$files = array();
 		foreach ($arrEntries as $entry) {
 			if ($entry['type'] == 'file') {
+
 				// We're processing a filename
 				$index += 1;
 
@@ -114,8 +115,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 				// Right-click on a file = open it's HTML version
 				$dataURL=str_replace($root, '', $entry['name']);
-				$dataURL=str_replace(DS, '/', $dataURL);
-				$dataURL=str_replace('.md', '.html', $dataURL);
+				// Should be relative to the /docs folder
+				$dataURL=$aeSettings->getFolderDocs(false).$dataURL;
+				$dataURL=str_replace(DS, '/', $dataURL).'.html';
+
 				$sFileText = $filename;
 
 				// If the title is really long, …
@@ -291,7 +294,9 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						// extension is .md
 						if (isset($item['extension'])) {
 							if ($item['extension']==='md') {
-								$arr[] = array('name' => $item['filename'],'type' => 'file');
+								$arr[] = array(
+									'name' => rtrim($directory,DS).'/'.$item['filename'],
+									'type' => 'file');
 							}
 						}
 					} // if ($aeFolders->exists($directory.DS.$file))
@@ -333,7 +338,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Call the ACLs plugin
-
 		$aeEvents->loadPlugins('task.acls.load');
 
 		$args=array();
@@ -345,6 +349,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		static::$bACLsLoaded = boolval($aeSession->get('acls', '') != '');
 
 		$sReturn = '';
+
 		/*$bOptimize=false;
 
 		if (!static::$bACLsLoaded) {

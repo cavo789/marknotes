@@ -151,7 +151,6 @@ class Markdown
 
 				// --------------------------------
 				// Call task plugins (f.i. task.export, task.search, ...)
-
 				$aeEvents->loadPlugins($task);
 				$args = array(&$params);
 				$aeEvents->trigger($task.'::run', $args);

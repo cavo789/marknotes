@@ -64,7 +64,7 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		// Derive the fullname
 		$doc = $aeSettings->getFolderDocs(true);
 
-		$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
+		$fullname = $doc.ltrim(str_replace('/', DS, $filename), DS);
 
 		if (!$aeFiles->exists($fullname)) {
 			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));

@@ -26,6 +26,33 @@ class Initialize
 	// Website root folder (f.i. c:\sites\notes)
 	private static $webRootFolder = '';
 
+	public function setDocFolder() : bool
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Get the doc folder
+		$docs = $aeSettings->getFolderDocs(true);
+
+		// Check if notes should be stored in the cloud (Dropbox, ...)
+		$arrSettings = $aeSettings->getPlugins('/cloud',
+			array('platform'=>'', 'enabled'=>0)
+		);
+
+		// Does the cloud setting enabled ?
+		$enabled = $arrSettings['enabled']??0;
+
+		// If yes, read the name of the "platform" (Dropbox, Amazon, ...)
+		// If no, initialize to an empty string
+		$platform = ($enabled ? ($arrSettings['platform']??'') : '');
+
+		$aeFiles->setDocFolder($arrSettings, $docs);
+		$aeFolders->setDocFolder($arrSettings, $docs);
+
+		return true;
+	}
+
 	/**
 	 * Website root folder
 	 */

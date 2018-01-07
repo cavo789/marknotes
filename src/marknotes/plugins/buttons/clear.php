@@ -42,24 +42,30 @@ class Clear extends \MarkNotes\Plugins\Button\Plugin
 	protected static function canAdd() : bool
 	{
 		if ($bReturn = parent::canAdd()) {
-			// We can continue
-			$bReturn = false;
 
-			$aeSettings = \MarkNotes\Settings::getInstance();
-			// The optimize plugin should be enabled in settings.json otherwise
-			// no need to add the clear button since nothing is cached
+			// This button can't be displayed to visitors
+			$aeSession = \MarkNotes\Session::getInstance();
+			$bReturn = boolval($aeSession->get('authenticated', 0));
 
-			$arr=$aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+			if ($bReturn) {
+				$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$bLocalStorage = boolval($arr['localStorage'] ?? false);
-			$bServerSession = boolval($arr['server_session'] ?? false);
-			$bCache  = boolval($arr['cache']['enabled'] ?? false);
+				// The optimize plugin should be enabled in
+				// settings.json otherwise no need to add the clear
+				// button since nothing is cached
 
-			// If at least one is set, the button Clear cache is
-			// usefull so show it
-			if ($bLocalStorage || $bServerSession || $bCache) {
-				$bReturn = true;
-			}
+				$arr=$aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+
+				$bLocalStorage = boolval($arr['localStorage'] ?? false);
+				$bServerSession = boolval($arr['server_session'] ?? false);
+				$bCache  = boolval($arr['cache']['enabled'] ?? false);
+
+				// If at least one is set, the button Clear cache is
+				// usefull so show it
+				if ($bLocalStorage || $bServerSession || $bCache) {
+					$bReturn = true;
+				}
+			} // if ($bReturn)
 		} // if ($bReturn = parent::canAdd())
 
 		return $bReturn;

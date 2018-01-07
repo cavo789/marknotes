@@ -40,7 +40,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 		$json = array();
 
-		$folder = str_replace('/', DS, $aeSettings->getFolderDocs(true));
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 
 		$arrFiles = self::getFiles();
 
@@ -52,13 +52,14 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			// Calling $aeMarkDown->read will, also, fire
 			// markdown::read event and thus plugins. This for
 			// every files in $arrFiles ==> can be really slow.
-			// $content = $aeMarkDown->read($file);
+			// $content = $aeMarkDown->read($docs.$file);
 
 			// Optimization : just read file on disk,
 			// without plugin support
-			$content = $aeFiles->getContent($file);
 
-			$relFileName = utf8_encode(str_replace($folder, '', $file));
+			$content = $aeFiles->getContent($docs.$file);
+
+			$relFileName = utf8_encode(str_replace($docs, '', $file));
 
 			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
 
@@ -66,8 +67,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			$json[] =
 				array(
-					'fmtime' => $aeFiles->timestamp($file),
-					'time' => date("Y-m-d", $aeFiles->timestamp($file)),
+					'fmtime' => $aeFiles->timestamp($docs.$file),
+					'time' => date("Y-m-d", $aeFiles->timestamp($docs.$file)),
 					'header' => htmlentities($aeMarkDown->getHeadingText($content)),
 					'body' => array(
 						array(
@@ -189,8 +190,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
 
-		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
-		$bOptimize = $arrOptimize['localStorage'] ?? false;
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+		$bOptimize = $arrSettings['localStorage'] ?? false;
 
 		$template = $aeFiles->getContent($aeSettings->getTemplateFile('timeline'));
 

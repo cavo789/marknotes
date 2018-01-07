@@ -9,7 +9,7 @@
  * parameter (f.i. &tip=homepage). The text of the tip can then
  * be retrieved in the /tips subfolder.
  *
- * Answer to URL like index.php?task=task.tips.show&tip=homepage
+ * Answer to URL like index.php?task=task.tips.show&param=homepage
  */
 namespace MarkNotes\Plugins\Task\Tips;
 

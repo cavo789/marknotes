@@ -99,14 +99,15 @@ class Files
 
 	/**
 	 * Initialize the "cloud filesystem" that will then allow to
-	 * work with Dropbox, Amazon S3, ...
+	 * work with Dropbox, Amazon S3, ... or just the FileSystem
 	 */
-	public static function setCloud(array $arr, string $docFolder) : bool
+	public static function setDocFolder(array $arr, string $docFolder) : bool
 	{
+		$enabled = boolval($arr['enabled']);
 		$platform = strtolower($arr['platform']);
 		self::$sDocsRoot = $docFolder;
 
-		if ($platform!=='') {
+		if ($enabled && ($platform!=='')) {
 			// Be sure that we've a token
 			if (!isset($arr['token'])) {
 				throw new \Exception('FATAL ERROR - No token '.
@@ -123,9 +124,12 @@ class Files
 			if ($platform=='dropbox') {
 				$client = new Client($token);
 				$adapter = new DropboxAdapter($client);
-				static::$flyDocsRoot = new Filesystem($adapter);
 			}
-		} // if ($platform!=='')
+		} else { // if ($platform!=='')
+			$adapter = new Local(self::$sDocsRoot);
+		}
+
+		static::$flyDocsRoot = new Filesystem($adapter);
 		return true;
 	}
 
@@ -313,7 +317,12 @@ class Files
 		self::getFileSystem($filename, $obj);
 
 		try {
-			$obj->update($filename, $content);
+			if ($obj->has($filename)) {
+				$obj->update($filename, $content);
+			} else {
+				$arr = array('visibility' => AdapterInterface::VISIBILITY_PUBLIC);
+				$obj->write($filename, $content, $arr);
+			}
 			$bReturn = $obj->has($filename);
 		} catch (Exception $ex) {
 			/*<!-- build:debug -->*/

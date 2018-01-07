@@ -311,8 +311,8 @@ class Markdown
 
 		if ($bCache) {
 			// The content isn't the same, depending on the task
-			$key = $task.'###'.$filename;
-
+			// key will be f.i. "task.export.html###c:\notes\docs\a.md"
+			$key = 'task.markdown.read###'.$filename;
 			$aeCache = \MarkNotes\Cache::getInstance();
 			$cached = $aeCache->getItem(md5($key));
 			$arr = $cached->get();
@@ -326,7 +326,8 @@ class Markdown
 				// Save the content in the cache
 				$arr['from_cache'] = 1;
 				$duration = $arrSettings['duration']['html'];
-				$cached->set($arr)->expiresAfter($duration);
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($filename));
+
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}

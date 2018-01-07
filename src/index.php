@@ -53,21 +53,10 @@ if ($bReturn) {
 
 	$aeSession = \MarkNotes\Session::getInstance($root);
 
-	// Check if notes should be stored in the cloud (Dropbox, ...)
-	$arrSettings = $aeSettings->getPlugins('/cloud', array('platform'=>''));
-	$platform = $arrSettings['platform']??'';
-	if(trim($platform)!=='') {
-		$enabled = $arrSettings['enabled']??0;
-		if (boolval($enabled)) {
-			// Get the doc folder
-			$docs = $aeSettings->getFolderDocs(true);
-			// Initialize the cloud
-			$aeFiles = \MarkNotes\Files::getInstance();
-			$aeFolders = \MarkNotes\Folders::getInstance();
-			$aeFiles->setCloud($arrSettings, $docs);
-			$aeFolders->setCloud($arrSettings, $docs);
-		}
-	} // if(trim($platform)!=='')
+	// Initialize the DocFolder filesystem
+	$aeInitialize = new Includes\Initialize();
+	$aeInitialize->setDocFolder();
+	unset($aeInitialize);
 
 	$aeFunctions = \MarkNotes\Functions::getInstance();
 	$aeJSON = \MarkNotes\JSON::getInstance();

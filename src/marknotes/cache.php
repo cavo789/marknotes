@@ -74,6 +74,12 @@ class Cache
 		}
 	}
 
+	public static function deleteItemsByTag(string $tag) {
+		if (!static::$InstanceCache==null) {
+			static::$InstanceCache->deleteItemsByTag($tag);
+		}
+	}
+
 	/**
 	 * Get the cache content for $key
 	 */

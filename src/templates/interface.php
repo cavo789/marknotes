@@ -36,8 +36,8 @@
 
 				<!-- logo -->
 				<a id="mnLogo" href="https://github.com/cavo789/marknotes" class="logo" title="Download Marknotes on GitHub">
-					<span class="logo-mini"><img src="%ROOT%assets/images/marknotes.svg" /></span>
-					<span class="logo-lg"><img src="%ROOT%assets/images/marknotes.svg" height="60px"/></span>
+					<span class="logo-mini"><img src="%LOGO%" /></span>
+					<span class="logo-lg"><img src="%LOGO%" height="60px"/></span>
 				</a>
 
 				<!-- Header Navbar -->

@@ -72,7 +72,7 @@ class Folders
 		self::$sAppRoot = rtrim(dirname(dirname(__DIR__)), DS).DS;
 		self::$sAppRoot = str_replace('/', DS, self::$sAppRoot);
 
-		// Default : empty; will be initialized by setCloud()
+		// Default : empty; will be initialized by setDocFolder()
 		self::$sDocsRoot = '';
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
@@ -112,14 +112,15 @@ class Folders
 
 	/**
 	 * Initialize the "cloud filesystem" that will then allow to
-	 * work with Dropbox, Amazon S3, ...
+	 * work with Dropbox, Amazon S3, ... or just the FileSystem
 	 */
-	public static function setCloud(array $arr, string $docFolder) : bool
+	public static function setDocFolder(array $arr, string $docFolder) : bool
 	{
+		$enabled = boolval($arr['enabled']);
 		$platform = strtolower($arr['platform']);
 		self::$sDocsRoot = $docFolder;
 
-		if ($platform!=='') {
+		if ($enabled && ($platform!=='')) {
 			// Be sure that we've a token
 			if (!isset($arr['token'])) {
 				throw new \Exception('FATAL ERROR - No token '.
@@ -136,9 +137,13 @@ class Folders
 			if ($platform=='dropbox') {
 				$client = new Client($token);
 				$adapter = new DropboxAdapter($client);
-				static::$flyDocsRoot = new Filesystem($adapter);
+
 			}
-		} // if ($platform!=='')
+		} else { // if ($platform!=='')
+			$adapter = new Local(static::$sDocsRoot);
+		}
+
+		static::$flyDocsRoot = new Filesystem($adapter);
 		return true;
 	}
 

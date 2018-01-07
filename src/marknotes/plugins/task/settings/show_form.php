@@ -51,7 +51,8 @@ class Show_Form
 		$arr = explode(';', $values);
 		$items = '';
 		foreach ($arr as $item) {
-			$items .= '<option data-value="'.$item.'">'.
+			$selected = ($item === $value) ? 'selected="selected"' : '';
+			$items .= '<option data-value="'.$item.'" '.$selected.'>'.
 				$item.'</option>';
 		}
 
@@ -205,6 +206,11 @@ class Show_Form
 	// Process Interface
 	private static function getInterface(array $arr, string $key) : string
 	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Retrieve the root folder
+		$root = $aeSettings->getFolderWebRoot();
+
 		$box = self::getBox('Interface', 'desktop');
 		$key = $key.'.';
 		$content = self::getRadio($key.'accent_conversion',
@@ -220,6 +226,10 @@ class Show_Form
 		$content .= self::getCombo($key.'skin',
 				'Color of header area', $arr['skin'],
 				'black;black-light;blue;blue-light;green;green-light;purple;purple-ligth;red;red-light;yellow;yellow-light');
+		$content .= self::getText($key.'logo', 'Logo '.
+			'(<em>The image should be saved in the <strong>'.
+			str_replace('/', DS, $root.'assets/images/').'</strong> '.
+			'folder</em>)', $arr['logo']);
 		return str_replace('%CONTENT%', $content, $box);
 	}
 
@@ -306,7 +316,7 @@ class Show_Form
 	/**
 	 * Built the HTML for the form
 	 */
-	public static function run(&$params = null)
+	private static function doIt(&$params = null)
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -359,6 +369,24 @@ class Show_Form
 		echo $html;
 
 		die();
+	}
+
+	public static function run(&$params = null) : bool
+	{
+		$aeSession = \MarkNotes\Session::getInstance();
+
+		$bReturn = false;
+
+		if (boolval($aeSession->get('authenticated', 0))) {
+			$bReturn = self::doIt($params);
+		} else {
+			// The user isn't logged in, he can't modify settings
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			echo '<p class="text-danger">'.
+				$aeSettings->getText('not_authenticated').'</p>';
+		}
+
+		return $bReturn;
 	}
 
 	/**

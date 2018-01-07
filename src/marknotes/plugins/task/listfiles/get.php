@@ -71,7 +71,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				if ($type=='file') {
 					$extension = $item['extension']??'';
 					if ($extension == 'md') {
-						$arrFiles[] = $docs.str_replace('/',DS,$item['path']);
+						$arrFiles[] = str_replace('/',DS,$item['path']);
 					}
 				}
 			}

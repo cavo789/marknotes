@@ -24,6 +24,11 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
+		$doc = $aeSettings->getFolderDocs(true);
+
+		$fullname = $params['filename'].'.md';
+		$fullname = $doc.ltrim(str_replace('/', DS, $fullname), DS);
+
 		$final = $aeFiles->removeExtension($params['filename']).'.'.static::$extension;
 		$final = $aeSettings->getFolderDocs(true).$final;
 
@@ -56,7 +61,12 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 				$arr['html'] = $html;
 				// Get the duration for the HTML cache (default : 31 days)
 				$duration = $arrSettings['duration']['html'];
-				$cached->set($arr)->expiresAfter($duration);
+
+				// Add a tag to the cached item : the fullname of the
+				// note so we can kill with a
+				// $aeCache->deleteItemsByTag(md5($fullname));
+				// every cached items concerning this note
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}

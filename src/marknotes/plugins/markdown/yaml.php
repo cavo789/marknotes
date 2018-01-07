@@ -12,11 +12,13 @@
  * For instance :
  *
  * ---
- * title: An amazing YAML block
- * author: Christophe Avonture
- * company: marknotes
- * date: tuesday 1st january 2018
+ * title: 'An amazing YAML block'
+ * author: 'Christophe Avonture'
+ * company: 'marknotes'
+ * language: 'en'
+ * created_time: '2018-01-01 08:00:00'
  * ---
+ *
  * Note content
  * ....
  */
@@ -89,6 +91,7 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 		// Only if the library is installed otherwise nothing to do
 		$lib = $aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
 		if ($aeFiles->exists($lib)) {
+
 			// Load the library
 			include_once $lib;
 
@@ -103,7 +106,8 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 				."){1}[\r\n|\n]*(.*?)[\r\n|\n]+("
 				// $matches[3] end separator
 				.implode('|', array_map($quote, array($yaml_separator)))
-				// $matches[4] the document content i.e. the markdown content
+				// $matches[4] the document content i.e.
+				// the markdown content
 				."){1}[\r\n|\n]*(.*)$~s";
 
 			$md = $params['markdown'];
@@ -126,10 +130,9 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 
 				if ($add) {
 					$params['yaml'] = self::BuildYAML($md);
-
 					// Remember the note's YAML header
 					$yaml = YAML::dump($params['yaml']);
-				} // if ($add)
+				}
 			}
 		} else { // if ($aeFiles->exists($lib))
 			// The YAML library isn't found

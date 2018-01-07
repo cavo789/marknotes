@@ -298,11 +298,19 @@ marknotes has been created and is maintained by [Christophe Avonture](https://gi
 
 11. Want to help
 
-Great! Jump in. Feel free to play around, open an issue with new feature ideas or open PRs for fixes and improvements. 
+MarkNotes is maintained by one person in spare time. 
 
-Before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
+MarkNotes needs your help!
 
-Contributions are very welcome in any domain : templating, CSS, PHP, images, documentation, ... and testing / suggestions too.
+* Use it !
+* Add a star in the project page.
+* Tell others about MarkNotes.
+* Propose improvements (templating, CSS, PHP, images, documentation, ...)
+* Test and report [issues](issues), [help to fix them](issues) or [implement new features](pulls)
+
+Note : before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
+
+Thanks in advance !
 
 ## 12. License
 

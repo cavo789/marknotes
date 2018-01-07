@@ -69,7 +69,7 @@ class GetButtons extends \MarkNotes\Plugins\Task\Plugin
 				// Save the list in the cache
 				$arr['from_cache'] = 1;
 				$duration = $arrSettings['duration']['default'];
-				$cached->set($arr)->expiresAfter($duration);
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5('interface'));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}

@@ -36,27 +36,17 @@ define('_MARKNOTES', 1);
 		$params = array('filename' => $filename);
 		$aeSettings = \MarkNotes\Settings::getInstance($root, $params);
 
-		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance($root);
 		$aeSession->set('filename',$filename);
 		$aeSession->set('img_id',0);
 
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
 
-		// Check if notes should be stored in the cloud (Dropbox, ...)
-		$arrSettings = $aeSettings->getPlugins('/cloud', array('platform'=>''));
-		$platform = $arrSettings['platform']??'';
-		if(trim($platform)!=='') {
-			$enabled = $arrSettings['enabled']??0;
-			if (boolval($enabled)) {
-				// Get the doc folder
-				$docs = $aeSettings->getFolderDocs(true);
-				// Initialize the cloud
-				$aeFolders = \MarkNotes\Folders::getInstance();
-				$aeFiles->setCloud($arrSettings, $docs);
-				$aeFolders->setCloud($arrSettings, $docs);
-			}
-		} // if(trim($platform)!=='')
+		// Initialize the DocFolder filesystem
+		$aeInitialize = new Includes\Initialize();
+		$aeInitialize->setDocFolder();
+		unset($aeInitialize);
 
 		if ($filename !== '') {
 			// The filename shouldn't mention the docs folders, just the filename

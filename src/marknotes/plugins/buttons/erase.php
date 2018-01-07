@@ -29,4 +29,15 @@ class Erase extends \MarkNotes\Plugins\Button\Plugin
 
 		return true;
 	}
+
+	protected static function canAdd() : bool
+	{
+		// This button can't be displayed to visitors
+		if ($bReturn = parent::canAdd()) {
+			$aeSession = \MarkNotes\Session::getInstance();
+			$bReturn = boolval($aeSession->get('authenticated', 0));
+		}
+
+		return $bReturn;
+	}
 }
