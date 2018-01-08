@@ -120,7 +120,8 @@ class HTML
 		$skin = "skin-".$skin;
 		$template = str_replace('%SKIN%', $skin, $template);
 
-		$logo = $interface['logo'] ?? array('logo'=>'marknotes.svg');
+		$logo = $interface['logo'] ?? 'marknotes.svg';
+
 		$logo = $url.'assets/images/'.$logo;
 		$template = str_replace('%LOGO%', $logo, $template);
 

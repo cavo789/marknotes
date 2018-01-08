@@ -29,6 +29,7 @@ class Show
 		$bCache = $arrSettings['enabled'] ?? false;
 
 		$html = '';
+		$arr = null;
 
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();

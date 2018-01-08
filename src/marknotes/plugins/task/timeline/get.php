@@ -142,6 +142,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		}
 		/*<!-- endbuild -->*/
 
+		$arr = null;
+
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();
 

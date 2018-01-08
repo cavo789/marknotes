@@ -238,7 +238,7 @@ class Search
 		}
 		/*<!-- endbuild -->*/
 
-		$arr = array();
+		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 		$bCache = $arrSettings['enabled'] ?? false;

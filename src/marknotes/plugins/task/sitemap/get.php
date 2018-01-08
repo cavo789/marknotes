@@ -85,7 +85,7 @@ class Get
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$arr = array();
+		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 		$bCache = $arrSettings['enabled'] ?? false;

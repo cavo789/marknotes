@@ -45,6 +45,8 @@ class GetButtons extends \MarkNotes\Plugins\Task\Plugin
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 		$bCache = boolval($arrSettings['enabled'] ?? false);
 
+		$arr=null;
+
 		if ($bCache) {
 			// Get the list of buttons.
 

@@ -108,7 +108,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		}
 		/*<!-- endbuild -->*/
 
-		$arr = array();
+		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
 		$canSee = boolval($arrSettings['can_see'] ?? 1);

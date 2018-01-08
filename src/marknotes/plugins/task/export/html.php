@@ -57,6 +57,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 
 			if ($bCache) {
 				// Save the list in the cache
+				$arr = array();
 				$arr['from_cache'] = 1;
 				$arr['html'] = $html;
 				// Get the duration for the HTML cache (default : 31 days)

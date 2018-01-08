@@ -309,6 +309,8 @@ class Markdown
 		$bCache = $arrSettings['enabled'] ?? false;
 		$task = $aeSession->get('task');
 
+		$arr=null;
+
 		if ($bCache) {
 			// The content isn't the same, depending on the task
 			// key will be f.i. "task.export.html###c:\notes\docs\a.md"

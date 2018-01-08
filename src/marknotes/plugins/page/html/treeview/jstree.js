@@ -107,7 +107,9 @@ function jstree_init($data) {
 								$('body').removeClass('sidebar-open');
 							}
 
-							var $fname = objNode.parent + objNode.text; //data.url;
+							// data-url contains the relative URL
+							// starting with /docs/xxxx
+							var $fname = objNode.data.url;
 
 							$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
 
