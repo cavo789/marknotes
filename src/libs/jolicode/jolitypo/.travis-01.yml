@@ -1,0 +1,20 @@
+language: php
+
+php:
+  - 5.6
+  - 5.5
+  - 5.4
+  - 5.3
+  - hhvm
+  - 7
+
+sudo: false
+
+matrix:
+    allow_failures:
+        - php: hhvm
+
+before_script:
+  - composer install
+
+script: composer testci
