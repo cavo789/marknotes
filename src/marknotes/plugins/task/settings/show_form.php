@@ -102,8 +102,7 @@ class Show_Form
 	}
 
 	// Text
-	private static function getText(string $key, string $caption,
-		string $value) : string
+	private static function getText(string $key, string $caption,  $value) : string
 	{
 		static::$option+=1;
 
@@ -229,7 +228,7 @@ class Show_Form
 		$content .= self::getText($key.'logo', 'Logo '.
 			'(<em>The image should be saved in the <strong>'.
 			str_replace('/', DS, $root.'assets/images/').'</strong> '.
-			'folder</em>)', $arr['logo']);
+			'folder</em>)', $arr['logo']??'marknotes.svg');
 		return str_replace('%CONTENT%', $content, $box);
 	}
 
@@ -313,6 +312,39 @@ class Show_Form
 		return str_replace('%CONTENT%', $content, $box);
 	}
 
+	// Process Plugins-Options-Page-HTML-Optimize
+	private static function getOptionsPageHTMLOptimize(array $arr, string $key) : string
+	{
+		$key = $key.'.';
+		$box = self::getBox('Plugins - Options - Page - HTML - Optimize', 'fighter-jet');
+		$content = self::getRadio($key.'localStorage',
+			'Use browser cache (localStorage)',
+			$arr['localStorage']);
+		$content .= self::getRadio($key.'server_session',
+			'Use sessions on the server', $arr['server_session']);
+
+		$cache = $arr['cache']??array();
+
+		if ($cache !== array()) {
+			$key .= 'cache.';
+			$content .= self::getRadio($key.'enabled',
+				'Enable cache on the server', $cache['enabled']);
+			$content .= self::getText($key.'duration.default',
+				'Duration of the cache in seconds '.
+				'(60*60*24 = one day = 86.400)',
+				$cache['duration']['default']);
+			$content .= self::getText($key.'duration.html',
+				'Duration of the cache in seconds for HTML pages'.
+				'(60*60*24*31 = one month = 2.678.400)',
+				$cache['duration']['html']);
+			$content .= self::getText($key.'duration.sitemap',
+				'Duration of the cache in seconds for the sitemap '.
+				'(60*60*24*7 = one week = 604.800)',
+				$cache['duration']['sitemap']);
+		}
+
+		return str_replace('%CONTENT%', $content, $box);
+	}
 	/**
 	 * Built the HTML for the form
 	 */
@@ -345,6 +377,7 @@ class Show_Form
 		$boxes .= self::getTaskMarkdown($arr['plugins']['task']['markdown'],
 			'plugins.task.markdown');
 		$boxes .= self::getOptionsTaskLogin($arr['plugins']['options']['task']['login'], 'plugins.options.task.login');
+		$boxes .= self::getOptionsPageHTMLOptimize($arr['plugins']['options']['page']['html']['optimize'], 'plugins.options.page.html.optimize');
 
 		// -------------------------
 		// Done, we've our form with all elements (checkboxes,

@@ -64,7 +64,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		// It's a folder node
 		$dataURL=str_replace(DS, '/', str_replace($root, '', $dir));
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
-		$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
 
 		if (PHP_7_0) {
 
@@ -73,13 +72,16 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			$bConvert  = boolval($arrSettings['accent_conversion']??1);
 
 			if ($bConvert) {
-				// accent_conversion in settings.json has been initialized
-				// to 1 => make the conversion
+				$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
+
+				// accent_conversion in settings.json has
+				// been initialized to 1 => make the conversion
 				$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
+
+				$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 			}
 		}
 
-		$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 		$listDir = array
 		(
 			'id' => str_replace(DS, '/', $sID),
@@ -170,14 +172,14 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						// accent_conversion in settings.json has
 						// been initialized to 1 => make the conversion
 						$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+
+						$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
+
+						$dataFile=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
+
+						$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 					}
 				}
-
-				$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
-
-				$dataFile=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
-
-				$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 
 				$files[] = array(
 					'id' => md5($id),
@@ -450,7 +452,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			} else {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log('   Retrieving from the cache', 'debug');
+					$aeDebug->log('	Retrieving from the cache', 'debug');
 				}
 				/*<!-- endbuild -->*/
 			}

@@ -25,8 +25,8 @@ SET PAGE=%SRC%marknotes\plugins\page\
 SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
-call :fnCopyComposer
-call :fnCopyPSR
+REM call :fnCopyComposer
+REM call :fnCopyPSR
 REM call :fnCopyBootstrap
 REM call :fnCopyjQuery
 REM call :fnCopySymfony
@@ -55,7 +55,7 @@ REM call :fnFlySystem
 REM call :fnScrollDir
 REM call :fnCSSCheckboxLib
 REM call :fnSweetAlert
-call :fnphpFastCache
+REM call :fnphpFastCache
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -89,7 +89,9 @@ REM call :fnUpload
 REM call :fnHTML2MD
 REM call :fnGuzzle
 REM call :fnGoogleTranslate
+call :fnLockbox
 REM call :fnFinalize
+
 GOTO END:
 
 REM -----------------------------------------------
@@ -251,7 +253,6 @@ ECHO.
 IF NOT EXIST %LIBS%erusev\parsedown\ MKDIR %LIBS%erusev\parsedown\ >> %LOG%
 COPY %VENDOR%erusev\parsedown\Parsedown.php %LIBS%erusev\parsedown\ /Y >> %LOG%
 goto:eof
-
 
 ::--------------------------------------------------------
 ::-- fnCopyParsedownExtra
@@ -895,6 +896,18 @@ XCOPY %VENDOR%stichoza\google-translate-php\src\Stichoza\GoogleTranslate\*.* %TA
 
 goto:eof
 
+::--------------------------------------------------------
+::-- fnLockbox
+::--------------------------------------------------------
+
+:fnLockbox
+ECHO  === fnLockbox ===
+ECHO	COPY TO  %MARKDOWN%encrypt\libs\lockbox\
+ECHO.
+IF NOT EXIST %MARKDOWN%encrypt\libs\lockbox\ MKDIR %MARKDOWN%encrypt\libs\lockbox\ >> %LOG%
+XCOPY %VENDOR%lockbox\src\*.* %MARKDOWN%encrypt\libs\lockbox\ /E /Y >> %LOG%
+goto:eof
+
 REM -----------------------------------------------
 REM -----------------------------------------------
 REM ---------------- FINALIZATION -----------------
@@ -924,7 +937,6 @@ REM	ECHO  === %LIB% === >> %LOG%
 REM	ECHO  === %LIB% ===
 REM	XCOPY %VENDOR%symfony\%LIB%*.* %LIBS%symfony\%LIB%*.* /E /Y >> %LOG%
 REM )
-
 
 :END
 ECHO.

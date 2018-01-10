@@ -1,10 +1,15 @@
 <?php
 /**
- * Encrypt / Decrypt part of the .md file included between <encrypt> tags.
+ * Encrypt / Decrypt part of the .md file included between
+ * <encrypt> tags.
  * Use php_openssl so that extension should be loaded in php.ini.
  *
- *    1. Check that extension=php_openssl.dll is present in your php.ini file
- *    2. Verify that the extension_dir variable is correctly initialized
+ *	1. Check that extension=php_openssl.dll is present in your
+ * php.ini file
+ *	2. Verify that the extension_dir variable is correctly
+ * initialized
+ *
+ * @link https://github.com/starekrow/lockbox
  */
 namespace MarkNotes\Plugins\Markdown;
 
@@ -69,6 +74,22 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 				}
 			}
 
+			$aeFolders = \MarkNotes\Folders::getInstance();
+			$lib = __DIR__.'/encrypt/libs/lockbox/';
+
+			if ($aeFolders->exists($lib)) {
+				// Include Lockbox
+				require_once $lib."CryptoCore.php";
+				require_once $lib."CryptoCoreLoader.php";
+				require_once $lib."CryptoCoreFailed.php";
+				require_once $lib."CryptoCoreBuiltin.php";
+				require_once $lib."CryptoCoreOpenssl.php";
+				require_once $lib."Crypto.php";
+				require_once $lib."CryptoKey.php";
+				require_once $lib."Secret.php";
+				require_once $lib."Vault.php";
+			}
+
 			// Run the initialization code only once
 			static::$Initialized=1;
 		}
@@ -79,9 +100,9 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 	* Encrypt a string by using SSL
 	*
 	* @param  string $data  The string that should be encrypted
-	* @return type          The string, encrypted.
+	* @return type		  The string, encrypted.
 	*						The first characters will contains the
-	*                       "Initialization vector", required for the decryption
+	*						"Initialization vector", required for the decryption
 	* @link http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
 	*/
 	public static function sslEncrypt(string $data = '') : string
@@ -112,7 +133,7 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 	* @param  string $encrypted  The string to decrypt.
 	*							 The first characters contains the
 	*							 "Initialiation vector"
-	* @return type               The string, decrypted
+	* @return type				The string, decrypted
 	*/
 	public static function sslDecrypt(string $encrypted = '') : string
 	{
@@ -213,8 +234,8 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug = \MarkNotes\Debug::getInstance();
 						$aeDebug->log('The encryption has failed !!!', 'error');
-						$aeDebug->log('*    1. Check that extension=php_openssl.dll is present in your php.ini file', 'error');
-						$aeDebug->log('*    2. Verify that the extension_dir variable is correctly initialized', 'error');
+						$aeDebug->log('*	1. Check that extension=php_openssl.dll is present in your php.ini file', 'error');
+						$aeDebug->log('*	2. Verify that the extension_dir variable is correctly initialized', 'error');
 					}
 					/*<!-- endbuild -->*/
 				} else {
