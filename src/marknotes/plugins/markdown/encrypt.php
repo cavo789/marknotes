@@ -15,6 +15,10 @@ namespace MarkNotes\Plugins\Markdown;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+//use starekrow\Lockbox\CryptoKey;
+//use starekrow\Lockbox\Secret;
+//use starekrow\Lockbox\Vault;
+
 class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 {
 	protected static $me = __CLASS__;
@@ -33,6 +37,7 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 		// ([\\S\\n\\r\\s]*?) : match any characters, included new lines
 		'([\\S\\n\\r\\s]*?)'.
 		'<\/encrypt>/';
+
 	/**
 	 * Verify if the plugin is well needed and thus have a reason
 	 * to be fired
@@ -79,7 +84,7 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 
 			if ($aeFolders->exists($lib)) {
 				// Include Lockbox
-				require_once $lib."CryptoCore.php";
+				/*require_once $lib."CryptoCore.php";
 				require_once $lib."CryptoCoreLoader.php";
 				require_once $lib."CryptoCoreFailed.php";
 				require_once $lib."CryptoCoreBuiltin.php";
@@ -87,7 +92,7 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 				require_once $lib."Crypto.php";
 				require_once $lib."CryptoKey.php";
 				require_once $lib."Secret.php";
-				require_once $lib."Vault.php";
+				require_once $lib."Vault.php";*/
 			}
 
 			// Run the initialization code only once

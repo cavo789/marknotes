@@ -153,6 +153,54 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
+	 * If the user tries to access to an URL, the PHP wrapper
+	 * should well be installed. If not, show an error and stop.
+	 */
+	private static function checkProtocol(string $url) : bool
+	{
+		$bContinue = false;
+
+		// Get the list of wrappers loaded i.e. the capacity for PHP
+		// to retrieve HTTP, HTTPS, ... content
+		$w = stream_get_wrappers();
+
+		// Get the protocol of the URL we need to visit :
+		// http or https?
+		$protocol = substr($url, 0, 5);
+
+		if (strcasecmp($protocol, 'https') == 0) {
+			// https : check if the https wrapper is installed
+			$bContinue = in_array('https', $w);
+
+			//throw new \Exception("HTTPS wrapper not installed");
+			if (!$bContinue) {
+				echo '<h2>Marknotes - Error</h2>';
+				echo '<strong>The https wrapper is not installed. '.
+					'If you can, please enable it in your apache '.
+					'configuration otherwise you won\'t be able '.
+					'to use https URLs (probably http:// well).'.
+					'</strong>';
+			}
+		} else {
+			$bContinue = in_array('http', $w);
+			//throw new \Exception("HTTP wrapper not installed");
+			if (!$bContinue) {
+				echo '<h2>Marknotes - Error</h2>';
+				echo '<strong>The http wrapper is not installed. '.
+					'If you can, please enable it in your apache '.
+					'configuration otherwise you won\'t be able '.
+					'to use http URLs</strong>';
+			}
+		}
+
+		if (!$bContinue) {
+			echo '<p>You tried to access to : '.$url.'</p>';
+		}
+
+		return $bContinue;
+	}
+
+	/**
 	 * Run the task
 	 */
 	public static function run(&$params = null) : bool
@@ -193,6 +241,11 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			}
 			/*<!-- endbuild -->*/
 		} else {
+
+			// Check if we can continue
+			if (!self::checkProtocol($url)) {
+				die();
+			}
 
 			// A temporary filename will be created in the /tmp folder
 			// The name will be the URL ressources and be sure it will

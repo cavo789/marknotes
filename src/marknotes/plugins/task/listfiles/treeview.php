@@ -49,9 +49,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		//$arr = $aeSettings->getPlugins('/files', array('encode_accent'=>0));
-		//$bEncodeAccents = boolval($arr['encode_accent']);
 		$root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
+
 		$rootNode = $aeSettings->getFolderDocs(false);
 
 		// Get the list of files and folders for the treeview
@@ -104,7 +103,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$dirs = array();
 		$files = array();
 		foreach ($arrEntries as $entry) {
+
 			if ($entry['type'] == 'file') {
+
+							$entry['name'] = str_replace('/', DS, $entry['name']);
 
 				// We're processing a filename
 				$index += 1;
@@ -118,7 +120,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// Right-click on a file = open it's HTML version
 				$dataURL=str_replace($root, '', $entry['name']);
 				// Should be relative to the /docs folder
-				$dataURL=$aeSettings->getFolderDocs(false).$dataURL;
+				//$dataURL=$aeSettings->getFolderDocs(false).$dataURL;
 				$dataURL=str_replace(DS, '/', $dataURL).'.html';
 
 				$sFileText = $filename;
@@ -150,11 +152,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 						/*<!-- endbuild -->*/
 					}
 				}
+				$dataBasename = $aeFiles->removeExtension(basename($dataURL));
 
 				$dataFile = str_replace($root, '', $entry['name']);
 				$dataFile = str_replace(DS, '/', $dataFile);
-
-				$dataBasename = $aeFiles->removeExtension(basename($dataURL));
 
 				$default_task = 'task.export.html';
 
@@ -162,6 +163,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// to know that the action should be EDIT and not DISPLAY
 				// when the user click on the note that was just created
 				$lastAddedNote = trim($aeSession->get('last_added_note', ''));
+
 
 				if ($dataBasename===$lastAddedNote) {
 					$default_task = 'task.edit.form';

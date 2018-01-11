@@ -58,7 +58,7 @@ class Debug
 		}
 
 		// Reset the file
-		$aeFiles->create(self::$sDebugFileName, '');
+		$aeFiles->rewrite(self::$sDebugFileName, '');
 
 		self::$bDevMode = false;
 

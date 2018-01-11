@@ -296,7 +296,11 @@ class Files
 		}
 
 		self::getFileSystem($filename, $obj);
-		return $obj->read($filename);
+		if ($obj->has($filename)) {
+			return $obj->read($filename);
+		} else {
+			return '';
+		}
 	}
 
 	/**
