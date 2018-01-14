@@ -107,7 +107,6 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$aeDebug->log('Get the list of files for the treeview', 'debug');
 		}
 		/*<!-- endbuild -->*/
-
 		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
@@ -132,6 +131,10 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 				$cached = $aeCache->getItem(md5($key));
 				$arr = $cached->get();
+
+				if ($arr['files']==array()) {
+					$arr=null;
+				}
 			}
 
 			if (is_null($arr)) {

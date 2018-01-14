@@ -14,19 +14,23 @@ class JSON
 	private static $hDebug = false;
 	private static $root = '';
 
-	public function __construct()
+	public function __construct(string $root = '')
 	{
-		self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
-		self::$root = str_replace('/', DS, self::$root);
+		if ($root!=='') {
+			self::$root = rtrim($root, DS).DS;
+		} else {
+			self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
+			self::$root = str_replace('/', DS, self::$root);
+		}
 
 		self::$hDebug = false;
 		return true;
 	}
 
-	public static function getInstance()
+	public static function getInstance(string $root = '')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new JSON();
+			self::$hInstance = new JSON($root);
 		}
 		return self::$hInstance;
 	}

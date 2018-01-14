@@ -106,7 +106,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 			if ($entry['type'] == 'file') {
 
-							$entry['name'] = str_replace('/', DS, $entry['name']);
+				$entry['name'] = str_replace('/', DS, $entry['name']);
 
 				// We're processing a filename
 				$index += 1;
@@ -163,7 +163,6 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// to know that the action should be EDIT and not DISPLAY
 				// when the user click on the note that was just created
 				$lastAddedNote = trim($aeSession->get('last_added_note', ''));
-
 
 				if ($dataBasename===$lastAddedNote) {
 					$default_task = 'task.edit.form';

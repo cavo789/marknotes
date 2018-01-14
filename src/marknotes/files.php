@@ -48,12 +48,16 @@ class Files
 	 * Create an instance of MarkNotes\Files and Initialize
 	 * the $flyWebRoot object and, if needed, $flyAppRoot
 	 */
-	public function __construct()
+	public function __construct(string $webroot = '')
 	{
-		// Get the root folder of marknotes (f.i. C:\sites\marknotes\
-		// or /home/html/sites/marknotes/)
-		self::$sWebRoot = trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
-		self::$sWebRoot = str_replace('/', DS, self::$sWebRoot).DS;
+		if ($webroot=='') {
+			// Get the root folder of marknotes (f.i. C:\sites\marknotes\
+			// or /home/html/sites/marknotes/)
+			self::$sWebRoot = trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+			self::$sWebRoot = str_replace('/', DS, self::$sWebRoot).DS;
+		} else {
+			self::$sWebRoot = rtrim($webroot, DS).DS;
+		}
 
 		// Application root folder.
 		self::$sAppRoot = rtrim(dirname(dirname(__DIR__)), DS).DS;
@@ -89,10 +93,10 @@ class Files
 		return true;
 	}
 
-	public static function getInstance()
+	public static function getInstance(string $webroot='')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new Files();
+			self::$hInstance = new Files($webroot);
 		}
 		return self::$hInstance;
 	}
@@ -161,9 +165,6 @@ class Files
 		if ((self::$sDocsRoot!=='') && (strpos($filename, self::$sDocsRoot)!==FALSE)) {
 			// The folder is stored in the /docs folder
 			// ==> can be on a cloud
-//require_once('includes/debug_here.php');
-//here($filename,4);
-
 			$filename = str_replace(self::$sDocsRoot, '', $filename);
 			$obj = self::$flyDocsRoot;
 		}  else if (strpos($filename, self::$sWebRoot)!==FALSE) {
@@ -177,7 +178,6 @@ class Files
 		}
 
 		return true;
-
 	}
 
 	/**
@@ -285,11 +285,9 @@ class Files
 	}
 
 	/**
-	 * Get the list of files/folders under $path, recursively or not
-	 *
-	 * $path should be a folder, can't be a pattern like 'file.*'
+	 * Get the content of the file
 	 */
-	public static function getContent(string $filename, bool $recursive = false) : string
+	public static function getContent(string $filename) : string
 	{
 		if ($filename == '') {
 			return false;

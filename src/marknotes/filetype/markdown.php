@@ -1,5 +1,10 @@
 <?php
-/* REQUIRES PHP 7.x AT LEAST */
+/*
+ * The markdown version will be put in the cache folder but ONLY WHEN
+ * the note will not contains encrypted informations. If it's the
+ * case, markdown can't be put in the cache otherwise we'll store
+ * unencrypted informations which is a bad idea.
+ */
 namespace MarkNotes\FileType;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -234,14 +239,13 @@ class Markdown
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if ($aeFiles->exists($filename)) {
-
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug->log("Process file ".$filename,"debug");
 			}
 			/*<!-- endbuild -->*/
 
-			$markdown = $aeFiles->getContent(utf8_decode($filename));
+			$markdown = $aeFiles->getContent($filename);
 
 			// --------------------------------
 			// Call content plugins
@@ -323,6 +327,17 @@ class Markdown
 		if (is_null($arr)) {
 			$arr = array();
 			$arr['markdown'] = self::doReadContent($filename);
+
+			if (trim($arr['markdown'])=='') {
+				// Don't cache if the content is empty.
+				$bCache = false;
+			} elseif (strpos($arr['markdown'], ENCRYPT_MARKDOWN_TAG)>0) {
+				// Check if the markdown contains the encrypt tag.
+				// If yes, this means that this note contains encrypted
+				// informations and if we store the note in the cache,
+				// we'll store the unencrypted data ==> DON'T DO THIS
+				$bCache = false;
+			}
 
 			if ($bCache) {
 				// Save the content in the cache

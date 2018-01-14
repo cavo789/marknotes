@@ -61,12 +61,16 @@ class Folders
 	 * Create an instance of MarkNotes\Folders and Initialize
 	 * the $flyWebRoot object and, if needed, $flyAppRoot
 	 */
-	public function __construct()
+	public function __construct(string $webroot = '')
 	{
 		// Get the root folder of marknotes (f.i. C:\sites\marknotes\
 		// or /home/html/sites/marknotes/)
-		self::$sWebRoot=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
-		self::$sWebRoot=str_replace('/', DS, self::$sWebRoot).DS;
+		if ($webroot=='') {
+			self::$sWebRoot=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+			self::$sWebRoot=str_replace('/', DS, self::$sWebRoot).DS;
+		} else {
+			self::$sWebRoot = rtrim($webroot, DS).DS;
+		}
 
 		// Application root folder.
 		self::$sAppRoot = rtrim(dirname(dirname(__DIR__)), DS).DS;
@@ -102,10 +106,10 @@ class Folders
 		return true;
 	}
 
-	public static function getInstance()
+	public static function getInstance(string $webroot='')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new Folders();
+			self::$hInstance = new Folders($webroot);
 		}
 		return self::$hInstance;
 	}

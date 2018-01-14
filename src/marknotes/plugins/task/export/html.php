@@ -1,6 +1,11 @@
 <?php
 /**
  * Export the note as a .html file
+ *
+ * The HTML version will be put in the cache folder but ONLY WHEN
+ * the note will not contains encrypted informations. If it's the
+ * case, HTML can't be put in the cache otherwise we'll store
+ * unencrypted informations which is a bad idea.
  */
 
 namespace MarkNotes\Plugins\Task\Export;
@@ -54,6 +59,19 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			// Get the HTML content
 			$aeTask = \MarkNotes\Tasks\Display::getInstance();
 			$html = $aeTask->run($params);
+
+			if (trim($html)=='') {
+				// No cache if the HTML is empty, probably due
+				// to an error
+				$bCache = false;
+			} else if (strpos($html, 'data-encrypt="true"')>0) {
+				// Check if the HTML contains the data-encrypt="true"
+				// attribute.
+				// If yes, this means that this note contains encrypted
+				// informations and if we store the note in the cache,
+				// we'll store the unencrypted data ==> DON'T DO THIS
+				$bCache = false;
+			}
 
 			if ($bCache) {
 				// Save the list in the cache

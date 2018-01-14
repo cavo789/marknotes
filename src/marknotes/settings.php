@@ -116,7 +116,7 @@ class Settings
 	*/
 	private function loadJSON(array $params = null) : array
 	{
-		$aeJSON = \MarkNotes\JSON::getInstance();
+		$aeJSON = \MarkNotes\JSON::getInstance($this->getFolderAppRoot());
 		$aeFiles = \MarkNotes\Files::getInstance();
 
 		$json = array();

@@ -91,28 +91,32 @@ class Display
 			// Damned ! It's so difficult to work with
 			// accentuated chars and make the
 			// code works both on Windows and Unix...
-			$fullname = utf8_encode($fullname);
+			$fullname = utf8_decode($fullname);
 			if (!$aeFiles->exists($fullname)) {
 				$aeFunctions->fileNotFound($fullname);
 			}
 		}
 
-		// Read the markdown file, $markdown will contains markdown content,
-		// not HTML one
+		// Read the markdown file, $markdown will contains
+		// markdown content, not HTML one
 		$aeMD = \MarkNotes\FileType\Markdown::getInstance();
 		$markdown = $aeMD->read($fullname, $params);
 
 		self::insertHR($markdown);
 		self::insertPageBreak($markdown);
 
-		// Convert the Markdown text (.md file's content) into an HTML text
+		// Convert the Markdown text (.md file's content)
+		// into an HTML text
 		$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
 		$htmlNote = $aeConvert->getHTML($markdown, $params, true);
 
-		// Now, get the template and add the content (from $htmlNote)
-		// in the page
-		$aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
-		$html = $aeConvert->run($htmlNote, $params);
+		// Now, get the template and add the content
+		// (from $htmlNote) in the page
+		$html = '';
+		if (trim($htmlNote)!=='') {
+			$aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
+			$html = $aeConvert->run($htmlNote, $params);
+		}
 
 		return $html;
 	}

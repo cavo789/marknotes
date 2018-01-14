@@ -15,10 +15,6 @@ namespace MarkNotes\Plugins\Markdown;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-//use starekrow\Lockbox\CryptoKey;
-//use starekrow\Lockbox\Secret;
-//use starekrow\Lockbox\Vault;
-
 class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 {
 	protected static $me = __CLASS__;
@@ -102,43 +98,14 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	* Encrypt a string by using SSL
-	*
-	* @param  string $data  The string that should be encrypted
-	* @return type		  The string, encrypted.
-	*						The first characters will contains the
-	*						"Initialization vector", required for the decryption
-	* @link http://stackoverflow.com/questions/11821195/use-of-initialization-vector-in-openssl-encrypt)
-	*/
-	public static function sslEncrypt(string $data = '') : string
-	{
-		// Dynamically generate an "IV" i.eI and initialization vector
-		// that will ensure cypher to be unique
-		//
-		// And concatenate that "IV" to the encrypted texte
-
-		$ivSize = @\mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-		$iv = @\mcrypt_create_iv($ivSize, MCRYPT_RAND);
-
-		if (function_exists('openssl_encrypt')) {
-			return urlencode($iv.\openssl_encrypt(urlencode($data), self::$method, static::$password, 0, $iv));
-		} else {
-			return urlencode(
-				exec(
-					"echo \"".urlencode($data)."\" | openssl enc -".urlencode(self::$method).
-					" -base64 -nosalt -K ".bin2hex(static::$password)." -iv ".bin2hex($iv)
-				)
-			);
-		}
-	}
-
-	/**
 	* Decrypt a SSL encrypted string
 	*
-	* @param  string $encrypted  The string to decrypt.
-	*							 The first characters contains the
-	*							 "Initialiation vector"
-	* @return type				The string, decrypted
+	* REMARK : OBSOLETE. As from v2, marknotes use the LockBox
+	* library. This is done through task.encrypt.unencrypt.
+	*
+	* This function is only needed during the upgrade of notes
+	* from marknotes v1 till marknotes v2. The upgrade is done thanks
+	* the /utils/upgrade_encryption.php script
 	*/
 	public static function sslDecrypt(string $encrypted = '') : string
 	{
@@ -203,16 +170,19 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 		$rewriteFile = false;
 
 		// Loop and process every <encrypt> tags
-		// For instance : <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
-
+		// For instance :
+		// <encrypt data-encrypt="true">ENCRYPTED TEXT</encrypt>
 		for ($i; $i < $j; $i++) {
 			// Retrieve the attributes (f.i. data-encrypt="true")
 			$attributes = $matches[1][$i];
 
 			$isEncrypted = false;
 
+			// Search for data-encrypt="xxxx" if present and if so
+			// check if the value is "true" meaning that the content
+			// is already encrypted
 			$tmp = array();
-			preg_match('#data-encrypt="(.*)"#', $attributes, $tmp);
+			preg_match('#data-encrypt="([^"]*)"#', $attributes, $tmp);
 
 			if (count($tmp) > 0) {
 				// Only when data-encrypt="true" is found,
@@ -228,34 +198,31 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 				// data-encrypt="true" => the content
 				// should be encrypted and the file should be override
 				// with encrypted data
-				$encrypted = self::sslEncrypt($words);
 
-				// Just to be sure that encryption is successfull
-				$decrypt = self::sslDecrypt($encrypted);
+				// New way of encryption, call the
+				// task.encrypt.encrypt
+				$aeEvents = \MarkNotes\Events::getInstance();
+				$aeEvents->loadPlugins('task.encrypt.encrypt');
 
-				if ($words !== $decrypt) {
-					/*<!-- build:debug -->*/
-					$aeSettings = \MarkNotes\Settings::getInstance();
-					if ($aeSettings->getDebugMode()) {
-						$aeDebug = \MarkNotes\Debug::getInstance();
-						$aeDebug->log('The encryption has failed !!!', 'error');
-						$aeDebug->log('*	1. Check that extension=php_openssl.dll is present in your php.ini file', 'error');
-						$aeDebug->log('*	2. Verify that the extension_dir variable is correctly initialized', 'error');
-					}
-					/*<!-- endbuild -->*/
-				} else {
-					// OK, it's fine, encryption is a success
-					$markdown = str_replace(
-						$matches[0][$i],
-						utf8_encode(
-							'<encrypt data-encrypt="true">'.
-							$encrypted.'</encrypt>'
-						),
-						$markdown
-					);
+				$info = array('data'=>$words);
 
-					$rewriteFile = true;
-				}
+				$args=array(&$info);
+				// Call the encryption tool; method : encrypt
+				$aeEvents->trigger('task.encrypt.encrypt::encrypt', $args);
+
+				// And get the unencrypted data
+				$encrypted = $args[0]['data'];
+
+				// OK, it's fine, encryption is a success
+				$markdown = str_replace(
+					$matches[0][$i],
+					utf8_encode(
+						'<encrypt data-encrypt="true" data-mode="1">'.
+						$encrypted.'</encrypt>'
+					),
+					$markdown
+				);
+				$rewriteFile = true;
 			} // if (!$isEncrypted)
 		} // for($i;$i<$j;$i++)
 
@@ -280,32 +247,23 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 		// Check if, in the markdown string, there is encrypt tags
 		// like <encrypt>SOMETHING</encrypt> i.e. unencrypted content.
 		if (preg_match_all(static::$regex, $params['markdown'], $matches)) {
-
-			if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-				// mcrypt_get_iv_size doesn't exists anymore !!!
-				// http://php.net/manual/fr/function.mcrypt-get-iv-size.php
-
-				$params['markdown'] = "## Encrypt plugin\nmcrypt_get_iv_size ".
-					"doesn't exists anymore since PHP 7.1 !!! {style='font-size:2em;color:red;' class='animated infinite flash'}\n".$params['markdown'];
-				return false;
-			}
-
 			// Yes => encrypt these contents
 			$params['markdown'] = self::encrypt($params['markdown'], $matches);
 		}
 
 		$aeSession = \MarkNotes\Session::getInstance();
 
-		// The note should be unencrypted in case of editing or when the search is fired
-		// edit.form : the unencrypted version should be editable
+		// The note should be unencrypted in case of editing
+		// or when the search is fired edit.form : the unencrypted
+		// version should be editable
 		// search : we also need to search in encrypted text
 		$task = $aeSession->get('task');
 
 		// In some cases, the encrypted info shouldn't  stay encrypted.
 		// In the edit.form f.i. or when the search task is running.
 		//
-		// To indicate that encryption should be removed, the calling code
-		// should initialize $params['encryption']=0
+		// To indicate that encryption should be removed,
+		// the calling code should initialize $params['encryption']=0
 		$bKeepEncryption = boolval($params['encryption'] ?? 1);
 
 		if (!$bKeepEncryption) {
@@ -339,9 +297,77 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 
 				$j = count($matches[0]);
 				for ($i=0; $i < $j; $i++) {
-					$decrypt = self::sslDecrypt($encrypted_portion[$i]);
+
+					$encrypted = $encrypted_portion[$i];
+
+					// Check if there is a data-mode="999" attribute
+					// in the attribute of the <encrypt> tag
+
+					$tmp = array();
+					preg_match('#data-mode="([^"]*)"#', $attributes[$i], $tmp);
+
+					$mode=0;
+					if (count($tmp) > 0) {
+						// Attribute data-mode="999" is found,
+						// this means the encryption tool used is
+						// no more MarkNotes v1.x but the
+						// tool introduced with Marknotes v2
+						// (i.e. Lockbox)
+						$mode = $tmp[1];
+					}
+
+					if ($mode>0) {
+						// New way of encryption, call the
+						// task.encrypt.unencrypt
+						$aeEvents = \MarkNotes\Events::getInstance();
+						$aeEvents->loadPlugins('task.encrypt.unencrypt');
+
+						$info = array('data'=>$encrypted);
+
+						$args=array(&$info);
+						// Call the encryption tool; method : encrypt
+						$aeEvents->trigger('task.encrypt.unencrypt::unencrypt', $args);
+
+						// And get the unencrypted data
+						$decrypt = $args[0]['data'];
+					} else {
+						// ------------------------------
+						// @DEPRECATED
+						// If the code comes here, this means that
+						// the encryption used is the one used by
+						// old version of marknotes (before v2.0
+						// launched in 2018). The encryption used
+						// was intern and not based on Lockbox.
+						// A tool is available under the /utils
+						// folder to convert notes from the old
+						// encryption method to the new one.
+						// Please run it !!!
+						// ------------------------------
+
+						// The migration tool
+						// utils/upgrade_encryption.php
+						// should well be able to call this method
+						// so check if running deprecated code is
+						// allowed. (Allow_Deprecated_Code is set
+						// to 1 by the utility)
+
+						$aeSession = \MarkNotes\Session::getInstance();
+						$bAllow = $aeSession->get('Allow_Deprecated_Code', 0);
+
+						if (!$bAllow) {
+							$aeFunctions = \MarkNotes\Functions::getInstance();
+							$url = $aeFunctions->getCurrentURL();
+
+							$msg = "Your note is using the old way of ".
+								"storing encrypted data. Please use ".
+								"the ".$url."utils/upgrade_encryption.php";
+							throw new \Exception($msg, 999);
+						}
+						$decrypt = self::sslDecrypt($encrypted);
+					}
 
 					$decrypt = ENCRYPT_MARKDOWN_TAG.$decrypt.ENCRYPT_MARKDOWN_TAG;
+
 					$params['markdown'] = str_replace($pattern[$i], $decrypt, $params['markdown']);
 				}
 			}
