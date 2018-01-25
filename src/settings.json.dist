@@ -365,6 +365,12 @@
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
+				"mermaid": {
+					"description": "Integrate mermaid",
+					"enabled": 1,
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
+				},
 				"md": {
 					"description": "Load JS for the MD file opening",
 					"enabled": 1,
