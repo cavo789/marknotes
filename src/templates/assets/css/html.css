@@ -141,7 +141,7 @@ footer > ul.list-inline li {
 	font-weight: bold;
 }
 
-.note {
+.note, .question {
 	color: #616E14;
 	border: solid 1px #BFD62F;
 	background-color: #DAE691;
@@ -149,6 +149,16 @@ footer > ul.list-inline li {
 	padding: 14px 20px;
 
 }
+
+.question::before {
+	content: 'Question: ';
+	font-weight: bold;
+}
+
+.question {
+	background-color: yellow;
+}
+
 .devmode {
 	background-color: #f78272;
 	padding		 : 10px;

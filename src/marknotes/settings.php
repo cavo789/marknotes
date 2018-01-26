@@ -32,6 +32,7 @@ class Settings
 
 	public static function getInstance(string $folder = '', array $params = null)
 	{
+
 		if (self::$hInstance === null) {
 			self::$hInstance = new Settings($folder, $params);
 		}
@@ -40,7 +41,8 @@ class Settings
 	}
 
 	/**
-	* $arr is the debug node of the settings.json file, something like :
+	* $arr is the debug node of the settings.json file,
+	* something like :
 	*
 	*  "debug": {
 	*	  "enabled": 1,
@@ -111,8 +113,8 @@ class Settings
 	*	  /docs/marknotes/userguide.md if displayed, check if the file
 	*	  /docs/marknotes/userguide.json exists and if so, use it.
 	*
-	* In this order so the file loaded in step 4 will have the priority
-	* and can overwrite global settings
+	* In this order so the file loaded in step 4 will have the
+	* priority and can overwrite global settings
 	*/
 	private function loadJSON(array $params = null) : array
 	{
@@ -162,31 +164,6 @@ class Settings
 
 			if (count($arr) > 0) {
 				$json = array_replace_recursive($json, $arr);
-
-				// ---------------------------------------------------------
-				// @TODO : Remove in future version (@DEPRECTATED)
-				// Support old json : before october 2017, old settings.json
-				// was like
-				//
-				// 	{
-				//		"debug": 1,
-				//		"development": 0,
-				//		...
-				//  }
-				//
-				// so debug wasn't an array but just a boolean
-
-				if (!is_array($json['debug'])) {
-					$arr=array(
-						'enabled'=>$json['debug']??0,
-						'development'=>$json['development']??0
-					);
-				} else {
-					$arr=$json['debug'];
-				}
-
-				//
-				// ---------------------------------------------------------
 			}
 		}
 
@@ -195,23 +172,24 @@ class Settings
 		// docs/markdown.md but only markdown.md because the folder
 		// name will be added later on
 
-		if (isset($params['filename'])) {
+		$noteFileName = $params['filename']??'';
+
+		if ($noteFileName!=='') {
 			$docRoot = $json['folder'].DS;
 
 			$aeFunctions = \MarkNotes\Functions::getInstance();
-			if ($aeFunctions->startsWith($params['filename'], $docRoot)) {
-				$params['filename'] = substr($params['filename'], strlen($docRoot));
+			if ($aeFunctions->startsWith($noteFileName, $docRoot)) {
+				$noteFileName = substr($noteFileName, strlen($docRoot));
 			}
 
 			// 3. Get the settings.json file that is, perhaps,
 			// present in the folder of the note
-
-			if (!dirname($params['filename'])=='.') {
+			if (dirname($noteFileName)!=='.') {
 				// Only when the file isn't directly under the root
 				// First, be sure that the doc folder has been set
 
 				$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
-				$noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
+				$noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($noteFileName));
 
 				// $noteFolder is perhaps
 				// C:\notes\docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
@@ -223,7 +201,8 @@ class Settings
 				$noteFolder = rtrim($noteFolder, DS);
 
 				do {
-					// $tree will be equal to docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+					// $tree will be equal to
+					// docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
 					$tree = str_replace($folder, '', $noteFolder);
 
 					// Process docs, then Folder, then Sub1, ...
@@ -234,8 +213,14 @@ class Settings
 					$noteJSON = rtrim($folder, DS).DS.'settings.json';
 
 					if ($aeFiles->exists($noteJSON)) {
+						/*<!-- build:debug -->*/
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log($noteJSON, "debug");
+						/*<!-- endbuild -->*/
+
 						// Read the settings.json file and merge
 						$arr = $aeJSON->json_decode($noteJSON, true);
+
 						$json = array_replace_recursive($json, $arr);
 
 						/*<!-- build:debug -->*/
@@ -251,16 +236,16 @@ class Settings
 			// note_name is the note filename with the .json
 			// extension of .md
 
-			// if $params['filename'] is equal to
+			// if $noteFileName is equal to
 			// /marknotes/userguide.md
 
 			// $dir will be "marknotes/"
-			$dir = dirname($params['filename']);
+			$dir = dirname($noteFileName);
 			$dir = ($dir=='.'?'':$dir.DS);
 
 			// $fname will be "userguide.json"
 			$aeFiles = \MarkNotes\Files::getInstance();
-			$fname=$aeFiles->removeExtension(basename($params['filename'])).'.json';
+			$fname = $aeFiles->removeExtension(basename($noteFileName)).'.json';
 
 			// $noteJSON will be
 			// c:/sites/notes/docs/marknotes/userguide.json f.i.
@@ -672,10 +657,9 @@ class Settings
 		/*<!-- build:debug -->*/
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeDebug->here("*** OBSOLETE - The convert node doesn't exists anymore. See plugins->options->export", 10);
-		/*<!-- build:debug -->*/
 		die("Died in ".__FILE__.", line ".__LINE__);
 		/*<!-- endbuild -->*/
-		/*<!-- endbuild -->*/
+
 		$aeFiles = \MarkNotes\Files::getInstance();
 
 		$arr = array();

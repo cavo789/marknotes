@@ -63,6 +63,7 @@ REM call :fnCopyjsTree
 REM call :fnCopyjsTreeProton
 REM call :fnCopySimpleMDE
 REM call :fnCopyPrism
+call :fnCopyMermaid
 REM call :fnCopyFlexDataList
 REM call :fnCopyjQueryHighLight
 REM call :fnCopyPrintPreview
@@ -89,7 +90,7 @@ REM call :fnUpload
 REM call :fnHTML2MD
 REM call :fnGuzzle
 REM call :fnGoogleTranslate
-call :fnLockbox
+REM call :fnLockbox
 REM call :fnFinalize
 
 GOTO END:
@@ -567,8 +568,21 @@ ECHO  === prism ===
 ECHO	COPY TO %PAGE%html\prism\libs\prism\
 ECHO.
 IF NOT EXIST %PAGE%html\prism\libs\prism\ MKDIR %PAGE%html\prism\libs\prism\ >> %LOG%
-COPY %VENDOR_MANUAL%prism\prism.css %PAGE%html\prism\libs\prism\ /Y >> %LOG%
-COPY %VENDOR_MANUAL%prism\prism.js %PAGE%html\prism\libs\prism\ /Y >> %LOG%
+COPY %MANUAL%prism\prism.css %PAGE%html\prism\libs\prism\ /Y >> %LOG%
+COPY %MANUAL%prism\prism.js %PAGE%html\prism\libs\prism\ /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyMermaid
+::--------------------------------------------------------
+
+:fnCopyMermaid
+ECHO  === mermaid ===
+ECHO	COPY TO %PAGE%html\mermaid\libs\mermaid\
+ECHO.
+IF NOT EXIST %PAGE%html\mermaid\libs\mermaid\ MKDIR %PAGE%html\mermaid\libs\mermaid\ >> %LOG%
+COPY %MANUAL%mermaid\mermaid-7.0.0\dist\mermaid*.css %PAGE%html\mermaid\libs\mermaid\ /Y >> %LOG%
+COPY %MANUAL%mermaid\mermaid-7.0.0\dist\mermaid.min.js %PAGE%html\mermaid\libs\mermaid\ /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
@@ -902,10 +916,10 @@ goto:eof
 
 :fnLockbox
 ECHO  === fnLockbox ===
-ECHO	COPY TO  %MARKDOWN%encrypt\libs\lockbox\
+ECHO	COPY TO  %TASK%encrypt\libs\lockbox\
 ECHO.
-IF NOT EXIST %MARKDOWN%encrypt\libs\lockbox\ MKDIR %MARKDOWN%encrypt\libs\lockbox\ >> %LOG%
-XCOPY %VENDOR%lockbox\src\*.* %MARKDOWN%encrypt\libs\lockbox\ /E /Y >> %LOG%
+IF NOT EXIST %TASK%encrypt\libs\lockbox\ MKDIR %TASK%encrypt\libs\lockbox\ >> %LOG%
+XCOPY %VENDOR%lockbox\src\*.* %TASK%encrypt\libs\lockbox\ /E /Y >> %LOG%
 goto:eof
 
 REM -----------------------------------------------

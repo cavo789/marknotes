@@ -167,7 +167,7 @@ function processFile(string $filename)
 
 			// The note is now encrypted with LockBox
 			// and his content contains portions like :
-			// Login    : <encrypt data-encrypt="true">XXXXXX</encrypt>
+			// Login	: <encrypt data-encrypt="true">XXXXXX</encrypt>
 			// Password : <encrypt data-encrypt="true">YYYYYY</encrypt>
 			$aeFiles->rewrite($filename, $markdown);
 
@@ -272,11 +272,7 @@ function getHTML() : string
 
 		// Get the list of .md files
 		$arr = getFiles();
-$arr=array(
-	'docs\Temporaire\MOSS.md',
-	'docs\Temporaire\èàéù\Intervat.md',
-	'docs\Temporaire\Activité Indépendant\Déclaration impôts\Credentials.md'
-);
+
 		if ($arr!==array()) {
 			// and process them one by one
 			foreach ($arr as $file) {

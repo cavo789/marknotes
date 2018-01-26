@@ -8,8 +8,9 @@
  * Symbolic link concern the folders that are not "really" in the
  * web folder (f.i. c:\sites\notes) but elsewhere (f.i.
  * c:\repo\marknotes). In the web folder, we can have a folder like
- * the "marknotes" folder (which contains the source code of marknotes)
- * and that folder is a symbolic link to c:\repo\marknotes.
+ * the "marknotes" folder (which contains the source code of
+ * marknotes) and that folder is a symbolic link to
+ * c:\repo\marknotes.
  *
  * By checking if the folder "marknotes" exists in "c:\sites\notes",
  * the result will be False. We need to check "c:\repo\marknotes".
@@ -84,7 +85,10 @@ class Folders
 			self::$sAppRoot = DS.ltrim(self::$sAppRoot, DS);
 		}
 
-		$adapter = new Local(static::$sWebRoot);
+		// Local::SKIP_LINKS = don't throw fatal errors when
+		// a symlink file/folder is found, just ignore it
+		// https://flysystem.thephpleague.com/adapter/local/
+		$adapter = new Local(static::$sWebRoot, LOCK_EX, Local::SKIP_LINKS);
 
 		// With Flysystem (https://flysystem.thephpleague.com),
 		// we can use multiple adapter for, for instance, the local
@@ -99,7 +103,10 @@ class Folders
 		// perhaps different than the web root (where the notes
 		// are stored). We then need to have two objects
 		if (self::$sWebRoot!==self::$sAppRoot) {
-			$adapter = new Local(static::$sAppRoot);
+			// Local::SKIP_LINKS = don't throw fatal errors when
+			// a symlink file/folder is found, just ignore it
+			// https://flysystem.thephpleague.com/adapter/local/
+			$adapter = new Local(static::$sAppRoot, LOCK_EX, Local::SKIP_LINKS);
 			static::$flyAppRoot = new Filesystem($adapter);
 		}
 
@@ -144,7 +151,10 @@ class Folders
 
 			}
 		} else { // if ($platform!=='')
-			$adapter = new Local(static::$sDocsRoot);
+			// Local::SKIP_LINKS = don't throw fatal errors when
+			// a symlink file/folder is found, just ignore it
+			// https://flysystem.thephpleague.com/adapter/local/
+			$adapter = new Local(static::$sDocsRoot, LOCK_EX, Local::SKIP_LINKS);
 		}
 
 		static::$flyDocsRoot = new Filesystem($adapter);
@@ -307,6 +317,7 @@ class Folders
 	{
 		self::getFileSystem($foldername, $obj);
 		$items = $obj->listContents($foldername, $recursive);
+
 		return $items;
 	}
 

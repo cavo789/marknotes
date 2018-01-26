@@ -103,9 +103,10 @@ class Initialize
 	}
 
 	/**
-	 * In order to make SEF URLs working, marknotes need a .htaccess file
-	 * Check the presence of the .htaccess file; if not present, create it
-	 * by getting a copy of htaccess.txt
+	 * In order to make SEF URLs working, marknotes need a
+	 * .htaccess file
+	 * Check the presence of the .htaccess file; if not
+	 * present, create it by getting a copy of htaccess.txt
 	 */
 	private static function createHTAccess() : bool
 	{
@@ -149,13 +150,13 @@ class Initialize
 		//
 		// The node should be something like this :
 		//
-		//   	"debug": {
-		//   		"enabled": 1,
-		//   		"development": 1,
-		//   		"logfile": {
-		//   			"template": "[%datetime%] [%level_name%] %message% %context%"
-		//   		}
-		//   	}
+		//		"debug": {
+		//			"enabled": 1,
+		//			"development": 1,
+		//			"logfile": {
+		//				"template": "[%datetime%] [%level_name%] %message% %context%"
+		//			}
+		//		}
 
 		$debug = boolval($arr['enabled'] ?? 0);
 
@@ -225,8 +226,7 @@ class Initialize
 
 		if (version_compare(phpversion(), '7.0.0', '<')) {
 			self::die(ERROR_PHP_VERSION);
-		} else { // if (version_compare(phpversion(), '7.0.0', '<'))
-
+		} else {
 			self::createHTAccess();
 
 			// Load third parties
@@ -264,7 +264,15 @@ class Initialize
 
 			$aeFiles = \MarkNotes\Files::getInstance(self::$webRootFolder);
 
-			$aeSettings = \MarkNotes\Settings::getInstance(self::$webRootFolder);
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+
+			// Retrieve the note to process if any
+			$filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
+			$filename = rtrim($filename, DS);
+			$filename = str_replace('/', DS, $filename);
+
+			$params = array('filename'=>$filename);
+			$aeSettings = \MarkNotes\Settings::getInstance(self::$webRootFolder, $params);
 
 			$aeCache = \MarkNotes\Cache::getInstance(self::$webRootFolder);
 

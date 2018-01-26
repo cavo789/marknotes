@@ -58,9 +58,11 @@ class Markdown
 		if (trim($filename) !== '') {
 			$filename = str_replace('/', DS, $filename);
 
-			// The filename shouldn't mention the docs folders, just the filename
-			// So, $filename should not be docs/markdown.md but only markdown.md because the
-			// folder name will be added later on
+			// The filename shouldn't mention the docs
+			// folders, just the filename
+			// So, $filename should not be docs/markdown.md
+			// but only markdown.md because the folder name
+			// will be added later on
 
 			$docRoot = $aeSettings->getFolderDocs(false);
 
@@ -69,28 +71,6 @@ class Markdown
 			}
 
 			$docRoot = $aeSettings->getFolderDocs(false);
-			// If the filename doesn't mention the file's extension, add it.
-			//if (substr($filename, -3) != '.md') {
-			//	$filename .= '.md';
-			//}
-
-			//$filename=$aeFiles->removeExtension($filename).'.md';
-			//$full=$aeSettings->getFolderDocs(true).$filename;
-
-			//if (!$aeFiles->exists($docFolder.$filename)) {
-			//	$tmp = utf8_decode($filename);
-			//	if ($aeFiles->exists($docFolder.$tmp)) {
-			//		$filename=$tmp;
-			//	}
-			//}
-
-			// It's a bad idea to sanitize here because if the filename
-			// already contains an invalid character (like a "+"), if we
-			// sanitize, we remove that character and, for sure, the file
-			// can't be retrieved. Sanitization should be made when we
-			// add notes through the interface, so in the task.file.create
-			// plugin; not here
-			//$filename = $aeFiles->sanitize(trim($filename));
 		}
 
 		/*<!-- build:debug -->*/
