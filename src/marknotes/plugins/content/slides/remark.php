@@ -4,13 +4,18 @@ namespace MarkNotes\Plugins\Content\Slides;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Remark
+class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 {
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.content.html.remark';
+	protected static $json_options = 'plugins.options.page.html.remark';
+
 	private static $layout = 'remark';
+
 	/**
 	 *
 	 */
-	public static function doIt(&$params = null)
+	public static function doIt(array &$params = array()) : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -33,8 +38,11 @@ class Remark
 
 			// The slideshow functionnality will be remark
 
-			// Consider that every headings (except h1) should start in a new slide
-			// The "remark" library allow indeed to give a name to each slide by just adding "name: NAME" in the markdown string
+			// Consider that every headings (except h1)
+			// should start in a new slide
+			// The "remark" library allow indeed to give a
+			// name to each slide by just adding "name: NAME"
+			// in the markdown string
 
 			$arrHeading = array('##','###','####','#####','######');
 			foreach ($arrHeading as $head) {
@@ -47,9 +55,12 @@ class Remark
 					$j = count($matches[0]);
 
 					for ($i = 0; $i < $j; $i++) {
-						// $matches[0][$i] is f.i. "## TITLE" while $matches[1][$i] is "TITLE"
+						// $matches[0][$i] is f.i. "## TITLE"
+						// while $matches[1][$i] is "TITLE"
 						//
-						// remark allow to specify the name of the slide so add a "name:" property in the markdown like this :
+						// remark allow to specify the name of
+						// the slide so add a "name:" property
+						// in the markdown like this :
 						//
 						//   name: TITLE
 						//   ---
@@ -57,9 +68,15 @@ class Remark
 
 						$markdown = str_replace(
 							$matches[0][$i],
-							//"???".PHP_EOL.str_replace('/',DS,$filename).PHP_EOL.  // Add speaker note : ??? followed by a line and the text
+							//"???".PHP_EOL.str_replace('/',DS,$filename).PHP_EOL.
+							// Add speaker note : ??? followed
+							// by a line and the text
 							"---".PHP_EOL.
-							"name: ".rtrim($matches[1][$i], " #").PHP_EOL.        // Be sure to not have a title like ## Heading2 ## (==> remove final # and space if there are ones)
+							"name: ".rtrim($matches[1][$i], " #").PHP_EOL.
+							// Be sure to not have a title
+							// like ## Heading2 ## (==> remove
+							// final # and space if there are
+							// ones)
 							".footnote[.italic[".$pageTitle."]]".PHP_EOL.
 							$matches[0][$i],
 							$markdown
@@ -96,21 +113,4 @@ class Remark
 		return true;
 	}
 
-	/**
-	 * Attach the function and responds to events
-	 */
-	public function bind(string $plugin)
-	{
-		$aeSession = \MarkNotes\Session::getInstance();
-		$task = $aeSession->get('task', '');
-
-		// Don't attach code if the task is reveal
-		if (in_array($task, array('reveal'))) {
-			return false;
-		}
-
-		$aeEvents = \MarkNotes\Events::getInstance();
-		$aeEvents->bind('export.slides', __CLASS__.'::doIt', $plugin);
-		return true;
-	}
 }

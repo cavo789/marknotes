@@ -13,63 +13,15 @@
  * Documentation : https://mermaidjs.github.io/
  */
 
-namespace MarkNotes\Plugins\Page\HTML;
+namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
+class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.page.html.mermaid';
 	protected static $json_options = 'plugins.options.page.html.mermaid';
-
-	/**
-	 * Provide additionnal javascript
-	 */
-	public static function addJS(&$js = null) : bool
-	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/mermaid/'.
-			'libs/mermaid/';
-
-		$script = "<script type=\"text/javascript\" ".
-			"src=\"".$url."mermaid.min.js\" ". "defer=\"defer\"></script>\n".
-			"\n<script type=\"text/javascript\" defer=\"defer\">\n".
-			"$('document').ready(function(){mermaid.initialize({startOnLoad:true});;});\n".
-			"</script>\n";
-
-		$js .= $aeFunctions->addJavascriptInline($script);
-
-		return true;
-	}
-
-	/**
-	 * Provide additionnal stylesheets
-	 */
-	public static function addCSS(&$css = null) : bool
-	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-
-		$theme = trim(self::getOptions('theme', 'forest'));
-
-		if ($theme!=='') {
-			$theme = '.'.$theme;
-		}
-
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/mermaid/'.
-			'libs/mermaid/';
-
-		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
-			"href=\"".$url."mermaid".$theme.".css\">\n";
-
-		$css .= $aeFunctions->addStyleInline($script);
-
-		return true;
-	}
 
 	/**
 	 * The HTML was modified by plugins like beautify
@@ -98,14 +50,16 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 	/**
 	 * Add/modify the HTML content
 	 */
-	public static function doIt(&$html = null) : bool
-	{
-		$return = false;
+	 public static function doIt(&$content = null) : bool
+ 	{
+ 		if (trim($content) === '') {
+ 			return true;
+ 		}
 
 		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
 
 		// Perhaps more than one mermaid flowchart or diagram
-		if (preg_match_all($pattern, $html, $matches)) {
+		if (preg_match_all($pattern, $content, $matches)) {
 			// Get how many (probably just one)
 
 			$j = count($matches[0]);
@@ -115,8 +69,8 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 				// a chart.
 				// That content is thus the portion inside
 				// <div class="mermaid">CONTENT</div>
-				$content = $matches[1][$i];
-				self::undoHTMLChanges($html, $content);
+				$mermaid = $matches[1][$i];
+				self::undoHTMLChanges($content, $mermaid);
 			}
 
 			// A priori just for a demo : when the mermaid
@@ -132,19 +86,15 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$pattern = '/<code class="language-mermaid">([\s\S]*?)<\/code>/m';
 
-			if (preg_match_all($pattern, $html, $matches)) {
+			if (preg_match_all($pattern, $content, $matches)) {
 				$j = count($matches[0]);
 				for ($i=0; $i<$j; $i++) {
-					$content = $matches[1][$i];
-					self::undoHTMLChanges($html, $content);
+					$mermaid = $matches[1][$i];
+					self::undoHTMLChanges($content, $mermaid);
 				}
 			}
-
-			// Yes, the mermaid plugin should be enabled since
-			// we've found at least one chart
-			$return = true;
 		}
 
-		return $return;
+		return true;
 	}
 }

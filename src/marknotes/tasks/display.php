@@ -50,7 +50,6 @@ class Display
 
 	private function insertPageBreak(&$markdown)
 	{
-
 		// Convert any '***' to a page break only if, twice and if
 		// preceded and followed by an empty line, so, like this :
 		//

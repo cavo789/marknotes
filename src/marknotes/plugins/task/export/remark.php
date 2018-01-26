@@ -1,19 +1,19 @@
 <?php
 /**
- * What are the actions to fired when MarkNotes is
- * running the "reveal" task ?
+ * What are the actions to fired when MarkNotes is running the "remark" task ?
  */
+
 namespace MarkNotes\Plugins\Task\Export;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Reveal extends \MarkNotes\Plugins\Task\Plugin
+class Remark extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
-	protected static $json_settings = 'plugins.task.export.reveal';
-	protected static $json_options = 'plugins.options.page.html.reveal';
+	protected static $json_settings = 'plugins.task.export.remark';
+	protected static $json_options = 'plugins.options.page.html.remark';
 
-	private static $extension = 'reveal';
+	private static $extension = 'remark';
 
 	/**
 	 * Retrieve the template for the presentation and use it
@@ -47,8 +47,6 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// If the filename doesn't mention the file's
 		// extension, add it.
@@ -56,63 +54,12 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 			$params['filename'] = $aeFiles->removeExtension($params['filename']).'.md';
 		}
 
-		// Get the template to use
-		$template = self::getTemplate($params);
-
-		// Trigger render.js and render.css in order to
-		// retrieve JS and CSS and put them in the template
-		$aeEvents = \MarkNotes\Events::getInstance();
-
-		$aeEvents->loadPlugins('page.html');
-
-		$additionnalJS = '';
-		$args = array(&$additionnalJS);
-		$aeEvents->trigger('page.html::render.js', $args);
-		$template = str_replace('<!--%ADDITIONNAL_JS%-->', $args[0], $template);
-
-		$additionnalCSS = '';
-		$args = array(&$additionnalCSS);
-		$aeEvents->trigger('page.html::render.css', $args);
-		$template = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $template);
-
-		// Now, get the content
-
-		// $params['filename'] is f.i. "note.reveal", get the .md file
-		$fullname = $aeSettings->getFolderDocs(true).$params['filename'];
-		$fullname = $aeFiles->removeExtension($fullname).'.md';
-
-		// reveal can work both with HTML content or markdown
-		// content. Check settings.json and take a look on the
-		// no_html_convert option. If equal to 1, don't
-		// convert the .md note into a html string
-		$no_html_convert = boolval(self::getOptions('no_html_convert', 0));
-
-		// Get the markdown content
-		$aeEvents->loadPlugins('markdown');
-		$content = $aeFiles->getContent($fullname);
-		$params['markdown'] = $content;
-		$params['filename'] = $fullname;
+		$aeEvents->loadPlugins('content.slides.remark');
 		$args = array(&$params);
-		$aeEvents->trigger('markdown::markdown.read', $args);
-		$content = $args[0]['markdown'];
-
-		if (!$no_html_convert) {
-			// Convert markdown to HTML first
-			$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
-			$content = $aeConvert->getHTML($content, $params, true);
-		}
-
-		// Run the reveal content plugin
-		$aeEvents->loadPlugins('content.slides.reveal');
-		$arr=array('html'=>$content);
-		$args = array(&$arr);
-		$aeEvents->trigger('content.slides.reveal::run', $args);
+		$aeEvents->trigger('content.slides.remark::run', $args);
 		$content = $args[0]['html'];
 
-		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
-		$html = $aeHTML->replaceVariables($template, $content, $params);
-
-		return $html;
+		return $params['html'];
 	}
 
 	public static function run(&$params = null) : bool

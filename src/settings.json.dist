@@ -213,6 +213,12 @@
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["interface", "main", "task.export.html"]
+				},
+				"mermaid": {
+					"description": "",
+					"enabled": 1,
+					"not_if_task": ["task.search.search"],
+					"only_if_task": ["main", "task.export.html", "task.export.pdf", "task.export.reveal", "task.export.remark"]
 				}
 			}
 		},
@@ -835,6 +841,9 @@
 					},
 					"gtranslate": {
 						"enable_localhost": 0
+					},
+					"mermaid": {
+						"theme": ""
 					},
 					"metadata": {
 						"key": [

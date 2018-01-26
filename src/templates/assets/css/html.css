@@ -159,6 +159,10 @@ footer > ul.list-inline li {
 	background-color: yellow;
 }
 
+.pros::before {
+	content: 'f055: ';
+}
+
 .devmode {
 	background-color: #f78272;
 	padding		 : 10px;

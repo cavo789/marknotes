@@ -2,7 +2,8 @@
 /**
  * Encrypt / Decrypt part of the .md file included between
  * <encrypt> tags.
- * Use php_openssl so that extension should be loaded in php.ini.
+ * Use php_openssl so that extension should be loaded in
+ * php.ini.
  *
  *	1. Check that extension=php_openssl.dll is present in your
  * php.ini file
@@ -35,8 +36,8 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 		'<\/encrypt>/';
 
 	/**
-	 * Verify if the plugin is well needed and thus have a reason
-	 * to be fired
+	 * Verify if the plugin is well needed and thus have a
+	 * reason to be fired
 	 */
 	final protected static function canRun() : bool
 	{
@@ -58,8 +59,8 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	 * For optimization purposes, read the settings.json only once and
-	 * initialize variables
+	 * For optimization purposes, read the settings.json only
+	 * once and initialize variables
 	 */
 	private static function initEncryption() : bool
 	{
@@ -104,8 +105,8 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 	* library. This is done through task.encrypt.unencrypt.
 	*
 	* This function is only needed during the upgrade of notes
-	* from marknotes v1 till marknotes v2. The upgrade is done thanks
-	* the /utils/upgrade_encryption.php script
+	* from marknotes v1 till marknotes v2. The upgrade is done
+	* thanks the /utils/upgrade_encryption.php script
 	*/
 	public static function sslDecrypt(string $encrypted = '') : string
 	{
@@ -153,9 +154,11 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	 * Encrypt patterns i.e. capture every <encrypt>SECRETS</encrypt> and
-	 * convert into <encrypt data-encrypt="true">xxxxxx</encrypt> and, also,
-	 * rewrite the file on the disk.
+	 * Encrypt patterns i.e. capture every
+	 * <encrypt>SECRETS</encrypt> and
+	 * convert into
+	 * <encrypt data-encrypt="true">xxxxxx</encrypt> and,
+	 * also, rewrite the file on the disk.
 	 */
 	private static function encrypt(string $markdown, array $matches = array()) : string
 	{
@@ -366,7 +369,9 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 						$decrypt = self::sslDecrypt($encrypted);
 					}
 
-					$decrypt = ENCRYPT_MARKDOWN_TAG.$decrypt.ENCRYPT_MARKDOWN_TAG;
+					if ($task!=='task.export.remark') {
+						$decrypt = ENCRYPT_MARKDOWN_TAG.$decrypt.ENCRYPT_MARKDOWN_TAG;
+					}
 
 					$params['markdown'] = str_replace($pattern[$i], $decrypt, $params['markdown']);
 				}

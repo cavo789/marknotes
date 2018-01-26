@@ -1,6 +1,7 @@
 <?php
 /**
- * When the exportation has been done, display the file in the browser
+ * When the exportation has been done, display the file
+ * in the browser
  */
 namespace MarkNotes\Plugins\Task\Export\After;
 
@@ -19,13 +20,15 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$format = $params['extension'];        // extension like 'txt'
-		$content = $params['content'] ?? '';   // in case of a .md file f.i.
+		// extension like 'txt'
+		$format = $params['extension'];
+		// in case of a .md file f.i.
+		$content = $params['content'] ?? '';
 
 		if (trim($content) === '') {
-			// When no content has been directly given to this function,
-			// check the "output" variable; can contains a filename
-			// (absolute name)
+			// When no content has been directly given to
+			// this function, check the "output" variable; can
+			// contains a filename (absolute name)
 
 			$filename = $params['output'] ?? '';
 
@@ -87,11 +90,12 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					header('Content-Transfer-Encoding: ascii');
 					header('Content-Type: text/html; charset=utf-8');
 
-					// When the note is displayed through the interface
-					// (i.e. using Ajax), we just need to have the content
+					// When the note is displayed through the
+					// interface (i.e. using Ajax), we just need to have the content
 					// and that content is inside the article tag
 					if ($aeFunctions->isAjaxRequest()) {
-						// The page has been accessed by an URL (and not through the interface)
+						// The page has been accessed by an URL
+						// (and not through the interface)
 						if (preg_match("/<article[^>]*>(.+)<\\/article>/s", $content, $match)) {
 							list($pattern, $article) = $match;
 							$content = trim($article);

@@ -123,7 +123,8 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			//$arrSettings = $aeSettings->getPlugins(static::$json_key);
 			$arrOptions = self::getOptions('appearance', array('theme'=>'beige'));
-			$appearance = $arrOptions['theme']; // ?? array('theme'=>'beige');
+
+			$appearance = $arrOptions['theme'];
 
 			$url = rtrim($aeFunctions->getCurrentURL(), '/');
 			$url .= '/marknotes/plugins/page/html/reveal/';

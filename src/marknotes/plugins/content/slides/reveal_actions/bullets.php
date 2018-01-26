@@ -18,7 +18,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Bullets
 {
-	private static $json_key = 'plugins.options.reveal';
+	private static $json_key = 'plugins.options.page.html.reveal';
 
 	public function doIt(string $html) : string
 	{

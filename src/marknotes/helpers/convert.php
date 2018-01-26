@@ -1,6 +1,7 @@
 <?php
 /**
- *  Convert the Markdown string into a HTML one, rely on parsedown for this
+ * Convert the Markdown string into a HTML one, rely on
+ * parsedown for this
  * @link https://github.com/erusev/parsedown
  */
 namespace MarkNotes\Helpers;
@@ -35,7 +36,7 @@ class Convert
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Call the Markdown parser (https://github.com/erusev/parsedown)
+		// Call the Markdown parser
 		$file = "Parsedown";
 		$lib = "Parsedown";
 		$folder = $aeSettings->getFolderLibs()."erusev/parsedown/";
@@ -54,8 +55,9 @@ class Convert
 		// --------------------
 		$task = $params['task'] ?? '';
 		if (!in_array($task, array('task.export.reveal','task.export.remark'))) {
-			// When writing a note, the author can type, on a new line, --- or ----- to
-			// ask marknotes to insert a new slide break.
+			// When writing a note, the author can type, on a
+			// new line, --- or ----- to ask marknotes to insert
+			// a new slide break.
 
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_REGEX);
