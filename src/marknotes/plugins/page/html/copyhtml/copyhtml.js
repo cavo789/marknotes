@@ -25,6 +25,10 @@ function copyHTMLSource(text) {
 	regex = /style=" *"/gm;
 	text = text.replace(regex, '');
 
+	// Remove empty paragraphs
+	regex = /<p><\/p>/gm;
+	text = text.replace(regex, '');
+
 	// remove the lazyload class (added by the optimize
 	// content plugin)
 	regex = /img src="(.*)" class=" *lazyloaded" data-src="[^"]*"/gm;
@@ -35,7 +39,42 @@ function copyHTMLSource(text) {
 	regex = /<span class="microdata"><span .*><span itemprop=".*">(.*)<\/span><\/span><\/span>/gm;
 	text = text.replace(regex, "$1");
 
-	// Ok, now, we've a cleaned string (as far as possible)
+	// Remove the noopener noreferrer attributes for anchor
+	regex = /(<a .*)(rel="noopener noreferrer")([^>]*>)/gm;
+	text = text.replace(regex, "$1$3");
+
+	// Remove unneeded classes
+	regex = /(<a .*)(class="linkified")([^>]*>)/gm;
+	text = text.replace(regex, "$1$3");
+
+	// Remove data attributes for tables
+	regex = /(<table .*)(data-datatables-enable="[0|1]")(.*)>/gm;
+	text = text.replace(regex, "$1$3");
+
+	// Remove Table-of-content added classes
+	regex = /(<li .*)(class="toc\d")(>.*<\/li>)/gm;
+	text = text.replace(regex, "$1$3");
+
+	// Remove unneeded classes
+	regex = /<div class="table-responsive">/gm;
+	text = text.replace(regex, "<div>");
+
+	// This character is a "empty square" (an invalid space char)
+	// Replace by a space
+	regex = / /gm;
+	text = text.replace(regex, " ");
+
+	// Remove empty space between HTML tags. Such spaces are just
+	// unneeded
+	regex = /\>(\s+)\</gm;
+	text = text.replace(regex, "><");
+
+	// Last thing, remove the space that is perhaps just before
+	// the end tag of an HTML tag (f.i. <a href="..." > or <li >)
+	regex = /(<[^>]*) >/gm;
+	text = text.replace(regex, "$1>");
+
+	// Ok, now, we've a super cleaned string (as far as possible)
 	// Put it into a DOM element and, then, copy it to the clipboard
 	var element = document.createElement('DIV');
 	element.textContent = text;
