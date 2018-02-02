@@ -1,0 +1,13 @@
+#favorites li {
+	cursor: pointer;
+	border-bottom: 1px dashed #999;
+	text-decoration: none
+}
+
+#favorites li::before {
+	content: "\f004"; /* FontAwesome Unicode */
+	font-family: FontAwesome;
+	display: inline-block;
+	margin-left: -1.3em; /* same as padding-left set on li */
+	width: 1.3em; /* same as padding-left set on li */
+}

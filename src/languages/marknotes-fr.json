@@ -61,6 +61,8 @@
 	"export_txt": "Format .txt",
 	"export_reveal": "Reveal.JS",
 	"export_remark": "Remark",
+	"favorites_show": "Afficher vos notes favorites",
+	"favorites_title": "Vos notes favorites",
 	"fetch_specify_url": "Cette option va r\u00e9cup\u00e9rer le code HTML d'une page accessible publiquement sur internet, veuillez sp\u00e9cifier ci-apr\u00e8s l'URL de la page",
 	"file_already_exists": "La note [$1] existe d\u00e9j\u00e0",
 	"file_cant_delete": "Vous ne pouvez pas supprimer le fichier [$1] \u00e9tant donn\u00e9 que vous n'avez pas les permissions requises pour voir le dossier parent",

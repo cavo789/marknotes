@@ -67,7 +67,7 @@
 							<div id="TOC">&nbsp;</div>
 						</div>
 					</ul>
-    			</section>
+				</section>
 			</aside>
 
 			<div class="content-wrapper">

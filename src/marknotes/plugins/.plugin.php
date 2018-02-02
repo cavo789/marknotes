@@ -1,9 +1,9 @@
 <?php
 /*
  * Definition of a plugin - Define the global structure and features.
- * This class will be derived by plugins if f.i. /plugins/markdown i.e.
- * a specialized class for working with markdown content, or /plugins/task
- * for task plugins, ...
+ * This class will be derived by plugins if f.i. /plugins/markdown
+ * i.e. a specialized class for working with markdown content, or
+ * /plugins/task for task plugins, ...
  */
 namespace MarkNotes\Plugins;
 
@@ -26,14 +26,17 @@ abstract class Plugin
 	 */
 	public function __construct()
 	{
-		// The child class should have a line like below in his definition
-		//     protected static $me = __CLASS__;
+		// The child class should have a line like below in his
+		// definition
+		//	 protected static $me = __CLASS__;
 		if (!isset(static::$me)) {
 			throw new \Exception(get_class($this).' must have a $me '.
 				'property and must initialize it exactly like this : "protected static $me = __CLASS__"');
 		}
-		// The child class should have a line like below in his definition
-		//     protected static $json_settings = 'plugins.markdown.read';
+
+		// The child class should have a line like below
+		// in his definition
+		// protected static $json_settings = 'plugins.markdown.read';
 		if (!isset(static::$json_settings)) {
 			throw new \Exception(get_class($this).' must have a $json_settings '.
 				'property and must initialize it (f.i. "plugins.markdown.read"). '.
@@ -41,8 +44,9 @@ abstract class Plugin
 				'find the settings (enabled, not_if_task, only_if_task, ...) for that plugin');
 		}
 
-		// The child class should have a line like below in his definition
-		//     protected static $json_options = 'plugins.options.markdown.read';
+		// The child class should have a line like below in
+		// his definition
+		// protected static $json_options = 'plugins.options.markdown.read';
 		if (!isset(static::$json_options)) {
 			throw new \Exception(get_class($this).' must have a $json_options '.
 				'property and must initialize it (f.i. "plugins.options.markdown.read"). '.
@@ -75,12 +79,12 @@ abstract class Plugin
 	}
 
 	/**
-	 * Return a value from the plugin options. Return $default is not found or
-	 * not initialized
+	 * Return a value from the plugin options. Return $default
+	 * is not found or not initialized
 	 *
 	 * $name can contains dot like in apparence.custom-css.
 	 *
-	 * Consider the options for plugins -> options -> page -> html - >reveal.
+	 * Consider the options for plugins->options->page->html->reveal.
 	 * This is something like this :
 	 *
 	 * 		"reveal": {
@@ -92,10 +96,10 @@ abstract class Plugin
 	 *			}
 	 *		}
 	 *
-	 * Calling getOptions for $name="appareance" will return both "theme" and
-	 * 		"custom-css"; will return an array thus
-	 * Calling getOptions for $name="appareance.theme" will just return
-	 * 		"beige.css"; will return a string.
+	 * Calling getOptions for $name="appareance" will return both
+	 * "theme" and "custom-css"; will return an array thus
+	 * Calling getOptions for $name="appareance.theme"
+	 * will just return "beige.css"; will return a string.
 	 */
 	protected static function getOptions(string $name, $default)
 	{
@@ -108,8 +112,9 @@ abstract class Plugin
 				$aeSettings = \MarkNotes\Settings::getInstance();
 
 				// It's really important to store the options in
-				// static::$arrOptions[static::$me] and not static::$arrOptions
-				// otherwise the last loaded plugins will overwrite all the previous
+				// static::$arrOptions[static::$me] and not
+				// static::$arrOptions otherwise the last loaded
+				// plugins will overwrite all the previous
 				// loaded options.
 				static::$arrOptions[static::$me] = $aeSettings->getPlugins(static::$json_options);
 
@@ -156,9 +161,10 @@ abstract class Plugin
 
 	/**
 	 * Based on the current running task (f.i. task.export.html,
-	 * task.search.search, task.listfiles.json, ...), verify if the plugin
-	 * can be fired or not. This based on the plugin settings (not the
-	 * options) as defined in the settings.json file.
+	 * task.search.search, task.listfiles.json, ...), verify if
+	 * the plugin can be fired or not. This based on the plugin
+	 * settings (not the options) as defined in the
+	 * settings.json file.
 	 * For instance, check settings.json->plugins->markdown->variables
 	 *
 	 *		"plugins": {
@@ -178,16 +184,18 @@ abstract class Plugin
 		$bCanRun = true;
 
 		if ($task!=='') {
-			// If "only_if_task" is mentionned (it's an array); verify that the
-			// current running task is mentionned in "only_if_task". If so, yes,
+			// If "only_if_task" is mentionned (it's an array);
+			// verify that the current running task is mentionned
+			// in "only_if_task". If so, yes,
 			// the plugin can be fired
 			$arr = static::$arrSettings[static::$me]['only_if_task'] ?? array();
 			if ($arr !== array()) {
 				$bCanRun = in_array($task, $arr);
 			}
 
-			// And the same for "not_if_task" but the opposite : if the running task
-			// is mentionned in "not_if_task" then the plugin can't be fired.
+			// And the same for "not_if_task" but the opposite :
+			// if the running task is mentionned in "not_if_task"
+			// then the plugin can't be fired.
 			if ($bCanRun) {
 				$arr = static::$arrSettings[static::$me]['not_if_task'] ?? array();
 				if ($arr !== array()) {

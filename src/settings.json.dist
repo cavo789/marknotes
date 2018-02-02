@@ -53,6 +53,10 @@
 				"enabled": 1,
 				"quickIcons": 1
 			},
+			"favorites": {
+				"enabled": 1,
+				"quickIcons": 1
+			},
 			"sitemap": {
 				"enabled": 1,
 				"quickIcons": 0
@@ -294,6 +298,12 @@
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["interface", "main", "task.export.html"]
+				},
+				"favorites" : {
+					"description": "Add JS / CSS for the favorites task plugin",
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
 				},
 				"editor": {
 					"description": "Add the js file for the Edit feature",
@@ -960,6 +970,9 @@
 						}
 					}
 				},
+				"favorites" : {
+					"list": [ ]
+				},
 				"fetch": {
 					"querystring": "?tmpl=component",
 					"timeout" : 5,
@@ -1015,7 +1028,6 @@
 						"//*[@id='system-message-container']",
 						"//*[@id='itemCommentsAnchor']",
 						"//*[(attribute::data-mce-bogus)]"
-
 					],
 					"regex": [
 						{
@@ -1045,7 +1057,6 @@
 				"update": {
 					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",
 					"version_url":"https://raw.githubusercontent.com/cavo789/marknotes/master/package.json"
-
 				}
 			}
 		},
@@ -1080,6 +1091,9 @@
 						"only_if_task": []
 					}
 				}
+			},
+			"favorites" : {
+				"enabled" : 1
 			},
 			"markdown": {
 				"write": {

@@ -6,7 +6,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-	protected static $hInstance =   null;
+	protected static $hInstance =	null;
 	private $_aeSettings = null;
 
 	public function __construct()
