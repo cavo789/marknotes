@@ -9,8 +9,6 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 /**
- * ProjectServiceContainer.
- *
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
@@ -21,9 +19,6 @@ class ProjectServiceContainer extends Container
     private $parameters;
     private $targetDirs = array();
 
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->services = array();
@@ -39,28 +34,28 @@ class ProjectServiceContainer extends Container
         $this->aliases = array();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getRemovedIds()
+    {
+        return array(
+            'Psr\\Container\\ContainerInterface' => true,
+            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
+            'baz_service' => true,
+        );
+    }
+
     public function compile()
     {
         throw new LogicException('You cannot compile a dumped container that was already compiled.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isCompiled()
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isFrozen()
     {
-        @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
 
         return true;
     }
@@ -72,7 +67,7 @@ class ProjectServiceContainer extends Container
      */
     protected function getBarServiceService()
     {
-        return $this->services['bar_service'] = new \stdClass(${($_ = isset($this->services['baz_service']) ? $this->services['baz_service'] : $this->getBazServiceService()) && false ?: '_'});
+        return $this->services['bar_service'] = new \stdClass(${($_ = isset($this->services['baz_service']) ? $this->services['baz_service'] : $this->services['baz_service'] = new \stdClass()) && false ?: '_'});
     }
 
     /**
@@ -82,7 +77,7 @@ class ProjectServiceContainer extends Container
      */
     protected function getFooServiceService()
     {
-        return $this->services['foo_service'] = new \stdClass(${($_ = isset($this->services['baz_service']) ? $this->services['baz_service'] : $this->getBazServiceService()) && false ?: '_'});
+        return $this->services['foo_service'] = new \stdClass(${($_ = isset($this->services['baz_service']) ? $this->services['baz_service'] : $this->services['baz_service'] = new \stdClass()) && false ?: '_'});
     }
 
     /**

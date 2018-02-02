@@ -30,6 +30,7 @@ class ChildDefinition extends Definition
     public function __construct($parent)
     {
         $this->parent = $parent;
+        $this->setPrivate(false);
     }
 
     /**
@@ -119,6 +120,14 @@ class ChildDefinition extends Definition
     public function setInstanceofConditionals(array $instanceof)
     {
         throw new BadMethodCallException('A ChildDefinition cannot have instanceof conditionals set on it.');
+    }
+
+    /**
+     * @internal
+     */
+    public function setBindings(array $bindings)
+    {
+        throw new BadMethodCallException('A ChildDefinition cannot have bindings set on it.');
     }
 }
 

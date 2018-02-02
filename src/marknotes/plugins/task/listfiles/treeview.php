@@ -114,7 +114,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				//Filename but without the extension (and no path)
 				$filename = str_replace('.md', '', basename($entry['name']));
 
-				// Relative filename like f.i.  docs/the_folder/a_note.md
+				// Relative filename like f.i.
+				// docs/the_folder/a_note.md
 				$id = str_replace($root, $rootNode, $entry['name']);
 
 				// Right-click on a file = open it's HTML version

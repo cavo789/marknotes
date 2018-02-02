@@ -28,8 +28,6 @@ class ReplaceAliasByActualDefinitionPass extends AbstractRecursivePass
     /**
      * Process the Container to replace aliases with service definitions.
      *
-     * @param ContainerBuilder $container
-     *
      * @throws InvalidArgumentException if the service definition does not exist
      */
     public function process(ContainerBuilder $container)
@@ -45,7 +43,7 @@ class ReplaceAliasByActualDefinitionPass extends AbstractRecursivePass
             }
             // Check if target needs to be replaces
             if (isset($replacements[$targetId])) {
-                $container->setAlias($definitionId, $replacements[$targetId]);
+                $container->setAlias($definitionId, $replacements[$targetId])->setPublic($target->isPublic())->setPrivate($target->isPrivate());
             }
             // No need to process the same target twice
             if (isset($seenAliasTargets[$targetId])) {
@@ -58,11 +56,12 @@ class ReplaceAliasByActualDefinitionPass extends AbstractRecursivePass
             } catch (InvalidArgumentException $e) {
                 throw new InvalidArgumentException(sprintf('Unable to replace alias "%s" with actual definition "%s".', $definitionId, $targetId), null, $e);
             }
-            if ($definition->isPublic()) {
+            if ($definition->isPublic() || $definition->isPrivate()) {
                 continue;
             }
             // Remove private definition and schedule for replacement
-            $definition->setPublic(true);
+            $definition->setPublic(!$target->isPrivate());
+            $definition->setPrivate($target->isPrivate());
             $container->setDefinition($definitionId, $definition);
             $container->removeDefinition($targetId);
             $replacements[$targetId] = $definitionId;

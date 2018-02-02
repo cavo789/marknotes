@@ -119,7 +119,6 @@ trait ExtendedCacheItemPoolTrait
      */
     public function deleteItemsByTag($tagName)
     {
-
         if (is_string($tagName)) {
             $return = null;
             foreach ($this->getItemsByTag($tagName) as $item) {

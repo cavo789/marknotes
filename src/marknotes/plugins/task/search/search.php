@@ -87,6 +87,7 @@ class Search
 	private static function doSearch(array $keywords, string $pattern) : array
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
@@ -110,6 +111,14 @@ class Search
 		$return = array();
 
 		foreach ($arrFiles as $file) {
+
+			// Remove the .md extension since that extension
+			// wasn't used when building the treeview.
+			// We, absolutly, need to respect the same way to
+			// build the MD5 of the matched file.
+			// Should be something like docs/subfolder/file
+			// (without the extension)
+
 			// Just keep relative filenames, relative from the
 			// /docs folder
 			$file = str_replace($docFolder, '', $file);
@@ -133,11 +142,12 @@ class Search
 
 				/*<!-- build:debug -->*/
 				if ($bDebug) {
-					$aeDebug->log("   FOUND IN [".$docs.$file."]", "debug");
+					$aeDebug->log("	FOUND IN [".$file."]", "debug");
 				}
 				/*<!-- endbuild -->*/
 
-				$return[] = $docs.$file;
+				// Don't remember the extension
+				$return[] = $aeFiles->removeExtension($file);
 			} else { // if ($bFound)
 				// Open the file and check against its content
 				// (plain and encrypted)
@@ -175,12 +185,14 @@ class Search
 				if ($bFound) {
 					/*<!-- build:debug -->*/
 					if ($bDebug) {
-						$aeDebug->log("   FOUND IN [".$docs.$file."]", "debug");
+						$aeDebug->log("	FOUND IN [".$docs.$file."]", "debug");
 					}
 					/*<!-- endbuild -->*/
 
-					// Found in the filename => stop process of this file
-					$return[] = $docs.$file;
+					// Found in the filename =>
+					// stop process of this file
+					// Don't remember the extension
+					$return[] = $aeFiles->removeExtension($file);
 				}  // if ($bFound)
 			} // if ($bFound) {
 		} // foreach ($arrFiles as $file)
@@ -195,7 +207,7 @@ class Search
 
 	/**
 	* $params['encryption'] = 0 : encrypted data should be unencrypted
-	*                         1 : encrypted infos should stay encrypted
+	*						 1 : encrypted infos should stay encrypted
 	 */
 	public static function run(&$params = null)
 	{
@@ -267,11 +279,10 @@ class Search
 		} else {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
-				$aeDebug->log('   Retrieving from the cache', 'debug');
+				$aeDebug->log('	Retrieving from the cache', 'debug');
 			}
 			/*<!-- endbuild -->*/
 		}
-
 
 		// Nothing should be returned, the list of files
 		// can be immediatly displayed
