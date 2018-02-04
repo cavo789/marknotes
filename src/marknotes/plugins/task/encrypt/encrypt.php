@@ -31,7 +31,7 @@ class Encrypt
 			$info = $params['data'];
 
 			// We can go further, load lockbox and crypt the info
-			$lib = __DIR__.DS.'libs\lockbox'.DS;
+			$lib = __DIR__.DS.'libs/lockbox'.DS;
 
 			// Include Lockbox
 			require_once $lib."CryptoCore.php";

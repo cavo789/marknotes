@@ -76,22 +76,6 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 				}
 			}
 
-			$aeFolders = \MarkNotes\Folders::getInstance();
-			$lib = __DIR__.'/encrypt/libs/lockbox/';
-
-			if ($aeFolders->exists($lib)) {
-				// Include Lockbox
-				/*require_once $lib."CryptoCore.php";
-				require_once $lib."CryptoCoreLoader.php";
-				require_once $lib."CryptoCoreFailed.php";
-				require_once $lib."CryptoCoreBuiltin.php";
-				require_once $lib."CryptoCoreOpenssl.php";
-				require_once $lib."Crypto.php";
-				require_once $lib."CryptoKey.php";
-				require_once $lib."Secret.php";
-				require_once $lib."Vault.php";*/
-			}
-
 			// Run the initialization code only once
 			static::$Initialized=1;
 		}
@@ -364,7 +348,8 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 							$msg = "Your note is using the old way of ".
 								"storing encrypted data. Please use ".
 								"the ".$url."utils/upgrade_encryption.php";
-							throw new \Exception($msg, 999);
+							echo '<div style="color:red;">'.$msg.'</div>';
+							//throw new \Exception($msg, 999);
 						}
 						$decrypt = self::sslDecrypt($encrypted);
 					}
