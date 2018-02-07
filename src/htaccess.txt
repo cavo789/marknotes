@@ -50,7 +50,8 @@ DirectoryIndex index.php
 	RewriteCond %{REQUEST_URI} .*\.epub$
 	RewriteRule (.*) router.php?task=task.export.epub&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.html?$
-	#RewriteCond %{REQUEST_URI} !.*/JavaScriptSpellCheck/.*
+	# Exception for ELF
+	RewriteCond %{REQUEST_URI} !.*/elf/libs/elf/*
 	RewriteRule (.*) router.php?task=task.export.html&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.md$
 	RewriteRule (.*) router.php?task=task.export.md&file=$1 [L]
@@ -89,8 +90,13 @@ DirectoryIndex index.php
 	RewriteCond %{SCRIPT_FILENAME} -f
 	RewriteRule .* - [R=403,NC,L]
 
-	# Only deploy.php, index.php or router.php are allowed; whatever the script location
+	# Only deploy.php, index.php or router.php are allowed;
+	# whatever the script location
 	RewriteCond %{REQUEST_FILENAME} !(debug|deploy|index|install|router)\.php
+
+	# And allow an exception for ELF
+	RewriteCond %{REQUEST_URI} !.*/task/elf/libs/elf/*
+
 	RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 
