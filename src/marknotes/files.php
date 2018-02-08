@@ -289,7 +289,6 @@ class Files
 		if ($filename == '') {
 			return false;
 		}
-
 		self::getFileSystem($filename, $obj);
 		return $obj->delete($filename);
 	}

@@ -30,9 +30,6 @@ class Delete extends \MarkNotes\Plugins\Task\File
 			return FILE_ERROR;
 		}
 
-		$filename = $aeFiles->sanitize($filename);
-		$filename = str_replace('/', DS, $aeSettings->getFolderDocs().$filename);
-
 		// Try to remove a file, first, be sure that the user
 		// can see the parent folder : if he can't, he can't
 		// delete the file
@@ -62,15 +59,24 @@ class Delete extends \MarkNotes\Plugins\Task\File
 				$name = $aeFiles->removeExtension(basename($filename));
 				$arrFiles = $aeFolders->getContent(dirname($filename));
 
+				$docs = $aeSettings->getFolderDocs(true);
+
 				$wReturn = true;
 				foreach ($arrFiles as $file) {
 
 					if ($file['type'] == 'file') {
 						if ($file['filename'] == $name) {
 							try {
-								$aeFiles->delete($file['path']);
+								// delete() require an
+								// absolute filename
+								$tmp = $docs.$file['path'];
+
+								$aeFiles->delete($tmp);
+
 								$wReturn = (!$aeFiles->exists($file['path']) ? KILL_SUCCESS : FILE_ERROR);
+
 							} catch (Exception $ex) {
+
 								/*<!-- build:debug -->*/
 								if ($aeSettings->getDebugMode()) {
 									$aeDebug = \MarkNotes\Debug::getInstance();
@@ -107,10 +113,6 @@ class Delete extends \MarkNotes\Plugins\Task\File
 
 		$oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
-		if ($oldname != '') {
-			//$oldname = $aeFiles->sanitize(trim($oldname));
-		}
-
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
@@ -128,8 +130,10 @@ class Delete extends \MarkNotes\Plugins\Task\File
 		} else {
 			$docs = $aeSettings->getFolderDocs(false);
 
-			// Be sure to have the .md extension
+			$oldname = $aeFiles->sanitize($oldname);
+			$oldname = $aeSettings->getFolderWebRoot().$oldname;
 			$oldname = $aeFiles->removeExtension($oldname).'.md';
+			$oldname = str_replace('/', DS, $oldname);
 
 			// Relative filenames
 			$rel_oldname = str_replace($aeSettings->getFolderDocs(true), '', $oldname);
@@ -162,11 +166,17 @@ class Delete extends \MarkNotes\Plugins\Task\File
 					break;
 			}
 
+			// When killing a file, the treeview should be opened
+			// to the parent folder. The md5 should then be
+			// calculated on the parent folder of the removed
+			// note.
+			$md5 = md5(dirname($docs.$rel_oldname).DS);
+
 			$arr = array(
 				'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
 				'action' => 'delete',
 				'msg' => $msg,
-				'md5' => md5($docs.$oldname),
+				'md5' => $md5,
 				'filename' => utf8_encode($oldname)
 			);
 

@@ -5,6 +5,7 @@
  * Anwser to URL like the one below (names are base64_encoded)
  * index.php?task=task.file.create&param=enp6enp6JTJGYWRm
  */
+
 namespace MarkNotes\Plugins\Task\File;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -33,23 +34,22 @@ class Create extends \MarkNotes\Plugins\Task\File
 		// Try to remove the folder, first, be sure that the user
 		// can see the folder : if he can't, he can't delete it too
 		$aeEvents = \MarkNotes\Events::getInstance();
+
 		$aeEvents->loadPlugins('task.acls.cansee');
 
 		// Note : the folder should start and end with the slash
 		$arr = array('folder' => dirname($filename),'return' => true);
-		$args = array(&$arr);
 
+		$args = array(&$arr);
 		$aeEvents->trigger('task.acls.cansee::run', $args);
 
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
 		if (intval($args[0]['return'])===1) {
-
 			// Only if the user can see the parent folder, he can
 			// create a file
 
 			if (!$aeFiles->exists($filename)) {
-
 				// Define the content : get the filename without the
 				// extension and set the content as heading 1.
 				// Don't use PHP_EOL but well PHP_LF
@@ -87,11 +87,13 @@ class Create extends \MarkNotes\Plugins\Task\File
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Be sure that filenames doesn't already start with the /docs folder
+		// Be sure that filenames doesn't already start
+		// with the /docs folder
 		self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
 		// The folder name is stored in $params['filename']
 		$filename = trim($params['filename']);
+
 		if ($filename != '') {
 			$filename = $aeFiles->sanitize(trim($filename));
 		}
@@ -112,11 +114,9 @@ class Create extends \MarkNotes\Plugins\Task\File
 			);
 		} else {
 			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
-
 			if (!$aeFunctions->endsWith($filename, '.md')) {
 				$filename.='.md';
 			}
-
 			// Be sure to have the .md extension
 			$wReturn = self::create($filename);
 
@@ -126,20 +126,30 @@ class Create extends \MarkNotes\Plugins\Task\File
 			// The md5 returned below should do the same
 			$rel_newname = str_replace($aeSettings->getFolderDocs(true), $docs, $filename);
 
+			// and remove the extension
+			$rel_newname = $aeFiles->removeExtension($rel_newname);
+
+			// The filename should be something like
+			// docs\christophe\note
+			// (not docs\christophe\note.md)
+
 			switch ($wReturn) {
 				case CREATE_SUCCESS:
 					$msg = $aeSettings->getText('file_created', 'The file [$1] has been created on the disk');
 					$msg = str_replace('$1', $rel_newname, $msg);
 					break;
+
 				case NO_ACCESS:
 					// The parent folder is protected and the user has no access to it
 					$msg = $aeSettings->getText('folder_parent_not_accessible', 'The parent folder of [$1] is not accessible to you');
 					$msg = str_replace('$1', $rel_newname, $msg);
 					break;
+
 				case ALREADY_EXISTS:
 					$msg = $aeSettings->getText('file_already_exists');
 					$msg = str_replace('$1', $rel_newname, $msg);
 					break;
+
 				default:
 					$msg = $aeSettings->getText('error_create_file');
 					$msg = str_replace('$1', $rel_newname, $msg);

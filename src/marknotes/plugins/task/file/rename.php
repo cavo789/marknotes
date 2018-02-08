@@ -32,10 +32,12 @@ class Rename extends \MarkNotes\Plugins\Task\File
 
 		// Sanitize filenames
 		$oldname = $aeFiles->sanitize($oldname);
-		$oldname = $aeSettings->getFolderDocs().$oldname;
+		$oldname = $aeSettings->getFolderWebRoot().$oldname;
+		$oldname = str_replace('/', DS, $oldname);
 
 		$newname = $aeFiles->sanitize($newname);
-		$newname = $aeSettings->getFolderDocs().$newname;
+		$newname = $aeSettings->getFolderWebRoot().$newname;
+		$newname = str_replace('/', DS, $newname);
 
 		// Try to remove the folder, first, be sure that the user
 		// can see the folder : if he can't, he can't delete it too
@@ -66,12 +68,22 @@ class Rename extends \MarkNotes\Plugins\Task\File
 			foreach ($arrFiles as $file) {
 				if ($file['type'] == 'file') {
 					if ($file['filename'] == $old) {
-						$oldfile = $file['dirname'].DS.$file['basename'];
-						$newfile = $file['dirname'].DS.$new.'.'.$file['extension'];
+
+						// Get the note's folder
+						$dir = str_replace('/', DS, $file['dirname']);
+						$dir = $aeSettings->getFolderDocs(true).$dir;
+
+						// The old filename (absolute path)
+						$oldfile = $dir.DS.$file['basename'];
+
+						// And the new one (absolute path)
+						$newfile = $dir.DS.$new.'.'.$file['extension'];
+
 						$wReturn = $aeFiles->rename($oldfile, $newfile);
 					}
 				}
 			}
+
 			return ($wReturn ? RENAME_SUCCESS : FILE_ERROR);
 		} else {
 			return NO_ACCESS;
@@ -150,11 +162,17 @@ class Rename extends \MarkNotes\Plugins\Task\File
 					break;
 			} // switch ($wReturn)
 
+			// and remove the extension
+			// The filename should be something like
+			// docs\christophe\newname
+			// (not docs\christophe\newname.md)
+			$md5 = md5($aeFiles->removeExtension($newname));
+
 			$return = array(
 				'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
 				'action' => 'rename',
 				'msg' => $msg,
-				'md5' => md5($docs.$newname),
+				'md5' => $md5,
 				'filename' => utf8_encode($newname)
 			);
 		}

@@ -4,5 +4,5 @@ RewriteCond %{REQUEST_FILENAME} !\.(ico?n|img|gif|jpe?g|png|css|map)$ [NC]
 RewriteCond %{REQUEST_FILENAME} !\.js(\?.*)?$ [NC]
 RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf2?|woff2?)(\?.*)?$ [NC]
 # And allow an exception for ELF
-RewriteCond %{REQUEST_URI} !.*/task/elf/libs/elf/*
+RewriteCond %{REQUEST_URI} !.*/task/elf/libs/*
 RewriteRule .* - [R=403,L]

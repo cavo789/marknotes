@@ -95,8 +95,7 @@ DirectoryIndex index.php
 	RewriteCond %{REQUEST_FILENAME} !(debug|deploy|index|install|router)\.php
 
 	# And allow an exception for ELF
-	RewriteCond %{REQUEST_URI} !.*/task/elf/libs/elf/*
-
+	RewriteCond %{REQUEST_URI} !.*/task/elf/libs/*
 	RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 

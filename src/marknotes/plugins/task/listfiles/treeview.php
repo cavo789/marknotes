@@ -58,7 +58,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		// Now, prepare the JSON return
 		$sDirectoryText = basename($dir);
-		$sID = str_replace($root, '', $dir).DS;
+		$sID = str_replace(dirname($root).DS, '', $dir);
+		$sID = rtrim($sID, DS).DS;
 
 		// It's a folder node
 		$dataURL=str_replace(DS, '/', str_replace($root, '', $dir));
@@ -83,7 +84,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		$listDir = array
 		(
-			'id' => str_replace(DS, '/', $sID),
+			'id' => md5($sID),
 			'type' => 'folder',
 			'icon' => 'folder',
 			'text' => str_replace(DS, '/', $sDirectoryText),
@@ -96,7 +97,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				//'task' => 'display',
 				// Right clic on the node ?
 				// Open the_folder/index.html page
-				'url' => $dataURL
+				'url' => $dataURL,
+				'path' => str_replace(DS, '/', $sID)
 			),
 			'children' => array()
 		);

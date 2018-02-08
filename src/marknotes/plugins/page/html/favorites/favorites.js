@@ -1,4 +1,5 @@
 marknotes.arrPluginsFct.push("fnPluginHTMLFavorites");
+marknotes.arrPluginsFct.push("fnPluginHTMLFavoritesShowIcon");
 
 function fnPluginHTMLFavorites() {
 
@@ -22,13 +23,99 @@ function fnPluginHTMLFavorites() {
 	return true;
 }
 
+function fnPluginHTMLFavoritesShowIcon() {
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('	  Plugin Page html - Favorites - ShowIcon');
+	}
+	/*<!-- endbuild -->*/
+
+	if (marknotes.note.file!=="") {
+		ajaxify({
+			task: 'task.favorites.geticon',
+			param: btoa(marknotes.note.file),
+			callback: 'afterGetFavoritesIcon(data)',
+			dataType: 'json',
+			useStore: 0
+		});
+	}
+
+	return true;
+}
+
+function afterGetFavoritesIcon($data) {
+
+	// $data is a JSON answer with, at least :
+	//
+	//	* title : "Remove this note from yours favorites"  i.e.
+	//		what will do the button
+	//	* icon  : The font-awesome icon (star or star-o f.i.)
+	//	* task  : The task to launch when the user will click on the button
+
+	$fav_title = $data.title;
+	$fav_title = $fav_title.replace("'", "''");
+
+	$fav_icon = $data.icon;
+	$fav_task = $data.task;
+
+	$title = $('.content-header h1').text();
+	$title = $title + ' <i id="favNoteIcon" data-task="' + $fav_task + '" ' +
+		'class="fa fa-' + $fav_icon + '" ' +
+		'title="' + $fav_title + '" aria-hidden="true"></i>';
+
+	$('.content-header h1').html($title);
+
+	// And handle clicks
+	$("#favNoteIcon").click(function (event) {
+		// Add or Remove the note into the favorites
+		var $data = {};
+		$data.task = 'task.favorites.' + $(this).attr('data-task');
+		$data.param = btoa(marknotes.note.file);
+
+		var $icon = $(this);
+
+		$.ajax({
+			async: true,
+			type: (marknotes.settings.debug ? 'GET' : 'POST'),
+			url: marknotes.url,
+			data: $data,
+			// If a key is mentionned, result is a JSON info
+			datatype: 'json',
+			success: function (data) {
+
+				Noty({
+					message: data.message,
+					type: (data.status == 1 ? 'success' : 'error')
+				});
+
+				if (data.hasOwnProperty('task')) {
+					// data.task / data.icon and data.title are
+					// returned by the task.
+					// When the task was "remove", the JSON answer provide
+					// infos so the button can be used to add the note again
+					// And same if task was "add", JSON contains info for the remove
+					// action
+					$fav_icon = data.icon;
+					$($icon).attr('class', 'fa fa-' + data.icon);
+					$($icon).attr('title', data.title);
+					$($icon).attr('data-task', data.task);
+				}
+			}
+		}); // $.ajax()
+
+	});
+
+	return true;
+}
+
 /**
  * Also called by the Show Favorites button
  */
 function fnPluginHTMLFavoritesShow() {
 
 	ajaxify({
-		task: 'task.favorites.show',
+		task: 'task.favorites.getlist',
 		callback: 'afterShowFavorites(data)',
 		dataType: 'json',
 		useStore: 1
@@ -40,7 +127,7 @@ function fnPluginHTMLFavoritesShow() {
 /**
  * Display the list of favorites
  * @param {json} $data  The return of the JSON returned by
- *		index.php?task=task.favorites.show
+ *		index.php?task=task.favorites.getlist
  */
 function afterShowFavorites($data) {
 

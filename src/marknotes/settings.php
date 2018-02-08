@@ -330,7 +330,7 @@ class Settings
 		$return = isset($json_lang[$variable]) ? $json_lang[$variable] : trim($default);
 
 		if ($jsProtect) {
-			$return = str_replace("'", "\'", html_entity_decode($return));
+			$return = str_replace("'", "\'", @html_entity_decode($return));
 		}
 
 		// In case of null (i.e. the translation wasn't found, return at least the name of the variable)
@@ -691,7 +691,7 @@ class Settings
 	public function getLocale() : string
 	{
 		// Set regional settings, language and locale
-		$arrRegion=$this->json['regional']??array('locale'=>'EN', 'language'=>DEFAULT_LANGUAGE, 'timezone'=>'Europe/London');
+		$arrRegion=$this->json['regional']??array('locale'=>'en_us', 'language'=>DEFAULT_LANGUAGE, 'timezone'=>'Europe/London');
 
 		// Be sure to have en-US (minus) and not en_US (underscore)
 		return str_replace('_', '-', trim($arrRegion['locale']));

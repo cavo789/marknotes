@@ -93,7 +93,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("    Retrieved from cache [".$key."]","debug");
+				$aeDebug->log("	Retrieved from cache [".$key."]","debug");
 			}
 			/*<!-- endbuild -->*/
 
@@ -110,35 +110,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			$html = substr_replace($html, $meta, $pos, 0);
 		}
 
-		// Generate the .html file ... only if not yet there
-		// AND ONLY IF THE NOTE DOESN'T CONTAINS ENCRYPTED DATA
-		// (otherwise would be no more encrypted in the .html file)
-		// Display the HTML rendering of a note
-		//if ($aeSession->get('NoteContainsEncryptedData',false)==false) {
-		//	if (!$aeFiles->exists($final)) {
-				// Accentuated char nightmare : try first without using
-				// the decode function. If not OK, then use utf8_decode
-				//$bReturn = $aeFiles->create($final, $html);
-				//if (!$bReturn) {
-				//	$bReturn = $aeFiles->create(utf8_decode($final), //$html);
-				//	if (!$bReturn) {
-				//		$final = '';
-				//		/*<!-- build:debug -->*/
-				//		if ($aeSettings->getDebugMode()) {
-				//			$aeDebug = \MarkNotes\Debug::getInstance();
-				//			$aeDebug->log("Error while trying to create //[".$final."]", "error");
-				//		}
-				//		/*<!-- endbuild -->*/
-				//	}
-				//}
-			//}  // 	if(!$aeFiles->exists($final))
-			// Store the filename so the export->after->display
-			// plugin knows which file should be displayed
-		//	$params['output'] = $final;
-
-		//} else { // if ($aeSession->get('NoteContainsEncryptedData'
-			$params['content'] = $html;
-		//}
+		$params['content'] = $html;
 
 		return true;
 	}

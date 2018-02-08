@@ -192,21 +192,6 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// Headings will be incremented by one
 							$sContent = self::IncrementHeadings($sContent);
 
-							/*<!-- build:debug -->*/
-							$aeDebug = \MarkNotes\Debug::getInstance();
-							if ($aeDebug->getDevMode()) {
-								// Add the name of the included
-								// file to make easier to retrieve
-								// in which file the content
-								// can be retrieved / modified.
-								// (otherwise in the case of a
-								// complex note with a big number
-								// of INCLUDE statement, it becomes
-								// quite complex)
-								$sContent = "###### ".DEV_MODE_PREFIX." INCLUDE FILE ".$sFile."	{.devmode}\n\n".$sContent;
-							}
-							/*<!-- endbuild -->*/
-
 							//$aeEvents = \MarkNotes\Events::getInstance();
 							//$aeEvents->loadPlugins('markdown');
 							//$params['markdown'] = $sContent;

@@ -119,7 +119,8 @@ class Markdown
 					// Run the "export.before" events
 
 					// $task is f.i. task.export.txt,
-					// retrieve the 'txt' part i.e. the format : it's the last part
+					// retrieve the 'txt' part i.e. the format : it's
+					// the last part
 					$tmp = explode('.', $task);
 					$format = $tmp[count($tmp)-1];
 
@@ -130,7 +131,8 @@ class Markdown
 				}
 
 				// --------------------------------
-				// Call task plugins (f.i. task.export, task.search, ...)
+				// Call task plugins (f.i. task.export, task.search,
+				// ...)
 				$aeEvents->loadPlugins($task);
 				$args = array(&$params);
 				$aeEvents->trigger($task.'::run', $args);

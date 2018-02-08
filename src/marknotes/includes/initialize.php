@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Initialization of the Debug class; file included in the
  * index.php and router.php file, during the loading time of the

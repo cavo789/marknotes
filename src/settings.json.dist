@@ -125,6 +125,10 @@
 				"enabled": 1,
 				"quickIcons": 1
 			},
+			"filemanager": {
+				"enabled": 1,
+				"quickIcons": 0
+			},
 			"update": {
 				"enabled": 1,
 				"quickIcons": 1
@@ -329,6 +333,12 @@
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
+				"filemanager": {
+					"description": "Add the js file for the File Manager feature",
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface", "task.export.html", "task.elf.show"]
+				},
 				"font-awesome": {
 					"description": "Load font-awesome css, needed by the font-awesome content plugin",
 					"enabled": 1,
@@ -450,12 +460,6 @@
 					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
 				},
-				"search": {
-					"description": "Display the search engine in the interface",
-					"enabled": 1,
-					"not_if_task": [],
-					"only_if_task": ["main", "interface"]
-				},
 				"share": {
 					"description": "Add share buttons like facebook, twitter, mail, ...",
 					"enabled": 1,
@@ -508,6 +512,12 @@
 					"enabled": 1,
 					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
+				},
+				"search": {
+					"description": "Display the search engine in the interface",
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
 				},
 				"optimize": {
 					"description": "Optimization plugin; see options to know what this plugin will really do. **The best place for this plugin is to be fired as the last one (as defined in plugins.page.html)**",

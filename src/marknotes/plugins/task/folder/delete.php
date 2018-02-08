@@ -31,10 +31,6 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Sanitize foldersname
-		$foldername = $aeFiles->sanitize($foldername);
-		$foldername = str_replace('/', DS, $aeSettings->getFolderDocs().$foldername);
-
 		if (!$aeFolders->exists($foldername)) {
 			// The folder is not found
 			return FOLDER_NOT_FOUND;
@@ -61,7 +57,7 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 					// Still exists
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
-						$aeDebug->log('   Error, folder ['.utf8_encode($foldername).'] still present', 'debug');
+						$aeDebug->log('	Error, folder ['.utf8_encode($foldername).'] still present', 'debug');
 					}
 					/*<!-- endbuild -->*/
 					return FILE_ERROR;
@@ -82,14 +78,13 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Be sure that filenames doesn't already start with the /docs folder
-		self::cleanUp($params, $aeSettings->getFolderDocs(false));
-
 		$foldername = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
-		if ($foldername != '') {
-			$foldername = $aeFiles->sanitize(trim($foldername));
-		}
+		$docs = $aeSettings->getFolderDocs(false);
+
+		$foldername = $aeFiles->sanitize($foldername);
+		$foldername = $aeSettings->getFolderWebRoot().$foldername;
+		$foldername = str_replace('/', DS, $foldername);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
@@ -111,24 +106,28 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 			// Relative foldername
 			$rel_foldername = str_replace($aeSettings->getFolderDocs(true), '', $foldername);
 
-			// Try to remove the folder, first, be sure that the user
-			// can see the folder : if he can't, he can't delete it too
+			// Try to remove the folder, first, be sure that
+			// the user can see the folder : if he can't, he
+			// can't delete it too
 			$aeEvents = \MarkNotes\Events::getInstance();
 			$aeEvents->loadPlugins('task.acls.cansee');
 
-			// Note : the folder should start and end with the slash
+			// Note : the folder should start and end with
+			// the slash
 			$arr = array('folder' => $foldername,'return' => true);
 			$args = array(&$arr);
 
 			$aeEvents->trigger('task.acls.cansee::run', $args);
 
-			// cansee will initialize return to 0 if the user can't
-			// see the folder
+			// cansee will initialize return to 0 if the user
+			// can't see the folder
 			if (intval($args[0]['return'])===1) {
-				// Only if the user can see the folder, he can delete it
+				// Only if the user can see the folder,
+				// he can delete it
 				$wReturn = self::delete($foldername);
 			} else {
-				// The folder is protected and the user can't see it.
+				// The folder is protected and the user
+				// can't see it.
 				$wReturn = NO_ACCESS;
 			}
 
@@ -160,11 +159,13 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 					break;
 			}
 
+			$md5 = md5(dirname($docs.$rel_foldername).DS);
+
 			$arr = array(
 				'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
 				'action' => 'delete',
 				'type' => 'folder',
-				'md5' => md5($docs.$foldername),
+				'md5' => $md5,
 				'msg' => $msg,
 				'foldername' => utf8_encode($foldername)
 			);

@@ -110,21 +110,35 @@ function initFiles($data) {
 	// Initialize the jsTree and attach events
 	jstree_init($data);
 
+	// If the data object contains a "select_node" attribute
+	// this means that the treeview should immediatly display
+	// that given note (based on his md5).
+	//
+	// Note : md5 is calculated on the filesystem filename but like
+	// this : docs\subfolder\note
+	//
+	//		* should start with the folder name (docs)
+	//		* should use the OS folder separator (so \ under Windows)
+	//		* should mentionned the relative name of file
+	//		* should not mentionned the .md extension
+
 	if ($data.hasOwnProperty('select_node')) {
 		if (typeof $data.select_node.id !== 'undefined') {
 			// Needed otherwise the jstree's state plugin will
 			// reset the selected node
+
 			try {
 				// Select the node
 				$('#TOC').jstree('select_node', $data.select_node.id);
 			} catch (err) {
-				/*<!-- build:debug -->*/
-				if (marknotes.settings.debug) {
-					console.warn(err.message + ' --- More info below ---');
-					console.log(err);
-				}
-				/*<!-- endbuild -->*/
 			}
+
+			try {
+				// If the selected node is a folder, just open it
+				$('#TOC').jstree('open_node', $('#TOC').jstree('get_selected'));
+			} catch (err) {
+			}
+
 		}
 	}
 

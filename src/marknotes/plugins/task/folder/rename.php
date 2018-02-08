@@ -3,7 +3,7 @@
  * Rename a folder
  *
  * Anwser to URL like the one below (names are base64_encoded)
- * index.php?task=task.folder.rename&oldname=JTJGemEy&newname=JTJGenp6enp6
+ *  index.php?task=task.folder.rename&oldname=JTJGemEy&newname=JTJGenp6enp6
  */
 namespace MarkNotes\Plugins\Task\Folder;
 
@@ -30,12 +30,16 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 			return FILE_ERROR;
 		}
 
-		// Sanitize foldersname
+		// Sanitize foldernames
 		$oldname = $aeFiles->sanitize($oldname);
-		$oldname = $aeSettings->getFolderDocs().$oldname;
+		$oldname = $aeSettings->getFolderWebRoot().$oldname;
+		$oldname = str_replace('/', DS, $oldname);
 
 		$newname = $aeFiles->sanitize($newname);
-		$newname = $aeSettings->getFolderDocs().$newname;
+		$newname = $aeSettings->getFolderWebRoot().$newname;
+		$newname = str_replace('/', DS, $newname);
+
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
 		// Try to remove a file, first, be sure that the user
 		// can see the parent folder : if he can't, he can't delete the file
@@ -155,10 +159,16 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 					break;
 			}
 
+			// For the md5 function, foldername should be
+			// something like docs\subfolder\newfolder\
+			$md5 = str_replace($aeSettings->getFolderDocs(true), $docs, $newname);
+
+			$md5 = rtrim(str_replace('/', DS, $md5), DS).DS;
+
 			$arr = array(
 				'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
 				'action' => 'rename',
-				'md5' => md5($docs.$newname),
+				'md5' => md5($md5),
 				'msg' => $msg,
 				'foldername' => utf8_encode($newname)
 			);

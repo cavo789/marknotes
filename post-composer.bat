@@ -63,7 +63,7 @@ REM call :fnCopyjsTree
 REM call :fnCopyjsTreeProton
 REM call :fnCopySimpleMDE
 REM call :fnCopyPrism
-call :fnCopyMermaid
+REM call :fnCopyMermaid
 REM call :fnCopyFlexDataList
 REM call :fnCopyjQueryHighLight
 REM call :fnCopyPrintPreview
@@ -87,6 +87,7 @@ REM call :fnCopyCLDRPluralRuleParser
 REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
 REM call :fnUpload
+call :fnELF
 REM call :fnHTML2MD
 REM call :fnGuzzle
 REM call :fnGoogleTranslate
@@ -872,6 +873,25 @@ ECHO.
 IF NOT EXIST %PAGE%html\upload\libs\dropzone MKDIR %PAGE%html\upload\libs\dropzone >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.css %PAGE%html\upload\libs\dropzone /Y >> %LOG%
 COPY %VENDOR%dropzone\dist\min\dropzone.min.js %PAGE%html\upload\libs\dropzone /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnELF
+::--------------------------------------------------------
+
+:fnELF
+ECHO  === fnELF ===
+ECHO	COPY TO %TASK%elf\libs
+ECHO.
+IF NOT EXIST %TASK%elf\libs MKDIR %TASK%elf\libs >> %LOG%
+XCOPY %MANUAL%elf\elFinder\css\*.* %TASK%elf\libs\css\ /E /Y >> %LOG%
+XCOPY %MANUAL%elf\elFinder\img\*.* %TASK%elf\libs\img\ /E /Y >> %LOG
+XCOPY %MANUAL%elf\elFinder\js\*.* %TASK%elf\libs\js\ /E /Y >> %LOG%
+XCOPY %MANUAL%elf\elFinder\php\*.* %TASK%elf\libs\php\ /E /Y >> %LOG%
+XCOPY %MANUAL%elf\elFinder\sounds\*.* %TASK%elf\libs\sounds\ /E /Y >> %LOG%
+COPY %MANUAL%elf\elFinder\elfinder.html %TASK%elf\libs\ /Y >> %LOG%
+COPY %MANUAL%elf\elFinder\main.default.js %TASK%elf\libs\ /Y >> %LOG%
+goto:eof
 
 ::--------------------------------------------------------
 ::-- fnHTML2MD
@@ -883,6 +903,7 @@ ECHO	COPY TO %TASK%convert\libs\html2md
 ECHO.
 IF NOT EXIST %TASK%convert\libs\html2md MKDIR %TASK%convert\libs\html2md >> %LOG%
 XCOPY %VENDOR%html-to-markdown\src\*.* %TASK%convert\libs\html2md /E /Y >> %LOG%
+goto:eof
 
 ::--------------------------------------------------------
 ::-- fnGuzzle

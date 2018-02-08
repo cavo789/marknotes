@@ -8,6 +8,6 @@
   RewriteCond %{REQUEST_FILENAME} !\.json(.gz)?(\?.*)?$ [NC]
   RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf|woff2?)(\?.*)?$ [NC]
   # And allow an exception for ELF
-  RewriteCond %{REQUEST_URI} !.*/task/elf/libs/elf/*
+  RewriteCond %{REQUEST_URI} !.*/task/elf/libs/*
   RewriteRule .* - [R=403,NC,L]
 </IfModule>
