@@ -4,6 +4,7 @@
 		"last-updated": "2017-09-27",
 		"locale": "fr"
 	},
+	"action_prohibited": "La configuration de l'application interdit cette action",
 	"action_download": "T\u00e9l\u00e9charger ce fichier",
 	"action_html": "Afficher la pr\u00e9sentation comme un article",
 	"action_slideshow": "Voir cet article sous le format pr\u00e9sentation",

@@ -1105,6 +1105,9 @@
 			"favorites" : {
 				"enabled" : 1
 			},
+			"filemanager": {
+				"enabled": 0
+			},
 			"markdown": {
 				"write": {
 					"description": "A few plugins like encrypt or beautify make changes to the content and will rewrite the file on the disk. This is done thanks to the write plugin (no files's rewriting if disabled). The preferred order for this plugin is at the last place.",

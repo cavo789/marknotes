@@ -290,6 +290,17 @@ class Show_Form
 		return str_replace('%CONTENT%', $content, $box);
 	}
 
+	// Process Plugins-Task-FileManager
+	private static function getTaskFileManager(array $arr, string $key) : string
+	{
+		$key = $key.'.';
+		$box = self::getBox('Plugins - Task - FileManager', 'square');
+		$content = self::getRadio($key.'enabled',
+			'Enable the task, allow to show the file manager to authorized users (enabled)',
+			$arr['enabled']);
+		return str_replace('%CONTENT%', $content, $box);
+	}
+
 	// Process Plugins-Task-Markdown
 	private static function getTaskMarkdown(array $arr, string $key) : string
 	{
@@ -376,6 +387,9 @@ class Show_Form
 			'plugins.markdown');
 		$boxes .= self::getTaskMarkdown($arr['plugins']['task']['markdown'],
 			'plugins.task.markdown');
+		$boxes .= self::getTaskFileManager($arr['plugins']['task']['filemanager'],
+			'plugins.task.filemanager');
+
 		$boxes .= self::getOptionsTaskLogin($arr['plugins']['options']['task']['login'], 'plugins.options.task.login');
 		$boxes .= self::getOptionsPageHTMLOptimize($arr['plugins']['options']['page']['html']['optimize'], 'plugins.options.page.html.optimize');
 
