@@ -1,6 +1,7 @@
 <?php
 /**
- * What are the actions to fired when MarkNotes is running the "remark" task ?
+ * What are the actions to fired when MarkNotes is running the
+ * "remark" task ?
  */
 
 namespace MarkNotes\Plugins\Task\Export;

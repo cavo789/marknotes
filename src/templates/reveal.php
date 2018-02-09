@@ -7,7 +7,7 @@
 		<meta http-equiv="content-language" content="%LANGUAGE%" />
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
 
-		<title>%SITE_NAME%</title>
+		<title>%NOTE_TITLE%</title>
 
 		<!--%META_DATA%-->
 		<!--%FAVICON%-->

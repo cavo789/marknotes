@@ -90,6 +90,10 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 		// Get the markdown content
 		$aeEvents->loadPlugins('markdown');
 		$content = $aeFiles->getContent($fullname);
+		if (trim($content) == '') {
+			$content = $aeFiles->getContent(utf8_decode($fullname));
+		}
+
 		$params['markdown'] = $content;
 		$params['filename'] = $fullname;
 		$args = array(&$params);

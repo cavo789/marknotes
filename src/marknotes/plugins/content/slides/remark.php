@@ -25,6 +25,10 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 			$fullname = $aeSettings->getFolderDocs(true).$params['filename'];
 
 			if (!$aeFiles->exists($fullname)) {
+				$fullname = utf8_decode($fullname);
+			}
+
+			if (!$aeFiles->exists($fullname)) {
 				$aeFunctions->fileNotFound($fullname);
 			}
 
@@ -102,15 +106,14 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 			$html = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $html);
 			$html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/'), $html);
 
-			// $slideshow contains the template : it's an html file with (from the /templates folder)
-			// and that file contains variables => convert them
-			//$aeHTML = \MarkNotes\FileType\HTML::getInstance();
-			//$html = $aeHTML->replaceVariables($slideshow, $markdown, $params);
+			if (strpos($html, '%NOTE_TITLE%') !== false) {
+				$html = str_replace('%NOTE_TITLE%', $pageTitle, $html);
+			}
+
 		} // if ($params['filename'] !== "")
 
 		// And return the HTML to the caller
 		$params['html'] = $html;
 		return true;
 	}
-
 }

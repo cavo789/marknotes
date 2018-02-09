@@ -272,6 +272,20 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 		//
 		// ---------------------------------------------------------------
 
+		if (strpos($markdown, '%NOTE_TITLE%') !== false) {
+			$aeMarkDown = \MarkNotes\FileType\Markdown::getInstance();
+
+			$mdContent = $aeFiles->getContent($params['filename']);
+			if (trim($mdContent) == '') {
+				$mdContent = $aeFiles->getContent(utf8_decode($params['filename']));
+			}
+
+			// Try to retrieve the heading 1
+			$pageTitle = $aeMarkDown->getHeadingText($mdContent, '#');
+
+			$markdown = self::replaceVar('%NOTE_TITLE%', $pageTitle, $markdown);
+		}
+
 		// ---------------------------------------------------------------
 		// Variables using the filename i.e. the note being reading
 		//
