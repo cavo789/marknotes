@@ -77,7 +77,7 @@ $opts = array(
 );
 
 // We can't never access to these folders :
-$protected = '.git|';
+$protected = '.git|.htaccess|.htpasswd|';
 
 // $arrMN['acls'] is set by the Elf\Initialize::getSettings();
 // function

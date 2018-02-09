@@ -13,12 +13,16 @@ function fnPluginHTMLFavorites() {
 	}
 	/*<!-- endbuild -->*/
 
-	// If favorites are displayed, no need to display tips
-	if (marknotes.settings.hasOwnProperty('show_tips')) {
-		marknotes.settings.show_tips = 0;
-	}
+	// Display the list of favorites only if there is something
+	// to display
+	if (marknotes.favorites_count > 0) {
+		// If favorites are displayed, no need to display tips
+		if (marknotes.settings.hasOwnProperty('show_tips')) {
+			marknotes.settings.show_tips = 0;
+		}
 
-	fnPluginHTMLFavoritesShow();
+		fnPluginHTMLFavoritesShow();
+	}
 
 	return true;
 }
@@ -34,7 +38,7 @@ function fnPluginHTMLFavoritesShowIcon() {
 	if (marknotes.note.file!=="") {
 		ajaxify({
 			task: 'task.favorites.geticon',
-			param: btoa(marknotes.note.file),
+			param: window.btoa(encodeURIComponent(JSON.stringify(marknotes.note.file))),
 			callback: 'afterGetFavoritesIcon(data)',
 			dataType: 'json',
 			useStore: 0
@@ -71,7 +75,8 @@ function afterGetFavoritesIcon($data) {
 		// Add or Remove the note into the favorites
 		var $data = {};
 		$data.task = 'task.favorites.' + $(this).attr('data-task');
-		$data.param = btoa(marknotes.note.file);
+		$data.param =
+		window.btoa(encodeURIComponent(JSON.stringify(marknotes.note.file)));
 
 		var $icon = $(this);
 

@@ -1082,7 +1082,8 @@
 						"only_if_task": ["interface", "main", "task.export.html", "task.export.reveal"]
 					},
 					"kill_old_ones": {
-						"enabled": 1,
+						"enabled": 0,
+						"TEMP":"This plugin is no more needed since MN use the cache system and doesn't create anymore .html files in the note's folder",
 						"not_if_task": ["task.search.search"],
 						"only_if_task": []
 					}

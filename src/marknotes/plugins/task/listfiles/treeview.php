@@ -120,6 +120,14 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// docs/the_folder/a_note.md
 				$id = str_replace($root, $rootNode, $entry['name']);
 
+				if (PHP_7_0) {
+					if ($bConvert) {
+						// accent_conversion in settings.json has
+						// been initialized to 1 => make the conversion
+						$id=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($id));
+					}
+				}
+
 				// Right-click on a file = open it's HTML version
 				$dataURL=str_replace($root, '', $entry['name']);
 				// Should be relative to the /docs folder

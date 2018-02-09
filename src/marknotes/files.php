@@ -54,7 +54,7 @@ class Files
 		if ($webroot=='') {
 			// Get the root folder of marknotes (f.i. C:\sites\marknotes\
 			// or /home/html/sites/marknotes/)
-			self::$sWebRoot = trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+			self::$sWebRoot = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
 			self::$sWebRoot = str_replace('/', DS, self::$sWebRoot).DS;
 		} else {
 			self::$sWebRoot = rtrim($webroot, DS).DS;
@@ -546,12 +546,6 @@ class Files
 		// Don't allow a double .. in the name and don't allow to start with a dot
 		$regex = array('#(\.){2,}#', '#^\.#');
 		$filename = trim(preg_replace($regex, '', $filename));
-
-		// If $filename was f.i. '../../../../../'.$filename
-		// the preg_replace has change it to '/////'.$filename so remove leading /
-		// Remove directory separator for Unix and Windows
-
-		$filename = ltrim($filename, '\\\/');
 
 		return $filename;
 	}

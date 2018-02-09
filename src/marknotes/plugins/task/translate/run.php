@@ -20,10 +20,40 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = 'plugins.options.task.translate';
 
 	/**
+	 * After the translation, the syntax of Markdown is sometimes
+	 * broken like for images :
+	 * instead of keeping
+	 *		![ALT](https://.../images/teaser.jpg)
+	 * after the translation it becomes
+	 *		! [ALT] (https://.../images/teaser.jpg)
+	 * and these spaces are bad; the image syntax is broken
+	 */
+	private static function cleaning(string $content) : string
+	{
+		$pattern =
+			// Search for an image (starting with "!")
+			'!'.
+			// Followed by one or more space and a [...] construction
+			' *(\[[^\]]+\])'.
+			// Followed by one or more space and a (...) construction
+			' *(\([^\)]+\))';
+
+		// And remove spaces so keep only ![...](...) and not
+		// !    [...]  (...) for instance
+		$replacement = '!$1$2';
+		$content = preg_replace('/'.$pattern.'/', $replacement,
+			$content);
+
+		return $content;
+	}
+
+	/**
 	 * Call Google API translation library
 	 */
 	private static function translate(string $content) : string
 	{
+		$return = '';
+
 		// Retrieve the language used for marknotes
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$arrSettings = $aeSettings->getPlugins('/regional');
@@ -56,7 +86,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 
 		$return = $tr->translate($content);
 
-		return $return;
+		return self::cleaning($return);;
 	}
 
 	private static function getVariable(string $line) : string

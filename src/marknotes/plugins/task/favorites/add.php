@@ -35,7 +35,7 @@ class Remove extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Get the filename to check (f.i. marknotes/Ideas)
-		$filename = $aeFunctions->getParam('param', 'string', '', true);
+		$filename = json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true)));
 		$filename = $aeFiles->removeExtension($filename);
 
 		// Get the list of favorites from the settings.json file
@@ -46,9 +46,6 @@ class Remove extends \MarkNotes\Plugins\Task\Plugin
 		foreach ($arrOptions as $key=>$fav) {
 			// Loop and check if the file in mentionned
 			if ($fav == $filename) {
-				// Yes : the file is mentionned in the
-				// favorites. Just remove it
-				unset($arrOptions[$key]);
 				$bFound = true;
 				break;
 			}
@@ -90,7 +87,6 @@ class Remove extends \MarkNotes\Plugins\Task\Plugin
 
 			// Sort the array by key, recursively
 			self::ksortRecursive($arrSettings);
-
 			// Write the file
 			$aeFiles->rewrite($json, json_encode($arrSettings, JSON_PRETTY_PRINT));
 		}

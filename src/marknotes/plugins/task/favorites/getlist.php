@@ -43,8 +43,8 @@ class GetList extends \MarkNotes\Plugins\Task\Plugin
 
 		foreach ($arrOptions as $file) {
 			$file = $aeFiles->removeExtension($file);
-
 			$file = str_replace('/', DS, $file);
+
 			$arr['files'][] = array(
 				'file'=>$file,
 				'id'=>md5($docs.$file) // md5 needs "docs/"

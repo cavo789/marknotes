@@ -23,7 +23,20 @@ class Favorites extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/favorites/';
 
-		$script = "<script type=\"text/javascript\" ".
+		// Count the number of items in the list of Favorites
+		// If the plugin is enabled and when the list isn't empty
+		// then this plugin can be fired
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// The plugin is enabled, check if the list of
+		// favorites is empty of not
+		$arr = $aeSettings->getPlugins(self::$json_options, array('list'=>array()));
+
+		$script = "<script type=\"text/javascript\">".
+			"marknotes.favorites_count=".count($arr['list']).";".
+			"</script>\n";
+
+		$script .= "<script type=\"text/javascript\" ".
 			" src=\"".$url."favorites.js\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
@@ -49,29 +62,6 @@ class Favorites extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$css .= $aeFunctions->addStyleInline($script);
 
 		return true;
-	}
-
-	/**
-	 * Verify if the plugin is well needed and thus have a reason
-	 * to be fired
-	 */
-	final protected static function canRun() : bool
-	{
-		$bCanRun = parent::canRun();
-
-		if ($bCanRun) {
-			// Count the number of items in the list of Favorites
-			// If the plugin is enabled and when the list isn't empty
-			// then this plugin can be fired
-			$aeSettings = \MarkNotes\Settings::getInstance();
-
-			// The plugin is enabled, check if the list of
-			// favorites is empty of not
-			$arr = $aeSettings->getPlugins(self::$json_options, array('list'=>array()));
-			$bCanRun = count($arr['list'])>0;
-		}
-
-		return $bCanRun;
 	}
 
 	/**

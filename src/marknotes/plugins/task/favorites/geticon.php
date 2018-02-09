@@ -30,7 +30,7 @@ class GetIcon extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Get the filename to check (f.i. marknotes/Ideas)
-		$filename = $aeFunctions->getParam('param', 'string', '', true);
+		$filename = json_decode(urldecode($aeFunctions->getParam('param', 'string', '', true)));
 		$filename = $aeFiles->removeExtension($filename);
 
 		// Get the list of favorites from the settings.json file

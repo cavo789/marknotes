@@ -67,7 +67,7 @@ class Folders
 		// Get the root folder of marknotes (f.i. C:\sites\marknotes\
 		// or /home/html/sites/marknotes/)
 		if ($webroot=='') {
-			self::$sWebRoot=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+			self::$sWebRoot=rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
 			self::$sWebRoot=str_replace('/', DS, self::$sWebRoot).DS;
 		} else {
 			self::$sWebRoot = rtrim($webroot, DS).DS;

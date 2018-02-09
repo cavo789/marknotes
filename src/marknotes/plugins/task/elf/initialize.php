@@ -42,7 +42,7 @@ class Initialize
 		$self=dirname(dirname(dirname($self)));
 		$self=dirname(dirname(dirname($self)));
 
-		$return = $protocol.'://'.$host.dirname($self).'/';
+		$return = $protocol.'://'.$host.rtrim(dirname($self),'/').'/';
 
 		return $return;
 	}
@@ -52,7 +52,8 @@ class Initialize
 		// Retrieve the root folder based on this script
 		// Make a lot of dirname() since this current script
 		// is deep in the marknotes folder's structure
-		$webRoot=trim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
+
+		$webRoot=rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS);
 		$webRoot=dirname(dirname(dirname($webRoot)));
 		$webRoot=dirname(dirname(dirname($webRoot)));
 
@@ -69,7 +70,7 @@ class Initialize
 		$arr = array('settings.json.dist', 'settings.json');
 
 		foreach ($arr as $file) {
-			if (is_file($json = $webRoot.$file)) {
+			if (file_exists($json = $webRoot.$file)) {
 				try {
 					$settings=json_decode(file_get_contents($json), true);
 
@@ -106,11 +107,6 @@ class Initialize
 		// So we can use the Session classes
 		$dir = dirname(dirname(dirname(dirname(__DIR__))));
 		include_once $dir.'/marknotes/includes/debug_show_errors.php';
-
-		// Get the webroot folder
-		$webRoot=trim(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), DS);
-		$webRoot=str_replace('/', DS, $webRoot).DS;
-		$webRoot=dirname(dirname(dirname(dirname(dirname($webRoot)))));
 
 		// Load classes and initialize Marknotes
 		include_once $dir.'/marknotes/includes/initialize.php';

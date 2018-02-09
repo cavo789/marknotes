@@ -1,14 +1,19 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
+
 namespace MarkNotes;
+
 defined('_MARKNOTES') or die('No direct access allowed');
+
 class Functions
 {
 	protected static $hInstance = null;
+
 	public function __construct()
 	{
 		return true;
 	}
+
 	public static function getInstance()
 	{
 		if (self::$hInstance === null) {
@@ -16,101 +21,129 @@ class Functions
 		}
 		return self::$hInstance;
 	}
+
 	public function fileNotFound(string $file = '', bool $die = true) : bool
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
 		header("HTTP/1.0 404 Not Found");
+
 		if ($file !== '') {
 			echo(str_replace('$1', '<strong>'.$file.'</strong>', $msg));
 		}
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->here('#DebugMode# - File '.$file.' not found', 10);
 		}
 		/*<!-- endbuild -->*/
+
 		if ($die) {
 			die();
 		}
 	}
+
 	public function folderNotFound(string $folder = '', bool $die = true) : bool
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$msg = $aeSettings->getText('folder_not_found', 'The folder [%s] doesn\\&#39;t exists');
 		header("HTTP/1.0 404 Not Found");
+
 		if ($folder !== '') {
 			echo(str_replace('%s', '<strong>'.$folder.'</strong>', $msg));
 		}
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->here('#DebugMode# - Folder '.$folder.' not found', 5);
 		}
+
 		/*<!-- endbuild -->*/
 		if ($die) {
 			die();
 		}
 	}
+
 	/**
-	* Display an error message and, if the debug mode is enabled, gives info about the caller
+	* Display an error message and, if the debug mode is
+	* enabled, gives info about the caller
 	*/
 	public static function showError(string $code, string $default, bool $bHTML = true) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$caller = '';
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$caller = ' (called by '.debug_backtrace()[1]['class'].'::'.debug_backtrace()[1]['function'].
 			', line '.debug_backtrace()[0]['line'].')';
 		}
 		/*<!-- endbuild -->*/
+
 		$sReturn = $aeSettings->getText($code, $default).$caller;
 		if ($bHTML) {
 			$sReturn = '<div class="text-danger">'.$sReturn.'</div>';
 		}
+
 		return $sReturn;
 	}
+
 	/**
-	* Remove any accentuated characters, dot, space, comma, ... and generate
-	* a secure string (can be used for an alias or a filename)
+	* Remove any accentuated characters, dot, space, comma, ...
+	* and generate a secure string (can be used for an alias or
+	* a filename)
 	*
 	* @link https://github.com/cocur/slugify
 	*/
 	public static function slugify(string $text) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$folder = $aeSettings->getFolderLibs()."slugify/";
 		include_once $folder.'RuleProvider/RuleProviderInterface.php';
 		include_once $folder.'RuleProvider/DefaultRuleProvider.php';
 		include_once $folder.'RuleProvider/FileRuleProvider.php';
 		include_once $folder.'SlugifyInterface.php';
 		include_once $folder.'Slugify.php';
+
 		$slugify = new \Cocur\Slugify\Slugify();
+
 		// Slugify support different languages (rules);
 		// see the $rules array defined in
 		// https://github.com/cocur/slugify/blob/master/src/RuleProvider/DefaultRuleProvider.php
+
 		$rule='default';
 		if ($aeSettings->getLanguage()=='fr') {
 			$rule='french';
 		}
+
 		$slugify->activateRuleSet($rule);
+
 		// Be sure to have really nice slugs
 		$text = trim(@html_entity_decode($text), ' .:,;-?!');
 		return $slugify->slugify($text);
 	}
+
 	/**
-	* Check if a specific function (like exec or shell_execute) is disabled or not
+	* Check if a specific function (like exec or shell_execute)
+	* is disabled or not
 	*/
 	public static function ifDisabled(string $fctname) : bool
 	{
 		$bReturn = false;
+
 		if ($fctname !== '') {
 			$disabled = explode(',', ini_get('disable_functions'));
 			$bReturn = in_array($fctname, $disabled);
 		}
+
 		return $bReturn;
 	}
+
 	/**
 	* Return the current URL
 	*
@@ -120,23 +153,32 @@ class Functions
 	{
 		$ssl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
 		$protocol = 'http';
+
 		// SERVER_PROTOCOL isn't set when the script is fired through a php-cli
 		if (isset($_SERVER['SERVER_PROTOCOL'])) {
 			$spt = strtolower($_SERVER['SERVER_PROTOCOL']);
 			$protocol = substr($spt, 0, strpos($spt, '/')) . (($ssl)?'s':'');
 		}
+
 		$port = '80';
-		// SERVER_PORT isn't set when the script is fired through a php-cli
+
+		// SERVER_PORT isn't set when the script is fired
+		// through a php-cli
+
 		if (isset($_SERVER['SERVER_PORT'])) {
 			$port = $_SERVER['SERVER_PORT'];
 			$port = ((!$ssl && $port == '80') || ($ssl && $port == '443')) ? '' : ':'.$port;
 		}
+
 		$host =
 		(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
 		$host = isset($host) ? rtrim(str_replace(DS, '/', $host), '/') : $_SERVER['SERVER_NAME'].$port;
-		$return = $protocol.'://'.$host.dirname($_SERVER['PHP_SELF']).'/';
+
+		$return = $protocol.'://'.$host.rtrim(dirname($_SERVER['PHP_SELF']),'/').'/';
+
 		return $return;
 	}
+
 	/**
 	* Safely read posted variables
 	*
@@ -154,9 +196,11 @@ class Functions
 	) {
 		$tmp = '';
 		$return = $default;
+
 		if ($type=='bool') {
 			$type='boolean';
 		}
+
 		if (isset($_POST[$name])) {
 			if (in_array($type, array('int','integer'))) {
 				$return = filter_input(INPUT_POST, $name, FILTER_SANITIZE_NUMBER_INT);
