@@ -29,11 +29,13 @@
 namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
+
 class Get extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.task.listfiles';
 	protected static $json_options = 'plugins.options.task.listfiles';
+
 	/**
 	 * Get the list of files
 	 */
@@ -109,6 +111,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 		return $arrFiles;
 	}
+
 	public static function run(&$params = null) : bool
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
@@ -129,7 +132,6 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($canSee) {
 			// Call the ACLs plugin
-
 			$aeEvents = \MarkNotes\Events::getInstance();
 
 			$aeEvents->loadPlugins('task.acls.load');

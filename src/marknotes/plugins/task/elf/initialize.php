@@ -5,8 +5,7 @@
  */
 namespace MarkNotes\Plugins\Task\Elf;
 
-//defined('_MARKNOTES') or die('No direct access allowed');
-
+define('_MARKNOTES', 1);
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 class Initialize
@@ -103,13 +102,53 @@ class Initialize
 		// Get the URL to the /docs folder
 		$url  = self::getCurrentURL().str_replace(DS, '/', $docs);
 
+		// Include Marknotes classes
+		// So we can use the Session classes
+		$dir = dirname(dirname(dirname(dirname(__DIR__))));
+		include_once $dir.'/marknotes/includes/debug_show_errors.php';
+
+		// Get the webroot folder
+		$webRoot=trim(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), DS);
+		$webRoot=str_replace('/', DS, $webRoot).DS;
+		$webRoot=dirname(dirname(dirname(dirname(dirname($webRoot)))));
+
+		// Load classes and initialize Marknotes
+		include_once $dir.'/marknotes/includes/initialize.php';
+		$class = new \MarkNotes\Includes\Initialize();
+		$class->init($webRoot);
+		unset($class);
+
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Call the ACLs plugin
+		$aeEvents->loadPlugins('task.acls.load');
+
+		$args=array();
+
+		$aeEvents->trigger('task.acls.load::run', $args);
+
+		// And retrieve the list of protected folders
+		$aeSession = \MarkNotes\Session::getInstance();
+		$acls = $aeSession->get('acls');
+
+		// Get the current logged username
+		$username = trim($_SERVER['PHP_AUTH_USER'] ?? '');
+		if ($username == '') {
+			$username = trim($_SERVER['REMOTE_USER'] ?? '');
+		}
+
+		// Finally return informations to ELF
 		$arr = array(
 			'root'=>$webRoot,
-			'docs'=>$webRoot.$docs,
+			'docs'=>rtrim($webRoot,DS).DS.$docs,
 			'url'=>$url,
 			'title'=>$title,
 			'locale'=>$locale,
-			'debug'=>$debug
+			'debug'=>$debug,
+			'username'=>$username,
+			'acls'=>json_encode($acls)
 		);
 
 		return $arr;

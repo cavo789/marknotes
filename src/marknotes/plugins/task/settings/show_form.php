@@ -301,6 +301,17 @@ class Show_Form
 		return str_replace('%CONTENT%', $content, $box);
 	}
 
+	// Process Plugins-Task-ACLs
+	private static function getTaskACLs(array $arr, string $key) : string
+	{
+		$key = $key.'.';
+		$box = self::getBox('Plugins - Task - ACLs', 'square');
+		$content = self::getRadio($key.'enabled',
+			'Enable the task, allow to hide folders to unallowed users (enabled)',
+			$arr['enabled']);
+		return str_replace('%CONTENT%', $content, $box);
+	}
+
 	// Process Plugins-Task-Markdown
 	private static function getTaskMarkdown(array $arr, string $key) : string
 	{
@@ -385,12 +396,17 @@ class Show_Form
 			'plugins.page.html');
 		$boxes .= self::getMarkdown($arr['plugins']['markdown'],
 			'plugins.markdown');
+
 		$boxes .= self::getTaskMarkdown($arr['plugins']['task']['markdown'],
 			'plugins.task.markdown');
+
 		$boxes .= self::getTaskFileManager($arr['plugins']['task']['filemanager'],
 			'plugins.task.filemanager');
 
+		$boxes .= self::getTaskACLs($arr['plugins']['task']['acls'], 'plugins.task.acls');
+
 		$boxes .= self::getOptionsTaskLogin($arr['plugins']['options']['task']['login'], 'plugins.options.task.login');
+
 		$boxes .= self::getOptionsPageHTMLOptimize($arr['plugins']['options']['page']['html']['optimize'], 'plugins.options.page.html.optimize');
 
 		// -------------------------

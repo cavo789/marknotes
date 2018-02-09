@@ -152,9 +152,10 @@ class Session
 	}
 
 	/**
-	* The session has a timeout property.	By calling the extend() method,
-	* the session timeout will be reset to the current time() and therefore,
-	* his lifetime will be prolongated.
+	* The session has a timeout property. By calling the
+	* extend() method, the session timeout will be reset to
+	* the current time() and therefore, his lifetime will
+	* be prolongated.
 	*/
 	public function extend()
 	{

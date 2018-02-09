@@ -70,12 +70,30 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 				// The user isn't logged in, he can't modify settings
 				$arr['html'] = '<p class="text-danger">'.
 					$aeSettings->getText('not_authenticated').'</p>';
+
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$arr['html'] .= '<p class="text-debug">'.
+						'Please first use the login feature.'.
+						'</p>';
+				}
+				/*<!-- endbuild -->*/
 			}
 		} else {
 			// File manager task disabled in settings.json,
 			// plugins.task.filemanager.enabled has been set to 0
 			$arr['html'] = '<p class="text-danger">'.
 				$aeSettings->getText('action_prohibited').'</p>';
+
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$arr['html'] .= '<p class="text-debug">'.
+					'The task filemanager is not enabled in '.
+					'plugins.task.filemanager.enabled.'.
+					'</p>';
+			}
+			/*<!-- endbuild -->*/
+
 		}
 
 		//$arrSettings = self::getOptions('enabled', array('enabled'=>0));

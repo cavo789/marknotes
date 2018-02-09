@@ -7,6 +7,7 @@ if ((trim($arrMN['root'])==='') || (trim($arrMN['docs'])==='') || (trim($arrMN['
 	die('FATAL ERROR - ELF configuration incorrect; marknotes '.
 		'folders not initialized');
 }
+
 //
 // --- INITIALIZE MARKNOTES ---
 
@@ -50,7 +51,7 @@ $opts = array(
 			'driver' => 'LocalFileSystem',
 			// path to the documentation folder of marknotes
 			'path' => $arrMN['docs'],
-'title'=>'YES !!',
+			//'attributes' => array(),
 			// path to the quarantine folder (in the temporary
 			// folder of marknotes
 			'quarantine' => $arrMN['root'].'tmp/.elf_quarantine',
@@ -74,6 +75,46 @@ $opts = array(
 		)
 	)
 );
+
+// We can't never access to these folders :
+$protected = '.git|';
+
+// $arrMN['acls'] is set by the Elf\Initialize::getSettings();
+// function
+if (isset($arrMN['acls'])) {
+
+	$acls = json_decode($arrMN['acls'], true);
+
+	// f.i. "christophe"
+	$username = trim($arrMN['username']);
+
+	foreach ($acls as $folder => $users) {
+		// $users is an array and contains the list of
+		// people who can access the folder. If the $username is
+		// not in the array, then the user is not allowed to access
+		// to the folder
+		if (!in_array($username, $users)) {
+			$protected .= $folder .'|';
+		}
+	} // foreach
+
+	$protected = rtrim($protected, '|');
+} // if (isset($arrMN['acls']))
+
+if (trim($protected)!=='') {
+	$arr=
+		array(
+			array(
+				'pattern' => '/('.$protected.')/',
+				'read'    => false,
+				'write'   => false,
+				'locked'  => true
+			)
+		);
+
+	$opts['roots'][0]['attributes'] = $arr;
+} // if (trim($protected)!=='')
+
 
 // run elFinder
 $connector = new elFinderConnector(new elFinder($opts));

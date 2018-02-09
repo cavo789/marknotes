@@ -1,10 +1,10 @@
 <?php
 /**
- * This plugin will allow to restrict the access to a folder and make
- * this folder only visible to allowed people. So, for instance, in
- * the folder /docs/private is protected, that folder won't be visible
- * to users except if they can. If not, users won't see that folder
- * at all.
+ * This plugin will allow to restrict the access to a folder
+ * and make this folder only visible to allowed people. So, for
+ * instance, in the folder /docs/private is protected, that folder
+ * won't be visible to users except if they can. If not, users
+ * won't see that folder at all.
  *
  * In settings.json, just add this section :
  *
@@ -20,9 +20,10 @@
  *		}
  *	}
  *
- * This means that the folder /private is protected and can only be
- * visible by Apache users mentionned in the list. "Apache users" :
- * users defined in a .htpasswd file placed at the root of the marknotes site
+ * This means that the folder /private is protected and can only
+ * be visible by Apache users mentionned in the list.
+ * "Apache users" : users defined in a .htpasswd file placed
+ * at the root of the marknotes site
  *
  * *** BE CAREFULL *** : ENTRIES ARE CASE SENSITIVE. If you've an user
  * "christophe" defined in the .htpassw, don't use "Christophe" in your
@@ -84,15 +85,35 @@ class Load extends \MarkNotes\Plugins\Task\Plugin
 	final protected static function canRun() : bool
 	{
 		$bCanRun = parent::canRun();
-		if ($bCanRun) {
-			// This plugin is only needed when at least one folder
-			// has been protected
-			$arrOptions = self::getOptions('folders', array());
 
-			$bCanRun = (count($arrOptions) > 0);
-			if (!$bCanRun) {
-				$aeSession = \MarkNotes\Session::getInstance();
-				$aeSession->set('acls', null);
+		if ($bCanRun) {
+
+			$aeSettings = \MarkNotes\Settings::getInstance();
+
+			// Check if the task is well enabled
+			$arrSettings = $aeSettings->getPlugins(self::$json_settings, array('enabled'=>0));
+
+			// Check that ACLs is well enabled
+			$bCanRun = boolval($arrSettings['enabled']??0);
+
+			if ($bCanRun) {
+				// This plugin is only needed when at least one folder
+				// has been protected
+				$arrOptions = self::getOptions('folders', array());
+
+				$bCanRun = (count($arrOptions) > 0);
+
+				if (!$bCanRun) {
+					$aeSession = \MarkNotes\Session::getInstance();
+					$aeSession->set('acls', null);
+				}
+			} else {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log("The ACLs task plugin is disabled in settings.json (".self::$json_settings.")","debug");
+				}
+				/*<!-- endbuild -->*/
 			}
 		}
 

@@ -19,8 +19,9 @@
  *		echo 'The folder '.$args[0]['folder'].' is '.
  *			($args[0]['folder']?'accessible':'prohibited');
  *
- * Can answer to /index.php?task=task.acls.cansee (but there is no output since this
- * is an intern task who initialize a boolean variable)
+ * Can answer to /index.php?task=task.acls.cansee (but there is
+ * no output since this is an intern task who initialize a
+ * boolean variable)
  */
 namespace MarkNotes\Plugins\Task\ACLs;
 
@@ -60,9 +61,11 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 		if (!isset($params['folder'])) {
 			/*<!-- build:debug -->*/
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log('   The task task.acls.cansee should be called with a '.
-				'foldername (like "private"); that foldername should be put in the '.
-				'$params[\'folder\'] parameter. It\'s not the case here.', 'error');
+			$aeDebug->log('   The task task.acls.cansee should '.
+				'be called with a foldername (like "private"); '.
+				'that foldername should be put in the '.
+				'$params[\'folder\'] parameter. It\'s not '.
+				'the case here.', 'error');
 			/*<!-- endbuild -->*/
 			return false;
 		}
@@ -83,8 +86,8 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 
 		if (count($arrOptions) > 0) {
 			// Retrieve the user defined at the .htpasswd level
-			// i.e. the user used to connect on the site when a .htpasswd is used
-			// to protect the site
+			// i.e. the user used to connect on the site when
+			// a .htpasswd is used to protect the site
 			$username = trim($_SERVER['PHP_AUTH_USER'] ?? '');
 			if ($username == '') {
 				$username = trim($_SERVER['REMOTE_USER'] ?? '');
