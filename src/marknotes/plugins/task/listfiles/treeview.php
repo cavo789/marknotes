@@ -102,8 +102,10 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			),
 			'children' => array()
 		);
+
 		$dirs = array();
 		$files = array();
+
 		foreach ($arrEntries as $entry) {
 
 			if ($entry['type'] == 'file') {
@@ -130,8 +132,9 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 				// Right-click on a file = open it's HTML version
 				$dataURL=str_replace($root, '', $entry['name']);
+
 				// Should be relative to the /docs folder
-				//$dataURL=$aeSettings->getFolderDocs(false).$dataURL;
+				$dataURL=$aeSettings->getFolderDocs(false).$dataURL;
 				$dataURL=str_replace(DS, '/', $dataURL).'.html';
 
 				$sFileText = $filename;

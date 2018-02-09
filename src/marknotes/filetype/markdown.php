@@ -174,12 +174,12 @@ class Markdown
 								$markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
 							} else {
 								/*<!-- build:debug -->*/
-								if (in_array($task, array('task.export.html','main','html'))) {
+								/*if (in_array($task, array('task.export.html','main','html'))) {
 									if ($aeSettings->getDebugMode()) {
 										$aeDebug = \MarkNotes\Debug::getInstance();
 										$aeDebug->here('DEBUG MODE --- In file	'.$params['filename'].' ==> '.$filename.' NOT FOUND');
 									}
-								}
+								}*/
 								/*<!-- endbuild -->*/
 							}
 						}//if (strpos('//', $matches[2][$i])===FALSE)
