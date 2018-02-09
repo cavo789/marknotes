@@ -62,9 +62,8 @@ class Clear extends \MarkNotes\Plugins\Button\Plugin
 
 				// If at least one is set, the button Clear cache is
 				// usefull so show it
-				if ($bLocalStorage || $bServerSession || $bCache) {
-					$bReturn = true;
-				}
+				$bReturn = ($bLocalStorage || $bServerSession || $bCache);
+
 			} // if ($bReturn)
 		} // if ($bReturn = parent::canAdd())
 

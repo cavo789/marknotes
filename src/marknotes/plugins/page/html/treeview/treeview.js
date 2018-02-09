@@ -158,7 +158,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		}
 
 		// Upload files
-		if ($type === 'folder') {
+		/*if ($type === 'folder') {
 			$items.Upload = {
 				separator_before: true,
 				separator_after: false,
@@ -168,7 +168,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 					fnPluginTaskTreeView_upload(node);
 				}
 			};
-		}
+		}*/
 
 		// Kill a note or folder
 		$items.Remove = {
@@ -221,13 +221,17 @@ function fnPluginTaskTreeViewContextMenu(node) {
 
 }
 
+/*
+FEBRUARY 2018 - No more needed since the integration of
+elFinder (task.elf.show)
+
 function fnPluginTaskTreeView_upload(node) {
-	/*<!-- build:debug -->*/
+	/*<!-- build:debug -->* /
 	if (marknotes.settings.debug) {
 		console.log('	  Plugin Page html - Treeview - Upload');
 		console.log(node);
 	}
-	/*<!-- endbuild -->*/
+	/*<!-- endbuild -->* /
 
 	ajaxify({
 		task: "task.upload.drop",
@@ -267,7 +271,7 @@ function fnPluginTaskTreeView_upload_droparea(data) {
 	//});
 
 	return true;
-}
+}*/
 
 /**
  * A node has been added, renamed or deleted in the Treeview.

@@ -21,6 +21,7 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// Add JS only if needed based on parameters
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+
 		$bLocalStorage = boolval($arrOptimize['localStorage'] ?? false);
 		$bServerSession = boolval($arrOptimize['server_session'] ?? false);
 		$bCache  = boolval($arrOptimize['cache']['enabled'] ?? false);
