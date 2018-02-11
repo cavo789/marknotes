@@ -311,6 +311,23 @@ class Files
 	}
 
 	/**
+	 * Get the filesize
+	 */
+	public static function getSize(string $filename) : int
+	{
+		if ($filename == '') {
+			return false;
+		}
+
+		self::getFileSystem($filename, $obj);
+		if ($obj->has($filename)) {
+			return $obj->getSize($filename);
+		} else {
+			return 0;
+		}
+	}
+
+	/**
 	 * Rewrite an existing file : update his content by a new one
 	 * With FlySystem
 	 *
