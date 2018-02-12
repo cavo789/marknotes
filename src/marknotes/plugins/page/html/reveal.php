@@ -64,6 +64,7 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"<script type=\"text/javascript\">\n".
 				"marknotes.note = {};\n".
 				"marknotes.note.url = '".$urlHTML."';\n".
+				"marknotes.note.url_noext = '".$aeFiles->removeExtension($urlHTML)."';\n".
 				"marknotes.slideshow = {};\n".
 				"marknotes.slideshow.durationMinutes=".$minutes.";\n".
 				"marknotes.slideshow.durationBarHeight=".$barHeight.";\n".
@@ -168,7 +169,6 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 				$script.="<style media=\"screen\" type=\"text/css\">\n".$tmp."</style>\n";
 			}
 
-
 			$css .= $aeFunctions->addStyleInline($script);
 		}
 
@@ -182,6 +182,5 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		return true;
 	}
-
 
 }

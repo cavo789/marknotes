@@ -58,7 +58,7 @@ class Events
 		//
 		// The syntax is therefore :
 		//		First part is the $type (as used in LoadPlugins) : f.i task.acls.load
-		//      Use "::" as separator
+		//	  Use "::" as separator
 		//		Then the event f.i. run
 
 		if (strpos($event, '::') !== false) {
@@ -97,13 +97,13 @@ class Events
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug->log("Trigger started for [".$plugin."][".$event."]", "debug", 2);
-				//if ($aeDebug->getDevMode()) {
-				//	echo("<pre style='background-color:yellow;'>".
-				//		__FILE__." - ".__LINE__." ".
-				//		"<h4>List of binded functions for that event:</h4>".
-				//		print_r(self::$arrEvents, true).
-				//		"</pre>");
-				//}
+				/*if ($aeDebug->getDevMode()) {
+					echo("<pre style='background-color:yellow;'>".
+						__FILE__." - ".__LINE__." ".
+						"<h4>List of binded functions for [".$plugin."][".$event."]:</h4>".
+						print_r(self::$arrEvents, true).
+						"</pre>");
+				}*/
 			}
 			/*<!-- endbuild -->*/
 
@@ -113,10 +113,10 @@ class Events
 						if (is_callable($func)) {
 							/*<!-- build:debug -->*/
 							//if ($aeDebug->getDevMode()) {
-							//	$aeDebug->here("   call [".$func."]", 1);
+							//	$aeDebug->here("	call [".$func."]", 1);
 							//}
 							if ($aeSettings->getDebugMode()) {
-								$aeDebug->log('   call ['.$func.']', 'debug');
+								$aeDebug->log('	call ['.$func.']', 'debug');
 							}
 							/*<!-- endbuild -->*/
 
@@ -125,7 +125,7 @@ class Events
 							if ($bReturn && $bStopOnFirstTrue) {
 							/*<!-- build:debug -->*/
 								if ($aeSettings->getDebugMode()) {
-									$aeDebug->log('   '.$func.' has done the job, stop', 'debug');
+									$aeDebug->log('	'.$func.' has done the job, stop', 'debug');
 								}
 								/*<!-- endbuild -->*/
 
@@ -250,9 +250,9 @@ class Events
 				$plugins = $aeSettings->getPlugins($type);
 
 				if ($plugins===array()) {
-					// No entry in the settings.json file but the directory
-					// exists on disk => get the list of .php files from
-					// that folder
+					// No entry in the settings.json file but the
+					// directory exists on disk => get the list of
+					// .php files from that folder
 					$file=basename($dir);
 					$tmpdir=dirname($dir).DS;
 					if ($aeFiles->exists($fname = $tmpdir.$file.DS.$file.'.php')) {
@@ -295,9 +295,9 @@ class Events
 				}
 				/*<!-- endbuild -->*/
 
-				// Plugins extends a parent class stored in a file called
-				// .plugin and stored in the same folder so if that file is
-				// there, load it first.
+				// Plugins extends a parent class stored in a file
+				// called .plugin and stored in the same folder so if
+				// that file is there, load it first.
 				if ($aeFiles->exists($file = $dir.'.plugin.php')) {
 					require_once($file);
 				} else {
@@ -337,8 +337,8 @@ class Events
 							// Load the plugin
 							require_once($file);
 
-							// And retrieve its namespace and class name
-							// f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
+							// And retrieve its namespace and class
+							// name f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
 							$class = self::getNameSpaceAndClassName($file);
 
 							// Instanciate the class (plugin)
@@ -356,26 +356,20 @@ class Events
 								$aeSettings = \MarkNotes\Settings::getInstance();
 								$aeDebug = \MarkNotes\Debug::getInstance();
 								if ($aeDebug->getDevMode()) {
-									$aeDebug->log('   Load plugin '.$file);
+									$aeDebug->log('	Load plugin '.$file);
 								}
 							}
 							/*<!-- endbuild -->*/
 						/*<!-- build:debug -->*/
-						} else {// foreach ($plugin as $name => $enabled)
+						} else {
 							if ($aeSettings->getDebugMode()) {
 								$aeDebug = \MarkNotes\Debug::getInstance();
-								$aeDebug->log("Plugin ".$name." has been disabled in ".
+								$aeDebug->log("Plugin ".$name." ".
+									"has been disabled in ".
 									"settings.json", "debug");
 							}
 						/*<!-- endbuild -->*/
-						} // if  ($aeFiles->exists($file = $dir.$name))
-					/*<!-- build:debug -->*/
-					//} else {// foreach ($plugin as $name => $enabled)
-					//	if ($aeSettings->getDebugMode()) {
-					//		$aeDebug = \MarkNotes\Debug::getInstance();
-					//		$aeDebug->log("Plugin ".$name." not enabled in //settings.json", "debug");
-					//	}
-					/*<!-- endbuild -->*/
+						}
 					} // // foreach ($plugin as $name => $enabled)
 				} // foreach
 			} // if(count($plugins)>0)

@@ -28,19 +28,29 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addJS(&$js = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/mermaid/'.
-			'libs/mermaid/';
+		$aeSession = \MarkNotes\Session::getInstance();
+		// Not sure that the HTML has been stored in the session
+		$html = $aeSession->get('html', '');
 
-		$script = "<script type=\"text/javascript\" ".
-			"src=\"".$url."mermaid.min.js\" ". "defer=\"defer\"></script>\n".
-			"\n<script type=\"text/javascript\" defer=\"defer\">\n".
-			"$('document').ready(function(){mermaid.initialize({startOnLoad:true});;});\n".
-			"</script>\n";
+		// JS are only needed when a mermaid block is found
+		// in the resulting HTML
+		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
 
-		$js .= $aeFunctions->addJavascriptInline($script);
+		if (($html=='') || (preg_match_all($pattern, $html, $matches))) {
+			// At least one block found, load .js
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+			$url = rtrim($aeFunctions->getCurrentURL(), '/');
+			$url .= '/marknotes/plugins/page/html/mermaid/'.
+				'libs/mermaid/';
 
+			$script = "<script type=\"text/javascript\" ".
+				"src=\"".$url."mermaid.min.js\" ". "defer=\"defer\"></script>\n".
+				"\n<script type=\"text/javascript\" defer=\"defer\">\n".
+				"$('document').ready(function(){mermaid.initialize({startOnLoad:true});;});\n".
+				"</script>\n";
+
+			$js .= $aeFunctions->addJavascriptInline($script);
+		}
 		return true;
 	}
 
@@ -49,50 +59,37 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addCSS(&$css = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		// Not sure that the HTML has been stored in the session
+		$html = $aeSession->get('html', '');
 
-		$theme = trim(self::getOptions('theme', 'forest'));
+		// CSS are only needed when a mermaid block is found
+		// in the resulting HTML
+		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
 
-		if ($theme!=='') {
-			$theme = '.'.$theme;
+		if (($html=='') || (preg_match_all($pattern, $html, $matches))) {
+			// At least one block found, load .css
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+			$aeSettings = \MarkNotes\Settings::getInstance();
+
+			$theme = trim(self::getOptions('theme', 'forest'));
+
+			if ($theme!=='') {
+				$theme = '.'.$theme;
+			}
+
+			$url = rtrim($aeFunctions->getCurrentURL(), '/');
+			$url .= '/marknotes/plugins/page/html/mermaid/'.
+				'libs/mermaid/';
+
+			$script =
+				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
+				"href=\"".$url."mermaid".$theme.".css\">\n";
+
+			$css .= $aeFunctions->addStyleInline($script);
 		}
 
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/mermaid/'.
-			'libs/mermaid/';
-
-		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
-			"href=\"".$url."mermaid".$theme.".css\">\n";
-
-		$css .= $aeFunctions->addStyleInline($script);
-
 		return true;
-	}
-
-	/**
-	 * The HTML was modified by plugins like beautify
-	 * or jolitypo so "undo" these changes and restore
-	 * the original HTML characters.
-	 */
-	private static function undoHTMLChanges(string &$html, string $content)
-	{
-		// Don't touch on the content but use a $new variable
-		// to make changes and then, replace the content in the
-		// full $html
-		$new = $content;
-		$new = str_replace('→', '-->', $new);
-		$new = str_replace('&gt;', '>', $new);
-		$new = str_replace('&mdash;', '--', $new);
-		$new = str_replace('&rarr;', '-->', $new);
-		$new = str_replace('&nbsp;', ' ', $new);
-		$new = str_replace('&ndash;', '-', $new);
-
-		// Replace the cleaned HTML in the string
-		$html = str_replace($content, $new, $html);
-
-		return;
 	}
 
 	/**
@@ -100,51 +97,6 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function doIt(&$html = null) : bool
 	{
-		$return = false;
-
-		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
-
-		// Perhaps more than one mermaid flowchart or diagram
-		if (preg_match_all($pattern, $html, $matches)) {
-			// Get how many (probably just one)
-
-			$j = count($matches[0]);
-			for ($i=0; $i<$j; $i++) {
-				// Extract the "mermaid" content i.e. the
-				// markdown text that will be converted in
-				// a chart.
-				// That content is thus the portion inside
-				// <div class="mermaid">CONTENT</div>
-				$content = $matches[1][$i];
-				self::undoHTMLChanges($html, $content);
-			}
-
-			// A priori just for a demo : when the mermaid
-			// code has been put in a
-			//
-			// ```mermaid
-			// THE CONTENT
-			// ```
-			//
-			// In this case "```mermaid" has been converted into
-			// <code class="language-mermaid">...</code> but,
-			// there too, the HTML shouldn't be modified
-
-			$pattern = '/<code class="language-mermaid">([\s\S]*?)<\/code>/m';
-
-			if (preg_match_all($pattern, $html, $matches)) {
-				$j = count($matches[0]);
-				for ($i=0; $i<$j; $i++) {
-					$content = $matches[1][$i];
-					self::undoHTMLChanges($html, $content);
-				}
-			}
-
-			// Yes, the mermaid plugin should be enabled since
-			// we've found at least one chart
-			$return = true;
-		}
-
-		return $return;
+		return true;
 	}
 }

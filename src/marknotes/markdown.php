@@ -137,8 +137,6 @@ class Markdown
 				$args = array(&$params);
 				$aeEvents->trigger($task.'::run', $args);
 
-				// --------------------------------
-
 				if ($aeFunctions->startsWith($task, 'task.export.')) {
 					// Run the "export.after" events
 					$aeEvents->loadPlugins('task.export.after');

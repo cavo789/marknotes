@@ -252,6 +252,12 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			$markdown = self::replaceVar('%NOTE_FOLDER%', rtrim($tmp, DS).DS, $markdown);
 		} // if (strpos($markdown, '%NOTE_FOLDER%')!==FALSE)
 
+		if (strpos($markdown, '%WEB_FOLDER%')!==false) {
+			$tmp = rtrim($aeSettings->getFolderWebRoot(), DS);
+			$tmp = str_replace('/', DS, $tmp);
+			$markdown = self::replaceVar('%WEB_FOLDER%', rtrim($tmp, DS).DS, $markdown);
+		} // if (strpos($markdown, '%NOTE_FOLDER%')!==FALSE)
+
 		// ---------------------------------------------------------------
 		// Based on the user's settings (settings.json)
 		//

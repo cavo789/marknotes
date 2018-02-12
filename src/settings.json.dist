@@ -967,15 +967,15 @@
 						}
 					},
 					"decktape": {
-						"script": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
+						"script": "tools/decktape/phantomjs.exe"
 					},
 					"pandoc": {
-						"script": "c:\\christophe\\tools\\pandoc\\pandoc.exe",
+						"script": "tools/pandoc/pandoc.exe",
 						"options": {
 							"docx": "--from markdown --standalone -S --smart --columns 1000 --to docx",
 							"epub": "--from markdown --standalone -S --table-of-contents --smart --to epub",
 							"odt": "--from markdown --standalone -S --table-of-contents --smart --to odt",
-							"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=c:\\Christophe\\tools\\pandoc\\miktex\\miktex\\bin\\x64\\xelatex.exe -V geometry:margin=1in",
+							"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=tools/miktex/miktex/bin/x64/xelatex.exe -V geometry:margin=1in",
 							"txt": "--from markdown --ascii"
 						}
 					}

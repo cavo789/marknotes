@@ -31,7 +31,7 @@ REM call :fnCopyBootstrap
 REM call :fnCopyjQuery
 REM call :fnCopySymfony
 REM call :fnCopySlugify
-REM call :fnCopydompdf
+call :fnCopydompdf
 REM call :fnCopyfontAwesome
 REM call :fnCopyJolicode
 REM call :fnCopyNoty
@@ -41,8 +41,8 @@ REM call :fnCopyParsedownExtra
 REM call :fnCopyParsedownCheckbox
 REM call :fnCopyMinify
 REM call :fnCopyGitHubMarkdownCSS
-REM call :fnCopyPHPFONT
-REM call :fnCopyPHPSVG
+call :fnCopyPHPFONT
+call :fnCopyPHPSVG
 REM call :fnCopyPHP_error
 REM call :fnCopyCrawlerDetect
 REM call :fnCopyAnimateCSS
@@ -87,7 +87,7 @@ REM call :fnCopyCLDRPluralRuleParser
 REM call :fnCopyFileSaver
 REM call :fnGitHubCorners
 REM call :fnUpload
-call :fnELF
+REM call :fnELF
 REM call :fnHTML2MD
 REM call :fnGuzzle
 REM call :fnGoogleTranslate
@@ -311,12 +311,12 @@ goto:eof
 
 :fnCopyPHPFONT
 ECHO  === PHP-FONT-LIB (used by dompdf) ===
-ECHO	COPY TO %LIBS%php-font-lib\
+ECHO	COPY TO %LIBS%dompdf\dompdf\lib\php-font-lib\
 ECHO.
-IF NOT EXIST %LIBS%php-font-lib MKDIR %LIBS%php-font-lib >> %LOG%
-XCOPY %VENDOR%php-font-lib\*.* %LIBS%php-font-lib /E /Y >> %LOG%
-IF EXIST %LIBS%php-font-lib\sample-fonts RMDIR %LIBS%php-font-lib\sample-fonts /S /Q >> %LOG%
-IF EXIST %LIBS%php-font-lib\tests RMDIR %LIBS%php-font-lib\tests /S /Q >> %LOG%
+IF NOT EXIST %LIBS%dompdf\dompdf\lib\php-font-lib MKDIR %LIBS%dompdf\dompdf\lib\php-font-lib >> %LOG%
+XCOPY %VENDOR%php-font-lib\*.* %LIBS%dompdf\dompdf\lib\php-font-lib /E /Y >> %LOG%
+IF EXIST %LIBS%dompdf\dompdf\lib\php-font-lib\sample-fonts RMDIR %LIBS%dompdf\dompdf\lib\php-font-lib\sample-fonts /S /Q >> %LOG%
+IF EXIST %LIBS%dompdf\dompdf\lib\php-font-lib\tests RMDIR %LIBS%dompdf\dompdf\lib\php-font-lib\tests /S /Q >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
@@ -325,11 +325,11 @@ goto:eof
 
 :fnCopyPHPSVG
 ECHO  === PHP-SVG-LIB (used by dompdf) ===
-ECHO	COPY TO %LIBS%php-svg-lib\
+ECHO	COPY TO %LIBS%dompdf\dompdf\lib\php-svg-lib\
 ECHO.
-IF NOT EXIST %LIBS%php-svg-lib MKDIR %LIBS%php-svg-lib >> %LOG%
-XCOPY %VENDOR%php-svg-lib\*.* %LIBS%php-svg-lib /E /Y >> %LOG%
-IF EXIST %LIBS%php-svg-lib\tests RMDIR %LIBS%php-svg-lib\tests /S /Q >> %LOG%
+IF NOT EXIST %LIBS%dompdf\dompdf\lib\php-svg-lib MKDIR %LIBS%dompdf\dompdf\lib\php-svg-lib >> %LOG%
+XCOPY %VENDOR%php-svg-lib\*.* %LIBS%dompdf\dompdf\lib\php-svg-lib /E /Y >> %LOG%
+IF EXIST %LIBS%dompdf\dompdf\lib\php-svg-lib\tests RMDIR %LIBS%dompdf\dompdf\lib\php-svg-lib\tests /S /Q >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

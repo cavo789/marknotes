@@ -12,7 +12,6 @@
  * https://github.com/knsv/mermaid
  * Documentation : https://mermaidjs.github.io/
  */
-
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -40,7 +39,6 @@ class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 		$new = str_replace('&rarr;', '-->', $new);
 		$new = str_replace('&nbsp;', ' ', $new);
 		$new = str_replace('&ndash;', '-', $new);
-
 		// Replace the cleaned HTML in the string
 		$html = str_replace($content, $new, $html);
 
@@ -51,10 +49,10 @@ class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 	 * Add/modify the HTML content
 	 */
 	 public static function doIt(&$content = null) : bool
- 	{
- 		if (trim($content) === '') {
- 			return true;
- 		}
+	{
+		if (trim($content) === '') {
+			return true;
+		}
 
 		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
 
@@ -63,6 +61,7 @@ class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 			// Get how many (probably just one)
 
 			$j = count($matches[0]);
+
 			for ($i=0; $i<$j; $i++) {
 				// Extract the "mermaid" content i.e. the
 				// markdown text that will be converted in
@@ -73,7 +72,7 @@ class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 				self::undoHTMLChanges($content, $mermaid);
 			}
 
-			// A priori just for a demo : when the mermaid
+			// À priori just for a demo : when the mermaid
 			// code has been put in a
 			//
 			// ```mermaid
@@ -88,6 +87,7 @@ class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 
 			if (preg_match_all($pattern, $content, $matches)) {
 				$j = count($matches[0]);
+
 				for ($i=0; $i<$j; $i++) {
 					$mermaid = $matches[1][$i];
 					self::undoHTMLChanges($content, $mermaid);

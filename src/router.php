@@ -34,10 +34,26 @@ if ($bReturn) {
 	$task = rawurldecode($aeFunctions->getParam('task', 'string', '', false));
 
 	$params = array('filename' => $filename);
+	// Retrieve the file's extension
+
+	$aeFiles = \MarkNotes\Files::getInstance();
+	$ext = trim($aeFiles->getExtension($filename));
+
+	$params['layout'] = '';
+
+	if (in_array($ext, array('reveal','reveal.pdf'))) {
+		$params['layout'] = 'reveal';
+	} else {
+		if (in_array($ext, array('remark','remark.pdf'))) {
+			$params['layout'] = 'remark';
+		}
+	}
+
 	$aeSettings = \MarkNotes\Settings::getInstance($root, $params);
 
 	$aeSession = \MarkNotes\Session::getInstance($root);
 	$aeSession->set('filename', $filename);
+	$aeSession->set('layout', $params['layout']);
 	$aeSession->set('img_id', 0);
 
 	$aeFiles = \MarkNotes\Files::getInstance();

@@ -29,14 +29,15 @@ class HTML
 	}
 
 	/**
-	 * @param  string  $html [description]   html rendering of the .md file
-	 * @return {[type]       Nothing
+	 * @param  string  $html [description]	html rendering of the .md file
+	 * @return {[type]		Nothing
 	 */
 	public function run(string $html, array $params = null) : string
 	{
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Add h2 and h3 id and don't add the "go to top" icon
@@ -65,6 +66,11 @@ class HTML
 		$args = array(&$html);
 		$aeEvents->trigger('page.html::render.html', $args);
 		$html = $args[0];
+
+		// Remember the HTML before calling render.js and render.css
+		// to make possible to not load .js / .css based on the
+		// resulting HTML content
+		$aeSession->set('html', $html);
 
 		if (strpos($html, '<!--%ADDITIONNAL_JS%-->') !== false) {
 			$aeEvents->loadPlugins('page.html');

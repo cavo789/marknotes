@@ -11,10 +11,14 @@ class DeckTape
 	 */
 	public static function doIt(&$params = null) : bool
 	{
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// DeckTape is only for slides : reveal or remark and not for "normal" html rendering
+		// DeckTape is only for slides : reveal or remark and not for
+		// "normal" html rendering
 
 		$layout = $params['layout'] ?? '';
 		if (!in_array($layout, array('remark','reveal'))) {
@@ -40,7 +44,9 @@ class DeckTape
 			/*<!-- endbuild -->*/
 			return false;
 		}
-
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 		$aeTask = \MarkNotes\Tasks\Convert::getInstance();
 
 		// Get the temporary name for the HTML and PDF files
@@ -59,15 +65,22 @@ class DeckTape
 			// Note : the PDF file was perhaps already moved by the convert script
 			$aeFiles->rename($tmpPDF, $finalPDF);
 		} else {
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 			$aeEvents = \MarkNotes\Events::getInstance();
-			$aeEvents->loadPlugins('content', 'slides');
+			$aeEvents->loadPlugins('task.export.reveal');
 			$args = array(&$params);
-
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 			$params['layout'] = $layout;
 
 			// true = stop on the first plugin which return "true" i.e. has done the job
 			$aeEvents->trigger('content::export.slides', $args, true);
-
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 			$html = $params['html'];
 
 			// And store that HTML to the disk
@@ -122,6 +135,13 @@ class DeckTape
 	 */
 	public function bind(string $plugin)
 	{
+/*<!-- build:debug -->*/
+$aeDebug = \MarkNotes\Debug::getInstance();
+$aeDebug->here("", 10);
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
+/*<!-- endbuild -->*/
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
 		return true;

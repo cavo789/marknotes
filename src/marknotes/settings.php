@@ -577,8 +577,9 @@ class Settings
 			// Get the filename (f.i. "screen" (or "screen.php")
 			$fname = $this->getFolderTemplates().$tmpl;
 
-			// The file isn't found; perhaps the extension wasn't mentionned
-			// If no extension mentionned; default is .php
+			// The file isn't found; perhaps the extension
+			// wasn't mentionned. If no extension mentionned;
+			// default is .php
 			if (!$aeFiles->exists($fname)) {
 				if ($aeFiles->exists($fname.'.php')) {
 					$fname.='.php';
@@ -596,7 +597,8 @@ class Settings
 				}
 				/*<!-- endbuild -->*/
 
-				$fname = '';
+				// Use the default template
+				$fname = $this->getFolderTemplates().$default.'.php';
 			}
 		} else { // if ($tmpl!=='')
 			$fname = $this->getFolderTemplates().$tmpl.'.php';
@@ -639,49 +641,12 @@ class Settings
 	}
 
 	/**
-	* Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
-	*
-	* The json "convert" entry looks like this :
-	*	 "convert": {
-	*		 "pandoc": {
-	*			 "script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
-	*			 "options" : "--latex-engine=xelatex -V geometry:margin=1in -o"
-	*		 }
-	*
-	* This function will return an array with every entries below the name of the converting tool but
-	* only if the tool is found i.e. if the "script" file exists on the disk
-	*
-	*/
-	public function getConvert(string $sTool) : array
-	{
-		/*<!-- build:debug -->*/
-		$aeDebug = \MarkNotes\Debug::getInstance();
-		$aeDebug->here("*** OBSOLETE - The convert node doesn't exists anymore. See plugins->options->export", 10);
-		die("Died in ".__FILE__.", line ".__LINE__);
-		/*<!-- endbuild -->*/
-
-		$aeFiles = \MarkNotes\Files::getInstance();
-
-		$arr = array();
-
-		if (isset($this->json['convert'])) {
-			if (isset($this->json['convert'][$sTool])) {
-				if ($aeFiles->exists($this->json['convert'][$sTool]['script'])) {
-					$arr = $this->json['convert'][$sTool];
-				}
-			}
-		}
-
-		return $arr;
-	}
-
-	/**
 	* Return a node from the "Page" JSON entry
 	*/
 	public function getPage(string $node = '', $default = '')
 	{
 		return $this->json['page'][$node] ?? $default;
-	} // function getPage()
+	}
 
 	/**
 	* Get locale

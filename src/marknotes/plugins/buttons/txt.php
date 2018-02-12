@@ -38,11 +38,12 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 
 		// Check if the file, once converted (note.txt) exists
 		if (!$aeFiles->exists($filename)) {
-			// The file didn't exists so, if this plugin is called, we need
-			// to be able to run the Pandoc conversion utility, check that
-			// the utility is correctly configured
-
+			// The file didn't exists so, if this plugin is
+			// called, we need to be able to run the Pandoc
+			// conversion utility, check that the utility is
+			// correctly configured
 			$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), static::$layout, 'pandoc');
+
 			if ($aeConvert->isValid()) {
 				// Yes, Pandoc is correctly configured, we'll be
 				// able to offer the conversion
@@ -55,7 +56,8 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 			$bPandoc = true;
 		} // if (!$aeFiles->exists($filename))
 
-		// Call the fnPluginHTMLTXT() function when Pandoc isn't installed
+		// Call the fnPluginHTMLTXT() function when
+		// Pandoc isn't installed
 		$task = ($bPandoc ? 'file' : 'fnPluginHTMLTXT');
 
 		// Get the button HTML code
@@ -66,7 +68,8 @@ class TXT extends \MarkNotes\Plugins\Button\Plugin
 				'default' => 'Export the note as a TXT document',
 				'id' => 'icon_txt',
 				'icon' => 'file-text-o',
-				'task' => $task
+				'task' => $task,
+				'extension' => 'txt'
 			)
 		);
 

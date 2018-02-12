@@ -57,6 +57,8 @@ DirectoryIndex index.php
 	RewriteRule (.*) router.php?task=task.export.md&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.odt$
 	RewriteRule (.*) router.php?task=task.export.odt&file=$1 [L]
+	RewriteCond %{REQUEST_URI} .*\.reveal.pdf$
+	RewriteRule (.*) router.php?task=task.export.reveal&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.pdf$
 	RewriteRule (.*) router.php?task=task.export.pdf&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.remark$

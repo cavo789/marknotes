@@ -14,8 +14,8 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 	/**
 	 * Replace a slide with only an image (like below illustrated) by a section with a background image
 
-	 *    ---
-	 *    ![](.images/image.jpg)
+	 *	---
+	 *	![](.images/image.jpg)
 	 */
 	private static function insertSlideBackgroundImage(string $markdown) : string
 	{
@@ -50,11 +50,13 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 
 	private static function processHTML(string $html) : string
 	{
-		// In order to keep this file has light as possible, use external actions
+		// In order to keep this file has light as possible, use
+		// external actions
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Look in the reveal_actions subfolder and take every .php file
+		// Look in the reveal_actions subfolder and take every .php
+		// file
 		$folder = __DIR__.'/reveal_actions/';
 		$arrActions = $aeFiles->rglob($pattern = '*.php', $path = $folder);
 
@@ -73,7 +75,7 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("   Load [".$action."]", "debug");
+					$aeDebug->log("	Load [".$action."]", "debug");
 				}
 				/*<!-- endbuild -->*/
 
@@ -134,6 +136,7 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 
 		// And return the HTML to the caller
 		$params['html'] = $content;
+
 		return true;
 	}
 }

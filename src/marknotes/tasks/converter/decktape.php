@@ -27,6 +27,9 @@ class Decktape
 	 */
 	public static function run(array $params) : string
 	{
+/*<!-- build:debug -->*/
+die("<h1>STILL USED ??? ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -88,10 +91,10 @@ die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
 		// $output is an array and contains the result of the script. If at least one line of the output start with
 		// Error:, show the debug information and stop the code
 		/*foreach ($output as $line) {
-            if (substr($line, 0, 6) === 'Error:') {
-                die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the deckTape script<br/><br/>".print_r($output, true)."</pre>");
-            }
-        }*/
+			if (substr($line, 0, 6) === 'Error:') {
+				die("<pre style='background-color:orange;'>".__FILE__." - ".__LINE__."<br/>There is an error with the deckTape script<br/><br/>".print_r($output, true)."</pre>");
+			}
+		}*/
 
 		try {
 			if ($aeFiles->exists($tmpPDF)) {

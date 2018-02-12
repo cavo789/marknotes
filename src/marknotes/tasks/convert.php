@@ -1,8 +1,7 @@
 <?php
-
 /**
- * Generic class used by different converter like /plugins/content/docx.php,
- * /plugins/content/pdf/pandoc.php, ...
+ * Generic class used by different converter like
+ * /plugins/content/docx.php, /plugins/content/pdf/pandoc.php, ...
  */
 
 namespace MarkNotes\Tasks;
@@ -15,10 +14,16 @@ class Convert
 {
 	protected static $hInstance = null;
 
-	private $sMDFileName = ''; // File to convert
-	private $sLayout = '';         // For instance "docx"
-	private $sMethod = '';         // For instance "pandoc" or "decktape"
-	private $arrConfig = null;      // plugins options (f.i. the plugins->options->pandoc entry)
+	private $sMDFileName = '';	// File to convert
+
+	// For instance "docx" or "odt"
+	private $sLayout = '';
+
+	// For instance "pandoc" or "decktape"
+	private $sMethod = '';
+
+	// plugins options (f.i. the plugins->options->pandoc entry)
+	private $arrConfig = null;
 
 	public function __construct(string $filename = '', string $layout = '', string $method = '')
 	{
@@ -61,6 +66,10 @@ class Convert
 		return $this->arrConfig;
 	}
 
+	/**
+	 * Check that the converter is well installed on the machine,
+	 * return True if the converter is there, False otherwise
+	 */
 	public function isValid() : bool
 	{
 		$bReturn=true;
@@ -71,9 +80,9 @@ class Convert
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log('Error, options should be specified in '.
-				   'the settings.json file, in the '.JSON_OPTIONS_PANDOC.
-				   ' node, please verify your settings.json file.', 'warning');
+				$aeDebug->log('Error, options should be '.
+					'specified in the settings.json file, in the '. JSON_OPTIONS_PANDOC.' '.
+					'node, please verify your settings.json file.', 'warning');
 			}
 			/*<!-- endbuild -->*/
 
@@ -88,15 +97,28 @@ class Convert
 		/*<!-- endbuild -->*/
 
 		if (($bReturn) && ($this->sMethod==='pandoc')) {
-			// Be sure that the script pandoc.exe is well installed on the system
-
+			// Be sure that the script pandoc.exe is well
+			// installed on the system
 			$aeFiles = \MarkNotes\Files::getInstance();
 
-			// $sScriptName string Absolute filename to the pandoc.exe script
-			if (!$aeFiles->exists($sScriptName = $this->arrConfig['script'])) {
+			// Get the path for pandoc.exe. Since that path is,
+			// *always* a relative path (like
+			// tools/pandoc/pandoc.exe), make it absolute
+			$root = $aeSettings->getFolderWebRoot();
+			$sScriptName = $root.ltrim($this->arrConfig['script'], DS);
+
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log('Check if pandoc can be retrieved, '.
+					'['.$sScriptName.']', 'debug');
+			}
+			/*<!-- endbuild -->*/
+
+			if (!$aeFiles->exists($sScriptName)) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log('File '.$sScriptName.' didn\'t exists', 'warning');
+					$aeDebug->log('File '.$sScriptName.' not '.
+						'found', 'warning');
 				}
 				/*<!-- endbuild -->*/
 
@@ -108,7 +130,8 @@ class Convert
 	}
 
 	/**
-	 * Taking the name of the note, provide the name of the file that should be created
+	 * Taking the name of the note, provide the name of the
+	 * file that should be created
 	 * F.i. for file c:\sites\marknotes\docs\so_nice_app.md return
 	 * c:\sites\marknotes\docs\so_nice_app.pdf when the layout is .pdf
 	 */
@@ -137,8 +160,8 @@ class Convert
 	}
 
 	/**
-	 * Return a "slug" from a filename (f.i. return "connectas" when the filename is
-	 * "connect-as.md")
+	 * Return a "slug" from a filename (f.i. return "connectas"
+	 * when the filename is "connect-as.md")
 	 */
 	public function getSlugName() : string
 	{
@@ -161,7 +184,8 @@ class Convert
 
 	/*
 	 * Read the note and call any plugins.
-	 * Generate a temporary version of the note in the temporary folder
+	 * Generate a temporary version of the note in the
+	 * temporary folder
 	 */
 	public function createTempNote() : string
 	{
@@ -204,13 +228,17 @@ class Convert
 
 		/*<!-- build:debug -->*/
 		/*
-        $aeDebug = \MarkNotes\Debug::getInstance();
-        if ($aeDebug->getDevMode()) {
+		$aeDebug = \MarkNotes\Debug::getInstance();
+		if ($aeDebug->getDevMode()) {
 			$aeDebug->here("DEVELOPPER MODE - SHOW THE MARKDOWN CONTENT BEFORE PANDOC CONVERSION (".$filename.")",1);
 			die("<pre>".print_r($content, true)."</pre>");
 		}*/
 
 		// Return the temporary filename or an empty string
+		if ($aeFiles->exists($filename)) {
+			$aeFiles->delete($filename);
+		}
+
 		return $aeFiles->create($filename, $content) ? $filename : '';
 	}
 
@@ -232,8 +260,11 @@ class Convert
 		// Method is a supported method like "pandoc"
 		$options = isset($this->arrConfig['options'][$this->sLayout]) ? $this->arrConfig['options'][$this->sLayout] : '';
 
-		// Executable (pandoc.exe)
-		$script = '"'.($this->arrConfig['script']??'').'" ';
+		// Get the path for pandoc.exe. Since that path is,
+		// *always* a relative path (like
+		// tools/pandoc/pandoc.exe), make it absolute
+		$root = $aeSettings->getFolderWebRoot();
+		$script = '"'.$root.ltrim($this->arrConfig['script'], DS).'" ';
 
 		// Output filename
 		$outFile='-o "'.basename($TargetFileName).'" ';
@@ -248,9 +279,9 @@ class Convert
 				// Once copied, kill from temp
 				$killFiles=
 					'if exist "'.$TargetFileName.'" ('.PHP_EOL.
-					'   del "'.basename($TargetFileName).'"'.PHP_EOL.
-					'   del "'.$debugFile.'"'.PHP_EOL.
-					'   del "'.$inFile.'"'.PHP_EOL.
+					'	del "'.basename($TargetFileName).'"'.PHP_EOL.
+					'	del "'.$debugFile.'"'.PHP_EOL.
+					'	del "'.$inFile.'"'.PHP_EOL.
 					')';
 			} // if (!$aeDebug->getDevMode())
 		}
@@ -291,6 +322,10 @@ class Convert
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$fScriptFile = $aeSettings->getFolderTmp().self::getSlugName().'.bat';
+
+		if ($aeFiles->exists($fScriptFile)) {
+			$aeFiles->delete($fScriptFile);
+		}
 
 		if (!$aeFiles->create($fScriptFile, $sScript)) {
 			/*<!-- build:debug -->*/
@@ -338,69 +373,69 @@ class Convert
 /*
 		die(__FILE__." - ".__LINE__. " -  called, is this still needed ?");
 
-        // If the filename doesn't mention the file's extension, add it.
-        if (substr($params['filename'], -3) != '.md') {
-            $params['filename'] .= '.md';
-        }
+		// If the filename doesn't mention the file's extension, add it.
+		if (substr($params['filename'], -3) != '.md') {
+			$params['filename'] .= '.md';
+		}
 
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        $layout = isset($params['layout']) ? $params['layout'] : '';
+		$layout = isset($params['layout']) ? $params['layout'] : '';
 
-        // Retrieve the fullname of the file that will be generated
-        // The task can be "docx" or "pdf" i.e. the file's extension
-        $final = self::getFileName($params['filename'], $params['task']);
+		// Retrieve the fullname of the file that will be generated
+		// The task can be "docx" or "pdf" i.e. the file's extension
+		$final = self::getFileName($params['filename'], $params['task']);
 
-        // And check if the file already exists => faster than creating on-the-fly
-        if ($aeFiles->exists($final)) {
-            $fMD = $aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'md');
-            if (filemtime($final) < filemtime($fMD)) {
-                // The note has been modified after the generation of the .pdf => no more up-to-date
-                $final = '';
-            }
-        }
+		// And check if the file already exists => faster than creating on-the-fly
+		if ($aeFiles->exists($final)) {
+			$fMD = $aeSettings->getFolderDocs(true).$aeFiles->replaceExtension($params['filename'], 'md');
+			if (filemtime($final) < filemtime($fMD)) {
+				// The note has been modified after the generation of the .pdf => no more up-to-date
+				$final = '';
+			}
+		}
 
-        // Doesn't exists yet ? Create it
-        if (($final === '') || (!$aeFiles->exists($final))) {
+		// Doesn't exists yet ? Create it
+		if (($final === '') || (!$aeFiles->exists($final))) {
 
-            // Try to use the best Converter
-            $converter = '';
+			// Try to use the best Converter
+			$converter = '';
 
-            // The exec() function should be enabled to use deckTape
-            $aeFunctions = \MarkNotes\Functions::getInstance();
-            if (!$aeFunctions->ifDisabled('exec')) {
-                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    if (in_array($layout, array('reveal', 'remark'))) {
+			// The exec() function should be enabled to use deckTape
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+			if (!$aeFunctions->ifDisabled('exec')) {
+				if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+					if (in_array($layout, array('reveal', 'remark'))) {
 
-                        // deckTape is only for slideshow view and not for HTML view
-                        $converter = ($aeSettings->getConvert('decktape') !== array() ? 'decktape' : '');
-                    } else { // if (in_array($layout, array('reveal', 'remark')))
+						// deckTape is only for slideshow view and not for HTML view
+						$converter = ($aeSettings->getConvert('decktape') !== array() ? 'decktape' : '');
+					} else { // if (in_array($layout, array('reveal', 'remark')))
 
-                        // Check for pandoc
-                        $converter = ($aeSettings->getConvert('pandoc') !== array() ? 'pandoc' : '');
-                    }
-                } // if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-            } // if (!$aeFunctions->ifDisabled('exec'))
+						// Check for pandoc
+						$converter = ($aeSettings->getConvert('pandoc') !== array() ? 'pandoc' : '');
+					}
+				} // if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+			} // if (!$aeFunctions->ifDisabled('exec'))
 
-            switch ($converter) {
-                case 'decktape':
-                    $aeConvert = \MarkNotes\Tasks\Converter\Decktape::getInstance();
-                    break;
+			switch ($converter) {
+				case 'decktape':
+					$aeConvert = \MarkNotes\Tasks\Converter\Decktape::getInstance();
+					break;
 
-                case 'pandoc':
-                    $aeConvert = \MarkNotes\Tasks\Converter\Pandoc::getInstance();
-                    break;
+				case 'pandoc':
+					$aeConvert = \MarkNotes\Tasks\Converter\Pandoc::getInstance();
+					break;
 
-                default:
-                    $aeConvert = \MarkNotes\Tasks\Converter\Dompdf::getInstance();
-                    break;
-            }
+				default:
+					$aeConvert = \MarkNotes\Tasks\Converter\Dompdf::getInstance();
+					break;
+			}
 
-            $final = $aeConvert->run($params);
-        }
+			$final = $aeConvert->run($params);
+		}
 
-        // Return the fullname of the file
-        return $final;*/
+		// Return the fullname of the file
+		return $final;*/
 	}
 }

@@ -50,10 +50,16 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
+		$filename = $params['filename'];
+
+		if ($aeFiles->getExtension($filename)==='reveal.pdf') {
+			$filename = $aeFiles->removeExtension($filename);
+		}
+
 		// If the filename doesn't mention the file's
 		// extension, add it.
-		if (substr($params['filename'], -3) != '.md') {
-			$params['filename'] = $aeFiles->removeExtension($params['filename']).'.md';
+		if (substr($filename, -3) != '.md') {
+			$params['filename'] = $aeFiles->removeExtension($filename).'.md';
 		}
 
 		// Get the template to use
@@ -167,7 +173,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("    Retrieved from cache [".$key."]","debug");
+				$aeDebug->log("	Retrieved from cache [".$key."]","debug");
 			}
 			/*<!-- endbuild -->*/
 
@@ -185,6 +191,20 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 		}
 
 		$params['content'] = $html;
+
+		// Last thing : if the filename was with
+		// an extension .reveal.pdf, we also need to generate
+		// a .pdf file
+		$filename = $params['filename'];
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->getExtension($filename)=='reveal.pdf') {
+			$aeEvents = \MarkNotes\Events::getInstance();
+			$aeEvents->loadPlugins('task.export.pdf');
+			$args = array(&$params);
+			$aeEvents->trigger('task.export.pdf::run', $args);
+			unset($params['content']);
+			$params['extension'] = 'pdf';
+		}
 
 		return true;
 	}
