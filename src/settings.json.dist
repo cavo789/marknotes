@@ -145,73 +145,61 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"attributes": {
-					"description": "Allow to add extra attributes (classes, style, data-attributes, ...) to DOM elements",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"balloon": {
-					"description": "Add nicer tooltips (based on full css) in place of the standard 'title' attribute",
 					"enabled": 0,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"bootstrap": {
-					"description": "Add bootstrap features to the note once converted in HTML. The added features will be defined in the plugin's parameters",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"encrypt": {
-					"description": "Add the lock span to show the user which parts of the note are connfidentials",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"datatables": {
-					"description": "Just add a data-datatables-enable=1 to the HTML table tag when the plugin can be enabled for the rendered note. Should remains active as soon as the content datatable plugin has been enabled",
 					"enabled": 1,
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["interface", "task.export.html", "main"]
 				},
 				"font-awesome": {
-					"description": "Replace :fa-xxx: by the icon from font-awesome and, too, use a font-awesome bullet for lists",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"jolitypo": {
-					"description": "automatically solve small issue with the note's typography",
 					"enabled": 1,
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["main", "task.export.html", "task.export.pdf"]
 				},
 				"image_gallery": {
-					"description": "Add an image gallery to the site; load images in a div/span so the page html plugin can handle them",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["task.export.html", "task.export.pdf", "task.export.reveal"]
 				},
 				"optimize": {
-					"description": "Prepare the optimization and, f.i., add a lazyload to images. **This plugin should be placed after the content.html.image_galley plugin**",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"format": {
-					"description": "Format allows you to add your own custom prefix. In Markdown, you can type **bold** i.e. the double asterix will put what is inside in bold, the single asterix will put things in italic, ... Format will allow you to add your own prefix",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"microdata": {
-					"description": "Add span with itemprop attribute to words of the note.",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"toc": {
-					"description": "Add a table-of-contents in the note",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal"],
 					"only_if_task": []
@@ -222,7 +210,6 @@
 					"only_if_task": ["interface", "main", "task.export.html"]
 				},
 				"mermaid": {
-					"description": "",
 					"enabled": 1,
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["main", "task.export.html", "task.export.pdf", "task.export.reveal", "task.export.remark"]
@@ -238,49 +225,41 @@
 					"only_if_task": ["interface", "main", "task.export.html", "task.timeline.get"]
 				},
 				"fakeLoader": {
-					"description": "Add a loading animation when the interface is displayed. This, only, when the site is visited by an human, not a bot",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"animate": {
-					"description": "Load the animate.css stylesheet",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["main", "task.export.html", "task.timeline.get"]
 				},
 				"add_icons": {
-					"description": "Analyze each URLs in the note and add icons before when, f.i., the link points to github, youtube, facebook, ... or to a file (.docx, .ppt, ...)",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"anchor": {
-					"description": "Show an anchor near headings",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["task.export.html"]
 				},
 				"balloon": {
-					"description": "Add nicer tooltips (based on full css) in place of the standard 'title' attribute",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
 				},
 				"banner": {
-					"description": "Add the marknotes ascii banner in html files",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["task.export.html", "task.export.reveal", "task.export.remark", "screen", "interface"]
 				},
 				"clipboard": {
-					"description": "Load clipboard.js to allow copy in clipboard features (used by the 'clipboard' plugin buttons of the content side)",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"copyhtml": {
-					"description": "Load the .js file used by the copyhtml button; will allow to copy the HTML of the note into the clipboard",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
@@ -291,67 +270,56 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"definitions": {
-					"description": "Highlight words from the definition list",
 					"enabled": 0,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"docx": {
-					"description": "Load Googoose js files to allow to convert to Winword also when Pandoc isn't installed locally. This script is only needed for the interface",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["interface", "main", "task.export.html"]
 				},
 				"favorites" : {
-					"description": "Add JS / CSS for the favorites task plugin",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"editor": {
-					"description": "Add the js file for the Edit feature",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html", "task.edit.form"]
 				},
 				"encrypt": {
-					"description": "Show a lock icon for encrypted portion of text",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
 				},
 				"epub": {
-					"description": "Add JS files for the EPUB conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"erase": {
-					"description": "Load the JS script for the erase button (in the treeview area)",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"filemanager": {
-					"description": "Add the js file for the File Manager feature",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html", "task.elf.show"]
 				},
 				"font-awesome": {
-					"description": "Load font-awesome css, needed by the font-awesome content plugin",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": []
 				},
 				"fullscreen": {
-					"description": "Add the js file for the Fullscreen feature",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"ganalytics": {
-					"description": "Load the JS for Google Analytics",
 					"enabled": 0,
 					"not_if_task": ["main", "interface"],
 					"only_if_task": ["task.export.html"]
@@ -368,7 +336,6 @@
 					"only_if_task": ["task.export.html"]
 				},
 				"image_gallery": {
-					"description": "Add an image gallery to the site; load JS and CSS",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.pdf", "task.export.reveal"]
@@ -379,25 +346,21 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"links_target": {
-					"description": "Force hyperlinks to be opened in a new tab",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": []
 				},
 				"login": {
-					"description": "Load the JS script for the Login button (in the treeview area)",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"mermaid": {
-					"description": "Integrate mermaid",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"md": {
-					"description": "Load JS for the MD file opening",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
@@ -408,31 +371,26 @@
 					"only_if_task": ["task.export.html"]
 				},
 				"microdata": {
-					"description": "Load CSS for the microdata content plugin",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"new_window": {
-					"description": "Load the .js file used by the New_Windows button",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"odt": {
-					"description": "Add JS files for the ODT conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"pdf": {
-					"description": "Add JS files for the PDF conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"print_preview": {
-					"description": "Load the .js file used by the Print preview button",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
@@ -443,13 +401,11 @@
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"remark": {
-					"description": "Add the JS file for remark",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["task.export.remark"]
 				},
 				"reveal": {
-					"description": "Add JS files for reveal.js",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.reveal", "task.export.html"]
@@ -460,7 +416,6 @@
 					"only_if_task": []
 				},
 				"share": {
-					"description": "Add share buttons like facebook, twitter, mail, ...",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["task.export.html"]
@@ -471,13 +426,11 @@
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal", "task.export.remark"]
 				},
 				"tags": {
-					"description": "Add css and js for the tags plugin",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"toc": {
-					"description": "Load the toc.css stylesheet",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal", "task.timeline.get"],
 					"only_if_task": []
@@ -489,31 +442,26 @@
 					"only_if_task": ["main", "interface"]
 				},
 				"txt": {
-					"description": "Add JS files for the TEXT conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"update": {
-					"description": "Load the JS script for the update button",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"upload": {
-					"description": "Add an upload form so the user can send local files to the server",
-					"enabled": 1,
+					"enabled": 0,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"custom": {
-					"description": "Load your own css and js files",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
 				},
 				"search": {
-					"description": "Display the search engine in the interface",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
@@ -1011,10 +959,10 @@
 					"password": "marknotes"
 				},
 				"optimize": {
-					"localStorage": 1,
-					"server_session": 1,
+					"localStorage": 0,
+					"server_session": 0,
 					"cache": {
-						"enabled" : 1,
+						"enabled" : 0,
 						"duration": {
 							"default" : 86400,
 							"html" : 2678400,
@@ -1129,7 +1077,7 @@
 				"enabled" : 1
 			},
 			"login" : {
-				"enabled" : 0
+				"enabled" : 1
 			},
 			"markdown": {
 				"write": {

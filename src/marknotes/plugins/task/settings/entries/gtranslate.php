@@ -6,11 +6,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 require_once('.plugin.php');
 
-class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
+class MN_Gtranslate extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings = 'plugins.task.encrypt';
+	protected static $json_settings = 'plugins.page.html.gtranslate';
 
 	public function getFormItem() : string
 	{
@@ -24,21 +24,12 @@ class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		// password
-		$key = 'plugins.options.markdown.encrypt';
+		$key = 'plugins.options.page.html.gtranslate';
 		$arr = self::getArray($key);
 
-		$opt = 'password';
+		$opt = 'enable_localhost';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
-
-		// Plugin html
-		$key = 'plugins.content.html.encrypt';
-		$arr = self::getArray($key);
-
-		$opt = 'enabled';
-		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

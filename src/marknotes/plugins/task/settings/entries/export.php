@@ -36,6 +36,16 @@ class MN_Export extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 			$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 		}
 
+		// --- Docx version Googoose
+		$key = 'plugins.page.html.docx';
+
+		$arr = self::getArray($key);
+
+		// Enabled
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

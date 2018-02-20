@@ -30,7 +30,7 @@ class Security extends \MarkNotes\Plugins\Content\HTML\Plugin
 		//
 		// [0] => <a href="https://www.marknotes.fr">MarkNotes</a>  (entire tag)
 		// [1] => href="https://www.marknotes.fr" (attributes of <a xxxx>)
-		// [2] => MarkNotes                       (the caption)
+		// [2] => MarkNotes						(the caption)
 		//
 		// And add the rel="noopener" attribute and "noreferrer" for old browsers
 

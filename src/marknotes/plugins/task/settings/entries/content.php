@@ -6,11 +6,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 require_once('.plugin.php');
 
-class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
+class MN_Content extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings = 'plugins.task.encrypt';
+	protected static $json_settings = 'plugins.content.html.datatables';
 
 	public function getFormItem() : string
 	{
@@ -24,18 +24,32 @@ class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		// password
-		$key = 'plugins.options.markdown.encrypt';
+		// -----------------
+		// Bootstrap
+		$key = 'plugins.content.html.bootstrap';
 		$arr = self::getArray($key);
 
-		$opt = 'password';
+		// Enabled
+		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		// Plugin html
-		$key = 'plugins.content.html.encrypt';
+		// -----------------
+		// PRISM
+		$key = 'plugins.page.html.prism';
 		$arr = self::getArray($key);
 
+		// Enabled
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// -----------------
+		// Smileys
+		$key = 'plugins.page.html.smileys';
+		$arr = self::getArray($key);
+
+		// Enabled
 		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);

@@ -6,11 +6,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 require_once('.plugin.php');
 
-class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
+class MN_Toc extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings = 'plugins.task.encrypt';
+	protected static $json_settings =  'plugins.content.html.toc';
 
 	public function getFormItem() : string
 	{

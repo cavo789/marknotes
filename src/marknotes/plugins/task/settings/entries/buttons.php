@@ -12,7 +12,7 @@ class MN_Buttons extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 	protected static $icon = 'square';
 	protected static $json_settings = 'plugins.buttons';
 
-	protected static $ignore = array('clear','docx','editor','epub','favorites','filemanager','login','md','odt','pdf','remark','reveal','sitemap','timeline','txt','update');
+	protected static $ignore = array('clear','clipboard','copyhtml','docx','editor','epub','favorites','filemanager','login','md','odt','pdf','remark','reveal','sitemap','timeline','txt','update');
 
 	public function getFormItem() : string
 	{
