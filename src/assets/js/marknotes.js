@@ -182,7 +182,7 @@ function initFiles($data) {
 				callback: 'afterShowTip()',
 				dataType: 'html',
 				useStore: 0,
-				target: 'CONTENT'
+				target: 'TIPS'
 			});
 		}
 	}
@@ -208,7 +208,7 @@ function afterShowTip() {
 		afterDisplay("");
 
 		// Add the show_tip class
-		$('#CONTENT').addClass('show_tip');
+		//$('#TIPS').addClass('show_tip');
 	}
 	return true;
 }
@@ -299,7 +299,7 @@ function initializeTasks() {
 
 		case 'file':
 
-			window.open($file);
+			window.open(marknotes.docs + $file);
 			break;
 
 		default:

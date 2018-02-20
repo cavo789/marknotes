@@ -5,7 +5,7 @@ function fnPluginHTMLTXT() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - TXT');
+		console.log('	  Plugin Page html - TXT');
 	}
 	/*<!-- endbuild -->*/
 
@@ -28,6 +28,8 @@ function fnPluginHTMLTXT() {
 		var blob = new Blob([article], {
 			type: "text/plain; charset=utf-8"
 		});
+
+		// Download : use a basename (like note.txt)
 		saveAs(blob, marknotes.note.file + ".txt");
 	}
 	return true;

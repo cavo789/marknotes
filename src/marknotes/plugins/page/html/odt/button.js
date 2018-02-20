@@ -5,7 +5,7 @@ function fnPluginHTMLODT() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - ODT');
+		console.log('	  Plugin Page html - ODT');
 	}
 	/*<!-- endbuild -->*/
 
@@ -24,7 +24,8 @@ function fnPluginHTMLODT() {
 			type: 'error'
 		});
 	} else {
-		var fname = marknotes.note.file + '.odt';
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.odt';
 		window.open(fname);
 	}
 

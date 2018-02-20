@@ -79,6 +79,34 @@ abstract class Plugin
 	}
 
 	/**
+	 * Verify in the settings of the plugin if the plugin is
+	 * enabled or not.
+	 */
+	protected static function isEnabled(bool $default) : bool
+	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Get the settings (f.i. plugins.task.login)
+		$arr = $aeSettings->getPlugins(static::$json_settings);
+
+		// Get the "enabled" property and, if not found, use the
+		// default value
+		$bEnabled = $arr['enabled']??$default;
+
+		if (!$bEnabled) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log(static::$json_settings.".enabled ".
+					"is set to False or is missing", "debug");
+			}
+			/*<!-- endbuild -->*/
+		}
+
+		return $bEnabled;
+	}
+
+	/**
 	 * Return a value from the plugin options. Return $default
 	 * is not found or not initialized
 	 *

@@ -76,7 +76,7 @@
 				</section>
 				<section class="content container-fluid">
 					<div id="content" class="page content markdown-body">
-						<article size="A4" layout="portrait" id="CONTENT">&nbsp;</article>
+						<article size="A4" layout="portrait" id="CONTENT"><div id="TIPS"/>&nbsp;</article>
 					</div>
 				</section>
 			</div>

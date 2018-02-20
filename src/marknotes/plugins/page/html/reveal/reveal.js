@@ -5,6 +5,47 @@ var $menuWidth = '';
 
 var URL_Lib = marknotes.root + 'marknotes/plugins/page/html/reveal/libs/reveal.js/';
 
+var $arrThemes = [];
+
+// Get the list of available themes.
+// marknotes.slideshow.themes is initialized by the plugin
+// page/html/reveal.php with the list of available themes in reveal.
+if (typeof marknotes.slideshow.themes !== 'undefined') {
+	var arr = marknotes.slideshow.themes.split(",");
+
+	arr.forEach(function($theme) {
+	  $arrThemes.push({
+		  name: $theme,
+		  theme: marknotes.root + 'templates/assets/css/' + $theme +'.css'
+	  });
+	});
+}
+
+var $sActions = "";
+
+// Check if pandoc is installed. marknotes.slideshow.pandoc
+// is initialized by the plugin page/html/reveal.php
+if (typeof marknotes.slideshow.pandoc !== 'undefined') {
+
+	// If pandoc is installed, add the PDF, DOCX and TXT formats
+	if (marknotes.slideshow.pandoc === 1) {
+
+		$sActions =
+			'<li class="slide-menu-item">' +
+			'<a href="'+marknotes.note.url_noext+'.reveal.pdf">'+
+			'Export a PDF version (dangerously slow!!!)</a>' +
+			'</li>' +
+			'<li class="slide-menu-item">' +
+			'<a href="'+marknotes.note.url_noext+'.txt">'+
+			'Get the TXT version</a>' +
+			'</li>' +
+			'<li class="slide-menu-item">' +
+			'<a href="'+marknotes.note.url_noext+'.docx">'+
+			'Get the DOCX version</a>' +
+			'</li>';
+	}
+}
+
 Reveal.initialize({
 	history: true,
 	controls: true,
@@ -34,56 +75,7 @@ Reveal.initialize({
 		// progress through the presentation
 		markers: true,
 		loadIcons: false,
-		themes: [
-			{
-				name: 'Contrast',
-				theme: marknotes.root + 'templates/assets/css/contrast.css'
-			},
-			{
-				name: 'Black',
-				theme: URL_Lib + 'css/theme/black.css'
-			},
-			{
-				name: 'White',
-				theme: URL_Lib + 'css/theme/white.css'
-			},
-			{
-				name: 'League',
-				theme: URL_Lib + 'css/theme/league.css'
-			},
-			{
-				name: 'Sky',
-				theme: URL_Lib + 'css/theme/sky.css'
-			},
-			{
-				name: 'Beige',
-				theme: URL_Lib + 'css/theme/beige.css'
-			},
-			{
-				name: 'Simple',
-				theme: URL_Lib + 'css/theme/simple.css'
-			},
-			{
-				name: 'Serif',
-				theme: URL_Lib + 'css/theme/serif.css'
-			},
-			{
-				name: 'Blood',
-				theme: URL_Lib + 'css/theme/blood.css'
-			},
-			{
-				name: 'Night',
-				theme: URL_Lib + 'css/theme/night.css'
-			},
-			{
-				name: 'Moon',
-				theme: URL_Lib + 'css/theme/moon.css'
-			},
-			{
-				name: 'Solarized',
-				theme: URL_Lib + 'css/theme/solarized.css'
-			}
-		],
+		themes : $arrThemes,
 		custom: [
 			{
 				title: 'About',
@@ -108,16 +100,7 @@ Reveal.initialize({
 					'<li class="slide-menu-item">' +
 					'<a href="'+marknotes.note.url_noext+'.html">Get the HTML version</a>' +
 					'</li>' +
-					'<li class="slide-menu-item">' +
-					'<a href="'+marknotes.note.url_noext+'.reveal.pdf">Export a PDF version (slow!!!)</a>' +
-					'</li>' +
-					'<li class="slide-menu-item">' +
-					'<a href="'+marknotes.note.url_noext+'.txt">Get the TXT version</a>' +
-					'</li>' +
-					'<li class="slide-menu-item">' +
-					'<a href="'+marknotes.note.url_noext+'.docx">Get the DOCX version</a>' +
-					'</li>' +
-
+					$sActions +
 					'</ul>'
 			}
 		]
@@ -169,7 +152,6 @@ Reveal.initialize({
 			src: URL_Lib + 'plugin/elapsed-time-bar/elapsed-time-bar.js'
 		}
 	]
-
 });
 
 Reveal.addEventListener('ready', function (event) {

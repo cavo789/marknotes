@@ -39,7 +39,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 			' *(\([^\)]+\))';
 
 		// And remove spaces so keep only ![...](...) and not
-		// !    [...]  (...) for instance
+		// !	[...]  (...) for instance
 		$replacement = '!$1$2';
 		$content = preg_replace('/'.$pattern.'/', $replacement,
 			$content);
@@ -119,36 +119,41 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
+		if (self::isEnabled(true)) {
+			$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$content = trim($aeFunctions->getParam('content', 'unsafe',
-			'', false));
+			$content = trim($aeFunctions->getParam('content', 'unsafe',
+				'', false));
 
-		if ($content == '') {
-			$content = 'ERROR - The translate task has been called '.
-				'but no content has been provided. '.
-				'That task requires a mandatory content parameter';
+			if ($content == '') {
+				$content = 'ERROR - The translate task has been called '.
+					'but no content has been provided. '.
+					'That task requires a mandatory content parameter';
 
-			/*<!-- build:debug -->*/
-			$aeSettings = \MarkNotes\Settings::getInstance();
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log($content,"error");
+				/*<!-- build:debug -->*/
+				$aeSettings = \MarkNotes\Settings::getInstance();
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log($content,"error");
+				}
+				/*<!-- endbuild -->*/
+			} else {
+				// Call html-to-markdown and make the conversion to MD
+				$content = self::translate($content);
+
+				// Get options from settings.json
+				$arr = self::getOptions('include', array());
+
+				// Is there a text to add at the end ?
+				$after = $arr['after']??'';
+
+				if ($after!=='') {
+					$content.=PHP_EOL.PHP_EOL.self::getVariable($after);
+				}
 			}
-			/*<!-- endbuild -->*/
 		} else {
-			// Call html-to-markdown and make the conversion to MD
-			$content = self::translate($content);
-
-			// Get options from settings.json
-			$arr = self::getOptions('include', array());
-
-			// Is there a text to add at the end ?
-			$after = $arr['after']??'';
-
-			if ($after!=='') {
-				$content.=PHP_EOL.PHP_EOL.self::getVariable($after);
-			}
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$content = $aeSettings->getText('action_prohibited');
 		}
 
 		header('Content-Type: text/plain; charset=utf-8');

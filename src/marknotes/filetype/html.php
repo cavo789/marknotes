@@ -7,12 +7,9 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class HTML
 {
 	protected static $hInstance =	null;
-	private $_aeSettings = null;
 
 	public function __construct()
 	{
-		$this->_aeSettings = \MarkNotes\Settings::getInstance();
-
 		return true;
 	}
 
@@ -27,7 +24,8 @@ class HTML
 
 	public function getHeadingText(string $html, string $heading = 'h1') : string
 	{
-		// Try to find a heading 1 and if so use that text for the title tag of the generated page
+		// Try to find a heading 1 and if so use that text
+		// for the title tag of the generated page
 		$matches = array();
 		$title = '';
 
@@ -46,8 +44,8 @@ class HTML
 	 * Scan the $html string and add an id to each h2 and h3 tags.
 	 * Used when the note is displayed as an html page.
 	 *
-	 * If $addGoTop is set on true, add also an icon for going back to the top
-	 * of the page
+	 * If $addGoTop is set on true, add also an icon for going
+	 * back to the top of the page
 	 */
 	public function addHeadingsID(string $html, bool $addGoTop = false) : string
 	{
@@ -64,14 +62,17 @@ class HTML
 			$matches = array();
 			preg_match_all('|<h\d{1}[^>]?>(.*)</h\d{1}[^>]?>|iU', $html, $matches);
 
-			// $matches contains the list of titles (including the tag so f.i. "<h2>Title</h2>"
+			// $matches contains the list of titles (including the
+			// tag so f.i. "<h2>Title</h2>"
 			foreach ($matches[0] as $tmp) {
-				// In order to have nice URLs, extract the title (stored in $tmp)
+				// In order to have nice URLs, extract the title
+				// (stored in $tmp)
 				// $tmp is equal, f.i., to <h2>My slide title</h2>
 				$id = $aeFunctions->slugify(strip_tags($tmp));
 
 				// The ID can't start with a figure, remove it if any
-				// Remove also . - , ; if present at the beginning of the id
+				// Remove also . - , ; if present at the beginning of
+				// the id
 				$id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
 
 				// The tag (like h2)
@@ -86,7 +87,8 @@ class HTML
 	}
 
 	/**
-	 * Return variables from the template file and append the html content
+	 * Return variables from the template file and append the
+	 * html content
 	 */
 	public function replaceVariables(string $template, string $html, array $params = null) : string
 	{
@@ -134,8 +136,8 @@ class HTML
 		$template = str_replace('%GITHUB%', $github['url'], $template);
 
 		if (strpos($template, '%SHOW_TIPS%') !== false) {
-			$arr = $aeSettings->getPlugins('/interface', array('show_tips'=>1));
-			$show_tips = boolval($arr['show_tips']);
+			$arr = $aeSettings->getPlugins('plugins.options.task.tips', array('enabled'=>1));
+			$show_tips = boolval($arr['enabled']);
 			$template = str_replace('%SHOW_TIPS%', $show_tips?1:0, $template);
 		}
 

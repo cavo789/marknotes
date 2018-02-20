@@ -79,7 +79,7 @@ defined('PHP_LF') or define('PHP_LF', "\n");
 // That sentence will start with the text below
 // Used in the include, hierarchy and TOC plugin f.i.
 // (Don't use the minus sign !!!)
-define('DEV_MODE_PREFIX', 'MN_DEV_MODE |');
+define('DEV_MODE_PREFIX', 'MN_DEV_MODE | ');
 
 // Each line outputted in the debug.log file will respect this template
 // Unless override in settings.json debug->logfile->template
@@ -110,10 +110,10 @@ define('JSON_OPTIONS_FONT_AWESOME', 'plugins.options.content.html.font-awesome')
 define('JSON_OPTIONS_MICRODATA', 'plugins.options.content.html.microdata');
 
 // ... where are defined options for optimizations
-define('JSON_OPTIONS_OPTIMIZE', 'plugins.options.page.html.optimize');
+define('JSON_OPTIONS_OPTIMIZE', 'plugins.options.task.optimize');
 
 // ... where are defined options for the cache
-define('JSON_OPTIONS_CACHE', 'plugins.options.page.html.optimize.cache');
+define('JSON_OPTIONS_CACHE', 'plugins.options.task.optimize.cache');
 
 // ... where are defined options for tags
 define('JSON_OPTIONS_TAGS', 'plugins.options.content.html.tags');

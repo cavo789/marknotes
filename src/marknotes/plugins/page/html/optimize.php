@@ -98,6 +98,15 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
+		// Verify that the optimize task plugin is well enabled
+		$arr = $aeSettings->getPlugins('task.optimize');
+		$enabled = boolval($arr['enabled']??0);
+
+		if ($enabled==false) {
+			// No so just stop
+			return true;
+		}
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
@@ -107,6 +116,10 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		// Get options
 		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
+/*<!-- build:debug -->*/
+die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($arrOptimize, true)."</pre>");
+/*<!-- endbuild -->*/
+
 		$arrHeaders=$arrOptimize['headers']??null;
 		require_once('optimize/headers.php');
 		$class=new Optimize\Headers();

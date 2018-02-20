@@ -18,7 +18,7 @@ function fnPluginHTMLFavorites() {
 	if (marknotes.favorites_count > 0) {
 		// If favorites are displayed, no need to display tips
 		if (marknotes.settings.hasOwnProperty('show_tips')) {
-			marknotes.settings.show_tips = 0;
+			//marknotes.settings.show_tips = 0;
 		}
 
 		fnPluginHTMLFavoritesShow();
@@ -49,7 +49,6 @@ function fnPluginHTMLFavoritesShowIcon() {
 }
 
 function afterGetFavoritesIcon($data) {
-
 	// $data is a JSON answer with, at least :
 	//
 	//	* title : "Remove this note from yours favorites"  i.e.
@@ -118,7 +117,6 @@ function afterGetFavoritesIcon($data) {
  * Also called by the Show Favorites button
  */
 function fnPluginHTMLFavoritesShow() {
-
 	ajaxify({
 		task: 'task.favorites.getlist',
 		callback: 'afterShowFavorites(data)',
@@ -172,13 +170,29 @@ function afterShowFavorites($data) {
 	// Put the list in the content area
 
 	$('#CONTENT').html(
+		'<div id="TIPS">&nbsp;</div>' +
 		'<div class="animated bounceInLeft">' +
 			'<ul id="favorites">' + $ul.innerHTML + '</ul>' +
 		'</div>');
 
 	// And handle clicks
 	$("#favorites li").click(function (event) {
-		$('#TOC').jstree('select_node', $(this).attr('id'));
+
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.log('Select node with id ' +
+				$(this).attr('id')+' in the treeview');
+		}
+		/*<!-- endbuild -->*/
+
+		try {
+			$(this).attr('id')
+			$('#TOC').jstree('select_node', $(this).attr('id'));
+		} catch (e) {
+			// Problem in jstree ???
+			console.warn('Error when selecting the node : ' +
+				e.message);
+		}
 	});
 
 	return true;

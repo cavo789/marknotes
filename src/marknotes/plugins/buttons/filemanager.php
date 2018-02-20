@@ -32,11 +32,24 @@ class FileManager extends \MarkNotes\Plugins\Button\Plugin
 	protected static function canAdd() : bool
 	{
 		if ($bReturn = parent::canAdd()) {
+
 			// We can continue
-			// The file manager button will only appears if the
-			// user is authenticated
-			$aeSession = \MarkNotes\Session::getInstance();
-			$bReturn = boolval($aeSession->get('authenticated', 0));
+			$bReturn = false;
+
+			// Check if the FileManager task is enabled
+			// Don't show the button if not enabled
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$arrSettings = $aeSettings->getPlugins('plugins.task.filemanager');
+
+			$bEnabled = boolval($arrSettings['enabled'] ?? 0);
+
+			if ($bEnabled) {
+				// Yes
+				// The file manager button will only appears if the
+				// user is authenticated
+				$aeSession = \MarkNotes\Session::getInstance();
+				$bReturn = boolval($aeSession->get('authenticated', 0));
+			}
 		}
 
 		return $bReturn;

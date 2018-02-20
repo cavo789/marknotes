@@ -18,15 +18,27 @@ class Animate extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addCSS(&$css = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
+		// Not sure that the HTML has been stored in the session
+		$html = $aeSession->get('html', '');
 
-		$root = rtrim($aeFunctions->getCurrentURL(), '/');
+		// animate.css use a class called "animated".
+		// If that word is found in the HTML, add animate.css
+		// (perhaps a false positive) but, when the "animated" word
+		// is not found, then, there, we know that animate.css
+		// is not used at all so don't load the css in that case
+		if (stripos($html, 'animated') !== false) {
 
-		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
-			"href=\"".$root."/libs/animate.css/animate.min.css\">\n";
+			$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$css .= $aeFunctions->addStyleInline($script);
+			$root = rtrim($aeFunctions->getCurrentURL(), '/');
+
+			$script =
+				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
+				"href=\"".$root."/libs/animate.css/animate.min.css\">\n";
+
+			$css .= $aeFunctions->addStyleInline($script);
+		}
 
 		return true;
 	}

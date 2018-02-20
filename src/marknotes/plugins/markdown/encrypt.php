@@ -354,7 +354,7 @@ class Encrypt extends \MarkNotes\Plugins\Markdown\Plugin
 						$decrypt = self::sslDecrypt($encrypted);
 					}
 
-					if ($task!=='task.export.remark') {
+					if (!in_array($task, array('task.export.md','task.export.remark', 'task.export.txt'))) {
 						$decrypt = ENCRYPT_MARKDOWN_TAG.$decrypt.ENCRYPT_MARKDOWN_TAG;
 					}
 

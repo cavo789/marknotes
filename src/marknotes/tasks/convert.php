@@ -249,10 +249,15 @@ class Convert
 		$debugFile=self::getDebugFileName();
 		$slug=self::getSlugName();
 
+		$template = '';
+
 		// Get the template to use, if any
-		$template = $aeSettings->getTemplateFile($this->sLayout, '');
-		if ($template!=='') {
-			$template='--reference-'.$this->sLayout.'="'.$template.'" ';
+		if ($this->sLayout!=='txt') {
+			$template = $aeSettings->getTemplateFile($this->sLayout, '');
+			// Pandoc don't support --reference-txt
+			if ($template!=='') {
+				$template='--reference-'.$this->sLayout.'="'.$template.'" ';
+			}
 		}
 
 		// Retrieve the options for this conversion
@@ -357,7 +362,8 @@ class Convert
 		// Once the exec() statement is finished
 
 		if ($aeFiles->exists($TargetFileName)) {
-			// The file has been correctly exported, the batch is no more needed
+			// The file has been correctly exported, the batch
+			// is no more needed
 
 			/*<!-- build:debug -->*/
 			$aeDebug = \MarkNotes\Debug::getInstance();

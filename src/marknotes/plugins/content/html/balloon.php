@@ -8,7 +8,7 @@
  *			"content": {
  *	 			"html": {
  *	 				"balloon": {
- *						 "attributes": "data-balloon-length=\"xlarge\" style=\"    text-decoration:underline dotted;\" data-balloon-pos=\"up\""
+ *						 "attributes": "data-balloon-length=\"xlarge\" style=\"	text-decoration:underline dotted;\" data-balloon-pos=\"up\""
  * 					}
  * 				}
  * 			}

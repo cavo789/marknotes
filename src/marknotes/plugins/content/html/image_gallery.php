@@ -23,7 +23,6 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 			return true;
 		}
 
-
 		// Don't keep unwanted HTML tags
 		$arrNotIn = self::getOptions('not_in_tags', array('code','pre'));
 		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();

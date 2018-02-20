@@ -32,7 +32,7 @@ class Encrypt extends \MarkNotes\Plugins\Content\HTML\Plugin
 
 		// The encrypt markdown plugin use the ENCRYPT_MARKDOWN_TAG tag
 		// between and after an encrypted portion (like in
-		//   ENCRYPT_MARKDOWN_TAG<<<MyEncryptedPassword>>>>ENCRYPT_MARKDOWN_TAG
+		//	ENCRYPT_MARKDOWN_TAG<<<MyEncryptedPassword>>>>ENCRYPT_MARKDOWN_TAG
 		$pattern = preg_quote(ENCRYPT_MARKDOWN_TAG).
 			// ([\\S\\n\\r\\s]*?)  : match any characters, included new lines
 			'([\\S\\n\\r\\s]*?)'.

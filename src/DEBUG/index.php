@@ -200,7 +200,7 @@ class Debugging {
 				'once settings.json.dist and settings.json have been '.
 				'merged.').'</li>';
 		$content .='<li>'.
-			self::makeURL('index.php?task=task.settings.show_form',
+			self::makeURL('index.php?task=task.settings.show',
 				'Show the settings form', 'html', 'Show the settings '.
 				'form').'</li>';
 		$html = str_replace('%CONTENT%', $content, $html);

@@ -170,7 +170,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		} else {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
-				$aeDebug->log('   Retrieving from the cache', 'debug');
+				$aeDebug->log('	Retrieving from the cache', 'debug');
 			}
 			/*<!-- endbuild -->*/
 		} // if (is_null($arr))
@@ -230,17 +230,22 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
-		$aeSession = \MarkNotes\Session::getInstance();
+		if (self::isEnabled(true)) {
+			$aeSession = \MarkNotes\Session::getInstance();
 
-		// filename will be timeline.html or timeline.json, keep only the extension
-		$layout = trim($aeSession->get('filename', ''));
+			// filename will be timeline.html or timeline.json, keep only the extension
+			$layout = trim($aeSession->get('filename', ''));
 
-		$layout = substr($layout, -4);
+			$layout = substr($layout, -4);
 
-		if ($layout === 'html') {
-			self::getHTML($params);
+			if ($layout === 'html') {
+				self::getHTML($params);
+			} else {
+				self::getJSON();
+			}
 		} else {
-			self::getJSON();
+			header("HTTP/1.0 404 Not Found");
+			exit();
 		}
 
 		return true;

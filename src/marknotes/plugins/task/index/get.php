@@ -189,35 +189,43 @@ class GetIndex extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
-		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
+		if (self::isEnabled(true)) {
+			// Ok the task is enabled
+			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$docRoot = str_replace(DS, '/', $aeSettings->getFolderDocs(false));
+			$docRoot = str_replace(DS, '/', $aeSettings->getFolderDocs(false));
 
-		// The filename shouldn't mention the docs folders, just the filename
-		// So, $filename should not be docs/markdown.md but only markdown.md because the
-		// folder name will be added later on
-		if (substr($params['filename'], 0, strlen($docRoot)) === $docRoot) {
-			$params['filename'] = substr($params['filename'], strlen($docRoot));
-		}
+			// The filename shouldn't mention the docs folders, just
+			// the filename. So, $filename should not be
+			// docs/markdown.md but only markdown.md because the
+			// folder name will be added later on
+			if (substr($params['filename'], 0, strlen($docRoot)) === $docRoot) {
+				$params['filename'] = substr($params['filename'], strlen($docRoot));
+			}
 
-		// If the filename doesn't mention the file's extension, add it.
-		if (substr($params['filename'], -5) != '.html') {
-			$params['filename'] .= '.html';
-		}
+			// If the filename doesn't mention the file's
+			// extension, add it.
+			if (substr($params['filename'], -5) != '.html') {
+				$params['filename'] .= '.html';
+			}
 
-		$fullname = ltrim($params['filename'], DS);
-		$fullname = str_replace('/', DS, $aeSettings->getFolderDocs(true).$fullname);
+			$fullname = ltrim($params['filename'], DS);
+			$fullname = str_replace('/', DS, $aeSettings->getFolderDocs(true).$fullname);
 
-		$params['fullname'] = $fullname;
+			$params['fullname'] = $fullname;
 
-		// Check if an index.md file exists in the folder, if yes,
-		// read it and convert it into HTML
-		$md = $aeFiles->removeExtension($fullname).'.md';
-		if ($aeFiles->exists($md)) {
-			self::readIndexMD($params);
+			// Check if an index.md file exists in the folder, if yes,
+			// read it and convert it into HTML
+			$md = $aeFiles->removeExtension($fullname).'.md';
+			if ($aeFiles->exists($md)) {
+				self::readIndexMD($params);
+			} else {
+				self::makeIndexHTML($params);
+			}
 		} else {
-			self::makeIndexHTML($params);
+			header("HTTP/1.0 404 Not Found");
+			exit();
 		}
 
 		return true;

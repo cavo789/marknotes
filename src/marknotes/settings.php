@@ -309,18 +309,22 @@ class Settings
 			$fname = $this->getFolderAppRoot().'languages/marknotes-'.DEFAULT_LANGUAGE.'.json';
 			$json_lang = json_decode($aeFiles->getContent($fname), true);
 
-			// Now, if present, load the second file, the selected language
-			// (for instance French).
+			// Now, if present, load the second file, the
+			// selected language (for instance French).
 			$lang = $this->getLanguage();
 
 			if ($lang!==DEFAULT_LANGUAGE) {
 				$fname = $this->getFolderAppRoot().'languages/marknotes-'.$lang.'.json';
 
 				if ($aeFiles->exists($fname)) {
-					// array_replace_recursive so keys in marknotes-en.json
-					// and not in the second file (marknotes-fr.json) are
-					// keep and not override. Doing this will allow to be able
-					// to show text in english even if not yet translated
+					// array_replace_recursive so keys in
+					// marknotes-en.json
+					// and not in the second file
+					// (marknotes-fr.json) are
+					// keep and not override. Doing this will
+					// allow to be able
+					// to show text in english even if not yet
+					// translated
 					$arr = json_decode($aeFiles->getContent($fname), true);
 					$json_lang = array_replace_recursive($json_lang, $arr);
 				}
@@ -333,7 +337,21 @@ class Settings
 			$return = str_replace("'", "\'", @html_entity_decode($return));
 		}
 
-		// In case of null (i.e. the translation wasn't found, return at least the name of the variable)
+		/*<!-- build:debug -->*/
+		if (($return==null) && (self::getDebugMode())) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+
+			$sMsg = "Translation for ".$variable." is missing";
+			$aeDebug->log($sMsg, "debug");
+
+			if ($aeDebug->getDevMode()) {
+				$aeDebug->here(DEV_MODE_PREFIX.$sMsg, 1);
+			}
+		}
+		/*<!-- endbuild -->*/
+
+		// In case of null (i.e. the translation wasn't found,
+		// return at least the name of the variable)
 		return ($return === null?$variable:$return);
 	}
 

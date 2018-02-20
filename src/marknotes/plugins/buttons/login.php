@@ -40,7 +40,8 @@ class Login extends \MarkNotes\Plugins\Button\Plugin
 
 	/**
 	 * No need to add the button if there is no credentials
-	 * When the webmaster has set login='' and password='' in the settings.json file
+	 * When the webmaster has set login='' and password=''
+	 * in the settings.json file
 	 */
 	protected static function canAdd() : bool
 	{
@@ -49,20 +50,24 @@ class Login extends \MarkNotes\Plugins\Button\Plugin
 			$bReturn = false;
 
 			$aeSettings = \MarkNotes\Settings::getInstance();
-			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
 
-			// Should the login plugin be active ?
-			$bEnabled = boolval($arrSettings['enabled'] ?? 0);
+			$arrSettings = $aeSettings->getPlugins('plugins.task.login');
+
+			// Check that the login task is well enabled
+			// (default is True)
+			$bEnabled = boolval($arrSettings['enabled'] ?? 1);
 
 			if ($bEnabled) {
 				// Yes
 
+				$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
+
 				$login = trim($arrSettings['username'] ?? '');
 				$password = trim($arrSettings['password'] ?? '');
 
-				// If both login and password are empty (will probably be the
-				// case on a localhost server), there is no need to add
-				// the Login button
+				// If both login and password are empty (will
+				// probably be the case on a localhost server),
+				// there is no need to add the Login button
 				if (($login !== '') && ($password !== '')) {
 					$bReturn = true;
 				/*<!-- build:debug -->*/

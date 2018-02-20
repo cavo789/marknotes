@@ -5,7 +5,7 @@
  */
 namespace MarkNotes\Plugins\Task\Elf;
 
-define('_MARKNOTES', 1);
+defined('_MARKNOTES') or define('_MARKNOTES', 1);
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 class Initialize
@@ -148,5 +148,15 @@ class Initialize
 		);
 
 		return $arr;
+	}
+
+	// Initialize is not a task that we can call through to events
+	// manager of marknotes. So, if the bind() function is called,
+	// this means that the "index.php?task=task.elf.initialize" has
+	// been accessed on the URL and it's not normal
+	public function bind(string $plugin) : bool
+	{
+		die('No direct access allowed to this file');
+		return false;
 	}
 }

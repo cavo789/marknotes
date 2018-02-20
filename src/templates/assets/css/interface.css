@@ -182,15 +182,20 @@ article {
 }
 
 .show_tip h2 {
-   background-color: #ecf0f5;
-   color : darkgray;
+	background-color: #ecf0f5;
+	color : darkgray;
 
 }
 .show_tip p {
-   background-color: #ecf0f5;
-   color : darkgray;
+	background-color: #ecf0f5;
+	color : darkgray;
 }
 
 div.show_tip code { color : darkgray; }
 div.show_tip a { color : darkgray; }
 div.show_tip summary { outline: none; }
+
+.float_left {
+	float: left;
+	padding:10px;
+}

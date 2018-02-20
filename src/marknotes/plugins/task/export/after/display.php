@@ -91,8 +91,9 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					header('Content-Type: text/html; charset=utf-8');
 
 					// When the note is displayed through the
-					// interface (i.e. using Ajax), we just need to have the content
-					// and that content is inside the article tag
+					// interface (i.e. using Ajax), we just need to
+					// have the content and that content is inside
+					// the article tag
 					if ($aeFunctions->isAjaxRequest()) {
 						// The page has been accessed by an URL
 						// (and not through the interface)

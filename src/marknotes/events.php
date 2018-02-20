@@ -39,12 +39,15 @@ class Events
 	}
 
 	/**
-	 * Call an event and fires every attached functions if there are somes
+	 * Call an event and fires every attached functions if there are
+	 * somes
 	 *
-	 * $bStopOnFirstTrue : when a plugin is called (f.i. export.pdf), when the file has been
-	 * created, no need to call a second or a third export plugin when the job was
-	 * already done. So, when $bStopOnFirstTrue is set on True, this function will stop
-	 * to call plugins as soon as one plugin has returned True (which means "I've done the job")
+	 * $bStopOnFirstTrue : when a plugin is called (f.i. export.pdf),
+	 * when the file has been created, no need to call a second or a
+	 * third export plugin when the job was already done. So, when
+	 * $bStopOnFirstTrue is set on True, this function will stop
+	 * to call plugins as soon as one plugin has returned True (which
+	 * means "I've done the job")
 	 */
 	public static function trigger(string $event = '', array &$args = array(), bool $bStopOnFirstTrue = false) : bool
 	{
@@ -52,12 +55,13 @@ class Events
 
 		$bReturn = true;
 
-		// We can fire "run" event and then every plugins who've implemented
-		// the "run" event will be fired or, better,
+		// We can fire "run" event and then every plugins who've
+		// implemented the "run" event will be fired or, better,
 		// we can fire "task.acls.load::run" to fire only that one.
 		//
 		// The syntax is therefore :
-		//		First part is the $type (as used in LoadPlugins) : f.i task.acls.load
+		//		First part is the $type (as used in LoadPlugins) :
+		// f.i task.acls.load
 		//	  Use "::" as separator
 		//		Then the event f.i. run
 
@@ -80,12 +84,13 @@ class Events
 		/*<!-- endbuild -->*/
 
 		// $event is, for instance, export.txt
-		// Check if there are attached events for this specific event but
-		// not only.  Check if there are events attached for 'export.*'
-		// i.e. whatever the format.
+		// Check if there are attached events for this specific event
+		// but not only.  Check if there are events attached for
+		// 'export.*' i.e. whatever the format.
 		//
-		// In a global way, if there is a dot (like in export.txt), extract
-		// the first item (export) and add a wildcard (export.*)
+		// In a global way, if there is a dot (like in export.txt),
+		// extract the first item (export) and add a wildcard
+		// (export.*)
 
 		$arr=array($event);
 		if (strpos($event, '.')) {
@@ -115,6 +120,7 @@ class Events
 							//if ($aeDebug->getDevMode()) {
 							//	$aeDebug->here("	call [".$func."]", 1);
 							//}
+
 							if ($aeSettings->getDebugMode()) {
 								$aeDebug->log('	call ['.$func.']', 'debug');
 							}
