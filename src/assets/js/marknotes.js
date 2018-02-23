@@ -181,7 +181,7 @@ function initFiles($data) {
 				callback: 'afterShowTip()',
 				dataType: 'html',
 				useStore: 0,
-				target: 'TIPS'
+				target: 'HOMEPAGE'
 			});
 		}
 	}

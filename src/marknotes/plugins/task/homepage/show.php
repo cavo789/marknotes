@@ -117,7 +117,7 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("Homepge, show [".$note."]", "debug");
+					$aeDebug->log("Homepage, show [".$note."]", "debug");
 				}
 				/*<!-- endbuild -->*/
 
