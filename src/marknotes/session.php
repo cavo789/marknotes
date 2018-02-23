@@ -73,14 +73,18 @@ class Session
 
 		}
 
-		// Get informations about the login plugin
-		$arr = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
+		// Get informations about the login plugin :
+		// read task.login.enabled to check if the plugin is active
+		$arr = $aeSettings->getPlugins('task.login', array('enabled'=>0));
 
 		// Check if the plugin is enabled ?
 		$bEnabled = boolval($arr['enabled'] ?? 0);
 
 		if ($bEnabled) {
 			// Yes, he is
+			// Get the login and password
+			$arr = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
+
 			$login = isset($arr['username']) ? trim($arr['username']) : '';
 			$password = isset($arr['password']) ? trim($arr['password']) : '';
 
