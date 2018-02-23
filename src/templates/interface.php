@@ -76,7 +76,7 @@
 				<div id="content" class="page content markdown-body">
 					<article size="A4" layout="portrait" id="CONTENT">
 						<div id="HOMEPAGE">&nbsp;</div>
-						<div id="TIPS">&nbsp;</div>
+						<div id="FAVORITES">&nbsp;</div>
 					</article>
 				</div>
 			</section>

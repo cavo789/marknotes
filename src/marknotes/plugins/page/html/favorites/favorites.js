@@ -169,7 +169,12 @@ function afterShowFavorites($data) {
 
 	// Put the list in the content area
 
-	$('#TIPS').html(
+	// The FAVORITES id exists on the homepage (when the interface
+	// is displayed). As soon as a note is displayed, only the
+	// CONTENT node id exists
+	$domID = ($('#FAVORITES').length == 0) ? '#CONTENT' : '#FAVORITES';
+
+	$($domID).html(
 		'<h2>' + $title + '</h2>' + 
 		'<div class="animated bounceInLeft">' +
 			'<ul id="favorites">' + $ul.innerHTML + '</ul>' +

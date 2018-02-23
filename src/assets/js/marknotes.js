@@ -207,7 +207,7 @@ function afterShowHomepage() {
 		afterDisplay("");
 
 		// Add the show_tip class
-		//$('#TIPS').addClass('show_tip');
+		//$('#FAVORITES').addClass('show_tip');
 	}
 	return true;
 }
