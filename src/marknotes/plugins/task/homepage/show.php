@@ -16,9 +16,9 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = 'plugins.options.task.homepage';
 
 	/**
-	 * Retrieve the tip
+	 * Retrieve the note content
 	 */
-	private static function doGetTip(string $tip) : string
+	private static function doGetNote(string $filename) : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
@@ -26,10 +26,6 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		// Get options of the cache plugin
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 		$bCache = $arrSettings['enabled'] ?? false;
-
-		// Get options of the tips plugin : retrieve the name of
-		// the note to show for the 'tip' (f.i. "homepage")
-		$filename = trim(self::getOptions($tip, ''));
 
 		if ($filename !== '') {
 			$filename = $aeSettings->getFolderDocs().$filename;
@@ -45,16 +41,12 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 			}
 		}
 
-		if ($filename == '') {
-			$filename = __DIR__.'/tips/'.$tip.'.html';
-		}
-
 		$html = '';
 		$arr = null;
 
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();
-			$key = 'tips###'.$tip;
+			$key = 'homepage###'.$filename;
 
 			$cached = $aeCache->getItem(md5($key));
 			$arr = $cached->get();
@@ -80,15 +72,11 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 
 				$html .= '<hr/>';
 
-				// Replace variables
-				$docs = rtrim($aeSettings->getFolderDocs(true), DS);
-				$html = str_replace('%DOCS%', $docs, $html);
-				$html = str_replace('%GITHUB%', GITHUB_REPO, $html);
 			} else {
 				$html = '<p class="error">Sorry the '.str_replace(__DIR__, '', $filename).' doesn\'t exists</p>';
 			}
 
-			$arr['tip'] = $html;
+			$arr['homepage'] = $html;
 
 			if ($bCache) {
 				// Save the list in the cache
@@ -107,7 +95,7 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- endbuild -->*/
 		} // if (is_null($arr))
 
-		return $arr['tip'];
+		return $arr['homepage'];
 	}
 
 	public static function run(&$params = null) : bool
@@ -119,21 +107,26 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$tip = trim($aeFunctions->getParam('param', 'string', '', false));
-			$tip = $aeFiles->sanitize($tip);
+			$note = trim(self::getOptions('note',''));
 
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("Get tip [".$tip."]", "debug");
+			if ($note !== '') {
+
+				$docs = $aeSettings->getFolderDocs(true);
+				$note = str_replace('/', DS, $docs.$note);
+
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log("Homepge, show [".$note."]", "debug");
+				}
+				/*<!-- endbuild -->*/
+
+				$html = self::doGetNote($note);
+
+				header('Content-Transfer-Encoding: ascii');
+				header('Content-Type: text/html; charset=utf-8');
+				echo $html;
 			}
-			/*<!-- endbuild -->*/
-
-			$html = self::doGetTip($tip);
-
-			header('Content-Transfer-Encoding: ascii');
-			header('Content-Type: text/html; charset=utf-8');
-			echo $html;
 		}
 
 		die();
