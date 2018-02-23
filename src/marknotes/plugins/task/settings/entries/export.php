@@ -22,7 +22,7 @@ class MN_Export extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$content = '';
 
 		// Buttons
-		$arrButtons = array('docx','epub','md','odt','pdf','remark','reveal','txt');
+		$arrButtons = array('docx','epub','md','odt','pdf','remark','txt');
 		foreach ($arrButtons as $btn) {
 			$key = 'plugins.buttons.'.$btn;
 			$arr = self::getArray($key);
@@ -38,13 +38,41 @@ class MN_Export extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		// --- Docx version Googoose
 		$key = 'plugins.page.html.docx';
-
 		$arr = self::getArray($key);
-
-		// Enabled
 		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// --- Docx markdown extra info
+		$key = 'plugins.markdown.docx';
+		$arr = self::getArray($key);
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// --- Decktape
+		$key = 'plugins.options.task.export.decktape';
+		$arr = self::getArray($key);
+		$opt = 'script';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
+		// --- Pandoc
+		$key = 'plugins.options.task.export.pandoc';
+		$arr = self::getArray($key);
+		$opt = 'script';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
+		// --- Pandoc - options
+		$key = 'plugins.options.task.export.pandoc.options';
+		$arr = self::getArray($key);
+
+		$arrFormats = array('docx','epub','odt','pdf','txt');
+		foreach ($arrFormats as $opt) {
+			$text = self::getTranslation($key.'.'.$opt);
+			$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+		}
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

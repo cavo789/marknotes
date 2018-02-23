@@ -1,33 +1,35 @@
 <?php
 /**
- * This plugin will read the abbreviations list from settings.json and if at
- * least one is found in the markdown content, the plugin will add these
- * abbreviations (only found ones) at the top of the markdown rendering.
+ * This plugin will read the abbreviations list from settings.json
+ * and if at least one is found in the markdown content, the plugin
+ * will add these abbreviations (only found ones) at the top of the
+ * markdown rendering.
  *
  * This is not standard in Markdown but well with Markdown extra.
- * See https://michelf.ca/projects/php-markdown/extra/#abbr for the syntax
+ * See https://michelf.ca/projects/php-markdown/extra/#abbr
+ * for the syntax
  *
  * Configuration :
  * -------------
  *
- *		"plugins": {
- *			"options": {
- *				"markdown": {
- *					"abbreviations": {
- *						"abbr": [
- *							{
- *								"pattern": "marknotes",
- *								"value": "marknotes is a software ..."
- *							},
- *							{
- *								"pattern": "joomla",
- *								"value": "Joomla!\u00ae is an OpenSource CMS ..."
- *							}
- *						]
- *					}
+ *	"plugins": {
+ *		"options": {
+ *			"markdown": {
+ *				"abbreviations": {
+ *					"abbr": [
+ *						{
+ *							"pattern": "marknotes",
+ *							"value": "marknotes is a software ..."
+ *						},
+ *						{
+ *							"pattern": "joomla",
+ *							"value": "Joomla!\u00ae is a CMS .."
+ *						}
+ *					]
  *				}
  *			}
  *		}
+ *	}
  */
 namespace MarkNotes\Plugins\Content\Markdown;
 
@@ -51,9 +53,10 @@ class Abbreviations extends \MarkNotes\Plugins\Markdown\Plugin
 
 		foreach ($arrOptions as $abbreviations) {
 			if (($wPos=stripos($params['markdown'], $abbreviations['pattern'])) !== false) {
-				// Due to the stripos (insensitive search), derive the key
-				// i.e. the found pattern but with the case ("Plugin",
-				// "plugin", "PLUGIN", ...) from the note and not the pattern itself
+				// Due to the stripos (insensitive search), derive
+				// the key i.e. the found pattern but with the case
+				// ("Plugin", "plugin", "PLUGIN", ...) from the note
+				// and not the pattern itself
 				$key = substr($params['markdown'], $wPos, strlen($abbreviations['pattern']));
 				$abbr_MD .= "*[".$key."]: ".$abbreviations['value']."\n";
 			}
@@ -74,7 +77,8 @@ class Abbreviations extends \MarkNotes\Plugins\Markdown\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
-			// This plugin is only needed when at least one abbreviation
+			// This plugin is only needed when at least one
+			// abbreviation
 			$arrOptions = self::getOptions('abbr', array());
 			$bCanRun = (count($arrOptions) > 0);
 		}

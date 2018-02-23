@@ -24,6 +24,18 @@ class MN_Definitions extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// -----------------
+		$key = 'plugins.options.markdown.definitions';
+		$arr = self::getArray($key);
+
+		$opt = 'title';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
+		$opt = 'not_in_tags';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

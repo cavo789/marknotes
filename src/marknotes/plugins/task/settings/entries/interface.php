@@ -29,7 +29,7 @@ class MN_Interface extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'skin';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getCombo($key.$opt, $text, $arr[$opt], 'black;black-light;blue;blue-light;green;green-light;purple;purple-ligth;red;red-light;yellow;yellow-light');
+		$content .= self::getCombo($key.'.'.$opt, $text, $arr[$opt], 'black;black-light;blue;blue-light;green;green-light;purple;purple-ligth;red;red-light;yellow;yellow-light');
 
 		$opt = 'logo';
 		$text = self::getTranslation($key.'.'.$opt);
@@ -37,8 +37,13 @@ class MN_Interface extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$root = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$text = str_replace('%1', $root.'assets/images/', $text);
-
 		$content .= self::getText($key.$opt, $text, $arr[$opt]??'marknotes.svg');
+
+		// Name of the website
+		$key = 'site_name';
+		$value = self::getArray($key);
+		$text = self::getTranslation($key);
+		$content .= self::getText($key, $text, $value);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

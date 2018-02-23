@@ -24,6 +24,13 @@ class MN_Addicons extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// position
+		$key = 'plugins.options.page.html.add_icons';
+		$arr = self::getArray($key);
+		$opt = 'position';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getCombo($key.'.'.$opt, $text, $arr[$opt], 'after;before');
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

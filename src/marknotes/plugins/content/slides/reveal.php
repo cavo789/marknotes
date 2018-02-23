@@ -12,19 +12,21 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 	private static $layout = 'reveal';
 
 	/**
-	 * Replace a slide with only an image (like below illustrated) by a section with a background image
-
+	 * Replace a slide with only an image (like below illustrated)
+	 * by a section with a background image
 	 *	---
 	 *	![](.images/image.jpg)
 	 */
 	private static function insertSlideBackgroundImage(string $markdown) : string
 	{
 
-		// A manual section break (i.e. a new slide) can be manually created in marknotes
-		// by just creating, in the note a new line with --- (or -----).
+		// A manual section break (i.e. a new slide) can be
+		// manually created in marknotes by just creating,
+		// in the note a new line with --- (or -----).
 		// Only these characters on the beginning of the line.
 		//
-		// WARNING : the string should be with LF (linefeed) only and not CRLF
+		// WARNING : the string should be with LF (linefeed)
+		// only and not CRLF
 
 		$newSlide = '\n+^-{3,5}$\n+';
 		$imgTag = '\!\[.*\]\((.*)\)$\n';
@@ -60,7 +62,8 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 		$folder = __DIR__.'/reveal_actions/';
 		$arrActions = $aeFiles->rglob($pattern = '*.php', $path = $folder);
 
-		// Convention : if the filename start with an underscore (like in _addThings.php)
+		// Convention : if the filename start with an underscore
+		// (like in _addThings.php)
 		// consider that file as disabled so don't call it
 		for ($i=count($arrActions); $i>0; $i--) {
 			$action = $arrActions[$i-1];
@@ -82,7 +85,8 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 				try {
 					require_once($action);
 
-					// If the file is "add_slides.php", the class will be "add_slides"
+					// If the file is "add_slides.php", the class
+					// will be "add_slides"
 					$class = $aeFiles->removeExtension(basename($action));
 
 					$class = "\\MarkNotes\\Plugins\\Content\\Slides\\Reveal_Actions\\".$class;
@@ -122,7 +126,8 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 			$content = self::processHTML($content);
 		} else {
 			// It's a markdown content
-			// Automatically add a horizontal slide break between each titles
+			// Automatically add a horizontal slide break between
+			// each titles
 			$content = preg_replace("/^(#{2,})/m", "\n---\n\n$1", $content);
 
 			// No empty slides

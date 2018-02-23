@@ -21,7 +21,7 @@ class MN_Regional extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'language';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content = self::getCombo($key.$opt, $text, $arr[$opt], 'fr;en');
+		$content = self::getCombo($key.'.'.$opt, $text, $arr[$opt], 'fr;en');
 
 		$opt = 'locale';
 		$text = self::getTranslation($key.'.'.$opt);

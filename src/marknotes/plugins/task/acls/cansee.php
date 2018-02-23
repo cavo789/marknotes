@@ -38,16 +38,23 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	final protected static function canRun() : bool
 	{
-		$bCanRun = parent::canRun();
+		// Check if the ACLs task is well enabled
+		$bCanRun = self::isEnabled(false);
 
 		if ($bCanRun) {
-			// This plugin is only needed when at least one folder
-			// has been protected
-			$arrOptions = self::getOptions('folders', array());
-			$bCanRun = (count($arrOptions) > 0);
-			if (!$bCanRun) {
-				$aeSession = \MarkNotes\Session::getInstance();
-				$aeSession->set('acls', null);
+			// Check if the plugin can be fired depending on
+			// the running task (f.i. task.export.reveal)
+			$bCanRun = parent::canRun();
+
+			if ($bCanRun) {
+				// This plugin is only needed when at least one folder
+				// has been protected
+				$arrOptions = self::getOptions('folders', array());
+				$bCanRun = (count($arrOptions) > 0);
+				if (!$bCanRun) {
+					$aeSession = \MarkNotes\Session::getInstance();
+					$aeSession->set('acls', null);
+				}
 			}
 		}
 
@@ -61,7 +68,7 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 		if (!isset($params['folder'])) {
 			/*<!-- build:debug -->*/
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log('   The task task.acls.cansee should '.
+			$aeDebug->log('	The task task.acls.cansee should '.
 				'be called with a foldername (like "private"); '.
 				'that foldername should be put in the '.
 				'$params[\'folder\'] parameter. It\'s not '.
@@ -96,7 +103,7 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("   Can see ".$params['folder']." ?", "debug");
+				$aeDebug->log("	Can see ".$params['folder']." ?", "debug");
 			}
 			/*<!-- endbuild -->*/
 
@@ -105,7 +112,6 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 				// For instance : c:\sites\marknotes\docs\private\
 				$folder = $aeSettings->getFolderDocs().$folder.DS;
 				$folder = str_replace('/', DS, $folder);
-
 
 				// Both $folder and $checkFolder are absolute paths and
 				// have the final slash
@@ -119,17 +125,17 @@ class canSee extends \MarkNotes\Plugins\Task\Plugin
 					if ($username == '') {
 						$bReturn = false;
 						/*<!-- build:debug -->*/
-						$aeDebug->log("   The folder ".$folder." is protected and requires a valid user", "debug");
+						$aeDebug->log("	The folder ".$folder." is protected and requires a valid user", "debug");
 						/*<!-- endbuild -->*/
 					} else {
 						if (in_array($username, $arrUsers) !== true) {
 							$bReturn = false;
 							/*<!-- build:debug -->*/
-							$aeDebug->log("   The folder ".$folder." is protected; user ".$username." can't see it", "debug");
+							$aeDebug->log("	The folder ".$folder." is protected; user ".$username." can't see it", "debug");
 							/*<!-- endbuild -->*/
 						/*<!-- build:debug -->*/
 						} else {
-							$aeDebug->log("   The folder ".$folder." is protected and  user ".$username." is allowed to see it", "debug");
+							$aeDebug->log("	The folder ".$folder." is protected and  user ".$username." is allowed to see it", "debug");
 						/*<!-- endbuild -->*/
 						}
 					} // if ($username == '')

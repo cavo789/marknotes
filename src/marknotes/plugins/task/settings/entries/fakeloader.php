@@ -19,10 +19,28 @@ class MN_Fakeloader extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$arr = self::getArray();
 		$box = self::getBox($key, self::$icon);
 
-		// Enabled
+		$content='';
+		// DON'T ALLOW TO DISABLE THIS PLUGIN OTHERWISE
+		// THE USER EXPERIENCE WILL BE BAD SINCE THE USER WILL
+		// SEE THE INTERFACE DURING HIS GENERATION
 		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// bgColor
+		$key = 'plugins.options.page.html.fakeLoader';
+		$arr = self::getArray($key);
+		$opt = 'bgColor';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
+		$opt = 'spinner';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getCombo($key.'.'.$opt, $text, $arr[$opt], 'spinner1;spinner2;spinner3;spinner4;spinner5;spinner6;spinner7');
+
+		$opt = 'timeToHide';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

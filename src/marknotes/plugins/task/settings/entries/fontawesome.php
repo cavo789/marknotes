@@ -24,6 +24,18 @@ class MN_Fontawesome extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// -----------------
+		$key = 'plugins.options.content.html.font-awesome';
+		$arr = self::getArray($key);
+
+		$opt = 'bullet';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
+		$opt = 'extra_attribute';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

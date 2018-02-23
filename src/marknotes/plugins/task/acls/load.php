@@ -17,6 +17,11 @@
  *					}
  *				}
  *			}
+ *		},
+ *		"task": {
+ *			"acls": {
+ *				"enabled": 1
+ *			}
  *		}
  *	}
  *
@@ -26,8 +31,8 @@
  * at the root of the marknotes site
  *
  * *** BE CAREFULL *** : ENTRIES ARE CASE SENSITIVE. If you've an user
- * "christophe" defined in the .htpassw, don't use "Christophe" in your
- * settings.json. You need to respect the case !
+ * "christophe" defined in the .htpassw, don't use "Christophe" in
+ * your settings.json. You need to respect the case !
  *
  * Note : if no folder is mentionned or if the /plugins/options/acls
  * entry is missing, this plugin has no effect.
@@ -64,7 +69,8 @@ class Load extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- endbuild -->*/
 		} else {
 			// Be sure to have the correct directory separator
-			// for folders i.e. / or \ depending on the Operating System
+			// for folders i.e. / or \ depending on the Operating
+			// System
 			foreach ($arrOptions as $folder => $value) {
 				if (strpos($folder, '/') > 0) {
 					$new = str_replace('/', DS, $folder);
@@ -87,14 +93,8 @@ class Load extends \MarkNotes\Plugins\Task\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
-
-			$aeSettings = \MarkNotes\Settings::getInstance();
-
-			// Check if the task is well enabled
-			$arrSettings = $aeSettings->getPlugins(self::$json_settings, array('enabled'=>0));
-
-			// Check that ACLs is well enabled
-			$bCanRun = boolval($arrSettings['enabled']??0);
+			// Check if the ACLs task is well enabled
+			$bCanRun = self::isEnabled(false);
 
 			if ($bCanRun) {
 				// This plugin is only needed when at least one folder
@@ -109,9 +109,10 @@ class Load extends \MarkNotes\Plugins\Task\Plugin
 				}
 			} else {
 				/*<!-- build:debug -->*/
+				$aeSettings = \MarkNotes\Settings::getInstance();
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("The ACLs task plugin is disabled in settings.json (".self::$json_settings.")","debug");
+					$aeDebug->log("The ACLs task plugin is disabled in settings.json (".self::$json_settings.")", "debug");
 				}
 				/*<!-- endbuild -->*/
 			}

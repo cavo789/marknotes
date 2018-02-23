@@ -136,7 +136,7 @@ class HTML
 		$template = str_replace('%GITHUB%', $github['url'], $template);
 
 		if (strpos($template, '%SHOW_TIPS%') !== false) {
-			$arr = $aeSettings->getPlugins('plugins.options.task.tips', array('enabled'=>1));
+			$arr = $aeSettings->getPlugins('plugins.task.homepage', array('enabled'=>1));
 			$show_tips = boolval($arr['enabled']);
 			$template = str_replace('%SHOW_TIPS%', $show_tips?1:0, $template);
 		}

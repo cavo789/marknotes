@@ -34,6 +34,17 @@ class MN_Update extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// URLs
+		$key = 'plugins.options.task.update';
+		$arr = self::getArray($key);
+		$opt = 'url';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
+		$opt = 'version_url';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

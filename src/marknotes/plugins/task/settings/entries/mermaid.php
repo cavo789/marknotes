@@ -24,6 +24,12 @@ class MN_Mermaid extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		$key = 'plugins.options.page.html.mermaid';
+		$arr = self::getArray($key);
+		$opt = 'theme';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getCombo($key.'.'.$opt, $text, $arr[$opt], ';dark;forest');
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

@@ -10,7 +10,7 @@ class MN_Imagegallery extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings = 'plugins.content.html.image_gallery';
+	protected static $json_settings = 'plugins.task.image_gallery';
 
 	public function getFormItem() : string
 	{
@@ -23,6 +23,13 @@ class MN_Imagegallery extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// Modal
+		$key = 'plugins.options.content.html.image_gallery';
+		$arr = self::getArray($key);
+		$opt = 'open_in_modal';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

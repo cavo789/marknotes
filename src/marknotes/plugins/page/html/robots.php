@@ -2,7 +2,8 @@
 /**
  * Add robots informations (like adding "index, follow") to pages.
  *
- * The settings.json file allows to address more than one bots like, f.i., in :
+ * The settings.json file allows to address more than one
+ * bots like, f.i., in :
  *
  *	"robots": {
  * 		"bots": [
@@ -17,8 +18,8 @@
  *		]
  *  }
  *
- * In that example, all bots are allowed to index and follow links except
- * the one of Baidu.
+ * In that example, all bots are allowed to index and
+ * follow links except the one of Baidu.
  *
  * See also https://developers.google.com/search/reference/robots_meta_tag
  */
@@ -40,7 +41,8 @@ class Robots extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$arrOptions = self::getOptions('bots', array());
 
 		if ($arrOptions!==array()) {
-			/* The options.page.html.robots.bots is defined like this in settings.json :
+			/* The options.page.html.robots.bots is defined
+			 * like this in settings.json :
 			 *
 			 *  		"bots": [
 			 *			{
@@ -53,8 +55,8 @@ class Robots extends \MarkNotes\Plugins\Page\HTML\Plugin
 			 *			}
 			 *		]
 			 *
-			 * i.e. a list of names and content. This make possible to address several
-			 * bots
+			 * i.e. a list of names and content.
+			 * This make possible to address several bots
 			 */
 
 			if (count($arrOptions)==1) {
@@ -65,8 +67,22 @@ class Robots extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$meta="";
 			foreach ($arrOptions as $key => $bot) {
-				$meta.="<meta name=\"".$bot['name']."\" ".
-					"content=\"".$bot['content']."\" />\n";
+
+				if (is_array($bot)) {
+					// $bot is an array
+					// $bot['name'] is the name of the targetted bot
+					//		"BaiduSpider" f.i.
+					// $bot['content'] is the instruction for that bot
+					//		"noindex, nofollow" f.i.
+					$meta.="<meta name=\"".$bot['name']."\" ".
+						"content=\"".$bot['content']."\" />\n";
+				} else {
+					// $bot isn't an array but just a string
+					// like f.i. "Index, follow"
+					// So use that value for all robots
+					$meta.="<meta name=\"robots\" ".
+						"content=\"".$bot."\" />\n";
+				}
 			}
 
 			/*<!-- build:debug -->*/

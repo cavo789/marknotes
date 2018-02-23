@@ -476,103 +476,90 @@
 		},
 		"markdown": {
 			"beautify": {
-				"description": "clean the markdown content, replace non breaking space, use LF and not CRLF, ... **The preferred order for this plugin is #1, just after the include plugin**",
+				"description": "**The preferred order for this plugin is #1, just after the include plugin**",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.timeline.get", "task.edit.form"],
 				"only_if_task": []
 			},
-			"csv": {
-				"description": "Allow to insert a .csv file in the note; convert the .csv into an array",
-				"enabled": 1,
-				"not_if_task": [],
-				"only_if_task": ["main", "interface", "task.export.html"]
-			},
 			"encrypt": {
-				"description": "Add encryption. **The preferred order for this plugin is #2, after the beautify plugin**",
+				"description": "**The preferred order for this plugin is #2, after the beautify plugin**",
 				"enabled": 1,
 				"not_if_task": ["task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"include": {
-				"description": "Allow to include other files in a note just like if these contents were in that note. Allow to create files for f.i. each chapters of your content. **The preferred order for this plugin is #3, after beautify and encrypt**",
+				"description": "**The preferred order for this plugin is #3, after beautify and encrypt**",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
+			"csv": {
+				"enabled": 1,
+				"not_if_task": [],
+				"only_if_task": ["main", "interface", "task.export.html"]
+			},
 			"yaml": {
-				"description": "handle YAML block if present and create it if configured",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"lastupdate": {
-				"description": "Add the last update date/time in the conntent",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"variables": {
-				"description": "Allow to use variables like %URL%, %ROOT%, ... in the markdown content",
+				"description": "Allow to use variables like %URL%, %ROOT%, ... in the markdown content **mandatory**",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md"],
 				"only_if_task": []
 			},
 			"abbreviations": {
-				"description": "Add tooltips for words in the abbreviation's list",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"definitions": {
-				"description": "Generate a table with definitions",
-				"enabled": 1,
+				"enabled": 0,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["interface", "main", "task.export.html"]
 			},
 			"footnotes": {
-				"Description": "Add footnotes to the note",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["main", "task.export.html"]
 			},
 			"image_gallery": {
-				"description": "Read a folder containing images and add images in the markdown note",
 				"enabled": 1,
 				"not_if_task": ["task.export.md", "task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["task.export.reveal"]
 			},
 			"todos": {
-				"description": "Add a todo summary",
 				"enabled": 1,
 				"not_if_task": ["task.export.md", "task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"toc": {
-				"description": "Add a table-of-contents in the note",
 				"enabled": 1,
 				"not_if_task": ["task.export.reveal", "task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"listfiles": {
-				"description": "Read a folder containing files and add links to these files in the markdown note",
 				"enabled": 1,
 				"not_if_task": ["task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"hierarchy": {
-				"description": "Add automatically number before headings",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"emoji": {
-				"description": "Add emoji support",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"docx": {
-				"description": "When exporting to docx, add an extra attribute for Pandoc so images will have the correct size",
 				"enabled": 1,
 				"not_if_task": [],
 				"only_if_task": ["task.export.docx"]
@@ -661,7 +648,7 @@
 				},
 				"definitions": {
 					"title": "## Glossary",
-					"not_in_tags": ["a", "abbr", "dd", "dt", "link", "script", "span"],
+					"not_in_tags": "a, abbr, dd, dt, link, script, span",
 					"terms": []
 				},
 				"encrypt": {
@@ -830,7 +817,7 @@
 							"h1": "zoom",
 							"h2": "random",
 							"h3": "random",
-							"h4": "slide-in",
+							"h4": "slide",
 							"h5": "fade",
 							"h6": "convex"
 						},
@@ -855,7 +842,7 @@
 						"bots": [
 							{
 								"name": "robots",
-								"content": "index, follow"
+								"content": "Index, Follow"
 							}
 						]
 					},
@@ -1076,6 +1063,9 @@
 			"index": {
 				"enabled" : 1
 			},
+			"image_gallery": {
+				"enabled" : 1
+			},
 			"login" : {
 				"enabled" : 1
 			},
@@ -1118,7 +1108,7 @@
 		"pdf": "pdf",
 		"remark": "remark",
 		"reveal": "reveal",
-		"screen": "screen",
+		"interface": "interface",
 		"timeline": "timeline"
 	}
 }

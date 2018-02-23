@@ -48,8 +48,38 @@ class MN_Content extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		// Smileys
 		$key = 'plugins.page.html.smileys';
 		$arr = self::getArray($key);
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		// Enabled
+		// -----------------
+		// emoji
+		$key = 'plugins.markdown.emoji';
+		$arr = self::getArray($key);
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// -----------------
+		// yaml
+		$key = 'plugins.markdown.yaml';
+		$arr = self::getArray($key);
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// -----------------
+		// listfiles
+		$key = 'plugins.markdown.listfiles';
+		$arr = self::getArray($key);
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// -----------------
+		// hierarchy
+		$key = 'plugins.markdown.hierarchy';
+		$arr = self::getArray($key);
 		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);

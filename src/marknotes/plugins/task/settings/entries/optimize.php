@@ -44,21 +44,69 @@ class MN_Optimize extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		$opt = 'cache.enabled';
+		// -------------------
+		// Cache
+		$key = 'plugins.options.task.optimize.cache';
+		$arr = self::getArray($key);
+
+		$opt = 'enabled';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getRadio($key.'.'.$opt, $text, $arr['cache']['enabled']);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		$opt = 'duration.default';
-		$text = self::getTranslation($key.'.cache.'.$opt);
-		$content .= self::getText($key.'.cache.'.$opt, $text, $arr['cache']['duration']['default']);
+		$key = 'plugins.options.task.optimize.cache.duration';
+		$arr = self::getArray($key);
 
-		$opt = 'duration.html';
-		$text = self::getTranslation($key.'.cache.'.$opt);
-		$content .= self::getText($key.'.cache.'.$opt, $text, $arr['cache']['duration']['html']);
+		$opt = 'default';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
-		$opt = 'duration.sitemap';
-		$text = self::getTranslation($key.'.cache.'.$opt);
-		$content .= self::getText($key.'.cache.'.$opt, $text, $arr['cache']['duration']['sitemap']);
+		$opt = 'html';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
+		$opt = 'sitemap';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
+		// -------------------
+		// HTML
+		$key = 'plugins.options.task.optimize.html';
+		$arr = self::getArray($key);
+		$opt = 'minify';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		$opt = 'remove_comments';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// CSS
+		$key = 'plugins.options.task.optimize.css';
+		$arr = self::getArray($key);
+		$opt = 'minify';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// JS
+		$key = 'plugins.options.task.optimize.js';
+		$arr = self::getArray($key);
+		$opt = 'minify';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// Images
+		$key = 'plugins.options.task.optimize.images';
+		$arr = self::getArray($key);
+		$opt = 'lazyload';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// Headers
+		$key = 'plugins.options.task.optimize.headers';
+		$arr = self::getArray($key);
+		$opt = 'browser_cache';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

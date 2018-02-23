@@ -1,34 +1,35 @@
 <?php
 /**
- * This plugin will read the definitions list from settings.json and if at
- * least one is found in the markdown content, the plugin will add these
- * terms at the bottom of the note.
+ * This plugin will read the definitions list from settings.json and
+ * if at least one is found in the markdown content, the plugin will
+ * add these terms at the bottom of the note.
  *
  * This is not standard in Markdown but well with Markdown extra.
- * See https://michelf.ca/projects/php-markdown/extra/#def-list for the syntax
+ * See https://michelf.ca/projects/php-markdown/extra/#def-list
+ * for the syntax
  *
  * Configuration :
  * -------------
  *
- *		"plugins": {
- *			"options": {
- *				"markdown": {
- *					"definitions": {
- *						"title": "---\n***Glossary***",
- *						"terms": [
- *							{
- *								"pattern": "marknotes",
- *								"value": "marknotes is a software ..."
- *							},
- *							{
- *								"pattern": "joomla",
- *								"value": "Joomla!\u00ae is an OpenSource CMS ..."
- *							}
- *						]
- *					}
+ *	"plugins": {
+ *		"options": {
+ *			"markdown": {
+ *				"definitions": {
+ *					"title": "---\n***Glossary***",
+ *					"terms": [
+ *						{
+ *							"pattern": "marknotes",
+ *							"value": "marknotes is a software ..."
+ *						},
+ *						{
+ *							"pattern": "joomla",
+ *							"value": "Joomla!\u00ae is a CMS ..."
+ *						}
+ *				]
  *				}
  *			}
  *		}
+ *	}
  */
 namespace MarkNotes\Plugins\Page\HTML;
 
@@ -73,7 +74,11 @@ class Definition extends \MarkNotes\Plugins\Page\HTML\Plugin
 	public static function doIt(&$html = null) : bool
 	{
 		// Don't keep unwanted HTML tags
-		$arrNotIn = self::getOptions('not_in_tags', array('a','abbr'));
+		$sNotIn = self::getOptions('not_in_tags', 'a, abbr');
+		$arrNotIn = explode(",", $sNotIn);
+		// Remove trailing spaces
+		$arrNotIn = array_map("trim", $arrNotIn);
+
 		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();
 		$tmp = $aeRegex->removeTags($html, $arrNotIn);
 
@@ -83,9 +88,9 @@ class Definition extends \MarkNotes\Plugins\Page\HTML\Plugin
 			// The word for the glossary
 			$key = $definitions['pattern'];
 
-			// Replace a word (i.e. the "$key") in the HTML content but never
-			// when that word is inside an html tag; so only modify pure text, nor an
-			// attribute
+			// Replace a word (i.e. the "$key") in the HTML content
+			// but never when that word is inside an html tag; so
+			// only modify pure text, nor an attribute
 			$pattern = '/(.*)('.preg_quote($key).')(.*)(?!([^<]+)?>)/i';
 
 			if (preg_match_all($pattern, $tmp, $matches)) {

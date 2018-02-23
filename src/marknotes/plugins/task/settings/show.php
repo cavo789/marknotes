@@ -38,46 +38,6 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		return $toc;
 	}
 
-	// Process Plugins-Content-HTML
-	/*private static function getContentHTML(array $arr, string $key) : string
-	{
-		$key = $key.'.';
-		$box = self::getBox('Plugins - Content - HTML', 'square');
-		$content = self::loopBooleans($arr, $key, 'enabled',
-			'Enable the <strong>%s</strong> content plugin');
-		return str_replace('%CONTENT%', $content, $box);
-	}*/
-
-	// Process Plugins-Page-HTML
-	/*private static function getPageHTML(array $arr, string $key) : string
-	{
-		$key = $key.'.';
-		$box = self::getBox('Plugins - Page - HTML', 'square');
-		$content = self::loopBooleans($arr, $key, 'enabled',
-			'Enable the <strong>%s</strong> page HTML plugin');
-		return str_replace('%CONTENT%', $content, $box);
-	}*/
-
-	// Process Plugins-Markdown
-	/*private static function getMarkdown(array $arr, string $key) : string
-	{
-		$key = $key.'.';
-		$box = self::getBox('Plugins - Markdown', 'square');
-		$content = self::loopBooleans($arr, $key, 'enabled',
-			'Enable the <strong>%s</strong> markdown plugin');
-		return str_replace('%CONTENT%', $content, $box);
-	}*/
-
-	// Process Plugins-Task-Markdown
-	/*private static function getTaskMarkdown(array $arr, string $key) : string
-	{
-		$key = $key.'.';
-		$box = self::getBox('Plugins - Task - Markdown', 'square');
-		$content = self::loopBooleans($arr, $key, 'enabled',
-			'Enable the <strong>%s</strong> task markdown plugin');
-		return str_replace('%CONTENT%', $content, $box);
-	}*/
-
 	/**
 	 * Built the HTML for the form
 	 */
@@ -103,7 +63,6 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		foreach ($arr as $file) {
 			// Don't process the "parent" plugin
 			if (basename($file) !== '.plugin.php') {
-
 				require_once($file);
 
 				// Dynamically derive the name of the class
@@ -121,7 +80,6 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 				$arrSettingsForm[$title] = array('icon'=>$icon, 'html'=>$html);
 
 				unset($class);
-
 			}
 		}
 
@@ -223,5 +181,4 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 
 		return $bReturn;
 	}
-
 }

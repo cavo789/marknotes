@@ -177,8 +177,7 @@ function initFiles($data) {
 		// for the in-context help
 		if (marknotes.settings.show_tips == 1) {
 			ajaxify({
-				task: 'task.tips.show',
-				param: 'homepage',
+				task: 'task.homepage.show',
 				callback: 'afterShowTip()',
 				dataType: 'html',
 				useStore: 0,
@@ -367,7 +366,7 @@ function afterDisplay($fname) {
 		/*<!-- endbuild -->*/
 
 		// Be sure to remove the show_tip class which is only for
-		// tips (task.tips.show) and not for other content.
+		// tips (task.homepage.show) and not for other content.
 		if ($('#CONTENT').hasClass('show_tip')) {
 			$('#CONTENT').removeClass('show_tip');
 		}

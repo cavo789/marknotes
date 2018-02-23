@@ -261,13 +261,12 @@ class Debugging {
 	 */
 	private function getTips() : string
 	{
-		$html = self::makeHeading('Tips','lightbulb-o');
+		$html = self::makeHeading('Tips', 'lightbulb-o');
 
 		$content = '';
 
 		$content .='<li>'.
-			self::makeURL('index.php?task=task.tips.show&param=homepage',
-				'Homepage', 'html').'</li>';
+			self::makeURL('index.php?task=task.homepage.show', 'Homepage', 'html').'</li>';
 
 		$html = str_replace('%CONTENT%', $content, $html);
 		return $html;

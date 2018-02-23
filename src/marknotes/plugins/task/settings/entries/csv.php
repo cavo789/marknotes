@@ -6,11 +6,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 require_once('.plugin.php');
 
-class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
+class MN_Csv extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings = 'plugins.task.encrypt';
+	protected static $json_settings = 'plugins.markdown.csv';
 
 	public function getFormItem() : string
 	{
@@ -24,20 +24,20 @@ class MN_Encrypt extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		// password
-		$key = 'plugins.options.markdown.encrypt';
+		// -----------------
+		$key = 'plugins.options.markdown.csv';
 		$arr = self::getArray($key);
-		$opt = 'password';
+		$opt = 'separator';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
 
-		// Plugin html
-		$key = 'plugins.content.html.encrypt';
-		$arr = self::getArray($key);
-
-		$opt = 'enabled';
+		$opt = 'value_separator';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
+		$opt = 'md_column_separator';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

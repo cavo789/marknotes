@@ -1,8 +1,8 @@
 <?php
 /**
- * This task will received, as parameter, an array with filenames and
- * will remove from that array any files located in a protected folder when
- * the connected user isn't allowed
+ * This task will received, as parameter, an array with filenames
+ * and will remove from that array any files located in a
+ * protected folder when the connected user isn't allowed
  *
  * The array will be something like :
  *
@@ -10,14 +10,15 @@
  * 		[1] => c:\sites\marknotes\docs\private\a_note.md
  * 		[2] => c:\sites\marknotes\docs\public\a_note.md
  *
- * The returned value will be the same array but without protected / not accessible Files
- * so, f.i., if "private" is protected and not accessible :
+ * The returned value will be the same array but without
+ * protected / not accessible Files so, f.i., if "private" is
+ * protected and not accessible :
  *
  * 		[0] => c:\sites\marknotes\docs\a_note.md
  * 		[1] => c:\sites\marknotes\docs\public\a_note.md
  *
- * Can answer to /index.php?task=task.acls.filter_list (but there is no output since this
- * is an intern task)
+ * Can answer to /index.php?task=task.acls.filter_list
+ * (but there is no output since this is an intern task)
  */
 namespace MarkNotes\Plugins\Task\ACLs;
 
@@ -50,8 +51,8 @@ class FilterList extends \MarkNotes\Plugins\Task\Plugin
 
 		if (count($arrOptions) > 0) {
 			// Retrieve the user defined at the .htpasswd level
-			// i.e. the user used to connect on the site when a .htpasswd is used
-			// to protect the site
+			// i.e. the user used to connect on the site when a
+			// .htpasswd is used to protect the site
 			$username = trim($_SERVER['PHP_AUTH_USER'] ?? '');
 			if ($username == '') {
 				$username = trim($_SERVER['REMOTE_USER'] ?? '');
@@ -67,47 +68,52 @@ class FilterList extends \MarkNotes\Plugins\Task\Plugin
 
 				/**
 				 * $params is an array with filenames like :
-				 * 		[0] => c:\sites\marknotes\docs\a_note.md
-				 * 		[1] => c:\sites\marknotes\docs\private\a_note.md
-				 * 		[2] => c:\sites\marknotes\docs\public\a_note.md
+				 * 	[0] => c:\sites\marknotes\docs\a_note.md
+				 * 	[1] => c:\sites\marknotes\docs\private\a_note.md
+				 * 	[2] => c:\sites\marknotes\docs\public\a_note.md
 				 */
 				foreach ($params as $entry) {
-					// Does the filename ($entry) starts with the protected
-					// foldername ?
+					// Does the filename ($entry) starts with the
+					// protected foldername ?
 
 					if (substr($entry, 0, strlen($folder)) === $folder) {
 						// Yes ==> we've found a protected file
-						// For instance c:\sites\marknotes\docs\private\secret.md
+						// For instance
+						// c:\sites\marknotes\docs\private\secret.md
 						// Check if the user can see it
 
-						// Check the username. If empty, no user is connected
-						// so the file is not accessible for him (visitor or bot)
+						// Check the username. If empty, no user is
+						// connected so the file is not accessible
+						// for him (visitor or bot)
 						if ($username == '') {
 							$params[$i] = '*protected*';
 							/*<!-- build:debug -->*/
-							$aeDebug->log("   The folder ".$folder." is protected and requires a valid user", "debug");
+							$aeDebug->log("	The folder ".$folder." is protected and requires a valid user", "debug");
 							/*<!-- endbuild -->*/
 						} else {
 							if (in_array($username, $arrUsers) !== true) {
 								$params[$i] = '*protected*';
 								/*<!-- build:debug -->*/
-								$aeDebug->log("   The folder ".$folder." is protected; user ".$username." can't see it", "debug");
+								$aeDebug->log("	The folder ".$folder." is protected; user ".$username." can't see it", "debug");
 								/*<!-- endbuild -->*/
 							/*<!-- build:debug -->*/
 							} else {
-								$aeDebug->log("   The folder ".$folder." is protected and user ".$username." is allowed to see it", "debug");
+								$aeDebug->log("	The folder ".$folder." is protected and user ".$username." is allowed to see it", "debug");
 							/*<!-- endbuild -->*/
 							}
 						}
-					} // if (substr($entry, 0, strlen($folder)) === $folder)
+					} // if (substr($entry, 0, strlen($folder))
 
 					$i+=1;
 				} // foreach ($params as $entry)
 			} // foreach ($arrOptions as $folder => $arrUsers)
 
-			/** At this stage, protected files are mentionned in the array like :
+			/**
+			 * At this stage, protected files are mentionned
+			 * in the array like :
 			 *
-			 *     [3] => *protected*   (<-- the filename has been removed)
+			 *	 [3] => *protected*	(<-- the filename has been
+			 *					 removed)
 			 *
 			 * So remove all *protected* entries
 			 */
@@ -130,16 +136,23 @@ class FilterList extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	final protected static function canRun() : bool
 	{
-		$bCanRun = parent::canRun();
+		// Check if the ACLs task is well enabled
+		$bCanRun = self::isEnabled(false);
 
 		if ($bCanRun) {
-			// This plugin is only needed when at least one folder
-			// has been protected
-			$arrOptions = self::getOptions('folders', array());
-			$bCanRun = (count($arrOptions) > 0);
-			if (!$bCanRun) {
-				$aeSession = \MarkNotes\Session::getInstance();
-				$aeSession->set('acls', null);
+			// Check if the plugin can be fired depending on
+			// the running task (f.i. task.export.reveal)
+			$bCanRun = parent::canRun();
+
+			if ($bCanRun) {
+				// This plugin is only needed when at least one folder
+				// has been protected
+				$arrOptions = self::getOptions('folders', array());
+				$bCanRun = (count($arrOptions) > 0);
+				if (!$bCanRun) {
+					$aeSession = \MarkNotes\Session::getInstance();
+					$aeSession->set('acls', null);
+				}
 			}
 		}
 

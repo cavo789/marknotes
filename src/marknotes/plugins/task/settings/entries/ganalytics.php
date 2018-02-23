@@ -24,6 +24,7 @@ class MN_Ganalytics extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// Code
 		$key = 'plugins.options.page.html.ganalytics';
 		$arr = self::getArray($key);
 		$content .= self::getText($key.'code', 'Code', $arr['code']);

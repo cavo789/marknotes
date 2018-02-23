@@ -36,10 +36,8 @@ class MN_Login extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$key = 'plugins.options.task.login';
 		$arr = self::getArray($key);
-		$content .= self::getText($key.'username', 'Login',
-			$arr['username']);
-		$content .= self::getText($key.'password', 'Password',
-			$arr['password']);
+		$content .= self::getText($key.'username', 'Login', $arr['username']);
+		$content .= self::getText($key.'password', 'Password', $arr['password']);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

@@ -24,19 +24,15 @@ class MN_Toc extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		// password
-		$key = 'plugins.options.markdown.encrypt';
+		/// -----------------
+		$key = 'plugins.options.content.html.toc';
 		$arr = self::getArray($key);
 
-		$opt = 'password';
+		$opt = 'text';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
 
-		// Plugin html
-		$key = 'plugins.content.html.encrypt';
-		$arr = self::getArray($key);
-
-		$opt = 'enabled';
+		$opt = 'collapse';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 

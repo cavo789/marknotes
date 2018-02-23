@@ -24,6 +24,13 @@ class MN_Attributes extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// dom_elements
+		$key = 'plugins.options.content.html.attributes';
+		$arr = self::getArray($key);
+		$opt = 'dom_elements';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

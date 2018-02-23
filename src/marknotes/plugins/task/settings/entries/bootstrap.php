@@ -6,11 +6,11 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 require_once('.plugin.php');
 
-class MN_Gtranslate extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
+class MN_Bootstrap extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings = 'plugins.page.html.gtranslate';
+	protected static $json_settings = 'plugins.content.html.bootstrap';
 
 	public function getFormItem() : string
 	{
@@ -24,12 +24,18 @@ class MN_Gtranslate extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		$key = 'plugins.options.page.html.gtranslate';
+		// -----------------
+		// responsive
+		$key = 'plugins.options.content.html.bootstrap.tables';
 		$arr = self::getArray($key);
-
-		$opt = 'enable_localhost';
+		$opt = 'responsive';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// attributes
+		$opt = 'extra-classes';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
 
 		return str_replace('%CONTENT%', $content, $box);
 	}
