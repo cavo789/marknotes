@@ -170,7 +170,6 @@ function afterShowFavorites($data) {
 	// Put the list in the content area
 
 	$('#TIPS').html(
-		//'<div id="TIPS">&nbsp;</div>' +
 		'<h2>' + $title + '</h2>' + 
 		'<div class="animated bounceInLeft">' +
 			'<ul id="favorites">' + $ul.innerHTML + '</ul>' +

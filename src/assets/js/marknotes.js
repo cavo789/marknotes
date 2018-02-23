@@ -178,7 +178,7 @@ function initFiles($data) {
 		if (marknotes.settings.show_tips == 1) {
 			ajaxify({
 				task: 'task.homepage.show',
-				callback: 'afterShowTip()',
+				callback: 'afterShowHomepage()',
 				dataType: 'html',
 				useStore: 0,
 				target: 'HOMEPAGE'
@@ -192,13 +192,13 @@ function initFiles($data) {
 /**
  * A tip has been displayed
  */
-function afterShowTip() {
+function afterShowHomepage() {
 
 	if (marknotes.settings.show_tips == 1) {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('*********** afterShowTip **********');
+			console.log('*********** afterShowHomepage **********');
 		}
 		/*<!-- endbuild -->*/
 
