@@ -69,8 +69,8 @@ class Create extends \MarkNotes\Plugins\Task\File
 				$wReturn =  ALREADY_EXISTS;
 			}
 		} else {
-			// The parent folder is protected so the user can't create a
-			// new note in that folder
+			// The parent folder is protected so the user can't
+			// create a new note in that folder
 			$wReturn = NO_ACCESS;
 		}
 

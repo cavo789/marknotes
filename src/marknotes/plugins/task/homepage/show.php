@@ -41,59 +41,65 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 			}
 		}
 
+		// Initialize
 		$html = '';
-		$arr = null;
+		$arr['homepage'] = $html;
 
-		if ($bCache) {
-			$aeCache = \MarkNotes\Cache::getInstance();
-			$key = 'homepage###'.$filename;
-
-			$cached = $aeCache->getItem(md5($key));
-			$arr = $cached->get();
-		}
-
-		if (is_null($arr)) {
-			$html='';
-
-			$aeFiles = \MarkNotes\Files::getInstance();
-			if ($aeFiles->exists($filename)) {
-				if ($aeFiles->getExtension($filename)=='md') {
-					// Read the markdown note and run any
-					// markdown plugins
-					$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
-					$content = $aeMarkdown->read($filename);
-
-					// And convert MD to HTML
-					$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
-					$html = $aeConvert->getHTML($content, array(), true);
-				} else {
-					$html = $aeFiles->getContent($filename);
-				}
-
-				$html .= '<hr/>';
-
-			} else {
-				$html = '<p class="error">Sorry the '.str_replace(__DIR__, '', $filename).' doesn\'t exists</p>';
-			}
-
-			$arr['homepage'] = $html;
+		if ($filename !== '') {
+			$arr = null;
 
 			if ($bCache) {
-				// Save the list in the cache
-				$arr['from_cache'] = 1;
-				$duration = $arrSettings['duration']['default'];
-				$cached->set($arr)->expiresAfter($duration);
-				$aeCache->save($cached);
-				$arr['from_cache'] = 0;
+				$aeCache = \MarkNotes\Cache::getInstance();
+				$key = 'homepage###'.$filename;
+
+				$cached = $aeCache->getItem(md5($key));
+				$arr = $cached->get();
 			}
-		} else {
-			/*<!-- build:debug -->*/
-			if ($aeSettings->getDebugMode()) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log('	Retrieving from the cache', 'debug');
-			}
-			/*<!-- endbuild -->*/
-		} // if (is_null($arr))
+
+			if (is_null($arr)) {
+				$html='';
+
+				$aeFiles = \MarkNotes\Files::getInstance();
+				if ($aeFiles->exists($filename)) {
+					if ($aeFiles->getExtension($filename)=='md') {
+						// Read the markdown note and run any
+						// markdown plugins
+						$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
+						$content = $aeMarkdown->read($filename);
+
+						// And convert MD to HTML
+						$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
+						$html = $aeConvert->getHTML($content, array(), true);
+					} else {
+						$html = $aeFiles->getContent($filename);
+					}
+
+					$html .= '<hr/>';
+
+				} else {
+					$html = '<p class="error">Sorry the '.str_replace(__DIR__, '', $filename).' doesn\'t exists</p>';
+				}
+
+				$arr['homepage'] = $html;
+
+				if ($bCache) {
+					// Save the list in the cache
+					$arr['from_cache'] = 1;
+					$duration = $arrSettings['duration']['default'];
+					$cached->set($arr)->expiresAfter($duration);
+					$aeCache->save($cached);
+					$arr['from_cache'] = 0;
+				}
+			} else {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log('	Retrieving from the cache', 'debug');
+				}
+				/*<!-- endbuild -->*/
+			} // if (is_null($arr))
+
+		} // if ($filename !== '')
 
 		return $arr['homepage'];
 	}

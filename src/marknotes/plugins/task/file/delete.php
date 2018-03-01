@@ -69,7 +69,7 @@ class Delete extends \MarkNotes\Plugins\Task\File
 							try {
 								// delete() require an
 								// absolute filename
-								$tmp = $docs.$file['path'];
+								$tmp = $aeFiles->makeFileNameAbsolute($file['path']);
 
 								$aeFiles->delete($tmp);
 

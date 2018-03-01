@@ -993,7 +993,7 @@
 					"min_occurences": 10
 				},
 				"homepage": {
-					"note": ""
+					"note": "Introduction.md"
 				},
 				"translate": {
 					"include" : {
@@ -1058,7 +1058,7 @@
 				"enabled": 1
 			},
 			"homepage" : {
-				"enabled" : 0
+				"enabled" : 1
 			},
 			"index": {
 				"enabled" : 1

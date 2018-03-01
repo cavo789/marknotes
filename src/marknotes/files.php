@@ -535,7 +535,8 @@ class Files
 	}
 
 	/**
-	* Be sure that the filename isn't something like f.i. ../../../../dangerous.file
+	* Be sure that the filename isn't something like f.i.
+	* ../../../../dangerous.file
 	* Remove dangerouse characters and remove ../
 	*
 	* @param  string $filename
@@ -551,19 +552,56 @@ class Files
 		// you can use preg_replace rather than mb_ereg_replace
 		// Thanks @Łukasz Rysiak!
 
-		// Remove any trailing dots, as those aren't ever valid file names.
+		// Remove any trailing dots, as those aren't ever
+		// valid file names.
 		$filename = rtrim($filename, '.');
 
 		// Replace characters not in the list below by a dash (-)
-		// For instance : single quote, double-quote, parenthesis, ...
+		// For instance : single quote, double-quote, parenthesis,
+		// ...
 		// The list mentionned below is thus the allowed characters
 		$regex = array('#[^: A-Za-z0-9&_àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇ\.\\\/\_\- ]#');
 		$filename = trim(preg_replace($regex, '-', $filename));
 
-		// Don't allow a double .. in the name and don't allow to start with a dot
+		// Don't allow a double .. in the name and don't allow to
+		// start with a dot
 		$regex = array('#(\.){2,}#', '#^\.#');
 		$filename = trim(preg_replace($regex, '', $filename));
 
 		return $filename;
 	}
+
+	/**
+	 * A lot of functions requires an absolute filename
+	 * and this function will ensure that f.i. "docs/file.md"
+	 * will become "/home/public/xxx/docs/file.md".
+	 */
+	public static function makeFileNameAbsolute(string $filename) : string
+	{
+		// If $filename already starts with "docs/",
+		// remove that part
+		$aeSettings	= \MarkNotes\Settings::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+
+		// get the relative /docs folder
+		$doc = $aeSettings->getFolderDocs(false);
+
+		// Make the slash operating system dependent
+		$filename = str_replace('/', DS, $filename);
+
+		if ($aeFunctions->startsWith($filename, $doc)) {
+			// If the name already starts with "docs/",
+			// remove that part
+			$filename = substr($filename, strlen($doc));
+		}
+
+		// Now get the absolute path to the /docs folder
+		$doc = $aeSettings->getFolderDocs(true);
+		// And put that folder before the filename
+		$filename = $doc.$filename;
+
+		// Now $filename is absolute
+		return $filename;
+	}
+
 }

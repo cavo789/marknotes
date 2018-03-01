@@ -71,7 +71,8 @@ class Rename extends \MarkNotes\Plugins\Task\File
 
 						// Get the note's folder
 						$dir = str_replace('/', DS, $file['dirname']);
-						$dir = $aeSettings->getFolderDocs(true).$dir;
+
+						$dir = $aeFiles->makeFileNameAbsolute($dir);
 
 						// The old filename (absolute path)
 						$oldfile = $dir.DS.$file['basename'];

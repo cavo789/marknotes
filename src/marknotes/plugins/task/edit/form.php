@@ -61,18 +61,8 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		// Be sure to have the .md extension
 		$filename = $aeFiles->RemoveExtension($filename).'.md';
 
-		$filename = ltrim(str_replace('/', DS, $filename), DS);
-
-		// If $filename already starts with "docs/", remove that part
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$doc = $aeSettings->getFolderDocs(false);
-		if ($aeFunctions->startsWith($filename, $doc)) {
-			$filename = substr($filename, strlen($doc));
-		}
-
-		// Derive the fullname
-		$doc = $aeSettings->getFolderDocs(true);
-		$fullname = $doc.ltrim(str_replace('/', DS, $filename), DS);
+		// Make filename absolute
+		$fullname = $aeFiles->makeFileNameAbsolute($filename);
 
 		if (!$aeFiles->exists($fullname)) {
 			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
