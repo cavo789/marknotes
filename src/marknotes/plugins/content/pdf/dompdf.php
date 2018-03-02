@@ -16,18 +16,19 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class DomPDF
 {
 
-    private static $layout = 'pdf';
+	private static $layout = 'pdf';
 
 	/**
-     * Make the conversion
-     */
-    public static function doIt(&$params = null)
-    {
-        $aeSettings = \MarkNotes\Settings::getInstance();
+	 * Make the conversion
+	 */
+	public static function doIt(&$params = null)
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// ----------------------------------------
 		// Call the generic class for file conversion
-        $aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$layout, 'dompdf');
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$layout, 'dompdf');
 
 		// Get the filename, once exported (f.i. notes.pdf)
 		$final = $aeConvert->getFileName();
@@ -35,9 +36,9 @@ class DomPDF
 		// Derive the filename for the debugging file
 		$debugFile = $aeSettings->getFolderTmp().$aeConvert->getDebugFileName().'.html';
 
-        // Use the pdf template and not the "html" one
-        $params['task'] = 'pdf';
-        $params['template'] = 'pdf';
+		// Use the pdf template and not the "html" one
+		$params['task'] = 'pdf';
+		$params['template'] = 'pdf';
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
@@ -59,16 +60,16 @@ class DomPDF
 		include_once $aeSettings->getFolderLibs().'dompdf/dompdf/autoload.inc.php';
 
 		$dompdf_options = array(
-		    'logOutputFile' => $debugFile,
-		    'isHtml5ParserEnabled' => true,
-		    'debugPng' => false,
-		    'debugKeepTemp' => false,
-		    'debugCss' => false,
-		    'debugLayout' => false,
-		    'debugLayoutLines' => false,
-		    'debugLayoutBlocks' => false,
-		    'debugLayoutInline' => false,
-		    'debugLayoutPaddingBox' => false
+			'logOutputFile' => $debugFile,
+			'isHtml5ParserEnabled' => true,
+			'debugPng' => false,
+			'debugKeepTemp' => false,
+			'debugCss' => false,
+			'debugLayout' => false,
+			'debugLayoutLines' => false,
+			'debugLayoutBlocks' => false,
+			'debugLayoutInline' => false,
+			'debugLayoutPaddingBox' => false
 		);
 
 		$dompdf = new \Dompdf\Dompdf($dompdf_options);
@@ -102,21 +103,21 @@ class DomPDF
 
 		$output = $dompdf->output();
 
-		file_put_contents($final, $output);
+		$aeFiles->rewrite($final, $output);
 
-        $params['output'] = $final;
+		$params['output'] = $final;
 
-        return true;
+		return true;
 
-    }
+	}
 
-    /**
-     * Attach the function and responds to events
-     */
-    public function bind(string $plugin)
-    {
-        $aeEvents = \MarkNotes\Events::getInstance();
-        $aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
-        return true;
-    }
+	/**
+	 * Attach the function and responds to events
+	 */
+	public function bind(string $plugin)
+	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->bind('export.pdf', __CLASS__.'::doIt', $plugin);
+		return true;
+	}
 }

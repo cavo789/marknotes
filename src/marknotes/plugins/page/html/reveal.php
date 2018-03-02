@@ -30,7 +30,28 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$script = "";
 
 		if ($task==='task.export.reveal') {
-			// We're playing the slideshow, add reveal.js
+			// Only when, indeed we're showing a reveal slideshow
+
+			// --------------------------------------------
+			// Get the list of templates available
+			// This list of templates will be accessible in the
+			// reveal.js-menu, at the bottom left during the slideshow
+			$dir = __DIR__.'/reveal/libs/reveal.js/css/theme/';
+
+			$arrThemes = glob($dir.'*.css');
+			// Keep only the filename (f.i. beige.css)
+			$arrThemes = array_map("basename", $arrThemes);
+
+			$themes = '';
+
+			foreach ($arrThemes as $file) {
+				$themes .= str_replace('.css', '', $file).',';
+			}
+
+			$themes = rtrim($themes, ',');
+			//
+			// --------------------------------------------
+
 			$script .= "<script type=\"text/javascript\" ".
 				"src=\"".$url."libs/reveal.js/js/reveal.js\" ".
 				"defer=\"defer\"></script>\n".
@@ -42,11 +63,15 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"defer=\"defer\"></script>";
 		}
 
+		// The button should be loaded also when task isn't
+		// task.export.reveal
 		$script .= "<script type=\"text/javascript\" ".
 			"src=\"".$url."button.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		if ($task==='task.export.reveal') {
+			// Only when, indeed we're showing a reveal slideshow
+
 			$arrOptions = self::getOptions('duration', array('minutes'=>60, 'bar_height'=>3));
 
 			$minutes = intval($arrOptions['minutes']) ?? 60;
@@ -60,17 +85,25 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$filename = $aeSession->get('filename');
 			$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($filename, 'html'));
 
+			// Verify if Pandoc is installed and if so, add a
+			// javascript variable to indicate this
+			$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), 'txt', 'pandoc');
+
+			$bPandoc = $aeConvert->isValid();
+
 			$script .=
 				"<script type=\"text/javascript\">\n".
 				"marknotes.note = {};\n".
 				"marknotes.note.url = '".$urlHTML."';\n".
+				"marknotes.note.url_noext = '".$aeFiles->removeExtension($urlHTML)."';\n".
 				"marknotes.slideshow = {};\n".
 				"marknotes.slideshow.durationMinutes=".$minutes.";\n".
 				"marknotes.slideshow.durationBarHeight=".$barHeight.";\n".
 				"marknotes.slideshow.hideunnecessarythings=".($hide ? 1 : 0).";\n".
+				"marknotes.slideshow.pandoc=".($bPandoc ? 1 : 0).";\n".
+				"marknotes.slideshow.themes='".$themes."';\n".
 				"</script>";
-		}
-
+			}
 		/**
 		  * Check if there is a custom-js property in the options
 		  *
@@ -123,7 +156,8 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			//$arrSettings = $aeSettings->getPlugins(static::$json_key);
 			$arrOptions = self::getOptions('appearance', array('theme'=>'beige'));
-			$appearance = $arrOptions['theme']; // ?? array('theme'=>'beige');
+
+			$appearance = $arrOptions['theme'];
 
 			$url = rtrim($aeFunctions->getCurrentURL(), '/');
 			$url .= '/marknotes/plugins/page/html/reveal/';
@@ -167,7 +201,6 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 				$script.="<style media=\"screen\" type=\"text/css\">\n".$tmp."</style>\n";
 			}
 
-
 			$css .= $aeFunctions->addStyleInline($script);
 		}
 
@@ -181,6 +214,5 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		return true;
 	}
-
 
 }

@@ -23,6 +23,12 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
 {
     private $bag;
+    private $resolveArrays;
+
+    public function __construct($resolveArrays = true)
+    {
+        $this->resolveArrays = $resolveArrays;
+    }
 
     /**
      * {@inheritdoc}
@@ -39,7 +45,7 @@ class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
             $aliases = array();
             foreach ($container->getAliases() as $name => $target) {
                 $this->currentId = $name;
-                $aliases[$this->bag->resolveValue($name)] = $this->bag->resolveValue($target);
+                $aliases[$this->bag->resolveValue($name)] = $target;
             }
             $container->setAliases($aliases);
         } catch (ParameterNotFoundException $e) {
@@ -55,9 +61,12 @@ class ResolveParameterPlaceHoldersPass extends AbstractRecursivePass
     protected function processValue($value, $isRoot = false)
     {
         if (is_string($value)) {
-            return $this->bag->resolveValue($value);
+            $v = $this->bag->resolveValue($value);
+
+            return $this->resolveArrays || !$v || !is_array($v) ? $v : $value;
         }
         if ($value instanceof Definition) {
+            $value->setBindings($this->processValue($value->getBindings()));
             $changes = $value->getChanges();
             if (isset($changes['class'])) {
                 $value->setClass($this->bag->resolveValue($value->getClass()));

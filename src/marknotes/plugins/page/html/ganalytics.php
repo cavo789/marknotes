@@ -18,13 +18,14 @@ class GAnalytics extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addJS(&$js = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		// Don't load if no code has been provided
 		$analyticsCode = trim(self::getOptions('code', ''));
 
 		// Get the template for the JS script of Google Analytics
-		$script = file_get_contents(__DIR__.'/ganalytics/code.txt');
+		$script = $aeFiles->getContent(__DIR__.'/ganalytics/code.txt');
 
 		// And use the user's code
 		$script = str_replace('%AnalyticsCode%', $analyticsCode, $script);
@@ -58,6 +59,7 @@ class GAnalytics extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
+			$aeFiles = \MarkNotes\Files::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
 			// Suppose there is a problem (no code provided or on localhost)
@@ -95,8 +97,8 @@ class GAnalytics extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 				if ($bLoad) {
 					// Finally check the existence of __DIR__.'/ganalytics/code.txt'
-
-					if (is_file($fname = __DIR__.'/ganalytics/code.txt')) {
+					$fname = __DIR__.'/ganalytics/code.txt';
+					if ($aeFiles->exists($fname)) {
 						$bCanRun =  true;
 					/*<!-- build:debug -->*/
 					} else {

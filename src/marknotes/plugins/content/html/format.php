@@ -2,8 +2,8 @@
 /**
  * Add <mark> tags in the HTML rendering
  * This plugin has no configuration in settings.json, you just need
- * to type ==keyword== in your markdown content and this plugin will translate
- * into <mark>keyword</mark>
+ * to type ==keyword== in your markdown content and this plugin will
+ * translate into <mark>keyword</mark>
  *
  *
  * 		"plugins" : {
@@ -62,9 +62,11 @@ class Format extends \MarkNotes\Plugins\Content\HTML\Plugin
 		// Get the options for the Format plugin
 		$arr = self::getOptions('prefix', array());
 
-		// If defined $arr will be an array with two informations; a pattern and a value.
+		// If defined $arr will be an array with two informations; a
+		// pattern and a value.
 		// The pattern can be "==" and the value "<mark>$1</mark>"
-		// This means : replace every word between two == and add the <mark> tag before.
+		// This means : replace every word between two == and add the
+		// <mark> tag before.
 		// So replace "==Important part of the sentence==" by
 		// "<mark>Important part of the sentence</mark>"
 
@@ -72,6 +74,7 @@ class Format extends \MarkNotes\Plugins\Content\HTML\Plugin
 			for ($i=0; $i < count($arr); $i++) {
 
 				if (isset($arr[$i]['pattern']) && isset($arr[$i]['value'])) {
+
 					// Get the prefix to search, for instance "=="
 					$prefix = trim($arr[$i]['pattern']);
 
@@ -90,6 +93,7 @@ class Format extends \MarkNotes\Plugins\Content\HTML\Plugin
 
 					$matches = array();
 					if (preg_match_all('/'.$pattern.'/m', $content, $matches)) {
+
 						// Retrieve matches groups
 						list($pattern, $keyword) = $matches;
 
@@ -102,6 +106,7 @@ class Format extends \MarkNotes\Plugins\Content\HTML\Plugin
 				}
 			} // foreach ($arr as $prefix => $value)
 		} // if (count($arr)>0)
+
 		return true;
 	}
 }

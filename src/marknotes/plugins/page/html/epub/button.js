@@ -5,7 +5,7 @@ function fnPluginHTMLEPUB() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - EPUB');
+		console.log('	  Plugin Page html - EPUB');
 	}
 	/*<!-- endbuild -->*/
 
@@ -24,7 +24,8 @@ function fnPluginHTMLEPUB() {
 			type: 'error'
 		});
 	} else {
-		var fname = marknotes.note.file + '.epub';
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.epub';
 		window.open(fname);
 	}
 

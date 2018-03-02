@@ -20,16 +20,17 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 	 *
 	 * dompdf requires external libraries :
 	 * (https://github.com/dompdf/dompdf/wiki/Requirements)
-	 *   - php-font-lib (https://github.com/PhenX/php-font-lib.git) and
-	 *   - php-svg-lib (https://github.com/PhenX/php-svg-lib.git)
+	 *	- php-font-lib (https://github.com/PhenX/php-font-lib.git)
+	 *	- php-svg-lib (https://github.com/PhenX/php-svg-lib.git)
 	 *
 	 * They should be installed manually
 	 */
 	private static function domPDF(&$params = null)
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$bReturn= true;
-		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
@@ -115,7 +116,7 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		/*<!-- endbuild -->*/
 
 		$output = $dompdf->output();
-		file_put_contents($final, $output);
+		$aeFiles->rewrite($final, $output);
 		return array($bReturn, $final);
 	}
 
@@ -167,16 +168,10 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
-	 * Export a note as a slideshow, thanks to decktape
+	 * Export a slideshow (reveal or remark), thanks to decktape
 	 */
 	private static function deckTape(&$params = null)
 	{
-
-		/*<!-- build:debug -->*/
-		$aeDebug = \MarkNotes\Debug::getInstance();
-		$aeDebug->here("SHOULD BE REVIEWED !!!!", 10);
-		/*<!-- endbuild -->*/
-
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		/*<!-- build:debug -->*/
@@ -186,108 +181,107 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		}
 		/*<!-- endbuild -->*/
 
-/*
 		$aeDebug = \MarkNotes\Debug::getInstance();
-        $aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
-        // DeckTape is only for slides : reveal or remark and not for "normal" html rendering
+		// DeckTape is only for slides : reveal or remark and not for "normal" html rendering
+		$layout = $params['layout'] ?? '';
+		if (!in_array($layout, array('remark','reveal'))) {
+			return false;
+		}
 
-        $layout = $params['layout'] ?? '';
-        if (!in_array($layout, array('remark','reveal'))) {
-            return false;
-        }
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 
-        $aeFiles = \MarkNotes\Files::getInstance();
-        $aeFunctions = \MarkNotes\Functions::getInstance();
+		$root = $aeSettings->getFolderWebRoot();
+		$arrSettings = $aeSettings->getPlugins('plugins.options.task.export.decktape');
 
-        $arrSettings = $aeSettings->getPlugins('plugins.options.task.export.decktape');
+		if ($arrSettings === array()) {
+			return false;
+		}
 
-        if ($arrSettings === array()) {
-            return false;
-        }
+		$sScriptName = $root.ltrim($arrSettings['script'], DS);
+		$sScriptName = str_replace('/', DS, $sScriptName);
 
-        $sScriptName = $arrSettings['script'];
+		if (!$aeFiles->exists($sScriptName)) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->here('Decktape, file '.$sScriptName.' not found', 5);
+			}
+			/*<!-- endbuild -->*/
+			return false;
+		}
 
-        if (!$aeFiles->fileExists($sScriptName)) {
-            / *<!-- build:debug -->* /
-            if ($aeSettings->getDebugMode()) {
-                $aeDebug->here('Decktape, file '.$sScriptName.' didn\'t exists', 5);
-            }
-            / *<!-- endbuild -->* /
-            return false;
-        }
+		// $params['filename'] is f.i. note.reveal.pdf or
+		// note.remark.pdf so retrieve the .md by removing the
+		// two extensions (.reveal.pdf)
 
-        $aeTask = \MarkNotes\Tasks\Convert::getInstance();
+		// remove the .pdf
+		$basename = $aeFiles->removeExtension($params['filename']);
+		// remove the .reveal
+		$basename = basename($aeFiles->removeExtension($basename));
 
-        // Get the temporary name for the HTML and PDF files
-        list($tmpHTML, $tmpPDF) = $aeTask->getTempNames($params);
+		$mdFilename = $basename.'.md';
+		$params['filename'] = $mdFilename;
 
-        // Derive the resulting filename
-        // will be .reveal.pdf or .remark.pdf
-        $final = $aeTask->getFileName($params['filename'], $layout).'.pdf';
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($mdFilename, static::$extension, 'decktape');
 
-        // Just in case of the file was already created in the /tmp folder but, for one
-        // or an another reason, not yet copied in the final folder.
+		// For instance c:\site\marknotes\tmp\note.reveal.html
+		$tmpHTML = $aeSettings->getFolderTmp().$basename.'.'.$params['layout'].'.html';
 
-        if ($aeFiles->fileExists($tmpPDF)) {
+		// Derive the resulting filename
+		// will be .reveal.pdf or .remark.pdf
+		$final = $aeConvert->getFileName($params['filename'], $layout);
 
-            // Remane the temporary with its final name
-            // Note : the PDF file was perhaps already moved by the convert script
-            $aeFiles->renameFile($tmpPDF, $finalPDF);
-        } else {
-            $aeEvents = \MarkNotes\Events::getInstance();
-            $aeEvents->loadPlugins('content.slides');
-            $args = array(&$params);
+		// When this function is called, the task.export.xxx
+		// (where xxx is reveal or remark) has already be fired
+		// and the HTML slideshow is stored in
+		// the $params['content'] entry so just get it back
+		$html = $params['content'];
 
-            $params['layout'] = $layout;
+		// Create the HTML file on the disk, in the tmp folder
+		$aeFiles->rewrite($tmpHTML, $html);
 
-			// true = stop on the first plugin which return "true" i.e. has done the job
-            $aeEvents->trigger('content.slides::export.slides', $args, true);
+		// Create a script on the disk
+		// Phantomjs (used by the Decktape conversion)
+		// should be started from the folder where the
+		// HTML file to convert stay so use the Windows PUSH
+		// instruction to change the default directory
+		// the time needed to run the script
+		// Be carefull : decktape don't like accentuated
+		// characters names below (to the html and pdf file)
+		// shouldn't contains any accentuated characters
+		// Use 'chcp 65001' command, accentuated characters won't
+		// be correctly understand if
+		// the file should be executable (like a .bat file)
+		// see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
+		$sProgram =
+			'@ECHO OFF'.PHP_EOL.
+			'chcp 65001'.PHP_EOL.
+			'pushd "'.dirname($tmpHTML).'"'.PHP_EOL.
+			'"'.$sScriptName.'" "'.dirname($sScriptName).DS.'decktape.js" '.$layout.' "'.basename($tmpHTML).'"'.
+			' "'.$final.'"'.PHP_EOL.
+			'popd';
 
-            $html = $params['html'];
+		$slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
 
-            // And store that HTML to the disk
-            file_put_contents($tmpHTML, $html);
+		$fScriptFile = dirname($tmpHTML).DS.$slug.'.bat';
 
-            // Create a script on the disk
-            // Phantomjs (used by the Decktape conversion) should be started from the folder where the
-            // HTML file to convert stay so use the Windows PUSH instruction to change the default directory
-            // the time needed to run the script
-            // Be carefull : decktape don't like accentuated characters
-            // names below (to the html and pdf file) shouldn't contains any accentuated charcters
-            // Use 'chcp 65001' command, accentuated characters won't be correctly understand if
-            // the file should be executable (like a .bat file)
-            // see https://superuser.com/questions/269818/change-default-code-page-of-windows-console-to-utf-8
-            $sProgram =
-                '@ECHO OFF'.PHP_EOL.
-                'chcp 65001'.PHP_EOL.
-                'pushd "'.dirname($tmpHTML).'"'.PHP_EOL.
-                '"'.$sScriptName.'" "'.dirname($sScriptName).DS.'decktape.js" '.$layout.' "'.basename($tmpHTML).'"'.
-                ' "'.basename($tmpPDF).'"'.PHP_EOL.
-                'popd';
+		// Create the DOS batch file
+		$aeFiles->rewrite($fScriptFile, $sProgram);
 
-            $slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($params['filename'])));
+		// Run the script. This part can be long depending on the
+		// number of slides in the HTML file to convert
+		$output = array();
 
-            $fScriptFile = dirname($tmpHTML).DS.$slug.'.bat';
+		// Disable the PHP timeout and give time to DeckTape
+		// for the conversion
+		set_time_limit(0);
 
-            $aeFiles->fwriteANSI($fScriptFile, $sProgram);
+		exec($fScriptFile, $output);
 
-            // Run the script. This part can be long depending on the number of slides in the HTML file to convert
-            $output = array();
+		$bReturn = $aeFiles->exists($final);
 
-            exec($fScriptFile, $output);
-
-            try {
-                if ($aeFiles->fileExists($tmpPDF)) {
-                    // Remane the temporary with its final name
-                    // Note : the PDF file was perhaps already moved by the convert script
-                    $aeFiles->renameFile($tmpPDF, $finalPDF);
-                }
-            } catch (Exception $e) {
-                $final = '';
-            }
-        }
-*/
 		return array($bReturn, $final);
 	}
 
@@ -299,27 +293,29 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$extension, 'pandoc');
 
 		// Get the filename, once exported (f.i. notes.txt)
 		$final = $aeConvert->getFileName();
 
 		// Generate the file ... only if not yet there
-		if (!$aeFiles->fileExists($final)) {
+		if (!$aeFiles->exists($final)) {
 			$layout = $params['layout'] ?? '';
 			if (in_array($layout, array('remark','reveal'))) {
-			// This is a slideshow => use deckTape for the exportation
+				// This is a slideshow => use deckTape for
+				// the exportation
 				list($bReturn, $final) = self::deckTape($params);
 			} else {
-			// Check if domPDF is installed
+				// Check if domPDF is installed
 				$domPDF = $aeSettings->getFolderLibs().'Dompdf/dompdf/autoload.inc.php';
-				if ($aeFiles->fileExists($domPDF)) {
+				if ($aeFiles->exists($domPDF)) {
 					list($bReturn, $final) = self::domPDF($params);
 				} else {
 					list($bReturn, $final) = self::pandoc($params);
 				}
 			} // if (in_array($layout, array('remark','reveal')))
-		} //if(!$aeFiles->fileExists($final))
+		} //if(!$aeFiles->exists($final))
 
 		// In case of error, there is no output at all
 		$params['output'] = ($bReturn ? $final : '');

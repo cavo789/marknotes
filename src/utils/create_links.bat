@@ -8,27 +8,26 @@ CALL :ShowInfo
 
 GOTO :END
 
-
 REM ---------------------------------------------------------------------------------------------------------
 :ShowInfo
 CLS
 
 ECHO  ===========================================================================
-ECHO  =                                                                         =
-ECHO  = Marknotes                                                               =
-ECHO  =                                                                         =
+ECHO  =																		 =
+ECHO  = Marknotes																=
+ECHO  =																		 =
 ECHO  = Quickly deploy a copy of marknotes, on a localhost, by just referencing =
 ECHO  = source files so a change in a source file will be reflected in the copy =
-ECHO  =                                                                         =
+ECHO  =																		 =
 ECHO  = The added-value of this script is to avoid, when you need to have more  =
 ECHO  = than one "marknotes" website on your system, to duplicate every files.  =
-ECHO  =                                                                         =
+ECHO  =																		 =
 ECHO  = Under Windows OS, the mklink command allow to create a symlink (like a  =
-ECHO  = shortcut) and files should only be there once on your system.           =
-ECHO  =                                                                         =
+ECHO  = shortcut) and files should only be there once on your system.			=
+ECHO  =																		 =
 ECHO  = NOTE : THIS SCRIPT  SHOULD BE EXECUTED IN A COMMAND  PROMPT BUT ONLY IF =
-ECHO  = YOU'VE STARTED THE PROMPT WITH "RUN AS AN ADMIN"                        =
-ECHO  =                                                                         =
+ECHO  = YOU'VE STARTED THE PROMPT WITH "RUN AS AN ADMIN"						=
+ECHO  =																		 =
 ECHO  ===========================================================================
 
 ECHO.
@@ -48,12 +47,12 @@ PAUSE
 REM ---------------------------------------------------------------------------------------------------------
 :DoIt
 mklink /D assets %MASTER%assets
-mklink /D cache %MASTER%cache
 mklink /D languages %MASTER%languages
 mklink /D libs %MASTER%libs
 mklink /D marknotes %MASTER%marknotes
 mklink /D templates %MASTER%templates
 
+if not exist "cache" mkdir cache
 if not exist "docs" mkdir docs
 if not exist "tmp" mkdir tmp
 

@@ -50,12 +50,15 @@ DirectoryIndex index.php
 	RewriteCond %{REQUEST_URI} .*\.epub$
 	RewriteRule (.*) router.php?task=task.export.epub&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.html?$
-	#RewriteCond %{REQUEST_URI} !.*/JavaScriptSpellCheck/.*
+	# Exception for ELF
+	RewriteCond %{REQUEST_URI} !.*/elf/libs/elf/*
 	RewriteRule (.*) router.php?task=task.export.html&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.md$
 	RewriteRule (.*) router.php?task=task.export.md&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.odt$
 	RewriteRule (.*) router.php?task=task.export.odt&file=$1 [L]
+	RewriteCond %{REQUEST_URI} .*\.reveal.pdf$
+	RewriteRule (.*) router.php?task=task.export.reveal&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.pdf$
 	RewriteRule (.*) router.php?task=task.export.pdf&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.remark$
@@ -85,12 +88,16 @@ DirectoryIndex index.php
 	RewriteRule "(^|/)\.(?!(files|images|well-known))" - [R=403,NC,L]
 
 	# Block access to somes files
-	RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
+	RewriteCond %{REQUEST_FILENAME} (composer.json|composer.lock|htaccess.txt|package.json|post-install.bat|settings.json|settings.json.dist|tags.json)$
 	RewriteCond %{SCRIPT_FILENAME} -f
 	RewriteRule .* - [R=403,NC,L]
 
-	# Only deploy.php, index.php or router.php are allowed; whatever the script location
-	RewriteCond %{REQUEST_FILENAME} !(deploy|index|install|router)\.php
+	# Only deploy.php, index.php or router.php are allowed;
+	# whatever the script location
+	RewriteCond %{REQUEST_FILENAME} !(debug|deploy|index|install|router)\.php
+
+	# And allow an exception for ELF
+	RewriteCond %{REQUEST_URI} !.*/task/elf/libs/*
 	RewriteCond %{REQUEST_FILENAME} \.(php)$
 	RewriteRule .* - [R=403,NC,L]
 

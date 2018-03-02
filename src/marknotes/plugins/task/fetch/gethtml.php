@@ -35,6 +35,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			$url .= $addQuerystring;
 		}
 
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		/*<!-- build:debug -->*/
@@ -53,7 +54,7 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 
 		$lib = $aeSettings->getFolderLibs().'GuzzleHttp'.DS;
 
-		if (is_dir($lib)) {
+		if($aeFolders->exists($lib)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug->log("Fetch using GuzzleHttp","debug");
@@ -61,9 +62,9 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- endbuild -->*/
 
 			// Use GuzzleHttp
-			$client = new \GuzzleHttp\Client(
-				array('curl'=>array(CURLOPT_SSL_VERIFYPEER=>false))
-			);
+			// Don't verify SSL to prevent errors on localhost
+			// Error can be "SSL certificate problem: unable to get local issuer certificate"
+			$client = new \GuzzleHttp\Client(['verify'=>false]);
 
 			$res = $client->request('GET', $url,
 				['connect_timeout' => $timeout]);
@@ -152,144 +153,203 @@ class GetHTML extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
+	 * If the user tries to access to an URL, the PHP wrapper
+	 * should well be installed. If not, show an error and stop.
+	 */
+	private static function checkProtocol(string $url) : bool
+	{
+		$bContinue = false;
+
+		// Get the list of wrappers loaded i.e. the capacity for PHP
+		// to retrieve HTTP, HTTPS, ... content
+		$w = stream_get_wrappers();
+
+		// Get the protocol of the URL we need to visit :
+		// http or https?
+		$protocol = substr($url, 0, 5);
+
+		if (strcasecmp($protocol, 'https') == 0) {
+			// https : check if the https wrapper is installed
+			$bContinue = in_array('https', $w);
+
+			//throw new \Exception("HTTPS wrapper not installed");
+			if (!$bContinue) {
+				echo '<h2>Marknotes - Error</h2>';
+				echo '<strong>The https wrapper is not installed. '.
+					'If you can, please enable it in your apache '.
+					'configuration otherwise you won\'t be able '.
+					'to use https URLs (probably http:// well).'.
+					'</strong>';
+			}
+		} else {
+			$bContinue = in_array('http', $w);
+			//throw new \Exception("HTTP wrapper not installed");
+			if (!$bContinue) {
+				echo '<h2>Marknotes - Error</h2>';
+				echo '<strong>The http wrapper is not installed. '.
+					'If you can, please enable it in your apache '.
+					'configuration otherwise you won\'t be able '.
+					'to use http URLs</strong>';
+			}
+		}
+
+		if (!$bContinue) {
+			echo '<p>You tried to access to : '.$url.'</p>';
+		}
+
+		return $bContinue;
+	}
+
+	/**
 	 * Run the task
 	 */
 	public static function run(&$params = null) : bool
 	{
-		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-
-		/*<!-- build:debug -->*/
-		if ($aeSettings->getDebugMode()) {
-			$aeDebug = \MarkNotes\Debug::getInstance();
-		}
-		/*<!-- endbuild -->*/
-
-		// Note being edited
-		$filename = $aeFunctions->getParam('param', 'string', '', true);
-		$filename = json_decode(urldecode($filename));
-		$filename = $aeFiles->removeExtension($filename).'.md';
-
-		// Derive the fullname
-		$doc = $aeSettings->getFolderDocs(true);
-		$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
-
-		$url = $aeFunctions->getParam('url', 'string', '', false);
-		$url = trim($url);
-
-		$sHTML = '';
-
-		if ($url=='') {
-			$sHTML = 'ERROR - The fetch task has been called but '.
-				'no URL has been provided. That task requires '.
-				'a mandatory url parameter';
+		if (self::isEnabled(true)) {
+			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+			$aeSettings = \MarkNotes\Settings::getInstance();
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log($sHTML,"error");
 			}
 			/*<!-- endbuild -->*/
-		} else {
 
-			// A temporary filename will be created in the /tmp folder
-			// The name will be the URL ressources and be sure it will
-			// be correct so use the slugify() function.
-			// f.i. C:\site\tmp\fetched_5667-joomla-3-6-2-released.html
-			// That file is created for debugging purposes but also
-			// for cache objectives : don't access multiple times to
-			// that URL if already processed once.
-			$ftemp = $aeSettings->getFolderTmp().'fetched_'.
-				$aeFunctions->slugify(basename($url)).'.html';
+			// Note being edited
+			$filename = $aeFunctions->getParam('param', 'string', '', true);
+			$filename = json_decode(urldecode($filename));
+			$filename = $aeFiles->removeExtension($filename).'.md';
 
-			// Reuse the cache
-			if (is_file($ftemp)) {
+			// Derive the fullname
+			$doc = $aeSettings->getFolderDocs(true);
+			$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
+
+			$url = $aeFunctions->getParam('url', 'string', '', false);
+			$url = trim($url);
+
+			$sHTML = '';
+
+			if ($url=='') {
+				$sHTML = 'ERROR - The fetch task has been called but '.
+					'no URL has been provided. That task requires '.
+					'a mandatory url parameter';
+
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
-					$aeDebug->log("Since that URL was already ".
-						"fetched, reuse the cache, retrieve content ".
-						"from ".$ftemp,"debug");
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log($sHTML,"error");
 				}
 				/*<!-- endbuild -->*/
-				$sHTML = trim(file_get_contents(utf8_decode($ftemp)));
-			}
+			} else {
 
-			if ($sHTML == '') {
-				$sHTML = self::getHTML($url);
-			}
-
-			if ($sHTML !== '') {
-
-				$sHTML = self::miscUpdate($sHTML);
-
-				// Remember the retrieved content
-				// This for debugging purposes and for
-				// cache optimization
-				try {
-					$aeFiles = \MarkNotes\Files::getInstance();
-					$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
-				} catch (\Exception $e) {
+				// Check if we can continue
+				if (!self::checkProtocol($url)) {
+					die();
 				}
 
-				// List of nodes where the content is placed.
-				// That list will allow to faster retrieved desired
-				// content and not pollute content by additionnal
-				// elements like comments, navigation, ...
-				$arrContentDOM = self::getOptions('content_DOM',
-					array());
-
-				// List of nodes that can be removed since are not
-				// part of the content we want to keep
-				$arrRemoveDOM = self::getOptions('remove_DOM', array());
-
-				// List of attributes that can be removed from html
-				// tags once the desired content is isolated
-				$arrRemoveAttribs = self::getOptions('remove_Attributes',
-					array());
-
-				// The regex entry of plugins->options->task->fetch
-				// contains search&replace expression for the content
-				// f.i. Search a specific content and replace it by
-				// a new value
-				$arrRegex = self::getOptions('regex',
-					array());
-
-				require_once('helpers/clean_html.php');
-
-				$aeClean = new Helpers\CleanHTML($sHTML, $url);
-
-				$aeClean->setContentDOM($arrContentDOM);
-				$aeClean->setRemoveDOM($arrRemoveDOM);
-				$aeClean->setRemoveAttributes($arrRemoveAttribs);
-				$aeClean->setRegex($arrRegex);
-
-				$sHTML = $aeClean->doIt();
-
-				unset($aeClean);
-
-				$yaml = "original_url: ".$url;
-
-				$aeSession = \MarkNotes\Session::getInstance();
-				$aeSession->set('yaml', $yaml);
-
-				// Rewrite the file on the disk
-				$aeEvents = \MarkNotes\Events::getInstance();
-				$aeEvents->loadPlugins('task.markdown.write');
-				$params = array('markdown'=>$yaml.$sHTML);
-				$args = array(&$params);
-				$aeEvents->trigger('task.markdown.write::run', $args);
-
-				// Remember the HTML after cleaning
-				// for debugging purposes only (not used at all)
-				$ftemp = $aeSettings->getFolderTmp().'cleaned_'.
+				// A temporary filename will be created in the /tmp folder
+				// The name will be the URL ressources and be sure it will
+				// be correct so use the slugify() function.
+				// f.i. C:\site\tmp\fetched_5667-joomla-3-6-2-released.html
+				// That file is created for debugging purposes but also
+				// for cache objectives : don't access multiple times to
+				// that URL if already processed once.
+				$ftemp = $aeSettings->getFolderTmp().'fetched_'.
 					$aeFunctions->slugify(basename($url)).'.html';
-				try {
-					$aeFiles = \MarkNotes\Files::getInstance();
-					$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
-				} catch (\Exception $e) {
+
+				// Reuse the cache
+				if ($aeFiles->exists($ftemp)) {
+					/*<!-- build:debug -->*/
+					if ($aeSettings->getDebugMode()) {
+						$aeDebug->log("Since that URL was already ".
+							"fetched, reuse the cache, retrieve content ".
+							"from ".$ftemp,"debug");
+					}
+					/*<!-- endbuild -->*/
+					$sHTML = trim($aeFiles->getContent(utf8_decode($ftemp)));
+				}
+
+				if ($sHTML == '') {
+					$sHTML = self::getHTML($url);
+				}
+
+				if ($sHTML !== '') {
+
+					$sHTML = self::miscUpdate($sHTML);
+
+					// Remember the retrieved content
+					// This for debugging purposes and for
+					// cache optimization
+					try {
+						$aeFiles = \MarkNotes\Files::getInstance();
+						$aeFiles->create($ftemp, $sHTML);
+					//	$aeFiles->fwriteUTF8BOM($ftemp, $sHTML);
+					} catch (\Exception $e) {
+					}
+
+					// List of nodes where the content is placed.
+					// That list will allow to faster retrieved desired
+					// content and not pollute content by additionnal
+					// elements like comments, navigation, ...
+					$arrContentDOM = self::getOptions('content_DOM',
+						array());
+
+					// List of nodes that can be removed since are not
+					// part of the content we want to keep
+					$arrRemoveDOM = self::getOptions('remove_DOM', array());
+
+					// List of attributes that can be removed from html
+					// tags once the desired content is isolated
+					$arrRemoveAttribs = self::getOptions('remove_Attributes',
+						array());
+
+					// The regex entry of plugins->options->task->fetch
+					// contains search&replace expression for the content
+					// f.i. Search a specific content and replace it by
+					// a new value
+					$arrRegex = self::getOptions('regex',
+						array());
+
+					require_once('helpers/clean_html.php');
+
+					$aeClean = new Helpers\CleanHTML($sHTML, $url);
+
+					$aeClean->setContentDOM($arrContentDOM);
+					$aeClean->setRemoveDOM($arrRemoveDOM);
+					$aeClean->setRemoveAttributes($arrRemoveAttribs);
+					$aeClean->setRegex($arrRegex);
+
+					$sHTML = $aeClean->doIt();
+
+					unset($aeClean);
+
+					$yaml = "original_url: ".$url;
+
+					$aeSession = \MarkNotes\Session::getInstance();
+					$aeSession->set('yaml', $yaml);
+
+					// Rewrite the file on the disk
+					$aeEvents = \MarkNotes\Events::getInstance();
+					$aeEvents->loadPlugins('task.markdown.write');
+					$params = array('markdown'=>$yaml.$sHTML);
+					$args = array(&$params);
+					$aeEvents->trigger('task.markdown.write::run', $args);
+
+					// Remember the HTML after cleaning
+					// for debugging purposes only (not used at all)
+					$ftemp = $aeSettings->getFolderTmp().'cleaned_'.
+						$aeFunctions->slugify(basename($url)).'.html';
+					try {
+						$aeFiles = \MarkNotes\Files::getInstance();
+						$aeFiles->create($ftemp, $sHTML);
+					} catch (\Exception $e) {
+					}
 				}
 			}
+		} else {
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$sHTML = $aeSettings->getText('action_prohibited');
 		}
 
 		header('Content-Type: text/plain; charset=utf-8');

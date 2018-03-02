@@ -39,23 +39,26 @@ class Debug
 		self::$sTemplate = DEBUG_TEMPLATE;
 		self::$sTimezone = DEFAULT_TIMEZONE;
 
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+
 		// full path for the debug.log file : in the /tmp folder
-		if (!is_dir(self::$root.'tmp'.DS)) {
-			mkdir(self::$root.'tmp'.DS, CHMOD_FOLDER, true);
+		if (!$aeFolders->exists(self::$root.'tmp'.DS)) {
+			$aeFolders->create(self::$root.'tmp'.DS);
 		}
 
 		self::$sDebugFileName = self::$root.'tmp'.DS.DEBUG_LOG_NAME;
 
 		// Don't keep previous run
-		if (is_file(self::$sDebugFileName)) {
+		if ($aeFiles->exists(self::$sDebugFileName)) {
 			try {
-				@unlink(self::$sDebugFileName);
+				@$aeFiles->delete(self::$sDebugFileName);
 			} catch (Exception $e) {
 			}
 		}
 
 		// Reset the file
-		file_put_contents(self::$sDebugFileName, '');
+		$aeFiles->rewrite(self::$sDebugFileName, '');
 
 		self::$bDevMode = false;
 
@@ -82,7 +85,8 @@ class Debug
 		// @link : https://github.com/JosephLenton/PHP-Error
 		$lib = self::$root.'libs/php_error/php_error.php';
 
-		if (is_file($lib)) {
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->exists($lib)) {
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 
 			// Seems to not work correctly with ajax; the return
@@ -98,7 +102,7 @@ class Debug
 
 			include_once $lib;
 			\php_error\reportErrors($options);
-		} // if (is_file($lib))
+		} // if ($aeFiles->exists($lib))
 		/*<!-- endbuild -->*/
 	}
 
@@ -149,15 +153,15 @@ class Debug
 		$sDisabled=rtrim($sDisabled, ';');
 
 		if ($sDisabled!=='') {
-			// At least one level has been disabled, f.i., the settings.json has
-			// been defined like this :
+			// At least one level has been disabled, f.i., the
+			// settings.json has been defined like this :
 			//
-			// 	"output": {
-			 //		"debug": 0
+			//	"output": {
+			//		"debug": 0
 			//	}
 			//
-			// This means : report everything (info, warning, error, ...)
-			// but not debug info.
+			// This means : report everything (info, warning,
+			// error, ...) but not debug info.
 
 			$arrDisabled=explode(';', $sDisabled);
 
@@ -231,11 +235,13 @@ class Debug
 		/*<!-- build:debug -->*/
 		$lib = self::$root.'libs/monolog/monolog/src/';
 
-		if (is_dir($lib)) {
+		$aeFolders = \MarkNotes\Folders::getInstance();
+		if ($aeFolders->exists($lib)) {
 			$formatter = new LineFormatter(self::$sTemplate."\n", "Y-m-d H:i:s");
 
-			// \Monolog\Logger::DEBUG =  The minimum logging level at which this
-			// handler will be triggered (debug is the lowest)
+			// \Monolog\Logger::DEBUG =  The minimum logging level
+			// at which this handler will be triggered (debug
+			// is the lowest)
 			$streamHandler = new StreamHandler(self::$sDebugFileName, \Monolog\Logger::DEBUG);
 
 			$streamHandler->setFormatter($formatter);
@@ -245,7 +251,7 @@ class Debug
 			self::$logger::setTimezone(new \DateTimeZone(self::$sTimezone));
 
 			$bReturn = true;
-		} // if (is_dir($lib))
+		} // if ($aeFolders->exists($lib))
 		/*<!-- endbuild -->*/
 
 		return $bReturn;

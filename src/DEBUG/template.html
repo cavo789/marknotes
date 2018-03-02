@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+		<link href="../marknotes/plugins/page/html/balloon/libs/balloon.min.css" rel="stylesheet" />
+		<style>
+			summary { outline:none; padding:5px; }
+			.important {border: 1px dotted yellow;background-color:rgba(255, 255, 0, 0.29); padding:10px;}
+			.red {color:red;}
+			.toolbar {background-color:#c5f4bc;border:1px dotted green;border-radius: 6px;margin-bottom:10px;}
+			#LOADING, #CONTENT_PRE, #CONTENT_CODE, #CONTENT_HTML {display:none;width:100%}
+			#CONTENT_PRE {white-space:pre-wrap !important;}
+			#CONTENT_HTML{min-height:800px;max-height:none;}
+		</style>
+		<title>DEBUG - Make debugging easy</title>
+	</head>
+	<body class="container">
+		<h1 class="jumbotron">marknotes - Make debugging easier</h1>
+		<div class="row">
+			<div class="col-sm-3">%CONTENT%</div>
+			<div class="col-sm-9">
+				<strong id="URL">&nbsp;</strong>
+				<div id="LOADING">Please wait...</div>
+				<pre id="CONTENT_PRE">&nbsp;</pre>
+				<iframe id="CONTENT_HTML">&nbsp;</iframe>
+				<code id="CONTENT_CODE">&nbsp;</code>
+			</div>
+		</div>
+
+	</body>
+
+	<script src="../libs/jquery/jquery.min.js"></script>
+	<script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" defer="defer">
+
+		// Display XML
+		function displayXML($xml) {
+
+			var xml_serializer = new XMLSerializer();
+			$xml = xml_serializer.serializeToString($xml);
+
+			var textNode = document.createTextNode($xml);
+			$('#CONTENT_PRE').empty();
+			document.getElementById('CONTENT_PRE').appendChild(textNode)
+		}
+
+		// Close the previous details area, keep only one
+		// opened at the same time
+		$('details').click(function (event) {
+			$('details').not(this).removeAttr("open");
+		});
+
+		$("[data-task]").click(function (e) {
+			e.preventDefault();
+
+			$('#LOADING').show();
+
+			if ($(this).data('task') == 'ajax') {
+				var $url = $(this).attr('href');
+				var $type = $(this).data('type');
+				var $result = 'CONTENT_PRE';
+
+				$("#URL").html($url);
+				$('#CONTENT_HTML').hide();
+
+				if ($type=='html') {
+					$('#CONTENT_PRE').css('max-height','200px');
+					$('#CONTENT_HTML').show();
+					$('#CONTENT_HTML').attr('src',$url);
+				} else {
+					$('#CONTENT_PRE').css('max-height','');
+				}
+
+				$.ajax({
+					beforeSend: function () {
+						$('#CONTENT_PRE').empty().hide();
+						$('#CONTENT_CODE').empty().hide();
+					}, // beforeSend()
+					async: true,
+					cache: false,
+					type: 'GET',
+					url: $url,
+					datatype: $type,
+					success: function (data) {
+						$('#LOADING').hide();
+						if (($type=='json') || ($type=='html') || ($type=='text')) {
+							// Output correctly JSON
+							if ($type=='json') {
+								document.getElementById($result).innerHTML = JSON.stringify(data, undefined, 2);
+							} else if ($type=='html') {
+								$("#"+$result).text(data);
+							} else {
+								$("#"+$result).html(data);
+							}
+						} else {
+							$result = 'CONTENT_CODE';
+							if ($type=='xml') {
+								displayXML(data);
+							} else {
+								$("#"+$result).html(data);
+							}
+						}
+					} // success
+				}); // $.ajax()
+
+				$("#"+$result).show();
+			}
+		});
+
+	</script>
+</html>

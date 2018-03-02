@@ -20,11 +20,23 @@ class Settings extends \MarkNotes\Plugins\Button\Plugin
 				'title' => 'update_settings',
 				'default' => 'Update settings',
 				'task' => 'settings',
-				'extra' => 'data-key="task=show_form"',
+				'extra' => 'data-key="task=show"',
 				'icon' => 'toggle-on'
 			)
 		);
 
 		return true;
+	}
+
+	protected static function canAdd() : bool
+	{
+		// The Settings button can't be displayed to visitors
+
+		if ($bReturn = parent::canAdd()) {
+			$aeSession = \MarkNotes\Session::getInstance();
+			$bReturn = boolval($aeSession->get('authenticated', 0));
+		}
+
+		return $bReturn;
 	}
 }

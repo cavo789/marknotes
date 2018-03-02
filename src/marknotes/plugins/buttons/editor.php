@@ -46,7 +46,6 @@ class Editor extends \MarkNotes\Plugins\Button\Plugin
 		// Conversion requires that
 		//    	1. the .odt file already exists OR
 		//		2. the pandoc utility is present to allow the conversion
-
 		if ($bReturn = parent::canAdd()) {
 			// We can continue
 			// The editor button will only appears if the

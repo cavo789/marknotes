@@ -49,17 +49,18 @@ class Copy extends \MarkNotes\Plugins\Task\Plugin
 		$bReturn = false;
 
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 
 		$filename = $params['output'] ?? '';   // output filename (fullname)
 
-		if ($aeFiles->fileExists($filename)) {
+		if ($aeFiles->exists($filename)) {
 			// Get the folder where the file should be copied
 			$target_folder = self::getOptions('target_folder', '');
 
 			if ($target_folder!=='') {
 				$target_folder=rtrim($target_folder, DS).DS;
 
-				if (is_dir($target_folder)) {
+				if ($aeFolders->exists($target_folder)) {
 					$filename = $params['output'];
 
 					self::debugMsg('Copying ['.$filename.'] to '.
@@ -72,13 +73,13 @@ class Copy extends \MarkNotes\Plugins\Task\Plugin
 					}
 
 					$bReturn = true;
-				} else { // if (is_dir($target_folder))
+				} else { // if ($aeFolders->exists($target_folder))
 					// Error ! The specified folder doesn't exists
 
 					self::debugMsg('Invalid settings.json, the folder '.
 					'['.$target_folder.'] is invalid, please verify your '.
 					static::$json_options.' setting', 'error');
-				} // if (is_dir($target_folder))
+				} // if ($aeFolders->exists($target_folder))
 			} else { // if ($target_folder!=='')
 				self::debugMsg('Invalid settings.json, you need to specify '.
 				   'a valid foldername in '.static::$json_options, 'debug');

@@ -15,7 +15,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\ResolveNamedArgumentsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Tests\Fixtures\CaseSensitiveClass;
 use Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsDummy;
+use Symfony\Component\DependencyInjection\Tests\Fixtures\SimilarArgumentsDummy;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -110,6 +112,45 @@ class ResolveNamedArgumentsPassTest extends TestCase
 
         $pass = new ResolveNamedArgumentsPass();
         $pass->process($container);
+    }
+
+    public function testTypedArgument()
+    {
+        $container = new ContainerBuilder();
+
+        $definition = $container->register(NamedArgumentsDummy::class, NamedArgumentsDummy::class);
+        $definition->setArguments(array('$apiKey' => '123', CaseSensitiveClass::class => new Reference('foo')));
+
+        $pass = new ResolveNamedArgumentsPass();
+        $pass->process($container);
+
+        $this->assertEquals(array(new Reference('foo'), '123'), $definition->getArguments());
+    }
+
+    public function testResolvesMultipleArgumentsOfTheSameType()
+    {
+        $container = new ContainerBuilder();
+
+        $definition = $container->register(SimilarArgumentsDummy::class, SimilarArgumentsDummy::class);
+        $definition->setArguments(array(CaseSensitiveClass::class => new Reference('foo'), '$token' => 'qwerty'));
+
+        $pass = new ResolveNamedArgumentsPass();
+        $pass->process($container);
+
+        $this->assertEquals(array(new Reference('foo'), 'qwerty', new Reference('foo')), $definition->getArguments());
+    }
+
+    public function testResolvePrioritizeNamedOverType()
+    {
+        $container = new ContainerBuilder();
+
+        $definition = $container->register(SimilarArgumentsDummy::class, SimilarArgumentsDummy::class);
+        $definition->setArguments(array(CaseSensitiveClass::class => new Reference('foo'), '$token' => 'qwerty', '$class1' => new Reference('bar')));
+
+        $pass = new ResolveNamedArgumentsPass();
+        $pass->process($container);
+
+        $this->assertEquals(array(new Reference('bar'), 'qwerty', new Reference('foo')), $definition->getArguments());
     }
 }
 

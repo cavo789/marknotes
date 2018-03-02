@@ -54,6 +54,13 @@ div.editor-wrapper .editor-toolbar a {
 	padding-right: 15px;
 	width		: auto;
 }
+
+/* Color used by jsTree when adding/renaming a node */
+.jstree-rename-input  {
+	color: #00abfc;
+	background-color : #222d32;
+}
+
 .jstree-proton .jstree-clicked {
 	color		 : yellow !important;
 	text-transform: uppercase;
@@ -166,7 +173,7 @@ article {
 }
 
 /*
-	show_tip is for informations displayed by task.tips.show
+	show_tip is for informations displayed by task.homepage.show
 	Appears in gray to make easier to understand it's a tip
  */
 .show_tip {
@@ -175,15 +182,20 @@ article {
 }
 
 .show_tip h2 {
-   background-color: #ecf0f5;
-   color : darkgray;
+	background-color: #ecf0f5;
+	color : darkgray;
 
 }
 .show_tip p {
-   background-color: #ecf0f5;
-   color : darkgray;
+	background-color: #ecf0f5;
+	color : darkgray;
 }
 
 div.show_tip code { color : darkgray; }
 div.show_tip a { color : darkgray; }
 div.show_tip summary { outline: none; }
+
+.float_left {
+	float: left;
+	padding:10px;
+}

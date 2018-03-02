@@ -14,7 +14,8 @@ class File extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
-	 * Convert the $arr parameter into a json object and return the string
+	 * Convert the $arr parameter into a json object and
+	 * return the string
 	 */
 	protected static function returnInfo(array $arr) : string
 	{
@@ -23,10 +24,11 @@ class File extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
-	 * Be sure that filenames doesn't already start with the /docs folder (otherwise will
-	 * be mentionned twice)
+	 * Be sure that filenames doesn't already start with the
+	 * /docs folder (otherwise will be mentionned twice)
 	 *
-	 * $params['oldname'] and $params['filename'] will contains absolute filenames
+	 * $params['oldname'] and $params['filename'] will
+	 * contains absolute filenames
 	 */
 	protected static function cleanUp(array &$params = null) : bool
 	{
@@ -34,7 +36,8 @@ class File extends \MarkNotes\Plugins\Task\Plugin
 
 		$docs = $aeSettings->getFolderDocs(false);
 
-		// oldname is the actual file/folder name, before renaming it f.i.
+		// oldname is the actual file/folder name, before
+		// renaming it f.i.
 		if (isset($params['oldname'])) {
 			if (substr($params['oldname'], 0, strlen($docs)) == $docs) {
 				$params['oldname'] = substr($params['oldname'], strlen($docs));
@@ -42,7 +45,8 @@ class File extends \MarkNotes\Plugins\Task\Plugin
 			$params['oldname'] = $aeSettings->getFolderDocs(true).$params['oldname'];
 		}
 
-		// newname is the actual file/folder name, before renaming it f.i.
+		// newname is the actual file/folder name, before
+		// renaming it f.i.
 		if (isset($params['newname'])) {
 			if (substr($params['newname'], 0, strlen($docs)) == $docs) {
 				$params['newname'] = substr($params['newname'], strlen($docs));
@@ -50,7 +54,8 @@ class File extends \MarkNotes\Plugins\Task\Plugin
 			$params['newname'] = $aeSettings->getFolderDocs(true).$params['newname'];
 		}
 
-		// filename is the new file/folder name or the name of the newly created file/folder
+		// filename is the new file/folder name or the name
+		// of the newly created file/folder
 		if (isset($params['filename'])) {
 			if (substr($params['filename'], 0, strlen($docs)) == $docs) {
 				$params['filename'] = substr($params['filename'], strlen($docs));
@@ -69,8 +74,10 @@ class File extends \MarkNotes\Plugins\Task\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
-			// Only when the user is connected, we will not provide operating system functions
-			// like create / delete / rename files/folders if the user isn't connected.
+			// Only when the user is connected, we will not provide
+			// operating system functions like
+			// create / delete / rename files/folders if the user
+			// isn't connected.
 			$aeSession = \MarkNotes\Session::getInstance();
 			$bCanRun = ($aeSession->get('authenticated', 0) === 1);
 		}

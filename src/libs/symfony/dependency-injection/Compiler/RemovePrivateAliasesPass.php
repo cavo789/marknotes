@@ -24,13 +24,11 @@ class RemovePrivateAliasesPass implements CompilerPassInterface
 {
     /**
      * Removes private aliases from the ContainerBuilder.
-     *
-     * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {
         foreach ($container->getAliases() as $id => $alias) {
-            if ($alias->isPublic()) {
+            if ($alias->isPublic() || $alias->isPrivate()) {
                 continue;
             }
 

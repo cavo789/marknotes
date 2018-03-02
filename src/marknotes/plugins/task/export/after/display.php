@@ -1,6 +1,7 @@
 <?php
 /**
- * When the exportation has been done, display the file in the browser
+ * When the exportation has been done, display the file
+ * in the browser
  */
 namespace MarkNotes\Plugins\Task\Export\After;
 
@@ -14,17 +15,20 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$format = $params['extension'];        // extension like 'txt'
-		$content = $params['content'] ?? '';   // in case of a .md file f.i.
+		// extension like 'txt'
+		$format = $params['extension'];
+		// in case of a .md file f.i.
+		$content = $params['content'] ?? '';
 
 		if (trim($content) === '') {
-			// When no content has been directly given to this function,
-			// check the "output" variable; can contains a filename
-			// (absolute name)
+			// When no content has been directly given to
+			// this function, check the "output" variable; can
+			// contains a filename (absolute name)
 
 			$filename = $params['output'] ?? '';
 
@@ -33,12 +37,12 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 
 				if (in_array($format, array('html','md','remark','reveal','txt'))) {
 					// Read content only if it's an ASCII file
-					if (is_file($filename)) {
-						$content = trim(file_get_contents($filename));
-					} elseif (is_file(utf8_decode($filename))) {
-						// Arrrgh, sometimes with sometimes without utf8_decode,
-						// it's crazy
-						$content = trim(file_get_contents(utf8_decode($filename)));
+					if ($aeFiles->exists($filename)) {
+						$content = trim($aeFiles->getContent($filename));
+					} elseif ($aeFiles->exists(utf8_decode($filename))) {
+						// Arrrgh, sometimes with sometimes
+						// without utf8_decode, it's crazy
+						$content = trim($aeFiles->getContent(utf8_decode($filename)));
 					}
 				}
 			} else {
@@ -57,7 +61,7 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					$aeDebug->log("The file [".$filename."] is missing", "error");
 				}
 				/*<!-- endbuild -->*/
-			} // if (($filename!=='') && (is_file($filename)))
+			} // if (($filename!=='') && ($aeFiles->exists($filename)))
 		} // if (trim($content) === '')
 
 		if ($content !== '') {
@@ -86,11 +90,13 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					header('Content-Transfer-Encoding: ascii');
 					header('Content-Type: text/html; charset=utf-8');
 
-					// When the note is displayed through the interface
-					// (i.e. using Ajax), we just need to have the content
-					// and that content is inside the article tag
+					// When the note is displayed through the
+					// interface (i.e. using Ajax), we just need to
+					// have the content and that content is inside
+					// the article tag
 					if ($aeFunctions->isAjaxRequest()) {
-						// The page has been accessed by an URL (and not through the interface)
+						// The page has been accessed by an URL
+						// (and not through the interface)
 						if (preg_match("/<article[^>]*>(.+)<\\/article>/s", $content, $match)) {
 							list($pattern, $article) = $match;
 							$content = trim($article);

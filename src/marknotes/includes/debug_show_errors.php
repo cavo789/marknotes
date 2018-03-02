@@ -3,7 +3,8 @@
  * Enable the error_reporting(E_ALL) mode when :
  *
  *   - There is a settings.json file present in the root folder
- *   - That file is configured for enabling debug mode i.e. contains at least :
+ *   - That file is configured for enabling debug mode i.e.
+ *		contains at least :
  *
  *		{
  *			"debug": {
@@ -11,8 +12,9 @@
  *			}
  *		}
  *
- * During the development of marknotes, this file will be included at the very top of
- * index.php and router.php so errors are catched immediatly
+ * During the development of marknotes, this file will be
+ * included at the very top of index.php and router.php so
+ * errors are catched immediatly
  */
 
 $root=trim(dirname($_SERVER['SCRIPT_FILENAME']), DIRECTORY_SEPARATOR);
@@ -45,4 +47,4 @@ if (is_file($fname = $root.'settings.json'))
 			error_reporting(E_ALL);
 		} // if(boolval($json['debug']['enabled']??0))
 	} // if (isset($json['debug']))
-} // if(is_file($fname=$root.'settings.json'))
+}

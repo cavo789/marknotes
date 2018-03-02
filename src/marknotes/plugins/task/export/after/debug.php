@@ -28,7 +28,7 @@ class Debug extends \MarkNotes\Plugins\Task\Plugin
 
 		$filename = $params['output'] ?? '';   // output filename (fullname)
 
-		if (!$aeFiles->fileExists($filename)) {
+		if (!$aeFiles->exists($filename)) {
 			$format = $params['extension'];  // extension like 'txt'
 
 			if ($filename=='') {
@@ -60,8 +60,8 @@ class Debug extends \MarkNotes\Plugins\Task\Plugin
 
 			$debugFile=$aeSettings->getFolderTmp().$aeConvert->getDebugFileName();
 
-			if ($aeFiles->fileExists($debugFile)) {
-				$content = file_get_contents($debugFile);
+			if ($aeFiles->exists($debugFile)) {
+				$content = $aeFiles->getContent($debugFile);
 				echo '<h3>Content of the debug file : '.$debugFile.'</h3>';
 				echo "<pre style='background-color:yellow;'>".$content."</pre>";
 			}

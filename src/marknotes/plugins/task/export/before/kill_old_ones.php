@@ -35,12 +35,17 @@ class KillOldOnes extends \MarkNotes\Plugins\Task\Plugin
 
 		// Never kill .md files !!!
 		if ($params['extension']!=='md') {
-			if ($aeFiles->fileExists($filename)) {
+			if ($aeFiles->exists($filename)) {
 				// If already there, check if that file is most recent than the .md file
 				$filenameMD = $aeFiles->removeExtension($filename).'.md';
 
 				try {
-					if ($aeFiles->fileExists($filename)) {
+					if ($aeFiles->exists($filename)) {
+						// *****************************************
+						// @TODO : With Flysystem, filemtime won't
+						// work anymore as soon as files are not
+						// on the filesystem
+						// *****************************************
 						if (filemtime($filenameMD) > filemtime($filename)) {
 							/*<!-- build:debug -->*/
 							if ($aeSettings->getDebugMode()) {
@@ -53,7 +58,7 @@ class KillOldOnes extends \MarkNotes\Plugins\Task\Plugin
 							// The .md file is most recent, delete the exported document
 							// since it's an old one
 							try {
-								unlink($filename);
+								$aeFiles->delete($filename);
 							} catch (Exception $e) {
 								/*<!-- build:debug -->*/
 								if ($aeSettings->getDebugMode()) {
@@ -72,7 +77,7 @@ class KillOldOnes extends \MarkNotes\Plugins\Task\Plugin
 					}
 					/*<!-- endbuild -->*/
 				}
-			} else { // if ($aeFiles->fileExists($filename))
+			} else { // if ($aeFiles->exists($filename))
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();

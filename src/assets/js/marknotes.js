@@ -110,21 +110,35 @@ function initFiles($data) {
 	// Initialize the jsTree and attach events
 	jstree_init($data);
 
+	// If the data object contains a "select_node" attribute
+	// this means that the treeview should immediatly display
+	// that given note (based on his md5).
+	//
+	// Note : md5 is calculated on the filesystem filename but like
+	// this : docs\subfolder\note
+	//
+	//		* should start with the folder name (docs)
+	//		* should use the OS folder separator (so \ under Windows)
+	//		* should mentionned the relative name of file
+	//		* should not mentionned the .md extension
+
 	if ($data.hasOwnProperty('select_node')) {
 		if (typeof $data.select_node.id !== 'undefined') {
 			// Needed otherwise the jstree's state plugin will
 			// reset the selected node
+
 			try {
 				// Select the node
 				$('#TOC').jstree('select_node', $data.select_node.id);
 			} catch (err) {
-				/*<!-- build:debug -->*/
-				if (marknotes.settings.debug) {
-					console.warn(err.message + ' --- More info below ---');
-					console.log(err);
-				}
-				/*<!-- endbuild -->*/
 			}
+
+			try {
+				// If the selected node is a folder, just open it
+				$('#TOC').jstree('open_node', $('#TOC').jstree('get_selected'));
+			} catch (err) {
+			}
+
 		}
 	}
 
@@ -158,15 +172,18 @@ function initFiles($data) {
 
 	// If nothing has been loaded, show a quick userguide
 	if (marknotes.settings.hasOwnProperty('show_tips')) {
-		//$('#CONTENT').addClass('show_tip');
-		ajaxify({
-			task: 'task.tips.show',
-			param: 'homepage',
-			callback: 'afterShowTip()',
-			dataType: 'html',
-			useStore: 0,
-			target: 'CONTENT'
-		});
+
+		// Enabled ? If yes, run the task and receive the HTML
+		// for the in-context help
+		if (marknotes.settings.show_tips == 1) {
+			ajaxify({
+				task: 'task.homepage.show',
+				callback: 'afterShowHomepage()',
+				dataType: 'html',
+				useStore: 0,
+				target: 'HOMEPAGE'
+			});
+		}
 	}
 
 	return true;
@@ -175,21 +192,31 @@ function initFiles($data) {
 /**
  * A tip has been displayed
  */
-function afterShowTip() {
-	// First process afterDisplay in order to process content's
-	// related features
-	afterDisplay("");
+function afterShowHomepage() {
 
-	// Add the show_tip class
-	$('#CONTENT').addClass('show_tip');
+	if (marknotes.settings.show_tips == 1) {
+
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.log('*********** afterShowHomepage **********');
+		}
+		/*<!-- endbuild -->*/
+
+		// First process afterDisplay in order to process content's
+		// related features
+		afterDisplay("");
+
+		// Add the show_tip class
+		//$('#FAVORITES').addClass('show_tip');
+	}
 	return true;
 }
 
 /**
  * Initialize each action buttons of the displayed note.
  * These buttons should :
- *    - Have an id starting with "icon_xxxx" (f.i. id="icon_preview")
- *    - Have a data-task attribute           (f.i. data-task="preview")
+ *	- Have an id starting with "icon_xxxx" (f.i. id="icon_preview")
+ *	- Have a data-task attribute			(f.i. data-task="preview")
  *
  * @returns {undefined}
  */
@@ -206,7 +233,7 @@ function initializeTasks() {
 	}
 	/*<!-- endbuild -->*/
 
-	if ($.isFunction(initializeSettings)) {
+	if (typeof initializeSettings !== 'undefined') {
 		initializeSettings();
 	}
 
@@ -271,7 +298,7 @@ function initializeTasks() {
 
 		case 'file':
 
-			window.open($file);
+			window.open(marknotes.docs + $file);
 			break;
 
 		default:
@@ -339,7 +366,7 @@ function afterDisplay($fname) {
 		/*<!-- endbuild -->*/
 
 		// Be sure to remove the show_tip class which is only for
-		// tips (task.tips.show) and not for other content.
+		// tips (task.homepage.show) and not for other content.
 		if ($('#CONTENT').hasClass('show_tip')) {
 			$('#CONTENT').removeClass('show_tip');
 		}
@@ -355,7 +382,8 @@ function afterDisplay($fname) {
 		}
 
 		// Even when there is no h1, we need to update the area otherwise
-		// the previous title (of the previous read note) will still be displayed
+		// the previous title (of the previous read note) will still be
+		// displayed
 		$('title').text($title);
 		$('.content-header h1').text($title);
 
@@ -396,14 +424,17 @@ function afterDisplay($fname) {
 }
 
 /**
- * The array marknotes.arrPluginsFct is a global array and will be initialized by
- * the differents plugins (like Bootstrap, DataTable, ...) and will contains functions name.
+ * The array marknotes.arrPluginsFct is a global array and
+ * will be initialized by the differents plugins
+ * (like Bootstrap, DataTable, ...) and will contains functions name.
  *
- * For instance : the file /marknotes/plugins/content/html/bootstrap/bootstrap.js contains this line :
- *    marknotes.arrPluginsFct.push("PluginBootstrap");
+ * For instance : the file
+ * 		/marknotes/plugins/content/html/bootstrap/bootstrap.js
+ * contains this line :
+ *		marknotes.arrPluginsFct.push("PluginBootstrap");
  *
- * This to tell to this code that the PluginBootstrap function should be fired once the note
- * is displayed.  So, let's do it
+ * This to tell to this code that the PluginBootstrap function
+ * should be fired once the note is displayed.  So, let's do it
  */
 function runPluginsFunctions() {
 
@@ -429,7 +460,7 @@ function runPluginsFunctions() {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('   call ' + ($i + 1) + '/' + $j + ' : ' + $arrFct[$i]);
+				console.log('	call ' + ($i + 1) + '/' + $j + ' : ' + $arrFct[$i]);
 			}
 			/*<!-- endbuild -->*/
 
@@ -457,14 +488,13 @@ function runPluginsFunctions() {
 	/*<!-- endbuild -->*/
 
 	return true;
-
 }
 
 /**
  *
  * @param {json} $params
- *      message : the message to display
- *      type    : success, error, warning, information, notification
+ *	  message : the message to display
+ *	  type	: success, error, warning, information, notification
  *
  * @returns {undefined}
  */

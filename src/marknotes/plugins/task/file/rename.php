@@ -23,6 +23,7 @@ class Rename extends \MarkNotes\Plugins\Task\File
 	private static function rename(string $oldname, string $newname) : float
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if (trim($oldname) === '') {
@@ -30,11 +31,13 @@ class Rename extends \MarkNotes\Plugins\Task\File
 		}
 
 		// Sanitize filenames
-		$oldname = $aeFiles->sanitizeFileName($oldname);
-		$oldname = $aeSettings->getFolderDocs().$oldname;
+		$oldname = $aeFiles->sanitize($oldname);
+		$oldname = $aeSettings->getFolderWebRoot().$oldname;
+		$oldname = str_replace('/', DS, $oldname);
 
-		$newname = $aeFiles->sanitizeFileName($newname);
-		$newname = $aeSettings->getFolderDocs().$newname;
+		$newname = $aeFiles->sanitize($newname);
+		$newname = $aeSettings->getFolderWebRoot().$newname;
+		$newname = str_replace('/', DS, $newname);
 
 		// Try to remove the folder, first, be sure that the user
 		// can see the folder : if he can't, he can't delete it too
@@ -50,19 +53,36 @@ class Rename extends \MarkNotes\Plugins\Task\File
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
 		if (intval($args[0]['return'])===1) {
-			// Only if the user can see the parent folder, he can rename files
-
-			// Before renaming the file (f.i. note.md), check if we've another
-			// files with the same name but with other extensions (like note.json,
-			// note.html, ...) and rename these files too.
-			$tmp = $aeFiles->removeExtension($oldname);
-			$arrFiles = glob($tmp.'.*');
+			// Only if the user can see the parent folder,
+			// he can rename files
+			// Before renaming the file (f.i. note.md), check if
+			// we've another files with the same name but with other
+			// extensions (like note.json, note.html, ...) and
+			// rename these files too.
+			$arrFiles = $aeFolders->getContent(dirname($oldname));
 
 			$wReturn = true;
-			$new = $aeFiles->removeExtension($newname);
+			$old = $aeFiles->removeExtension(basename($oldname));
+			$new = $aeFiles->removeExtension(basename($newname));
 
 			foreach ($arrFiles as $file) {
-				$wReturn = $aeFiles->renameFile($file, $new.'.'.pathinfo($file)['extension']);
+				if ($file['type'] == 'file') {
+					if ($file['filename'] == $old) {
+
+						// Get the note's folder
+						$dir = str_replace('/', DS, $file['dirname']);
+
+						$dir = $aeFiles->makeFileNameAbsolute($dir);
+
+						// The old filename (absolute path)
+						$oldfile = $dir.DS.$file['basename'];
+
+						// And the new one (absolute path)
+						$newfile = $dir.DS.$new.'.'.$file['extension'];
+
+						$wReturn = $aeFiles->rename($oldfile, $newfile);
+					}
+				}
 			}
 
 			return ($wReturn ? RENAME_SUCCESS : FILE_ERROR);
@@ -81,18 +101,20 @@ class Rename extends \MarkNotes\Plugins\Task\File
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Be sure that filenames doesn't already start with the /docs folder
+		// Be sure that filenames doesn't already start
+		// with the /docs folder
 		self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
 		$newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
+
 		if ($newname != '') {
-			$newname = $aeFiles->sanitizeFileName(trim($newname));
+			$newname = $aeFiles->sanitize(trim($newname));
 		}
 
 		$oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
 		if ($oldname != '') {
-			$oldname = $aeFiles->sanitizeFileName(trim($oldname));
+			$oldname = $aeFiles->sanitize(trim($oldname));
 		}
 
 		/*<!-- build:debug -->*/
@@ -121,7 +143,6 @@ class Rename extends \MarkNotes\Plugins\Task\File
 			$rel_oldname = str_replace($aeSettings->getFolderDocs(true), '', $oldname);
 			$rel_newname = str_replace($aeSettings->getFolderDocs(true), '', $newname);
 
-			// Try to create a file called "$filename.md" on the disk
 			$wReturn = self::rename($oldname, $newname);
 
 			switch ($wReturn) {
@@ -142,11 +163,17 @@ class Rename extends \MarkNotes\Plugins\Task\File
 					break;
 			} // switch ($wReturn)
 
+			// and remove the extension
+			// The filename should be something like
+			// docs\christophe\newname
+			// (not docs\christophe\newname.md)
+			$md5 = md5($aeFiles->removeExtension($newname));
+
 			$return = array(
 				'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
 				'action' => 'rename',
 				'msg' => $msg,
-				'md5' => md5($docs.$newname),
+				'md5' => $md5,
 				'filename' => utf8_encode($newname)
 			);
 		}

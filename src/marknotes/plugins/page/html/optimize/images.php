@@ -18,8 +18,9 @@ class Images
 		$bLazyLoad = boolval($arrOptimize['lazyload'] ?? false);
 
 		if ($bLazyLoad) {
-			$aeSettings = \MarkNotes\Settings::getInstance();
+			$aeFolders = \MarkNotes\Folders::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
+			$aeSettings = \MarkNotes\Settings::getInstance();
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
@@ -30,7 +31,7 @@ class Images
 
 			$lib=$aeSettings->getFolderLibs().'lazysizes/';
 
-			if (is_dir($lib)) {
+			if ($aeFolders->exists($lib)) {
 				$aeFunctions = \MarkNotes\Functions::getInstance();
 				$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
@@ -41,13 +42,13 @@ class Images
 					'<img src="'.$root.'/assets/images/blank.png" class="lazyload" data-src="',
 					$str
 				);
-			} else { // if (is_dir($lib))
+			} else { // if ($aeFolders->exists($lib))
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug->log('Library not found ['.$lib.']', 'warning');
 				}
 				/*<!-- endbuild -->*/
-			} // if (is_dir($lib))
+			} // if ($aeFolders->exists($lib))
 		} // if ($bLazyLoad)
 
 		return $str;

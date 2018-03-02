@@ -2,7 +2,6 @@
 /**
  * Load balloon.min.css
  */
-
 namespace MarkNotes\Plugins\Page\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -18,14 +17,25 @@ class Balloon extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addCSS(&$css = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
-		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
-		$url .= 'marknotes/plugins/page/html/balloon/';
+		// Not sure that the HTML has been stored in the session
+		$html = $aeSession->get('html', '');
 
-		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". 	"href=\"".$url."libs/balloon.min.css\" />\n";
+		// balloon.css use a data-attribute called "data-balloon"
+		// This attribute is set by /plugins/content/html/balloon
+		// If the attribute is not in the HTML string, no need to
+		// load the css
+		if (stripos($html, 'data-balloon') !== false) {
+			$aeFunctions = \MarkNotes\Functions::getInstance();
 
-		$css .= $aeFunctions->addStyleInline($script);
+			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
+			$url .= 'marknotes/plugins/page/html/balloon/';
+
+			$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". 	"href=\"".$url."libs/balloon.min.css\" />\n";
+
+			$css .= $aeFunctions->addStyleInline($script);
+		}
 
 		return true;
 	}

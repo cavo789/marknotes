@@ -28,7 +28,7 @@ class Download
 	}
 
 	/**
-	 *   $type contains the output format (doc, pdf, ...)
+	 *	$type contains the output format (doc, pdf, ...)
 	 */
 	public function run(string $fname, string $type) : bool
 	{
@@ -38,7 +38,7 @@ class Download
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$slug = $aeFunctions->slugify($aeFiles->removeExtension(basename($fname))).'.'.$type;
 
-		if ($aeFiles->fileExists($fname)) {
+		if ($aeFiles->exists($fname)) {
 			// And send the file to the browser
 			switch ($type) {
 				case 'doc':
@@ -65,6 +65,7 @@ class Download
 			$bReturn = true;
 		} else { // if ($content!=='')
 			/*<!-- build:debug -->*/
+			$aeSettings	= \MarkNotes\Settings::getInstance();
 			if ($aeSettings->getDebugMode()) {
 				echo __FILE__."-".__LINE__." - The file ".$fname." doesn't exists<br/>";
 			}

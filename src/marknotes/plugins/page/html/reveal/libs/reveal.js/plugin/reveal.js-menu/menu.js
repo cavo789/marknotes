@@ -11,7 +11,7 @@ var RevealMenu = window.RevealMenu || (function(){
 	var loadIcons = options.loadIcons;
 	if (typeof loadIcons === "undefined") loadIcons = true;
 	var initialised = false;
-	
+
 	var module = {};
 
 	loadResource(options.path + '/menu.css', 'stylesheet', function() {
@@ -70,7 +70,6 @@ var RevealMenu = window.RevealMenu || (function(){
 			if (typeof autoOpen === "undefined") autoOpen = true;
 			var delayInit = options.delayInit;
 			if (typeof delayInit === "undefined") delayInit = false;
-			
 
 			function disableMouseSelection() {
 				mouseSelectionEnabled = false;
@@ -104,7 +103,7 @@ var RevealMenu = window.RevealMenu || (function(){
 				var offsetFromTop = getOffset(el).top - el.offsetParent.offsetTop;
 				if (offsetFromTop < 0) return -offsetFromTop
 				var offsetFromBottom = el.offsetParent.offsetHeight - (el.offsetTop - el.offsetParent.scrollTop + el.offsetHeight);
-				if (offsetFromBottom < 0) return offsetFromBottom; 
+				if (offsetFromBottom < 0) return offsetFromBottom;
 				return 0;
 			}
 
@@ -113,20 +112,20 @@ var RevealMenu = window.RevealMenu || (function(){
 				if (offset) {
 					disableMouseSelection();
 					el.scrollIntoView(offset > 0);
-					reenableMouseSelection();	
+					reenableMouseSelection();
 				}
 			}
 
 			function scrollItemToTop(el) {
 				disableMouseSelection();
 				el.offsetParent.scrollTop = el.offsetTop;
-				reenableMouseSelection();	
+				reenableMouseSelection();
 			}
 
 			function scrollItemToBottom(el) {
 				disableMouseSelection();
 				el.offsetParent.scrollTop = el.offsetTop - el.offsetParent.offsetHeight + el.offsetHeight
-				reenableMouseSelection();	
+				reenableMouseSelection();
 			}
 
 			function selectItem(el) {
@@ -202,7 +201,7 @@ var RevealMenu = window.RevealMenu || (function(){
 						case 34: case 68:
 							var visibleItems = selectAll('.active-menu-panel .slide-menu-items li').filter(function(item) { return visibleOffset(item) == 0; });
 							var itemsBelow = selectAll('.active-menu-panel .slide-menu-items li').filter(function(item) { return visibleOffset(item) < 0; });
-							
+
 							var lastVisible = (itemsBelow.length > 0 && Math.abs(visibleOffset(itemsBelow[0])) < itemsBelow[0].clientHeight ? itemsBelow[0] : visibleItems[visibleItems.length-1]);
 							if (lastVisible) {
 								if (lastVisible.classList.contains('selected') && itemsBelow.length > 0) {
@@ -283,7 +282,6 @@ var RevealMenu = window.RevealMenu || (function(){
 				}
 			}
 
-
 			//
 			// Utilty functions
 			//
@@ -292,19 +290,19 @@ var RevealMenu = window.RevealMenu || (function(){
 				if (event) event.preventDefault();
 				if (!isOpen()) {
 					select('body').classList.add('slide-menu-active');
-				    select('.reveal').classList.add('has-' + options.effect + '-' + side);
-				    select('.slide-menu').classList.add('active');
-				    select('.slide-menu-overlay').classList.add('active');
-					
-				    // identify active theme
-				    selectAll('div[data-panel="Themes"] li').forEach(function(i) { i.classList.remove('active') });
-				    select('li[data-theme="' + select('#theme').getAttribute('href') + '"]').classList.add('active');
+					select('.reveal').classList.add('has-' + options.effect + '-' + side);
+					select('.slide-menu').classList.add('active');
+					select('.slide-menu-overlay').classList.add('active');
 
-				    // identify active transition
-				    selectAll('div[data-panel="Transitions"] li').forEach(function(i) { i.classList.remove('active') });
-				    select('li[data-transition="' + Reveal.getConfig().transition + '"]').classList.add('active');
+					// identify active theme
+					selectAll('div[data-panel="Themes"] li').forEach(function(i) { i.classList.remove('active') });
+					//select('li[data-theme="' + select('#theme').getAttribute('href') + '"]').classList.add('active');
 
-				    // set item selections to match active items
+					// identify active transition
+					selectAll('div[data-panel="Transitions"] li').forEach(function(i) { i.classList.remove('active') });
+					select('li[data-transition="' + Reveal.getConfig().transition + '"]').classList.add('active');
+
+					// set item selections to match active items
 					var items = selectAll('.slide-menu-panel li.active')
 					items.forEach(function(i) {
 						i.classList.add('selected');
@@ -422,7 +420,7 @@ var RevealMenu = window.RevealMenu || (function(){
 					top.appendChild(panels);
 					var overlay = create('div', { 'class': 'slide-menu-overlay'});
 					top.appendChild(overlay);
-					overlay.onclick = closeMenu;						
+					overlay.onclick = closeMenu;
 
 					var toolbar = create('ol', {'class': 'slide-menu-toolbar'});
 					select('.slide-menu').appendChild(toolbar);
@@ -434,14 +432,14 @@ var RevealMenu = window.RevealMenu || (function(){
 						};
 						if (ref) {
 							attrs['data-panel'] = ref;
-						}	
+						}
 						var button = create('li', attrs);
 
 						if (icon.startsWith('fa-')) {
 							button.appendChild(create('i', {'class': 'fa ' + icon}));
 						} else {
 							button.innerHTML = icon + '</i>';
-						}					
+						}
 						button.insertBefore(create('span', {'class': 'slide-menu-toolbar-label'}, title), select('i', button));
 						button.insertBefore(create('br'), select('i', button));
 						button.onclick = fn;
@@ -554,7 +552,7 @@ var RevealMenu = window.RevealMenu || (function(){
 						}
 
 						item.appendChild(create('span', {class: 'slide-menu-item-title'}, title));
-						
+
 						return item;
 					}
 
@@ -633,7 +631,7 @@ var RevealMenu = window.RevealMenu || (function(){
 							});
 						}
 						function showErrorMsg(response) {
-							var msg = '<p>ERROR: The attempt to fetch ' + response.responseURL + ' failed with HTTP status ' + 
+							var msg = '<p>ERROR: The attempt to fetch ' + response.responseURL + ' failed with HTTP status ' +
 								response.status + ' (' + response.statusText + ').</p>' +
 								'<p>Remember that you need to serve the presentation HTML from a HTTP server.</p>';
 								response.panel.innerHTML = msg;
@@ -745,7 +743,7 @@ var RevealMenu = window.RevealMenu || (function(){
 			module.isOpen = isOpen;
 			module.init = init;
 			module.isInit = function() { return initialised };
-			
+
 			if (!delayInit) {
 				init();
 			}

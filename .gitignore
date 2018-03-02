@@ -16,3 +16,5 @@ composer.log
 gulpfile.js
 build.bat
 src/assets/aesecure.png
+
+src/utils/tmp/debug.log

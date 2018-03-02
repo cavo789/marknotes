@@ -1,10 +1,18 @@
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
 
+By **Christophe Avonture**
+
+Marknotes is a tool that will exploit your documents through a powerfull web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
+
+By adopting Marknotes, you'll never ask yourself, "Where did I save my document ?" or "I had read an interesting piece of information but I don't know where it is anymore". The answer will be, of course, "The information is saved in Marknotes and will really fast retrieved."
+
 >If you like marknotes, please give him a :star: and fork it.
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
-**marknotes requires PHP 7+.**
+**marknotes requires PHP 7.1 or greater**
+
+*(There is a [bug in PHP 7.0](https://github.com/php/php-src/blob/PHP-7.1.0beta2/UPGRADING#L321) when working with filenames having accentuated characters (UTF8) so if you wish to use such name, please be sure to use at least PHP 7.1)*
 
 ## Table of Contents
 
@@ -18,14 +26,14 @@
 8. **[Debugging](#8-debugging)**
 9. **[:closed_lock_with_key: Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
 10. **[:man: Author](#10-man-author)**
-11. **[Follow us](#11-follow-us)**
+11. **[Want to help](#11-want-to-help)
 12. **[License](#12-license)**
 
 ## 1. Description
 
 ### 1.1 What is marknotes ?
 
-Marknotes is a PHP application that you can self-hosted and who will help you to manage your "notes" : documentations, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
+Marknotes is a PHP application that you can **self-hosted** and who will help you to manage your "notes" : documentations, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
 
 Notes are written in pure [Markdown](https://daringfireball.net/projects/markdown/syntax) : this is a plain text language with only a few codes (like `#` or `*`) for text formatting. Yes !!!  You'll write your notes with a very stupid text editor (`Notepad` on Windows will do the work) (note : marknotes provide an online editor) and save them as a flatfile on your server.
 
@@ -39,10 +47,11 @@ Want to move to an another application and leave marknotes ? No problem ! Notes 
 
 Even if I'd be really sad to see you leave, you'll certainly not have any problem to do it. Just move your .md files and that's all.
 
-And remember : notes are yours ! Unlike Evernote, Google, Microsoft of others companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on internet at all.
+And remember : notes are yours ! Unlike Evernote®, Google®, Microsoft® of others companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on internet at all.
+
 ### 1.3 Background
 
-During years, I've used Evernotes™ to manage my notes (can be documentation, user guide, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
+During years, I've used Evernotes® to manage my notes (can be documentation, user guide, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
 
 In 2016, Evernote has introduced more restriction with the Free version and by the end of the year, has stated that somes employees will have access to **our** notes for administration tasks.
 
@@ -287,15 +296,27 @@ Please read [Privacy and protection : everything is yours, for now and always](r
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-## 11. Follow us
+11. Want to help
 
-Follow us on [Facebook](https://www.facebook.com/marknotes789/) to stay up-to-date
+MarkNotes is maintained by one person in spare time. 
+
+MarkNotes needs your help!
+
+* Use it !
+* Add a star in the project page.
+* Tell others about MarkNotes.
+* Propose improvements (templating, CSS, PHP, images, documentation, ...)
+* Test and report [issues](issues), [help to fix them](issues) or [implement new features](pulls)
+
+Note : before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
+
+Thanks in advance !
 
 ## 12. License
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
-[MIT](https://github.com/cavo789/marknotes/blob/master/LICENSE)
+You are free to copy, modify, and distribute Marknotes with attribution under the terms of the MIT license. See the [LICENSE](LICENSE) file for details.
 
 **[⬆ back to top](#table-of-contents)**
 

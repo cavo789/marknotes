@@ -39,8 +39,9 @@ class Banner extends \MarkNotes\Plugins\Page\HTML\Plugin
 			return true;
 		}
 
-		if (file_exists($fname = __DIR__.'/banner/banner.txt')) {
-			$banner = file_get_contents($fname);
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if ($aeFiles->exists($fname = __DIR__.'/banner/banner.txt')) {
+			$banner = $aeFiles->getContent($fname);
 
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			if ($aeSettings->getDebugMode()) {

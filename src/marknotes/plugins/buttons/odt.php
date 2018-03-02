@@ -27,40 +27,14 @@ class ODT extends \MarkNotes\Plugins\Button\Plugin
 				'task' => 'fnPluginHTMLODT'
 			)
 		);
-		/*
-		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-		$aeSession = \MarkNotes\Session::getInstance();
 
-		$title = $aeSettings->getText('export_'.self::$layout, 'Export the note as a ODT document', true);
-
-		$aeSession = \MarkNotes\Session::getInstance();
-		$file = $aeSession->get('filename');
-		$file = str_replace(DS, '/', $aeFiles->replaceExtension($file, self::$layout));
-
-		// Get the default extension, as specified in the settings.json file
-		//$default = $aeSettings->getTask()['default'] ?? 'reveal';
-		//if ($default === self::$layout) {
-			// The default extension is odt ==> no need to mention the extension
-		//	$file = $aeFiles->removeExtension($file);
-		//}
-
-		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-
-		$buttons .=
-			'<a id="icon_'.self::$layout.'"  data-task="file" data-file="'.$url.$file.'" '.
-				'title="'.$title.'" href="#">'.
-				'<i class="fa fa-file-text-o" aria-hidden="true"></i>'.
-			'</a>';
-*/
 		return true;
 	}
 
 	protected static function canAdd() : bool
 	{
 		// Conversion requires that
-		//    	1. the .odt file already exists OR
+		//		1. the .odt file already exists OR
 		//		2. the pandoc utility is present to allow the conversion
 
 		if ($bReturn = parent::canAdd()) {
@@ -78,7 +52,7 @@ class ODT extends \MarkNotes\Plugins\Button\Plugin
 				$filename  = $aeFiles->replaceExtension($filename, static::$layout);
 				$filename = str_replace('/', DS, $filename);
 
-				$bReturn = $aeFiles->fileExists($filename);
+				$bReturn = $aeFiles->exists($filename);
 			}
 
 			if (!$bReturn) {

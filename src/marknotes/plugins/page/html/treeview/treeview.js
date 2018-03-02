@@ -158,7 +158,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 		}
 
 		// Upload files
-		if ($type === 'folder') {
+		/*if ($type === 'folder') {
 			$items.Upload = {
 				separator_before: true,
 				separator_after: false,
@@ -168,7 +168,7 @@ function fnPluginTaskTreeViewContextMenu(node) {
 					fnPluginTaskTreeView_upload(node);
 				}
 			};
-		}
+		}*/
 
 		// Kill a note or folder
 		$items.Remove = {
@@ -177,29 +177,36 @@ function fnPluginTaskTreeViewContextMenu(node) {
 			label: ($type === 'folder' ? $.i18n('tree_delete_folder', node.text) : $.i18n('tree_delete_file', node.text)),
 			icon: 'fa fa-trash',
 			action: function () {
-				noty({
-					theme: 'relax',
-					timeout: 0,
-					layout: 'center',
+				swal({
+					title: $.i18n('are_you_sure'),
+					text: ($type === 'folder' ? $.i18n('tree_delete_folder_confirm', node.text) : $.i18n('tree_delete_file_confirm', node.text)),
 					type: 'warning',
-					text: '<strong>' + ($type === 'folder' ? $.i18n('tree_delete_folder_confirm', node.text) : $.i18n('tree_delete_file_confirm', node.text)) + '</strong>',
-					buttons: [{
-							addClass: 'btn btn-primary',
-							text: $.i18n('ok'),
-							onClick: function ($noty) {
-								$noty.close();
-								tree.delete_node(node);
-							}
-					},
-						{
-							addClass: 'btn btn-danger',
-							text: $.i18n('cancel'),
-							onClick: function ($noty) {
-								$noty.close();
-							}
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: $.i18n('ok'),
+					cancelButtonText: $.i18n('cancel'),
+					confirmButtonClass: 'btn btn-success',
+					cancelButtonClass: 'btn btn-danger',
+					buttonsStyling: false,
+					reverseButtons: false
+					}).then((result) => {
+						if (result.value) {
+							tree.delete_node(node);
+							swal(
+								$.i18n('deleted'),
+								$.i18n('tree_delete_file_done'),
+								'success'
+							);
+						} else if (result.dismiss === 'cancel') {
+							swal(
+								$.i18n('cancelled'),
+								$.i18n('tree_delete_cancelled'),
+								'error'
+							);
+						}
 					}
-							]
-				}); // noty()
+				);
 			} // action()
 		};
 	} else {
@@ -214,13 +221,17 @@ function fnPluginTaskTreeViewContextMenu(node) {
 
 }
 
+/*
+FEBRUARY 2018 - No more needed since the integration of
+elFinder (task.elf.show)
+
 function fnPluginTaskTreeView_upload(node) {
-	/*<!-- build:debug -->*/
+	/*<!-- build:debug -->* /
 	if (marknotes.settings.debug) {
 		console.log('	  Plugin Page html - Treeview - Upload');
 		console.log(node);
 	}
-	/*<!-- endbuild -->*/
+	/*<!-- endbuild -->* /
 
 	ajaxify({
 		task: "task.upload.drop",
@@ -260,7 +271,7 @@ function fnPluginTaskTreeView_upload_droparea(data) {
 	//});
 
 	return true;
-}
+}*/
 
 /**
  * A node has been added, renamed or deleted in the Treeview.
@@ -289,29 +300,22 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 			console.warn(err.message);
 		}
 
-		var $root = data.node.parent;
+		// Get the parent node : when adding a new folder or note,
+		// we need to retrieve the parent paths (f.i. docs/folder/sub)
+
+		var $parent = $('#TOC').jstree('get_node', data.node.parent);
 
 		// In case of the creation of a new note, the "oldname" is
 		// something like "new note" (and "new folder" for a folder)
 		// i.e. the default name suggested by jsTree.
 		// The real name will be $newname; the one typed by the user
 
-		var $oldname = $root + data.old;
+		var $oldname = $parent.data.path + data.old;
 
 		// Get the name of the file; use the node.data.file info
 		// and not node.text which is the displayed name (and
 		// can be truncated)
-		var $newname = $root;
-
-		if (data.node.data !== null) {
-			if (data.node.data.hasOwnProperty('file')) {
-				$newname = $newname + data.node.data.file;
-			} else {
-				$newname = $newname + data.node.text;
-			}
-		} else {
-			$newname = $newname + data.node.text;
-		}
+		var $newname = $parent.data.path + data.node.text;
 
 		// Remove the starting slash character if present
 		if ($newname.charAt(0) === marknotes.settings.DS) {
@@ -408,7 +412,7 @@ function fnPluginTaskTreeView_reload(data) {
 	/*<!-- endbuild -->*/
 
 	var $select_node = {};
-	if (data.hasOwnProperty('filename')) {
+	if (data.hasOwnProperty('md5')) {
 		$select_node.id = data.md5;
 	}
 
@@ -442,57 +446,7 @@ function fnPluginTaskTreeView_reload(data) {
  * @returns {undefined}
  */
 function fnPluginTaskTreeView_showStatus($data) {
-
 	return fnPluginTaskTreeView_reload($data);
-
-	// The ideal situation would be to not reload everything but just
-	// update informations of the tree node : the id and
-	// data-basename, data-file and data-url and perhaps others
-	// in the future
-	/*<!-- build:debug -->*/
-	//if (marknotes.settings.debug) {
-	//	console.log('	  Plugin Page html - Treeview - Showstatus');
-	//	console.log($data);
-	//}
-	/*<!-- endbuild -->*/
-
-	/*if ($data.hasOwnProperty('status')) {
-		$status = $data.status;
-		if ($status == 1) {
-			Noty({
-				message: $data.msg,
-				type: 'success'
-			});
-
-			if (($data.type === "folder") && (($data.action === "rename") || ($data.action === "create"))) {
-				$('#TOC li')
-					.each(function () {
-						$("#TOC")
-							.jstree()
-							.disable_node(this.id);
-					});
-
-				ajaxify({
-					task: 'listFiles',
-					callback: 'initFiles(data)',
-					useStore: false // After a creation, don't use the localStorage, we need to get the new list
-				});
-
-				Noty({
-					message: $.i18n('loading_tree'),
-					type: 'info'
-				});
-
-				//  $('#TOC').jstree('refresh');
-			}
-		} else {
-			Noty({
-				message: $data.msg,
-				type: 'error'
-			});
-		}
-	}*/
-
 }
 
 /**

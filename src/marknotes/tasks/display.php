@@ -32,9 +32,9 @@ class Display
 		// Convert any '---' (or '-----') to a new line (<hr/>) only if
 		// preceded and followed by an empty line, so, like this :
 		//
-		//                  (empty line)
-		//      ---
-		//                  (empty line)
+		//				  (empty line)
+		//	  ---
+		//				  (empty line)
 		//
 		// Needed because there is sometimes bugs in MarkDown Extra when '---' follow
 		// the declaration of an array
@@ -50,20 +50,19 @@ class Display
 
 	private function insertPageBreak(&$markdown)
 	{
-
 		// Convert any '***' to a page break only if, twice and if
 		// preceded and followed by an empty line, so, like this :
 		//
-		//                  (empty line)
-		//      ***
-		//      ***
-		//                  (empty line)
+		//				  (empty line)
+		//	  ***
+		//	  ***
+		//				  (empty line)
 		//
 
 		$matches = array();
 		preg_match_all('/\n\r?(\*{3,5}(\s*(\n\r?)*)*){2}(\s*\n\r?)*/', $markdown, $matches);
 		$break='<p style="page-break-after: always;">&nbsp;</p>'.
-		   '<p style="page-break-before: always;">&nbsp;</p>';
+			'<p style="page-break-before: always;">&nbsp;</p>';
 		foreach ($matches[0] as $tmp) {
 			$markdown = str_replace($tmp, $break.PHP_EOL, $markdown);
 		}
@@ -87,32 +86,43 @@ class Display
 		$fullname = $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS);
 		$fullname = str_replace('/', DS, $fullname);
 
-		if (!$aeFiles->fileExists($fullname)) {
+		if (!$aeFiles->exists($fullname)) {
 			// Damned ! It's so difficult to work with
 			// accentuated chars and make the
 			// code works both on Windows and Unix...
-			$fullname = utf8_encode($fullname);
-			if (!$aeFiles->fileExists($fullname)) {
+			$fullname = utf8_decode($fullname);
+			if (!$aeFiles->exists($fullname)) {
 				$aeFunctions->fileNotFound($fullname);
 			}
 		}
 
-		// Read the markdown file, $markdown will contains markdown content,
-		// not HTML one
+		// Read the markdown file, $markdown will contains
+		// markdown content, not HTML one
 		$aeMD = \MarkNotes\FileType\Markdown::getInstance();
-		$markdown = $aeMD->read($fullname, $params);
+		$markdown = trim($aeMD->read($fullname, $params));
+
+		// If the file is empty, display an information message
+		if ($markdown=='') {
+			$empty = $aeSettings->getText('file_empty', 'Sorry, the note [$1] is empty; nothing to display');
+			$markdown = "# ".basename($params['filename'])."\n\n".
+				"*".str_replace('$1', $params['filename'], $empty)."*";
+		}
 
 		self::insertHR($markdown);
 		self::insertPageBreak($markdown);
 
-		// Convert the Markdown text (.md file's content) into an HTML text
+		// Convert the Markdown text (.md file's content)
+		// into an HTML text
 		$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
 		$htmlNote = $aeConvert->getHTML($markdown, $params, true);
 
-		// Now, get the template and add the content (from $htmlNote)
-		// in the page
-		$aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
-		$html = $aeConvert->run($htmlNote, $params);
+		// Now, get the template and add the content
+		// (from $htmlNote) in the page
+		$html = '';
+		if (trim($htmlNote)!=='') {
+			$aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
+			$html = $aeConvert->run($htmlNote, $params);
+		}
 
 		return $html;
 	}

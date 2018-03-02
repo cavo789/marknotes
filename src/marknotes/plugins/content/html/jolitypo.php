@@ -22,21 +22,27 @@ class JoliTypo extends \MarkNotes\Plugins\Content\HTML\Plugin
 			return true;
 		}
 
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		if (is_dir($aeSettings->getFolderLibs()."jolicode")) {
+		if ($aeFolders->exists($aeSettings->getFolderLibs()."jolicode")) {
 			$locale = $aeSettings->getLocale();
 
 			// See https://github.com/jolicode/JoliTypo#fixer-recommendations-by-locale
 			switch ($locale) {
 				case 'fr-FR':
-					// Those rules apply most of the recommendations of "Abrégé du code typographique à l'usage de la presse", ISBN: 9782351130667.
-					// Remove Hypen because need a library (Hyphenator) of 12MB,
-					$fixer = new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'FrenchNoBreakSpace', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
+					// Those rules apply most of the recommendations
+					// of "Abrégé du code typographique à l'usage de
+					// la presse", ISBN: 9782351130667.
+					// Remove Hypen because need a library
+					// (Hyphenator) of 12MB,
+					$fixer = new \JoliTypo\Fixer(array( 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'FrenchNoBreakSpace', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
 					break;
 
 				default:
-					// Remove Hypen because need a library (Hyphenator) of 12MB,
+
+					// Remove Hypen because need a library
+					// (Hyphenator) of 12MB,
 					$fixer = new \JoliTypo\Fixer(array('Ellipsis', 'Dimension', 'Numeric', 'Dash', 'SmartQuotes', 'NoSpaceBeforeComma', 'CurlyQuote', 'Trademark'));
 					break;
 			}

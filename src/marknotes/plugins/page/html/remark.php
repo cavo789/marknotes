@@ -32,16 +32,11 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"src=\"".$url."libs/remark/remark.min.js\" ".
 				"defer=\"defer\"></script>\n";
 
-			$script .= "<script type=\"text/javascript\" ".
-				"src=\"".$url."remark.js\" ".
-				"defer=\"defer\"></script>\n";
-
-			$arrSettings = $aeSettings->getPlugins(static::$json_key);
+			$arrOptions = self::getOptions('duration', array('minutes'=>60, 'bar_height'=>3));
 
 			// Get settings
-			$minutes = intval($arrSettings['duration']['minutes']) ?? 60;
-			$barHeight = intval($arrSettings['duration']['bar_height']) ?? 3;
-			$hide = intval($arrSettings['HideUnnecessaryThings']) ?? 0;
+			$minutes = intval($arrOptions['minutes']) ?? 60;
+			$barHeight = intval($arrOptions['bar_height']) ?? 3;
 
 			// Get the note URL
 			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
@@ -56,8 +51,8 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"marknotes.slideshow = {};\n".
 				"marknotes.slideshow.durationMinutes=".$minutes.";\n".
 				"marknotes.slideshow.durationBarHeight=".$barHeight.";\n".
-				"marknotes.slideshow.hideunnecessarythings=".($hide ? 1 : 0).";\n".
 				"</script>";
+
 		} else {
 			$script = "<script type=\"text/javascript\" ".
 				"src=\"".$url."button.js\" ".
@@ -74,24 +69,6 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addCSS(&$css = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-
-		$arrSettings = $aeSettings->getPlugins(static::$json_key);
-
-		$appearance = $arrSettings['appearance'] ?? array('theme'=>'beige');
-
-		$url = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url .= '/marknotes/plugins/page/html/reveal/';
-
-		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/css/reveal.css\">\n".
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/css/theme/".$appearance['theme'].".css\">\n".
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/lib/css/zenburn.css\">\n".
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/plugin/title-footer/title-footer.css\">\n";
-
-		$css .= $aeFunctions->addStyleInline($script);
-
 		return true;
 	}
 

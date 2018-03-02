@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Autoloader for Makrnotes class_exists
+ * Autoloader for Marknotes class_exists
  *
  * This file should be saved in the /marknotes/includes folder
  */
@@ -21,11 +21,13 @@ class Autoload
 	public static function autoload($class)
 	{
 
-		// This file should be saved in the /marknotes/includes folder so
-		// the root folder for Marknotes's classes is three folders up
+		// This file should be saved in the /marknotes/includes
+		// folder so the root folder for Marknotes's classes is
+		// three folders up
 		$root = rtrim(dirname(dirname(dirname(__FILE__))), DS).DS;
 
-		// Only for MarkNotes classes and not third parties libraries f.i.
+		// Only for MarkNotes classes and not third parties
+		// libraries f.i.
 		if (substr($class, 0, 10) === 'MarkNotes\\') {
 			$parts = preg_split('#\\\#', $class);
 

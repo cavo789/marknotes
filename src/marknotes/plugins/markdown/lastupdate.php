@@ -42,8 +42,12 @@ class LastUpdate extends \MarkNotes\Plugins\Markdown\Plugin
 			// Default will be '**Last update : %s**
 			$text = self::getOptions('text', '**Last update : %s**');
 
+			$aeFiles = \MarkNotes\Files::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
-			$date=utf8_encode(ucfirst(strftime($aeSettings->getText('date'), filemtime($filename))));
+
+			$timestamp = $aeFiles->timestamp($filename);
+
+			$date=utf8_encode(ucfirst(strftime($aeSettings->getText('date'), $timestamp)));
 
 			$params['markdown'] = str_replace('%LASTUPDATE%', sprintf($text, $date), $params['markdown']);
 		}

@@ -31,7 +31,8 @@ class Font_Awesome extends \MarkNotes\Plugins\Content\HTML\Plugin
 	 */
 	private static function setBullets(string $html) : string
 	{
-		// Replace <li></li> but only if they're part of a <ul></ul> i.e. don't modify <li> for <ol>
+		// Replace <li></li> but only if they're part of a <ul></ul>
+		// i.e. don't modify <li> for <ol>
 		// http://stackoverflow.com/a/4835671
 		$sReturn = preg_replace_callback(
 			"/(<ul>.*<\/ul>)/Ums",

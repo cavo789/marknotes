@@ -32,6 +32,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$sReturn='';
@@ -75,17 +76,17 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			// Get the robots.txt content
 			$fname = $aeSettings->getFolderWebRoot().'robots.txt';
 
-			if (!is_file($fname)) {
+			if (!$aeFiles->exists($fname)) {
 				$fname = $aeSettings->getFolderWebRoot().'robots.txt.dist';
 			}
 
-			if (!is_file($fname)) {
+			if (!$aeFiles->exists($fname)) {
 				$fname = $aeSettings->getFolderAppRoot().'robots.txt.dist';
 			}
 
-			if (is_file($fname)) {
+			if ($aeFiles->exists($fname)) {
 				// Ok, a robots.txt file has been found.
-				$sReturn = file_get_contents($fname);
+				$sReturn = $aeFiles->getContent($fname);
 
 				// Get the /docs folder
 				$docs = rtrim($aeSettings->getFolderDocs(false), DS);

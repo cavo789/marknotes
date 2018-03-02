@@ -21,6 +21,7 @@ class MD extends \MarkNotes\Plugins\Task\Plugin
 	public static function run(&$params = null) : bool
 	{
 		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// Display a .md file, call plugins and output note's content
@@ -28,7 +29,7 @@ class MD extends \MarkNotes\Plugins\Task\Plugin
 
 		// Get the markdown content, run markdown plugins
 		$aeEvents->loadPlugins('markdown');
-		$content = file_get_contents($final);
+		$content = $aeFiles->getContent($final);
 		$params['markdown'] = $content;
 		$params['filename'] = $final;
 		$args = array(&$params);

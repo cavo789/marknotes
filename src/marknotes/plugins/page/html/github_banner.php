@@ -45,13 +45,14 @@ class github_banner extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function doIt(&$html = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$svg = __DIR__.'/github_banner/github-corner.svg';
 
-		if (is_file($svg)) {
-			$svg = file_get_contents($svg);
+		if ($aeFiles->exists($svg)) {
+			$svg = $aeFiles->getContent($svg);
 
 			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 			$url .= 'marknotes/plugins/page/html/github_banner/';

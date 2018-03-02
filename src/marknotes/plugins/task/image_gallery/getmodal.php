@@ -13,35 +13,35 @@ class GetModal extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = '';
 
 	/**
-	 * Return the code for showing the login form and respond to the login action
+	 * Return the code for showing the login form and respond to
+	 * the login action
 	 */
 	public static function run(&$params = null) : bool
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$filename = __DIR__.'/assets/modal.frm';
 
-		if ($aeFiles->FileExists($filename)) {
+		if ($aeFiles->exists($filename)) {
 			// Get the root URL
 			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
-			$form = file_get_contents($filename);
+			$form = $aeFiles->getContent($filename);
 
 			$close = $aeSettings->getText('close', 'close');
 
 			$form = str_replace('%CLOSE%', $close, $form);
 
 		/*<!-- build:debug -->*/
-		} else { // if ($aeFiles->FileExists($filename))
+		} else { // if ($aeFiles->exists($filename))
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
 				$aeDebug->log("The file [".$filename."] is missing", "error");
 			}
 		/*<!-- endbuild -->*/
-		} // if ($aeFiles->FileExists($filename))
+		} // if ($aeFiles->exists($filename))
 
 		header('Content-Type: application/json');
 		echo json_encode(array('form'=>$form));

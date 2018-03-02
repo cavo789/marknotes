@@ -5,7 +5,7 @@ function fnPluginHTMLRemark() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Remark');
+		console.log('	  Plugin Page html - Remark');
 	}
 	/*<!-- endbuild -->*/
 
@@ -24,7 +24,8 @@ function fnPluginHTMLRemark() {
 			type: 'error'
 		});
 	} else {
-		var fname = marknotes.note.file + '.remark';
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.remark';
 		window.open(fname);
 	}
 

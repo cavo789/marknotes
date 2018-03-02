@@ -61,12 +61,10 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		// Be sure to have the .md extension
 		$filename = $aeFiles->RemoveExtension($filename).'.md';
 
-		// Derive the fullname
-		$doc = $aeSettings->getFolderDocs(true);
+		// Make filename absolute
+		$fullname = $aeFiles->makeFileNameAbsolute($filename);
 
-		$fullname = str_replace('/', DS, ($doc.ltrim($filename, DS)));
-
-		if (!$aeFiles->fileExists($fullname)) {
+		if (!$aeFiles->exists($fullname)) {
 			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
 			die();
 		}
@@ -87,7 +85,7 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($yaml !== array()) {
 			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
-			if (is_file($lib)) {
+			if ($aeFiles->exists($lib)) {
 				include_once $lib;
 				$arrYAML =  \Symfony\Component\Yaml\Yaml::parse($yaml);
 				$lang = $arrYAML['language']??$lang;
@@ -147,8 +145,8 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 			'</div>'.
 		'</div>';
 
-        echo $sEditForm;
+		echo $sEditForm;
 
-        return true;
-    }
+		return true;
+	}
 }

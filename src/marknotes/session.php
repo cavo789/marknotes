@@ -4,35 +4,40 @@ namespace MarkNotes;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+define('DEFAULT_USERNAME', 'public');
+
 class Session
 {
 	protected static $hInstance = null;
 	private static $prefix = 'MN_';
 
-	public function __construct(string $folder = '')
+	public function __construct(string $folder)
 	{
-		self::init($folder);
+		if ($folder!=='') {
+			self::init($folder);
+		}
 		return true;
 	}
 
 	public static function getInstance(string $folder = '')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new Session($folder);
+			self::$hInstance = new Session(trim($folder));
 		}
 		return self::$hInstance;
 	}
 
 	private function init(string $folder = '')
 	{
-		$aeSettings = \MarkNotes\Settings::getInstance($folder);
+		$aeFolders = \MarkNotes\Folders::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if (!isset($_SESSION)) {
 			// Store session informations in the /tmp/sessions/ folder
 			// Create that folder if needed
-			$folder = $aeSettings->getFolderTmp().DS.'sessions'.DS;
-			if (!is_dir($folder)) {
-				mkdir($folder, CHMOD_FOLDER);
+			$folder = rtrim($aeSettings->getFolderTmp(),DS).DS.'sessions'.DS;
+			if (!$aeFolders->exists($folder)) {
+				$aeFolders->create($folder);
 			}
 
 			// session_save_path will cause a white page on a
@@ -52,16 +57,34 @@ class Session
 			} // try
 
 			self::set('marknotes', 1);
+
+			// ---------------------------------------------------
+			// Get the username used when, if applicable, accessing
+			// to the site. This is the .htpasswd authentication
+			// layer.
+			// If none was used, the username will be set to
+			// "public"
+			$username = trim($_SERVER['PHP_AUTH_USER'] ?? '');
+			if ($username == '') {
+				$username = trim($_SERVER['REMOTE_USER'] ?? DEFAULT_USERNAME);
+			}
+			self::set('htpasswd_username', $username);
+			// ---------------------------------------------------
+
 		}
 
-		// Get informations about the login plugin
-		$arr = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
+		// Get informations about the login plugin :
+		// read task.login.enabled to check if the plugin is active
+		$arr = $aeSettings->getPlugins('task.login', array('enabled'=>0));
 
 		// Check if the plugin is enabled ?
 		$bEnabled = boolval($arr['enabled'] ?? 0);
 
 		if ($bEnabled) {
 			// Yes, he is
+			// Get the login and password
+			$arr = $aeSettings->getPlugins(JSON_OPTIONS_LOGIN);
+
 			$login = isset($arr['username']) ? trim($arr['username']) : '';
 			$password = isset($arr['password']) ? trim($arr['password']) : '';
 
@@ -131,15 +154,37 @@ class Session
 		}
 		return true;
 	}
+
 	/**
-	* The session has a timeout property.	By calling the extend() method,
-	* the session timeout will be reset to the current time() and therefore,
-	* his lifetime will be prolongated.
+	* The session has a timeout property. By calling the
+	* extend() method, the session timeout will be reset to
+	* the current time() and therefore, his lifetime will
+	* be prolongated.
 	*/
 	public function extend()
 	{
-		session_regenerate_id();
+		if (session_id() == '') {
+			session_start();
+		} else {
+			session_regenerate_id();
+		}
 		self::set('timeout', time());
 		return;
+	}
+
+	/**
+	 * Return the username used on Apache level.
+	 * Be sure to return the DEFAULT_USERNAME when the
+	 * variable is empty
+	 */
+	public function getUser() : string
+	{
+		$user = self::get('htpasswd_username', DEFAULT_USERNAME);
+
+		if (trim($user)=='') {
+			$user = DEFAULT_USERNAME;
+		}
+
+		return $user;
 	}
 }

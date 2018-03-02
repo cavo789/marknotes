@@ -41,7 +41,8 @@ class Settings
 	}
 
 	/**
-	* $arr is the debug node of the settings.json file, something like :
+	* $arr is the debug node of the settings.json file,
+	* something like :
 	*
 	*  "debug": {
 	*	  "enabled": 1,
@@ -112,12 +113,12 @@ class Settings
 	*	  /docs/marknotes/userguide.md if displayed, check if the file
 	*	  /docs/marknotes/userguide.json exists and if so, use it.
 	*
-	* In this order so the file loaded in step 4 will have the priority
-	* and can overwrite global settings
+	* In this order so the file loaded in step 4 will have the
+	* priority and can overwrite global settings
 	*/
 	private function loadJSON(array $params = null) : array
 	{
-		$aeJSON = \MarkNotes\JSON::getInstance();
+		$aeJSON = \MarkNotes\JSON::getInstance($this->getFolderAppRoot());
 		$aeFiles = \MarkNotes\Files::getInstance();
 
 		$json = array();
@@ -129,7 +130,7 @@ class Settings
 		// using symbolic paths)
 		$noteJSON = $this->getFolderAppRoot().'settings.json.dist';
 
-		if ($aeFiles->fileExists($noteJSON)) {
+		if ($aeFiles->exists($noteJSON)) {
 			$json = $aeJSON->json_decode($noteJSON, true);
 		}
 
@@ -139,7 +140,7 @@ class Settings
 
 		// From the root folder of the web application
 		$noteJSON = $this->getFolderWebRoot().'settings.json.dist';
-		if ($aeFiles->fileExists($noteJSON)) {
+		if ($aeFiles->exists($noteJSON)) {
 			$arr = $aeJSON->json_decode($noteJSON, true);
 
 			/*<!-- build:debug -->*/
@@ -154,7 +155,7 @@ class Settings
 		// 2. Get the settings.json user's file
 		$noteJSON = $this->getFolderWebRoot().'settings.json';
 
-		if ($aeFiles->fileExists($noteJSON)) {
+		if ($aeFiles->exists($noteJSON)) {
 			$arr = $aeJSON->json_decode($noteJSON, true);
 
 			/*<!-- build:debug -->*/
@@ -163,101 +164,94 @@ class Settings
 
 			if (count($arr) > 0) {
 				$json = array_replace_recursive($json, $arr);
-
-				// ---------------------------------------------------------
-				// @TODO : Remove in future version (@DEPRECTATED)
-				// Support old json : before october 2017, old settings.json
-				// was like
-				//
-				// 	{
-				//		"debug": 1,
-				//		"development": 0,
-				//		...
-				//  }
-				//
-				// so debug wasn't an array but just a boolean
-
-				if (!is_array($json['debug'])) {
-					$arr=array(
-						'enabled'=>$json['debug']??0,
-						'development'=>$json['development']??0
-					);
-				} else {
-					$arr=$json['debug'];
-				}
-
-				//
-				// ---------------------------------------------------------
 			}
 		}
 
-		// 3. The filename shouldn't mention the docs folders, just the filename
-		// So, $filename should not be docs/markdown.md but only
-		// markdown.md because the folder name will be added later on
+		// 3. The filename shouldn't mention the docs folders,
+		// just the filename. So, $filename should not be
+		// docs/markdown.md but only markdown.md because the folder
+		// name will be added later on
 
-		if (isset($params['filename'])) {
+		$noteFileName = $params['filename']??'';
+
+		if ($noteFileName!=='') {
 			$docRoot = $json['folder'].DS;
 
 			$aeFunctions = \MarkNotes\Functions::getInstance();
-			if ($aeFunctions->startsWith($params['filename'], $docRoot)) {
-				$params['filename'] = substr($params['filename'], strlen($docRoot));
+			if ($aeFunctions->startsWith($noteFileName, $docRoot)) {
+				$noteFileName = substr($noteFileName, strlen($docRoot));
 			}
 
 			// 3. Get the settings.json file that is, perhaps,
 			// present in the folder of the note
+			if (dirname($noteFileName)!=='.') {
+				// Only when the file isn't directly under the root
+				// First, be sure that the doc folder has been set
 
-			// First, be sure that the doc folder has been set
+				$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
+				$noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($noteFileName));
 
-			$this->setFolderDocs($json['folder'] ?? DOC_FOLDER);
-			$noteFolder = $this->getFolderDocs(true).str_replace('/', DS, dirname($params['filename']));
+				// $noteFolder is perhaps
+				// C:\notes\docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+				// Process from C:\notes\docs\ till that (so from
+				// the top to the deepest)
+				// and check if there is a settings.json file
 
-			// $noteFolder is perhaps C:\notes\docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
-			// Process from C:\notes\docs\ till that (so from the top to the deepest)
-			// and check if there is a settings.json file
+				$folder = $this->getFolderWebRoot();
+				$noteFolder = rtrim($noteFolder, DS);
 
-			$folder = $this->getFolderWebRoot();
-			$noteFolder = rtrim($noteFolder, DS);
+				do {
+					// $tree will be equal to
+					// docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
+					$tree = str_replace($folder, '', $noteFolder);
 
-			do {
-				// $tree will be equal to docs\Folder\Sub1\Sub-Sub1\Sub-Sub-Sub1\
-				$tree = str_replace($folder, '', $noteFolder);
+					// Process docs, then Folder, then Sub1, ...
+					$subFolder = strrev(basename(strrev($tree)));
 
-				// Process docs, then Folder, then Sub1, ...
-				$subFolder = strrev(basename(strrev($tree)));
+					$folder = rtrim($folder, DS).DS.$subFolder;
 
-				$folder = rtrim($folder, DS).DS.$subFolder;
+					$noteJSON = rtrim($folder, DS).DS.'settings.json';
 
-				$noteJSON = rtrim($folder, DS).DS.'settings.json';
+					if ($aeFiles->exists($noteJSON)) {
+						/*<!-- build:debug -->*/
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log($noteJSON, "debug");
+						/*<!-- endbuild -->*/
 
-				if ($aeFiles->fileExists($noteJSON)) {
-					// Read the settings.json file and merge
-					$arr = $aeJSON->json_decode($noteJSON, true);
-					$json = array_replace_recursive($json, $arr);
+						// Read the settings.json file and merge
+						$arr = $aeJSON->json_decode($noteJSON, true);
 
-					/*<!-- build:debug -->*/
-					self::enableDebugMode($json['debug']??array(), $noteJSON);
-					/*<!-- endbuild -->*/
-				}
-			} while ($folder !== $noteFolder);
+						$json = array_replace_recursive($json, $arr);
+
+						/*<!-- build:debug -->*/
+						self::enableDebugMode($json['debug']??array(), $noteJSON);
+						/*<!-- endbuild -->*/
+					}
+
+				} while ($folder !== $noteFolder);
+			}
 
 			// 4. Get the note_name.json file that is, perhaps,
 			// present in the folder of the note.
-			// note_name is the note filename with the .json extension of .md
+			// note_name is the note filename with the .json
+			// extension of .md
 
-			// if $params['filename'] is equal to /marknotes/userguide.md
+			// if $noteFileName is equal to
+			// /marknotes/userguide.md
 
 			// $dir will be "marknotes/"
-			$dir = dirname($params['filename']);
+			$dir = dirname($noteFileName);
 			$dir = ($dir=='.'?'':$dir.DS);
 
 			// $fname will be "userguide.json"
 			$aeFiles = \MarkNotes\Files::getInstance();
-			$fname=$aeFiles->removeExtension(basename($params['filename'])).'.json';
+			$fname = $aeFiles->removeExtension(basename($noteFileName)).'.json';
 
-			// $noteJSON will be c:/sites/notes/docs/marknotes/userguide.json f.i.
+			// $noteJSON will be
+			// c:/sites/notes/docs/marknotes/userguide.json f.i.
 			$noteJSON = $this->getFolderDocs(true).$dir.$fname;
 
-			if ($aeFiles->fileExists($noteJSON)) {
+			if ($aeFiles->exists($noteJSON)) {
 				$arr = $aeJSON->json_decode($noteJSON, true);
 				$json = array_replace_recursive($json, $arr);
 
@@ -305,27 +299,33 @@ class Settings
 	*/
 	public function getText(string $variable, string $default = '', bool $jsProtect = false) : string
 	{
-
 		static $json_lang=array();
 
 		if ($json_lang === array()) {
+
+			$aeFiles = \MarkNotes\Files::getInstance();
+
 			// Load, always, the file in English
 			$fname = $this->getFolderAppRoot().'languages/marknotes-'.DEFAULT_LANGUAGE.'.json';
-			$json_lang = json_decode(file_get_contents($fname), true);
+			$json_lang = json_decode($aeFiles->getContent($fname), true);
 
-			// Now, if present, load the second file, the selected language
-			// (for instance French).
+			// Now, if present, load the second file, the
+			// selected language (for instance French).
 			$lang = $this->getLanguage();
 
 			if ($lang!==DEFAULT_LANGUAGE) {
 				$fname = $this->getFolderAppRoot().'languages/marknotes-'.$lang.'.json';
 
-				if (is_file($fname)) {
-					// array_replace_recursive so keys in marknotes-en.json
-					// and not in the second file (marknotes-fr.json) are
-					// keep and not override. Doing this will allow to be able
-					// to show text in english even if not yet translated
-					$arr = json_decode(file_get_contents($fname), true);
+				if ($aeFiles->exists($fname)) {
+					// array_replace_recursive so keys in
+					// marknotes-en.json
+					// and not in the second file
+					// (marknotes-fr.json) are
+					// keep and not override. Doing this will
+					// allow to be able
+					// to show text in english even if not yet
+					// translated
+					$arr = json_decode($aeFiles->getContent($fname), true);
 					$json_lang = array_replace_recursive($json_lang, $arr);
 				}
 			}
@@ -334,21 +334,36 @@ class Settings
 		$return = isset($json_lang[$variable]) ? $json_lang[$variable] : trim($default);
 
 		if ($jsProtect) {
-			$return = str_replace("'", "\'", html_entity_decode($return));
+			$return = str_replace("'", "\'", @html_entity_decode($return));
 		}
 
-		// In case of null (i.e. the translation wasn't found, return at least the name of the variable)
+		/*<!-- build:debug -->*/
+		if (($return==null) && (self::getDebugMode())) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+
+			$sMsg = "Translation for ".$variable." is missing";
+			$aeDebug->log($sMsg, "debug");
+
+			if ($aeDebug->getDevMode()) {
+				$aeDebug->here(DEV_MODE_PREFIX.$sMsg, 1);
+			}
+		}
+		/*<!-- endbuild -->*/
+
+		// In case of null (i.e. the translation wasn't found,
+		// return at least the name of the variable)
 		return ($return === null?$variable:$return);
 	}
 
 	/**
-	* Small sanitization function to be sure that the user willn't type anything in the settings.json file
+	* Small sanitization function to be sure that the user
+	* won't type anything in the settings.json file
 	* for filename properties
 	*
 	* @param  string $fname
 	* @return string
 	*/
-	private function sanitizeFileName(string $fname) : string
+	private function sanitize(string $fname) : string
 	{
 		$fname = trim($fname);
 
@@ -376,7 +391,8 @@ class Settings
 		$fname = $this->getFolderAppRoot().'languages/marknotes-'.$lang.'.json';
 
 		// If no, use the default language
-		$this->language = (is_file($fname) ? $lang : DEFAULT_LANGUAGE);
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$this->language = ($aeFiles->exists($fname) ? $lang : DEFAULT_LANGUAGE);
 	}
 
 	public function getDebugMode() : bool
@@ -455,7 +471,6 @@ class Settings
 
 	public function setFolderDocs($folder)
 	{
-
 		// Respect OS directory separator
 		$folder = str_replace('/', DS, $folder);
 
@@ -473,19 +488,22 @@ class Settings
 	*/
 	public function getFolderTmp() : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+
 		$folder = rtrim($this->folderWebRoot, DS).DS.'tmp';
 
-		if (!is_dir($folder)) {
-			mkdir($folder, CHMOD_FOLDER);
+		if (!$aeFolders->exists($folder)) {
+			$aeFolders->create($folder);
 		}
 
-		if (is_dir($folder)) {
-			if (!file_exists($fname = $folder.'/.gitignore')) {
-				file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+		if ($aeFolders->exists($folder)) {
+			if (!$aeFiles->exists($fname = $folder.'/.gitignore')) {
+				$aeFiles->create($fname, '# Ignore everything'.PHP_EOL.'*');
 			}
 
-			if (!file_exists($fname = $folder.'/.htaccess')) {
-				file_put_contents($fname, 'deny from all');
+			if (!$aeFiles->exists($fname = $folder.'/.htaccess')) {
+				$aeFiles->create($fname, 'deny from all');
 			}
 		}
 
@@ -500,19 +518,22 @@ class Settings
 	*/
 	public function getFolderCache() : string
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
+
 		$folder = rtrim($this->folderWebRoot, DS).DS.'cache';
 
-		if (!is_dir($folder)) {
-			mkdir($folder, CHMOD_FOLDER);
+		if (!$aeFolders->exists($folder)) {
+			$aeFolders->create($folder, CHMOD_FOLDER);
 		}
 
-		if (is_dir($folder)) {
-			if (!file_exists($fname = $folder.'/.gitignore')) {
-				file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+		if ($aeFolders->exists($folder)) {
+			if (!$aeFiles->exists($fname = $folder.'/.gitignore')) {
+				$aeFiles->create($fname, '# Ignore everything'.PHP_EOL.'*');
 			}
 
-			if (!file_exists($fname = $folder.'/.htaccess')) {
-				file_put_contents($fname, 'deny from all');
+			if (!$aeFiles->exists($fname = $folder.'/.htaccess')) {
+				$aeFiles->create($fname, 'deny from all');
 			}
 		}
 
@@ -561,13 +582,12 @@ class Settings
 	*/
 	public function getTemplateFile(string $default = 'screen') : string
 	{
-
 		$aeFiles = \MarkNotes\Files::getInstance();
 
 		$tmpl = $default;
 		if (isset($this->json['templates'])) {
 			if (isset($this->json['templates'][$default])) {
-				$tmpl = $this->sanitizeFileName($this->json['templates'][$default]);
+				$tmpl = $this->sanitize($this->json['templates'][$default]);
 			}
 		}
 
@@ -575,15 +595,16 @@ class Settings
 			// Get the filename (f.i. "screen" (or "screen.php")
 			$fname = $this->getFolderTemplates().$tmpl;
 
-			// The file isn't found; perhaps the extension wasn't mentionned
-			// If no extension mentionned; default is .php
-			if (!$aeFiles->fileExists($fname)) {
-				if ($aeFiles->fileExists($fname.'.php')) {
+			// The file isn't found; perhaps the extension
+			// wasn't mentionned. If no extension mentionned;
+			// default is .php
+			if (!$aeFiles->exists($fname)) {
+				if ($aeFiles->exists($fname.'.php')) {
 					$fname.='.php';
 				}
 			}
 
-			if (!$aeFiles->fileExists($fname)) {
+			if (!$aeFiles->exists($fname)) {
 				// The specified template doesn't exists.
 				// Back to the default one;
 				/*<!-- build:debug -->*/
@@ -594,14 +615,13 @@ class Settings
 				}
 				/*<!-- endbuild -->*/
 
-				$fname = '';
+				// Use the default template
+				$fname = $this->getFolderTemplates().$default.'.php';
 			}
 		} else { // if ($tmpl!=='')
-			if ($aeFiles->fileExists($this->getFolderTemplates().$tmpl.'.php')) {
-				$fname = $this->getFolderTemplates().$tmpl.'.php';
-			} else {
+			$fname = $this->getFolderTemplates().$tmpl.'.php';
+			if (!$aeFiles->exists($fname)) {
 				// No template at all
-
 				$fname='';
 			}
 		} // if ($tmpl!=='')
@@ -639,50 +659,12 @@ class Settings
 	}
 
 	/**
-	* Retrieve if a specific tool like for instance 'decktape' is configured in the settings.json file
-	*
-	* The json "convert" entry looks like this :
-	*	 "convert": {
-	*		 "pandoc": {
-	*			 "script" : "c:\\christophe\\tools\\pandoc\\pandoc.exe",
-	*			 "options" : "--latex-engine=xelatex -V geometry:margin=1in -o"
-	*		 }
-	*
-	* This function will return an array with every entries below the name of the converting tool but
-	* only if the tool is found i.e. if the "script" file exists on the disk
-	*
-	*/
-	public function getConvert(string $sTool) : array
-	{
-		/*<!-- build:debug -->*/
-		$aeDebug = \MarkNotes\Debug::getInstance();
-		$aeDebug->here("*** OBSOLETE - The convert node doesn't exists anymore. See plugins->options->export", 10);
-		/*<!-- build:debug -->*/
-		die("Died in ".__FILE__.", line ".__LINE__);
-		/*<!-- endbuild -->*/
-		/*<!-- endbuild -->*/
-		$aeFiles = \MarkNotes\Files::getInstance();
-
-		$arr = array();
-
-		if (isset($this->json['convert'])) {
-			if (isset($this->json['convert'][$sTool])) {
-				if ($aeFiles->fileExists($this->json['convert'][$sTool]['script'])) {
-					$arr = $this->json['convert'][$sTool];
-				}
-			}
-		}
-
-		return $arr;
-	}
-
-	/**
 	* Return a node from the "Page" JSON entry
 	*/
 	public function getPage(string $node = '', $default = '')
 	{
 		return $this->json['page'][$node] ?? $default;
-	} // function getPage()
+	}
 
 	/**
 	* Get locale
@@ -692,7 +674,7 @@ class Settings
 	public function getLocale() : string
 	{
 		// Set regional settings, language and locale
-		$arrRegion=$this->json['regional']??array('locale'=>'EN', 'language'=>DEFAULT_LANGUAGE, 'timezone'=>'Europe/London');
+		$arrRegion=$this->json['regional']??array('locale'=>'en_us', 'language'=>DEFAULT_LANGUAGE, 'timezone'=>'Europe/London');
 
 		// Be sure to have en-US (minus) and not en_US (underscore)
 		return str_replace('_', '-', trim($arrRegion['locale']));
@@ -785,7 +767,7 @@ class Settings
 		$sReturn = '';
 
 		$fname = $this->getFolderAppRoot().'package.json';
-		if ($aeFiles->fileExists($fname)) {
+		if ($aeFiles->exists($fname)) {
 			$json = $aeJSON->json_decode($fname, true);
 			$sReturn = $json[$info];
 		}

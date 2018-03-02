@@ -19,17 +19,21 @@
 	"interface": {
 		"accent_conversion": 0,
 		"footer": {
-			"left": "<strong>markNotes © 2017<strong>",
+			"left": "<strong>markNotes © 2016-2018<strong>",
 			"right": "<a href='https://github.com/cavo789/marknotes' target='blank'>Fork me on GitHub</a>"
 		},
-		"show_tips": 1,
-		"show_tree_allowed": 1,
+		"can_see": 1,
 		"skin": "blue"
 	},
 	"github": {
 		"url": "https://github.com/cavo789/marknotes"
 	},
 	"folder": "docs",
+	"cloud": {
+		"enabled": 0,
+		"platform": "",
+		"token": ""
+	},
 	"regional": {
 		"locale": "en-UK",
 		"language": "en",
@@ -45,6 +49,10 @@
 				"quickIcons": 1
 			},
 			"clear": {
+				"enabled": 1,
+				"quickIcons": 1
+			},
+			"favorites": {
 				"enabled": 1,
 				"quickIcons": 1
 			},
@@ -116,6 +124,10 @@
 				"enabled": 1,
 				"quickIcons": 1
 			},
+			"filemanager": {
+				"enabled": 1,
+				"quickIcons": 1
+			},
 			"update": {
 				"enabled": 1,
 				"quickIcons": 1
@@ -133,73 +145,61 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"attributes": {
-					"description": "Allow to add extra attributes (classes, style, data-attributes, ...) to DOM elements",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"balloon": {
-					"description": "Add nicer tooltips (based on full css) in place of the standard 'title' attribute",
 					"enabled": 0,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"bootstrap": {
-					"description": "Add bootstrap features to the note once converted in HTML. The added features will be defined in the plugin's parameters",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"encrypt": {
-					"description": "Add the lock span to show the user which parts of the note are connfidentials",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"datatables": {
-					"description": "Just add a data-datatables-enable=1 to the HTML table tag when the plugin can be enabled for the rendered note. Should remains active as soon as the content datatable plugin has been enabled",
 					"enabled": 1,
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["interface", "task.export.html", "main"]
 				},
 				"font-awesome": {
-					"description": "Replace :fa-xxx: by the icon from font-awesome and, too, use a font-awesome bullet for lists",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"jolitypo": {
-					"description": "automatically solve small issue with the note's typography",
 					"enabled": 1,
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["main", "task.export.html", "task.export.pdf"]
 				},
 				"image_gallery": {
-					"description": "Add an image gallery to the site; load images in a div/span so the page html plugin can handle them",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["task.export.html", "task.export.pdf", "task.export.reveal"]
 				},
 				"optimize": {
-					"description": "Prepare the optimization and, f.i., add a lazyload to images. **This plugin should be placed after the content.html.image_galley plugin**",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"format": {
-					"description": "Format allows you to add your own custom prefix. In Markdown, you can type **bold** i.e. the double asterix will put what is inside in bold, the single asterix will put things in italic, ... Format will allow you to add your own prefix",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"microdata": {
-					"description": "Add span with itemprop attribute to words of the note.",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"toc": {
-					"description": "Add a table-of-contents in the note",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal"],
 					"only_if_task": []
@@ -208,6 +208,11 @@
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["interface", "main", "task.export.html"]
+				},
+				"mermaid": {
+					"enabled": 1,
+					"not_if_task": ["task.search.search"],
+					"only_if_task": ["main", "task.export.html", "task.export.pdf", "task.export.reveal", "task.export.remark"]
 				}
 			}
 		},
@@ -220,49 +225,41 @@
 					"only_if_task": ["interface", "main", "task.export.html", "task.timeline.get"]
 				},
 				"fakeLoader": {
-					"description": "Add a loading animation when the interface is displayed. This, only, when the site is visited by an human, not a bot",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"animate": {
-					"description": "Load the animate.css stylesheet",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["main", "task.export.html", "task.timeline.get"]
 				},
 				"add_icons": {
-					"description": "Analyze each URLs in the note and add icons before when, f.i., the link points to github, youtube, facebook, ... or to a file (.docx, .ppt, ...)",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"anchor": {
-					"description": "Show an anchor near headings",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["task.export.html"]
 				},
 				"balloon": {
-					"description": "Add nicer tooltips (based on full css) in place of the standard 'title' attribute",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
 				},
 				"banner": {
-					"description": "Add the marknotes ascii banner in html files",
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": ["task.export.html", "task.export.reveal", "task.export.remark", "screen", "interface"]
 				},
 				"clipboard": {
-					"description": "Load clipboard.js to allow copy in clipboard features (used by the 'clipboard' plugin buttons of the content side)",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"copyhtml": {
-					"description": "Load the .js file used by the copyhtml button; will allow to copy the HTML of the note into the clipboard",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
@@ -273,56 +270,57 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"definitions": {
-					"description": "Highlight words from the definition list",
 					"enabled": 0,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"docx": {
-					"description": "Load Googoose js files to allow to convert to Winword also when Pandoc isn't installed locally. This script is only needed for the interface",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["interface", "main", "task.export.html"]
 				},
+				"favorites" : {
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
+				},
 				"editor": {
-					"description": "Add the js file for the Edit feature",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html", "task.edit.form"]
 				},
 				"encrypt": {
-					"description": "Show a lock icon for encrypted portion of text",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
 				},
 				"epub": {
-					"description": "Add JS files for the EPUB conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"erase": {
-					"description": "Load the JS script for the erase button (in the treeview area)",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
+				"filemanager": {
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface", "task.export.html", "task.elf.show"]
+				},
 				"font-awesome": {
-					"description": "Load font-awesome css, needed by the font-awesome content plugin",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": []
 				},
 				"fullscreen": {
-					"description": "Add the js file for the Fullscreen feature",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"ganalytics": {
-					"description": "Load the JS for Google Analytics",
-					"enabled": 1,
+					"enabled": 0,
 					"not_if_task": ["main", "interface"],
 					"only_if_task": ["task.export.html"]
 				},
@@ -333,12 +331,11 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"gtranslate": {
-					"enabled": 1,
+					"enabled": 0,
 					"not_if_task": ["main", "interface"],
 					"only_if_task": ["task.export.html"]
 				},
 				"image_gallery": {
-					"description": "Add an image gallery to the site; load JS and CSS",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.pdf", "task.export.reveal"]
@@ -349,19 +346,21 @@
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"links_target": {
-					"description": "Force hyperlinks to be opened in a new tab",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": []
 				},
 				"login": {
-					"description": "Load the JS script for the Login button (in the treeview area)",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
+				"mermaid": {
+					"enabled": 1,
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
+				},
 				"md": {
-					"description": "Load JS for the MD file opening",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
@@ -372,31 +371,26 @@
 					"only_if_task": ["task.export.html"]
 				},
 				"microdata": {
-					"description": "Load CSS for the microdata content plugin",
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"new_window": {
-					"description": "Load the .js file used by the New_Windows button",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"odt": {
-					"description": "Add JS files for the ODT conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"pdf": {
-					"description": "Add JS files for the PDF conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"print_preview": {
-					"description": "Load the .js file used by the Print preview button",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
@@ -407,13 +401,11 @@
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
 				},
 				"remark": {
-					"description": "Add the JS file for remark",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["task.export.remark"]
 				},
 				"reveal": {
-					"description": "Add JS files for reveal.js",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.reveal", "task.export.html"]
@@ -423,14 +415,7 @@
 					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
 				},
-				"search": {
-					"description": "Display the search engine in the interface",
-					"enabled": 1,
-					"not_if_task": [],
-					"only_if_task": ["main", "interface"]
-				},
 				"share": {
-					"description": "Add share buttons like facebook, twitter, mail, ...",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["task.export.html"]
@@ -441,13 +426,11 @@
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal", "task.export.remark"]
 				},
 				"tags": {
-					"description": "Add css and js for the tags plugin",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"toc": {
-					"description": "Load the toc.css stylesheet",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal", "task.timeline.get"],
 					"only_if_task": []
@@ -459,28 +442,29 @@
 					"only_if_task": ["main", "interface"]
 				},
 				"txt": {
-					"description": "Add JS files for the TEXT conversion",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"update": {
-					"description": "Load the JS script for the update button",
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"upload": {
-					"description": "Add an upload form so the user can send local files to the server",
-					"enabled": 1,
+					"enabled": 0,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
 				"custom": {
-					"description": "Load your own css and js files",
 					"enabled": 1,
 					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
+				},
+				"search": {
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
 				},
 				"optimize": {
 					"description": "Optimization plugin; see options to know what this plugin will really do. **The best place for this plugin is to be fired as the last one (as defined in plugins.page.html)**",
@@ -492,103 +476,90 @@
 		},
 		"markdown": {
 			"beautify": {
-				"description": "clean the markdown content, replace non breaking space, use LF and not CRLF, ... **The preferred order for this plugin is #1, just after the include plugin**",
+				"description": "**The preferred order for this plugin is #1, just after the include plugin**",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.timeline.get", "task.edit.form"],
 				"only_if_task": []
 			},
-			"csv": {
-				"description": "Allow to insert a .csv file in the note; convert the .csv into an array",
-				"enabled": 1,
-				"not_if_task": [],
-				"only_if_task": ["main", "interface", "task.export.html"]
-			},
 			"encrypt": {
-				"description": "Add encryption. **The preferred order for this plugin is #2, after the beautify plugin**",
+				"description": "**The preferred order for this plugin is #2, after the beautify plugin**",
 				"enabled": 1,
 				"not_if_task": ["task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"include": {
-				"description": "Allow to include other files in a note just like if these contents were in that note. Allow to create files for f.i. each chapters of your content. **The preferred order for this plugin is #3, after beautify and encrypt**",
+				"description": "**The preferred order for this plugin is #3, after beautify and encrypt**",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
+			"csv": {
+				"enabled": 1,
+				"not_if_task": [],
+				"only_if_task": ["main", "interface", "task.export.html"]
+			},
 			"yaml": {
-				"description": "handle YAML block if present and create it if configured",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"lastupdate": {
-				"description": "Add the last update date/time in the conntent",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"variables": {
-				"description": "Allow to use variables like %URL%, %ROOT%, ... in the markdown content",
+				"description": "Allow to use variables like %URL%, %ROOT%, ... in the markdown content **mandatory**",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md"],
 				"only_if_task": []
 			},
 			"abbreviations": {
-				"description": "Add tooltips for words in the abbreviation's list",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"definitions": {
-				"description": "Generate a table with definitions",
-				"enabled": 1,
+				"enabled": 0,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["interface", "main", "task.export.html"]
 			},
 			"footnotes": {
-				"Description": "Add footnotes to the note",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["main", "task.export.html"]
 			},
 			"image_gallery": {
-				"description": "Read a folder containing images and add images in the markdown note",
 				"enabled": 1,
 				"not_if_task": ["task.export.md", "task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["task.export.reveal"]
 			},
 			"todos": {
-				"description": "Add a todo summary",
 				"enabled": 1,
 				"not_if_task": ["task.export.md", "task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"toc": {
-				"description": "Add a table-of-contents in the note",
 				"enabled": 1,
 				"not_if_task": ["task.export.reveal", "task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"listfiles": {
-				"description": "Read a folder containing files and add links to these files in the markdown note",
 				"enabled": 1,
 				"not_if_task": ["task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"hierarchy": {
-				"description": "Add automatically number before headings",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"emoji": {
-				"description": "Add emoji support",
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"docx": {
-				"description": "When exporting to docx, add an extra attribute for Pandoc so images will have the correct size",
 				"enabled": 1,
 				"not_if_task": [],
 				"only_if_task": ["task.export.docx"]
@@ -677,7 +648,7 @@
 				},
 				"definitions": {
 					"title": "## Glossary",
-					"not_in_tags": ["a", "abbr", "dd", "dt", "link", "script", "span"],
+					"not_in_tags": "a, abbr, dd, dt, link, script, span",
 					"terms": []
 				},
 				"encrypt": {
@@ -825,6 +796,9 @@
 					"gtranslate": {
 						"enable_localhost": 0
 					},
+					"mermaid": {
+						"theme": ""
+					},
 					"metadata": {
 						"key": [
 							{
@@ -837,45 +811,13 @@
 							}
 						]
 					},
-					"optimize": {
-						"localStorage": 1,
-						"server_session": 1,
-						"cache_search_results": 1,
-						"headers": {
-							"browser_cache": 0
-						},
-						"html": {
-							"minify": 0,
-							"remove_comments": 0
-						},
-						"css": {
-							"minify": 0
-						},
-						"js": {
-							"add_defer": 0,
-							"defer_exceptions": [
-								"ajaxify.js",
-								"bootstrap",
-								"CLDRPluralRuleParser",
-								"i18n",
-								"jquery.min.js",
-								"linkify.min.js",
-								"marknotes.js",
-								"url.min"
-							],
-							"minify": 0
-						},
-						"images": {
-							"lazyload": 1
-						}
-					},
 					"reveal": {
 						"animation": {
 							"bullet": "",
 							"h1": "zoom",
 							"h2": "random",
 							"h3": "random",
-							"h4": "slide-in",
+							"h4": "slide",
 							"h5": "fade",
 							"h6": "convex"
 						},
@@ -900,7 +842,7 @@
 						"bots": [
 							{
 								"name": "robots",
-								"content": "index, follow"
+								"content": "Index, Follow"
 							}
 						]
 					},
@@ -920,18 +862,21 @@
 						}
 					},
 					"decktape": {
-						"script": "c:\\christophe\\tools\\decktape\\phantomjs.exe"
+						"script": "tools/decktape/phantomjs.exe"
 					},
 					"pandoc": {
-						"script": "c:\\christophe\\tools\\pandoc\\pandoc.exe",
+						"script": "tools/pandoc/pandoc.exe",
 						"options": {
 							"docx": "--from markdown --standalone -S --smart --columns 1000 --to docx",
 							"epub": "--from markdown --standalone -S --table-of-contents --smart --to epub",
 							"odt": "--from markdown --standalone -S --table-of-contents --smart --to odt",
-							"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=c:\\Christophe\\tools\\pandoc\\miktex\\miktex\\bin\\x64\\xelatex.exe -V geometry:margin=1in",
+							"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=tools/miktex/miktex/bin/x64/xelatex.exe -V geometry:margin=1in",
 							"txt": "--from markdown --ascii"
 						}
 					}
+				},
+				"favorites" : {
+					"list": [ ]
 				},
 				"fetch": {
 					"querystring": "?tmpl=component",
@@ -988,7 +933,6 @@
 						"//*[@id='system-message-container']",
 						"//*[@id='itemCommentsAnchor']",
 						"//*[(attribute::data-mce-bogus)]"
-
 					],
 					"regex": [
 						{
@@ -999,8 +943,46 @@
 				},
 				"login": {
 					"username": "admin",
-					"password": "marknotes",
-					"enabled" : 1
+					"password": "marknotes"
+				},
+				"optimize": {
+					"localStorage": 0,
+					"server_session": 0,
+					"cache": {
+						"enabled" : 0,
+						"duration": {
+							"default" : 86400,
+							"html" : 2678400,
+							"sitemap" : 604800
+						}
+					},
+					"headers": {
+						"browser_cache": 0
+					},
+					"html": {
+						"minify": 0,
+						"remove_comments": 0
+					},
+					"css": {
+						"minify": 0
+					},
+					"js": {
+						"add_defer": 0,
+						"defer_exceptions": [
+							"ajaxify.js",
+							"bootstrap",
+							"CLDRPluralRuleParser",
+							"i18n",
+							"jquery.min.js",
+							"linkify.min.js",
+							"marknotes.js",
+							"url.min"
+						],
+						"minify": 0
+					},
+					"images": {
+						"lazyload": 1
+					}
 				},
 				"robots-txt": {
 					"bots_only": 0,
@@ -1010,6 +992,9 @@
 					"min_chars": 6,
 					"min_occurences": 10
 				},
+				"homepage": {
+					"note": "Introduction.md"
+				},
 				"translate": {
 					"include" : {
 						"after" : "Free translation of the article  %YAML_ORIGINAL_URL%"
@@ -1018,11 +1003,19 @@
 				"update": {
 					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",
 					"version_url":"https://raw.githubusercontent.com/cavo789/marknotes/master/package.json"
-
 				}
 			}
 		},
 		"task": {
+			"acls" : {
+				"enabled" : 1
+			},
+			"editor" : {
+				"enabled" : 1
+			},
+			"encrypt" : {
+				"enabled" : 0
+			},
 			"export": {
 				"before": {
 					"debug": {
@@ -1031,7 +1024,8 @@
 						"only_if_task": ["interface", "main", "task.export.html", "task.export.reveal"]
 					},
 					"kill_old_ones": {
-						"enabled": 1,
+						"enabled": 0,
+						"TEMP":"This plugin is no more needed since MN use the cache system and doesn't create anymore .html files in the note's folder",
 						"not_if_task": ["task.search.search"],
 						"only_if_task": []
 					}
@@ -1054,6 +1048,27 @@
 					}
 				}
 			},
+			"favorites" : {
+				"enabled" : 1
+			},
+			"fetch": {
+				"enabled" : 1
+			},
+			"filemanager": {
+				"enabled": 1
+			},
+			"homepage" : {
+				"enabled" : 1
+			},
+			"index": {
+				"enabled" : 1
+			},
+			"image_gallery": {
+				"enabled" : 1
+			},
+			"login" : {
+				"enabled" : 1
+			},
 			"markdown": {
 				"write": {
 					"description": "A few plugins like encrypt or beautify make changes to the content and will rewrite the file on the disk. This is done thanks to the write plugin (no files's rewriting if disabled). The preferred order for this plugin is at the last place.",
@@ -1061,6 +1076,24 @@
 					"not_if_task": ["task.search.search"],
 					"only_if_task": []
 				}
+			},
+			"optimize" : {
+				"enabled" : 0
+			},
+			"sitemap": {
+				"enabled" : 1
+			},
+			"timeline": {
+				"enabled" : 1
+			},
+			"translate": {
+				"enabled" : 1
+			},
+			"update": {
+				"enabled" : 1
+			},
+			"upload": {
+				"enabled" : 1
 			}
 		}
 	},
@@ -1075,7 +1108,7 @@
 		"pdf": "pdf",
 		"remark": "remark",
 		"reveal": "reveal",
-		"screen": "screen",
+		"interface": "interface",
 		"timeline": "timeline"
 	}
 }

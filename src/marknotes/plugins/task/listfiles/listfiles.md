@@ -13,7 +13,7 @@ $args=array(&$arrFiles);
 $aeEvents->loadPlugins('task.listfiles.get');
 $aeEvents->trigger('task.listfiles.get::run', $args);
 
-$arrFiles = $args[0];
+$arrFiles = $args[0]['files'];
 
 foreach ($arrFiles as $file) {
 	echo "Dear visitor, the file " . $file . " is accessible to you</br>";

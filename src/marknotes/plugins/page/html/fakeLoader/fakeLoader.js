@@ -1,8 +1,7 @@
 // @link https://github.com/joaopereirawd/fakeLoader.js
 
 function showAfterFakeLoading() {
-	$(".wrapper").removeClass("hidden");
-	//		$("header").removeClass("hidden");
+	$("body").removeClass("hidden");
 };
 
 $(document).ready(function () {

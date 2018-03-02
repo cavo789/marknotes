@@ -12,10 +12,20 @@ marknotes.arrPluginsFct.push("fnPluginTaskSearch_afterDisplay");
 function fnPluginTaskSearch_init() {
 
 	try {
+
+		// Calculate the width of the search box
+		$width = window.innerWidth - $('.main-sidebar').width();
+		$width = $width - 500; // $('.navbar-custom-menu').width();
+
+		// Get place for other DOM elements
+		$width = $width - 100;
+
+		$('#divSearch').css("max-width", $width +"px");
+
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('      Plugin Page html - Search - Initialization');
-			console.log('         This function will be called only once');
+			console.log('	  Plugin Page html - Search - Initialization');
+			console.log('		 This function will be called only once');
 		}
 		/*<!-- endbuild -->*/
 
@@ -25,7 +35,7 @@ function fnPluginTaskSearch_init() {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('         fnPluginTaskSearch_init has been removed from marknotes.arrPluginsFct');
+			console.log('		 fnPluginTaskSearch_init has been removed from marknotes.arrPluginsFct');
 		}
 		/*<!-- endbuild -->*/
 
@@ -56,9 +66,6 @@ function fnPluginTaskSearch_init() {
 					} // if ($.isFunction($.fn.jstree))
 				});
 
-				/*	$('#search').css('width', $('#sidebar').width() - 5);
-					$('.flexdatalist-multiple').css('width', $('.flexdatalist-multiple').parent().width() - 10).show();*/
-
 				// Interface : put the cursor immediatly in the edit box
 				try {
 					$('#search').focus();
@@ -85,7 +92,7 @@ function fnPluginTaskSearch_afterDisplay() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Search - A note has been displayed');
+		console.log('	  Plugin Page html - Search - A note has been displayed');
 	}
 	/*<!-- endbuild -->*/
 
@@ -125,9 +132,9 @@ function fnPluginTaskSearch_afterDisplay() {
  * Called by the tags plugin
  *
  * @param {json} $entry
- *      keyword           : the value to add in the search area
- *      reset (optional)  : if true, the search area will be resetted before
- *                          (so only search for the new keyword)
+ *	  keyword			: the value to add in the search area
+ *	  reset (optional)  : if true, the search area will be resetted before
+ *						  (so only search for the new keyword)
  *
  * @returns {Boolean}
  */
@@ -135,7 +142,7 @@ function fnPluginTaskSearch_addSearchEntry($entry) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Search - Add an entry');
+		console.log('	  Plugin Page html - Search - Add an entry');
 	}
 	/*<!-- endbuild -->*/
 

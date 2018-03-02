@@ -5,6 +5,7 @@
  * Anwser to URL like the one below (names are base64_encoded)
  * index.php?task=task.folder.create&param=JTJGenp6enp6
  */
+
 namespace MarkNotes\Plugins\Task\Folder;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -23,6 +24,7 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 	public static function create(string $foldername) : float
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if (trim($foldername) === '') {
@@ -30,7 +32,7 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 		}
 
 		// Sanitize the foldername
-		$foldername = $aeFiles->sanitizeFileName($foldername);
+		$foldername = $aeFiles->sanitize($foldername);
 
 		// Try to remove the folder, first, be sure that the user
 		// can see the folder : if he can't, he can't delete it too
@@ -41,8 +43,9 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 		$arr = array('folder' => $foldername,'return' => true);
 		$args = array(&$arr);
 
-		// Be sure that the foldername starts with a "/" on non Windows
-		// environment (the foldername is thus absolute, not relative)
+		// Be sure that the foldername starts with a "/"
+		// on non Windows environment (the foldername is thus
+		// absolute, not relative)
 		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 			$foldername = DS.ltrim($foldername, DS);
 		}
@@ -52,19 +55,19 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
 		if (intval($args[0]['return'])===1) {
-			// Only if the user can see the parent folder, he can create a child folder
-
-			if ($aeFiles->folderExists($foldername)) {
+			// Only if the user can see the parent folder, he can
+			// create a child folder
+			if ($aeFolders->exists($foldername)) {
 				// The folder already exists
 				return ALREADY_EXISTS;
-			} elseif (!$aeFiles->folderExists(dirname($foldername))) {
+			} elseif (!$aeFolders->exists(dirname($foldername))) {
 				// The parent folder doesn't exists
 				return FOLDER_NOT_FOUND;
 			} else {
-				if (!$aeFiles->folderExists($foldername)) {
+				if (!$aeFolders->exists($foldername)) {
 					try {
-						mkdir(mb_convert_encoding($foldername, "ISO-8859-1", "UTF-8"), CHMOD_FOLDER);
-						return ($aeFiles->folderExists($foldername) ? CREATE_SUCCESS : FILE_ERROR);
+						$aeFolders->create($foldername);
+						return ($aeFolders->exists($foldername) ? CREATE_SUCCESS : FILE_ERROR);
 					} catch (Exception $ex) {
 						/*<!-- build:debug -->*/
 						if ($aeSettings->getDebugMode()) {
@@ -72,14 +75,13 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 							$aeDebug->log($ex->getMessage(), 'error');
 						}
 						/*<!-- endbuild -->*/
-
 						return FILE_ERROR;
 					} // try
-				} // if (!$aeFiles->folderExists($foldername))
-			} // if ($aeFiles->folderExists($foldername))
+				} // if (!$aeFolders->exists($foldername))
+			} // if ($aeFolders->exists($foldername))
 		} else {
-			// The parent folder is protected so the user can't create a
-			// subfolder
+			// The parent folder is protected so the user can't
+			// create a subfolder
 			return NO_ACCESS;
 		}
 	}
@@ -90,17 +92,20 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 	public static function run(&$params = null) : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Be sure that filenames doesn't already start with the /docs folder
+		// Be sure that filenames doesn't already start with
+		// the /docs folder
 		self::cleanUp($params, $aeSettings->getFolderDocs(false));
 
 		// The folder name is stored in $params['filename']
 		$foldername = trim($params['filename']);
+
 		if ($foldername != '') {
-			$foldername = $aeFiles->sanitizeFileName(trim($foldername));
+			$foldername = $aeFiles->sanitize(trim($foldername));
 		}
 
 		/*<!-- build:debug -->*/
@@ -150,10 +155,16 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 					break;
 			}
 
+			// For the md5 function, foldername should be
+			// something like docs\subfolder\newfolder\
+			$md5 = str_replace($aeSettings->getFolderDocs(true), $docs, $foldername);
+
+			$md5 = rtrim($md5, DS).DS;
+
 			$return = array(
 				'status' => (($wReturn == CREATE_SUCCESS) ? 1 : 0),
 				'action' => 'create',
-				'md5' => md5($docs.$foldername),
+				'md5' => md5($md5),
 				'msg' => $msg,
 				'foldername' => utf8_encode($foldername)
 			);
@@ -161,7 +172,6 @@ class Create extends \MarkNotes\Plugins\Task\Folder
 
 		header('Content-Type: application/json');
 		echo self::returnInfo($return);
-
 		return true;
 	}
 }

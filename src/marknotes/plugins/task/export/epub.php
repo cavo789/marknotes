@@ -37,7 +37,7 @@ class EPUB extends \MarkNotes\Plugins\Task\Plugin
 		$final = $aeConvert->getFileName();
 
 		// Generate the file ... only if not yet there
-		if (!$aeFiles->fileExists($final)) {
+		if (!$aeFiles->exists($final)) {
 			// Check if pandoc is installed; if not, check if the
 			// exported file already exists
 			if (!$aeConvert->isValid()) {
@@ -57,7 +57,7 @@ class EPUB extends \MarkNotes\Plugins\Task\Plugin
 				$sScript = $aeConvert->getScript($tempMD, $final);
 				$aeConvert->Run($sScript, $final);
 			} // if (!$aeConvert->isValid())
-		}// if(!$aeFiles->fileExists($final))
+		}// if(!$aeFiles->exists($final))
 
 		// In case of error, there is no output at all
 		$params['output'] = ($bReturn ? $final : '');

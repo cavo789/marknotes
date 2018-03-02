@@ -2,8 +2,9 @@
 /**
  * Return a JSON with the list of known tags i.e.
  *
- *    - coming from the settings.json -> plugins -> options -> page -> tags
- *    - every foldername under the /docs folder will be considered as tag
+ *    - coming from the settings.json -> plugins.options.page.tags
+ *    - every foldername under the /docs folder will be
+ *		considered as tag
  *
  * In settings.json, the list of tags is coded like this :
  *
@@ -32,8 +33,9 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = 'plugins.options.content.html.tags';
 
 	/**
-	 * Retrieve the list of folders but only when the user has access
-	 * to it. Rely on the ACLs plugin for this purpose.
+	 * Retrieve the list of folders but only when the user
+	 * has access to it.
+	 * Rely on the ACLs plugin for this purpose.
 	 */
 	private static function getFolders() : array
 	{
@@ -53,10 +55,12 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		// And make the array unique (not the same folder twice)
 		$arrFolders = $aeFunctions->array_iunique($arrFiles, SORT_STRING);
 
-		// The first position of the array is the /docs folder, remove it
+		// The first position of the array is the /docs folder,
+		// remove it
 		unset($arrFolders[0]);
 
-		// Now, just keep relative name (like "folder_name") and not fullname
+		// Now, just keep relative name (like "folder_name")
+		// and not fullname
 		// (like c:\website\marknotes\docs\folder_name
 		$arrFolders = array_map("basename", $arrFolders);
 
@@ -65,22 +69,27 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 
-		// get the list of folders and generate a "tags" node
-		$sReturn = '';
+		$arr = null;
+		$arrTags = array();
 
-		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
-		$bOptimize = boolval($arrSettings['server_session'] ?? false);
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = boolval($arrSettings['enabled'] ?? false);
 
-		if ($bOptimize) {
-			// Get the list of files/folders from the session object if possible
-			// If found, it's a JSON object
-			$aeSession = \MarkNotes\Session::getInstance();
-			$sReturn = $aeSession->get('Tags', '');
+		if ($bCache) {
+			$aeCache = \MarkNotes\Cache::getInstance();
+
+			// The list of tags can vary from one user to an
+			// another so we need to use his username
+			$key = $aeSession->getUser().'###tags';
+			$cached = $aeCache->getItem(md5($key));
+			$arr = $cached->get();
 		}
 
-		if ($sReturn == '') {
+		if (is_null($arr)) {
 			// Get the list of folders
 			$arr = self::getFolders();
 
@@ -102,30 +111,48 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			natcasesort($arr);
 			$arrTags = array();
 			foreach ($arr as $key => $value) {
-				$arrTags[] = array('name' => $value);
+				if($value!=='') {
+					$arrTags[] = array('name' => $value);
+				}
 			}
 
 			// Get tags.json if the file exists
 			$fname = $aeSettings->getFolderWebRoot().'tags.json';
-			if (is_file($fname)) {
-				$content = json_decode(file_get_contents($fname), true);
+			if ($aeFiles->exists($fname)) {
+				$content = json_decode($aeFiles->getContent($fname), true);
 				foreach ($content as $tag) {
-					$arrTags[] = array('name'=>$tag);
+					if($tag!=='') {
+						$arrTags[] = array('name'=>$tag);
+					}
 				}
 			}
 
-			// Be carefull, folders / filenames perhaps contains accentuated
-			// characters
-			// $arrTags = array_map('utf8_encode', $arrTags);
+			$arr=array();
+			$arr['tags'] = $arrTags;
 
-			$aeJSON = \MarkNotes\JSON::getInstance();
-			$sReturn = $aeJSON->json_encode($arrTags);
-
-			if ($bOptimize) {
-				// Remember for the next call
-				$aeSession->set('Tags', $sReturn);
+			if ($bCache) {
+				// Save the list in the cache
+				$arr['from_cache'] = 1;
+				$duration = $arrSettings['duration']['default'];
+				$cached->set($arr)->expiresAfter($duration);
+				$aeCache->save($cached);
+				$arr['from_cache'] = 0;
 			}
-		} // if (count($arrTags)==0)
+		} else { // if (count($arrTags)==0)
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log("    Retrieved from cache","debug");
+			}
+			/*<!-- endbuild -->*/
+		}
+
+		// Be carefull, folders / filenames perhaps contains accentuated
+		// characters
+		// $arrTags = array_map('utf8_encode', $arrTags);
+
+		$aeJSON = \MarkNotes\JSON::getInstance();
+		$sReturn = $aeJSON->json_encode($arr['tags']);
 
 		header('Content-Type: application/json; charset=UTF-8');
 		header("cache-control: must-revalidate");

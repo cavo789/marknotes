@@ -5,7 +5,7 @@ function fnPluginHTMLMD() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - MD');
+		console.log('	  Plugin Page html - MD');
 	}
 	/*<!-- endbuild -->*/
 
@@ -24,7 +24,8 @@ function fnPluginHTMLMD() {
 			type: 'error'
 		});
 	} else {
-		var fname = marknotes.note.file + '.md';
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.md';
 		window.open(fname);
 	}
 

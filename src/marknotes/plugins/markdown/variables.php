@@ -42,12 +42,14 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 	protected static $json_options = 'plugins.options.markdown.variables';
 
 	/**
-	 * Read the plugins.options.markdown.variables.var key of the settings.json
-	 * file and replace variables in the markdown content.
+	 * Read the plugins.options.markdown.variables.var key of the
+	 * settings.json file and replace variables in the markdown
+	 * content.
 	 */
 	private static function replaceUserVariables(array &$params = null) : string
 	{
-		// The variable plugin should avoid to process keywords in these tags :
+		// The variable plugin should avoid to process keywords
+		// in these tags :
 		$arrNotIn = self::getOptions('not_in_tags', array('a','abbr','code','pre'));
 
 		// Get the plugin options, get the list of variables
@@ -65,25 +67,30 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 					$pattern = $variables['pattern'];
 
 					/** The list of variables can be a single word
-					  * like "%AUTHOR%" and will be replaced by the name
-					  * of the author like "AVONTURE Christophe" or can be
-					  * something a little more complex : a regex.
+					  * like "%AUTHOR%" and will be replaced by the
+					  * name of the author like "AVONTURE Christophe"
+					  * or can be something a little more complex :
+					  * a regex.
 					  *
-					  * The pattern can be : %SEE_SOURCE%{filename=(.*)}
-					  * which means "%SEE_SOURCE%" immediatly followed by
+					  * The pattern can be :
+					  * %SEE_SOURCE%{filename=(.*)}
+					  * which means "%SEE_SOURCE%" immediatly
+					  * followed by
 					  * {filename=xxxxxxxxxx} where xxxxx is a word
 					  *
-					  * The (.*) will capture this information so we've a
-					  * variable => $1
+					  * The (.*) will capture this information so
+					  * we've a variable => $1
 					  *
-					  * And that variable will be used in the replaced by
-					  * value like in "([see source file](%URL%$1))"
+					  * And that variable will be used in the
+					  * replaced by value like in
+					  * "([see source file](%URL%$1))"
 					  */
 
 					$tmp = $markdown;
 
 					// Don't process words between one or more `
-					// In markdown a `...` is a <pre> and ```....``` is a <code>
+					// In markdown a `...` is a <pre> and ```....```
+					// is a <code>
 					$tmp = preg_replace('/`{1,}[^`]*`{1,}/m', '', $tmp);
 
 					if ($arrNotIn !== array()) {
@@ -100,7 +107,8 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 
 							for ($i = 2; $i < count($matches); $i++) {
 								// Get what was in the file
-								// For instance "%SEE_SOURCE%{filename=a_file.md}"
+								// For instance
+								// "%SEE_SOURCE%{filename=a_file.md}"
 
 								$tag = $matches[$i][$k];
 
@@ -111,8 +119,8 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 								}
 							}
 
-							// Replace the variable in his context : in the matched
-							// line
+							// Replace the variable in his context :
+							// in the matched line
 							$value = str_replace($matches[2][$k], $value, $matches[0][$k]);
 
 							// Then replace the line in the full text
@@ -138,33 +146,38 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	 * Replace variables like '%ROOT%', '%URL%', ... in the content but
-	 * but not when inside a <pre> or a <code> tag i.e., in markdown's
-	 * language not between `pre` or ```code```
+	 * Replace variables like '%ROOT%', '%URL%', ... in the
+	 * content but but not when inside a <pre> or a <code> tag i.e.,
+	 * in markdown's language not between `pre` or ```code```
 	 */
 	private static function replaceVar(string $var, string $value, string $markdown, array $arrNotIn = array()) : string
 	{
 		// Remove any <a>, <abbr>, <code>, ... from the content
-		// Don't keep tag and content, just remove it before the process
-		// The variable plugin should avoid to process keywords in these tags :
+		// Don't keep tag and content, just remove it before the
+		// process
+		// The variable plugin should avoid to process keywords in
+		// these tags :
 		if ($arrNotIn == array()) {
 			$arrNotIn = self::getOptions('not_in_tags', array('a','abbr','code','pre'));
 		}
 
 		// Remove any <a>, <abbr>, <code>, ... from the content
-		// Don't keep tag and content, just remove it before the process
+		// Don't keep tag and content, just remove it before the
+		// process
 		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();
-		// When $markdown is a ... markdown string, remove the code block
+
+		// When $markdown is a ... markdown string, remove the code
+		// block
 		$tmp = $aeRegex->removeMarkdownCodeBlock($markdown);
 
-		// And, it's pretty rare but ... when $markdown is a HTML string,
-		// remove a few tags
+		// And, it's pretty rare but ... when $markdown is a HTML
+		// string, remove a few tags
 		//$tmp = $aeRegex->removeTags($tmp, $arrNotIn);
 
-		// Don't process the variable if between one single ` (a <pre> block)
-		// Using a negative lookahead to check if, just after the variable
-		// there is a ` character. If yes, don't replace (since we've
-		// a pre block)
+		// Don't process the variable if between one single `
+		// (a <pre> block). Using a negative lookahead to check if,
+		// just after the variable there is a ` character.
+		// If yes, don't replace (since we've a pre block)
 		// @URL : https://stackoverflow.com/a/6256377
 
 		$pattern = "/(.*)(".$var.")([^`\n\r]*)(?!`)/m";
@@ -200,8 +213,9 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 		$filename = str_replace('/', DS, urldecode($params['filename']));
 
 		// Get the relative folder; like docs/marknotes/french/
-		$sFolder = str_replace($aeSettings->getFolderDocs(true), '', dirname($filename)).'/';
+		$sFolder = str_replace($aeSettings->getFolderDocs(true), '', dirname($filename).DS);
 
+		// Get the relative folder like docs/marknotes/french/
 		$sFolder = str_replace(DS, '/', $aeSettings->getFolderDocs(false).$sFolder);
 
 		$markdown = self::replaceVar('%ROOT%', $sRoot, $markdown, array('abbr','code','pre'));
@@ -212,6 +226,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			$tmp = print_r($arr, true);
 			$markdown = self::replaceVar('%PLUGINS%', "```\n".$tmp."\n```\n", $markdown);
 		}
+
 		// The %URL% variable should be relative to the note
 		// and not from the master note i.e. where the %INCLUDE% tag
 		// has been put
@@ -237,12 +252,17 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			$markdown = self::replaceVar('%NOTE_FOLDER%', rtrim($tmp, DS).DS, $markdown);
 		} // if (strpos($markdown, '%NOTE_FOLDER%')!==FALSE)
 
+		if (strpos($markdown, '%WEB_FOLDER%')!==false) {
+			$tmp = rtrim($aeSettings->getFolderWebRoot(), DS);
+			$tmp = str_replace('/', DS, $tmp);
+			$markdown = self::replaceVar('%WEB_FOLDER%', rtrim($tmp, DS).DS, $markdown);
+		} // if (strpos($markdown, '%NOTE_FOLDER%')!==FALSE)
+
 		// ---------------------------------------------------------------
 		// Based on the user's settings (settings.json)
 		//
 		//
 		// ---------------------------------------------------------------
-
 
 		// ---------------------------------------------------------------
 		// Based on the user's settings (settings.json)
@@ -257,6 +277,20 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 		$markdown = self::replaceVar('%SITE_NAME%', $aeSettings->getSiteName(), $markdown);
 		//
 		// ---------------------------------------------------------------
+
+		if (strpos($markdown, '%NOTE_TITLE%') !== false) {
+			$aeMarkDown = \MarkNotes\FileType\Markdown::getInstance();
+
+			$mdContent = $aeFiles->getContent($params['filename']);
+			if (trim($mdContent) == '') {
+				$mdContent = $aeFiles->getContent(utf8_decode($params['filename']));
+			}
+
+			// Try to retrieve the heading 1
+			$pageTitle = $aeMarkDown->getHeadingText($mdContent, '#');
+
+			$markdown = self::replaceVar('%NOTE_TITLE%', $pageTitle, $markdown);
+		}
 
 		// ---------------------------------------------------------------
 		// Variables using the filename i.e. the note being reading
@@ -329,8 +363,9 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			return true;
 		}
 
-		// Important : first the user variables since we can reuse there
-		// intern variables like f.i. %URL%
+		// Important : first the user variables since
+		// we can reuse there intern variables like f.i. %URL%
+
 		$params['markdown'] = self::replaceUserVariables($params);
 		$params['markdown'] = self::replaceInternVariables($params);
 

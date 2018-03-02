@@ -40,7 +40,7 @@ class Update
 		return true;
 	}
 
-	public static function run(&$params = null)
+	private static function doIt(&$params = null)
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -49,7 +49,7 @@ class Update
 		$key = trim($aeFunctions->getParam('key', 'string', '', false));
 		$value = trim($aeFunctions->getParam('value', 'string', '', false));
 
-		$key = $aeFiles->sanitizeFileName($key);
+		$key = $aeFiles->sanitize($key);
 
 		$arrNew = array();
 		$arrNew = self::buildArray($key, $value, $arrNew);
@@ -59,8 +59,8 @@ class Update
 		$arrSettings = array();
 
 		// If there is already a settings.json file, get its content
-		if (is_file($json = $rootFolder.'settings.json')) {
-			$arrSettings = json_decode(file_get_contents($json), true);
+		if ($aeFiles->exists($json = $rootFolder.'settings.json')) {
+			$arrSettings = json_decode($aeFiles->getContent($json), true);
 		}
 
 		// And merge it with the new settings
@@ -74,17 +74,51 @@ class Update
 		self::ksortRecursive($arrSettings);
 
 		// Write the file
-		$fp = fopen($json, 'w');
-		fwrite($fp, json_encode($arrSettings, JSON_PRETTY_PRINT));
-		fclose($fp);
+		$aeFiles->rewrite($json, json_encode($arrSettings, JSON_PRETTY_PRINT));
 
-		header('Content-Type: application/json');
-		echo json_encode(
-			array(
-				'status'=>1,
-				'message'=>$aeSettings->getText('settings_saved')
-				)
-			);
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = boolval($arrSettings['enabled'] ?? false);
+
+		if ($bCache) {
+			// Refresh the cache for what concerns the interface
+			$aeCache = \MarkNotes\Cache::getInstance();
+			// Clear the cache for this note : clear every cached
+			// items with a tag equal to $fullname i.e. the fullname
+			// of the note
+			$aeCache->deleteItemsByTag(md5('interface'));
+		}
+
+		return true;
+	}
+
+	public static function run(&$params = null)
+	{
+		// The update requires to be authenticated
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		if (boolval($aeSession->get('authenticated', 0))) {
+
+			self::doIt($params);
+
+			header('Content-Type: application/json');
+			echo json_encode(
+				array(
+					'status'=>1,
+					'message'=>$aeSettings->getText('settings_saved')
+					)
+				);
+		} else {
+			// The user isn't logged in, he can't modify settings
+
+			header('Content-Type: application/json');
+			echo json_encode(
+				array(
+					'status'=>0,
+					'message'=>$aeSettings->getText('not_authenticated')
+					)
+				);
+		} // if (boolval($aeSession->get('authenticated', 0)))
 
 		die();
 	}

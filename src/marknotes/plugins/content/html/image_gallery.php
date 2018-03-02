@@ -23,7 +23,6 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 			return true;
 		}
 
-
 		// Don't keep unwanted HTML tags
 		$arrNotIn = self::getOptions('not_in_tags', array('code','pre'));
 		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();
@@ -44,6 +43,7 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 			$task = $aeSession->get('task', '');
 
 			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFolders = \MarkNotes\Folders::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$aeSession = \MarkNotes\Session::getInstance();
@@ -65,12 +65,12 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 					$folder = str_replace('/', DS, $arrFolders[$i]);
 				}
 
-				if (!(is_dir(realpath($root.$folder)))) {
+				if (!($aeFolders->exists(realpath($root.$folder)))) {
 					// Correctly handle accentuated characters
 					$folder = utf8_decode($folder);
 				}
 
-				if (is_dir(realpath($root.$folder))) {
+				if ($aeFolders->exists(realpath($root.$folder))) {
 					// image folder
 					$imgFolder = realpath($root.$folder);
 					$imgFolder = str_replace($aeSettings->getFolderDocs(true), '', $imgFolder);
@@ -115,7 +115,7 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 					}
 
 					$content = str_replace($arrTags[$i], $images, $content);
-				} // if (is_dir(realpath($root.$folder)))
+				} // if ($aeFolders->exists(realpath($root.$folder)))
 			} // for ($i == 0; $i < $j; $i++)
 		} // if (preg_match_all($pattern, $content, $matches))
 

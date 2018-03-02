@@ -304,7 +304,7 @@
 }
 .jstree-proton .jstree-hovered {
   background: #76b6ec;
-  color:#ffffff;
+  color: #ffffff;
   border-radius: 3px;
   box-shadow: inset 0 0 1px #76b6ec;
 }
@@ -898,36 +898,36 @@ filter: gray;
 }
 @media (max-width: 768px) {
   #jstree-dnd.jstree-dnd-responsive {
-	line-height: 30px;
-	font-weight: bold;
-	font-size: 1.1em;
-	text-shadow: 1px 1px white;
+    line-height: 30px;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-shadow: 1px 1px white;
   }
   #jstree-dnd.jstree-dnd-responsive > i {
-	background: transparent;
-	width: 30px;
-	height: 30px;
+    background: transparent;
+    width: 30px;
+    height: 30px;
   }
   #jstree-dnd.jstree-dnd-responsive > .jstree-ok {
-	background-image: url("30px.png");
-	background-position: 0 -150px;
-	background-size: 90px 180px;
+    background-image: url("30px.png");
+    background-position: 0 -150px;
+    background-size: 90px 180px;
   }
   #jstree-dnd.jstree-dnd-responsive > .jstree-er {
-	background-image: url("30px.png");
-	background-position: -30px -150px;
-	background-size: 90px 180px;
+    background-image: url("30px.png");
+    background-position: -30px -150px;
+    background-size: 90px 180px;
   }
   #jstree-marker.jstree-dnd-responsive {
-	border-left-width: 10px;
-	border-top-width: 10px;
-	border-bottom-width: 10px;
-	margin-top: -10px;
+    border-left-width: 10px;
+    border-top-width: 10px;
+    border-bottom-width: 10px;
+    margin-top: -10px;
   }
 }
 @media (max-width: 768px) {
   .jstree-proton-responsive {
-	/*
+    /*
 	.jstree-open > .jstree-ocl,
 	.jstree-closed > .jstree-ocl {
 	border-radius:20px;
@@ -936,144 +936,144 @@ filter: gray;
 	*/
   }
   .jstree-proton-responsive .jstree-container-ul {
-	overflow: hidden;
+    overflow: hidden;
   }
   .jstree-proton-responsive .jstree-icon {
-	background-image: url("30px.png");
-	background-size: 90px 180px;
+    background-image: url("30px.png");
+    background-size: 90px 180px;
   }
   .jstree-proton-responsive .jstree-node,
   .jstree-proton-responsive .jstree-leaf > .jstree-ocl {
-	background: transparent;
+    background: transparent;
   }
   .jstree-proton-responsive .jstree-node {
-	min-height: 30px;
-	line-height: 30px;
-	margin-left: 30px;
-	min-width: 30px;
-	white-space: nowrap;
+    min-height: 30px;
+    line-height: 30px;
+    margin-left: 30px;
+    min-width: 30px;
+    white-space: nowrap;
   }
   .jstree-proton-responsive .jstree-anchor {
-	line-height: 38px;
-	height: 38px;
-	margin: 0;
+    line-height: 38px;
+    height: 38px;
+    margin: 0;
   }
   .jstree-proton-responsive .jstree-icon,
   .jstree-proton-responsive .jstree-icon:empty {
-	margin-top: 4px;
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
+    margin-top: 4px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
   }
   .jstree-proton-responsive > .jstree-container-ul > .jstree-node {
-	margin-left: 0;
+    margin-left: 0;
   }
   .jstree-proton-responsive.jstree-rtl .jstree-node {
-	margin-left: 0;
-	margin-right: 30px;
+    margin-left: 0;
+    margin-right: 30px;
   }
   .jstree-proton-responsive.jstree-rtl .jstree-container-ul > .jstree-node {
-	margin-right: 0;
+    margin-right: 0;
   }
   .jstree-proton-responsive .jstree-ocl,
   .jstree-proton-responsive .jstree-themeicon,
   .jstree-proton-responsive .jstree-checkbox {
-	background-size: 90px 180px;
+    background-size: 90px 180px;
   }
   .jstree-proton-responsive .jstree-leaf > .jstree-ocl {
-	background: transparent;
+    background: transparent;
   }
   .jstree-proton-responsive .jstree-open > .jstree-ocl {
-	background-position: 0 0px !important;
+    background-position: 0 0px !important;
   }
   .jstree-proton-responsive .jstree-closed > .jstree-ocl {
-	background-position: 0 -30px !important;
+    background-position: 0 -30px !important;
   }
   .jstree-proton-responsive.jstree-rtl .jstree-closed > .jstree-ocl {
-	background-position: -30px 0px !important;
+    background-position: -30px 0px !important;
   }
   .jstree-proton-responsive .jstree-themeicon {
-	background-position: -30px -30px;
+    background-position: -30px -30px;
   }
   .jstree-proton-responsive .jstree-checkbox,
   .jstree-proton-responsive .jstree-checkbox:hover {
-	background-position: -30px -60px;
+    background-position: -30px -60px;
   }
   .jstree-proton-responsive.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox,
   .jstree-proton-responsive.jstree-checkbox-selection .jstree-clicked > .jstree-checkbox:hover,
   .jstree-proton-responsive .jstree-checked > .jstree-checkbox,
   .jstree-proton-responsive .jstree-checked > .jstree-checkbox:hover {
-	background-position: 0 -60px;
+    background-position: 0 -60px;
   }
   .jstree-proton-responsive .jstree-anchor > .jstree-undetermined,
   .jstree-proton-responsive .jstree-anchor > .jstree-undetermined:hover {
-	background-position: 0 -90px;
+    background-position: 0 -90px;
   }
   .jstree-proton-responsive > .jstree-striped {
-	background: transparent;
+    background: transparent;
   }
   .jstree-proton-responsive .jstree-wholerow-ul li {
-	position: relative;
+    position: relative;
   }
   .jstree-proton-responsive .jstree-wholerow-ul .jstree-wholerow {
-	position: absolute;
-	top: 0;
-	left: -1000px;
-	right: -1000px;
-	width: auto;
-	height: 100%;
+    position: absolute;
+    top: 0;
+    left: -1000px;
+    right: -1000px;
+    width: auto;
+    height: 100%;
   }
   .jstree-proton-responsive .jstree-wholerow {
-	border-top: 1px solid rgba(0, 0, 0, 0.05);
-	background: rgba(0, 0, 0, 0.02);
-	height: 30px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.02);
+    height: 30px;
   }
   .jstree-proton-responsive .jstree-wholerow-hovered {
-	background: #76b6ec;
+    background: #76b6ec;
   }
   .jstree-proton-responsive .jstree-wholerow-clicked {
-	background: #3392e3;
+    background: #3392e3;
   }
   .jstree-proton-responsive .jstree-children .jstree-open + .jstree-open {
-	box-shadow: none;
+    box-shadow: none;
   }
   .jstree-proton-responsive .jstree-node,
   .jstree-proton-responsive .jstree-icon,
   .jstree-proton-responsive .jstree-node > .jstree-ocl,
   .jstree-proton-responsive .jstree-themeicon,
   .jstree-proton-responsive .jstree-checkbox {
-	background-image: url("30px.png");
-	background-size: 90px 180px;
+    background-image: url("30px.png");
+    background-size: 90px 180px;
   }
   .jstree-proton-responsive .jstree-node {
-	background-position: -60px 0;
-	background-repeat: repeat-y;
+    background-position: -60px 0;
+    background-repeat: repeat-y;
   }
   .jstree-proton-responsive .jstree-last {
-	background: transparent;
+    background: transparent;
   }
   .jstree-proton-responsive .jstree-leaf > .jstree-ocl {
-	background-position: -30px -90px;
+    background-position: -30px -90px;
   }
   .jstree-proton-responsive .jstree-last > .jstree-ocl {
-	background-position: -30px -120px;
+    background-position: -30px -120px;
   }
   .jstree-proton-responsive .jstree-themeicon-custom {
-	background-color: transparent;
-	background-image: none;
-	background-position: 0 0;
+    background-color: transparent;
+    background-image: none;
+    background-position: 0 0;
   }
   .jstree-proton-responsive .jstree-file {
-	background: url("30px.png") 0 -120px no-repeat;
-	background-size: 90px 180px;
+    background: url("30px.png") 0 -120px no-repeat;
+    background-size: 90px 180px;
   }
   .jstree-proton-responsive .jstree-folder {
-	background: url("30px.png") -30px -30px no-repeat;
-	background-size: 90px 180px;
+    background: url("30px.png") -30px -30px no-repeat;
+    background-size: 90px 180px;
   }
   .jstree-proton-responsive > .jstree-container-ul > .jstree-node {
-	margin-left: 0;
-	margin-right: 0;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 @font-face {
@@ -1099,22 +1099,22 @@ filter: gray;
 }
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
-	font-family: 'Titillium Web';
-	src: url('fonts/titillium/titilliumweb-extralight-webfont.svg#titillium_webthin') format('svg');
-	font-weight: 300;
-	font-style: normal;
+    font-family: 'Titillium Web';
+    src: url('fonts/titillium/titilliumweb-extralight-webfont.svg#titillium_webthin') format('svg');
+    font-weight: 300;
+    font-style: normal;
   }
   @font-face {
-	font-family: 'Titillium Web';
-	src: url('fonts/titillium/titilliumweb-regular-webfont.svg#titillium_webregular') format('svg');
-	font-weight: 400;
-	font-style: normal;
+    font-family: 'Titillium Web';
+    src: url('fonts/titillium/titilliumweb-regular-webfont.svg#titillium_webregular') format('svg');
+    font-weight: 400;
+    font-style: normal;
   }
   @font-face {
-	font-family: 'Titillium Web';
-	src: url('fonts/titillium/titilliumweb-bold-webfont.svg#titillium_webbold') format('svg');
-	font-weight: 700;
-	font-style: normal;
+    font-family: 'Titillium Web';
+    src: url('fonts/titillium/titilliumweb-bold-webfont.svg#titillium_webbold') format('svg');
+    font-weight: 700;
+    font-style: normal;
   }
 }
 .jstree-proton {

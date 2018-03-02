@@ -1,8 +1,8 @@
 <?php
 /**
  * Working on big files isn't always the most efficient way.
- * This plugin will allow to include files in the markdown content "just like"
- * if the content was in a single file.
+ * This plugin will allow to include files in the markdown
+ * content "just like" if the content was in a single file.
  *
  * For instance :
  *
@@ -13,16 +13,18 @@
  *	%INCLUDE .chapters/chapter2.md%
  *	%INCLUDE .chapters/chapter3.md%
  *
- * After the filename, settings can be given in a json format like {"once":1}
+ * After the filename, settings can be given in a json
+ * format like {"once":1}
  *
  *	once:1	=> that file will be loaded only once even when
- *				 	multiples .md files are referencing the same include.
+ *				 	multiples .md files are referencing the same
+ *					include.
  *					Usefull for f.i. including a settings file.
- *				 once=1 is good when you're including a settings file
- *					(i.e a markdown file where you're defining, once and
- *					for all, your abbreviations, URLs, ...),
- *				 once=0 can be good when you wish to include headers
- *					and footers f.i.
+ *					once=1 is good when you're including a settings
+ *					file (i.e a markdown file where you're defining,
+ *					once and for all, your abbreviations, URLs, ...),
+ *					once=0 can be good when you wish to include
+ *					headers and footers f.i.
  */
 namespace MarkNotes\Plugins\Markdown;
 
@@ -36,7 +38,6 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 	private static function getURL(string $filename) : string
 	{
-
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -107,8 +108,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		//
 		// %INCLUDE %NOTE_FOLDER%.settings/0_links.md{"once":1}%
 		//
-		// The JSON part ("  {"once":1}  " in this example) is optionnal
-		// and, if mentionned, contains settings
+		// The JSON part ("  {"once":1}  " in this example) is
+		// optionnal and, if mentionned, contains settings
 
 		if ($arrLoaded===null) {
 			$arrLoaded=array();
@@ -129,26 +130,28 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 			// Loop and process every %INCLUDE ..% tags
 			for ($i=0; $i<count($matches[0]); $i++) {
 				// $tag	=> $matches[0][0] will be f.i.
-				//					"  %INCLUDE .chapters/chapter1.md%"
+				// 		%INCLUDE .chapters/chapter1.md%"
 				// $before => $matches[1][0] will be f.i.
-				//					"  " i.e. what's before %INCLUDE
+				//		"  " i.e. what's before %INCLUDE
 				// $file	=> $matches[2][0] will be f.i.
-				//					".chapters/chapter1.md"
+				//		".chapters/chapter1.md"
 				// $json	=> $matches[3][0] will be f.i.
-				//					"{"once":1}"
+				//		"{"once":1}"
 				list($tag, $before, $file, $json) = $matches;
 
 				// %INCLUDE filename.md% => when no path has been
 				// modified, it means that the file is in the same
 				// folder of the processed note i.e. $root
-				$file[$i]=str_replace('/', DS, $file[$i]);
+				if (!$aeFiles->exists($file[$i])) {
 
-				if (!$aeFunctions->startsWith($file[$i], $root)) {
-					$file[$i]=$root.$file[$i];
+					$file[$i]=str_replace('/', DS, $file[$i]);
+					if (!$aeFunctions->startsWith($file[$i], $root)) {
+						$file[$i]=$root.$file[$i];
+					}
 				}
 
 				// Get the filename to include
-				$sFile = realpath(str_replace('/', DS, $file[$i]));
+				$sFile = str_replace('/', DS, $file[$i]);
 
 				if ($sFile=='') {
 					// The file doensn't exists
@@ -159,7 +162,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					// Ok, no space before the tag => it's enabled => run it
 					$bContinue=1;
 
-					if (is_file($sFile)) {
+					if ($aeFiles->exists($sFile)) {
 						if ($json[$i]!=="") {
 							$tmp=json_decode($json[$i], true);
 
@@ -183,26 +186,11 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							$arrLoaded[]=$sFile;
 
 							// Read the file
-							$sContent = trim(file_get_contents($sFile));
+							$sContent = trim($aeFiles->getContent($sFile));
 
-							// We're including a file. Headings will be
-							// incremented by one
-							//if (preg_match('/^# .*/', $sContent, $match)) {
-								$sContent = self::IncrementHeadings($sContent);
-							//}
-
-							/*<!-- build:debug -->*/
-							$aeDebug = \MarkNotes\Debug::getInstance();
-							if ($aeDebug->getDevMode()) {
-								// Add the name of the included file to make
-								// easier to retrieve in which file the content
-								// can be retrieved / modified.
-								// (otherwise in the case of a complex note with
-								// a big number of INCLUDE statement, it becomes
-								// quite complex)
-									$sContent = "###### ".DEV_MODE_PREFIX." INCLUDE FILE ".$sFile."	{.devmode}\n\n".$sContent;
-							}
-							/*<!-- endbuild -->*/
+							// We're including a file.
+							// Headings will be incremented by one
+							$sContent = self::IncrementHeadings($sContent);
 
 							//$aeEvents = \MarkNotes\Events::getInstance();
 							//$aeEvents->loadPlugins('markdown');
@@ -249,13 +237,13 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 						} // if ($bContinue)
 
 						$markdown = str_replace($tag[$i], $sContent, $markdown);
-					} else { // if (is_file($sFile))
+					} else { // if ($aeFiles->exists($sFile))
 						/*<!-- build:debug -->*/
 						if ($aeSettings->getDebugMode()) {
 							$aeDebug->log('	Failure : file ['.$sFile.'] not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
 						}
 						/*<!-- endbuild -->*/
-					}// if (is_file($sFile))
+					}// if ($aeFiles->exists($sFile))
 				} else { // if ($before[$i]=='')
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {

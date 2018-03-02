@@ -90,7 +90,7 @@ function initializeSettings() {
 							// If it's a checkbox, if checked, the value to store
 							// is 1. 0 if unchecked
 							$value = $(this).is(":checked") ? 1 : 0;
-alert($value);
+
 							$bContinue = true;
 							break;
 						default:

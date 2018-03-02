@@ -2,7 +2,6 @@
 /**
 * Build the main interface of the application; without showing a note
 */
-
 namespace MarkNotes\Tasks;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -33,8 +32,10 @@ class ShowInterface
 	 */
 	private static function interfaceDisabled()
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+
 		$fname = self::$root.'errors/error_interface_disabled.html';
-		$content = str_replace('%ROOT%', self::$root, file_get_contents($fname));
+		$content = str_replace('%ROOT%', self::$root, $aeFiles->getContent($fname));
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -47,38 +48,90 @@ class ShowInterface
 		die($content);
 	}
 
+	private static function fakeLoader(string $html): string
+	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$key = 'plugins.page.html.fakeLoader';
+		$arr = $aeSettings->getPlugins($key, array('enabled'=>0));
+
+		if (boolval($arr['enabled'])) {
+			// Enabled => the interface shouldn't be displayed
+			// during the loading phase but will be make visible
+			// by the plugin
+
+			// Capture the body tag and everything until the class
+			// attribute so in
+			//		<body class="hold-transition fixed skin-blue">
+			// capture
+			// 		<body class="
+			//
+			// and add the hidden class (followed by a space)
+			// 		<body class="hidden
+			//
+			// and put the rest ($2 and $3)
+			//		hold-transition fixed skin-blue">
+			$pattern = '/(<body .*class=")([^"]*)("[^>]*>)/i';
+			$html = preg_replace($pattern, '$1hidden $2$3', $html);
+
+			// Retrieve the color to use by the plugin.
+			// If not empty, use that color for the body background
+			$key = 'plugins.options.page.html.fakeLoader';
+			$arr = $aeSettings->getPlugins($key, array('bgColor'=>'#3c8dbc'));
+
+			$bgColor = trim($arr['bgColor']);
+			if ($bgColor!=='') {
+				$bgColor = 'style="background-color: '.$bgColor.';"';
+				$pattern = '/(<body )([^>]*>)/i';
+				$html = preg_replace($pattern, '$1'.$bgColor.' $2', $html);
+			}
+
+		}
+
+		return $html;
+	}
+
 	public function run()
 	{
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
-		$show_tree_allowed = boolval($arrSettings['show_tree_allowed'] ?? 1);
+		$canSee = boolval($arrSettings['can_see'] ?? 1);
 
-		if (!$show_tree_allowed) {
+		if (!$canSee) {
 			// The access to the interface can be disabled in settings.json
 			self::interfaceDisabled();
 		}
 
 		// @link https://github.com/JayBizzle/Crawler-Detect
-		// Check the user agent of the current 'visitor' : is it a human
-		// or a bot ?
+		// Check the user agent of the current 'visitor' :
+		// is it a human or a bot ?
 		$arr = array('AbstractProvider', 'Crawlers', 'Exclusions', 'Headers');
+
 		foreach ($arr as $file) {
 			require_once($aeSettings->getFolderLibs().'Jaybizzle/crawler-detect/src/Fixtures/'.$file.'.php');
 		}
+
 		require_once($aeSettings->getFolderLibs().'Jaybizzle/crawler-detect/src/CrawlerDetect.php');
+
 		$CrawlerDetect = new \Jaybizzle\CrawlerDetect\CrawlerDetect;
-		$isBot=$CrawlerDetect->isCrawler();  // return True when it's a crawler bot
+
+		// return True when it's a crawler bot
+		$isBot=$CrawlerDetect->isCrawler();
+
 		unset($CrawlerDetect);
 
-		$aeEvents = \MarkNotes\Events::getInstance();
-		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
-		$aeSession = \MarkNotes\Session::getInstance();
-
-		// Read the template (in first versions, the template was called "screen"
-		$template = file_get_contents($aeSettings->getTemplateFile('interface'));
+		// Read the template (in first versions,
+		// the template was called "screen"
+		$template = $aeFiles->getContent($aeSettings->getTemplateFile('interface'));
 
 		$html = $aeHTML->replaceVariables($template, '', null);
+
+		// Handle the fakeloader plugin
+		$html = self::fakeLoader($html);
 
 		// --------------------------------
 		// Call page.html plugins so the interface can be built

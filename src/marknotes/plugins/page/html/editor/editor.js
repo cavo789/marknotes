@@ -494,30 +494,40 @@ function buttonCurlBlog($fname, editor) {
 
 	var $default_url = '';
 
-	var $url = prompt($.i18n('fetch_specify_url'), $default_url);
+	swal({
+		html:
+			'<label>'+$.i18n('fetch_specify_url')+'</label>'+
+			'<input id="swal-fetch-url" class="swal2-input" '+ 'value="'+$default_url+'">',
+		onOpen: function () {
+			$('#swal-fetch-url').focus()
+		}
+	}).then(function (result) {
+		$url = $('#swal-fetch-url').val();
 
-	if (($url != null) && ($url != $default_url)) {
-		// Start the ajax request and fetch the HTML of that page.
-		// The gethtml task will also clean the code and only
-		// keep content's HTML and not footer, navigation, comments,
-		// ...
-		var $data = {};
-		$data.task = 'task.fetch.gethtml';
-		$data.param = $fname;
-		$data.url = $url;
+		if (($url != null) && ($url != $default_url)) {
+			// Start the ajax request and fetch the HTML of that page.
+			// The gethtml task will also clean the code and only
+			// keep content's HTML and not footer, navigation, comments,
+			// ...
+			var $data = {};
+			$data.task = 'task.fetch.gethtml';
+			$data.param = $fname;
+			$data.url = $url;
 
-		$.ajax({
-			async: true,
-			type: 'GET',
-			url: marknotes.url,
-			data: $data,
-			datatype: 'html',
-			success: function (data) {
-				editor.codemirror.setValue(data);
-			}
-		}); // $.ajax()
-	}
+			$.ajax({
+				async: true,
+				type: 'GET',
+				url: marknotes.url,
+				data: $data,
+				datatype: 'html',
+				success: function (data) {
+					editor.codemirror.setValue(data);
+				}
+			}); // $.ajax()
+		}
+	}).catch(swal.noop);
 
+	return true;
 }
 
 /**

@@ -3,7 +3,7 @@
  * Rename a folder
  *
  * Anwser to URL like the one below (names are base64_encoded)
- * index.php?task=task.folder.rename&oldname=JTJGemEy&newname=JTJGenp6enp6
+ *  index.php?task=task.folder.rename&oldname=JTJGemEy&newname=JTJGenp6enp6
  */
 namespace MarkNotes\Plugins\Task\Folder;
 
@@ -23,18 +23,23 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 	private static function rename(string $oldname, string $newname) : float
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		if ((trim($oldname) === '') || (trim($newname) === '')) {
 			return FILE_ERROR;
 		}
 
-		// Sanitize foldersname
-		$oldname = $aeFiles->sanitizeFileName($oldname);
-		$oldname = $aeSettings->getFolderDocs().$oldname;
+		// Sanitize foldernames
+		$oldname = $aeFiles->sanitize($oldname);
+		$oldname = $aeSettings->getFolderWebRoot().$oldname;
+		$oldname = str_replace('/', DS, $oldname);
 
-		$newname = $aeFiles->sanitizeFileName($newname);
-		$newname = $aeSettings->getFolderDocs().$newname;
+		$newname = $aeFiles->sanitize($newname);
+		$newname = $aeSettings->getFolderWebRoot().$newname;
+		$newname = str_replace('/', DS, $newname);
+
+		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
 		// Try to remove a file, first, be sure that the user
 		// can see the parent folder : if he can't, he can't delete the file
@@ -51,18 +56,21 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 		// see the folder so can't see the note too
 		if (intval($args[0]['return'])===1) {
 			// Only if the user can see the folder, he can rename it
-			if (!$aeFiles->folderExists($oldname)) {
+			if (!$aeFolders->exists($oldname)) {
 				// The "old" folder is not found
 				return FOLDER_NOT_FOUND;
 			} else {
-				if ($aeFiles->folderExists($newname)) {
+				if ($aeFolders->exists($newname)) {
 					// The new folder already exists
 					return ALREADY_EXISTS;
 				} else {
 					try {
-						rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
 
-						return ($aeFiles->folderExists($newname) ? RENAME_SUCCESS : FILE_ERROR);
+						$aeFolders->rename($oldname, $newname);
+
+						//rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
+
+						return ($aeFolders->exists($newname) ? RENAME_SUCCESS : FILE_ERROR);
 					} catch (Exception $ex) {
 						/*<!-- build:debug -->*/
 						if ($aeSettings->getDebugMode()) {
@@ -73,8 +81,8 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 
 						return FILE_ERROR;
 					} // try
-				} // if ($aeFiles->folderExists($newname))
-			} // if ($aeFiles->folderExists($newname))
+				} // if ($aeFolders->exists($newname))
+			} // if ($aeFolders->exists($newname))
 		} else { // if (intval($args[0]['return'])===1)
 			return NO_ACCESS;
 		}
@@ -95,13 +103,13 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 
 		$newname = trim(urldecode($aeFunctions->getParam('param', 'string', '', true)));
 		if ($newname != '') {
-			$newname = $aeFiles->sanitizeFileName(trim($newname));
+			$newname = $aeFiles->sanitize(trim($newname));
 		}
 
 		$oldname = trim(urldecode($aeFunctions->getParam('oldname', 'string', '', true)));
 
 		if ($oldname != '') {
-			$oldname = $aeFiles->sanitizeFileName(trim($oldname));
+			$oldname = $aeFiles->sanitize(trim($oldname));
 		}
 
 		/*<!-- build:debug -->*/
@@ -151,10 +159,16 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 					break;
 			}
 
+			// For the md5 function, foldername should be
+			// something like docs\subfolder\newfolder\
+			$md5 = str_replace($aeSettings->getFolderDocs(true), $docs, $newname);
+
+			$md5 = rtrim(str_replace('/', DS, $md5), DS).DS;
+
 			$arr = array(
 				'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
 				'action' => 'rename',
-				'md5' => md5($docs.$newname),
+				'md5' => md5($md5),
 				'msg' => $msg,
 				'foldername' => utf8_encode($newname)
 			);

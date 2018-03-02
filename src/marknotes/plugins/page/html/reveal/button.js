@@ -5,7 +5,7 @@ function fnPluginHTMLReveal() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Reveal');
+		console.log('	  Plugin Page html - Reveal');
 	}
 	/*<!-- endbuild -->*/
 
@@ -24,7 +24,8 @@ function fnPluginHTMLReveal() {
 			type: 'error'
 		});
 	} else {
-		var fname = marknotes.note.file + '.reveal';
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.reveal';
 		window.open(fname);
 	}
 

@@ -5,7 +5,7 @@ function fnPluginHTMLNewWindow() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - New_Window');
+		console.log('	  Plugin Page html - New_Window');
 	}
 	/*<!-- endbuild -->*/
 
@@ -23,7 +23,9 @@ function fnPluginHTMLNewWindow() {
 			type: 'error'
 		});
 	} else {
-		window.open(marknotes.note.url);
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.html';
+		window.open(fname);
 	}
 
 	return true;

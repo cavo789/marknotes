@@ -14,7 +14,7 @@ namespace Symfony\Component\DependencyInjection\Tests\Compiler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Compiler\ResolveInstanceofConditionalsPass;
-use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass;
+use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ResolveInstanceofConditionalsPassTest extends TestCase
@@ -32,7 +32,7 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
         $parent = 'instanceof.'.parent::class.'.0.foo';
         $def = $container->getDefinition('foo');
         $this->assertEmpty($def->getInstanceofConditionals());
-        $this->assertInstanceof(ChildDefinition::class, $def);
+        $this->assertInstanceOf(ChildDefinition::class, $def);
         $this->assertTrue($def->isAutowired());
         $this->assertSame($parent, $def->getParent());
         $this->assertSame(array('tag' => array(array()), 'baz' => array(array('attr' => 123))), $def->getTags());
@@ -57,7 +57,7 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
         $container->setDefinition('child', $def);
 
         (new ResolveInstanceofConditionalsPass())->process($container);
-        (new ResolveDefinitionTemplatesPass())->process($container);
+        (new ResolveChildDefinitionsPass())->process($container);
 
         $expected = array(
             array('foo', array('bar')),
@@ -95,7 +95,7 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
         ));
 
         (new ResolveInstanceofConditionalsPass())->process($container);
-        (new ResolveDefinitionTemplatesPass())->process($container);
+        (new ResolveChildDefinitionsPass())->process($container);
 
         $def = $container->getDefinition('foo');
         $this->assertTrue($def->isAutowired());
@@ -119,7 +119,7 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
             ->setFactory('autoconfigured_factory');
 
         (new ResolveInstanceofConditionalsPass())->process($container);
-        (new ResolveDefinitionTemplatesPass())->process($container);
+        (new ResolveChildDefinitionsPass())->process($container);
 
         $def = $container->getDefinition('normal_service');
         // autowired thanks to the autoconfigured instanceof
@@ -147,7 +147,7 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
         ;
 
         (new ResolveInstanceofConditionalsPass())->process($container);
-        (new ResolveDefinitionTemplatesPass())->process($container);
+        (new ResolveChildDefinitionsPass())->process($container);
 
         $def = $container->getDefinition('normal_service');
         $this->assertSame(array('duplicated_tag' => array(array(), array('and_attributes' => 1))), $def->getTags());
@@ -165,7 +165,7 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
             ->setAutowired(true);
 
         (new ResolveInstanceofConditionalsPass())->process($container);
-        (new ResolveDefinitionTemplatesPass())->process($container);
+        (new ResolveChildDefinitionsPass())->process($container);
 
         $def = $container->getDefinition('normal_service');
         $this->assertFalse($def->isAutowired());
@@ -223,5 +223,31 @@ class ResolveInstanceofConditionalsPassTest extends TestCase
             ->addArgument('bar');
 
         (new ResolveInstanceofConditionalsPass())->process($container);
+    }
+
+    public function testMergeReset()
+    {
+        $container = new ContainerBuilder();
+
+        $container
+            ->register('bar', self::class)
+            ->addArgument('a')
+            ->addMethodCall('setB')
+            ->setDecoratedService('foo')
+            ->addTag('t')
+            ->setInstanceofConditionals(array(
+                parent::class => (new ChildDefinition(''))->addTag('bar'),
+            ))
+        ;
+
+        (new ResolveInstanceofConditionalsPass())->process($container);
+
+        $abstract = $container->getDefinition('abstract.instanceof.bar');
+
+        $this->assertEmpty($abstract->getArguments());
+        $this->assertEmpty($abstract->getMethodCalls());
+        $this->assertNull($abstract->getDecoratedService());
+        $this->assertEmpty($abstract->getTags());
+        $this->assertTrue($abstract->isAbstract());
     }
 }

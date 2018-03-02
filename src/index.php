@@ -51,6 +51,13 @@ if ($bReturn) {
 	}
 	/*<!-- endbuild -->*/
 
+	$aeSession = \MarkNotes\Session::getInstance($root);
+
+	// Initialize the DocFolder filesystem
+	$aeInitialize = new Includes\Initialize();
+	$aeInitialize->setDocFolder();
+	unset($aeInitialize);
+
 	$aeFunctions = \MarkNotes\Functions::getInstance();
 	$aeJSON = \MarkNotes\JSON::getInstance();
 

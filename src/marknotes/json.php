@@ -14,19 +14,23 @@ class JSON
 	private static $hDebug = false;
 	private static $root = '';
 
-	public function __construct()
+	public function __construct(string $root = '')
 	{
-		self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
-		self::$root = str_replace('/', DS, self::$root);
+		if ($root!=='') {
+			self::$root = rtrim($root, DS).DS;
+		} else {
+			self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
+			self::$root = str_replace('/', DS, self::$root);
+		}
 
 		self::$hDebug = false;
 		return true;
 	}
 
-	public static function getInstance()
+	public static function getInstance(string $root = '')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new JSON();
+			self::$hInstance = new JSON($root);
 		}
 		return self::$hInstance;
 	}
@@ -144,10 +148,13 @@ class JSON
 	*/
 	public static function json_decode(string $fname, bool $assoc = false)
 	{
-		if (!file_exists($fname)) {
-			$fname = utf8_decode($fname);
-		}
-		if (!file_exists($fname)) {
+		$aeFiles = \MarkNotes\Files::getInstance();
+
+		//if (!$aeFiles->exists($fname)) {
+		//	$fname = utf8_decode($fname);
+		//}
+
+		if (!$aeFiles->exists($fname)) {
 			self::showError(str_replace('%s', '<strong>'.$fname.'</strong>', JSON_FILE_NOT_FOUND), true);
 		}
 
@@ -156,7 +163,7 @@ class JSON
 
 		// Trim() so we're sure there is no whitespace
 		// before the JSON content
-		$value = trim(file_get_contents($fname));
+		$value = trim($aeFiles->getContent($fname));
 
 		// Load the JSON parser
 		// Because files settings.json can be manually changed by
@@ -175,7 +182,7 @@ class JSON
 			self::showError($fname, false);
 
 			if (self::$hDebug) {
-				echo '<pre>'.file_get_contents($fname).'</pre>';
+				echo '<pre>'.$aeFiles->getContent($fname).'</pre>';
 				echo "<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($e->getMessage(), true)."</pre>";
 			}
 		}

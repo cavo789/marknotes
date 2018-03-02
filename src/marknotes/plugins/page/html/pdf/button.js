@@ -5,7 +5,7 @@ function fnPluginHTMLPDF() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - PDF');
+		console.log('	  Plugin Page html - PDF');
 	}
 	/*<!-- endbuild -->*/
 
@@ -24,7 +24,8 @@ function fnPluginHTMLPDF() {
 			type: 'error'
 		});
 	} else {
-		var fname = marknotes.note.file + '.pdf';
+		// Make the URL absolute by using "marknotes.docs"
+		var fname = marknotes.docs + marknotes.note.file + '.pdf';
 		window.open(fname);
 	}
 

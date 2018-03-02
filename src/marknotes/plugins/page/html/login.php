@@ -70,8 +70,13 @@ class Login  extends \MarkNotes\Plugins\Page\HTML\Plugin
 		if ($bCanRun) {
 			$bCanRun = false;
 
-			// Should the login plugin be active ?
-			$bEnabled = boolval(self::getOptions('enabled', false));
+			$aeSettings = \MarkNotes\Settings::getInstance();
+
+			$arrSettings = $aeSettings->getPlugins('plugins.task.login');
+
+			// Check that the login task is well enabled
+			// (default is True)
+			$bEnabled = boolval($arrSettings['enabled'] ?? 1);
 
 			if ($bEnabled) {
 				// Yes
@@ -79,14 +84,14 @@ class Login  extends \MarkNotes\Plugins\Page\HTML\Plugin
 				$login = trim(self::getOptions('username', ''));
 				$password = trim(self::getOptions('password', ''));
 
-				// If both login and password are empty (will probably be the
-				// case on a localhost server), there is no need to add
-				// the Login button
+				// If both login and password are empty (will
+				// probably be the case on a localhost server),
+				// there is no need to add the Login button
 				if (($login !== '') && ($password !== '')) {
 					$bCanRun = true;
 				/*<!-- build:debug -->*/
 				} else {
-					$aeSettings = \MarkNotes\Settings::getInstance();
+
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug = \MarkNotes\Debug::getInstance();
 						$aeDebug->log("The login and/or the password is empty, ".
