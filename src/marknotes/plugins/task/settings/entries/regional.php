@@ -25,11 +25,11 @@ class MN_Regional extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'locale';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.$opt, $text, $arr[$opt]);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
 		$opt = 'timezone';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.$opt, $text, $arr[$opt]);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}
