@@ -56,6 +56,7 @@ REM call :fnScrollDir
 REM call :fnCSSCheckboxLib
 REM call :fnSweetAlert
 REM call :fnphpFastCache
+REM call :fnCopyjs-cookie
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -152,6 +153,18 @@ ECHO.
 IF NOT EXIST %LIBS%jquery\ MKDIR %LIBS%jquery\ >> %LOG%
 COPY %VENDOR%components\jquery\jquery.min.js %LIBS%jquery\jquery.min.js /Y >> %LOG%
 COPY %VENDOR%components\jquery\jquery.min.map %LIBS%jquery\jquery.min.map /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyjs-cookie
+::--------------------------------------------------------
+
+:fnCopyjs-cookie
+ECHO  === js-cookie ===
+ECHO	COPY TO %LIBS%js-cookie\
+ECHO.
+IF NOT EXIST %LIBS%js-cookie\ MKDIR %LIBS%js-cookie\ >> %LOG%
+COPY %VENDOR%js-cookie\src\js.cookie.js %LIBS%js-cookie /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
