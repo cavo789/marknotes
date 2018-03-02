@@ -3,7 +3,7 @@
  * Translate : receive a MD string and call an online translation
  * application like Google Translate.
  *
- * Answer to URL index.php?task=task.translate.run&content=....
+ * Answer to URL index.php?task=task.translate.run&content=....&param=language_code
  *
  * @Link https://github.com/Stichoza/google-translate-php/
  */
@@ -41,8 +41,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 		// And remove spaces so keep only ![...](...) and not
 		// !	[...]  (...) for instance
 		$replacement = '!$1$2';
-		$content = preg_replace('/'.$pattern.'/', $replacement,
-			$content);
+		$content = preg_replace('/'.$pattern.'/', $replacement, $content);
 
 		return $content;
 	}
@@ -55,19 +54,34 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 		$return = '';
 
 		// Retrieve the language used for marknotes
+		// Default : translate into the language specified in
+		// settings.json -> regional -> language
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$arrSettings = $aeSettings->getPlugins('/regional');
-		$language = trim($arrSettings['language'] ?? 'en');
+		$default = trim($arrSettings['language'] ?? 'en');
+
+		// Get the param parameter which contains, if mentionned,
+		// the language to use for the Translation
+		// Indeed, we can have Marknotes in French but wish
+		// to translate to English f.i.
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+
+		$language = trim($aeFunctions->getParam('param', 'string', $default, false, 2));
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log("Translate into ".$language,"debug");
+			$aeDebug->log("Translate into ".$language, "debug");
 		}
 		/*<!-- endbuild -->*/
 
-		$libs = __DIR__.DS.'libs/google-translate-php/';
+		// google-translate-php is using a specific URL
+		// Get that URL from the settings of the task
+		// and if not mentionned, used the default one
+		$url = 'https://translate.google.cn/translate_a/single';
+		$url = self::getOptions('url', $url);
 
+		$libs = __DIR__.DS.'libs/google-translate-php/';
 		require_once($libs.'Tokens/TokenProviderInterface.php');
 		require_once($libs.'Tokens/GoogleTokenGenerator.php');
 		require_once($libs.'Tokens/SampleTokenGenerator.php');
@@ -78,15 +92,17 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 		// Don't mention source language, autodetect
 		$tr->setSource(null);
 
-		// Translate into the language specified in
-		// settings.json -> regional -> language
+		// Defined the target language (the &param value on the
+		// querystring, default is the settings -> regionnal ->
+		// language
 		$tr->setTarget($language);
 
-		$tr->setUrlBase('http://translate.google.cn/translate_a/single');
+		// Define the URL of the Google Translate service
+		$tr->setUrlBase($url);
 
 		$return = $tr->translate($content);
 
-		return self::cleaning($return);;
+		return self::cleaning($return);
 	}
 
 	private static function getVariable(string $line) : string
@@ -122,8 +138,7 @@ class Run extends \MarkNotes\Plugins\Task\Plugin
 		if (self::isEnabled(true)) {
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 
-			$content = trim($aeFunctions->getParam('content', 'unsafe',
-				'', false));
+			$content = trim($aeFunctions->getParam('content', 'unsafe', '', false));
 
 			if ($content == '') {
 				$content = 'ERROR - The translate task has been called '.

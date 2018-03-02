@@ -1,7 +1,7 @@
 {
 	"@metadata": {
 		"authors": ["Christophe Avonture"],
-		"last-updated": "2017-09-27",
+		"last-updated": "2018-03-02",
 		"locale": "en"
 	},
 	"action_prohibited": "The configuration of the application prohibits this action",
@@ -16,6 +16,8 @@
 	"app_name": "Marknotes - Notes management",
 	"are_you_sure": "Are you sure ?",
 	"button_addTOC": "Add a table of content",
+	"button_convertMD": "Convert the HTML content to Markdown",
+	"button_translate": "Translate the note",
 	"button_curlBlog": "Get the HTML of a page (from an URL)",
 	"button_encrypt": "Add encryption for the selection",
 	"button_exit_edit_mode": "Exit the editing mode",
@@ -40,6 +42,9 @@
 	"date": "%A %d %B %Y - %H:%M",
 	"deleted": "Deleted",
 	"display_that_note": "Display that note",
+	"editor_translate_alert_title" : "To which language wish you translate ?",
+	"editor_translate_select" : "Please select a language",
+	"editor_translate_doit" : "Translate",
 	"edit_file": "Edit the note",
 	"encrypted": "This information is encrypted",
 	"encrypted_hint": "This information is encrypted. You'll be able to see it once you're connected",
@@ -52,6 +57,7 @@
 	"error_delete_folder": "An error has occured during the deletion of the folder [$1] (this is the case when the folder contains readonly subfolders or notes)",
 	"error_lib_not_found": "Error - The library [$1] was not found",
 	"error_invalid_task": "Invalid task [$1]",
+	"error_please_select_a_value":"Please select a value",
 	"error_rename_file": "An error has occured when trying to rename the note [$1] into [$2]",
 	"error_rename_folder": "An error has occured when trying to rename the folder [$1] into [$2]",
 	"error_select_first": "Please select first a note",
@@ -188,6 +194,7 @@
 	"settings_plugins_task_acls_title": "Authorization management",
 	"settings_plugins_buttons_title": "Buttons",
 	"settings_plugins_options_page_html_editor_spellchecker": "Allow spellcheck",
+	"settings_plugins_options_page_html_editor_language_to": "List of languages to propose for the translation (the value must follow the following syntax  <strong>'en':'English','fr':'French','nl':'Dutch'</strong>)",
 	"settings_plugins_task_encrypt_title": "Encryption feature",
 	"settings_plugins_options_markdown_encrypt_password": "Password to use for the encryption",
 	"settings_plugins_buttons_editor_enabled": "Show the editor button",

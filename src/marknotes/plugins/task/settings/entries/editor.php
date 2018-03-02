@@ -42,6 +42,19 @@ class MN_Editor extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// Translate-to language
+		$opt = 'language_to';
+		// Should use double quotes
+		$value = str_replace("'", '"', trim($arr[$opt]));
+
+		if ($value == '') {
+			$value = "'en':'English','fr':'French'";
+		}
+		$value = str_replace('"', "'", $value);
+
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $value);
+
 		// fetch
 		$key = 'plugins.task.fetch';
 		$arr = self::getArray($key);

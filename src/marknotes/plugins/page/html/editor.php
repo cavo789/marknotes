@@ -25,6 +25,17 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// Get the options for the plugin
 		$bSpellCheck = boolval(self::getOptions('spellchecker', true));
 
+		// Get the options for the plugin
+		$default = "'en':'English','es':'Spanish','fr':'French','it':'Italian','nl':'Dutch'";
+
+		$sLang = trim(self::getOptions('language_to', $default));
+		if ($sLang==='') {
+			$sLang = $default;
+		}
+
+		// Should be a double quote and not a single
+		$sLang = str_replace("'", '"', $sLang);
+
 		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
 
@@ -43,6 +54,7 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 			"defer=\"defer\"></script>".
 			"\n<script type=\"text/javascript\">\n".
 			"marknotes.editor={};\n".
+			"marknotes.editor.language_to={".$sLang."};\n".
 			"marknotes.editor.spellChecker=".($bSpellCheck?"true":"false").";\n".
 			"</script>";
 

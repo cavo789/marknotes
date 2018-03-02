@@ -782,7 +782,8 @@
 						"js": []
 					},
 					"editor": {
-						"spellchecker": 0
+						"spellchecker": 0,
+						"language_to":"'en':'English','es':'Spanish','fr':'French','it':'Italian','nl':'Dutch'"
 					},
 					"fakeLoader": {
 						"bgColor": "#3c8dbc",
@@ -998,7 +999,8 @@
 				"translate": {
 					"include" : {
 						"after" : "Free translation of the article  %YAML_ORIGINAL_URL%"
-					}
+					},
+					"url" : "https://translate.google.cn/translate_a/single"
 				},
 				"update": {
 					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",

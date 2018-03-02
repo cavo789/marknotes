@@ -18,7 +18,7 @@ class Update
 		$tmp = explode('.', $key);
 		$node = array_shift($tmp);
 		if (count($tmp)>0) {
-			$arr[$node] = self::buildArray(implode('.',$tmp), $value, $arr);
+			$arr[$node] = self::buildArray(implode('.', $tmp), $value, $arr);
 		} else {
 			$arr[$node] = $value;
 		}
@@ -47,7 +47,11 @@ class Update
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$key = trim($aeFunctions->getParam('key', 'string', '', false));
-		$value = trim($aeFunctions->getParam('value', 'string', '', false));
+		$value = $aeFunctions->getParam('value', 'string', '', false);
+
+		// Don't use the escape form
+		$value = str_replace('&#39;', "'", $value);
+		$value = str_replace('&#34;', '"', $value);
 
 		$key = $aeFiles->sanitize($key);
 
@@ -62,7 +66,6 @@ class Update
 		if ($aeFiles->exists($json = $rootFolder.'settings.json')) {
 			$arrSettings = json_decode($aeFiles->getContent($json), true);
 		}
-
 		// And merge it with the new settings
 		if (count($arrSettings)>0) {
 			$arrSettings = array_replace_recursive($arrSettings, $arrNew);

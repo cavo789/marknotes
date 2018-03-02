@@ -70,7 +70,7 @@ function fnPluginButtonEdit($params) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor');
+		console.log('	  Plugin Page html - Editor');
 	}
 	/*<!-- endbuild -->*/
 
@@ -101,7 +101,7 @@ function afterEdit($ajax_request, $form) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor - afterEdit');
+		console.log('	  Plugin Page html - Editor - afterEdit');
 	}
 	/*<!-- endbuild -->*/
 
@@ -137,7 +137,7 @@ function afterEdit($ajax_request, $form) {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.warn('         DOM element id=sourceMarkDown is missing');
+			console.warn('		 DOM element id=sourceMarkDown is missing');
 		}
 		/*<!-- endbuild -->*/
 		Noty({
@@ -156,7 +156,7 @@ function afterEditInitMDE($data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor - afterEdit');
+		console.log('	  Plugin Page html - Editor - afterEdit');
 		console.log($data);
 	}
 	/*<!-- endbuild -->*/
@@ -326,15 +326,15 @@ function fnPluginButtonEdit_Exit($params) {
  * EDIT MODE - Save the new content.  Called by the "Save" button
  * of the simplemde editor, initialized in the afterEdit function)
  *
- * @param {type} $fname        Filename
- * @param {type} $markdown     The new content
+ * @param {type} $fname		Filename
+ * @param {type} $markdown	 The new content
  * @returns {boolean}
  */
 function buttonSave($fname, $markdown) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor - Save');
+		console.log('	  Plugin Page html - Editor - Save');
 	}
 	/*<!-- endbuild -->*/
 
@@ -382,7 +382,7 @@ function buttonUploadImage(editor) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor - Upload');
+		console.log('	  Plugin Page html - Editor - Upload');
 	}
 	/*<!-- endbuild -->*/
 
@@ -427,7 +427,6 @@ function buttonUploadImage(editor) {
 			}
 		});
 
-
 	});
 
 	return true;
@@ -442,7 +441,7 @@ function buttonEncrypt(editor) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor - Encrypt');
+		console.log('	  Plugin Page html - Editor - Encrypt');
 	}
 	/*<!-- endbuild -->*/
 
@@ -465,7 +464,7 @@ function buttonAddTOC(editor) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Editor - Add TOC tag');
+		console.log('	  Plugin Page html - Editor - Add TOC tag');
 	}
 	/*<!-- endbuild -->*/
 
@@ -558,19 +557,45 @@ function button_convertMD(editor) {
  */
 function button_translate(editor) {
 
-	var $data = {};
-	$data.task = 'task.translate.run';
-	$data.content = editor.codemirror.getValue();
+	swal({
+		title: $.i18n('editor_translate_alert_title'),
+		type: 'question',
+		input: 'select',
+		inputOptions: marknotes.editor.language_to,
+		inputPlaceholder:  $.i18n('editor_translate_select'),
+		inputValidator: function (value) {
+			return new Promise(function (resolve, reject) {
+				if (value !== '') {
+					// value contains the selected language
+					// for instance "en" or "fr"
+					var $data = {};
+					$data.task = 'task.translate.run';
+					$data.param = value;
+					$data.content = editor.codemirror.getValue();
 
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: marknotes.url,
-		data: $data,
-		datatype: 'html',
-		success: function (data) {
-			editor.codemirror.setValue(data);
-		}
-	}); // $.ajax()
+					$.ajax({
+						async: true,
+						type: 'POST',
+						url: marknotes.url,
+						data: $data,
+						datatype: 'html',
+						success: function (data) {
+							editor.codemirror.setValue(data);
+						}
+					}); // $.ajax()
 
+					resolve();
+				} else {
+					reject($.i18n('error_please_select_a_value'));
+				}
+			})
+		},
+		showCancelButton: true,
+		cancelButtonText: $.i18n('cancel'),
+		confirmButtonText: $.i18n('editor_translate_doit')
+	});
+
+	/*
+
+*/
 }

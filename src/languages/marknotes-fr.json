@@ -1,7 +1,7 @@
 {
 	"@metadata": {
 		"authors": ["Christophe Avonture"],
-		"last-updated": "2017-09-27",
+		"last-updated": "2018-03-02",
 		"locale": "fr"
 	},
 	"action_prohibited": "La configuration de l'application interdit cette action",
@@ -16,11 +16,17 @@
 	"app_name": "Marknotes - Gestionnaire de prise de notes",
 	"are_you_sure": "\u00cates-vous s\u00fbr ?",
 	"button_addTOC": "Ins\u00e8re une table des mati\u00e8res",
+	"button_convertMD": "Converti le contenu HTML de la note en Markdown",
+	"button_translate": "Traduit le texte",
 	"button_curlBlog": "R\u00e9cup\u00e8re le code HTML d'une page sur le web",
 	"button_encrypt": "Encrypte la s\u00e9lection",
 	"button_exit_edit_mode": "Quitte le mode \u00e9dition",
 	"button_save": "Enregistre vos modifications sur le serveur",
 	"button_save_done": "Le fichier a \u00e9t\u00e9 enregistr\u00e9 avec succ\u00e8s",
+	"editor_translate_alert_title" : "Vers quelle langue souhaitez-vous traduire ?",
+	"editor_translate_select" : "Veuillez sélectionner une langue",
+	"editor_translate_doit" : "Traduire",
+	"error_please_select_a_value":"Veuillez sélectionner une valeur",
 	"button_save_error": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la sauvegarde",
 	"button_upload_image": "T\u00e9l\u00e9verse une image et ins\u00e8re le tag d'affichage de l'image \u00e0 l'endroit o\u00f9 se situe le curseur",
 	"cancel": "Annuler",
