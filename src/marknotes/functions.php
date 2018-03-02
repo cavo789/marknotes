@@ -103,7 +103,12 @@ class Functions
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$folder = $aeSettings->getFolderLibs()."slugify/";
+		$folder = $aeSettings->getFolderLibs()."slugify".DS;
+
+		if (!is_dir($folder)) {
+			return $text;
+		}
+
 		include_once $folder.'RuleProvider/RuleProviderInterface.php';
 		include_once $folder.'RuleProvider/DefaultRuleProvider.php';
 		include_once $folder.'RuleProvider/FileRuleProvider.php';
