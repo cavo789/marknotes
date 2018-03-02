@@ -1,1 +1,0 @@
-Please see: https://github.com/reeze/php-leveldb for more documentation
