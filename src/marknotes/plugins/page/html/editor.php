@@ -41,18 +41,18 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		// Add Simple Markdown Editor
 		$script =
-			"\n<script type=\"text/javascript\" ". "src=\"".$url."libs/simplemde-markdown-editor/simplemde.min.js\" defer=\"defer\"></script>\n";
+			"\n<script ". "src=\"".$url."libs/simplemde-markdown-editor/simplemde.min.js\" defer=\"defer\"></script>\n";
 
 		// Add the dropzone library to allow image upload
-		$script.="<script type=\"text/javascript\" ".
+		$script.="<script ".
 			"src=\"".$rootURL."/marknotes/plugins/page/html/upload".
 			"/libs/dropzone/dropzone.min.js\" ".
 			"defer=\"defer\"></script>\n";
 
-		$script .= "<script type=\"text/javascript\" ".
+		$script .= "<script ".
 			"src=\"".$url."editor.js\" ".
 			"defer=\"defer\"></script>".
-			"\n<script type=\"text/javascript\">\n".
+			"\n<script>\n".
 			"marknotes.editor={};\n".
 			"marknotes.editor.language_to={".$sLang."};\n".
 			"marknotes.editor.spellChecker=".($bSpellCheck?"true":"false").";\n".

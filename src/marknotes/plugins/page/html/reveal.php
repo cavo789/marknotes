@@ -52,21 +52,19 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 			//
 			// --------------------------------------------
 
-			$script .= "<script type=\"text/javascript\" ".
+			$script .= "<script ".
 				"src=\"".$url."libs/reveal.js/js/reveal.js\" ".
 				"defer=\"defer\"></script>\n".
-			$script = "<script type=\"text/javascript\" ".
+			$script = "<script ".
 				"src=\"".$url."libs/reveal.js/lib/js/head.min.js\" ".
 				"defer=\"defer\"></script>\n";
-			$script .= "<script type=\"text/javascript\" ".
-				"src=\"".$url."reveal.js\" ".
+			$script .= "<script src=\"".$url."reveal.js\" ".
 				"defer=\"defer\"></script>";
 		}
 
 		// The button should be loaded also when task isn't
 		// task.export.reveal
-		$script .= "<script type=\"text/javascript\" ".
-			"src=\"".$url."button.js\" ".
+		$script .= "<script src=\"".$url."button.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		if ($task==='task.export.reveal') {
@@ -92,7 +90,7 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$bPandoc = $aeConvert->isValid();
 
 			$script .=
-				"<script type=\"text/javascript\">\n".
+				"<script>\n".
 				"marknotes.note = {};\n".
 				"marknotes.note.url = '".$urlHTML."';\n".
 				"marknotes.note.url_noext = '".$aeFiles->removeExtension($urlHTML)."';\n".
@@ -132,7 +130,7 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 			}
 
 			// Add inline JS
-			$script.="<script type=\"text/javascript\">\n".$tmp."</script>\n";
+			$script.="<script>\n".$tmp."</script>\n";
 		}
 
 		$js .= $aeFunctions->addJavascriptInline($script);

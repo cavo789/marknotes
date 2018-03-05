@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * Intern plugin, don't answer to URL
  */
 namespace MarkNotes\Plugins\Task\Encrypt;

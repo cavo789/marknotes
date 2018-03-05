@@ -56,8 +56,8 @@ class GTranslate extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
-			"\n<script type=\"text/javascript\" ". "src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\" defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ". "src=\"".$root."/marknotes/plugins/page/html/gtranslate/gtranslate.js\" ".
+			"\n<script ". "src=\"//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\" defer=\"defer\"></script>\n".
+			"<script ". "src=\"".$root."/marknotes/plugins/page/html/gtranslate/gtranslate.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

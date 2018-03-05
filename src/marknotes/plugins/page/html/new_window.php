@@ -24,14 +24,13 @@ class NewWindow extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= '/marknotes/plugins/page/html/new_window/';
 
 		$script =
-			"<script type=\"text/javascript\" src=\"".$url."new_window.js\" ".
+			"<script src=\"".$url."new_window.js\" ".
 			"defer=\"defer\"></script>";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 
 		return true;
 	}
-
 
 	/**
 	 * Provide additionnal stylesheets

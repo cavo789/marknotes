@@ -25,12 +25,11 @@ class TXT extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/txt/';
 
-		$script = "<script type=\"text/javascript\" ".
+		$script = "<script ".
 			"src=\"".$url."libs/FileSaver.js/FileSaver.min.js\" ".
 			"defer=\"defer\"></script>\n";
 
-		$script .= "<script type=\"text/javascript\" ".
-			"src=\"".$url."button.js\" ".
+		$script .= "<script src=\"".$url."button.js\" ".
 			"defer=\"defer\"></script>";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

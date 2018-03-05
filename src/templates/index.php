@@ -3,11 +3,9 @@
 
 	<head>
 
-		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="content-language" content="%LANGUAGE%" />
-		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 		<title>%SITE_NAME%</title>
 
@@ -29,7 +27,7 @@
 
 		<footer>
 			<hr/>
-			<a href="https://github.com/cavo789/marknotes" target="_blank" title="Download Marknotes on GitHub"><img src="%ROOT%/templates/assets/images/logo-marknotes.svg" alt="marknotes" height="42" align="left" /></a>
+			<a href="https://github.com/cavo789/marknotes" target="_blank" rel="noopener" title="Download Marknotes on GitHub"><img src="%ROOT%/templates/assets/images/logo-marknotes.svg" alt="marknotes" height="42" align="left" /></a>
 		</footer>
 
 	</body>

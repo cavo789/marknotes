@@ -1,7 +1,7 @@
 <?php
 /**
- * Analyze each URLs in the note and add a target="_blank" in order to open
- * the link in a new windows
+ * Analyze each URLs in the note and add a target="_blank"
+ * in order to open the link in a new windows
  */
 
 namespace MarkNotes\Plugins\Page\HTML;
@@ -25,7 +25,7 @@ class Links_Target extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/links_target/';
 
-		$script = "<script type=\"text/javascript\" src=\"".$url."links_target.js\" ".
+		$script = "<script src=\"".$url."links_target.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

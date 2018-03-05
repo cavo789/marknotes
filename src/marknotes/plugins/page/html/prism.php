@@ -26,9 +26,9 @@ class Prism extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= '/marknotes/plugins/page/html/prism/';
 
 		$script =
-			"<script type=\"text/javascript\" src=\"".$url."libs/prism/prism.js\" ".
+			"<script src=\"".$url."libs/prism/prism.js\" ".
 			"data-manual defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" src=\"".$url."prism.js\" ".
+			"<script src=\"".$url."prism.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

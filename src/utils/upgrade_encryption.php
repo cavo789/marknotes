@@ -141,7 +141,8 @@ function processFile(string $filename)
 		// Only when the backup was successfull made
 		if ($bContinue) {
 			$html = '<li>Process <a href="'.$url.'" '.
-				'target="_blank">'.utf8_encode($filename).'</a></li>';
+				'target="_blank" rel="noopener">'.
+				utf8_encode($filename).'</a></li>';
 
 			// Add the encrypt tag before the confidential content
 			for ($i=0; $i<count($tag); $i++) {
@@ -220,7 +221,6 @@ function getHTML() : string
 	 	'"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'.
 		'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">'.
 		'<head>'.
-		'<meta charset="utf-8" />'.
 		'<meta http-equiv="Content-Type" content="text/html;'.
 		'charset=UTF-8" />'.
 		'<meta http-equiv="X-UA-Compatible" content="IE=edge" />'.

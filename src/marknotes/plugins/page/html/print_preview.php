@@ -24,9 +24,9 @@ class PrintPreview extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= '/marknotes/plugins/page/html/print_preview/';
 
 		$script =
-			"<script type=\"text/javascript\" src=\"".$url."libs/printThis/printThis.js\" ".
+			"<script src=\"".$url."libs/printThis/printThis.js\" ".
 			"defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" src=\"".$url."print_preview.js\" ".
+			"<script src=\"".$url."print_preview.js\" ".
 			"defer=\"defer\"></script>";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

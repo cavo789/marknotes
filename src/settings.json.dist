@@ -19,7 +19,7 @@
 	"interface": {
 		"accent_conversion": 0,
 		"footer": {
-			"left": "<strong>markNotes © 2016-2018<strong>",
+			"left": "<strong>markNotes © 2016-2018<\/strong>",
 			"right": "<a href='https://github.com/cavo789/marknotes' target='blank'>Fork me on GitHub</a>"
 		},
 		"can_see": 1,

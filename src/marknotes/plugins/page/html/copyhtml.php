@@ -25,7 +25,7 @@ class CopyHTML extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= 'marknotes/plugins/page/html/copyhtml/';
 
 		$script =
-			"<script type=\"text/javascript\" src=\"".$url."copyhtml.js\" ".
+			"<script src=\"".$url."copyhtml.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

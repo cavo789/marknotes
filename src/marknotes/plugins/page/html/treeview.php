@@ -26,11 +26,11 @@ class Treeview extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/treeview/';
 
-		$script = "\n<script type=\"text/javascript\" ".
+		$script = "\n<script ".
 			"src=\"".$url."libs/jstree/jstree.min.js\" ".
 			"defer=\"defer\"></script>\n";
 
-		$script .= "<script type=\"text/javascript\" ".
+		$script .= "<script ".
 			"src=\"".$url."jstree.js\" ".
 			"defer=\"defer\"></script>\n";
 
@@ -38,14 +38,14 @@ class Treeview extends \MarkNotes\Plugins\Page\HTML\Plugin
 		if ($aeSession->get('authenticated', 0) === 1) {
 			// Add extra functionnalities like adding, renaming or removing
 			// a folder / a note
-			$script .= "<script type=\"text/javascript\" ".
+			$script .= "<script ".
 				"src=\"".$url."treeview.js\" ".
 				"defer=\"defer\"></script>";
 		} // if ($aeSession->get('authenticated', 0) === 1)
 
 		$theme = self::getOptions('theme', 'default');
 
-		$js .= "<script type=\"text/javascript\">\n".
+		$js .= "<script>\n".
 			"marknotes.jstree={};\n".
 			"marknotes.jstree.theme='".$theme."';\n".
 			"</script>\n";

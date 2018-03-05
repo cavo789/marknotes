@@ -32,12 +32,12 @@ class Favorites extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// favorites is empty of not
 		$arr = $aeSettings->getPlugins(self::$json_options, array('list'=>array()));
 
-		$script = "<script type=\"text/javascript\">".
+		$script = "<script>".
 			"marknotes.favorites_count=".count($arr['list']).";".
 			"</script>\n";
 
-		$script .= "<script type=\"text/javascript\" ".
-			" src=\"".$url."favorites.js\"></script>\n";
+		$script .= "<script ".
+			"src=\"".$url."favorites.js\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

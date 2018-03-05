@@ -54,7 +54,7 @@ class Custom extends \MarkNotes\Plugins\Page\HTML\Plugin
 				$file = ltrim($file, "/\\");
 
 				if ($aeFiles->exists($fname = $aeSettings->getFolderWebRoot().$file)) {
-					$sScript .= "<script type=\"text/javascript\" src=\"".$root.$file."\" ".
+					$sScript .= "<script src=\"".$root.$file."\" ".
 						"defer=\"defer\"></script>\n";
 				/*<!-- build:debug -->*/
 				} else {

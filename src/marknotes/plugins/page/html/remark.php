@@ -28,7 +28,7 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$task = $aeSession->get('task', '');
 
 		if ($task==='task.export.remark') {
-			$script = "<script type=\"text/javascript\" ".
+			$script = "<script ".
 				"src=\"".$url."libs/remark/remark.min.js\" ".
 				"defer=\"defer\"></script>\n";
 
@@ -45,7 +45,7 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($filename, 'html'));
 
 			$script .=
-				"<script type=\"text/javascript\">\n".
+				"<script>\n".
 				"marknotes.note = {};\n".
 				"marknotes.note.url = '".$urlHTML."';\n".
 				"marknotes.slideshow = {};\n".
@@ -54,8 +54,7 @@ class Remark extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"</script>";
 
 		} else {
-			$script = "<script type=\"text/javascript\" ".
-				"src=\"".$url."button.js\" ".
+			$script = "<script src=\"".$url."button.js\" ".
 				"defer=\"defer\"></script>";
 		}
 

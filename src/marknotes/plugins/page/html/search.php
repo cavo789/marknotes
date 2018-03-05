@@ -28,22 +28,21 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// For highligthing content in a note : after a search,
 		// the displayed note will have the search term highlighted
 		// @link https://github.com/knownasilya/jquery-highlight
-		$script = "<script type=\"text/javascript\" ".
+		$script = "<script ".
 			"src=\"".$url."libs/jquery-highlight/jquery.highlight.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		// Used by the search box, for auto-completion
 		// @link https://github.com/sergiodlopes/jquery-flexdatalist
-		$script .= "<script type=\"text/javascript\" ".
+		$script .= "<script ".
 			"src=\"".$url."libs/jquery-flexdatalist/jquery.flexdatalist.min.js\" ".
 			"defer=\"defer\"></script>\n";
 
-		$script .= "<script type=\"text/javascript\" ".
-			"src=\"".$url."search.js\" ".
+		$script .= "<script src=\"".$url."search.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$script .=
-			"<script type=\"text/javascript\" defer=\"defer\">\n".
+			"<script>\n".
 			"marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
 			"</script>\n";
 
@@ -92,14 +91,14 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$placeHolder = str_replace('"', "'", $placeHolder);
 
 			$sSearch='<div id="divSearch" class="search sidebar-form">
-	          <div class="input-group">
-	            <input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
-	            <span class="input-group-btn">
-	                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-	                </button>
-	              </span>
-	          </div>
-	        </div>';
+			  <div class="input-group">
+				<input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
+				<span class="input-group-btn">
+					<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+					</button>
+				  </span>
+			  </div>
+			</div>';
 
 /*
 $sSearch='<input id="search" name="search" type="text" '.

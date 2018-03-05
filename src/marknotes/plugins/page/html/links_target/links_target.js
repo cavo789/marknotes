@@ -9,15 +9,14 @@ function fnPluginHTMLLinksTarget() {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('    fnPluginHTMLLinksTarget - Open links in a new window');
+			console.log('	fnPluginHTMLLinksTarget - Open links in a new window');
 		}
 		/*<!-- endbuild -->*/
 		//var $currentURL = location.protocol + '//' + location.host;
 
 		$('article a[href^="http:"], article a[href^="https:"]')
 			//.not('[href^="' + $currentURL + '/"]')
-			.attr('target', '_blank');
-
+			.attr('target', '_blank').attr('rel','noopener');
 	}
 
 	return true;

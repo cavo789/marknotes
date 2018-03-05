@@ -23,16 +23,16 @@ class FakeLoader extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
 		$url .= 'marknotes/plugins/page/html/fakeLoader/';
 
-		$script = "<script type=\"text/javascript\" ".
-			" src=\"".$url."libs/fakeLoader.js/fakeLoader.js\"></script>\n".
-			"<script type=\"text/javascript\">\n".
+		$script = "<script ".
+			"src=\"".$url."libs/fakeLoader.js/fakeLoader.js\">".
+			"</script>\n".
+			"<script>\n".
 			"marknotes.fakeLoader={};\n".
 			"marknotes.fakeLoader.bgColor='".self::getOptions('bgColor', '#2ecc71')."';\n".
 			"marknotes.fakeLoader.spinner='".self::getOptions('spinner', 'spinner1')."';\n".
 			"marknotes.fakeLoader.timeToHide='".self::getOptions('timeToHide', '#5000')."';\n".
 			"</script>\n".
-			"<script type=\"text/javascript\" ".
-			"src=\"".$url."fakeLoader.js\"></script>\n";
+			"<script src=\"".$url."fakeLoader.js\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

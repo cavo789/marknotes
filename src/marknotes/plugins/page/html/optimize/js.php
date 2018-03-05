@@ -43,6 +43,8 @@ class JS
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		// In case of, remove empty tag
+		$str=str_replace('<script></script>', '', $str);
+		$str=str_replace('<script defer="defer"></script>', '', $str);
 		$str=str_replace('<script type="text/javascript"></script>', '', $str);
 		$str=str_replace('<script type="text/javascript" defer="defer"></script>', '', $str);
 
@@ -87,8 +89,7 @@ class JS
 					} // if ($arrOptimize['minify']??0)
 				} else {
 					// It's a file inclusion like :
-					// <script type="text/javascript"
-					// src="http://localhost:8080/notes/libs/jquery/jquery.min.js"></script>
+					// <script src="http://...jquery.min.js"></script>
 
 					$script=$arrMatches[0][$k];
 

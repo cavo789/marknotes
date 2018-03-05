@@ -30,9 +30,9 @@ class Clipboard extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= 'marknotes/plugins/page/html/clipboard/';
 
 		$script =
-			"<script type=\"text/javascript\" ". "src=\"".$url."libs/clipboard-js/clipboard.min.js\" ".
+			"<script ". "src=\"".$url."libs/clipboard-js/clipboard.min.js\" ".
 			"defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" src=\"".$url."clipboard.js\" ".
+			"<script src=\"".$url."clipboard.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

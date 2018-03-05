@@ -25,7 +25,7 @@ class Erase extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= 'marknotes/plugins/page/html/erase/';
 
 		$script =
-			"<script type=\"text/javascript\" src=\"".$url."erase.js\" ".
+			"<script src=\"".$url."erase.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

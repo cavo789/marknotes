@@ -1,9 +1,9 @@
 <?php
 /*
- * The markdown version will be put in the cache folder but ONLY WHEN
- * the note will not contains encrypted informations. If it's the
- * case, markdown can't be put in the cache otherwise we'll store
- * unencrypted informations which is a bad idea.
+ * The markdown version will be put in the cache folder but
+ * ONLY WHEN the note will not contains encrypted informations.
+ * If it's the case, markdown can't be put in the cache otherwise
+ * we'll store unencrypted informations which is a bad idea.
  */
 namespace MarkNotes\FileType;
 
@@ -16,7 +16,7 @@ class Markdown
 	public function __construct()
 	{
 		return true;
-	} // function __construct()
+	}
 
 	public static function getInstance()
 	{
@@ -24,7 +24,7 @@ class Markdown
 			self::$hInstance = new Markdown();
 		}
 		return self::$hInstance;
-	} // function getInstance()
+	}
 
 	/**
 	* From a markdown content, return an heading text
@@ -50,7 +50,7 @@ class Markdown
 		}
 
 		return $title;
-	} //  function getHeadingText()
+	}
 
 	/**
 	* Convert any links like ![alt](image/file.png) or
@@ -109,10 +109,10 @@ class Markdown
 
 			$matches = array();
 
-			// When the task is DOCX, PDF, ... links to images should
-			// be from the disk and not from an url so replace
-			// absolute links by relative ones, then, replace
-			// links by hard disk filepaths
+			// When the task is DOCX, PDF, ... links to
+			// images should be from the disk and not from an
+			// url so replace absolute links by relative ones,
+			// then, replace links by hard disk filepaths
 			if (in_array($task, $arrFilePaths)) {
 				if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
 					for ($i = 0; $i < count($matches[2]); $i++) {
@@ -236,7 +236,7 @@ class Markdown
 	 * Get the content of the file. Use the cache system to
 	 * speed up the retrieving.
 	 */
-	private static function doReadContent(string $filename) : string
+	private static function doReadContent(string $filename, array $params) : string
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
@@ -260,6 +260,7 @@ class Markdown
 
 			$params['markdown'] = $markdown;
 			$params['filename'] = $filename;
+
 			$args = array(&$params);
 			$aeEvents->trigger('markdown::markdown.read', $args);
 			$markdown = $args[0]['markdown'];
@@ -301,7 +302,7 @@ class Markdown
 	*						 1 : encrypted infos should
 	*			stay encrypted
 	*/
-	public function read(string $filename, array $params = null) : string
+	public function read(string $filename, array $params = array()) : string
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
@@ -334,7 +335,8 @@ class Markdown
 
 		if (is_null($arr)) {
 			$arr = array();
-			$arr['markdown'] = self::doReadContent($filename);
+
+			$arr['markdown'] = self::doReadContent($filename, $params);
 
 			if (trim($arr['markdown'])=='') {
 				// Don't cache if the content is empty.

@@ -62,12 +62,12 @@ class Add_Icons extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$arrOptions = self::getOptions('regex', array());
 
-		$script="<script type=\"text/javascript\">".
+		$script="<script>".
 			"var position_add_icons='".$position."';\n".
 			"var json_add_icons=".json_encode($arrOptions).";\n".
 			"</script>";
 
-		$script .= "<script type=\"text/javascript\" src=\"".$url."add_icons.js\" ".
+		$script .= "<script src=\"".$url."add_icons.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

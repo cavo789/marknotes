@@ -2,8 +2,8 @@
 /**
  * Process the markdown content; extract his YAML header.
  * Add the YAML header in the Session object.
- * If the header is not present, if the setting is "add_if_missing=1",
- * then create a header.
+ * If the header is not present, if the setting is
+ * "add_if_missing=1", then create a header.
  *
  * The YAML block should, always, be at the top of the document
  * starting with '---' on the first line of the document and
@@ -102,7 +102,8 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 			$regex = '~^('
 				// $matches[1] start separator
 				.implode('|', array_map($quote, array($yaml_separator)))
-				 // $matches[2] between separators i.e. the YAML content
+				// $matches[2] between separators i.e.
+				// the YAML content
 				."){1}[\r\n|\n]*(.*?)[\r\n|\n]+("
 				// $matches[3] end separator
 				.implode('|', array_map($quote, array($yaml_separator)))
@@ -113,25 +114,38 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 			$md = $params['markdown'];
 
 			if (preg_match($regex, $md, $matches) === 1) {
+
 				// Yes, a YAML header has been found
 				// Get the matches parts
 				list ($pattern, $tag_before, $yaml, $tag_after, $content) = $matches;
 
-				$params['yaml'] = Yaml::parse(trim($yaml));
+				try {
+					// Don't raise an error if the Yaml
+					// content is incorrectly built
+					$params['yaml'] = Yaml::parse(trim($yaml));
+				} catch (\Exception $e) {
+				}
+
 				$params['markdown'] = trim($content);
 			} else {
-				// There is no YAML block yet
+				// There is no YAML block yet in the content,
+				// check the Session
+				$aeSession =  \MarkNotes\Session::getInstance();
+				$yaml = trim($aeSession->get('yaml', ''));
 
-				// Retrieve the title for the section, from settings.json
-				$arrSettings = $aeSettings->getPlugins('options.yaml');
+				if ($yaml == '') {
+					// Retrieve the title for the section,
+					// from settings.json
+					$arrSettings = $aeSettings->getPlugins('options.yaml');
 
-				// Check if we can add the block automatically
-				$add = boolval(self::getOptions('add_if_missing', 0));
+					// Check if we can add the block automatically
+					$add = boolval(self::getOptions('add_if_missing', 0));
 
-				if ($add) {
-					$params['yaml'] = self::BuildYAML($md);
-					// Remember the note's YAML header
-					$yaml = YAML::dump($params['yaml']);
+					if ($add) {
+						$params['yaml'] = self::BuildYAML($md);
+						// Remember the note's YAML header
+						$yaml = YAML::dump($params['yaml']);
+					}
 				}
 			}
 		} else { // if ($aeFiles->exists($lib))

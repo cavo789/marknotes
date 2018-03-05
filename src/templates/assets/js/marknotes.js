@@ -4,7 +4,8 @@ $(document).ready(function () {
 
 	$('a[href^="http:"], a[href^="https:"]')
 		.not('[href^="' + $currentURL + '/"]')
-		.attr('target', '_blank');
+		.attr('target', '_blank')
+		.attr('rel', 'noopener');
 
 	// Last part : the array marknotes.arrPluginsFct is a global
 	// array and will be initialized by

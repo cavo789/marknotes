@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="%LANGUAGE%" >
 	<head>
-		<meta charset="utf-8">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta http-equiv="content-language" content="%LANGUAGE%" />
 		<title>%SITE_NAME%</title>
 		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -11,7 +10,7 @@
 
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/ajax_loading.css" />
 
-		<link  media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/ionicons/css/ionicons.min.css">
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/ionicons/css/ionicons.min.css">
 
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/github-markdown-css/github-markdown.css" />
 
@@ -34,12 +33,12 @@
 
 			<!-- logo -->
 			<a id="mnLogo" href="https://github.com/cavo789/marknotes" class="logo" title="Download Marknotes on GitHub">
-				<span class="logo-mini"><img src="%LOGO%" /></span>
-				<span class="logo-lg"><img src="%LOGO%" height="60px"/></span>
+				<span class="logo-mini"><img src="%LOGO%" alt="logo-mini" /></span>
+				<span class="logo-lg"><img src="%LOGO%" height="60" alt="logo-large" /></span>
 			</a>
 
 			<!-- Header Navbar -->
-			<nav class="navbar navbar-static-top" role="navigation">
+			<nav class="navbar navbar-static-top">
 				<!-- Sidebar toggle button-->
 				<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
 					<span class="sr-only">Toggle navigation</span>
@@ -60,11 +59,11 @@
 
 		<aside class="main-sidebar">
 			<section class="sidebar">
-				<ul class="sidebar-menu" data-widget="tree">
+				<div class="sidebar-menu" data-widget="tree">
 					<div class="slimScrollBar">
 						<div id="TOC">&nbsp;</div>
 					</div>
-				</ul>
+				</div>
 			</section>
 		</aside>
 
@@ -74,7 +73,7 @@
 			</section>
 			<section class="content container-fluid">
 				<div id="content" class="page content markdown-body">
-					<article size="A4" layout="portrait" id="CONTENT">
+					<article id="CONTENT">
 						<div id="HOMEPAGE">&nbsp;</div>
 						<div id="FAVORITES">&nbsp;</div>
 					</article>
@@ -103,31 +102,31 @@
 				<!-- Note tab content -->
 				<div class="tab-pane active" id="control-sidebar-note-tab">
 					<span id="control-sidebar-note-tab-export">
-						<ul class="control-sidebar-menu" id="control-sidebar-note-tab-export-list">&nbsp;</ul>
+						<span class="control-sidebar-menu" id="control-sidebar-note-tab-export-list">&nbsp;</span>
 					</span>
 					<hr/>
 					<span id="control-sidebar-note-tab-utility">
-						<ul class="control-sidebar-menu" id="control-sidebar-note-tab-utility-list">&nbsp;</ul>
+						<span class="control-sidebar-menu" id="control-sidebar-note-tab-utility-list">&nbsp;</span>
 					</span>
 				</div>
 				<!-- Clipboard -->
 				<div class="tab-pane" id="control-sidebar-clipboard-tab">
-					<ul class="control-sidebar-menu" id="control-sidebar-clipboard-tab-list">&nbsp;</ul>
+					<span class="control-sidebar-menu" id="control-sidebar-clipboard-tab-list">&nbsp;</span>
 				</div>
 				<!-- Slideshow -->
 				<div class="tab-pane" id="control-sidebar-slideshow-tab">
-					<ul class="control-sidebar-menu" id="control-sidebar-slideshow-tab-list">&nbsp;</ul>
+					<span class="control-sidebar-menu" id="control-sidebar-slideshow-tab-list">&nbsp;</span>
 				</div>
 				<!-- Application -->
 				<div class="tab-pane" id="control-sidebar-app-tab">
-					<ul class="control-sidebar-menu" id="control-sidebar-app-tab-list">&nbsp;</ul>
+					<span class="control-sidebar-menu" id="control-sidebar-app-tab-list">&nbsp;</span>
 				</div>
 				<!-- Settings content -->
 				<div class="tab-pane" id="control-sidebar-settings-tab">
 					<h3 class="control-sidebar-heading">Marknotes v%VERSION%</h3>
-					<p>marknotes is an OpenSource software coded and maintained by <a href="https://github.com/cavo789" target="_blank">Christophe Avonture</a>.</p>
+					<p>marknotes is an OpenSource software coded and maintained by <a href="https://github.com/cavo789" target="_blank" rel="noopener">Christophe Avonture</a>.</p>
 					<p>marknotes will transform your notes taken in the markdown format (.md files) into a full featured website.</p>
-					<p>Get your copy of marknotes on <a href="%GITHUB%" target="_blank">GitHub <i class="fa fa-github" aria-hidden="true"></i></a></p>
+					<p>Get your copy of marknotes on <a href="%GITHUB%" target="_blank" rel="noopener">GitHub <i class="fa fa-github" aria-hidden="true"></i></a></p>
 					<p>Click <a href="javascript:fnPluginTaskUpdate()">here</a> to install a newer version of marknotes.</p>
 				</div>
 			</div>
@@ -136,21 +135,21 @@
 		immediately after the control sidebar -->
 		<div class="control-sidebar-bg"></div>
 
-		<script type="text/javascript" src="%ROOT%libs/jquery/jquery.min.js"></script>
+		<script src="%ROOT%libs/jquery/jquery.min.js"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/bootstrap/js/bootstrap.min.js"></script>
+		<script src="%ROOT%libs/bootstrap/js/bootstrap.min.js"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/AdminLTE/js/adminlte.min.js"></script>
+		<script src="%ROOT%libs/AdminLTE/js/adminlte.min.js"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/jQuery-slimScroll/jquery.slimscroll.min.js"></script>
+		<script src="%ROOT%libs/jQuery-slimScroll/jquery.slimscroll.min.js"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/noty/jquery.noty.packaged.min.js" defer="defer"></script>
+		<script src="%ROOT%libs/noty/jquery.noty.packaged.min.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/sweetalert2/sweetalert2.min.js" defer="defer"></script>
+		<script src="%ROOT%libs/sweetalert2/sweetalert2.min.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/js-cookie/js.cookie.js" defer="defer"></script>
+		<script src="%ROOT%libs/js-cookie/js.cookie.js" defer="defer"></script>
 
-		<script type="text/javascript" defer="defer">
+		<script>
 			var marknotes = {};
 			marknotes.arrPluginsFct = [];
 			marknotes.plugins = {};
@@ -168,17 +167,17 @@
 		<!--%ADDITIONNAL_JS%-->
 
 		<!--%MARKDOWN_GLOBAL_VARIABLES%-->
-		<script type="text/javascript" src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
+		<script src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%assets/js/settings.js" defer="defer"></script>
+		<script src="%ROOT%assets/js/settings.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
+		<script src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%assets/js/marknotes.js" defer="defer"></script>
+		<script src="%ROOT%assets/js/marknotes.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%libs/scrolldir/scrolldir.min.js" defer="defer"></script>
+		<script src="%ROOT%libs/scrolldir/scrolldir.min.js" defer="defer"></script>
 
-		<script type="text/javascript" src="%ROOT%templates/assets/js/interface.js" defer="defer"></script>
+		<script src="%ROOT%templates/assets/js/interface.js" defer="defer"></script>
 
 	</body>
 </html>

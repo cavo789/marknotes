@@ -85,10 +85,10 @@ Reveal.initialize({
 					'<h4>External Links</h4>' +
 					'<ul class="slide-menu-items">' +
 					'<li class="slide-menu-item">' +
-					'<a href="https://github.com/cavo789/marknotes" target="_blank">marknotes</a>' +
+					'<a href="https://github.com/cavo789/marknotes" target="_blank" rel="noopener">marknotes</a>' +
 					'</li>' +
 					'<li class="slide-menu-item">' +
-					'<a href="https: //github.com/hakimel/reveal.js" target="_blank">Reveal.js</a>' +
+					'<a href="https://github.com/hakimel/reveal.js" target="_blank" rel="noopener">Reveal.js</a>' +
 					'</li>' +
 					'</ul>'
 			},

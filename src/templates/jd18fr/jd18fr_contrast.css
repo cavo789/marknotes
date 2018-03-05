@@ -1,0 +1,91 @@
+body {
+	max-width          : none !important;
+	padding            : 0 !important;
+	background         : white url('jd17fr.png');
+	background-size    : 1645px;
+	background-repeat  : no-repeat;
+	background-position: center -71px;
+}
+
+.reveal h1 {
+	font-size: 3.2em;
+	color    : black;
+}
+
+.reveal h2 {
+	font-size: 2.6em;
+	color    : #f6a542;
+}
+
+.reveal h3 {
+	font-size: 2em;
+	color    : #7dbb48;
+}
+
+.reveal h4 {
+	font-size: 1.4em;
+	color    : #7dbb48;
+}
+
+.reveal strong {
+	display      : inline-block;
+	border-radius: 10px;
+	padding      : 5px;
+}
+
+.reveal dl,
+.reveal ol,
+.reveal ul {
+	margin: 0 0 0 2em;
+}
+
+div.reveal .warning {
+	background-color: orange;
+	border-radius   : 10px;
+	display         : inline-block;
+	padding         : 0 10px;
+	border          : dotted;
+	font-size       : .8em;
+}
+
+section:not([data-background-image]) {
+	color           : black;
+	background-color: white;
+	padding         : 25px !important;
+	/*top             : -20px !important;*/
+	width           : 125% !important;
+	left            : -140px !important;
+}
+
+div.reveal section a {
+	color           : white;
+	background-color: #7dbb48;
+	border-radius   : 10px;
+	padding         : 0 10px;
+}
+
+div.reveal section a:hover {
+	color: red;
+}
+
+.reveal section em {
+	font-size: .8em;
+	color    : blue;
+}
+
+.reveal .slides section .fragment.highlight-current.current-fragment {
+	background-color: #014068;
+	color           : white;
+	padding         : 25px !important;
+}
+
+.fragment.visible:not(.current-fragment) {
+	display    : none;
+	height     : 0;
+	line-height: 0;
+	font-size  : 0;
+}
+
+.reveal .big {
+	font-size: 2em;
+}

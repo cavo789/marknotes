@@ -4,11 +4,12 @@ function fnPluginHTMLLinkify() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Linkify');
+		console.log('	  Plugin Page html - Linkify');
 	}
 	/*<!-- endbuild -->*/
 
-	// Try to detect email, urls, ... not yet in a <a> tag and so ... linkify them
+	// Try to detect email, urls, ... not yet in a <a> tag
+	// and so ... linkify them
 	// @link https://github.com/SoapBox/linkifyjs
 	if ($.isFunction($.fn.linkify)) {
 		if ($.isFunction($.fn.linkify)) {

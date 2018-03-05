@@ -50,26 +50,25 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 			if ($bLocalStorage || $bServerSession || $bCache) {
 
 				if ($bLocalStorage) {
-					$script.="<script type=\"text/javascript\" ".
+					$script.="<script ".
 					"src=\"".$url."libs/store-js/store.everything.min.js\" ".
 					"defer=\"defer\"></script>\n";
 				}
 
-				$script.="<script type=\"text/javascript\" ".
+				$script.="<script ".
 					"src=\"".$url."optimize.js\" ".
 					"defer=\"defer\"></script>\n";
 			}
 
 			if ($bLazyLoad) {
-				$script .= "<script type=\"text/javascript\" ".
+				$script .= "<script ".
 				"src=\"".$url."libs/lazysizes/lazysizes.min.js\" ".
 				"defer=\"defer\"></script>\n";
 			}
 
 			$prefix = rtrim($aeSettings->getFolderDocs(false), DS);
 
-			$script .= "<script type=\"text/javascript\" ".
-			"defer=\"defer\">\n".
+			$script .= "<script>\n".
 			"marknotes.store={};\n".
 			"marknotes.store.prefix='".$prefix."';\n".
 			"</script>\n";

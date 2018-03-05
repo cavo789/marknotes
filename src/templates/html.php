@@ -2,12 +2,10 @@
 <html lang="%LANGUAGE%">
 
 	<head>
-		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="content-language" content="%LANGUAGE%" />
-		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8;" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 		<title>%TITLE%</title>
 
@@ -34,13 +32,13 @@
 			</article>
 		</div>
 
-		<script type="text/javascript" src="%ROOT%libs/jquery/jquery.min.js"></script>
-		<script type="text/javascript" src="%ROOT%templates/assets/js/html.js"></script>
-		<script type="text/javascript" src="%ROOT%assets/js/marknotes.js"></script>
-		<script type="text/javascript" src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
-		<script type="text/javascript" src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
+		<script src="%ROOT%libs/jquery/jquery.min.js"></script>
+		<script src="%ROOT%templates/assets/js/html.js"></script>
+		<script src="%ROOT%assets/js/marknotes.js"></script>
+		<script src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
+		<script src="%ROOT%templates/assets/js/menu.js" defer="defer"></script>
 
-		<script type="text/javascript">
+		<script>
 			var marknotes = {};
 			marknotes.arrPluginsFct = [];
 			marknotes.note = {};
@@ -55,7 +53,7 @@
 
 		<!--%ADDITIONNAL_JS%-->
 
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function () {
 				runPluginsFunctions();
 

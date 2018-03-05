@@ -28,7 +28,7 @@ class Upload extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$script = "";
 
-		$script.="<script type=\"text/javascript\" ".
+		$script.="<script ".
 		"src=\"".$url."libs/dropzone/dropzone.min.js\" ".
 		"defer=\"defer\"></script>\n";
 

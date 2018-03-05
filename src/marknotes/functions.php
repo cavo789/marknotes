@@ -304,15 +304,15 @@ class Functions
 		// real file can be found and SCRIPT_FILENAME his link, the line below should therefore not be used anymore
 		$aeFiles = \MarkNotes\Files::getInstance();
 		if ($aeFiles->exists(dirname($_SERVER['SCRIPT_FILENAME']).'/'.$localfile)) {
-			$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'">'.
+			$return = '<script '.($defer == true?'defer="defer" ':'').' src="'.$localfile.'">'.
 			'</script>';
 		} elseif ($aeFiles->exists($localfile)) {
 			// It's a full, local, filename
 			$localfile = str_replace(dirname(dirname($_SERVER['SCRIPT_FILENAME'])), '', str_replace(DS, '/', $localfile));
-			$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$localfile.'"></script>';
+			$return = '<script '.($defer == true?'defer="defer" ':'').' src="'.$localfile.'"></script>';
 		} else {
 			if ($weblocation != '') {
-				$return = '<script '.($defer == true?'defer="defer" ':'').'type="text/javascript" src="'.$weblocation.'">'.
+				$return = '<script '.($defer == true?'defer="defer" ':'').' src="'.$weblocation.'">'.
 				'</script>';
 			}
 		}

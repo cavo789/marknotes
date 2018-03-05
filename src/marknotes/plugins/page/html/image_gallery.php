@@ -25,11 +25,10 @@ class Image_Gallery extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url.= '/marknotes/plugins/page/html/image_gallery/';
 
 		$script =
-			"\n<script type=\"text/javascript\" ". "src=\"".$url."libs/justified-gallery/jquery.justifiedGallery.min.js\" ".
+			"\n<script ". "src=\"".$url."libs/justified-gallery/jquery.justifiedGallery.min.js\" ".
 			"defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ". "src=\"".$url."image_gallery.js\" ".
-			"defer=\"defer\">".
-			"</script>\n";
+			"<script src=\"".$url."image_gallery.js\" ".
+			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

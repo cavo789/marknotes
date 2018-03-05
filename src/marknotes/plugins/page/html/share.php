@@ -61,9 +61,9 @@ class Share extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
-		$script = "<script type=\"text/javascript\" ". "src=\"".$root."/libs/jquery-toolbar/jquery.toolbar.min.js\" ".
+		$script = "<script ". "src=\"".$root."/libs/jquery-toolbar/jquery.toolbar.min.js\" ".
 		"defer=\"defer\"></script>\n".
-		"<script type=\"text/javascript\" ". "src=\"".$root."/marknotes/plugins/page/html/share/assets/share.js\" ".
+		"<script ". "src=\"".$root."/marknotes/plugins/page/html/share/assets/share.js\" ".
 		"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

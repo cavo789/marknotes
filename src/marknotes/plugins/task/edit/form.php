@@ -69,8 +69,8 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 			die();
 		}
 
-		// In the edit form; keep encrypted data ... unencrypted (we need
-		// to be able to see and update them)
+		// In the edit form; keep encrypted data ...
+		// unencrypted (we need to be able to see and update them)
 		$params['encryption'] = 0;
 
 		$aeMD = \MarkNotes\FileType\Markdown::getInstance();

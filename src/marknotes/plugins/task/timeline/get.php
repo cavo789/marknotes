@@ -74,6 +74,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 						array(
 							'tag' => 'a',
 							'content' => $relFileName,
+							'rel' => 'noopener',
 							'attr' => array(
 								'href' => $urlHTML,
 								'target' => '_blank',
@@ -87,6 +88,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 						array(
 							'tag' => 'a',
 							'content' => 'slide',
+							'rel' => 'noopener',
 							'attr' => array(
 								'href' => $urlHTML.'?format=slides',
 								'target' => '_blank',
@@ -100,6 +102,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 						array(
 							'tag' => 'a',
 							'content' => 'pdf',
+							'rel' => 'noopener',
 							'attr' => array(
 								'href' => $urlHTML.'?format=pdf',
 								'target' => '_blank',

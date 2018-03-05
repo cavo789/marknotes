@@ -26,17 +26,17 @@ class i18n extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = $root.'/marknotes/plugins/page/html/i18n/';
 		$urlLib = $url.'libs/';
 
-		$script = "<script type=\"text/javascript\" defer=\"defer\" ".
+		$script = "<script defer=\"defer\" ".
 			"src=\"".$root."/libs/js-url/url.min.js\"></script>\n".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."CLDRPluralRuleParser/CLDRPluralRuleParser.js\">".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."CLDRPluralRuleParser/CLDRPluralRuleParser.js\">".
 			"</script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.js\"></script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.messagestore.js\"></script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.fallbacks.js\"></script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.parser.js\"></script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.emitter.js\"></script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.language.js\"></script>".
-			"<script type=\"text/javascript\" defer=\"defer\" ".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.js\"></script>".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.messagestore.js\"></script>".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.fallbacks.js\"></script>".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.parser.js\"></script>".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.emitter.js\"></script>".
+			"<script defer=\"defer\" ". "src=\"".$urlLib."jquery.i18n/jquery.i18n.language.js\"></script>".
+			"<script defer=\"defer\" ".
 			"src=\"".$url."i18n.js\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

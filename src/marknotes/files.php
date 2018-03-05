@@ -341,11 +341,13 @@ class Files
 			return false;
 		}
 
+		$fullname = $filename;
+
 		$bReturn = false;
 		self::getFileSystem($filename, $obj);
 
 		try {
-			if ($obj->has($filename)) {
+			if ($obj->has($fullname)) {
 				$obj->update($filename, $content);
 			} else {
 				$arr = array('visibility' => AdapterInterface::VISIBILITY_PUBLIC);

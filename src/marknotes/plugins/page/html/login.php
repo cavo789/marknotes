@@ -25,7 +25,7 @@ class Login  extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
 		$script =
-			"<script type=\"text/javascript\" ".
+			"<script ".
 			"src=\"".$root."/marknotes/plugins/page/html/login/login.js\" ".
 			"defer=\"defer\"></script>";
 

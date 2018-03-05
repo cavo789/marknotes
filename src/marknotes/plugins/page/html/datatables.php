@@ -30,13 +30,14 @@ class DataTables extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = $root. '/marknotes/plugins/page/html/datatables/';
 		$urlLib = $url.'libs/datatables/js/';
 
-		$script = "<script type=\"text/javascript\" ".
+		$script = "<script ".
 			"src=\"".$urlLib."jquery.dataTables.min.js\" defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ". "src=\"".$urlLib."dataTables.bootstrap4.min.js\" defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ". "src=\"".$urlLib."dataTables.buttons.min.js\" defer=\"defer\"> ".
+			"<script ". "src=\"".$urlLib."dataTables.bootstrap4.min.js\" defer=\"defer\"></script>\n".
+			"<script ". "src=\"".$urlLib."dataTables.buttons.min.js\" defer=\"defer\"> ".
 			"</script>\n".
-			"<script type=\"text/javascript\" src=\"".$urlLib."buttons.html5.min.js\" ". "defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ". "src=\"".$url."datatables.js\" ".
+			"<script src=\"".$urlLib."buttons.html5.min.js\" ".
+			"defer=\"defer\"></script>\n".
+			"<script src=\"".$url."datatables.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

@@ -24,10 +24,8 @@ class FileManager extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url = $rootURL.'/marknotes/plugins/page/html/filemanager/';
 
-		$script = "<script type=\"text/javascript\" ".
-			"src=\"".$url."filemanager.js\" ".
-			"defer=\"defer\"></script>".
-			"</script>";
+		$script = "<script src=\"".$url."filemanager.js\" ".
+			"defer=\"defer\"></script>";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

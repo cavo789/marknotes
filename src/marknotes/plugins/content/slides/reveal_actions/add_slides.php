@@ -88,11 +88,14 @@ class Add_Slides
 				$id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
 
 				// No background
+				// Put the "id" on the section and not, both,
+				// on the section and the h1, h2, ... which is
+				// an error (ids should be unique)
 				$html = str_replace(
 					$tmp,
 					'</section>'.PHP_EOL.PHP_EOL.
 					'<section id="'.$id.'" data-transition="'.$transition.'">'.
-					'<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>',
+					'<'.$head.'>'.strip_tags($tmp).'</'.$head.'>',
 					$html
 				);
 			} // if (substr($tmp, 0, 8)==='<h2>@@@@')

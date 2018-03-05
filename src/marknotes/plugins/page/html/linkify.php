@@ -24,13 +24,11 @@ class Linkify  extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= '/marknotes/plugins/page/html/linkify/';
 
 		$script =
-			"\n<script type=\"text/javascript\" ". "src=\"".$url."libs/linkify/linkify.min.js\" ". "defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ". "src=\"".$url."libs/linkify/linkify-jquery.min.js\" ".
+			"\n<script ". "src=\"".$url."libs/linkify/linkify.min.js\" ". "defer=\"defer\"></script>\n".
+			"<script ". "src=\"".$url."libs/linkify/linkify-jquery.min.js\" ".
 			"defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" ".
-			"src=\"".$url."linkify.js\" ".
-			"defer=\"defer\">".
-			"</script>\n";
+			"<script src=\"".$url."linkify.js\" ".
+			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

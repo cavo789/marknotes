@@ -26,9 +26,9 @@ class Anchor extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/anchor/';
 
-		$script = "<script type=\"text/javascript\" ".
+		$script = "<script ".
 			"src=\"".$url."libs/anchor-js/anchor.min.js\" ". "defer=\"defer\"></script>\n".
-			"\n<script type=\"text/javascript\" defer=\"defer\">\n".
+			"\n<script>\n".
 			"$('document').ready(function(){anchors.add('h2, h3, h4, h5, h6');});\n".
 			"</script>\n";
 

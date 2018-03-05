@@ -1,10 +1,12 @@
 <?php
 /**
- * This plugin will add a table of content in your html document (i.e. once the markdown
+ * This plugin will add a table of content in your html document
+ * (i.e. once the markdown
  * note has been converted in a HTML document)
  *
- * Just add a tag like %TOC_5% in your markdown note to tell : take every headings 2 till 5
- * (included), generate a table of content (toc) and replace the tag by the toc.
+ * Just add a tag like %TOC_5% in your markdown note to tell : take
+ * every headings 2 till 5 (included), generate a table of content
+ * (toc) and replace the tag by the toc.
  */
 namespace MarkNotes\Plugins\Content\HTML;
 
@@ -70,15 +72,16 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 					// settings.json, the INCLUDE plugin will add a
 					// sentence like
 					//
-					//   ###### DEV_MODE_PREFIX INCLUDE FILE filename {.devmode}
+					//	###### DEV_MODE_PREFIX INCLUDE FILE
+					// filename {.devmode}
 					//
 					// (DEV_MODE_PREFIX is a prefiw defined in
 					// includes/constants.php)
 					//
-					// So, here in the Table of Content plugin, we should
-					// ignore headings when the title starts with the
-					// DEV_MODE_PREFIX and don't put them in
-					// the table of content.
+					// So, here in the Table of Content plugin, we
+					// should ignore headings when the title starts
+					// with the DEV_MODE_PREFIX and don't put them
+					// in the table of content.
 
 					if ($aeFunctions::startsWith($title[$i], DEV_MODE_PREFIX)) {
 						$heads = str_replace($matches[0][$i], '', $heads);

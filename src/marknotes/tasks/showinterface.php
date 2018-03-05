@@ -167,7 +167,7 @@ class ShowInterface
 		"marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
 		"marknotes.settings.DS='".preg_quote(DS)."';\n".
 		"marknotes.settings.locale='".$aeSettings->getLocale()."';\n";
-		$html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script type="text/javascript" defer="defer">'.$javascript.'</script>', $html);
+		$html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script>'.$javascript.'</script>', $html);
 
 		return $html;
 	}

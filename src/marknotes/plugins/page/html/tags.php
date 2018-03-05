@@ -46,7 +46,7 @@ class Tags extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$root = rtrim($aeFunctions->getCurrentURL(), '/');
 
-			$script = "<script type=\"text/javascript\" src=\"".$root."/marknotes/plugins/page/html/tags/tags.js\"></script>\n";
+			$script = "<script src=\"".$root."/marknotes/plugins/page/html/tags/tags.js\"></script>\n";
 
 			$js .= $aeFunctions->addJavascriptInline($script);
 		}

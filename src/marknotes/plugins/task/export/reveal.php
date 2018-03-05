@@ -83,7 +83,8 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 
 		// Now, get the content
 
-		// $params['filename'] is f.i. "note.reveal", get the .md file
+		// $params['filename'] is f.i. "note.reveal", get
+		// the .md file
 		$fullname = $aeSettings->getFolderDocs(true).$params['filename'];
 		$fullname = $aeFiles->removeExtension($fullname).'.md';
 

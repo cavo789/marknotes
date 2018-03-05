@@ -6,7 +6,7 @@ function fnPluginHTMLAddIcons() {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.info('      Plugin Page html - add_icons');
+			console.info('	  Plugin Page html - add_icons');
 		}
 		/*<!-- endbuild -->*/
 
@@ -22,7 +22,7 @@ function fnPluginHTMLAddIcons() {
 
 				/*<!-- build:debug -->*/
 				//if (marknotes.settings.debug) {
-				//	console.info('         Scan for ' + icon_regex + ' and add ' +
+				//	console.info('		 Scan for ' + icon_regex + ' and add ' +
 				//		icon_icon + ' if found');
 				//}
 				/*<!-- endbuild -->*/
@@ -37,7 +37,7 @@ function fnPluginHTMLAddIcons() {
 
 							/*<!-- build:debug -->*/
 							if (marknotes.settings.debug) {
-								console.info('            FOUND : ' + $href);
+								console.info('			FOUND : ' + $href);
 							}
 							/*<!-- endbuild -->*/
 
@@ -56,7 +56,7 @@ function fnPluginHTMLAddIcons() {
 						(/\.(log|md|markdown|txt)$/i.test($href)) {
 						// LOG - Open it in a new windows and not in the current one
 						$sAnchor += '<i class="icon_file fa fa-file-text-o" aria-hidden="true"></i>';
-						$(this).html($sAnchor).addClass('download-link').attr('target', '_blank');
+						$(this).html($sAnchor).addClass('download-link').attr('target', '_blank').attr('rel', 'noopener');
 						*/
 					}
 

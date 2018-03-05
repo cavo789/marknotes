@@ -30,13 +30,13 @@ class Update extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$url .= 'marknotes/plugins/page/html/update/';
 
 			$script =
-				"<script type=\"text/javascript\" src=\"".$url."update.js\" ".
+				"<script src=\"".$url."update.js\" ".
 				"defer=\"defer\"></script>\n";
 		} else {
 			// Because fnPluginTaskUpdate() is also defined in the
 			// template, we need to have that function in the HTML
 			$script =
-				"<script type=\"text/javascript\" defer=\"defer\">\n".
+				"<script>\n".
 				"function fnPluginTaskUpdate() {\n".
 					"Noty({\n".
 					"	message: $.i18n('not_authenticated'),\n".

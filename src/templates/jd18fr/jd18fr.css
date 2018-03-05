@@ -1,0 +1,99 @@
+body {
+	max-width		  : none !important;
+	padding			: 0 !important;
+	background-color	: #f9c256;
+	background-image	: url('jd18fr.png');
+	background-size	: 1170px;
+	background-repeat  : no-repeat;
+	background-position: 100%;
+}
+
+.reveal h1 {
+	font-size: 3.2em;
+	color	: white;
+}
+
+.reveal h2 {
+	font-size: 2.6em;
+	color	: #f6a542;
+	/*text-shadow: .01em .02em .05em white;*/
+}
+
+.reveal h3 {
+	font-size  : 2em;
+	color	  : #7dbb48;
+	text-shadow: .1em .1em .05em #333;
+}
+
+.reveal h4 {
+	font-size  : 1.4em;
+	color	  : #7dbb48;
+	text-shadow: .1em .1em .05em #333;
+}
+
+.reveal strong {
+	background-color: #91d2fc;
+	/*#7dbb48;*/
+	color			: #5695cf;
+	display		 : inline-block;
+	border-radius	: 10px;
+	padding		 : 5px;
+}
+
+.reveal dl,
+.reveal ol,
+.reveal ul {
+	margin: 0 0 0 2em;
+}
+
+div.reveal .warning {
+	background-color: yellow;
+	color			: red;
+	border-radius	: 10px;
+	display		 : inline-block;
+	padding		 : 0 10px;
+	border		  : dotted;
+	font-size		: .8em;
+}
+
+section:not([data-background-image]) {
+	color			: #c3d9ee;
+	background-color: rgba(0,0,0,0.4);
+	padding		 : 25px !important;
+	/*top			 : -20px !important;*/
+	width			: 125% !important;
+	left			: -140px !important;
+}
+
+.reveal .slides section .fragment.highlight-current.current-fragment {
+	background-color: #58bbfa;
+	color			: white;
+	padding		 : 25px !important;
+}
+
+.fragment.visible:not(.current-fragment) {
+	display	: none;
+	height	 : 0;
+	line-height: 0;
+	font-size  : 0;
+}
+
+div.reveal section a {
+	color			: white;
+	background-color: #7dbb48;
+	border-radius	: 10px;
+	padding		 : 0 10px;
+}
+
+div.reveal section a:hover {
+	color: red;
+}
+
+.reveal .big {
+	font-size: 2em;
+}
+
+.reveal section em {
+	font-size: .8em;
+	color	: lightgray;
+}

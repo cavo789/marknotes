@@ -28,9 +28,10 @@ class Docx extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url .= '/marknotes/plugins/page/html/docx/';
 
 		$script =
-			"<script type=\"text/javascript\" src=\"".$url."libs/googoose/jquery.googoose.js\" ".
+			"<script ".
+			"src=\"".$url."libs/googoose/jquery.googoose.js\" ".
 			"defer=\"defer\"></script>\n".
-			"<script type=\"text/javascript\" src=\"".$url."button.js\" ".
+			"<script src=\"".$url."button.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

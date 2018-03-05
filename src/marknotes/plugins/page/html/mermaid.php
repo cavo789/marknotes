@@ -43,9 +43,9 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$url .= '/marknotes/plugins/page/html/mermaid/'.
 				'libs/mermaid/';
 
-			$script = "<script type=\"text/javascript\" ".
-				"src=\"".$url."mermaid.min.js\" ". "defer=\"defer\"></script>\n".
-				"\n<script type=\"text/javascript\" defer=\"defer\">\n".
+			$script = "<script src=\"".$url."mermaid.min.js\" ".
+				"defer=\"defer\"></script>\n".
+				"<script>\n".
 				"$('document').ready(function(){mermaid.initialize({startOnLoad:true});;});\n".
 				"</script>\n";
 

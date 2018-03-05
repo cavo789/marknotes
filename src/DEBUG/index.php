@@ -43,7 +43,7 @@ class Debugging {
 		}
 
 		return '<a data-task="ajax" data-type="'.$type.'" '.
-			'href="'.self::$host.$url.'" '.$title.' target="_blank">'.
+			'href="'.self::$host.$url.'" '.$title.' target="_blank" rel="noopener">'.
 			$caption.'</a>';
 	}
 
