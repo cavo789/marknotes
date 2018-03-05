@@ -52,13 +52,20 @@ class Debug
 		// Don't keep previous run
 		if ($aeFiles->exists(self::$sDebugFileName)) {
 			try {
-				@$aeFiles->delete(self::$sDebugFileName);
+
+				$time = $aeFiles->timestamp(self::$sDebugFileName, true);
+
+				if (time()-$time > 120) {
+					// the debug.log file is older than 2 minutes
+					// (based on the lastmodification date/time)
+					// rewrite the file so we can start with a
+					// fresh file each 2 minutes
+					@$aeFiles->delete(self::$sDebugFileName);
+					$aeFiles->create(self::$sDebugFileName, '');
+				}
 			} catch (Exception $e) {
 			}
 		}
-
-		// Reset the file
-		$aeFiles->rewrite(self::$sDebugFileName, '');
 
 		self::$bDevMode = false;
 
@@ -362,7 +369,7 @@ class Debug
 				} else { // if (in_array($method, self::$arrLevels))
 					//
 					//echo "Debug info of type [".$method."] have been disabled in".
-					//   "settings.json, no output in the logfile for them<br/>";
+					//	"settings.json, no output in the logfile for them<br/>";
 				}
 			} // if (self::$logger !== null)
 		}

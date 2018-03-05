@@ -70,6 +70,14 @@ div.reveal .warning {
 	border		  : dotted;
 }
 
+section.vertical {
+	/**
+		No color for the section tag when it concern a vertical
+		separator
+	*/
+	background-color:transparent !important;
+}
+
 section:not([data-background-image]) {
 	color			: #c3d9ee;
 	background-color: rgba(0,0,0,0.4);

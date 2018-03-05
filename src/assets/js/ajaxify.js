@@ -405,6 +405,7 @@ function ajaxify($params) {
 			data: $data,
 			datatype: $dataType,
 			success: function (data) {
+
 				// If "select_node" has been set by the caller
 				// (f.i. the treeview plugin add this attribute in the
 				// fnPluginTaskTreeView_reload() function when

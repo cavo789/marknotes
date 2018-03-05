@@ -88,8 +88,8 @@ class Settings
 
 				// Once correctly initialized, set the debug mode
 				$this->setDebugMode($debug);
-
 				$aeDebug->enable($debug);
+				$aeDebug->log('Query string : '.http_build_query($_REQUEST));
 				$aeDebug->log('Load settings file : '.$fname, 'debug', 2, false);
 			}
 		}

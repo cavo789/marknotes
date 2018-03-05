@@ -12,15 +12,15 @@
 
 		<!--%ADDITIONNAL_CSS%-->
 
-		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/marknotes.css" media="screen" />
-		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/reveal.css" media="screen" id="theme">
+		<link rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/marknotes.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/reveal.css" media="screen" id="theme">
 
 	</head>
 	<body>
 		<div class="reveal">
 
 			<div class="logo">
-				<img src="%ROOT%/templates/assets/images/logo-marknotes.svg" alt="marknotes" height="97" align="right" />
+				<img src="%ROOT%templates/assets/images/logo-marknotes.svg" alt="marknotes" height="97" align="right" />
 			</div>
 
 			<div class="slides" id="note_content">
@@ -44,11 +44,11 @@
 			marknotes.settings.language='%LANGUAGE%';
 		</script>
 
-		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
+		<script src="%ROOT%libs/jquery/jquery.min.js"></script>
 
 		<!--%ADDITIONNAL_JS%-->
 
-		<script src="%ROOT%/templates/assets/js/marknotes.js" defer="defer"></script>
+		<script src="%ROOT%templates/assets/js/marknotes.js" defer="defer"></script>
 
 	</body>
 </html>

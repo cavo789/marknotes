@@ -228,9 +228,9 @@ class Files
 
 		$wReturn = false;
 		try {
-			//if ($obj->has($filename)) {
-			//	$obj->delete($filename);
-			//}
+			if ($obj->has($filename)) {
+				$obj->delete($filename);
+			}
 			$obj->write($filename, $content, $arr);
 			$wReturn = $obj->has($filename);
 		} catch (Exception $ex) {
@@ -347,7 +347,7 @@ class Files
 		self::getFileSystem($filename, $obj);
 
 		try {
-			if ($obj->has($fullname)) {
+			if ($obj->has($filename)) {
 				$obj->update($filename, $content);
 			} else {
 				$arr = array('visibility' => AdapterInterface::VISIBILITY_PUBLIC);

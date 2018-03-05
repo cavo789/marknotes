@@ -5,6 +5,7 @@ node_modules/
 src/templates/AFUJ/*
 src/templates/bosa/*
 src/templates/jd17fr/*
+src/templates/jd18fr/*
 src/templates/Jug_Toulouse/*
 src/templates/JUGW/*
 vendor/
@@ -16,5 +17,4 @@ composer.log
 gulpfile.js
 build.bat
 src/assets/aesecure.png
-
 src/utils/tmp/debug.log

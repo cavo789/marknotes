@@ -113,10 +113,10 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 						<button type="button" class="btn btn-default btn-sm btn-exit-upload-droparea">
 						<i class="fa fa-times"></i></button>
 					</div>'.
-					'<form class="dropzone" id="upload_droparea">'.
+					'<form action="" class="dropzone" id="upload_droparea"><div>'.
 						'<input type="hidden" name="folder" '.
 						'value="'.base64_encode($imageFolder).'">'.
-					'</form>'.
+					'</div></form>'.
 				'</div>'.
 			'</div>';
 
@@ -130,7 +130,7 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 					$sUploadForm.
 					'<div class="box-body pad" id="divEditEditor">'.
 						'<div class="editor-wrapper">'.
-							'<textarea id="sourceMarkDown" '.
+							'<textarea rows="999" cols="200"  id="sourceMarkDown" '.
 								'lang="'.$lang.'" '.
 								$spellcheck.
 								'>'.$markdown.

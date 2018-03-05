@@ -86,8 +86,7 @@ function fnPluginButtonEdit($params) {
 			task: 'task.edit.form',
 			param: marknotes.note.md5,
 			callback: 'afterEdit($data, data)',
-			useStore: false,
-			target: 'CONTENT'
+			useStore: false
 		});
 	}
 
@@ -98,7 +97,6 @@ function fnPluginButtonEdit($params) {
  * EDIT MODE - Render the textarea in an editor
  */
 function afterEdit($ajax_request, $form) {
-
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
 		console.log('	  Plugin Page html - Editor - afterEdit');
@@ -352,7 +350,8 @@ function buttonSave($fname, $markdown) {
 
 	$.ajax({
 		async: true,
-		// GET can't be used because note's content can be too big for URLs
+		// GET can't be used because note's content can be
+		// too big for URLs
 		type: 'POST',
 		url: marknotes.url,
 		data: $data,

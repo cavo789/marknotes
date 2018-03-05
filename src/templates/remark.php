@@ -34,7 +34,7 @@
 			var marknotes = {};
 			marknotes.settings = {};
 			marknotes.arrPluginsFct = [];
-			marknotes.root='%ROOT%/';
+			marknotes.root='%ROOT%';
 			marknotes.settings.debug='%DEBUG%';
 			marknotes.settings.language='%LANGUAGE%';
 		</script>

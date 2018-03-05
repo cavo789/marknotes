@@ -339,12 +339,12 @@ class Events
 						}
 
 						if ($aeFiles->exists($file = $dir.$name)) {
-
 							// Load the plugin
 							require_once($file);
 
 							// And retrieve its namespace and class
-							// name f.i. "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
+							// name f.i.
+							// "\MarkNotes\Plugins\Content\HTML\ReplaceVariables"
 							$class = self::getNameSpaceAndClassName($file);
 
 							// Instanciate the class (plugin)
@@ -366,18 +366,18 @@ class Events
 								}
 							}
 							/*<!-- endbuild -->*/
-						/*<!-- build:debug -->*/
-						} else {
-							if ($aeSettings->getDebugMode()) {
-								$aeDebug = \MarkNotes\Debug::getInstance();
-								$aeDebug->log("Plugin ".$name." ".
-									"has been disabled in ".
-									"settings.json", "debug");
-							}
-						/*<!-- endbuild -->*/
 						}
-					} // // foreach ($plugin as $name => $enabled)
-				} // foreach
+					/*<!-- build:debug -->*/
+					} else { // if (($plgSettings['enabled']??0)
+						if ($aeSettings->getDebugMode()) {
+							$aeDebug = \MarkNotes\Debug::getInstance();
+							$aeDebug->log("Plugin ".$dir.$name." ".
+								"has been disabled in ".
+								"settings.json", "debug");
+						}
+					/*<!-- endbuild -->*/
+					} // if (($plgSettings['enabled']??0)
+				} // foreach ($plugin as $name => $enabled)
 			} // if(count($plugins)>0)
 		}
 

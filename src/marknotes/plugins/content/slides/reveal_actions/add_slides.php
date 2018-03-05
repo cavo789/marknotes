@@ -1,7 +1,7 @@
 <?php
 /**
- * Reveal - Add slides (one slide by heading) and add the transitions
- * as configured in settings.json
+ * Reveal - Add slides (one slide by heading) and add the
+ * transitions as configured in settings.json
  *
  *	 	"plugins" : {
  *			"options": {
@@ -115,6 +115,42 @@ class Add_Slides
 
 		// and ending by </section>
 		if (!$aeFunctions->endsWith($html, '</section>')) {
+			$html .= '</section>';
+		}
+
+		// --------------------------------------
+		// Add vertical slides : get the list of all h2 tags
+		// The regex below will match any line (get the full line)
+		// where there is a <h2> tag
+		//
+		// For instance :
+		// 		<section id="my-title"><h2>My Title</h2>
+		//
+		// Add an empty <section> just before and a </section>
+		// before the next <h2> :
+		//
+		//		<section>
+		// 			<section id="my-title"><h2>My Title</h2>
+		//		  	... a lot of things ...
+		//		</section>
+		//		<section>
+		// 			<section id="my-second"><h2>My second/h2>
+		//
+		// So, except for the first found h2 tag, we'll always
+		// add </section><section> to put any h2 content in a
+		// vertical slide
+
+		$regex = '/.*<\s*h2[^>]*>.*?<\s*\/\s*h2>.*/';
+		$matches = array();
+		preg_match_all($regex, $html, $matches);
+
+		$add_section  = '<section class="vertical">';
+
+		if (count($matches)) {
+			foreach ($matches[0] as $match) {
+				$html = str_replace($match, $add_section.$match, 	$html);
+				$add_section = '</section><section class="vertical">';
+			}
 			$html .= '</section>';
 		}
 
