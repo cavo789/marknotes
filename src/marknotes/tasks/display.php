@@ -116,6 +116,13 @@ class Display
 		$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
 		$htmlNote = $aeConvert->getHTML($markdown, $params, true);
 
+		// Call htmlindent to correctly indent HTML
+		$aeEvents->loadPlugins('task.htmlindent.indent');
+		$params['html']=$htmlNote;
+		$args = array(&$params);
+		$aeEvents->trigger('task.htmlindent.indent::run', $args);
+		$htmlNote = $args[0]['html'];
+
 		// Now, get the template and add the content
 		// (from $htmlNote) in the page
 		$html = '';

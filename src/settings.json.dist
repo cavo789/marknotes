@@ -179,6 +179,9 @@
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["main", "task.export.html", "task.export.pdf"]
 				},
+				"htmlindent": {
+					"indent_size": "4"
+				},
 				"image_gallery": {
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
@@ -1060,6 +1063,9 @@
 				"enabled": 1
 			},
 			"homepage" : {
+				"enabled" : 1
+			},
+			"htmlindent" : {
 				"enabled" : 1
 			},
 			"index": {

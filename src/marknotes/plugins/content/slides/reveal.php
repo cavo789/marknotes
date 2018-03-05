@@ -139,6 +139,14 @@ class Reveal extends \MarkNotes\Plugins\Content\Slides\Plugin
 				'</section>';
 		}
 
+		// Call htmlindent to correctly indent HTML
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->loadPlugins('task.htmlindent.indent');
+		$params['html']=$content;
+		$args = array(&$params);
+		$aeEvents->trigger('task.htmlindent.indent::run', $args);
+		$content = $args[0]['html'];
+
 		// And return the HTML to the caller
 		$params['html'] = $content;
 
