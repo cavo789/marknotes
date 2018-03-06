@@ -48,7 +48,7 @@ function fnPluginHTMLPrism() {
 			};
 
 			// clipboard.min.js is already part of Marknotes
-			script.src = '../../../../marknotes/plugins/page/html/clipboard/libs/clipboard-js/clipboard.min.js';
+			script.src = '../../../../../marknotes/plugins/page/html/clipboard/libs/clipboard-js/clipboard.min.js';
 			head.appendChild(script);
 		}
 

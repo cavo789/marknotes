@@ -157,6 +157,16 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		$tmp = str_replace('%s', $nbrOptions, $tmp);
 		$html = str_replace('%NBROPTIONS%', $tmp, $html);
 
+		// Call htmlindent to correctly indent HTML
+		// Interessant for debugging purposes, to make sure
+		// all tags are correctly closed
+		$aeEvents = \MarkNotes\Events::getInstance();
+		$aeEvents->loadPlugins('task.htmlindent.indent');
+		$params['html']=$html;
+		$args = array(&$params);
+		$aeEvents->trigger('task.htmlindent.indent::run', $args);
+		$html = $args[0]['html'];
+
 		header('Content-Transfer-Encoding: ascii');
 		header('Content-Type: text/html; charset=utf-8');
 		echo $html;

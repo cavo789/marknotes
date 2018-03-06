@@ -245,6 +245,7 @@ class Settings
 
 			// $fname will be "userguide.json"
 			$aeFiles = \MarkNotes\Files::getInstance();
+
 			$fname = $aeFiles->removeExtension(basename($noteFileName)).'.json';
 
 			// $noteJSON will be

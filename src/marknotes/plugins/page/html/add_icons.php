@@ -97,14 +97,27 @@ class Add_Icons extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	final protected static function canRun() : bool
 	{
-
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
-			// Get plugin's options
-			$arrOptions = self::getOptions('regex', array());
-			if ($arrOptions !== array()) {
-				$bCanRun = true;
+
+			$aeSession = \MarkNotes\Session::getInstance();
+			$filename = trim($aeSession->get('filename', ''));
+
+			if ($filename !== '') {
+				// Don't run add_icons for PDF exportation
+				// (will give errors with decktape)
+				$aeFiles = \MarkNotes\Files::getInstance();
+				$ext = $aeFiles->getExtension($filename);
+				$bCanRun = !(in_array($ext, array('pdf', 'reveal.pdf', 'remark.pdf')));
+			}
+
+			if ($bCanRun) {
+				// Get plugin's options
+				$arrOptions = self::getOptions('regex', array());
+				if ($arrOptions !== array()) {
+					$bCanRun = true;
+				}
 			}
 		}
 

@@ -152,6 +152,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 		}
 
 		if (trim($html) == '') {
+
 			$html = self::getHTML($params);
 
 			if ($bCache) {

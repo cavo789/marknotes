@@ -48,4 +48,29 @@ class Links_Target extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		return true;
 	}
+
+	/**
+	 * Verify if the plugin is well needed and thus have a reason
+	 * to be fired
+	 */
+	final protected static function canRun() : bool
+	{
+		$bCanRun = parent::canRun();
+
+		if ($bCanRun) {
+
+			$aeSession = \MarkNotes\Session::getInstance();
+			$filename = trim($aeSession->get('filename', ''));
+
+			if ($filename !== '') {
+				// Don't run add_icons for PDF exportation
+				// (will give errors with decktape)
+				$aeFiles = \MarkNotes\Files::getInstance();
+				$ext = $aeFiles->getExtension($filename);
+				$bCanRun = !(in_array($ext, array('pdf', 'reveal.pdf', 'remark.pdf')));
+			}
+		}
+
+		return $bCanRun;
+	}
 }

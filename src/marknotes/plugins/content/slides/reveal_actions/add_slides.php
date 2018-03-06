@@ -26,6 +26,58 @@ class Add_Slides
 {
 	private static $json_key = 'plugins.options.page.html.reveal';
 
+	/**
+	 * Add vertical slides : get the list of all h2 tags
+	 * The regex below will match any line (get the full line)
+	 * where there is a <h2> tag
+	 *
+	 *  For instance :
+	 * 		<section id="my-title"><h2>My Title</h2>
+	 *
+	 * Add an empty <section> just before and a </section>
+	 * before the next <h2> :
+	 *
+	 *		<section>
+	 * 			<section id="my-title"><h2>My Title</h2>
+	 *		  	... a lot of things ...
+	 *		</section>
+	 *		<section>
+	 * 			<section id="my-second"><h2>My second/h2>
+	 *
+	 * So, except for the first found h2 tag, we'll always
+	 * add </section><section> to put any h2 content in a
+	 * vertical slide
+	*/
+	private function addVerticalSlides(string $html) : string
+	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$arrSettings = $aeSettings->getPlugins(static::$json_key);
+
+		$bAdd = boolval($arrSettings['addVerticalSlides']??0);
+
+		if ($bAdd) {
+			// Ok, add vertical slides for each h2 found
+			// Everything between two h2 will be vertical
+			// so to go from one h2 to the other one, just use
+			// the right arrow.
+
+			$regex = '/.*<\s*h2[^>]*>.*?<\s*\/\s*h2>.*/';
+			$matches = array();
+			preg_match_all($regex, $html, $matches);
+
+			$add_section  = '<section class="vertical">';
+
+			if (count($matches)) {
+				foreach ($matches[0] as $match) {
+					$html = str_replace($match, $add_section.$match, 	$html);
+					$add_section = '</section><section class="vertical">';
+				}
+				$html .= '</section>';
+			}
+		}
+		return $html;
+	}
+
 	public function doIt(string $html) : string
 	{
 		$html = trim($html);
@@ -118,41 +170,7 @@ class Add_Slides
 			$html .= '</section>';
 		}
 
-		// --------------------------------------
-		// Add vertical slides : get the list of all h2 tags
-		// The regex below will match any line (get the full line)
-		// where there is a <h2> tag
-		//
-		// For instance :
-		// 		<section id="my-title"><h2>My Title</h2>
-		//
-		// Add an empty <section> just before and a </section>
-		// before the next <h2> :
-		//
-		//		<section>
-		// 			<section id="my-title"><h2>My Title</h2>
-		//		  	... a lot of things ...
-		//		</section>
-		//		<section>
-		// 			<section id="my-second"><h2>My second/h2>
-		//
-		// So, except for the first found h2 tag, we'll always
-		// add </section><section> to put any h2 content in a
-		// vertical slide
-
-		$regex = '/.*<\s*h2[^>]*>.*?<\s*\/\s*h2>.*/';
-		$matches = array();
-		preg_match_all($regex, $html, $matches);
-
-		$add_section  = '<section class="vertical">';
-
-		if (count($matches)) {
-			foreach ($matches[0] as $match) {
-				$html = str_replace($match, $add_section.$match, 	$html);
-				$add_section = '</section><section class="vertical">';
-			}
-			$html .= '</section>';
-		}
+		$html = self::addVerticalSlides($html);
 
 		return $html;
 	}

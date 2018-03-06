@@ -62,7 +62,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		$sID = rtrim($sID, DS).DS;
 
 		// It's a folder node
-		$dataURL=str_replace(DS, '/', str_replace($root, '', $dir));
+		$dataURL=str_replace(DS, '/', str_replace(dirname($root).DS, '', $dir));
 		$dataURL.=(($root == $dir)?'':'/').'index.html';
 
 		if (PHP_7_0) {
@@ -228,15 +228,15 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 				$args = array(&$tmp);
 
-				// If the task.acls.cansee wasn't fired i.e. when there was
-				// no folder to protect, the trigger even return False.
-				// Otherwise, trigger return True : the plugin has been
-				// fired
+				// If the task.acls.cansee wasn't fired i.e. when
+				// there was no folder to protect, the trigger even
+				// return False. Otherwise, trigger return True :
+				// the plugin has been fired
 				if (static::$bACLsLoaded) {
 					$bReturn = $aeEvents->trigger('task.acls.cansee::run', $args);
 				} else {
-					// ACLs plugin not loaded; every files / folders can be
-					// accessed
+					// ACLs plugin not loaded; every files / folders
+					// can be accessed
 					$args[0]['return'] = 1;
 					$bReturn = true;
 				}

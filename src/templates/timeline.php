@@ -14,8 +14,8 @@
 
 		<!--%ADDITIONNAL_CSS%-->
 
-		<link rel="stylesheet" href="%ROOT%/marknotes/plugins/task/timeline/libs/jquery-albe-timeline/style-albe-timeline.css" />
-		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/ajax_loading.css" />
+		<link rel="stylesheet" href="%ROOT%marknotes/plugins/task/timeline/libs/jquery-albe-timeline/style-albe-timeline.css" />
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/ajax_loading.css" />
 
 		<style>
 		.lds-css {
@@ -31,7 +31,7 @@
 
 		<div id="divTimeline">&nbsp;</div>
 
-		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
+		<script src="%ROOT%libs/jquery/jquery.min.js"></script>
 
 		<script>
 		var marknotes = {};
@@ -40,15 +40,15 @@
 		marknotes.settings = {};
 		marknotes.settings.debug = '%DEBUG%';
 		marknotes.settings.language='%LANGUAGE%';
-		marknotes.webroot='%ROOT%/';
+		marknotes.webroot='%ROOT%';
 		</script>
 
 		<!--%ADDITIONNAL_JS%-->
 
-		<script src="%ROOT%/assets/js/ajaxify.js" defer="defer"></script>
-		<script src="%ROOT%/marknotes/plugins/task/timeline/libs/jquery-albe-timeline/jquery-albe-timeline.min.js" defer="defer"></script>
-		<script src="%ROOT%/assets/js/marknotes.js" defer="defer"></script>
-		<script src="%ROOT%/marknotes/plugins/task/timeline/timeline.js" defer="defer"></script>
+		<script src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
+		<script src="%ROOT%marknotes/plugins/task/timeline/libs/jquery-albe-timeline/jquery-albe-timeline.min.js" defer="defer"></script>
+		<script src="%ROOT%assets/js/marknotes.js" defer="defer"></script>
+		<script src="%ROOT%marknotes/plugins/task/timeline/timeline.js" defer="defer"></script>
 
 	</body>
 

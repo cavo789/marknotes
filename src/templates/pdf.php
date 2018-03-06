@@ -13,8 +13,8 @@
 
 		<title>%TITLE%</title>
 
-		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/libs/bootstrap/css/bootstrap.min.css" />
-		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/interface.css" />
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%libs/bootstrap/css/bootstrap.min.css" />
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/interface.css" />
 
 	</head>
 

@@ -27,15 +27,40 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$task = $aeSession->get('task', '');
 
+		// ----------------------------------------------
+		// Detect if the file a .reveal or .reveal.pdf
+		// This is needed because some dependencies like the
+		// js-menu should not be loaded if the layout is a pdf
+		// file but well (if enabled) when it's a .reveal online
+		// presentation
+		$filename = trim($aeSession->get('filename', ''));
+
+		$bPDF = false;
+		if ($filename !== '') {
+			// Don't run add_icons for PDF exportation
+			// (will give errors with decktape)
+			$ext = $aeFiles->getExtension($filename);
+			$bPDF = in_array($ext, array('pdf', 'reveal.pdf', 'remark.pdf'));
+		}
+		//
+		// ----------------------------------------------
+
 		$script = "";
 
 		if ($task==='task.export.reveal') {
+
+			// Initialize the list of dependencies
+			// This variable will be received the .js script
+			// of any plugins that should be loaded
+			$dependencies='';
+
 			// Only when, indeed we're showing a reveal slideshow
 
 			// --------------------------------------------
 			// Get the list of templates available
 			// This list of templates will be accessible in the
-			// reveal.js-menu, at the bottom left during the slideshow
+			// reveal.js-menu, at the bottom left during the
+			// slideshow
 			$dir = __DIR__.'/reveal/libs/reveal.js/css/theme/';
 
 			$arrThemes = glob($dir.'*.css');
@@ -70,13 +95,35 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 		if ($task==='task.export.reveal') {
 			// Only when, indeed we're showing a reveal slideshow
 
-			$arrOptions = self::getOptions('duration', array('minutes'=>60, 'bar_height'=>3));
+			$arrOptions = self::getOptions('duration', array('enabled'=>1, 'minutes'=>60, 'bar_height'=>3));
+
+			// Load the plugin only when enabled and only
+			// if not rendering a PDF file
+			if ((!$bPDF) && (boolval($arrOptions['enabled']))) {
+				$dependencies.='plugin/elapsed-time-bar/elapsed-time-bar.js,';
+			}
 
 			$minutes = intval($arrOptions['minutes']) ?? 60;
 			$barHeight = intval($arrOptions['bar_height']) ?? 3;
 
 			$hide = intval(self::getOptions('HideUnnecessaryThings', 0));
 
+			// Load the js-menu lib or not ?
+			// It's the Hamburger menu at the bottom left
+			$arrOptions = self::getOptions('menu', array('enabled'=>1));
+
+			// Load the plugin only when enabled and only
+			// if not rendering a PDF file
+			if ((!$bPDF) && (boolval($arrOptions['enabled']))) {
+				$dependencies.='plugin/reveal.js-menu/menu.js,';
+			}
+
+			// Load the speaker notes plugin or not
+			$arrOptions = self::getOptions('speaker_notes', array('enabled'=>1));
+
+			if (boolval($arrOptions['enabled'])) {
+				$dependencies.='plugin/notes/notes.js,';
+			}
 			// Get the note URL
 			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
 
@@ -99,9 +146,10 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"marknotes.slideshow.durationBarHeight=".$barHeight.";\n".
 				"marknotes.slideshow.hideunnecessarythings=".($hide ? 1 : 0).";\n".
 				"marknotes.slideshow.pandoc=".($bPandoc ? 1 : 0).";\n".
+				"marknotes.slideshow.dependencies='".rtrim($dependencies, ',')."';\n".
 				"marknotes.slideshow.themes='".$themes."';\n".
 				"</script>";
-			}
+		}
 		/**
 		  * Check if there is a custom-js property in the options
 		  *
@@ -163,8 +211,9 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$script =
 				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/css/reveal.css\">\n".
 				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/css/theme/".$appearance.".css\">\n".
-				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/lib/css/zenburn.css\">\n".
-				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/plugin/title-footer/title-footer.css\">\n";
+				"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/lib/css/zenburn.css\">\n";
+
+				//"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" href=\"".$url."libs/reveal.js/plugin/title-footer/title-footer.css\">\n";
 
 			/**
 			  * Check if there is a custom-css property in the options

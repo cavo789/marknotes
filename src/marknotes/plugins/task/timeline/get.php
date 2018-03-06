@@ -14,9 +14,10 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_options = 'plugins.options.task.timeline';
 
 	/**
-	 * Get the list of notes, relies on the listFiles task plugin for this
-	 * in order to, among other things, be sure that only files that the
-	 * user can access are retrieved and not confidential ones
+	 * Get the list of notes, relies on the listFiles task
+	 * plugin for this in order to, among other things, be
+	 * sure that only files that the user can access are
+	 * retrieved and not confidential ones
 	 */
 	private static function getFiles() : array
 	{
@@ -57,7 +58,9 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			// Optimization : just read file on disk,
 			// without plugin support
 
-			$content = $aeFiles->getContent($docs.$file);
+			$fullname = $aeFiles->makeFileNameAbsolute($file);
+
+			$content = $aeFiles->getContent($fullname);
 
 			$relFileName = utf8_encode(str_replace($docs, '', $file));
 
@@ -65,15 +68,18 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			$urlHTML = $url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
+			$urlSlides = $aeFiles->replaceExtension($urlHTML, 'reveal');
+			$urlPDF = $aeFiles->replaceExtension($urlHTML, 'pdf');
+
 			$json[] =
 				array(
-					'fmtime' => $aeFiles->timestamp($docs.$file),
-					'time' => date("Y-m-d", $aeFiles->timestamp($docs.$file)),
+					'fmtime' => $aeFiles->timestamp($fullname),
+					'time' => date("Y-m-d", $aeFiles->timestamp($fullname)),
 					'header' => htmlentities($aeMarkDown->getHeadingText($content)),
 					'body' => array(
 						array(
 							'tag' => 'a',
-							'content' => $relFileName,
+							'content' => $aeFiles->replaceExtension($relFileName, 'html'),
 							'rel' => 'noopener',
 							'attr' => array(
 								'href' => $urlHTML,
@@ -90,7 +96,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 							'content' => 'slide',
 							'rel' => 'noopener',
 							'attr' => array(
-								'href' => $urlHTML.'?format=slides',
+								'href' => $urlSlides,
 								'target' => '_blank',
 								'title' => $relFileName
 							) // attr
@@ -104,7 +110,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 							'content' => 'pdf',
 							'rel' => 'noopener',
 							'attr' => array(
-								'href' => $urlHTML.'?format=pdf',
+								'href' => $urlPDF,
 								'target' => '_blank',
 								'title' => $relFileName
 							) // attr

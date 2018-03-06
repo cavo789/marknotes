@@ -66,9 +66,9 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 						// the slide so add a "name:" property
 						// in the markdown like this :
 						//
-						//   name: TITLE
-						//   ---
-						//   ## TITLE
+						//	name: TITLE
+						//	---
+						//	## TITLE
 
 						$markdown = str_replace(
 							$matches[0][$i],
@@ -90,7 +90,7 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 			} // foreach ($arrHeading as $head)
 
 			// -------------------
-			// Consider an <hr> (can be <hr   >, <hr  />, ...) as a new slide
+			// Consider an <hr> (can be <hr	>, <hr  />, ...) as a new slide
 
 			$matches = array();
 			preg_match_all('/-{3,5}/', $markdown, $matches);
@@ -104,7 +104,7 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 
 			$html = str_replace('%CONTENT%', strip_tags($markdown), $slideshow);
 			$html = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $html);
-			$html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/'), $html);
+			$html = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/').'/', $html);
 
 			if (strpos($html, '%NOTE_TITLE%') !== false) {
 				$html = str_replace('%NOTE_TITLE%', $pageTitle, $html);

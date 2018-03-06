@@ -502,16 +502,29 @@ class Files
 	*/
 	public static function removeExtension(string $filename) : string
 	{
-		// Correctly handle double extension like docs\development\marknotes.reveal.pdf
-		$arr = explode('.', $filename);
+		// Get the extension (in case of a double like .reveal.pdf),
+		// get well the double extension
+		$ext = self::getExtension($filename);
 
-		$extension = '';
-		if (count($arr) > 0) {
-			// Remove the last extension and save it into $extension
-			$extension = array_pop($arr);
+		if ($ext!=='') {
+			// Remove the extension; return "test" and not 	"test.reveal"
+			$filename = substr($filename, 0, (strlen($ext)+1) * -1);
 		}
 
-		return str_replace('.'.$extension, '', $filename);
+		// Return the filename without any extension
+		return $filename;
+
+		// Correctly handle double extension like
+		// docs\development\marknotes.reveal.pdf
+		//$arr = explode('.', $filename);
+
+		//$extension = '';
+		//if (count($arr) > 0) {
+		//	// Remove the last extension and save it into $extension
+		//	$extension = array_pop($arr);
+		//}
+
+		//return str_replace('.'.$extension, '', $filename);
 	}
 
 	/**

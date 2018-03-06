@@ -53,7 +53,7 @@ REM call :fnFlySystem
 REM call :fnScrollDir
 REM call :fnCSSCheckboxLib
 REM call :fnSweetAlert
-call :fnCopyjs-cookie
+REM call :fnCopyjs-cookie
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -87,6 +87,7 @@ REM call :fnUpload
 REM call :fnHTML2MD
 REM call :fnGuzzle
 REM call :fnGoogleTranslate
+call :fnhtmLawed
 REM call :fnFinalize
 GOTO END:
 
@@ -867,6 +868,18 @@ XCOPY %VENDOR%stichoza\google-translate-php\src\Stichoza\GoogleTranslate\*.* %TA
 
 goto:eof
 
+::--------------------------------------------------------
+::-- fnhtmLawed
+::--------------------------------------------------------
+
+:fnhtmLawed
+ECHO  === fnhtmLawed ===
+ECHO	COPY TO %TASK%htmlindent\libs\
+ECHO.
+IF NOT EXIST %TASK%htmlindent\libs MKDIR %TASK%htmlindent\libs\ >> %LOG%
+COPY %VENDOR%htmlawed\src\htmLawed\htmLawed.php %TASK%htmlindent\libs\htmLawed.php /Y >> %LOG%
+
+goto:eof
 REM -----------------------------------------------
 REM -----------------------------------------------
 REM ---------------- FINALIZATION -----------------

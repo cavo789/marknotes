@@ -21,6 +21,46 @@ if (typeof marknotes.slideshow.themes !== 'undefined') {
 	});
 }
 
+// ----------------------------------
+// Initialize the list of dependencies
+var $arrDependencies = [];
+$arrDependencies.push({
+	src: URL_Lib + 'lib/js/classList.js',
+	condition: function () {
+		return !document.body.classList;
+	}
+});
+
+$arrDependencies.push({
+	src: URL_Lib + 'plugin/markdown/marked.js',
+	condition: function () {
+		return !!document.querySelector('[data-markdown]');
+	}
+});
+
+$arrDependencies.push({
+	src: URL_Lib + 'plugin/markdown/markdown.js',
+	condition: function () {
+		return !!document.querySelector('[data-markdown]');
+	}
+});
+
+// Get the list of dependencies that should be loaded.
+// marknotes.slideshow.dependencies is initialized by the plugin
+// page/html/reveal.php
+if (typeof marknotes.slideshow.dependencies !== 'undefined') {
+	var arr = marknotes.slideshow.dependencies.split(",");
+	arr.forEach(function($src) {
+		$arrDependencies.push({
+			src: URL_Lib + $src,
+			async: true
+		//condition: true,
+});
+	});
+}
+//
+// ----------------------------------
+
 var $sActions = "";
 
 // Check if pandoc is installed. marknotes.slideshow.pandoc
@@ -106,52 +146,8 @@ Reveal.initialize({
 		]
 	},
 	// More info https://github.com/hakimel/reveal.js#dependencies
+	dependencies: $arrDependencies
 
-	dependencies: [
-		{
-			src: URL_Lib + 'lib/js/classList.js',
-			condition: function () {
-				return !document.body.classList;
-			}
-		},
-		{
-			src: URL_Lib + 'plugin/markdown/marked.js',
-			condition: function () {
-				return !!document.querySelector('[data-markdown]');
-			}
-		},
-		{
-			src: URL_Lib + 'plugin/markdown/markdown.js',
-			condition: function () {
-				return !!document.querySelector('[data-markdown]');
-			}
-		},
-		{
-			src: URL_Lib + 'plugin/zoom-js/zoom.js',
-			async: true
-		},
-		{
-			src: URL_Lib + 'plugin/notes/notes.js',
-			async: true
-		},
-		/*{	Add a search box on the top left of any slides
-			src: marknotes.root + 'libs/reveal.js/plugin/search/search.js',
-			async: true
-		},*/
-		{ // Add a bottom left menu icon to let the user to access to a table-of-contents
-			src: URL_Lib + 'plugin/reveal.js-menu/menu.js'
-		},
-		/*{ // Add a footer on any slide and display the presentation H1 title
-			src: marknotes.root + 'libs/reveal.js/plugin/title-footer/title-footer.js',
-			async: true,
-			callback: function () {
-				title_footer.initialize();
-			}
-		},*/
-		{ // Add an ElapsedTimeBar on the bottom (by default a red line)
-			src: URL_Lib + 'plugin/elapsed-time-bar/elapsed-time-bar.js'
-		}
-	]
 });
 
 Reveal.addEventListener('ready', function (event) {

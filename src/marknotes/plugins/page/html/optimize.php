@@ -115,9 +115,6 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		// Get options
 		$arrOptimize = $aeSettings->getPlugins(JSON_OPTIONS_OPTIMIZE);
-/*<!-- build:debug -->*/
-die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($arrOptimize, true)."</pre>");
-/*<!-- endbuild -->*/
 
 		$arrHeaders=$arrOptimize['headers']??null;
 		require_once('optimize/headers.php');
@@ -161,5 +158,30 @@ die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r
 		}
 
 		return true;
+	}
+
+	/**
+	 * Verify if the plugin is well needed and thus have a reason
+	 * to be fired
+	 */
+	final protected static function canRun() : bool
+	{
+		$bCanRun = parent::canRun();
+
+		if ($bCanRun) {
+
+			$aeSession = \MarkNotes\Session::getInstance();
+			$filename = trim($aeSession->get('filename', ''));
+
+			if ($filename !== '') {
+				// Don't run add_icons for PDF exportation
+				// (will give errors with decktape)
+				$aeFiles = \MarkNotes\Files::getInstance();
+				$ext = $aeFiles->getExtension($filename);
+				$bCanRun = !(in_array($ext, array('pdf', 'reveal.pdf', 'remark.pdf')));
+			}
+		}
+
+		return $bCanRun;
 	}
 }

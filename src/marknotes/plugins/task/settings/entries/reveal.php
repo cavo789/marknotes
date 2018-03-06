@@ -42,6 +42,10 @@ class MN_Reveal extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$key = 'plugins.options.page.html.reveal';
 		$arr = self::getArray($key);
 
+		$opt = 'addVerticalSlides';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
 		$opt = 'HideUnnecessaryThings';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
@@ -79,6 +83,10 @@ class MN_Reveal extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$key = 'plugins.options.page.html.reveal.duration';
 		$arr = self::getArray($key);
 
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
 		$opt = 'minutes';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
@@ -86,6 +94,24 @@ class MN_Reveal extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$opt = 'bar_height';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
+		// ----------------------
+		// menu (js-menu)
+		$key = 'plugins.options.page.html.reveal.menu';
+		$arr = self::getArray($key);
+
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// ----------------------
+		// speaker notes
+		$key = 'plugins.options.page.html.reveal.speaker_notes';
+		$arr = self::getArray($key);
+
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

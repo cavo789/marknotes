@@ -158,7 +158,8 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 			$slug = $aeConvert->getSlugName();
 			$debugFile = $aeConvert->getDebugFileName();
 
-			// Get a copy of the .md note (in /temp folder), run any plugins
+			// Get a copy of the .md note (in /temp folder),
+			// run any plugins
 			$tempMD = $aeConvert->createTempNote();
 			$sScript = $aeConvert->getScript($tempMD, $final);
 			$aeConvert->Run($sScript, $final);
@@ -184,7 +185,8 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// DeckTape is only for slides : reveal or remark and not for "normal" html rendering
+		// DeckTape is only for slides : reveal or remark
+		// and not for "normal" html rendering
 		$layout = $params['layout'] ?? '';
 		if (!in_array($layout, array('remark','reveal'))) {
 			return false;
@@ -224,14 +226,15 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		$mdFilename = $basename.'.md';
 		$params['filename'] = $mdFilename;
 
-		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($mdFilename, static::$extension, 'decktape');
+		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($mdFilename, $layout, 'decktape');
 
 		// For instance c:\site\marknotes\tmp\note.reveal.html
 		$tmpHTML = $aeSettings->getFolderTmp().$basename.'.'.$params['layout'].'.html';
 
 		// Derive the resulting filename
 		// will be .reveal.pdf or .remark.pdf
-		$final = $aeConvert->getFileName($params['filename'], $layout);
+		$aeConvert->setLayout($layout.'.'.static::$extension);
+		$final = $aeConvert->getFileName();
 
 		// When this function is called, the task.export.xxx
 		// (where xxx is reveal or remark) has already be fired

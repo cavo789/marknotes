@@ -57,6 +57,12 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 
 		// Get the filename from the querystring
 		$filename = $aeFunctions->getParam('param', 'string', '', true);
+
+		if ($filename=='') {
+			echo $aeSettings->getText('error_filename_missing', 'Error - a filename is expected and none has been specified');
+			die();
+		}
+
 		$filename = json_decode(urldecode($filename));
 
 		// Be sure to have the .md extension

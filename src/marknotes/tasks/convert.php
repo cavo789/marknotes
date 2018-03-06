@@ -129,6 +129,11 @@ class Convert
 		return $bReturn;
 	}
 
+	public function setLayout(string $layout)
+	{
+		$this->sLayout = $layout;
+	}
+
 	/**
 	 * Taking the name of the note, provide the name of the
 	 * file that should be created
@@ -140,12 +145,7 @@ class Convert
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$fname=$this->sMDFileName;
-
-		// $fname should be an absolute filename; not a relative one
-		if (strpos($fname, $aeSettings->getFolderDocs(true)) === false) {
-			$fname = $aeSettings->getFolderDocs(true).ltrim($fname, DS);
-		}
+		$fname=$aeFiles->makeFileNameAbsolute($this->sMDFileName);
 
 		$fname = $aeFiles->replaceExtension(str_replace('/', DS, $fname), $this->sLayout);
 
@@ -245,7 +245,10 @@ class Convert
 	private function getPandocScript(string $InputFileName, string $TargetFileName) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
-
+echo '*' .$InputFileName.'--'.$TargetFileName.'-';
+/*<!-- build:debug -->*/
+die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+/*<!-- endbuild -->*/
 		$debugFile=self::getDebugFileName();
 		$slug=self::getSlugName();
 

@@ -27,6 +27,7 @@
 	"editor_translate_select" : "Veuillez sélectionner une langue",
 	"editor_translate_doit" : "Traduire",
 	"error_please_select_a_value":"Veuillez sélectionner une valeur",
+	"error_filename_missing":"Erreur - Un nom de fichier est attendu et aucun n'a été spécifié",
 	"button_save_error": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la sauvegarde",
 	"button_upload_image": "T\u00e9l\u00e9verse une image et ins\u00e8re le tag d'affichage de l'image \u00e0 l'endroit o\u00f9 se situe le curseur",
 	"cancel": "Annuler",

@@ -816,6 +816,7 @@
 						]
 					},
 					"reveal": {
+						"addVerticalSlides": 1,
 						"animation": {
 							"bullet": "",
 							"h1": "zoom",
@@ -833,10 +834,17 @@
 							}
 						},
 						"duration": {
+							"enabled": 1,
 							"minutes": 60,
 							"bar_height": 10
 						},
 						"HideUnnecessaryThings": 0,
+						"menu": {
+							"enabled": 1
+						},
+						"speaker_notes": {
+							"enabled": 1
+						},
 						"no_html_convert": 0,
 						"section": {
 							"extra_data_img_attr": "data-background-size='contain'"

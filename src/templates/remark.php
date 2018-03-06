@@ -10,7 +10,7 @@
 		<!--%META_DATA%-->
 		<!--%FAVICON%-->
 
-		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/remark.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/remark.css" media="screen" />
 
 		<!--%ADDITIONNAL_CSS%-->
 
@@ -19,8 +19,8 @@
 
 		<textarea id="note_content" readonly="readonly">%CONTENT%</textarea>
 
-		<script src="%ROOT%/libs/jquery/jquery.min.js"></script>
-		<script src="%ROOT%/marknotes/plugins/page/html/remark/libs/remark/remark.min.js"></script>
+		<script src="%ROOT%libs/jquery/jquery.min.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/remark/libs/remark/remark.min.js"></script>
 		<script>
 			var hljs = remark.highlighter.engine
 
