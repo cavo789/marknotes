@@ -39,7 +39,8 @@ function fnPluginTaskSearch_init() {
 		}
 		/*<!-- endbuild -->*/
 
-		// initialize the search area, thanks to the Flexdatalist plugin
+		// initialize the search area, thanks to
+		// the Flexdatalist plugin
 		// @link http://projects.sergiodinislopes.pt/flexdatalist/#options
 		try {
 			if ($.isFunction($.fn.flexdatalist)) {
@@ -66,7 +67,8 @@ function fnPluginTaskSearch_init() {
 					} // if ($.isFunction($.fn.jstree))
 				});
 
-				// Interface : put the cursor immediatly in the edit box
+				// Interface : put the cursor immediatly
+				// in the edit box
 				try {
 					$('#search').focus();
 				} catch (err) {
@@ -98,13 +100,15 @@ function fnPluginTaskSearch_afterDisplay() {
 
 	/*<!-- build:debug -->*/
 	// Don't focus !!!
-	// Problem is that the view will always be resetted on the search field so the
-	// treeview will always display the first items (just like we press then Home key)
+	// Problem is that the view will always be resetted on
+	// the search field so the treeview will always display the first
+	// items (just like we press then Home key)
 	//$('#search-flexdatalist').focus();
 	/*<!-- endbuild -->*/
 
 	if ($.isFunction($.fn.highlight)) {
-		// Get the searched keywords.  Apply the restriction on the size.
+		// Get the searched keywords.
+		// Apply the restriction on the size.
 		var $searchKeywords = $('#search').val().substr(0, marknotes.settings.search_max_width).trim();
 
 		if ($searchKeywords !== '') {
@@ -133,8 +137,9 @@ function fnPluginTaskSearch_afterDisplay() {
  *
  * @param {json} $entry
  *	  keyword			: the value to add in the search area
- *	  reset (optional)  : if true, the search area will be resetted before
- *						  (so only search for the new keyword)
+ *	  reset (optional)  : if true, the search area will be resetted
+ *							before (so only search for the new
+ *							keyword)
  *
  * @returns {Boolean}
  */
@@ -151,18 +156,26 @@ function fnPluginTaskSearch_addSearchEntry($entry) {
 	$current = $('#search').val().trim();
 
 	if (($current !== '') && ($bReset === false)) {
-		// Append the new keyword only when bReset is not set or set to False
+		// Append the new keyword only when bReset
+		// is not set or set to False
 		var values = $current.split(',');
 		values.push($entry.keyword);
 		$('#search').val(values.join(','));
 	} else {
-		$('#search').val($entry.keyword);
+		if ($.isFunction($.fn.flexdatalist)) {
+			// TODO
+			// Should work but no...
+			// http://projects.sergiodinislopes.pt/flexdatalist/
+			// The add method should add a new keyword but here
+			// the key isn't added to the flexdatalist entry
+			$('.flexdatalist').flexdatalist('add', $entry.keyword);
+		}
 	}
 
 	if ($.isFunction($.fn.jstree)) {
 		$('#TOC').jstree(true).show_all();
-		$('#TOC').jstree('search', $('#search').val());
-	} // if ($.isFunction($.fn.jstree))
+		$('#TOC').jstree('search', $entry.keyword);
+	}
 
 	return true;
 }

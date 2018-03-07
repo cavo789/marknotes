@@ -186,6 +186,21 @@ function initFiles($data) {
 		}
 	}
 
+	// Detect if the page was called with like "?keyword"
+	// f.i. http://localhost:8080/notes/?marknotes
+	// If so, immediatly start a search for the keyword marknotes
+	$search = window.location.search.substring(1);
+	if (($search !== 'undefined') && ($search !== '')) {
+		// Verify the presence of the function
+		var fn = window["fnPluginTaskSearch_addSearchEntry"];
+		if (typeof fn === "function") {
+			fnPluginTaskSearch_addSearchEntry({
+				keyword: $search,
+				reset: true
+			});
+		}
+	}
+
 	return true;
 }
 
@@ -303,8 +318,9 @@ function initializeTasks() {
 
 		default:
 
-			// The task is perhaps a function that was added by a plugin
-			// For instance the login form is a plugin and the data-task
+			// The task is perhaps a function that was added
+			// by a plugin. For instance the login form is
+			// a plugin and the data-task
 			// is set to "fnPluginTaskLogin", defined in login.js
 			// => try and call this function
 			try {
