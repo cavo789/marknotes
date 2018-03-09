@@ -48,9 +48,7 @@ class Getform extends \MarkNotes\Plugins\Task\Plugin
 				$item.'</option>';
 		}
 
-		return '<select id="backup_folder" '.
-			'class="form-control select2 select2-hidden-accessible">'.
-			$items.'</select>';
+		return $items;
 	}
 
 	/**
@@ -65,11 +63,23 @@ class Getform extends \MarkNotes\Plugins\Task\Plugin
 
 		$form = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/'), $form);
 
-		$form = str_replace('%BACKUP_LOG%', $aeSettings->getText('backuplog', 'Progression of archiving'), $form);
+		$arr=array(
+			'%BACKUP_TITLE%' => 'button_backup',
+			'%BACKUP_LOG%' => 'backuplog',
+			'%BACKUP_START%' => 'backup_start',
+			'%BACKUP_ONLY_CAN_SEE_FOLDERS%' => 'backup_only_can_see_folders',
+			'%BACKUP_THIS_FOLDER%' => 'backup_this_folder',
+			'%BACKUP_LABEL_IGNORE_EXTENSIONS%' => 'backup_ignore_extensions',
+			'%BACKUP_THIS_SETTINGS%' => 'backup_this_settings'
+		);
 
-		$form = str_replace('%BACKUP_THIS_SETTINGS%', $aeSettings->getText('backup_this_settings', 'Parameterization of this backup'), $form);
+		foreach ($arr as $code => $text) {
+			$form = str_replace($code, $aeSettings->getText($text, ''), $form);
+		}
 
-		$form = str_replace('%BACKUP_THIS_FOLDER%', $aeSettings->getText('backup_this_folder', 'Name of the folder to archive (subfolders included)'), $form);
+		// Get settings
+		$extensions = self::getOptions('ignore_extensions', '');
+		$form = str_replace('%BACKUP_IGNORE_EXTENSIONS%', $extensions, $form);
 
 		// Get the location of the backup folder
 		$folder = $arr['folder']??'backup';
@@ -79,12 +89,6 @@ class Getform extends \MarkNotes\Plugins\Task\Plugin
 		$txt = $aeSettings->getText('backup_folder_location', '');
 		$txt = str_replace('$1', $folder, $txt);
 		$form = str_replace('%BACKUP_FOLDER_LOCATION%', '<i>'.$txt.'</i>', $form);
-
-		$form = str_replace('%BACKUP_TITLE%', $aeSettings->getText('button_backup', ''), $form);
-
-		$form = str_replace('%BACKUP_START%', $aeSettings->getText('backup_start', ''), $form);
-
-		$form = str_replace('%BACKUP_ONLY_CAN_SEE_FOLDERS%', $aeSettings->getText('backup_only_can_see_folders', ''), $form);
 
 		if (strpos($form, '%BACKUP_CBX_FOLDERS%') !== false) {
 			$form = str_replace('%BACKUP_CBX_FOLDERS%', self::getFolderList(), $form);

@@ -81,15 +81,19 @@ function fnPluginTaskBackupStart() {
 
 	// Retrieve the value selected in the combobox
 	$folder = $('#backup_folder').val();
+	// List of extensions to ignore
+	$ignore_extensions = $('#ignore_extensions').val();
 
 	// First get the list of files to create
 	var $data = {};
 	$data.task = 'task.backup.getfiles';
 	$data.folder = window.btoa(encodeURIComponent(JSON.stringify($folder)));
+	$data.ignore_extensions = window.btoa(encodeURIComponent(JSON.stringify($ignore_extensions)));
 
 	$.ajax({
 		beforeSend: function () {
-
+			// Clear the previous textarea
+			$('#backup_history').empty();
 		}, // beforeSend()
 		async: true,
 		cache: false,
@@ -130,10 +134,6 @@ function fnPluginTaskBackupDoIt($offset) {
 
 	$.ajax({
 		beforeSend: function () {
-			// Clear the previous textarea
-			if ($index==0) {
-				$('textarea').val('');
-			}
 		}, // beforeSend()
 		async: true,
 		cache: false,
@@ -167,19 +167,17 @@ function fnPluginTaskBackupDoIt($offset) {
 				//		},
 				//		...
 				// ]
-
 				// log_info : contains the name of the processed file
 				// the one that has been added in the ZIP file; with an
 				// indicator (success, failure, ...)
-				$('textarea').append(json_file.log_info + "\n");
+				$('#backup_history').append(json_file.log_info + "\n");
 
 				// Retrieve the offset of the next file to process
 				// Will be 0 when all files have been processed
 				$offset = json_file.offset;
-
-				$('#CONTENT textarea').scrollTop($('#CONTENT textarea')[0].scrollHeight);
-
 			});
+
+			$('#backup_history').scrollTop($('#backup_history')[0].scrollHeight);
 
 			// btn_text will contains the processed file number ("#1")
 			// and the number of files to process (so f.i. 1/7)

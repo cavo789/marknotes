@@ -334,6 +334,7 @@ class Settings
 
 		$return = isset($json_lang[$variable]) ? $json_lang[$variable] : trim($default);
 
+
 		if ($jsProtect) {
 			$return = str_replace("'", "\'", @html_entity_decode($return));
 		}

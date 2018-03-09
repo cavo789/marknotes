@@ -6,6 +6,8 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 require_once('.plugin.php');
 
+const IGNORE_EXTENSIONS = '7z;aiff;asf;avi;bak;eot;eot2;fla;flv;f4v;gz;jpa;m4v;mkv;mov;mp3;mp4;mpeg;mpg;ogg;ogv;otf;otf2;swf;tar;tif;ttf;ttf2;wav;woff;woff2;wma;zip';
+
 class MN_Backup extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
@@ -61,6 +63,12 @@ class MN_Backup extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$opt = 'prefix';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $arr[$opt]));
+
+		// ignore extensions
+		$opt = 'ignore_extensions';
+		$text = self::getTranslation($key.'.'.$opt);
+		$value = $arr[$opt]??IGNORE_EXTENSIONS;
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $value));
 
 		// --------------------------------------
 		// Retrieve the list of existing folders under /docs

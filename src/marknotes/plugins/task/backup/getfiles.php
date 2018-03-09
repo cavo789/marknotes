@@ -12,6 +12,65 @@ class Getfiles extends \MarkNotes\Plugins\Task\Plugin
 	protected static $json_settings = 'plugins.task.backup';
 	protected static $json_options = '';
 
+	private static function getParamFolder() : array
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Retrieve the folder to archive
+		$folder = trim(urldecode($aeFunctions->getParam('folder', 'string', '', true)));
+
+		$folder = trim($folder, '"');
+
+		if (($folder=='') || ($folder==rtrim($aeSettings->getFolderDocs(false), DS))) {
+			// Process the /docs or "" folder =>
+			// it's a full backup
+			$folder = $aeSettings->getFolderDocs(false);
+
+			// Get files for /docs ==> full backup
+			$suffix = '_full';
+		} else {
+			// Not for /docs ==> partial backup
+			// Get the last folder for the suffixe
+			// So if $folder is "docs/folder/subfolder1/sub2"
+			// then use "sub2" for the suffix
+			$suffix = '_'.$aeFiles->sanitize(basename($folder));
+		}
+
+		// Make the folder name absolute
+		$folder = $aeFiles->makeFileNameAbsolute($folder);
+
+		return array($folder, $suffix);
+	}
+
+	/**
+	 * Read the "ignore_extensions" parameter and process it.
+	 * Return an array with the list of extensions.
+	 */
+	private static function getParamExtensions() : array
+	{
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+
+		$ignore_extensions = trim(urldecode($aeFunctions->getParam('ignore_extensions', 'string', '', true)));
+		$ignore_extensions = trim($ignore_extensions, '"');
+		// Use a ";" and not a "," as separator
+		$ignore_extensions = str_replace(",", ";", $ignore_extensions);
+
+		// Don't keep the last ";" if there is one
+		$ignore_extensions = trim($ignore_extensions, ";");
+
+		// And convert as a array
+		$arrIgnoreExtensions = array();
+		if ($ignore_extensions!=='') {
+			$arrIgnoreExtensions = explode(";", $ignore_extensions);
+			sort($arrIgnoreExtensions);
+			$arrIgnoreExtensions = array_unique($arrIgnoreExtensions);
+		}
+
+		return $arrIgnoreExtensions;
+	}
+
 	/**
 	 * $arr is an array filled in by FlySystem and contains all
 	 * files under /docs (also images, pdf, ...)
@@ -57,11 +116,51 @@ class Getfiles extends \MarkNotes\Plugins\Task\Plugin
 		return $arrFiles;
 	}
 
+	/**
+	 * Remove files from $arrFiles when their extension (f.i. MP4)
+	 * is mentionned in the list of extensions to ignore.
+	 *
+	 * $arrFiles contains a list of files list
+	 *
+	 *		[] ... \folder\filename.pdf
+	 *		[] ... \folder\filename.md
+	 *		[] ... \folder\filename.jpg
+	 *		[] ... \folder\filename.zip
+	 *
+	 * and $arrIgnore contains a list of extensions
+	 * (like pdf, zip, ...)
+	 */
+	private static function onlyAllowedExtensions(array $arrFiles, array $arrIgnore) : array
+	{
+		if (count($arrIgnore)==0) {
+			return $arrFiles;
+		}
+
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		$arr = array();
+		foreach ($arrFiles as $file) {
+			$ext = pathinfo($file)['extension'];
+			if (!in_array($ext, $arrIgnore)) {
+				$arr[] = $file;
+			/*<!-- build:debug -->*/
+			} else {
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log("Ignore ".$file." (extension is in the list to ignore ".$ext.")","debug");
+				}
+			/*<!-- endbuild -->*/
+			}
+		}
+
+		// Return the list of files
+		return $arr;
+	}
+
 	public static function run(&$params = null) : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFolders = \MarkNotes\Folders::getInstance();
-		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -70,27 +169,9 @@ class Getfiles extends \MarkNotes\Plugins\Task\Plugin
 		if (self::isEnabled(true)) {
 			$root = $aeSettings->getFolderWebRoot();
 
-			// Retrieve the folder to archive
-			$folder = trim(urldecode($aeFunctions->getParam('folder', 'string', '', true)));
-			$folder = trim($folder, '"');
-
-			if (($folder=='') || ($folder==rtrim($aeSettings->getFolderDocs(false), DS))) {
-				// Process the /docs or "" folder =>
-				// it's a full backup
-				$folder = $aeSettings->getFolderDocs(false);
-
-				// Get files for /docs ==> full backup
-				$suffix = '_full';
-			} else {
-				// Not for /docs ==> partial backup
-				// Get the last folder for the suffixe
-				// So if $folder is "docs/folder/subfolder1/sub2"
-				// then use "sub2" for the suffix
-				$suffix = '_'.$aeFiles->sanitize(basename($folder));
-			}
-
-			// Make the folder name absolute
-			$folder = $aeFiles->makeFileNameAbsolute($folder);
+			// Get the name of the folder and also return a suffix
+			// (_full if the folder is /docs)
+			list($folder, $suffix) = self::getParamFolder();
 
 			// Generate the name of the temporary file that
 			// will contains the list of files that should be
@@ -119,6 +200,12 @@ class Getfiles extends \MarkNotes\Plugins\Task\Plugin
 			// should not be in the list so, remove them and keep
 			// only folder that the current logged-in user can see
 			$arrFiles = self::onlyCanCee($arr);
+
+			// Now $arrFiles contains all files, allowed files,
+			// to backup. Filter them to remove files to ignore
+			// (based on their extensions)
+			$arrIgnoreExtensions = self::getParamExtensions();
+			$arrFiles = self::onlyAllowedExtensions($arrFiles, $arrIgnoreExtensions);
 
 			// Always backup these files
 			$files .= $root.'.htaccess'.PHP_EOL;

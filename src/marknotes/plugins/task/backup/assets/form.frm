@@ -8,7 +8,9 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label>%BACKUP_THIS_FOLDER%</label>
-						%BACKUP_CBX_FOLDERS%
+						<select id="backup_folder" class="form-control select2 select2-hidden-accessible">%BACKUP_CBX_FOLDERS%</select>
+						<label>%BACKUP_LABEL_IGNORE_EXTENSIONS%</label>
+						<textarea id="ignore_extensions" style="width:100%;height:80px;">%BACKUP_IGNORE_EXTENSIONS%</textarea>
 						<br/>
 					</div>
 				</div>
@@ -32,7 +34,7 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">%BACKUP_LOG%</div>
 		<div class="panel-body">
-			<textarea class="form-control" disabled="disabled" style="resize: none; height: 200px;"></textarea>
+			<textarea id="backup_history" class="form-control" disabled="disabled" style="resize: none; height: 200px;"></textarea>
 		</div>
 	</div>
 </div>

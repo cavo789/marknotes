@@ -324,7 +324,6 @@ class Grabber
 	{
 		$this->archive->close();
 		$this->outputResult(true, 'Archive ready', 'Download', 'complete', 0);
-
 		return true;
 	}
 
@@ -367,16 +366,14 @@ class Grabber
 		// And return to the Ajax task a log info
 		$end = ($offset+1 >= $this->files_count);
 
-		if (!$end) {
-			$btn_text = ($offset + 1) . "/". $this->files_count;
-			$log_info = $btn_text.' - '.$basename.' - success';
-			$btn_class = 'wait';
-			$next_offset = ++$offset;
-		} else {
-			$log_info = 'Archive ready';
+		$btn_text = ($offset + 1) . "/". $this->files_count;
+		$btn_class = ($end ? 'complete' : 'wait');
+		$next_offset = ($end ? 0 : ++$offset);
+		$log_info = $btn_text.' - '.$basename.' - success';
+
+		// Show "Download" at the end
+		if ($end) {
 			$btn_text = 'Download';
-			$btn_class = 'complete';
-			$next_offset = 0;
 		}
 
 		$arr = $this->outputResult($end, $log_info, $btn_text, $btn_class, $next_offset);
