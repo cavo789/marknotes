@@ -145,6 +145,21 @@ class Session
 		return $return;
 	}
 
+	/**
+	 * Some variables should not stay once marknotes has done his job
+	 * so remove them before leaving. $aeSession->free() is called
+	 * by \MarkNotes\Markdown::process(); i.e. by index.php and
+	 * router.php
+	 */
+	public function free() : bool
+	{
+		$arr = array('filename', 'html', 'htpasswd_username', 'yaml');
+		foreach ($arr as $key) {
+			self::remove($key);
+		}
+		return true;
+	}
+
 	public function remove(string $name = null)
 	{
 		if ((isset($_SESSION)) && ($name!==null)) {

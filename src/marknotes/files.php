@@ -598,6 +598,13 @@ class Files
 		$aeSettings	= \MarkNotes\Settings::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
+		// Get the full path
+		$doc = $aeSettings->getFolderDocs(true);
+		if ($aeFunctions->startsWith($filename, $doc)) {
+			// Already absolute
+			return $filename;
+		}
+
 		// get the relative /docs folder
 		$doc = $aeSettings->getFolderDocs(false);
 

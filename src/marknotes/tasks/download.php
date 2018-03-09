@@ -54,12 +54,19 @@ class Download
 					header('Content-Type: text/plain');
 					header('Content-Transfer-Encoding: ascii');
 					break;
+				case 'zip':
+					header("Content-Description: File Transfer");
+					header("Content-type: application/octet-stream");
+					header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+					break;
 			}
 
-			header('Content-Disposition: download; filename="'.$slug.'"');
+			header('Content-Disposition: attachment; filename="'.$slug.'"');
 			header('Content-Length: '.filesize(utf8_decode($fname)));
 			header('Accept-Ranges: bytes');
-
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			ob_end_flush();
 			@readfile(utf8_decode($fname));
 
 			$bReturn = true;

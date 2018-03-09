@@ -47,7 +47,6 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
-
 		$docs = $aeSettings->getFolderDocs(true);
 
 		/*<!-- build:debug -->*/
@@ -62,10 +61,9 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$aeFolders = \MarkNotes\Folders::getInstance();
 
 		$arr = $aeFolders->getContent($docs, true);
-
 		$arrFiles = array();
-		if (count($arr)>0) {
 
+		if (count($arr)>0) {
 			// Only the name of the folder, not the fullpath
 			$docs = $aeSettings->getFolderDocs(false);
 
@@ -77,13 +75,11 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 					if ($extension == 'md') {
 						$file = str_replace('/', DS, $item['path']);
-
 						// Be sure the filename starts with
 						// docs/
 						if (!$aeFunctions->startsWith($file, $docs)) {
 							$file = $docs.$file;
 						}
-
 						$arrFiles[] = $file;
 					}
 				}
@@ -99,16 +95,14 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			// not allowed for the current user
 
 			$aeEvents->loadPlugins('task.acls.filter_list');
-
 			$args=array(&$arrFiles);
-
 			$aeEvents->trigger('task.acls.filter_list::run', $args);
 
 			// Retrieve the filtered array i.e. that Files
 			// well accessible to the current user
 			$arrFiles=$args[0];
-		} // if ($bACLsLoaded)
 
+		} // if ($bACLsLoaded)
 		return $arrFiles;
 	}
 
@@ -135,10 +129,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$aeEvents = \MarkNotes\Events::getInstance();
 
 			$aeEvents->loadPlugins('task.acls.load');
-
 			$args=array();
 			$aeEvents->trigger('task.acls.load::run', $args);
-
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 
 			$bCache = $arrSettings['enabled'] ?? false;
@@ -162,8 +154,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 				if ($bCache) {
 					// Save the list in the cache
-					$arr['from_cache'] = 1;
 
+					$arr['from_cache'] = 1;
 					$duration = $arrSettings['duration']['default'];
 					$cached->set($arr)->expiresAfter($duration);
 					$aeCache->save($cached);

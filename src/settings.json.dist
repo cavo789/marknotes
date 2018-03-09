@@ -44,6 +44,10 @@
 	},
 	"plugins": {
 		"buttons": {
+			"backup": {
+				"enabled": 1,
+				"quickIcons": 1
+			},
 			"login": {
 				"enabled": 1,
 				"quickIcons": 1
@@ -246,6 +250,10 @@
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["task.export.html"]
+				},
+				"backup": {
+					"enabled": 1,
+					"only_if_task": ["main", "interface"]
 				},
 				"balloon": {
 					"enabled": 1,
@@ -867,6 +875,10 @@
 				"acls": {
 					"folders": {}
 				},
+				"backup" : {
+					"prefix": "%DATE%_",
+					"folder": "backups"
+				},
 				"export": {
 					"after": {
 						"copy": {
@@ -1021,6 +1033,9 @@
 		},
 		"task": {
 			"acls" : {
+				"enabled" : 1
+			},
+			"backup" : {
 				"enabled" : 1
 			},
 			"editor" : {

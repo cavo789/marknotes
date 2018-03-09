@@ -11,4 +11,5 @@ return array(
     'a0edc8309cc5e1d60e3047b5df6b7052' => $vendorDir . '/guzzlehttp/psr7/src/functions_include.php',
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
     '5e187b582b2b3bb26276f0085ef51bb1' => $vendorDir . '/leblanc-simon/parsedown-checkbox/ParsedownCheckbox.php',
+    '7745382c92b7799bf1294b1f43023ba2' => $vendorDir . '/tracy/tracy/src/shortcuts.php',
 );

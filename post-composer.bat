@@ -54,6 +54,7 @@ REM call :fnScrollDir
 REM call :fnCSSCheckboxLib
 REM call :fnSweetAlert
 REM call :fnCopyjs-cookie
+call :fnCopyTracy
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -326,6 +327,20 @@ ECHO	COPY TO %LIBS%php_error\
 ECHO.
 IF NOT EXIST %LIBS%php_error MKDIR %LIBS%php_error >> %LOG%
 COPY %VENDOR%PHP-Error\src\php_error.php %LIBS%php_error\ /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyTracy
+::--------------------------------------------------------
+
+:fnCopyTracy
+ECHO  === Tracy ===
+ECHO	COPY TO %LIBS%tracy\
+ECHO.
+IF NOT EXIST %LIBS%tracy MKDIR %LIBS%tracy >> %LOG%
+XCOPY %VENDOR%tracy\*.* %LIBS%tracy\ /E /Y >> %LOG%
+IF EXIST %LIBS%tracy\tracy\examples RMDIR %LIBS%tracy\tracy\examples /S /Q >> %LOG%
+IF EXIST %LIBS%tracy\tracy\tools RMDIR %LIBS%tracy\tracy\tools /S /Q >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

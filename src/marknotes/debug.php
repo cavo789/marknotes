@@ -1,5 +1,10 @@
 <?php
 /* REQUIRES PHP 7.x AT LEAST */
+/**
+ *
+ * @link https://github.com/nette/tracy for PHP errors
+ * @link https://github.com/Seldaek/monolog for debug output
+ */
 namespace MarkNotes;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -88,28 +93,38 @@ class Debug
 		self::$bDevMode = $bOnOff;
 
 		/*<!-- build:debug -->*/
-		// include php_error library to make life easier
-		// @link : https://github.com/JosephLenton/PHP-Error
-		$lib = self::$root.'libs/php_error/php_error.php';
+		// Load tracy if found otherwise check php-error
+		$lib = self::$root.'libs/tracy/tracy';
+		if (is_dir($lib)) {
+			// @https://github.com/nette/tracy
+			\Tracy\Debugger::enable();
+			\Tracy\Debugger::$showBar = true;
+			\Tracy\Debugger::$strictMode = true;
+			\Tracy\Debugger::$showLocation = true;
+		} else {
+			// include php_error library to make life easier
+			// @link : https://github.com/JosephLenton/PHP-Error
+			$lib = self::$root.'libs/php_error/php_error.php';
 
-		$aeFiles = \MarkNotes\Files::getInstance();
-		if ($aeFiles->exists($lib)) {
-			$aeFunctions = \MarkNotes\Functions::getInstance();
+			$aeFiles = \MarkNotes\Files::getInstance();
+			if ($aeFiles->exists($lib)) {
+				$aeFunctions = \MarkNotes\Functions::getInstance();
 
-			// Seems to not work correctly with ajax; the return
-			// JSON isn't correctly understand by JS
-			$options = array(
-				// Don't enable ajax is not ajax call
-				'catch_ajax_errors' => $aeFunctions->isAjaxRequest(),
-				// Don't allow to modify sources from php-error
-				'enable_saving' => 0,
-				// Capture everything
-				'error_reporting_on' => $bOnOff
-			);
+				// Seems to not work correctly with ajax; the return
+				// JSON isn't correctly understand by JS
+				$options = array(
+					// Don't enable ajax is not ajax call
+					'catch_ajax_errors' => $aeFunctions->isAjaxRequest(),
+					// Don't allow to modify sources from php-error
+					'enable_saving' => 0,
+					// Capture everything
+					'error_reporting_on' => $bOnOff
+				);
 
-			include_once $lib;
-			\php_error\reportErrors($options);
-		} // if ($aeFiles->exists($lib))
+				include_once $lib;
+				\php_error\reportErrors($options);
+			} // if ($aeFiles->exists($lib))
+		}
 		/*<!-- endbuild -->*/
 	}
 

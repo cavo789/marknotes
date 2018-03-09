@@ -32,6 +32,7 @@ class FilterList extends \MarkNotes\Plugins\Task\Plugin
 
 	public static function run(&$params = null) : bool
 	{
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -73,9 +74,12 @@ class FilterList extends \MarkNotes\Plugins\Task\Plugin
 				 * 	[2] => c:\sites\marknotes\docs\public\a_note.md
 				 */
 				foreach ($params as $entry) {
+					// $entry should be an absolute filename
+					// because $folder is also absolute
+					$entry = $aeFiles->makeFileNameAbsolute($entry);
+
 					// Does the filename ($entry) starts with the
 					// protected foldername ?
-
 					if (substr($entry, 0, strlen($folder)) === $folder) {
 						// Yes ==> we've found a protected file
 						// For instance

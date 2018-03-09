@@ -29,7 +29,8 @@
 		"stichoza/google-translate-php": "^3.2",
 		"league/flysystem": "^1.0",
 		"spatie/flysystem-dropbox": "^1.0",
-		"phpFastCache/phpFastCache": "^6.0"
+		"phpFastCache/phpFastCache": "^6.0",
+		"tracy/tracy": "^2.4"
 	},
 	"config": {
 		"preferred-install": "dist"

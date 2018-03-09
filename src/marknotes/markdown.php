@@ -148,5 +148,8 @@ class Markdown
 
 				break;
 		} // switch ($task)
+
+		// Security; remove somes Session replaceVariables
+		$aeSession->free();
 	}
 }
