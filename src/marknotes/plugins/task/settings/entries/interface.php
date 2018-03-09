@@ -25,7 +25,7 @@ class MN_Interface extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'can_see';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getText($key.$opt, $text, $arr[$opt]);
+		$content .= self::getRadio($key.$opt, $text, $arr[$opt]);
 
 		$opt = 'skin';
 		$text = self::getTranslation($key.'.'.$opt);
