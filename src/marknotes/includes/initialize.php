@@ -247,7 +247,7 @@ class Initialize
 
 			/*<!-- build:debug -->*/
 			// First the settings.json.dist if present
-			if (is_file($fname = dirname(self::$webRootFolder).DS.'settings.json.dist')) {
+			if (is_file($fname = self::$webRootFolder.'settings.json.dist')) {
 				self::initDebug($fname);
 			}
 
