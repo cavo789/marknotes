@@ -95,6 +95,12 @@ class MN_Backup extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$value = $arr[$opt]??10;
 		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $value));
 
+		// zip_maxsize is the approximative max size (in MB)
+		// for an archive.
+		$opt = 'zip_max_size';
+		$text = self::getTranslation($key.'.'.$opt);
+		$value = $arr[$opt]??250;
+		$content .= self::getText($key.'.'.$opt, $text, str_replace('"', "'", $value));
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

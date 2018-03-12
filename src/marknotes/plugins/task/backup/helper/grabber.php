@@ -54,8 +54,11 @@ class Grabber
 	// If just one file is bigger than this size, only one file will
 	// be processed but when the sum of 14 files is just bigger,
 	// then process 14 files (and not 15)
-
 	private $max_size = 10 * MB;
+
+	// Max size of a ZIP file. If the ZIP becomes bigger, create
+	// a new zip, _001, _002, ...
+	private $zip_max_size = 250 * MB;
 
 	// The current processed file number
 	private $offset = 0;
@@ -105,6 +108,11 @@ class Grabber
 			// max number of files to process at once
 			$this->max_count_files = $arr['max_count_files']??50;
 
+			// Max size of a ZIP file. If the ZIP becomes bigger,
+			// create a new zip, _001, _002, ...
+			$this->zip_max_size = $arr['zip_max_size']??250;
+			$this->zip_max_size = $this->zip_max_size * MB;
+
 			// max total size (in MB) to process at once
 			$this->max_size = intval($arr['max_size_files']??10);
 			$this->max_size = $this->max_size * MB;
@@ -116,17 +124,18 @@ class Grabber
 
 	/**
 	 * Render results of the script's work
-	 * @param bool $end Script finished it's work
+	 * @param bool $end True when the script has finished it's work
+	 * @param bool $is_name True when $log_info will contains the name of a generated zipfile i.e. the name of the archive
 	 * @param string $log_info Info to be outputed into AJAX-log
 	 * @param string $btn_text Text to set to primary button
 	 * @param string $btn_class Class to set to primary button {@see self::$BUTTON_CLASSES}
 	 * @param int $offset New offset to return to JavaScript
 	 */
-	private function outputResult($end, $log_info, $btn_text, $btn_class, $offset) : array
+	private function outputResult($end, $is_name, $log_info, $btn_text, $btn_class, $offset) : array
 	{
 		$btn_bootstrap_class = self::$BUTTON_CLASSES[$btn_class];
 
-		return compact('end', 'log_info', 'btn_text', 'btn_bootstrap_class', 'offset');
+		return compact('end', 'is_name', 'log_info', 'btn_text', 'btn_bootstrap_class', 'offset');
 	}
 
 	/**
@@ -138,7 +147,7 @@ class Grabber
 	{
 		$message = $ex->getCode().': '.$ex->getMessage();
 
-		$this->outputResult($fatal, $message, $fatal ? 'Error' : 'Skipping', 'error', $fatal ? 0 : ++$this->offset);
+		$this->outputResult($fatal, false, $message, $fatal ? 'Error' : 'Skipping', 'error', $fatal ? 0 : ++$this->offset);
 
 		if ($fatal && $this->archive instanceof \ZipArchive) {
 			$this->archive->close();
@@ -193,10 +202,28 @@ class Grabber
 			// Derive the filename - Use the prefix and add an ID
 			// based on the session ID so the filename will be unique
 			$id = substr(sha1(session_id()), 0, 8);
-			$file = $this->zip_prefix.$suffix.'_'.$id.'.zip';
+			$file = $this->zip_prefix.$suffix.'_'.$id;
 
+			// Define once the filename like f.i.
+			// 20180312093659_all_f0f5e82e
+			// i.e.
+			//		date/time as prefix
+			//		"all" when the backup is for /docs
+			//		"f0f5e82e" as the $id (based on session_id)
+			//
+			// don't add yet the .zip extension
 			$aeSession->set('backup_zipfilename', $file);
 		}
+
+		// Now get the part (000, 001, 002, ...)
+		$part = $aeSession->get('backup_zipfilename_part', '000');
+
+		// Get, f.i. "015" when $part is equal to 15
+		$part = "_".substr('00'.$part, -3);
+
+		// Build the final name by adding the part (000, 001,
+		// 002, ...) and the .zip extension
+		$file = $file.$part.'.zip';
 
 		return $file;
 	}
@@ -229,6 +256,11 @@ class Grabber
 
 		if (is_null($this->offset)) {
 			throw new \Exception('Unable to get offset', 424);
+		}
+
+		if ($this->offset == 0) {
+			$aeSession = \MarkNotes\Session::getInstance();
+			$aeSession->set('backup_zipfilename_part', '000');
 		}
 
 		return true;
@@ -276,13 +308,13 @@ class Grabber
 		$this->archive = new \ZipArchive();
 		$flags = null;
 
-		// Create the ZIP only when we're starting the process
-		// i.e. when processing file #0
-		if ($this->offset == 0) {
+		$file = $this->backup_folder.$this->zip_filename;
+
+		// Create the ZIP if not yet there
+		$aeFiles = \MarkNotes\Files::getInstance();
+		if (!$aeFiles->exists($file)) {
 			$flags = \ZipArchive::CREATE;
 		}
-
-		$file = $this->backup_folder.$this->zip_filename;
 
 		return $this->archive->open($file, $flags);
 	}
@@ -318,13 +350,42 @@ class Grabber
 	}
 
 	/**
-	 * Finish archiving and return filepath within primary button
+	 * The backup process is finished
+	 * Return the list of ZIP files created (if more than one)
 	 */
-	private function completeArchive() : bool
+	private function completeArchive() : array
 	{
 		$this->archive->close();
-		$this->outputResult(true, 'Archive ready', 'Download', 'complete', 0);
-		return true;
+
+		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		$fname = $aeSession->get('backup_zipfilename', '');
+		$fzip = $this->backup_folder.$fname;
+
+		$arrFiles = glob($fzip.'*.*');
+		$arr = array();
+
+		$text = $aeSettings->getText('backup_file_created', '');
+		$text = '== '.$text.' ==';
+
+		$btn = $aeSettings->getText('action_download', '');
+
+		if (count($arrFiles)>0) {
+			foreach ($arrFiles as $zip_filename) {
+				$arr[]=$this->outputResult(true, true, str_replace('$1', basename($zip_filename), $text), basename($zip_filename), 'complete', 0);
+			}
+
+			// There are severall files, use backup_download
+			// text which is more explicit
+			if (count($arrFiles)>1) {
+				$btn = $aeSettings->getText('backup_download', '');
+			}
+		}
+
+		$arr[]=$this->outputResult(true, false, $aeSettings->getText('backup_archive_ready', ''), $btn, 'complete', 0);
+
+		return $arr;
 	}
 
 	/**
@@ -345,8 +406,8 @@ class Grabber
 		if ($offset >= $this->files_count) {
 			// It's done when offset is equal to the total number
 			// of files to process
-			$this->completeArchive();
-			return true;
+			$arr = $this->completeArchive();
+			return $arr;
 		}
 
 		// Get the file to process
@@ -376,9 +437,57 @@ class Grabber
 			$btn_text = 'Download';
 		}
 
-		$arr = $this->outputResult($end, $log_info, $btn_text, $btn_class, $next_offset);
+		$arr = $this->outputResult($end, false, $log_info, $btn_text, $btn_class, $next_offset);
 
 		return $arr;
+	}
+
+	/**
+	 * Check if the ZIP file already exists and if yes, if his
+	 * filesize is not bigger than the max allowed for a ZIP.
+	 * If bigger, create a new "part"
+	 */
+	private function checkZipFileSizeIncPart() : bool
+	{
+		$bInit = false;
+
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$fzip = $this->backup_folder.$this->zip_filename;
+
+		// Close the ZIP so we can retrieve it's current size
+		if (!$this->archive==null) {
+			$this->archive->close();
+			$bInit = true;
+		}
+
+		$wZipFileSize = $aeFiles->getSize($fzip);
+
+		// Verify if the size of the ZIP file becomes
+		// too large and if so, create a new file by adding
+		// one to the "part" (so xxx_000.zip will be closed
+		// and xxx_001.zip will be created)
+		if ($wZipFileSize >= $this->zip_max_size) {
+			// Get the new filename
+			$aeSession = \MarkNotes\Session::getInstance();
+
+			// Get the current part (000)
+			$part = $aeSession->get('backup_zipfilename_part', 0);
+			$part = intval($part);
+
+			// And add one (001)
+			$part += 1;
+
+			// Store this number in the session and get
+			// a new zip filename
+			$aeSession->set('backup_zipfilename_part', $part);
+			$this->zip_filename = $this->buildFilename();
+		}
+
+		if ($bInit) {
+			$this->initArchive();
+		}
+
+		return true;
 	}
 
 	/**
@@ -388,8 +497,8 @@ class Grabber
 	public function process() : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
-		try {
 
+		try {
 			// Derive the name of the ZIP file to create
 			$this->zip_filename = $this->buildFilename();
 
@@ -397,6 +506,12 @@ class Grabber
 			// (the script runs for the first time) check
 			// if file exists and try to remove it.
 			$this->checkOffsetAndUnlinkFile();
+
+			// Before starting, check if the ZIP file already
+			// exists and if yes, if his filesize is not bigger
+			// than the max allowed for a ZIP. If bigger, create a
+			// new "part"
+			self::checkZipFileSizeIncPart();
 
 			// Initialize archive
 			// (creating a new one or opening existing)
@@ -424,7 +539,6 @@ class Grabber
 			$this->files_size = 0;
 
 			for ($i = $this->offset; $i < $j; $i++) {
-
 				// Get the name of the file that will be processed
 				$filename = $this->files[$i];
 
@@ -451,11 +565,27 @@ class Grabber
 						break;
 					}
 				}
-			}
+
+				$count = count($json)-1;
+				// When we've finished (i.e. "end" is true)
+				// call completeArchive so we can retrieve the
+				// list of generated zipfiles
+				if (boolval($json[$count]['end'])) {
+					$tmp=self::completeArchive();
+					foreach ($tmp as $item) {
+						$json[] = $item;
+					}
+				} else {
+					self::checkZipFileSizeIncPart();
+				}
+
+			} // for ($i = $this->offset
 
 			// Close the archive otherwise will be locked
 			// for the next file
-			$this->archive->close();
+			if(!$this->archive==null) {
+				@$this->archive->close();
+			}
 		} catch (\Exception $ex) {
 			$this->error($ex, false);
 		}

@@ -54,7 +54,8 @@ REM call :fnScrollDir
 REM call :fnCSSCheckboxLib
 REM call :fnSweetAlert
 REM call :fnCopyjs-cookie
-call :fnCopyTracy
+REM call :fnCopyTracy
+REM call :fnCopyMultiDownload
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
 REM call :fnCopyDatatables
@@ -88,7 +89,7 @@ REM call :fnUpload
 REM call :fnHTML2MD
 REM call :fnGuzzle
 REM call :fnGoogleTranslate
-call :fnhtmLawed
+REM call :fnhtmLawed
 REM call :fnFinalize
 GOTO END:
 
@@ -149,6 +150,18 @@ ECHO	COPY TO %LIBS%js-cookie\
 ECHO.
 IF NOT EXIST %LIBS%js-cookie\ MKDIR %LIBS%js-cookie\ >> %LOG%
 COPY %VENDOR%js-cookie\src\js.cookie.js %LIBS%js-cookie /Y >> %LOG%
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyMultiDownload
+::--------------------------------------------------------
+
+:fnCopyMultiDownload
+ECHO  === fnCopyMultiDownload ===
+ECHO	COPY TO %LIBS%multi-download\
+ECHO.
+IF NOT EXIST %LIBS%multi-download\ MKDIR %LIBS%multi-download\ >> %LOG%
+COPY %VENDOR%multi-download\browser.js %LIBS%multi-download\multi-download.js /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

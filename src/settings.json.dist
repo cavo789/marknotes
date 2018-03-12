@@ -878,7 +878,10 @@
 				"backup" : {
 					"prefix": "%DATE%_",
 					"folder": "backups",
-					"ignore_extensions":"7z;aiff;asf;avi;bak;eot;eot2;fla;flv;f4v;gz;jpa;m4v;mkv;mov;mp3;mp4;mpeg;mpg;ogg;ogv;otf;otf2;swf;tar;tif;ttf;ttf2;wav;woff;woff2;wma;zip"
+					"ignore_extensions":"7z;aiff;asf;avi;bak;eot;eot2;fla;flv;f4v;gz;jpa;m4v;mkv;mov;mp3;mp4;mpeg;mpg;ogg;ogv;otf;otf2;swf;tar;tif;ttf;ttf2;wav;woff;woff2;wma;zip",
+					"max_count_files": "50",
+					"max_size_files": "10",
+					"zip_max_size": "250"
 				},
 				"export": {
 					"after": {

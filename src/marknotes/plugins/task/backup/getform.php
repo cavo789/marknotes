@@ -68,6 +68,7 @@ class Getform extends \MarkNotes\Plugins\Task\Plugin
 			'%BACKUP_LOG%' => 'backuplog',
 			'%BACKUP_START%' => 'backup_start',
 			'%BACKUP_ONLY_CAN_SEE_FOLDERS%' => 'backup_only_can_see_folders',
+			"%BACKUP_FILES_GENERATED%" => 'backup_files_generated',
 			'%BACKUP_THIS_FOLDER%' => 'backup_this_folder',
 			'%BACKUP_LABEL_IGNORE_EXTENSIONS%' => 'backup_ignore_extensions',
 			'%BACKUP_THIS_SETTINGS%' => 'backup_this_settings'

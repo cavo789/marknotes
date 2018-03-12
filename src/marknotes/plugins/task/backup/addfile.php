@@ -33,7 +33,6 @@ class Addfile extends \MarkNotes\Plugins\Task\Plugin
 				$message = $aeSettings->getText("error_lib_not_found");
 				$message = str_replace('$1', 'Grabber', $message);
 			}
-
 		} else { // if (self::isEnabled(true))
 			$status = 0;
 			$message = $aeSettings->getText('not_authenticated');

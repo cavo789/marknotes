@@ -21,7 +21,16 @@ class Download extends \MarkNotes\Plugins\Task\Plugin
 
 		if (self::isEnabled(true)) {
 
-			$filename = $aeSession->get('backup_zipfilename', '');
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+
+			$filename = trim(urldecode($aeFunctions->getParam('file', 'string', '', true)));
+
+			$filename = trim($filename, '"');
+
+			if ($filename == '') {
+				$filename = $aeSession->get('backup_zipfilename', '').'_000.zip';
+			}
+
 			$arr = $aeSettings->getPlugins(self::$json_options);
 
 			// Get the root folder

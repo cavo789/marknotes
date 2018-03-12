@@ -29,20 +29,30 @@ class Display
 
 	private function insertHR(&$markdown)
 	{
-		// Convert any '---' (or '-----') to a new line (<hr/>) only if
+		// Convert any '---' (or '-----') to a new line
+		// (<hr/>) only if
 		// preceded and followed by an empty line, so, like this :
 		//
 		//				  (empty line)
 		//	  ---
 		//				  (empty line)
 		//
-		// Needed because there is sometimes bugs in MarkDown Extra when '---' follow
+		// Needed because there is sometimes bugs in
+		// MarkDown Extra when '---' follow
 		// the declaration of an array
 
-		$matches = array();
-		preg_match_all('/\n\r?-{3,5}(\s*(\n\r?)*)*/', $markdown, $matches);
-		foreach ($matches[0] as $tmp) {
-			$markdown = str_replace($tmp, '<hr/>'.PHP_EOL, $markdown);
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task');
+
+		// Because --- is used in reveal or remark presentations
+		// just replace with <hr/> for these tasks
+		$arr = array('task.export.remark','task.export.reveal');
+		if (in_array($task, $arr)) {
+			$matches = array();
+			preg_match_all('/\n\r?-{3,5}(\s*(\n\r?)*)*/', $markdown, $matches);
+			foreach ($matches[0] as $tmp) {
+				$markdown = str_replace($tmp, '<hr/>'.PHP_EOL, $markdown);
+			}
 		}
 
 		return true;

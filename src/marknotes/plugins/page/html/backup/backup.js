@@ -153,6 +153,7 @@ function fnPluginTaskBackupDoIt($offset) {
 				// [
 				//		{
 				//			"end":false,
+				//			"is_name":false,
 				//			"log_info":".htaccess -success",
 				//			"btn_text":"1/7",
 				//			"btn_bootstrap_class":"btn-default",
@@ -160,6 +161,7 @@ function fnPluginTaskBackupDoIt($offset) {
 				//		},
 				//		{
 				//			"end":false,
+				//			"is_name":false,
 				//			"log_info":"settings.json -success",
 				//			"btn_text":"2/7",
 				//			"btn_bootstrap_class":"btn-default",
@@ -171,6 +173,19 @@ function fnPluginTaskBackupDoIt($offset) {
 				// the one that has been added in the ZIP file; with an
 				// indicator (success, failure, ...)
 				$('#backup_history').append(json_file.log_info + "\n");
+
+				// When is_name is true, we'll retrieve the name
+				// of the archive in the btn_text entry
+				// It's well possible to have severall entries
+				// when the archive is composed of severall parts
+
+				if (json_file.is_name) {
+
+					$datafile = window.btoa(encodeURIComponent(JSON.stringify(json_file.btn_text)));
+
+					$('#backup_filenames ul').append('<li data-backup_file="'+$datafile+'">'+json_file.btn_text+'</li>');
+
+				}
 
 				// Retrieve the offset of the next file to process
 				// Will be 0 when all files have been processed
@@ -190,6 +205,14 @@ function fnPluginTaskBackupDoIt($offset) {
 			if ($offset !== 0) {
 				fnPluginTaskBackupDoIt($offset);
 			} else {
+				// Done, the backup process is finished
+				$('#backup_filenames').show();
+
+				$("[data-backup_file]").click(function (e) {
+					e.stopImmediatePropagation();
+					fnPluginTaskBackupDownload($(this).data('backup_file'));
+				});
+
 				// Propose the download link
 				$('#status').attr('disabled', false);
 
@@ -207,7 +230,31 @@ function fnPluginTaskBackupDoIt($offset) {
 	return true;
 }
 
-function fnPluginTaskBackupDownload() {
-	window.location = marknotes.url + '?task=task.backup.download';
+/**
+ * Download an archive. When $filename is mentionned, the user has
+ * click on a specific file like the '_000.zip' part (in case that
+ * the archive is composed of severall files)
+ */
+function fnPluginTaskBackupDownload($filename) {
+
+	if (typeof $filename !== 'undefined') {
+		// Download a specific file
+		$param = '&file='+$filename;
+		window.location = marknotes.url + '?task=task.backup.download' + $param;
+	} else {
+
+		// Process every files at once
+		var $arrFiles = [];
+		$("[data-backup_file]").each(function (e) {
+			$param = '&file='+$(this).data('backup_file');
+			$url = marknotes.url + '?task=task.backup.download' + $param;
+			$arrFiles.push($url);
+		});
+
+		// Use multi-download of
+		// https://github.com/sindresorhus/multi-download
+		multiDownload($arrFiles);
+	}
+
 	return true;
 }
