@@ -20,13 +20,19 @@
 	margin-left: 2px;
 	color	  : #abe0ab;
 }
+
 .icon_file {
 	padding-left: 5px;
 }
+
 #TOC {
 	font-size  : 1em;
 	padding-top: 10px;
+	/*display: block;
+	overflow: auto;
+	height: 1500px;*/
 }
+
 #TOC .folder {
 	background: url('../../../marknotes/plugins/page/html/treeview/file_sprite.png') right bottom no-repeat;
 }

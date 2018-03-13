@@ -95,8 +95,11 @@ class GetList extends \MarkNotes\Plugins\Task\Plugin
 
 		$arr = array();
 
-		$arr['title'] = $aeSettings->getText('lastmodified_title', 'Notes modified recently');
 		$arr['files'] = self::getFiles();
+
+		$count = count($arr['files']);
+		$arr['title'] = $aeSettings->getText('lastmodified_title', 'Notes modified recently');
+		$arr['title'] = str_replace('$1', $count, $arr['title']);
 
 		header('Content-Transfer-Encoding: ascii');
 		header('Content-Type: application/json');

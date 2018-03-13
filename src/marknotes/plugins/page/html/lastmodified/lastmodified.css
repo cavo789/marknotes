@@ -5,7 +5,7 @@
 }
 
 #lastmodified li::before {
-	content: "\f004"; /* FontAwesome Unicode */
+	content: "\f044"; /* FontAwesome Unicode */
 	font-family: FontAwesome;
 	display: inline-block;
 	margin-left: -1.3em; /* same as padding-left set on li */
