@@ -32,20 +32,25 @@ class Debug
 	private static $sDebugFileName = DEBUG_LOG_NAME;
 	private static $bDevMode = false;
 
-	public function __construct()
+	public function __construct(string $root = '')
 	{
 		static::$startedAt = microtime(true);
 
 		// Root folder
-		self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
+		if (trim($root)=='') {
+			self::$root = rtrim(dirname($_SERVER['SCRIPT_FILENAME']), DS).DS;
+		} else {
+			self::$root = $root;
+		}
+
 		self::$root = str_replace('/', DS, self::$root);
 
 		static::$bEnabled = false;
 		self::$sTemplate = DEBUG_TEMPLATE;
 		self::$sTimezone = DEFAULT_TIMEZONE;
 
-		$aeFiles = \MarkNotes\Files::getInstance();
-		$aeFolders = \MarkNotes\Folders::getInstance();
+		$aeFiles = \MarkNotes\Files::getInstance(self::$root);
+		$aeFolders = \MarkNotes\Folders::getInstance(self::$root);
 
 		// full path for the debug.log file : in the /tmp folder
 		if (!$aeFolders->exists(self::$root.'tmp'.DS)) {
@@ -77,10 +82,10 @@ class Debug
 		return true;
 	}
 
-	public static function getInstance()
+	public static function getInstance(string $root = '')
 	{
 		if (self::$hInstance === null) {
-			self::$hInstance = new Debug();
+			self::$hInstance = new Debug($root);
 		}
 		return self::$hInstance;
 	}

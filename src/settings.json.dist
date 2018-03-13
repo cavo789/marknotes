@@ -351,6 +351,11 @@
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.pdf", "task.export.reveal"]
 				},
+				"lastmodified" : {
+					"enabled": 1,
+					"not_if_task": [],
+					"only_if_task": ["main", "interface"]
+				},
 				"linkify": {
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get", "task.edit.form"],
@@ -969,6 +974,9 @@
 						}
 					]
 				},
+				"lastmodified": {
+					"items_count": "25"
+				},
 				"login": {
 					"username": "admin",
 					"password": "marknotes"
@@ -1099,6 +1107,9 @@
 				"enabled" : 1
 			},
 			"image_gallery": {
+				"enabled" : 1
+			},
+			"lastmodified" : {
 				"enabled" : 1
 			},
 			"login" : {

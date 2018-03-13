@@ -2,26 +2,22 @@
 // --- INITIALIZE MARKNOTES ---
 //
 require_once('../../initialize.php');
+
 $arrMN = \MarkNotes\Plugins\Task\Elf\Initialize::getSettings();
+
 if ((trim($arrMN['root'])==='') || (trim($arrMN['docs'])==='') || (trim($arrMN['url'])==='')) {
 	die('FATAL ERROR - ELF configuration incorrect; marknotes '.
 		'folders not initialized');
 }
-
 //
 // --- INITIALIZE MARKNOTES ---
-
 // ELF - Documentation for connector options:
 // https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
-
 error_reporting(0); // Set E_ALL for debuging
-
 // elFinder autoload
 require './autoload.php';
-
 // Enable FTP connector netmount
 elFinder::$netDrivers['ftp'] = 'FTP';
-
 /**
  * Simple function to demonstrate how to control file access using "accessControl" callback.
  * This method will disable accessing files/folders starting from '.' (dot)
@@ -41,7 +37,6 @@ function access($attr, $path, $data, $volume, $isDir, $relpath) {
 		? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
 		:  null;								 // else elFinder decide it itself
 }
-
 $opts = array(
 	'debug' => $arrMN['debug'],
 	'roots' => array(
@@ -76,19 +71,14 @@ $opts = array(
 		)
 	)
 );
-
 // We can't never access to these folders :
 $protected = '.git|.htaccess|.htpasswd|';
-
 // $arrMN['acls'] is set by the Elf\Initialize::getSettings();
 // function
 if (isset($arrMN['acls'])) {
-
 	$acls = json_decode($arrMN['acls'], true);
-
 	// f.i. "christophe"
 	$username = trim($arrMN['username']);
-
 	foreach ($acls as $folder => $users) {
 		// $users is an array and contains the list of
 		// people who can access the folder. If the $username is
@@ -98,25 +88,20 @@ if (isset($arrMN['acls'])) {
 			$protected .= $folder .'|';
 		}
 	} // foreach
-
 	$protected = rtrim($protected, '|');
 } // if (isset($arrMN['acls']))
-
 if (trim($protected)!=='') {
 	$arr=
 		array(
 			array(
 				'pattern' => '/('.$protected.')/',
-				'read'    => false,
-				'write'   => false,
+				'read'	=> false,
+				'write'	=> false,
 				'locked'  => true
 			)
 		);
-
 	$opts['roots'][0]['attributes'] = $arr;
 } // if (trim($protected)!=='')
-
-
 // run elFinder
 $connector = new elFinderConnector(new elFinder($opts));
 $connector->run();

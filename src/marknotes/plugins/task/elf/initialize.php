@@ -20,14 +20,16 @@ class Initialize
 
 		$ssl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
 		$protocol = 'http';
-		// SERVER_PROTOCOL isn't set when the script is fired through a php-cli
+		// SERVER_PROTOCOL isn't set when the script is
+		// fired through a php-cli
 		if (isset($_SERVER['SERVER_PROTOCOL'])) {
 			$spt = strtolower($_SERVER['SERVER_PROTOCOL']);
 			$protocol = substr($spt, 0, strpos($spt, '/')) . (($ssl)?'s':'');
 		}
 
 		$port = '80';
-		// SERVER_PORT isn't set when the script is fired through a php-cli
+		// SERVER_PORT isn't set when the script is fired
+		// through a php-cli
 		if (isset($_SERVER['SERVER_PORT'])) {
 			$port = $_SERVER['SERVER_PORT'];
 			$port = ((!$ssl && $port == '80') || ($ssl && $port == '443')) ? '' : ':'.$port;
@@ -42,7 +44,7 @@ class Initialize
 		$self=dirname(dirname(dirname($self)));
 		$self=dirname(dirname(dirname($self)));
 
-		$return = $protocol.'://'.$host.rtrim(dirname($self),'/').'/';
+		$return = $protocol.'://'.$host.rtrim(dirname($self), '/').'/';
 
 		return $return;
 	}
@@ -70,7 +72,8 @@ class Initialize
 		$arr = array('settings.json.dist', 'settings.json');
 
 		foreach ($arr as $file) {
-			if (file_exists($json = $webRoot.$file)) {
+			$json = $webRoot.$file;
+			if (is_file($json)) {
 				try {
 					$settings=json_decode(file_get_contents($json), true);
 
@@ -112,6 +115,7 @@ class Initialize
 		include_once $dir.'/marknotes/includes/initialize.php';
 		$class = new \MarkNotes\Includes\Initialize();
 		$class->init($webRoot);
+
 		unset($class);
 
 		$aeEvents = \MarkNotes\Events::getInstance();
@@ -138,7 +142,7 @@ class Initialize
 		// Finally return informations to ELF
 		$arr = array(
 			'root'=>$webRoot,
-			'docs'=>rtrim($webRoot,DS).DS.$docs,
+			'docs'=>rtrim($webRoot, DS).DS.$docs,
 			'url'=>$url,
 			'title'=>$title,
 			'locale'=>$locale,

@@ -5,6 +5,7 @@
 		"locale": "fr"
 	},
 	"action_prohibited": "La configuration de l'application interdit cette action",
+	"lastmodified_title": "Notes ayant \u00e9t\u00e9 modifi\u00e9es r\u00e9cemment",
 	"action_download": "T\u00e9l\u00e9charger le fichier",
 	"action_html": "Afficher la pr\u00e9sentation comme un article",
 	"action_slideshow": "Voir cet article sous le format pr\u00e9sentation",

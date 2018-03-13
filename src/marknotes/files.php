@@ -210,7 +210,6 @@ class Files
 		} else {
 			return $obj->has($filename);
 		}
-
 	}
 
 	/**
@@ -368,6 +367,11 @@ class Files
 
 	/**
 	 * Get the timestamp (last modification date) of a file
+	 * The timestamp can be displayed for human like :
+	 *
+	 *		'f.i. 25-12-2018 23:59:30
+	 *		echo date('d-m-Y G:i:s', $timestamp)
+	 *
 	 * With FlySystem
 	 */
 	public static function timestamp(string $filename) : string

@@ -4,6 +4,7 @@
  *
  * Answer to URL like index.php?task=task.favorites.getlist
  */
+
 namespace MarkNotes\Plugins\Task\Favorites;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -40,20 +41,27 @@ class GetList extends \MarkNotes\Plugins\Task\Plugin
 		//
 		// the root "docs/" folder is not mentionned and the ".md"
 		// extension not needed too.
-
 		foreach ($arrOptions as $file) {
 			$file = $aeFiles->removeExtension($file);
+
 			$file = str_replace('/', DS, $file);
 
-			$arr['files'][] = array(
-				'file'=>$file,
-				'id'=>md5($docs.$file) // md5 needs "docs/"
-			);
+			// Make sure the favorites still exists
+			$fullname = $aeFiles->makeFileNameAbsolute($file).'.md';
+
+			if ($aeFiles->exists($fullname)) {
+				$arr['files'][] = array(
+					'file'=>$file,
+					'id'=>md5($docs.$file) // md5 needs "docs/"
+				);
+			}
 		}
 
 		header('Content-Transfer-Encoding: ascii');
 		header('Content-Type: application/json');
+
 		echo json_encode($arr, JSON_PRETTY_PRINT);
+
 		die();
 	}
 }

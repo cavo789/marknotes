@@ -76,6 +76,7 @@
 					<article id="CONTENT">
 						<div id="HOMEPAGE">&nbsp;</div>
 						<div id="FAVORITES">&nbsp;</div>
+						<div id="LASTMODIFIED">&nbsp;</div>
 					</article>
 				</div>
 			</section>

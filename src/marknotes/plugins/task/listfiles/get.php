@@ -7,6 +7,18 @@
 * This task won't return a visible output (no json, no html, ...)
 * but will initialize an array in his run() function.
 *
+* The function will return an array with a key and a filename.
+* The key is not just a incremental figure (1, 2, 3, ...), unusefull,
+* but the timestamp of the file, for instance :
+*
+*		[1520937247] => docs/folder/file.md
+*		[1520935082] => docs/folder/file999.md
+*		[1520874329] => docs/folder2/file2..md
+*
+* So we can make a revert sort on the array (with krsort()) and
+* quickly retrieve the last added/modified notes f.i. (see plugin
+* task.lastmodified.getlist)
+*
 * Example of a call :
 *
 *		$arrFiles = array();
@@ -80,7 +92,12 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 						if (!$aeFunctions->startsWith($file, $docs)) {
 							$file = $docs.$file;
 						}
-						$arrFiles[] = $file;
+
+						// Instead of using a unusefull index
+						// use the file timestamp (last mod date/time)
+						$dte = $aeFiles->timestamp($aeFiles->makeFileNameAbsolute($file));
+
+						$arrFiles[$dte] = $file;
 					}
 				}
 			}

@@ -34,7 +34,8 @@ class Initialize
 		// Get the doc folder
 		$docs = $aeSettings->getFolderDocs(true);
 
-		// Check if notes should be stored in the cloud (Dropbox, ...)
+		// Check if notes should be stored in the cloud
+		// (Dropbox, ...)
 		$arrSettings = $aeSettings->getPlugins('/cloud',
 			array('platform'=>'', 'enabled'=>0)
 		);
@@ -42,7 +43,8 @@ class Initialize
 		// Does the cloud setting enabled ?
 		$enabled = $arrSettings['enabled']??0;
 
-		// If yes, read the name of the "platform" (Dropbox, Amazon, ...)
+		// If yes, read the name of the "platform"
+		// (Dropbox, Amazon, ...).
 		// If no, initialize to an empty string
 		$platform = ($enabled ? ($arrSettings['platform']??'') : '');
 
@@ -135,17 +137,16 @@ class Initialize
 	 */
 	private static function initDebug(string $fname) : bool
 	{
-
 		/*<!-- build:debug -->*/
-		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeDebug = \MarkNotes\Debug::getInstance(self::$webRootFolder);
 
-		$aeJSON = \MarkNotes\JSON::getInstance();
+		$aeJSON = \MarkNotes\JSON::getInstance(self::$webRootFolder);
 		$json = $aeJSON->json_decode($fname, true);
 
 		$arr = $json['debug'] ?? array('enabled'=>0,'development'=>0);
 
-		// Get the debug node of the settings.json file and if not present,
-		// create a "fake" ArrayAccess
+		// Get the debug node of the settings.json file and if not
+		// present, create a "fake" ArrayAccess
 		//
 		// The node should be something like this :
 		//
@@ -166,7 +167,8 @@ class Initialize
 		}
 
 		if (isset($arr['output'])) {
-			// Output defines which type of informations should be logged.
+			// Output defines which type of informations
+			// should be logged.
 			// By default, the output node is defined like this :
 			//
 			//	 	"output": {
@@ -227,9 +229,7 @@ class Initialize
 			self::die(ERROR_PHP_VERSION);
 		} else {
 			self::createHTAccess();
-
 			// Load third parties
-
 			// ----------------------------------------------------
 			// If Parsedown and ParsedownExtra aren't loaded *before*
 			// ParsedownCheckbox, autoload will fail. Is it possible
