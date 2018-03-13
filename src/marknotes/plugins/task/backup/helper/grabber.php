@@ -305,6 +305,8 @@ class Grabber
 	 */
 	private function initArchive() : bool
 	{
+		$zip = null;
+
 		$this->archive = new \ZipArchive();
 		$flags = null;
 
@@ -316,7 +318,28 @@ class Grabber
 			$flags = \ZipArchive::CREATE;
 		}
 
-		return $this->archive->open($file, $flags);
+		$zip = $this->archive->open($file, $flags);
+
+		// If the creation of the zip was successfull,
+		// add comments
+		if ($zip && ($flags==\ZipArchive::CREATE)) {
+			$aeSession = \MarkNotes\Session::getInstance();
+
+			// Build the comment. Mention the archived folder
+			// name, the part (000, 001, ...) and who has taken
+			// the backup (default is Public; otherwise the
+			// used htpasswd username
+			$sComment = "Backup done by marknotes, folder [".
+				ltrim($aeSession->get('backup_suffix', ''), '_').
+				'], part '.$aeSession->get('backup_zipfilename_part', '').'.';
+
+			$user = $aeSession->get('htpasswd_username', '');
+			$sComment .= ' Backup taken by ['.$user.']';
+
+			$this->archive->setArchiveComment($sComment);
+		}
+
+		return $zip;
 	}
 
 	/**
@@ -423,6 +446,8 @@ class Grabber
 
 		// Add the file in the archive
 		$this->archive->addFile($filename, $basename);
+		$handle = $this->archive->locateName($basename);
+//echo '<pre>'.print_r($this->archive->statIndex($handle),true).'</pre>';
 
 		// And return to the Ajax task a log info
 		$end = ($offset+1 >= $this->files_count);
@@ -460,7 +485,12 @@ class Grabber
 			$bInit = true;
 		}
 
-		$wZipFileSize = $aeFiles->getSize($fzip);
+		$wZipFileSize = 0;
+		if ($aeFiles->exists($fzip)) {
+			$wZipFileSize = $aeFiles->getSize($fzip);
+		}
+
+		//echo __LINE__.'---Offset '.$this->offset.'---ZipSize '.$wZipFileSize.'--MAX '.$this->zip_max_size.'<hr/>';
 
 		// Verify if the size of the ZIP file becomes
 		// too large and if so, create a new file by adding
@@ -477,9 +507,15 @@ class Grabber
 			// And add one (001)
 			$part += 1;
 
+			//echo '<h1>'.__LINE__.' Create part '.$part.'</h1>';
 			// Store this number in the session and get
 			// a new zip filename
 			$aeSession->set('backup_zipfilename_part', $part);
+
+			if (!$this->archive==null) {
+				@$this->archive->close();
+			}
+
 			$this->zip_filename = $this->buildFilename();
 		}
 
@@ -497,6 +533,13 @@ class Grabber
 	public function process() : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
+
+		// No timeout
+		set_time_limit(0);
+
+		// Try to use has much memory that is needed for the
+		// archive process
+		ini_set('memory_limit', '-1');
 
 		try {
 			// Derive the name of the ZIP file to create
@@ -521,7 +564,6 @@ class Grabber
 			$this->readInput();
 
 			// Processing current file and close archive
-
 			$json = array();
 
 			// Maximum number of files to process in one call
@@ -576,14 +618,18 @@ class Grabber
 						$json[] = $item;
 					}
 				} else {
-					self::checkZipFileSizeIncPart();
+					// Don't do it for every single added file
+					// because closing and opening the zip file
+					// again and again cost CPU and it's impossible
+					// to get the ZIP filesize without closing
+					// the archive; unfortunatelly
+					//self::checkZipFileSizeIncPart();
 				}
-
 			} // for ($i = $this->offset
 
 			// Close the archive otherwise will be locked
 			// for the next file
-			if(!$this->archive==null) {
+			if (!$this->archive==null) {
 				@$this->archive->close();
 			}
 		} catch (\Exception $ex) {
