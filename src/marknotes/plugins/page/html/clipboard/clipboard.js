@@ -1,19 +1,23 @@
 /**
  * fnPluginButtonClipboard
  * ------------------------
- * Copy the note content in the clipboard so, f.i., we can paste it then in an email
+ * Copy the note content in the clipboard so, f.i., we can
+ * paste it then in an email
  * Copy html tags so layout is copied too
  * @link https://clipboardjs.com/
  *
  * fnPluginButtonClipboardLinkNote
  * ------------------------
- * Copy just the URL to the note (full, like http://localhost/notes/docs/note.html)
+ * Copy just the URL to the note (full, like
+ * http://localhost/notes/docs/note.html)
+ *
+ * @https://github.com/zenorocha/clipboard.js
  */
 function fnPluginButtonClipboard() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - clipboard - Initialize');
+		console.log('	  Plugin Page html - clipboard - Initialize');
 	}
 	/*<!-- endbuild -->*/
 
@@ -27,11 +31,10 @@ function fnPluginButtonClipboard() {
 	} else {
 		if (typeof Clipboard === 'function') {
 			if (Clipboard.isSupported()) {
-				console.log('1');
+alert('fnPluginButtonClipboard');
+fnPluginButtonClipboardClean();
 				var clipboard = new Clipboard('#icon_clipboard');
-				console.log('2');
 				clipboard.on('success', function (e) {
-					console.log('3');
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
 						console.info('Action:', e.action);
@@ -70,7 +73,7 @@ function fnPluginButtonClipboardLinkNote() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - clipboard - Copy URL of the note in the clipboard');
+		console.log('	  Plugin Page html - clipboard - Copy URL of the note in the clipboard');
 	}
 	/*<!-- endbuild -->*/
 
@@ -108,4 +111,30 @@ function fnPluginButtonClipboardLinkNote() {
 			type: 'success'
 		});
 	}
+}
+
+/**
+ * Private function used by fnPluginButtonClipboard
+ * Aim is to remove some DOM elements
+ */
+function fnPluginButtonClipboardClean() {
+
+	try {
+		// List of classes to search and to remove before copying
+		// in the clipboard
+		var $arrElem = ['toolbar'];
+		var $j = $arrElem.length;
+		var $elements = null;
+
+		for (var $i = 0; $i < $j; $i++) {
+			$elements = document.getElementById('CONTENT').parentNode.getElementsByClassName($arrElem[$i]);
+
+			while ($elements.length > 0) {
+				$elements[0].parentNode.removeChild($elements[0]);
+			}
+		}
+	} catch (e) {
+	}
+
+	return true;
 }
