@@ -32,23 +32,10 @@ class Settings
 
 	public static function getInstance(string $folder = '', array $params = null)
 	{
-		static $previous_file = '';
-		static $previous_folder = '';
-
-		if (($previous_folder!=='') && ($folder=='')) {
-			$folder = $previous_folder;
-		}
-
-		if ($previous_file != ($params['filename']??'')) {
-			self::$hInstance = null;
-		}
 
 		if (self::$hInstance === null) {
 			self::$hInstance = new Settings($folder, $params);
 		}
-
-		$previous_file = $params['filename']??'';
-		$previous_folder = $folder;
 
 		return self::$hInstance;
 	}
@@ -154,13 +141,6 @@ class Settings
 		// From the root folder of the web application
 		$noteJSON = $this->getFolderWebRoot().'settings.json.dist';
 		if ($aeFiles->exists($noteJSON)) {
-			/*<!-- build:debug -->*/
-			if (self::$bDebugMode) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("LOAD SETTINGS.JSON : ".$noteJSON, "debug");
-			}
-			/*<!-- endbuild -->*/
-
 			$arr = $aeJSON->json_decode($noteJSON, true);
 
 			/*<!-- build:debug -->*/
@@ -176,13 +156,6 @@ class Settings
 		$noteJSON = $this->getFolderWebRoot().'settings.json';
 
 		if ($aeFiles->exists($noteJSON)) {
-			/*<!-- build:debug -->*/
-			if (self::$bDebugMode) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("LOAD SETTINGS.JSON : ".$noteJSON, "debug");
-			}
-			/*<!-- endbuild -->*/
-
 			$arr = $aeJSON->json_decode($noteJSON, true);
 
 			/*<!-- build:debug -->*/
@@ -198,6 +171,7 @@ class Settings
 		// just the filename. So, $filename should not be
 		// docs/markdown.md but only markdown.md because the folder
 		// name will be added later on
+
 		$noteFileName = $params['filename']??'';
 
 		if ($noteFileName!=='') {
@@ -240,10 +214,8 @@ class Settings
 
 					if ($aeFiles->exists($noteJSON)) {
 						/*<!-- build:debug -->*/
-						if (self::$bDebugMode) {
-							$aeDebug = \MarkNotes\Debug::getInstance();
-							$aeDebug->log("LOAD SETTINGS.JSON : ".$noteJSON, "debug");
-						}
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						$aeDebug->log($noteJSON, "debug");
 						/*<!-- endbuild -->*/
 
 						// Read the settings.json file and merge
@@ -255,6 +227,7 @@ class Settings
 						self::enableDebugMode($json['debug']??array(), $noteJSON);
 						/*<!-- endbuild -->*/
 					}
+
 				} while ($folder !== $noteFolder);
 			}
 
@@ -280,13 +253,6 @@ class Settings
 			$noteJSON = $this->getFolderDocs(true).$dir.$fname;
 
 			if ($aeFiles->exists($noteJSON)) {
-				/*<!-- build:debug -->*/
-				if (self::$bDebugMode) {
-					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("LOAD SETTINGS.JSON : ".$noteJSON, "debug");
-				}
-				/*<!-- endbuild -->*/
-
 				$arr = $aeJSON->json_decode($noteJSON, true);
 				$json = array_replace_recursive($json, $arr);
 
@@ -337,6 +303,7 @@ class Settings
 		static $json_lang=array();
 
 		if ($json_lang === array()) {
+
 			$aeFiles = \MarkNotes\Files::getInstance();
 
 			// Load, always, the file in English
@@ -366,6 +333,7 @@ class Settings
 		} // if ($json_lang === array())
 
 		$return = isset($json_lang[$variable]) ? $json_lang[$variable] : trim($default);
+
 
 		if ($jsProtect) {
 			$return = str_replace("'", "\'", @html_entity_decode($return));
