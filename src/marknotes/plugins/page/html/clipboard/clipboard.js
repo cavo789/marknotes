@@ -31,9 +31,11 @@ function fnPluginButtonClipboard() {
 	} else {
 		if (typeof Clipboard === 'function') {
 			if (Clipboard.isSupported()) {
-alert('fnPluginButtonClipboard');
-fnPluginButtonClipboardClean();
+
+				fnPluginButtonClipboardClean();
+
 				var clipboard = new Clipboard('#icon_clipboard');
+
 				clipboard.on('success', function (e) {
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {

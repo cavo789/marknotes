@@ -266,7 +266,16 @@ class Initialize
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 
 			// Retrieve the note to process if any
-			$filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
+			$filename = rawurldecode($aeFunctions->getParam('file',
+			'string', '', false));
+
+			// Just check the param variable too because
+			// it's &param= from the interface
+			if ($filename=='') {
+				$filename = rawurldecode($aeFunctions->getParam('param', 'string', '', true));
+				$filename = str_replace('"', '', $filename);
+			}
+
 			$filename = rtrim($filename, DS);
 			$filename = str_replace('/', DS, $filename);
 

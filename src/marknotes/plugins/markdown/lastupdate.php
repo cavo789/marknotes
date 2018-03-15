@@ -6,7 +6,7 @@
   *			"options": {
   *				"markdown": {
   *					"lastupdate": {
-  *						"text": ">*Last update : %s*"
+  *						"text": ">*Last update: %s*"
   *					}
   *				}
   *			}
@@ -39,8 +39,8 @@ class LastUpdate extends \MarkNotes\Plugins\Markdown\Plugin
 		if (strpos($params['markdown'], '%LASTUPDATE%')!==false) {
 			$filename = $params['filename'];
 
-			// Default will be '**Last update : %s**
-			$text = self::getOptions('text', '**Last update : %s**');
+			// Default will be '**Last update: %s**
+			$text = self::getOptions('text', '**Last update: %s**');
 
 			$aeFiles = \MarkNotes\Files::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();

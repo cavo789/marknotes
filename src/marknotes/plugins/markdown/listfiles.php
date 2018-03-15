@@ -58,27 +58,43 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 				}
 
 				if ($aeFolders->exists($folder)) {
+
 					// Retrieve the list of files under that $folder
-					$arrFiles = $aeFiles->rglob('*', $folder);
+					//$arrFiles = $aeFiles->rglob('*', $folder);
+					$arrFiles = $aeFolders->getContent($folder, true);
 
 					// Do we need to encode accent on that system ?
 					//$arr = $aeSettings->getPlugins('/files', //array('encode_accent'=>0));
 					//$bEncodeAccents = boolval($arr['encode_accent']);
 
 					$sList = '';
+
+					$doc = $aeSettings->getFolderDocs(true);
+
+					$root_url = $aeFunctions->getCurrentURL();
+
 					foreach ($arrFiles as $file) {
-						if ($aeFiles->exists($file)) {
+
+						if ($file['type']=='file') {
+
 							// Don't take files starting with a dot
-							if (substr(basename($file), 0, 1) !== '.') {
-								//if ($bEncodeAccents) {
-								//	$file = utf8_encode($file);
-								//}
+							if (substr($file['basename'], 0, 1) !== '.') {
 
-								$relURL = str_replace($aeSettings->getFolderWebRoot(), '', $file);
+								$html = '';
+
+								$fullname = $doc.str_replace('/', DS, $file['path']);
+
+								$relURL = $aeSettings->getFolderDocs(false).$file['path'];
 								$relURL = str_replace(DS, '/', $relURL);
-								$file = str_replace(utf8_decode($root), '', str_replace($root, '', $file));
+								$filename = str_replace($root, '', $fullname);
 
-								$sList .= "* [".$file."](".str_replace(' ', '%20', $relURL).")".PHP_EOL;
+								$url = str_replace(' ', '%20', $root_url.$relURL);
+
+								if ($file['extension']=='md') {
+									$html = ' ([html]('.str_replace('.md','.html',$url).'))';
+								}
+
+								$sList .= "* [".$filename."](".str_replace(' ', '%20', $url).")".$html.PHP_EOL;
 							}
 						} // if ($aeFiles->exists($file))
 					} // foreach ($arrFiles as $file)

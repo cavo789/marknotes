@@ -425,9 +425,26 @@ class Files
 	*/
 	public static function rglob(string $pattern = '*', string $path = '', int $flags = 0, $arrSkipFolder = null) : array
 	{
+		// ------------------------------
+		// @DEPRECATED
+		// CONSIDER TO USE $aeFolders->getContent()
+		/*<!-- build:debug -->*/
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+			$aeDebug->log("CONSIDER TO USE aeFolders->getContent()", "debug");
+		}
+		/*<!-- endbuild -->*/
+		// ------------------------------
+
 		static $adjustCase = false;
 
-		// glob() is case sensitive so, search for PHP isn't searching for php.
+		if ($path!=='') {
+			$path = str_replace('/', DS, $path);
+		}
+
+		// glob() is case sensitive so, search for PHP isn't
+		// searching for php.
 		// Here, the pattern will be changed to be case insensitive.
 		// "*.php" will be changed to "*.[pP][hH][pP]"
 
@@ -443,14 +460,13 @@ class Files
 		}
 
 		// If the "$path" is one of the folder to skip, ... skip it.
-
 		if (($arrSkipFolder != null) && (count($arrSkipFolder) > 0)) {
 			foreach ($arrSkipFolder as $folder) {
 				if (self::startsWith($folder, $path)) {
 					return null;
 				}
 			} // foreach
-		} // if (($arrSkipFolder!=null) && (count($arrSkipFolder)>0))
+		} // if
 
 		$paths = glob($path.'*', GLOB_MARK | GLOB_ONLYDIR);
 
@@ -458,6 +474,7 @@ class Files
 		usort($paths, 'strnatcasecmp');
 
 		$files = glob(rtrim($path, DS).DS.$pattern, $flags);
+
 		// Sort, case insensitive
 		usort($files, 'strnatcasecmp');
 
@@ -469,12 +486,15 @@ class Files
 					$files = array_merge($files, $arr);
 				}
 			} else {
-				// $path is a symbolic link.  Doing a glob on a symbolic link will create a recursive
+				// $path is a symbolic link.  Doing a glob on a
+				// symbolic link will create a recursive
 				// call and will crash the script
 			}
 		} // foreach
 
-		// Don't use the / notation but well the correct directory separator
+		// Don't use the / notation but well the correct
+		// directory separator
+
 		foreach ($files as $key => $value) {
 			$files[$key] = $value;
 		}

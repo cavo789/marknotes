@@ -103,9 +103,9 @@ class Debug
 		if (is_dir($lib)) {
 			// @https://github.com/nette/tracy
 			\Tracy\Debugger::enable();
-			\Tracy\Debugger::$showBar = true;
-			\Tracy\Debugger::$strictMode = true;
-			\Tracy\Debugger::$showLocation = true;
+			\Tracy\Debugger::$showBar = $bOnOff;
+			\Tracy\Debugger::$strictMode = $bOnOff;
+			\Tracy\Debugger::$showLocation = $bOnOff;
 		} else {
 			// include php_error library to make life easier
 			// @link : https://github.com/JosephLenton/PHP-Error
@@ -338,7 +338,7 @@ class Debug
 	public static function log(
 		string $msg = '',
 		string $method = 'debug',
-		int $deep = 1,
+		int $deep = 3,
 		bool $shortFilename = true
 	) : bool {
 

@@ -678,7 +678,7 @@
 					"increment_headings": 1
 				},
 				"lastupdate": {
-					"text": "> Last update : *%s*"
+					"text": "> Last update: *%s*"
 				},
 				"todos": {
 					"introduction": "## Summary",

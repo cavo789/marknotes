@@ -245,10 +245,7 @@ class Convert
 	private function getPandocScript(string $InputFileName, string $TargetFileName) : string
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
-echo '*' .$InputFileName.'--'.$TargetFileName.'-';
-/*<!-- build:debug -->*/
-die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
-/*<!-- endbuild -->*/
+
 		$debugFile=self::getDebugFileName();
 		$slug=self::getSlugName();
 
