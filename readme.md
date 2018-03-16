@@ -27,7 +27,7 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document 
 9. **[:closed_lock_with_key: Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
 10. **[:man: Author](#10-man-author)**
 11. **[Want to help](#11-want-to-help)
-12. **[Licence](#12-license)**
+12. **[Licence](#12-licence)**
 
 ## 1. Description
 
@@ -296,7 +296,7 @@ Please read [Privacy and protection : everything is yours, for now and always](r
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-11. Want to help
+## 11. Want to help
 
 MarkNotes is maintained by one person in spare time. 
 

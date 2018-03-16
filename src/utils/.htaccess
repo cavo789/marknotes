@@ -1,5 +1,5 @@
 #AddHandler application/x-httpd-php70 .php
 
 # Only a very few scripts will be allowed
-RewriteCond %{REQUEST_FILENAME} !(sort_json|upgrade_encryption)\.php
+RewriteCond %{REQUEST_FILENAME} !(json_(decode|sort)|upgrade_encryption)\.php
 RewriteRule .* - [R=403,NC,L]
