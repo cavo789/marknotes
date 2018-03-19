@@ -40,7 +40,7 @@
 			<!-- Header Navbar -->
 			<nav class="navbar navbar-static-top">
 				<!-- Sidebar toggle button-->
-				<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+				<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" data-intro="%INTRO_HIDE_TOC%">
 					<span class="sr-only">Toggle navigation</span>
 				</a>
 
@@ -48,9 +48,9 @@
 
 				<!-- Navbar Right Menu -->
 				<div class="navbar-custom-menu">
-					<ul class="nav navbar-nav" id="navBar">
+					<ul class="nav navbar-nav" id="navBar" data-intro="%INTRO_QUICKICONS%">
 						<li class="control-sidebar-button">
-							<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+							<a href="#" data-toggle="control-sidebar"><i class="fa fa-gears" data-intro="%INTRO_SETTINGS_BUTTON%"></i></a>
 						</li>
 					</ul>
 				</div>
@@ -61,22 +61,22 @@
 			<section class="sidebar">
 				<div class="sidebar-menu" data-widget="tree">
 					<div class="slimScrollBar">
-						<div id="TOC">&nbsp;</div>
+						<div id="TOC" data-intro="%INTRO_TOC%">&nbsp;</div>
 					</div>
 				</div>
 			</section>
 		</aside>
 
 		<div class="content-wrapper">
-			<section class="content-header content-headerFixed">
+			<section class="content-header content-headerFixed" data-intro="%INTRO_NOTE_H1%">
 				<h1>&nbsp;</h1>
 			</section>
 			<section class="content container-fluid">
 				<div id="content" class="page content markdown-body">
 					<article id="CONTENT">
-						<div id="HOMEPAGE">&nbsp;</div>
-						<div id="FAVORITES">&nbsp;</div>
-						<div id="LASTMODIFIED">&nbsp;</div>
+						<div id="HOMEPAGE" data-intro="%INTRO_HOMEPAGE%">&nbsp;</div>
+						<div id="FAVORITES" data-intro="%INTRO_FAVORITES%">&nbsp;</div>
+						<div id="LASTMODIFIED" data-intro="%INTRO_LASTMOD%">&nbsp;</div>
 					</article>
 				</div>
 			</section>

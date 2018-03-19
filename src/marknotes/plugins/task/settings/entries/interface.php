@@ -21,11 +21,15 @@ class MN_Interface extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'accent_conversion';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content = self::getRadio($key.$opt, $text, $arr[$opt]);
+		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		$opt = 'can_see';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content .= self::getRadio($key.$opt, $text, $arr[$opt]);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		$opt = 'demo_mode';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		$opt = 'skin';
 		$text = self::getTranslation($key.'.'.$opt);

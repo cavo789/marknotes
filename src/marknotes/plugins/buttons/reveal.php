@@ -17,6 +17,8 @@ class Reveal extends \MarkNotes\Plugins\Button\Plugin
 
 	public static function add(&$buttons = array()) : bool
 	{
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$intro = $aeSettings->getText('intro_js_reveal','intro_js_reveal');
 		// Get the button HTML code
 		$buttons['slideshow'][] = self::button(
 			array(
@@ -25,7 +27,8 @@ class Reveal extends \MarkNotes\Plugins\Button\Plugin
 				'default' => 'slideshow',
 				'id' => 'icon_reveal',
 				'icon' => 'desktop',
-				'task' => 'fnPluginHTMLReveal'
+				'task' => 'fnPluginHTMLReveal',
+				'intro' => $intro
 			)
 		);
 

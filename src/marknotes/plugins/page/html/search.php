@@ -90,7 +90,9 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 			// No double quote...
 			$placeHolder = str_replace('"', "'", $placeHolder);
 
-			$sSearch='<div id="divSearch" class="search sidebar-form">
+			$intro = $aeSettings->getText('intro_js_search','');
+
+			$sSearch='<div id="divSearch" class="search sidebar-form" data-intro="'.$intro.'">
 			  <div class="input-group">
 				<input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
 				<span class="input-group-btn">

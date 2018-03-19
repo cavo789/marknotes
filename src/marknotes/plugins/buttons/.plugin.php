@@ -63,15 +63,18 @@ abstract class Plugin
 	 *						title for the button
 	 *		'default'	: if the 'title variable' isn't found, use a default
 	 *						title (in english)
-	 *		'id'		: (optionnal) if present, ID to use for the button
-	 '		'task'		: (optionnal) if present, data-task to assign to the
-	 '					  button
-	 '		'extension' : (optionnal) if present, data-extension to assign to
-	 '					  the button
-	 '		'extra'		: (optionnal) if present, will be added as is
-	 '		'icon'		: font-awesome icon (f.i. fa-cog, fa-print, ...)
-	 '		'quickIcons': (optionnal) 1 if the icon should be displayed
-	 ' 					  immediatly in the interface, near the "cog" button
+	 *		'id'		: (optionnal) if present, ID to use for
+	 *						the button
+	 *		'task'		: (optionnal) if present, data-task to
+	 *						assign to the button
+	 *		'extension' : (optionnal) if present, data-extension to
+	 *						assign to the button
+	 *		'extra'		: (optionnal) if present, will be added as is
+	 *		'icon'		: font-awesome icon (f.i. fa-cog, fa-print, ...)
+	 *		'intro'		: (optionnal) text for the intro.js
+	 *		'quickIcons': (optionnal) 1 if the icon should be displayed
+	 * 					  immediatly in the interface, near the "cog"
+	 *					 	button
 	 *
 	 */
 	protected static function button(array $params) : array
@@ -111,11 +114,17 @@ abstract class Plugin
 			$quickIcons  = boolval($params['quickIcons'])?1:0;
 		}
 
+		$data_intro='';
+		if (isset($params['intro'])) {
+			$data_intro = 'data-intro="'.str_replace('"', '\"', $params['intro']).'" ';
+		}
+
 		$anchor = '<a '.
 			$id.' '.
 			$task.' '.
 			$extension.' '.
 			'title="'.ucfirst($title).'" '.
+			$data_intro.
 			(isset($params['extra']) ? $params['extra'].' ' : '').'>'.
 			'%1'.
 			'</a>';

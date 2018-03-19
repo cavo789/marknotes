@@ -63,7 +63,8 @@ function afterGetFavoritesIcon($data) {
 	$fav_task = $data.task;
 
 	$title = $('.content-header h1').text();
-	$title = $title + ' <i id="favNoteIcon" data-task="' + $fav_task + '" ' +
+	$title = $title + ' <i id="favNoteIcon" ' +
+		'data-task="' + $fav_task + '" ' +
 		'class="fa fa-' + $fav_icon + '" ' +
 		'title="' + $fav_title + '" aria-hidden="true"></i>';
 
@@ -175,7 +176,7 @@ function afterShowFavorites($data) {
 	$domID = ($('#FAVORITES').length == 0) ? '#CONTENT' : '#FAVORITES';
 
 	$($domID).html(
-		'<h2>' + $title + '</h2>' + 
+		'<h2>' + $title + '</h2>' +
 		'<div class="animated bounceInLeft">' +
 			'<ul id="favorites">' + $ul.innerHTML + '</ul>' +
 		'</div>');
