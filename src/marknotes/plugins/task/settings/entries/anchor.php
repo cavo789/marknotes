@@ -23,6 +23,14 @@ class MN_Anchor extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// prefix
+		$key = 'plugins.options.page.html.anchor';
+		$arr = self::getArray($key);
+		$opt = 'paragraph_prefix';
+		$value = $arr[$opt]??'par';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $value);
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

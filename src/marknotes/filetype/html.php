@@ -54,7 +54,6 @@ class HTML
 		 * be used in javascript
 		 * (see https://css-tricks.com/automatic-table-of-contents/)
 		 */
-
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		try {
@@ -64,24 +63,72 @@ class HTML
 
 			// $matches contains the list of titles (including the
 			// tag so f.i. "<h2>Title</h2>"
+
 			foreach ($matches[0] as $tmp) {
 				// In order to have nice URLs, extract the title
 				// (stored in $tmp)
 				// $tmp is equal, f.i., to <h2>My slide title</h2>
 				$id = $aeFunctions->slugify(strip_tags($tmp));
 
-				// The ID can't start with a figure, remove it if any
-				// Remove also . - , ; if present at the beginning of
-				// the id
-				$id = preg_replace("/^[\d|.|\-|,|;]+/", "", $id);
+				// The ID can't start with one of these chars
+				$id = preg_replace("/^[.|\-|\(|\[|\{|,|;]+/", "", $id);
 
 				// The tag (like h2)
 				$head = substr($tmp, 1, 2);
 
-				$html = str_replace($tmp, '<'.$head.' id="'.$id.'">'.strip_tags($tmp).'</'.$head.'>', $html);
+				$value = '<'.$head.' id="'.$id.'">'.
+					strip_tags($tmp).'</'.$head.'>';
+
+				$html = str_replace($tmp, $value, $html);
 			}
 		} catch (Exception $e) {
 		} // try
+
+		return $html;
+	}
+
+	/**
+	 * Loop any <p> element and give them an "id"
+	 * This way the reader will be able to immediatly reference
+	 * that paragraph from the URL, with a # anchor
+	 */
+	public function addParagraphsID(string $html) : string
+	{
+		// Give the opportunity to the webmaster to choice his
+		// prefix, use an option for this
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$options = 'plugins.options.page.html.anchor';
+		$arr = $aeSettings->getPlugins($options);
+		$prefix = trim($arr['paragraph_prefix'])??'par';
+
+		// Small cleaning in case of
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$prefix = $aeFunctions->slugify(strip_tags($prefix));
+
+		// And add a final underscore before starting the
+		// numbering
+		$prefix = rtrim($prefix, '_').'_';
+
+		$dom = new \DOMDocument;
+
+		$dom->preserveWhiteSpace = false;
+		$dom->encoding = 'utf-8';
+
+		@$dom->loadHTML(utf8_decode($html));
+
+		$xpath = new \DOMXPath($dom);
+
+		$arrDOM = array('p');
+
+		for ($i=0; $i<count($arrDOM); ++$i) {
+			$list = $xpath->query("//".$arrDOM[$i]);
+			for ($j=0; $j<$list->length; ++$j) {
+				$node = $list->item($j);
+				$node->setAttribute('id', $prefix.$j);
+			}
+		}
+
+		$html = $dom->saveHTML($dom->documentElement);
 
 		return $html;
 	}

@@ -45,14 +45,14 @@ REM call :fnCopyPHP_error
 REM call :fnCopyCrawlerDetect
 REM call :fnCopyAnimateCSS
 REM call :fnCopyURLjs
-REM call :fnIonIcons
-REM call :fnAdminLTE
-REM call :fnSlimScroll
-REM call :fnJSONLint
-REM call :fnFlySystem
-REM call :fnScrollDir
-REM call :fnCSSCheckboxLib
-REM call :fnSweetAlert
+REM call :fnCopyIonIcons
+REM call :fnCopyAdminLTE
+REM call :fnCopySlimScroll
+REM call :fnCopyJSONLint
+REM call :fnCopyFlySystem
+REM call :fnCopyScrollDir
+REM call :fnCopyCSSCheckboxLib
+REM call :fnCopySweetAlert
 REM call :fnCopyjs-cookie
 REM call :fnCopyTracy
 REM call :fnCopyMultiDownload
@@ -84,12 +84,13 @@ REM call :fnCopyBalloon
 REM call :fnCopyjqueryi18n
 REM call :fnCopyCLDRPluralRuleParser
 REM call :fnCopyFileSaver
-REM call :fnGitHubCorners
-REM call :fnUpload
-REM call :fnHTML2MD
-REM call :fnGuzzle
-REM call :fnGoogleTranslate
-REM call :fnhtmLawed
+REM call :fnCopyGitHubCorners
+REM call :fnCopyUpload
+REM call :fnCopyHTML2MD
+REM call :fnCopyGuzzle
+REM call :fnCopyGoogleTranslate
+REM call :fnCopyHTMLLawed
+call :fnCopyIntroJS
 REM call :fnFinalize
 GOTO END:
 
@@ -393,10 +394,10 @@ COPY %VENDOR%js-url\url.min.js %LIBS%\js-url /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnIonIcons
+::-- fnCopyIonIcons
 ::--------------------------------------------------------
 
-:fnIonIcons
+:fnCopyIonIcons
 ECHO  === ionicons ===
 ECHO	COPY TO %LIBS%ionicons
 ECHO.
@@ -406,10 +407,10 @@ XCOPY %VENDOR%ionicons\fonts\*.* %LIBS%ionicons\fonts\ /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnAdminLTE
+::-- fnCopyAdminLTE
 ::--------------------------------------------------------
 
-:fnAdminLTE
+:fnCopyAdminLTE
 ECHO  === AdminLTE ===
 ECHO	COPY TO %LIBS%AdminLTE
 ECHO.
@@ -424,10 +425,10 @@ COPY %VENDOR%AdminLTE\dist\js\adminlte.min.js %LIBS%AdminLTE\js\  /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnSlimScroll
+::-- fnCopySlimScroll
 ::--------------------------------------------------------
 
-:fnSlimScroll
+:fnCopySlimScroll
 ECHO  === SlimScroll===
 ECHO	COPY TO %LIBS%jQuery-slimScroll
 ECHO.
@@ -436,10 +437,10 @@ COPY %VENDOR%jQuery-slimScroll\jquery.slimscroll.min.js %LIBS%jQuery-slimScroll\
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnJSONLint
+::-- fnCopyJSONLint
 ::--------------------------------------------------------
 
-:fnJSONLint
+:fnCopyJSONLint
 ECHO  === jsonlint===
 ECHO	COPY TO %LIBS%jsonlint
 ECHO.
@@ -448,10 +449,10 @@ XCOPY %VENDOR%jsonlint\src\*.php %LIBS%jsonlint\ /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnFlySystem
+::-- fnCopyFlySystem
 ::--------------------------------------------------------
 
-:fnFlySystem
+:fnCopyFlySystem
 ECHO  === flysystem ===
 ECHO	COPY TO %LIBS%league/flysystem
 ECHO.
@@ -460,10 +461,10 @@ XCOPY %VENDOR%league\flysystem\src\*.php %LIBS%league\flysystem\ /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnScrollDir
+::-- fnCopyScrollDir
 ::--------------------------------------------------------
 
-:fnScrollDir
+:fnCopyScrollDir
 ECHO  === scrolldir ===
 ECHO	COPY TO %LIBS%scrolldir
 ECHO.
@@ -472,10 +473,10 @@ COPY %VENDOR%scrolldir\dist\scrolldir.min.js %LIBS%scrolldir\ /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnCSSCheckboxLib
+::-- fnCopyCSSCheckboxLib
 ::--------------------------------------------------------
 
-:fnCSSCheckboxLib
+:fnCopyCSSCheckboxLib
 ECHO  === CSS-Checkbox-Library ===
 ECHO	COPY TO %LIBS%CSS-Checkbox-Library
 ECHO.
@@ -484,10 +485,10 @@ COPY %VENDOR%CSS-Checkbox-Library\dist\css\checkboxes.min.css %LIBS%CSS-Checkbox
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnSweetAlert
+::-- fnCopySweetAlert
 ::--------------------------------------------------------
 
-:fnSweetAlert
+:fnCopySweetAlert
 ECHO  === SweetAlert ===
 ECHO	COPY TO %LIBS%sweetalert2
 ECHO.
@@ -836,11 +837,11 @@ COPY %VENDOR%FileSaver.js\FileSaver.min.js %PAGE%html\txt\libs\FileSaver.js /Y >
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnGitHubCorners
+::-- fnCopyGitHubCorners
 ::--------------------------------------------------------
 
-:fnGitHubCorners
-ECHO  === fnGitHubCorners ===
+:fnCopyGitHubCorners
+ECHO  === fnCopyGitHubCorners ===
 ECHO	COPY TO %PAGE%html\github_banner\libs\github-corners
 ECHO.
 IF NOT EXIST %PAGE%html\github_banner\libs\github-corners MKDIR %PAGE%html\github_banner\libs\github-corners >> %LOG%
@@ -848,11 +849,11 @@ COPY %VENDOR%github-corners\css\styles.css %PAGE%html\github_banner\libs\github-
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnUpload
+::-- fnCopyUpload
 ::--------------------------------------------------------
 
-:fnUpload
-ECHO  === fnUpload ===
+:fnCopyUpload
+ECHO  === fnCopyUpload ===
 ECHO	COPY TO %PAGE%html\upload\libs\dropzone
 ECHO.
 IF NOT EXIST %PAGE%html\upload\libs\dropzone MKDIR %PAGE%html\upload\libs\dropzone >> %LOG%
@@ -860,22 +861,22 @@ COPY %VENDOR%dropzone\dist\min\dropzone.min.css %PAGE%html\upload\libs\dropzone 
 COPY %VENDOR%dropzone\dist\min\dropzone.min.js %PAGE%html\upload\libs\dropzone /Y >> %LOG%
 
 ::--------------------------------------------------------
-::-- fnHTML2MD
+::-- fnCopyHTML2MD
 ::--------------------------------------------------------
 
-:fnHTML2MD
-ECHO  === fnHTML2MD ===
+:fnCopyHTML2MD
+ECHO  === fnCopyHTML2MD ===
 ECHO	COPY TO %TASK%convert\libs\html2md
 ECHO.
 IF NOT EXIST %TASK%convert\libs\html2md MKDIR %TASK%convert\libs\html2md >> %LOG%
 XCOPY %VENDOR%html-to-markdown\src\*.* %TASK%convert\libs\html2md /E /Y >> %LOG%
 
 ::--------------------------------------------------------
-::-- fnGuzzle
+::-- fnCopyGuzzle
 ::--------------------------------------------------------
 
-:fnGuzzle
-ECHO  === fnGuzzle ===
+:fnCopyGuzzle
+ECHO  === fnCopyGuzzle ===
 ECHO	COPY TO %TASK%fetch\libs\guzzle
 ECHO.
 IF NOT EXIST %TASK%fetch\libs\guzzle MKDIR %TASK%fetch\libs\guzzle >> %LOG%
@@ -884,11 +885,11 @@ XCOPY %VENDOR%guzzlehttp\guzzle\src\*.* %TASK%fetch\libs\guzzle /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnGoogleTranslate
+::-- fnCopyGoogleTranslate
 ::--------------------------------------------------------
 
-:fnGoogleTranslate
-ECHO  === fnGoogleTranslate ===
+:fnCopyGoogleTranslate
+ECHO  === fnCopyGoogleTranslate ===
 ECHO	COPY TO %TASK%translate\libs\google-translate-php
 ECHO.
 IF NOT EXIST %TASK%translate\libs\google-translate-php MKDIR %TASK%translate\libs\google-translate-php >> %LOG%
@@ -897,17 +898,33 @@ XCOPY %VENDOR%stichoza\google-translate-php\src\Stichoza\GoogleTranslate\*.* %TA
 goto:eof
 
 ::--------------------------------------------------------
-::-- fnhtmLawed
+::-- fnCopyHTMLLawed
 ::--------------------------------------------------------
 
-:fnhtmLawed
-ECHO  === fnhtmLawed ===
+:fnCopyHTMLLawed
+ECHO  === fnCopyHTMLLawed ===
 ECHO	COPY TO %TASK%htmlindent\libs\
 ECHO.
 IF NOT EXIST %TASK%htmlindent\libs MKDIR %TASK%htmlindent\libs\ >> %LOG%
 COPY %VENDOR%htmlawed\src\htmLawed\htmLawed.php %TASK%htmlindent\libs\htmLawed.php /Y >> %LOG%
 
 goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyIntroJS
+::--------------------------------------------------------
+
+:fnCopyIntroJS
+ECHO  === fnCopyIntroJS ===
+ECHO	COPY TO %PAGE%html\introjs\libs\
+ECHO.
+IF NOT EXIST %PAGE%html\introjs\libs\ MKDIR %PAGE%html\introjs\libs\ >> %LOG%
+COPY %VENDOR%intro.js\minified\intro.min.js %PAGE%html\introjs\libs\ /Y >> %LOG%
+COPY %VENDOR%intro.js\minified\introjs.min.css %PAGE%html\introjs\libs\ /Y >> %LOG%
+COPY %VENDOR%intro.js\themes\introjs-flattener.css %PAGE%html\introjs\libs\ /Y >> %LOG%
+
+goto:eof
+
 REM -----------------------------------------------
 REM -----------------------------------------------
 REM ---------------- FINALIZATION -----------------

@@ -40,8 +40,13 @@ class HTML
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Add h2 and h3 id and don't add the "go to top" icon
+		// Give headings an ID
 		$html = $aeHTML->addHeadingsID($html, false);
+
+		// Give an ID to every single <p> so we can easily
+		// use AnchorJS library to create links to them
+		// https://github.com/bryanbraun/anchorjs
+		$html = $aeHTML->addParagraphsID($html);
 
 		// Check if a template has been specified in the parameters
 		// and if so, check that this file exists, default is html

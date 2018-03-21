@@ -26,7 +26,8 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 		// Capture headings like : "### 1.3. Annex"
 		//
 		// $tags = will contains the full match i.e. "### 1.3. Annex"
-		// $heading = the "###" construction so the heading's level (H3 here)
+		// $heading = the "###" construction so the heading's
+		// level (H3 here)
 		// $numbering = the current numbering ("1.3.") or nothing
 		// $title = the title ("Annex")
 
@@ -42,7 +43,6 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 			}
 
 			// Initialize counters to 0 for each level
-
 			$arrHeadings=array();
 			for ($i=0; $i<$deepestLevel; $i++) {
 				$arrHeadings[($i+1)] = 0;
@@ -53,9 +53,9 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 			// Process every headings
 			for ($i=0; $i<count($headings); $i++) {
 				$len=strlen($headings[$i]);
-				if ($aeFunctions::startsWith($title[$i], DEV_MODE_PREFIX)) {
+				/*if ($aeFunctions::startsWith($title[$i], DEV_MODE_PREFIX)) {
 					continue;
-				}
+				}*/
 
 				for ($j=$len+1; $j<=$deepestLevel; $j++) {
 					$arrHeadings[$j]=0;
@@ -64,15 +64,23 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 				$arrHeadings[$len]+=1;
 				$sNumber = '';
 
-				// Don't start the numbering to heading 1 (since there should be only
-				// once by article (should be)). Start the number at $j=1 i.e. heading 2.
+				// Don't start the numbering to heading 1 (since
+				// there should be only once by article (should be)).
+				// Start the number at $j=1 i.e. heading 2.
 				for ($j=1; $j<$len; $j++) {
 					$sNumber .= $arrHeadings[$j+1].'.';
 				}
 
 				$sNumber = ltrim($sNumber, '0.');
+
 				$sTitle = $headings[$i].' '.($sNumber<>''?$sNumber.' ':'').trim($title[$i]);
-				$markdown=str_replace($tags[$i], $sTitle, $markdown);
+
+				// Use preg_replace ( xx, xx, xx, 1) for replacing
+				// only the first occurence.
+				// Will act exactly like a str_replace but only
+				// replace the first occurence which is really
+				// important here when using numbering
+				$markdown=preg_replace('~'.$tags[$i].'~', $sTitle, $markdown, 1);
 			} // for ($i
 
 			// Now, check if there is an added value to add number i.e.

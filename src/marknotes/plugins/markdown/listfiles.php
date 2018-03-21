@@ -91,7 +91,9 @@ class ListFiles extends \MarkNotes\Plugins\Markdown\Plugin
 								$url = str_replace(' ', '%20', $root_url.$relURL);
 
 								if ($file['extension']=='md') {
-									$html = ' ([html]('.str_replace('.md','.html',$url).'))';
+									$html = ' ([html]('.str_replace('.md','.html', $url).')';
+
+									$html .= ' |  [reveal]('.str_replace('.md','.reveal', $url).'))';
 								}
 
 								$sList .= "* [".$filename."](".str_replace(' ', '%20', $url).")".$html.PHP_EOL;

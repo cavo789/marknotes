@@ -25,6 +25,12 @@
  *					once and for all, your abbreviations, URLs, ...),
  *					once=0 can be good when you wish to include
  *					headers and footers f.i.
+ *
+ * Note : the Include plugin also support dynamic list files like
+ *		%INCLUDE *.md%
+ *		In that case, all .md files in the same folder will be
+ *		included *except* the file that contains that sentence
+ *		(otherwise we'll have an infinite loop)
  */
 namespace MarkNotes\Plugins\Markdown;
 
@@ -35,6 +41,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.markdown.include';
 	protected static $json_options = 'plugins.options.markdown.include';
+
+	protected static $root = '';
 
 	private static function getURL(string $filename) : string
 	{
@@ -80,9 +88,137 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		return $sContent;
 	}
 
+	private static function IncludeFile(string $filename, string $json, string $indent) : string
+	{
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$aeDebug = \MarkNotes\Debug::getInstance();
+		}
+		/*<!-- endbuild -->*/
+
+		// %INCLUDE filename.md% => when no path has been
+		// modified, it means that the file is in the same
+		// folder of the processed note i.e. $root
+		if (!$aeFiles->exists($filename)) {
+			$filename=str_replace('/', DS, $filename);
+			if (!$aeFunctions->startsWith($filename, static::$root)) {
+				$filename=static::$root.$filename;
+			}
+		}
+
+		// Get the filename to include
+		$sFile = str_replace('/', DS, $filename);
+
+		if ($sFile == '') {
+			// The file doensn't exists
+			return '';
+		}
+
+		$bContinue=1;
+
+		if ($aeFiles->exists($sFile)) {
+			if ($json !== "") {
+				$tmp=json_decode($json, true);
+
+				$once=$tmp['once']??0;
+
+				if (boolval($once)) {
+					// The file should be included only once
+					// So if already processed previously,
+					// don't import again.
+					if (in_array($sFile, $arrLoaded)) {
+						$bContinue=0;
+					}
+				} // if(boolval($once))
+			} // if ($json[$i]!=="")
+
+			if ($bContinue) {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug->log($indent.'Including '.$sFile, 'debug');
+				}
+				/*<!-- endbuild -->*/
+
+				$arrLoaded[]=$sFile;
+
+				// Read the file
+				$sContent = trim($aeFiles->getContent($sFile));
+
+				// We're including a file.
+				// Headings will be incremented by one
+				$sContent = self::IncrementHeadings($sContent);
+
+				//$aeEvents = \MarkNotes\Events::getInstance();
+				//$aeEvents->loadPlugins('markdown');
+				//$params['markdown'] = $sContent;
+				//$params['filename'] = $sFile;
+				//$args = array(&$params);
+
+				//$aeEvents->trigger('markdown::markdown.read', $args);
+
+				//$sContent = $args[0]['markdown'];
+
+				// Replace non breaking space to spaces
+				// since, otherwise, rendering will fail and
+				// no output will be done for the
+				// sentence/paragraph with that character.
+				// A non breaking space is U+00A0 (Unicode)
+				// but encoded as C2A0 in UTF-8
+				// Replace by a space character
+				$sContent=preg_replace('/\x{00a0}/siu', ' ', $sContent);
+
+				if (strpos($sContent, '%URL%') !== false) {
+					// The %URL% variable should be relative
+					// to this note ($sFile)
+					// and not from the master note i.e.
+					// where the %INCLUDE% tag has been put
+					$aeSession = \MarkNotes\Session::getInstance();
+					$task = $aeSession->get('task');
+					if (!in_array($task, array('task.export.epub','task.export.docx','task.export.pdf'))) {
+						// This is an hyperlink
+						$sContent = str_replace('%URL%', str_replace(' ', '%20', self::getURL($sFile)), $sContent);
+					} else {
+						// When exporting the note, should be
+						// a local file. Escape the directory
+						// separator (since under Windows,
+						// it's a backslash \ which has special
+						// meaning in a regex)
+						$sContent = str_replace('%URL%', str_replace(DS, '\\'.DS, rtrim(dirname($sFile)).DS), $sContent);
+					}
+				}
+
+				// Now, perhaps that note (the included one)
+				// also contains
+				// %INCLUDE ...% tag so ... process it again
+				while (strpos($sContent, '%INCLUDE ') !== false) {
+					$sContent = self::processIncludes($sContent, $sFile, $indent.'	');
+				}
+			} else {
+				$sContent = '';
+			} // if ($bContinue)
+		} else { // if ($aeFiles->exists($sFile))
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log('	Failure : file ['.$sFile.'] not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
+			}
+			/*<!-- endbuild -->*/
+		} // if ($aeFiles->exists($sFile))
+
+		return $sContent;
+	}
+
 	private static function processIncludes(string $markdown, string $filename, string $indent = '') : string
 	{
 		static $arrLoaded=null;
+
+		// Important for comparaisons : the processed filename
+		// should be with the .md extension
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$filename = $aeFiles->removeExtension($filename).'.md';
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -120,12 +256,12 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 			$aeSession = \MarkNotes\Session::getInstance();
 			$task = $aeSession->get('task');
 
-			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFolders = \MarkNotes\Folders::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSession = \MarkNotes\Session::getInstance();
 
 			// Retrieve the note fullpath.
-			$root = dirname($filename).DS;
+			static::$root = dirname($filename).DS;
 
 			// Loop and process every %INCLUDE ..% tags
 			for ($i=0; $i<count($matches[0]); $i++) {
@@ -139,112 +275,10 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				//		"{"once":1}"
 				list($tag, $before, $file, $json) = $matches;
 
-				// %INCLUDE filename.md% => when no path has been
-				// modified, it means that the file is in the same
-				// folder of the processed note i.e. $root
-				if (!$aeFiles->exists($file[$i])) {
+				$arrFiles = array();
+				$arrTags = array();
 
-					$file[$i]=str_replace('/', DS, $file[$i]);
-					if (!$aeFunctions->startsWith($file[$i], $root)) {
-						$file[$i]=$root.$file[$i];
-					}
-				}
-
-				// Get the filename to include
-				$sFile = str_replace('/', DS, $file[$i]);
-
-				if ($sFile=='') {
-					// The file doensn't exists
-					continue;
-				}
-
-				if ($before[$i]=='') {
-					// Ok, no space before the tag => it's enabled => run it
-					$bContinue=1;
-
-					if ($aeFiles->exists($sFile)) {
-						if ($json[$i]!=="") {
-							$tmp=json_decode($json[$i], true);
-
-							$once=$tmp['once']??0;
-							if (boolval($once)) {
-								// The file should be included only once
-								// So if already processed previously, don't import again.
-								if (in_array($sFile, $arrLoaded)) {
-									$bContinue=0;
-								}
-							} // if(boolval($once))
-						} // if ($json[$i]!=="")
-
-						if ($bContinue) {
-							/*<!-- build:debug -->*/
-							if ($aeSettings->getDebugMode()) {
-								$aeDebug->log($indent.'Including '.$sFile, 'debug');
-							}
-							/*<!-- endbuild -->*/
-
-							$arrLoaded[]=$sFile;
-
-							// Read the file
-							$sContent = trim($aeFiles->getContent($sFile));
-
-							// We're including a file.
-							// Headings will be incremented by one
-							$sContent = self::IncrementHeadings($sContent);
-
-							//$aeEvents = \MarkNotes\Events::getInstance();
-							//$aeEvents->loadPlugins('markdown');
-							//$params['markdown'] = $sContent;
-							//$params['filename'] = $sFile;
-							//$args = array(&$params);
-
-							//$aeEvents->trigger('markdown::markdown.read', $args);
-
-							//$sContent = $args[0]['markdown'];
-
-							// Replace non breaking space to spaces since, otherwise,
-							// rendering will fail and no output will be done for the
-							// sentence/paragraph with that character.
-							// A non breaking space is U+00A0 (Unicode) but encoded
-							// as C2A0 in UTF-8
-							// Replace by a space character
-							$sContent=preg_replace('/\x{00a0}/siu', ' ', $sContent);
-
-							if (strpos($sContent, '%URL%') !== false) {
-								// The %URL% variable should be relative to this note ($sFile)
-								// and not from the master note i.e. where the %INCLUDE% tag
-								// has been put
-
-								if (!in_array($task, array('task.export.epub','task.export.docx','task.export.pdf'))) {
-									// This is an hyperlink
-									$sContent = str_replace('%URL%', str_replace(' ', '%20', self::getURL($sFile)), $sContent);
-								} else {
-									// When exporting the note, should be a local file
-									// Escape the directory separator (since under Windows,
-									// it's a backslash \ which has special meaning in a regex)
-									$sContent = str_replace('%URL%', str_replace(DS, '\\'.DS, rtrim(dirname($sFile)).DS), $sContent);
-								}
-							}
-
-							// Now, perhaps that note (the included one) also contains
-							// %INCLUDE ...% tag so ... process it again
-
-							while (strpos($sContent, '%INCLUDE ') !== false) {
-								$sContent = self::processIncludes($sContent, $sFile, $indent.'	');
-							}
-						} else {
-							$sContent = '';
-						} // if ($bContinue)
-
-						$markdown = str_replace($tag[$i], $sContent, $markdown);
-					} else { // if ($aeFiles->exists($sFile))
-						/*<!-- build:debug -->*/
-						if ($aeSettings->getDebugMode()) {
-							$aeDebug->log('	Failure : file ['.$sFile.'] not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
-						}
-						/*<!-- endbuild -->*/
-					}// if ($aeFiles->exists($sFile))
-				} else { // if ($before[$i]=='')
+				if ($before[$i] !== '') {
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug->log($indent.' - Not processed since the tag isn\'t at the begining of the sentence. If there are characters before the %INCLUDE% tag, the tag is ignored', 'debug');
@@ -252,22 +286,110 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					}
 					/*<!-- endbuild -->*/
 
-					// there is at least one space before the tag => it's not active
+					// there is at least one space before
+					// the tag => it's not active
 
 					if (!in_array($task, array('task.export.html','main','task.export.md'))) {
 						// Don't show the tag, if disabled, for f.i. html / pdf / ... output
 						$markdown = str_replace($tag[$i], '', $markdown);
 					} else {
-						// **********************************************************
-						// The tag "%INCLUDE " (with a space after) CAN'T stay unchanged
-						// due to the recursive call of this function. The tag should be changed
-						// to something else otherwise we'll have an infinite loop
-						// **********************************************************
+						// *************************************
+						// The tag "%INCLUDE " (with a space after)
+						// CAN'T stay unchanged due to the
+						// recursive call of this function.
+						// The tag should be changed
+						// to something else otherwise we'll
+						// have an infinite loop
+						// *************************************
 
 						$markdown = str_replace($tag[$i], str_replace('%INCLUDE', '%INCLUDE_disabled', $tag[$i]), $markdown);
 					}
-				} // if ($before[$i]=='')
+				} else { // if ($before[$i] !== '')
+					// Very special case = "*.md"
+					// ==> Loop and load every .md files
+
+					if (substr($file[$i], -4) == '*.md') {
+						// So $file[$i] ends with '*.md'
+						// Like in %INCLUDE *.md%
+						// But perhaps not the root folder but a
+						// subfolder like %INCLUDE notes/*.md%
+
+						$subfolder = '';
+						if (strlen($file[$i])>4) {
+							$subfolder = substr($file[$i], 0, strlen($file[$i])-4);
+							if ($subfolder!=='') {
+								$subfolder = ltrim($subfolder, '/');
+							}
+							$subfolder = str_replace('/', DS, $subfolder);
+						}
+
+						// Retrieve files in all subdirectories
+						$arr = $aeFolders->getContent(static::$root.$subfolder, true);
+
+						$sContent = '';
+
+						foreach ($arr as $tmp) {
+							if ($tmp['type'] == 'file') {
+								if ($tmp['extension'] == 'md') {
+									//	Include the note only if it's an .md one
+									$fullname = $aeFiles->makeFileNameAbsolute($tmp['path']);
+
+									// $filename is the note being
+									// processed.
+									// The one with the
+									// %INCLUDE *.md% statement
+									// and, thus, make sure to not
+									// import that file otherwise
+									// we'llhave an infinite loop
+
+									if ($fullname != $filename) {
+
+										$basename = str_replace(static::$root, '', $fullname);
+
+										$arrFiles[] = $basename;
+
+										$arrTags[] = '%INCLUDE '.$basename.'%';
+
+										$sContent .= '%INCLUDE '.$basename.'%'.PHP_EOL.PHP_EOL;
+									}
+								}
+							}
+						}
+
+						// Just to be sure, sort the list of files
+						// in an ascending way
+						sort($arrFiles);
+
+						// Replace %INCLUDE *.md% by,
+						// 		%INCLUDE file1.md%
+						// 		%INCLUDE file2.md%
+						// so, later in the code, we'll replace
+						// 		%INCLUDE file1.md%
+						// by his content.
+						// And add also a TOC
+
+						$sContent = '%TOC_5%'.PHP_EOL.PHP_EOL.
+							$sContent;
+
+						$markdown = str_replace($tag[$i], $sContent, $markdown);
+					} else {
+						// $file[$i] is a single file (f.i. note.md)
+						// Load only that file
+						$arrFiles[] = $file[$i];
+						$arrTags[] = $tag[$i];
+					}
+
+					for ($j=0; $j<count($arrFiles); $j++) {
+						$file = $arrFiles[$j];
+						$tag = $arrTags[$j];
+
+						$sContent = self::IncludeFile($file, $json[$i], $indent);
+
+						$markdown = str_replace($tag, $sContent, $markdown);
+					}
+				} // if ($before[$i] !== '')
 			} // for
+
 		} // preg_match_all
 
 		return $markdown;

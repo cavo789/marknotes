@@ -1,7 +1,8 @@
 <?php
 /**
- * This plugin will display an anchor icon after each headings so, clicking on
- * that icon will put the anchor name in the URL for easy reference
+ * This plugin will display an anchor icon after each
+ * headings so, clicking on that icon will put the anchor
+ * name in the URL for easy reference
  * (like page.html#the-title-name)
  *
  * Based on anchor-js; https://ben.balter.com/2014/03/13/pages-anchor-links/
@@ -29,7 +30,14 @@ class Anchor extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$script = "<script ".
 			"src=\"".$url."libs/anchor-js/anchor.min.js\" ". "defer=\"defer\"></script>\n".
 			"\n<script>\n".
-			"$('document').ready(function(){anchors.add('h2, h3, h4, h5, h6');});\n".
+			"$('document').ready(function(){\n".
+			"	anchors.options = {\n".
+			"		visible: 'hover ',\n".
+			"		placement: 'left',\n".
+			"	};\n".
+			// Also add anchors on paragraph
+			"	anchors.add('p, h2, h3, h4, h5, h6');\n".
+			"});\n".
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

@@ -525,6 +525,11 @@
 				"not_if_task": ["task.search.search", "task.timeline.get"],
 				"only_if_task": []
 			},
+			"hierarchy": {
+				"enabled": 1,
+				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
+				"only_if_task": []
+			},
 			"lastupdate": {
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
@@ -569,11 +574,6 @@
 			"listfiles": {
 				"enabled": 1,
 				"not_if_task": ["task.edit.form", "task.timeline.get"],
-				"only_if_task": []
-			},
-			"hierarchy": {
-				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"emoji": {
@@ -798,6 +798,9 @@
 								"icon": "fa fa-file-excel-o"
 							}
 						]
+					},
+					"anchor" : {
+						"paragraph_prefix":"par"
 					},
 					"custom": {
 						"css": [],

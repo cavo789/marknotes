@@ -107,7 +107,6 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 						$dte = $aeFiles->timestamp($aeFiles->makeFileNameAbsolute($file));
 
 						$arrFiles[$dte.'_'.md5($file)] = $file;
-
 					}
 				}
 			}
