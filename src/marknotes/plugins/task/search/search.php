@@ -3,16 +3,24 @@
  * Search engine, search for keywords in notes and return the md5
  * of the filename. Then, the treeview (jstree) will filter on that
  * list and only show items with the same md5
+ *
+ * Answer to /search.php?str=Marknotes or
+ * index.php?task=task.search.search&str=Marknotes
  */
 namespace MarkNotes\Plugins\Task\Search;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Search
+class Search extends \MarkNotes\Plugins\Task\Plugin
 {
+	protected static $me = __CLASS__;
+	protected static $json_settings = 'plugins.task.search';
+	protected static $json_options = 'plugins.options.task.search';
+
 	/**
-	 * Get the list of notes, relies on the listFiles task plugin for this
-	 * in order to, among other things, be sure that only files that the
+	 * Get the list of notes, relies on the listFiles
+	 * task plugin for this in order to, among other things,
+	 * be sure that only files that the
 	 * user can access are retrieved and not confidential ones
 	 */
 	private static function getFiles() : array
@@ -95,11 +103,8 @@ class Search
 		// Retrieve the list of files
 		$arrFiles = self::getFiles();
 
-		// docs should be relative
-		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
-
-		// This one will be absolute
-		$docFolder = $aeSettings->getFolderDocs(true);
+		// Absolute root folder
+		$root = $aeSettings->getFolderWebRoot();
 
 		$bDebug=false;
 		/*<!-- build:debug -->*/
@@ -109,6 +114,10 @@ class Search
 		/*<!-- endbuild -->*/
 
 		$return = array();
+
+		// Filenames in $arrFiles already start with the
+		// "docs/" part so, f.i.
+		// 		docs/Development/markdown.md
 
 		foreach ($arrFiles as $file) {
 
@@ -121,7 +130,7 @@ class Search
 
 			// Just keep relative filenames, relative from the
 			// /docs folder
-			$file = str_replace($docFolder, '', $file);
+			//$file = str_replace($docFolder, '', $file);
 
 			// If the keyword can be found in the document title,
 			// yeah, it's the fatest solution,
@@ -151,7 +160,7 @@ class Search
 			} else { // if ($bFound)
 				// Open the file and check against its content
 				// (plain and encrypted)
-				$fullname = $docFolder.$file;
+				$fullname = $root.$file;
 
 				// Read the note content
 				// The read() method will fires any plugin linked
@@ -169,8 +178,10 @@ class Search
 					* Add "$file" which is the filename in the
 					* content, just for the search.
 					* Because when f.i. search for two words;
-					* one can be in the filename and one in the content
-					* By searching only in the content; that file won't
+					* one can be in the filename and one in the
+					* content.
+					* By searching only in the content; that
+					* file won't
 					* appear while it should be the Collapse
 					* so "fake" and add the filename in the content,
 					* just for the search_no_result
@@ -185,7 +196,7 @@ class Search
 				if ($bFound) {
 					/*<!-- build:debug -->*/
 					if ($bDebug) {
-						$aeDebug->log("	FOUND IN [".$docs.$file."]", "debug");
+						$aeDebug->log("	FOUND IN [".$file."]", "debug");
 					}
 					/*<!-- endbuild -->*/
 
@@ -208,8 +219,8 @@ class Search
 	/**
 	* $params['encryption'] = 0 : encrypted data should be unencrypted
 	*						 1 : encrypted infos should stay encrypted
-	 */
-	public static function run(&$params = null)
+	*/
+ 	public static function run(&$params = null) : bool
 	{
 		$aeCache = \MarkNotes\Cache::getInstance();
 		$aeDebug = \MarkNotes\Debug::getInstance();
@@ -290,16 +301,6 @@ class Search
 		// Don't return filenames but the md5() of these names
 		echo json_encode($arr);
 
-		return true;
-	}
-
-	/**
-	 * Attach the function and responds to events
-	 */
-	public function bind(string $task)
-	{
-		$aeEvents = \MarkNotes\Events::getInstance();
-		$aeEvents->bind('run', __CLASS__.'::run', $task);
 		return true;
 	}
 }

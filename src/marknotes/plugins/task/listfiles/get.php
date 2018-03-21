@@ -9,11 +9,18 @@
 *
 * The function will return an array with a key and a filename.
 * The key is not just a incremental figure (1, 2, 3, ...), unusefull,
-* but the timestamp of the file, for instance :
+* but the timestamp of the file AND THE MD5, for instance :
 *
-*		[1520937247] => docs/folder/file.md
-*		[1520935082] => docs/folder/file999.md
-*		[1520874329] => docs/folder2/file2..md
+* 	Key syntax = $timestamp.'_'.md5($file)
+*
+*		[1510574854_4bc1946d9f928e4f87deb4d7a8c8aad9] => docs/folder/file.md
+*		[1510574854_fcd38c89c9a5d9a00422fcd3121a5db8] => docs/folder/file999.md
+*		[1517479015_ce02c0df9aafe987154c15371c573dad] => docs/folder2/file2..md
+*
+* MD5 is indeed needed because only the timestamp is not enough
+* because two or more files can have exactly the same timestamp.
+* So, in order to not "loose" files in the array (same timestamp),
+* we need to be sure to make the key unique.
 *
 * So we can make a revert sort on the array (with krsort()) and
 * quickly retrieve the last added/modified notes f.i. (see plugin
@@ -73,6 +80,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$aeFolders = \MarkNotes\Folders::getInstance();
 
 		$arr = $aeFolders->getContent($docs, true);
+
 		$arrFiles = array();
 
 		if (count($arr)>0) {
@@ -83,6 +91,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				$type = $item['type']??'';
 
 				if ($type=='file') {
+
 					$extension = $item['extension']??'';
 
 					if ($extension == 'md') {
@@ -97,7 +106,8 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 						// use the file timestamp (last mod date/time)
 						$dte = $aeFiles->timestamp($aeFiles->makeFileNameAbsolute($file));
 
-						$arrFiles[$dte] = $file;
+						$arrFiles[$dte.'_'.md5($file)] = $file;
+
 					}
 				}
 			}
