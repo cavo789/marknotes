@@ -1,8 +1,7 @@
 <?php
 /**
  * This plugin will add a table of content in your html document
- * (i.e. once the markdown
- * note has been converted in a HTML document)
+ * (i.e. once the markdown note has been converted in a HTML document)
  *
  * Just add a tag like %TOC_5% in your markdown note to tell : take
  * every headings 2 till 5 (included), generate a table of content
@@ -27,11 +26,11 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 			return true;
 		}
 
-		// Try to find the tag : %TOC_9%  (where 9 is the deepest level to mention
-		// in the table of content (so, for headings 1 -> 4, mention %TOC_4%)
+		// Try to find the tag : %TOC_9%  (where 9 is the deepest
+		// level to mention in the table of content (so, for headings
+		// 1 -> 4, mention %TOC_4%)
 
 		if (preg_match("/%TOC_(\\d)%/m", $content, $match)) {
-
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
 			// Get the deepest level
@@ -41,13 +40,13 @@ class TOC extends \MarkNotes\Plugins\Content\HTML\Plugin
 			$pattern = '/<h([2-'.$deepestLevel.']){1} *(id="(.*)")?[^>]*>(.*)<\/h[2-'.$deepestLevel.']>/i';
 
 			if (preg_match_all($pattern, $content, $matches)) {
-
 				$aeFiles = \MarkNotes\Files::getInstance();
 				$aeFunctions = \MarkNotes\Functions::getInstance();
 
 				list($tags, $level, $id, $slug, $title) = $matches;
 
-				// Retrieve the title for the section, from settings.json
+				// Retrieve the title for the section, from
+				// settings.json
 				$text = trim(self::getOptions('text', '**Table of content**'));
 
 				// $text is probably written in the markdown language,

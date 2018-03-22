@@ -1,11 +1,11 @@
 <?php
 /**
- * This plugin will add a table of content in your html document (i.e. once the markdown
- * note has been converted in a HTML document)
+ * This plugin will add a table of content in your html document
+ * (i.e. once the markdown note has been converted in a HTML document)
  *
- * Just add a tag like %TOC_5% in your markdown note to tell : take every headings 2 till 5
- * (included), generate a table of content (toc) and replace the tag by the toc.
- *
+ * Just add a tag like %TOC_5% in your markdown note to tell :
+ * take every headings 2 till 5 (included), generate a table of
+ * content (toc) and replace the tag by the toc.
  */
 namespace MarkNotes\Plugins\Page\HTML;
 

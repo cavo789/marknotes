@@ -89,6 +89,14 @@ class Convert
 
 		$html = $parsedown->text(trim($markdown));
 
+		// Add IDs to headings and paragraph, should be done
+		// here for, f.i. the TOC plugin : headings should already
+		// have an id to allow plugins to make their job correctly
+
+		$aeHTML = \MarkNotes\FileType\HTML::getInstance();
+		$html = $aeHTML->addHeadingsID($html, false);
+
+		$html = $aeHTML->addParagraphsID($html);
 		if ($bRunContentPlugin) {
 			// --------------------------------
 			// Call content plugins

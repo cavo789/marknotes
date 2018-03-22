@@ -29,7 +29,8 @@ class HTML
 	}
 
 	/**
-	 * @param  string  $html [description]	html rendering of the .md file
+	 * @param  string  $html [description]	html rendering
+	 *					of the .md file
 	 * @return {[type]		Nothing
 	 */
 	public function run(string $html, array $params = null) : string
