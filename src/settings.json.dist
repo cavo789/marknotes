@@ -407,6 +407,11 @@
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
 				},
+				"orgchart": {
+					"enabled": 1,
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["task.export.html"]
+				},				
 				"pdf": {
 					"enabled": 1,
 					"not_if_task": [],
@@ -519,6 +524,11 @@
 				"enabled": 1,
 				"not_if_task": [],
 				"only_if_task": ["main", "interface", "task.export.html"]
+			},
+			"orgchart": {
+				"enabled": 1,
+				"not_if_task": ["task.timeline.get"],
+				"only_if_task": ["task.export.html"]
 			},
 			"yaml": {
 				"enabled": 1,

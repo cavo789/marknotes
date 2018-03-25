@@ -1,17 +1,21 @@
 <?php
 
 /**
- * This plugin will scan the markdown content and check for the presence
- * of the "%TODOS%" tag. If found, try to retrieve every "Todo" like in
+ * This plugin will scan the markdown content and check
+ *  for the presence of the "%TODOS%" tag. If found, try
+ * to retrieve every "Todo" like in
  *
  *   Ipso lorem
  *   Todo Christophe : Check if i's possible to ...
  *
- * Once sentence with "Todo" has been found, every todos will be numeroted (starting at 1).
- * Then a Todos overview table will be added in the document with, for every IDs, a link to the
- * place in the document with that todo.
+ * Once sentence with "Todo" has been found, every todos will
+ * be numeroted (starting at 1).
+ * Then a Todos overview table will be added in the document with,
+ * for every IDs, a link to the place in the document with that
+ * todo.
  *
- * In settings.json, you can change a few settings like the title of the added section :
+ * In settings.json, you can change a few settings like the
+ * title of the added section :
  *
  * "plugins": {
  *		"options": {
@@ -42,8 +46,8 @@ class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 	protected static $json_options = 'plugins.options.markdown.todos';
 
 	/**
-	 * Scan the markdown content, search every TODO occurences and generate
-	 * an array with the list of todos
+	 * Scan the markdown content, search every TODO occurences
+	 * and generate an array with the list of todos
 	 */
 	private static function getTodos(string $markdown) : array
 	{
@@ -114,10 +118,14 @@ class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 				//
 				// Example : "Todo Christophe : make it rocks!"
 				//
-				// 0 : the matched string    => "Todo Christophe : make it rocks!"
-				// 1 : The Todo word         => "Todo"
-				// 2 : Spaces or punctuation just after the word => ""
-				// 3 : After the punctuation => "Christophe : make it rocks!"
+				// 0 : the matched string
+				//			=> "Todo Christophe : make it rocks!"
+				// 1 : The Todo word
+				//			=> "Todo"
+				// 2 : Spaces or punctuation just after the word
+				//			=> ""
+				// 3 : After the punctuation
+				//			=> "Christophe : make it rocks!"
 
 				$entries = count($matches[0]);
 
@@ -140,7 +148,7 @@ class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 					$arrTodos[$j] = $sWhoWhat;
 				}
 
-				// ----------------------------------------------------
+				// ----------------------------------------
 				// Add the Todo summary after the content
 
 				if ($bIntroAdded == false) {
@@ -170,8 +178,9 @@ class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	 * The markdown file has been read, this function will get the content of the .md file and
-	 * make some processing like data cleansing
+	 * The markdown file has been read, this function will
+	 * get the content of the .md file and make some processing
+	 * like data cleansing
 	 *
 	 * $params is a associative array with, as entries,
 	 *		* markdown : the markdown string (content of the file)
@@ -183,8 +192,8 @@ class Todos extends \MarkNotes\Plugins\Markdown\Plugin
 			return true;
 		}
 
-		// The todos plugins only fires when the %TODOS% tag has been found
-		// in the note's content.
+		// The todos plugins only fires when the %TODOS% tag
+		// has been found in the note's content.
 		if (preg_match_all('/%TODOS%/', $params['markdown'], $matches)) {
 			list($params['markdown'], $todos) = self::getTodos($params['markdown']);
 			$params['markdown']=str_replace($matches[0], $todos, $params['markdown']);
