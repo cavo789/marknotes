@@ -44,20 +44,27 @@ class Orgchart extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/orgchart/';
 
-		$script = "<script ".
+		$script =
+			"<script ".
 			"src=\"".$url."libs/orgchart/jquery.orgchart.min.js\" ". "defer=\"defer\"></script>\n".
 			"<script ".
-				"src=\"".$url."libs/orgchart/html2canvas.min.js\" ". "defer=\"defer\"></script>\n".
-			"\n<script>\n".
-			"$('document').ready(function(){\n".
-				"$('#mn_chart-container').orgchart({\n".
-					"'data' : $('#mn_orgchart-data'),\n".
-					"'verticalLevel': 3,\n".
-					"'visibleLevel' : 3,\n".
-					"'exportButton': true,\n".
-					"'exportFilename': 'mn_Chart'\n".
-				"});".
-			"});\n".
+			"src=\"".$url."libs/orgchart/html2canvas.min.js\" ". "defer=\"defer\"></script>\n".
+			"<script>\n".
+			// The function PluginOrgChart() will be called once the
+			// page will be displayed, both from the interface or
+			// in a new window
+			"marknotes.arrPluginsFct.push('PluginOrgChart');\n".
+			"function PluginOrgChart(){\n".
+				"if ($('#mn_chart-container').length !== 0) {\n".
+					"$('#mn_chart-container').orgchart({\n".
+						"'data' : $('#mn_orgchart-data'),\n".
+						"'verticalLevel': 3,\n".
+						"'visibleLevel' : 3,\n".
+						"'exportButton': true,\n".
+						"'exportFilename': 'mn_Chart'\n".
+					"});\n".
+				"}\n".
+			"}\n".
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
@@ -84,6 +91,7 @@ class Orgchart extends \MarkNotes\Plugins\Page\HTML\Plugin
 			".orgchart { background: #fff; }\n".
 			"#mn_chart-container .orgchart .lines td { height : 0; }\n".
 			".markdown-body table th, .markdown-body table td { border: none; }\n".
+			".markdown-body table { display: initial; }\n".
 			".orgchart td { padding: initial !important; }\n".
 			".orgchart table tr { background-color: transparent !important; height: 10px;}\n".
 			"</style>";
@@ -169,7 +177,7 @@ class Orgchart extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$orgData = preg_replace($pattern, '', $orgData);
 
 			// Add an ID to the org data info (i.e. to the
-			// <ul><li>...</li></ul> block
+			// <ul><li>...</li></ul>
 			$orgData = '<ul class="hide" id="mn_orgchart-data"'.substr($orgData, 4);
 
 			// Now, add the DIV for the chart

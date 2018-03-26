@@ -410,7 +410,7 @@
 				"orgchart": {
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
-					"only_if_task": ["task.export.html"]
+					"only_if_task": ["main", "task.export.html"]
 				},				
 				"pdf": {
 					"enabled": 1,
