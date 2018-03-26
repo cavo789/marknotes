@@ -1,8 +1,28 @@
 <?php
 /**
- * Orgchart
+ * Orgchart - Convert a bullet list items into an organisational
+ * chart. The list should be prefixed on his own line by
+ * %ORGCHART_START% then the list and followed by an empty line
+ * and, on his own line, by %ORGCHART_END%. See the sample here below
  *
- * @http://capricasoftware.co.uk/#/projects/orgchart/tutorial/basic-chart
+ * @https://github.com/dabeng/OrgChart
+ *
+ * Sample :
+ *
+ *		%ORGCHART_START%
+ * 		* The animal world
+ *			* Invertebrates
+ *				* Molluscs
+ *					* Cephalopods
+ *					* Gastropods
+ *					* Bivalves
+ *				* Crustaceans
+ *			* Vertebrates
+ *				* Fish
+ *					* Bone
+ *					* Cartilaginous
+ *
+ *		%ORGCHART_END%
  */
 namespace MarkNotes\Plugins\Page\HTML;
 
@@ -26,10 +46,16 @@ class Orgchart extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$script = "<script ".
 			"src=\"".$url."libs/orgchart/jquery.orgchart.min.js\" ". "defer=\"defer\"></script>\n".
+			"<script ".
+				"src=\"".$url."libs/orgchart/html2canvas.min.js\" ". "defer=\"defer\"></script>\n".
 			"\n<script>\n".
 			"$('document').ready(function(){\n".
-				"$('#mn_orgchart').orgChart({\n".
-					"container: $('#mn_chart')\n".
+				"$('#mn_chart-container').orgchart({\n".
+					"'data' : $('#mn_orgchart-data'),\n".
+					"'verticalLevel': 3,\n".
+					"'visibleLevel' : 3,\n".
+					"'exportButton': true,\n".
+					"'exportFilename': 'mn_Chart'\n".
 				"});".
 			"});\n".
 			"</script>\n";
@@ -54,10 +80,12 @@ class Orgchart extends \MarkNotes\Plugins\Page\HTML\Plugin
 			"href=\"".$url."jquery.orgchart.css\">\n";
 
 		$script.="<style>\n".
-			"div.orgChart { background-color:transparent;}\n".
-			"div.orgChart td { border: 1px solid transparent;}\n".
-			"div.orgChart table tr:nth-child(2n) { background-color: transparent;}\n".
-			"div.orgChart table { margin-bottom: 0;}\n".
+			"#mn_chart-container {text-align: center;}\n".
+			".orgchart { background: #fff; }\n".
+			"#mn_chart-container .orgchart .lines td { height : 0; }\n".
+			".markdown-body table th, .markdown-body table td { border: none; }\n".
+			".orgchart td { padding: initial !important; }\n".
+			".orgchart table tr { background-color: transparent !important; height: 10px;}\n".
 			"</style>";
 
 		$css .= $aeFunctions->addStyleInline($script);
@@ -72,24 +100,87 @@ class Orgchart extends \MarkNotes\Plugins\Page\HTML\Plugin
 	{
 		// Check if a chart is present : look for the
 		// "mn_orgchart" ID
-		if (strpos($html, 'id="mn_orgchart"') !== false) {
-			$dom = new \DOMDocument;
+		if (strpos($html, '%ORGCHART_START%') !== false) {
 
-			$dom->preserveWhiteSpace = false;
-			$dom->encoding = 'utf-8';
+			$pattern='/<p.*>\%ORGCHART_START\%<\/p>/';
+			preg_match($pattern, $html, $matches, PREG_OFFSET_CAPTURE);
 
-			@$dom->loadHTML(utf8_decode($html));
+			// Get the lenght of the tag
+			// <p (class and ids)>\%ORGCHART_START\%</p>
+			$startLen = strlen($matches[0][0]);
 
-			// Get the UL with the "mn_orgchart" id.
-			$chart = $dom->getElementById('mn_orgchart');
+			// Get the start position of
+			// <p (class and ids)>\%ORGCHART_START\%</p>
+			$startPos = $matches[0][1];
 
-			// And add a <div id="mn_chart"> just before the list
-			$div = $dom->createElement('div');
-			$div->setAttribute('id', 'mn_chart');
-			$chart->parentNode->insertBefore($div,$chart);
+			// Get the start position of
+			// <p (class and ids)>\%ORGCHART_END\%</p>
+			$pattern='/<p.*>\%ORGCHART_END\%<\/p>/';
+			preg_match($pattern, $html, $matches, PREG_OFFSET_CAPTURE);
 
-			$html = $dom->saveHTML($dom->documentElement);
+			if ($matches == array()) {
+				// There is a problem !!!
+				// The %ORGCHART_END% tag wasn't found.
+				// If this happens, add an empty line, in the
+				// markdown file between the last org chart data
+				// and the %ORGCHART_END% line
+				//
+				// So, add an empty line before %ORGCHART_END%
+				// like here below
+				//
+				// 		%ORGCHART_START%
+				//		* Root level
+				//			* level 1
+				//			* level 2
+				//
+				// 		%ORGCHART_END%
+				return false;
+			}
+
+			$endLen = strlen($matches[0][0]);
+			$endPos = $matches[0][1];
+
+			// Extract the original HTML i.e.
+			//		<p id="par_0">%ORGCHART_START%</p>
+			//			<ul>
+			//				<li>Animals
+			//					<ul>
+			//						<li>Birds</li>
+			//						<li>Mammals</li>
+			//					</ul>
+			// 		...
+			//		<p id="par_1">%ORGCHART_END%</p>
+
+			$original = substr($html, $startPos, $endPos - $startPos + $endLen);
+
+			// Retrieve only the organisational data
+			$len = $endPos - $startPos;
+			$orgData = substr($html, $startPos + $startLen, $endPos - $startPos - $startLen);
+
+			// Remove every <i class="fa-li fa fa-check"></i>
+			// because https://github.com/dabeng/OrgChart didn't
+			// work correctly in that case. The <li> item should
+			// only have the content like <li>VALUE</li>
+			$pattern = "~<li>\\s?<i.*\/i>?~m";
+			$orgData = preg_replace($pattern, '<li>', $orgData);
+
+			// Remove CSS classes
+			$pattern = "~ class=\".*\"~";
+			$orgData = preg_replace($pattern, '', $orgData);
+
+			// Add an ID to the org data info (i.e. to the
+			// <ul><li>...</li></ul> block
+			$orgData = '<ul class="hide" id="mn_orgchart-data"'.substr($orgData, 4);
+
+			// Now, add the DIV for the chart
+			$orgData = '<div id="mn_chart-container"></div>'.$orgData;
+
+			// Finally, replace the original data to the
+			// correctly prepared org chart structure (div and
+			// ul li)
+			$html = str_replace($original, $orgData, $html);
 		}
+
 		return true;
 	}
 }
