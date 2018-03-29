@@ -640,7 +640,6 @@
 					"microdata": {
 						"not_in_tags": ["a", "abbr", "code", "dd", "dt", "img", "pre", "span"],
 						"keywords": [
-							"Christophe Avonture",
 							"marknotes"
 						]
 					},
