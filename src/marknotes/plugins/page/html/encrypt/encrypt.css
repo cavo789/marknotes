@@ -3,3 +3,8 @@
 	padding-right: 5px;
 	color        : #abe0ab;
 }
+.encrypt_error {
+	color:red;
+	font-style:italic;
+	font-size: 0.8em;
+}

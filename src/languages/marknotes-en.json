@@ -79,6 +79,7 @@
 	"editor_translate_select": "Please select a language",
 	"encrypted": "This information is encrypted",
 	"encrypted_hint": "This information is encrypted. You'll be able to see it once you're connected",
+	"encrypt_decrypt_error": "An error has occurred, please verify f.i. if your password is well correct",
 	"error": "Error",
 	"error_create_file": "An error has occurred during the creation of the note [$1]",
 	"error_create_folder": "An error has occurred during the creation of the folder [$1]",
