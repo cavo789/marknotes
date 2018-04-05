@@ -18,3 +18,6 @@ gulpfile.js
 build.bat
 src/assets/aesecure.png
 src/utils/tmp/debug.log
+src/templates/jd17fr/jd17fr.css
+src/templates/jd18fr/jd18fr.css
+src/templates/jd18fr/reveal.php

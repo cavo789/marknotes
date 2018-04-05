@@ -20,11 +20,12 @@
  *				 	multiples .md files are referencing the same
  *					include.
  *					Usefull for f.i. including a settings file.
- *					once=1 is good when you're including a settings
- *					file (i.e a markdown file where you're defining,
- *					once and for all, your abbreviations, URLs, ...),
- *					once=0 can be good when you wish to include
- *					headers and footers f.i.
+ *					once=1 is good when you're including a
+ *					settings file (i.e a markdown file where
+ *					you're defining,
+ *					once and for all, your abbreviations, URLs,
+ *					 ...), once=0 can be good when you wish
+ *					to include headers and footers f.i.
  *
  * Note : the Include plugin also support dynamic list files like
  *		%INCLUDE *.md%
@@ -68,11 +69,11 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	 * When we're processing a file that contains a H1, the problem
-	 * is that the master file probably already contains a H1 so we've
-	 * two. This is not a good habit so, for each included files, if
-	 * we've a H1 in the included content, scan every headings in that
-	 * content and increment by one
+	 * When we're processing a file that contains a H1, the
+	 * problem is that the master file probably already contains
+	 * a H1 so we've two. This is not a good habit so, for each
+	 * included files, if we've a H1 in the included content,
+	 * scan every headings in that content and increment by one
 	 */
 	private static function IncrementHeadings(string $sContent) : string
 	{
@@ -181,8 +182,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
-	 * Replace variables like %URL% present in the markdown content
-	 * by its value
+	 * Replace variables like %URL% present in the markdown
+	 * content by its value
 	 */
 	private static function replaceVariables(string $filename, string $markdown) : string
 	{
@@ -218,8 +219,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 * is one character before, like a space, the tag will be
 	 * considered as "commented"
 	 *
-	 * So a line with, for instance, "#%INCLUDE file.md%" won't be
-	 * processed.
+	 * So a line with, for instance, "#%INCLUDE file.md%"
+	 * won't be processed.
 	 *
 	 * When this is the case, this function will be called
 	 */
@@ -276,7 +277,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 *
 	 * @param $caller = the filename of the master note.
 	 *		Indeed if index.md use %INCLUDE *.md% we SHOULD NOT
-	 *		included index.md back otherwise it'll be an infinite loop
+	 *		included index.md back otherwise it'll be an
+	 *		infinite loop
 	 *
 	 * @param $filename = the "filename" used like f.i.
 	 *		c:\notes\docs\*.md (i.e. the parent folder and the
@@ -346,7 +348,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		/*<!-- endbuild -->*/
 
 		/**
-		 * Replace the variable by the location of the current note
+		 * Replace the variable by the location of the current
+		 * note
 		 * Get the folder of the processed note
 		 * If we're processing f.i.
 		 * 		C:\notes\docs\include\test.md
@@ -427,11 +430,13 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// Read the file
 							$sContent = trim($aeFiles->getContent($filename));
 
-							// Recursive : process any %INCLUDE%
-							// tags in included content
-							while (strpos($sContent, '%INCLUDE ') !== false) {
+							// Check if there are another
+							// INCLUDE tags (take care to use
+							// a regex and not a strpos !)
+							// The tag should comply the regex
+							while (preg_match(static::$include_regex, $sContent)) {
 								$sContent = self::processIncludes($sContent, $filename, $indent.'	');
-							}
+							} // while
 
 							// Remove unneeded plugins tags
 							$sContent = self::cleanMarkdown($sContent);
@@ -481,11 +486,11 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 		/**
 		 * The process_includes function here above will
-		 * process any %INCLUDE% tags by itself but need to be able
-		 * to run the others markdown plugins (but not, thus,
-		 * the include plugin). So, process_includes will set
-		 * a dont_include parameters to true to avoid to plugin
-		 * to run.
+		 * process any %INCLUDE% tags by itself but need to
+		 * be able to run the others markdown plugins (but
+		 * not, thus, the include plugin). So, process_includes
+		 * will set a dont_include parameters to true to avoid
+		 * to plugin to run.
 		 */
 		if (isset($params['dont_include'])) {
 			return true;
