@@ -75,6 +75,7 @@
     "editor_translate_select": "Veuillez s\u00e9lectionner une langue",
     "encrypted": "Cette information est crypt\u00e9e.",
     "encrypted_hint": "Cette information est crypt\u00e9e. Vous devez d'abord vous connecter pour y avoir acc\u00e8s.",
+	"encrypt_decrypt_error": "Une erreur est survenue lors du d\u00e9cryptage, veuillez v\u00e9rifier si votre mot de passe est correct",
     "error": "Erreur",
     "error_create_file": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation du fichier [$1]",
     "error_create_folder": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation du dossier [$1]",

@@ -65,6 +65,9 @@ class Debugging {
 		$content .='<li>'.
 			self::makeURL('index.php?task=task.fetch.gethtml&param=JTIydGVzdHRlc3QuaHRtbCUyMg%3D%3D&url=http%3A%2F%2Fphp.net%2Fmanual%2Fen%2Ffunction.urlencode.php',
 			'<i class="fa fa-download" aria-hidden="true"></i> Fetch HTTP content', 'html', 'Get HTML of a page').'</li>';
+		$content .='<li>'.
+			self::makeURL('index.php?task=task.debug.encrypt',
+			'<i class="fa fa-key" aria-hidden="true"></i> Test the encryption', 'json', 'Encryption test : encrypt a sentence and decrypt it. This test to make sure that the encryption task is working.').'</li>';
 
 		$html = str_replace('%CONTENT%', $content, $html);
 		return $html;

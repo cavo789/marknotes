@@ -45,6 +45,33 @@ class Unencrypt
 			$key = new CryptoKey($password, null, $method);
 			$unencrypted = $key->unlock($info);
 
+			// Something goes wrong
+			// The return value is false when, f.i., the password
+			// used for the encryption isn't the one used for the
+			// decryption so, please check your password.
+
+			if ($unencrypted === false) {
+				$aeSession = \MarkNotes\Session::getInstance();
+				$task = $aeSession->get('task','');
+
+				$sMsg=$aeSettings->getText('encrypt_decrypt_error');
+
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					if ($aeDebug->getDevMode()) {
+						$sMsg.=" - ".DEV_MODE_PREFIX."Current password=".$arrSettings['password'];
+					}
+				}
+				/*<!-- endbuild -->*/
+
+				if (in_array($task, array('task.export.html', 'task.export.reveal'))) {
+					$sMsg="<span class='encrypt_error'>".$sMsg."</span>";
+				}
+
+				$unencrypted = $sMsg;
+			}
+
 			$params['data'] = $unencrypted;
 		}
 		return true;

@@ -14,7 +14,8 @@
 			.toolbar {background-color:#c5f4bc;border:1px dotted green;border-radius: 6px;margin-bottom:10px;}
 			#LOADING, #CONTENT_PRE, #CONTENT_CODE, #CONTENT_HTML {display:none;width:100%}
 			#CONTENT_PRE {white-space:pre-wrap !important;}
-			#CONTENT_HTML{min-height:800px;max-height:none;}
+			#CONTENT_HTML {min-height:800px;max-height:none;}
+			#URL {color:blue; text-decoration:underline;}
 		</style>
 		<title>DEBUG - Make debugging easy</title>
 	</head>
@@ -23,7 +24,7 @@
 		<div class="row">
 			<div class="col-sm-3">%CONTENT%</div>
 			<div class="col-sm-9">
-				<strong id="URL">&nbsp;</strong>
+				<strong id="URL"></strong>
 				<div id="LOADING">Please wait...</div>
 				<pre id="CONTENT_PRE">&nbsp;</pre>
 				<iframe id="CONTENT_HTML">&nbsp;</iframe>
@@ -55,6 +56,11 @@
 			$('details').not(this).removeAttr("open");
 		});
 
+		$("#URL").click(function (e) {
+			e.preventDefault();
+			window.open($("#URL").text());
+		});
+		
 		$("[data-task]").click(function (e) {
 			e.preventDefault();
 
