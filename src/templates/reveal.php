@@ -14,6 +14,9 @@
 
 		<link rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/marknotes.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/reveal.css" media="screen" id="theme">
+		
+		<!-- Reveal.js Title-footer plugin -->
+		<link rel="stylesheet" type="text/css" href="%ROOT%/marknotes/plugins/page/html/reveal/libs/reveal.js/plugin/title-footer/title-footer.css" media="screen" />
 
 	</head>
 	<body>
@@ -26,6 +29,10 @@
 			<div class="slides" id="note_content">
 				%CONTENT%
 			</div>
+			
+			<!-- Title-footer plugin -->
+			<footer id="title-footer"><p id="notification"></p></footer>
+			
 		</div>
 
 		<aside class="controls">

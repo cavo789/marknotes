@@ -24,6 +24,14 @@ if (typeof marknotes.slideshow.themes !== 'undefined') {
 // ----------------------------------
 // Initialize the list of dependencies
 var $arrDependencies = [];
+
+$arrDependencies.push({
+	src: URL_Lib + 'lib/js/title-footer.js',
+	condition: function () {
+		return document.querySelector('title-footer');
+	}
+});
+
 $arrDependencies.push({
 	src: URL_Lib + 'lib/js/classList.js',
 	condition: function () {
@@ -55,7 +63,7 @@ if (typeof marknotes.slideshow.dependencies !== 'undefined') {
 			src: URL_Lib + $src,
 			async: true
 		//condition: true,
-});
+		});
 	});
 }
 //
@@ -249,3 +257,59 @@ Reveal.addEventListener('slidechanged', function (evt) {
 	} // if ($hide===1)
 
 });
+
+/* Title-footer plugin : initialize the footer title */
+Reveal.addEventListener('ready', function(evt) {          
+	if (evt.indexh === 0 && evt.indexv === 0) {
+		pushHelpNotification();
+	} else {
+		pushFootnoteNotification();
+	}
+});
+
+/* Title-footer plugin : adjust the footer text when showing a new slide */
+Reveal.addEventListener('slidechanged', function(evt) {
+	if (evt.indexh === 0 && evt.indexv === 0) {
+		// First slide, show help like how to navigate 
+		pushHelpNotification();
+	} else {
+		// As from the second slide
+		pushFootnoteNotification();
+	}	
+});
+
+/* Title-footer plugin */
+function pushNotification(msg, fade) {
+	
+	var footer = document.getElementById('title-footer')
+	var notification = document.getElementById('notification')
+	
+	if(window.innerWidth < 700) {
+		// Not large enough, hide the footer
+		footer.className = "footer-hidden";
+	} else {
+		footer.className = "footer-visible";
+		if(fade) {
+			notification.className = "footer-fade";
+			notification.innerHTML = msg;
+		} else {
+			notification.className = "footer-hard";
+			notification.innerHTML = msg;
+		}
+	}
+}
+
+/* Title-footer plugin */
+function pushHelpNotification() {	
+	if(window.innerWidth < 700)
+		pushNotification("<a href='#' onclick='RevealMenu.toggle()'>Menu</a> | <a href='#' onclick='enterFullscreen()'>Fullscreen</a> | <a href='#' onclick='enterOverview()'>Overview</a> | <a href='#' onclick='enterBlackout()'>Blackout</a> | <a href='#' onclick='RevealNotes.open()'>Speaker</a> | <a href='#' onclick='enterHelp()'>Help</a>");
+	else
+		pushNotification("Navigate : Space / Arrow Keys | <a href='#' onclick='RevealMenu.toggle()'>M</a> - Menu | <a href='#' onclick='enterFullscreen()'>F</a> - Fullscreen | <a href='#' onclick='enterOverview()'>O</a> - Overview | <a href='#' onclick='enterBlackout()'>B</a> - Blackout | <a href='#' onclick='RevealNotes.open()'>S</a> - Speaker | <a href='#' onclick='enterHelp()'>?</a> - Help");
+}
+
+/* Title-footer plugin */
+function pushFootnoteNotification() {
+	/* As from the second slide, retrieve the page title and display it in the footer */
+	var $title = $(document).find("title").text();
+	pushNotification($title, true);
+}
