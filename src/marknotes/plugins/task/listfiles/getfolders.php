@@ -1,55 +1,18 @@
 <?php
 /**
-* Get the list of .md files present in the /docs folder.
-* This plugin will make sure, thanks to ACLs plugin, that
-* files are accessible to the visitor
+* Get the list of folders under /docs
 *
-* This task won't return a visible output (no json, no html, ...)
-* but will initialize an array in his run() function.
+* Can answer to /index.php?task=task.listfiles.getfolders
 *
-* The function will return an array with a key and a filename.
-* The key is not just a incremental figure (1, 2, 3, ...), unusefull,
-* but the timestamp of the file AND THE MD5, for instance :
-*
-* 	Key syntax = $timestamp.'_'.md5($file)
-*
-*		[1510574854_4bc1946d9f928e4f87deb4d7a8c8aad9] => docs/folder/file.md
-*		[1510574854_fcd38c89c9a5d9a00422fcd3121a5db8] => docs/folder/file999.md
-*		[1517479015_ce02c0df9aafe987154c15371c573dad] => docs/folder2/file2..md
-*
-* MD5 is indeed needed because only the timestamp is not enough
-* because two or more files can have exactly the same timestamp.
-* So, in order to not "loose" files in the array (same timestamp),
-* we need to be sure to make the key unique.
-*
-* So we can make a revert sort on the array (with krsort()) and
-* quickly retrieve the last added/modified notes f.i. (see plugin
-* task.lastmodified.getlist)
-*
-* Example of a call :
-*
-*		$arrFiles = array();
-*		// Call the listfiles.get event and initialize $arrFiles
-*		$aeEvents = \MarkNotes\Events::getInstance();
-*		$args=array(&$arrFiles);
-*		$aeEvents->loadPlugins('task.listfiles.get');
-*		$aeEvents->trigger('task.listfiles.get::run', $args);
-*
-*		$arrFiles = $args[0]['files'];
-*
-*		foreach ($arrFiles as $file) {
-*			echo "Dear visitor, the file ".$file." is accessible to ".
-*				"you</br>";
-*		}
-*
-* Can answer to /index.php?task=task.listfiles.get
-* (but there is no output)
+* The list can be restricted to a folder like
+*	/index.php?task=task.listfiles.getfolders&restrict_folder=PHP
+* which limit the list to folders under /docs/PHP
 */
 namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-class Get extends \MarkNotes\Plugins\Task\Plugin
+class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.task.listfiles';
@@ -137,20 +100,20 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$arrFiles=$args[0];
 
 		} // if ($bACLsLoaded)
+
 		return $arrFiles;
 	}
 
 	public static function run(&$params = null) : bool
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
-		// $params can be an array with a params entry.
-		// Like in the plugins/task/search/search.php where
-		// restrict_folder is set so we can restrict the search to
-		// a subfolder and not the full /docs folder
-		$restrict_folder = $params['params']['restrict_folder']??'';
+		// Restrict folder will allow to limit the search to a given
+		// subfolder and not search for everyting under /docs
+		$restrict_folder = trim($aeFunctions->getParam('restrict_folder', 'string', '', false, SEARCH_MAX_LENGTH));
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
@@ -212,8 +175,15 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			} // if (is_null($arr))
 		} // if ($can_see)
 
-		// Return the array with files accessible to the current user
-		$params = $arr['files'];
+		// Now extract only folder name, remove duplicates
+		// and sort
+		$arrFiles = $arr['files'];
+		$arrFiles = array_map('dirname', $arrFiles);
+		$arrFiles = array_unique($arrFiles);
+		sort($arrFiles);
+
+		header('Content-Type: application/json');
+		echo json_encode($arrFiles, JSON_PRETTY_PRINT);
 
 		// This task has no visible output
 		return true;

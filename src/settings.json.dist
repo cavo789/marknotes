@@ -194,7 +194,7 @@
 				},
 				"optimize": {
 					"enabled": 1,
-					"not_if_task": ["task.search.search", "task.edit.form"],
+					"not_if_task": ["task.search.search", "task.edit.form", "task.export.docx"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"format": {

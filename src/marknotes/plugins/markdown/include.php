@@ -13,8 +13,11 @@
  *	%INCLUDE .chapters/chapter2.md%
  *	%INCLUDE .chapters/chapter3.md%
  *
+ *  or
+ *	%INCLUDE .chapters/*.md{"recursive":0}%
+ *
  * After the filename, settings can be given in a json
- * format like {"once":1}
+ * format like {"once":1} or {"recursive":0}
  *
  *	once:1	=> that file will be loaded only once even when
  *				 	multiples .md files are referencing the same
@@ -26,6 +29,13 @@
  *					once and for all, your abbreviations, URLs,
  *					 ...), once=0 can be good when you wish
  *					to include headers and footers f.i.
+ *
+ * recursive:0 => by default, include will also take subfolders when
+ *					the included filename is with a wildcard
+ *					(f.i. *.md)
+ *					By specifying recursive:0, only the mentionned
+ *					folder will be processed
+ *					(f.i. %INCLUDE foldername/*.md%)
  *
  * Note : the Include plugin also support dynamic list files like
  *		%INCLUDE *.md%
@@ -201,6 +211,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 			if (!in_array($task, array('task.export.epub','task.export.docx','task.export.pdf'))) {
 				// This is an hyperlink
 				$markdown = str_replace('%URL%', str_replace(' ', '%20', self::getURL($filename)), $markdown);
+
 			} else {
 				// When exporting the note, should be
 				// a local file. Escape the directory
@@ -284,7 +295,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 *		c:\notes\docs\*.md (i.e. the parent folder and the
 	 *		*.md pattern)
 	 */
-	private static function getListNotes(string $caller, string $filename) : array
+	private static function getListNotes(string $caller, string $filename, bool $recursive) : array
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFolders = \MarkNotes\Folders::getInstance();
@@ -299,7 +310,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		}
 
 		// Retrieve files in all subdirectories
-		$arr = $aeFolders->getContent($folder, true);
+		$arr = $aeFolders->getContent($folder, $recursive);
 
 		$sContent = '';
 
@@ -385,7 +396,15 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				if (substr($file[$i], -4) == '*.md') {
 					// Special case : the "filename" ends with
 					// "*.md" so get the list of files
-					list ($files, $arrFiles, $arrTags) = self::getListNotes($filename, $folder.$file[$i]);
+
+					$recursive = true;
+
+					if ($json!=='') {
+						$tmp = json_decode($json[$i], true);
+						$recursive = boolval($tmp['recursive'])??true;
+					}
+
+					list ($files, $arrFiles, $arrTags) = self::getListNotes($filename, $folder.$file[$i], $recursive);
 
 					/**
 					 * Replace the tag
@@ -430,12 +449,18 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// Read the file
 							$sContent = trim($aeFiles->getContent($filename));
 
+							// Be sure to have two empty lines so
+							// headings will be correctly understand
+							// when appending multiples files.
+							$sContent .= PHP_EOL.PHP_EOL;
+
 							// Check if there are another
 							// INCLUDE tags (take care to use
 							// a regex and not a strpos !)
 							// The tag should comply the regex
 							while (preg_match(static::$include_regex, $sContent)) {
 								$sContent = self::processIncludes($sContent, $filename, $indent.'	');
+
 							} // while
 
 							// Remove unneeded plugins tags

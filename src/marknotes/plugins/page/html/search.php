@@ -1,7 +1,7 @@
 <?php
 /**
- * Add search functionnality (only when the note is displayed through the
- * interface
+ * Add search functionnality (only when the note is displayed
+ * through the interface
  */
 
 namespace MarkNotes\Plugins\Page\HTML;
@@ -90,15 +90,17 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 			// No double quote...
 			$placeHolder = str_replace('"', "'", $placeHolder);
 
-			$intro = $aeSettings->getText('intro_js_search','');
+			$intro = $aeSettings->getText('intro_js_search', '');
 
 			$sSearch='<div id="divSearch" class="search sidebar-form" data-intro="'.$intro.'">
 			  <div class="input-group">
 				<input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
 				<span class="input-group-btn">
-					<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-					</button>
-				  </span>
+					<button type="button" name="folder" id="search-folder-btn" class="btn btn-flat"><i class="fa fa-folder"></i>
+					</button>'.
+					//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
+					//</button>
+				  '</span>
 			  </div>
 			</div>';
 

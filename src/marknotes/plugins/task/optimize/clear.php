@@ -1,7 +1,7 @@
 <?php
 /**
- * Optimizations tasks - Clear the session. Called by the 'Eraser' button,
- *    located in the option button of the treeview pane
+ * Optimizations tasks - Clear the session. Called by the 'Eraser'
+ * button, located in the option button of the treeview pane
  */
 
 namespace MarkNotes\Plugins\Task\Optimize;
@@ -27,6 +27,24 @@ class Clear
 			// Clear the cache
 			$aeCache = \MarkNotes\Cache::getInstance();
 			$aeCache->clear();
+
+			// Clear the tmp folder
+			$aeFiles = \MarkNotes\Files::getInstance();
+			$aeFolders = \MarkNotes\Folders::getInstance();
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$folder = $aeSettings->getFolderTmp();
+			$arr = $aeFolders->getContent($folder, true);
+
+			foreach ($arr as $file) {
+				if ($file['type'] == 'file') {
+					if (!in_array($file['basename'], array('.gitignore','.htaccess','debug.log','index.html'))) {
+						$file = $file['path'];
+						$file = $aeSettings->getFolderWebRoot().$file;
+						$file = str_replace('/', DS, $file);
+						$aeFiles->delete($file);
+					}
+				}
+			}
 
 			// When the task is 'clear', just clear the session
 			$aeSession->destroy();

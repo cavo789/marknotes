@@ -23,9 +23,14 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	 * be sure that only files that the
 	 * user can access are retrieved and not confidential ones
 	 */
-	private static function getFiles() : array
+	private static function getFiles(string $restrict_folder = '') : array
 	{
-		$arrFiles = array();
+		$arrFiles = array(
+			'params'=>array(
+				'restrict_folder'=>$restrict_folder
+			),
+			'result'=>array()
+		);
 
 		// Call the listfiles.get event and initialize $arrFiles
 		$aeEvents = \MarkNotes\Events::getInstance();
@@ -92,7 +97,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	/**
 	 * Make the search.
 	 */
-	private static function doSearch(array $keywords, string $pattern) : array
+	private static function doSearch(array $keywords, string $pattern, string $restrict_folder = '') : array
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -101,7 +106,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
 		// Retrieve the list of files
-		$arrFiles = self::getFiles();
+		$arrFiles = self::getFiles($restrict_folder);
 
 		// Absolute root folder
 		$root = $aeSettings->getFolderWebRoot();
@@ -118,9 +123,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		// Filenames in $arrFiles already start with the
 		// "docs/" part so, f.i.
 		// 		docs/Development/markdown.md
-
 		foreach ($arrFiles as $file) {
-
 			// Remove the .md extension since that extension
 			// wasn't used when building the treeview.
 			// We, absolutly, need to respect the same way to
@@ -261,6 +264,10 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		}
 		/*<!-- endbuild -->*/
 
+		// Restrict folder will allow to limit the search to a given
+		// subfolder and not search for everyting under /docs
+		$restrict_folder = trim($aeFunctions->getParam('restrict_folder', 'string', '', false, SEARCH_MAX_LENGTH));
+
 		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
@@ -277,7 +284,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		}
 
 		if (is_null($arr)) {
-			$arr = self::doSearch($keywords, $pattern);
+			$arr = self::doSearch($keywords, $pattern, $restrict_folder);
 
 			if ($bCache) {
 				$arr['from_cache'] = 1;

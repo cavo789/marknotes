@@ -38,8 +38,9 @@ class DOCX extends \MarkNotes\Plugins\Button\Plugin
 		// Check if the file, once converted (note.docx) exists
 		if (!$aeFiles->exists($filename)) {
 			// The file didn't exists so, if this plugin is called,
-			// we need to be able to run the Pandoc conversion utility,
-			// check that the utility is correctly configured
+			// we need to be able to run the Pandoc conversion
+			// utility, check that the utility is correctly
+			// configured
 
 			$aeConvert = \MarkNotes\Tasks\Convert::getInstance($aeSession->get('filename'), static::$layout, 'pandoc');
 			if ($aeConvert->isValid()) {
@@ -54,7 +55,8 @@ class DOCX extends \MarkNotes\Plugins\Button\Plugin
 			$bPandoc = true;
 		} // if (!$aeFiles->exists($filename))
 
-		// Call the fnPluginHTMLDOCX() function when Pandoc isn't installed
+		// Call the fnPluginHTMLDOCX() function when Pandoc
+		// isn't installed
 		$task = ($bPandoc ? 'file' : 'fnPluginHTMLDOCX');
 
 		// Get the button HTML code

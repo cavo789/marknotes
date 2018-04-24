@@ -289,7 +289,21 @@ class Files
 			return false;
 		}
 		self::getFileSystem($filename, $obj);
-		return $obj->delete($filename);
+
+		// Don't halt if the file can't be deleted like, f.i.,
+		// when the file is locked by a process (this is the case
+		// for the active session file)
+		$errorlevel = error_reporting();
+		error_reporting(0);
+
+		try {
+			$bReturn = $obj->delete($filename);
+		} catch (\Exception $e) {
+		}
+
+		error_reporting($errorlevel);
+
+		return $bReturn;
 	}
 
 	/**

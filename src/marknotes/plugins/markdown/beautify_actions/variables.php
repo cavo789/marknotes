@@ -20,10 +20,10 @@ class Variables
 
 		$markdown = $params['markdown'];
 
-		$sURL=$aeFunctions->getCurrentURL();
+		/*$sURL=$aeFunctions->getCurrentURL();
 		$sURL.=str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
 		$sURL=str_replace(' ', '%20', $sURL);
-		$markdown=str_replace($sURL, '%URL%', $markdown);
+		$markdown=str_replace($sURL, '%URL%', $markdown);*/
 
 		// Replace links to the folder where the note resides by the
 		// %NOTE_FOLDER% variable
@@ -36,7 +36,7 @@ class Variables
 		if ($aeSettings->getDebugMode()) {
 			if ($params['markdown']!==$markdown) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("   ".__CLASS__." has modify the markdown content", "debug");
+				$aeDebug->log("	".__CLASS__." has modify the markdown content", "debug");
 			}
 		}
 		/*<!-- endbuild -->*/

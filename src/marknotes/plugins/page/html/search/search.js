@@ -29,6 +29,16 @@ function fnPluginTaskSearch_init() {
 		}
 		/*<!-- endbuild -->*/
 
+		if ($('#search-folder-btn').length > 0) {
+			$("#search-folder-btn").click(function() {
+				fnPluginTaskSearchRestrictFolder();
+			});
+		}
+
+		$("#search-btn").click(function() {
+			fnPluginTaskSearchStartSearch();
+		});
+
 		// This function should only be fired once
 		// So, now, remove it from the arrPluginsFct array
 		marknotes.arrPluginsFct.splice(marknotes.arrPluginsFct.indexOf('fnPluginTaskSearch_init'), 1);
@@ -168,7 +178,7 @@ function fnPluginTaskSearch_addSearchEntry($entry) {
 			// http://projects.sergiodinislopes.pt/flexdatalist/
 			// The add method should add a new keyword but here
 			// the key isn't added to the flexdatalist entry
-			$('.flexdatalist').flexdatalist('add', $entry.keyword);
+			//$('#search').flexdatalist('add', $entry.keyword);
 		}
 	}
 
@@ -195,4 +205,20 @@ function fnPluginTaskSearchClearCache() {
 	$('#TOC').jstree(true).settings.search.ajax.url = oldSearchURL;
 
 	return true;
+}
+
+// The user has clicked on the Folder button : show a list of
+// folder so we can restrict the search action only on these folders
+function fnPluginTaskSearchRestrictFolder() {
+	alert('fnPluginTaskSearchRestrictFolder - search.php?str=Keyword&restrict_folder=xxxx');
+}
+
+// When the user click on the Search button and doesn't press the Enter key
+// Start the search
+function fnPluginTaskSearchStartSearch() {
+	alert('RunSearch');
+$('#search').flexdatalist('add', 'add_me');
+alert($('#search').flexdatalist('value'));
+		$('#TOC').jstree(true).show_all();
+	$('#TOC').jstree('search', $('#search').val());
 }

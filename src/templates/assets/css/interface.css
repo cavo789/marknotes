@@ -69,7 +69,7 @@ div.editor-wrapper .editor-toolbar a {
 
 .jstree-proton .jstree-clicked {
 	color		 : yellow !important;
-	text-transform: uppercase;
+	/*text-transform: uppercase;*/
 }
 .jstree-open > .jstree-anchor {
 	/*color	  : #00abfc !important;

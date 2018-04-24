@@ -21,7 +21,8 @@ function jstree_init($data) {
 			$('#TOC').jstree("destroy").empty();
 			$('#TOC').jstree("true");
 
-			var $arrPlugins = ['contextmenu', 'types', 'search', 'types', 'unique'];
+			var $arrPlugins = ['contextmenu', 'types', 'search',
+				'types', 'unique'];
 
 			try {
 				// Use the "state" plugin of jsTree to remember
@@ -242,6 +243,9 @@ function jstree_init($data) {
 							// the '&str=SEARCH_TERM' parameter
 							url: 'search.php',
 							dataType: 'json',
+							data : {
+							  restrict_folder : ''
+							},
 							type: (marknotes.settings.debug ? 'GET' : 'POST'),
 							beforeSend: function () {
 								/*<!-- build:debug -->*/
@@ -332,6 +336,22 @@ function jstree_context_menu(node) {
 	}
 
 	var $items = {};
+
+	$items.Search = {
+		separator_before: false,
+		separator_after: false,
+		label: $.i18n('search_placeholder'),
+		icon: 'fa fa-search',
+		action: function () {
+			var fn = window["fnPluginTaskSearch_addSearchEntry"];
+			if (typeof fn === "function") {
+				fnPluginTaskSearch_addSearchEntry({
+					keyword: node.data.path,
+					reset: true
+				});
+			}
+		}
+	};
 
 	$items.Collapse = {
 		separator_before: false,
