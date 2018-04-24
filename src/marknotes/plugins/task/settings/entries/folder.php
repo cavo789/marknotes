@@ -22,7 +22,7 @@ class MN_Folder extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'folder';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content = self::getText($key.$opt, $text, $value);
+		$content = self::getText($opt, $text, $value);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

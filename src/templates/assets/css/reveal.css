@@ -106,3 +106,36 @@ div.reveal section a:hover {
 .big {
 	font-size: 1.4em !important;
 }
+
+/* title-footer reveal.js plugin */
+#title-footer {
+	background-color: black;
+}
+#title-footer.footer-visible {
+	display: inline;
+}
+#title-footer.footer-hidden {
+	display: none;
+}
+#title-footer #notification {
+	font-family: 'Roboto', sans-serif;
+}
+#title-footer p {
+	text-align: center;
+	font-size: 0.9em;
+	line-height: 1;
+	margin: 0;
+	padding-top: 2px;
+	font-family: 'Roboto', sans-serif;
+	letter-spacing: 0;
+}
+#title-footer p.footer-hard {
+	color: #bbb;
+}
+#title-footer p.footer-fade {
+	color: #bbb;
+	opacity: 0.9;
+	font-size: 1.5vh;
+	letter-spacing: 0;
+	padding-top: 3px;
+}
