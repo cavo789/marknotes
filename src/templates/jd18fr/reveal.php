@@ -14,14 +14,16 @@
 		<title>%SITE_NAME%</title>
 
 		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/reveal.css" media="screen" />
-		
+
+		<link rel="stylesheet" type="text/css" href="%ROOT%/libs/animate.css/animate.min.css" media="screen" />
+
 		<link rel="stylesheet" type="text/css" href="%ROOT%/marknotes/plugins/page/html/reveal/libs/reveal.js/plugin/title-footer/title-footer.css" media="screen" />
 
 		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/assets/css/marknotes.css" media="screen" />
 
 		<!--%ADDITIONNAL_CSS%-->
 		<link rel="stylesheet" type="text/css" href="%ROOT%/templates/jd18fr/jd18fr.css" media="screen" id="theme">
-		
+
 	</head>
 
 	<body>
@@ -35,9 +37,9 @@
 			<div class="slides" id="note_content">
 				%CONTENT%
 			</div>
-			
+
 			<footer id="title-footer"><p id="notification"></p></footer>
-			
+
 		</div>
 
 		<aside class="controls">

@@ -240,7 +240,7 @@
 				"animate": {
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
-					"only_if_task": ["main", "task.export.html", "task.timeline.get"]
+					"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 				},
 				"add_icons": {
 					"enabled": 1,
@@ -411,7 +411,7 @@
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["main", "task.export.html"]
-				},				
+				},
 				"pdf": {
 					"enabled": 1,
 					"not_if_task": [],
@@ -524,7 +524,7 @@
 				"enabled": 1,
 				"not_if_task": [],
 				"only_if_task": ["main", "interface", "task.export.html"]
-			},			
+			},
 			"yaml": {
 				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.timeline.get"],

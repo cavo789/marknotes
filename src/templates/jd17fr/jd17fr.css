@@ -1,43 +1,43 @@
 body {
-	max-width          : none !important;
-	padding            : 0 !important;
-	background-color   : #58bbfa;
-	background-image   : url('jd17fr.png');
-	background-size    : 1645px;
+	max-width		  : none !important;
+	padding			: 0 !important;
+	background-color	: #58bbfa;
+	background-image	: url('jd17fr.png');
+	background-size	: 1645px;
 	background-repeat  : no-repeat;
 	background-position: center -71px;
 }
 
 .reveal h1 {
 	font-size: 3.2em;
-	color    : white;
+	color	: white;
 }
 
 .reveal h2 {
 	font-size: 2.6em;
-	color    : #f6a542;
+	color	: #f6a542;
 	/*text-shadow: .01em .02em .05em white;*/
 }
 
 .reveal h3 {
 	font-size  : 2em;
-	color      : #7dbb48;
+	color	  : #7dbb48;
 	text-shadow: .1em .1em .05em #333;
 }
 
 .reveal h4 {
 	font-size  : 1.4em;
-	color      : #7dbb48;
+	color	  : #7dbb48;
 	text-shadow: .1em .1em .05em #333;
 }
 
 .reveal strong {
 	background-color: #91d2fc;
 	/*#7dbb48;*/
-	color           : #5695cf;
-	display         : inline-block;
-	border-radius   : 10px;
-	padding         : 5px;
+	color			: #5695cf;
+	display		 : inline-block;
+	border-radius	: 10px;
+	padding		 : 5px;
 }
 
 .reveal dl,
@@ -48,41 +48,41 @@ body {
 
 div.reveal .warning {
 	background-color: yellow;
-	color           : red;
-	border-radius   : 10px;
-	display         : inline-block;
-	padding         : 0 10px;
-	border          : dotted;
-	font-size       : .8em;
+	color			: red;
+	border-radius	: 10px;
+	display		 : inline-block;
+	padding		 : 0 10px;
+	border		  : dotted;
+	font-size		: .8em;
 }
 
 section:not([data-background-image]) {
-	color           : #c3d9ee;
+	color			: #c3d9ee;
 	background-color: rgba(0,0,0,0.4);
-	padding         : 25px !important;
-	/*top             : -20px !important;*/
-	width           : 125% !important;
-	left            : -140px !important;
+	padding		 : 25px !important;
+	/*top			 : -20px !important;*/
+	/*width			: 125% !important;
+	left			: -140px !important;*/
 }
 
 .reveal .slides section .fragment.highlight-current.current-fragment {
 	background-color: #58bbfa;
-	color           : white;
-	padding         : 25px !important;
+	color			: white;
+	padding		 : 25px !important;
 }
 
 .fragment.visible:not(.current-fragment) {
-	display    : none;
-	height     : 0;
+	display	: none;
+	height	 : 0;
 	line-height: 0;
 	font-size  : 0;
 }
 
 div.reveal section a {
-	color           : white;
+	color			: white;
 	background-color: #7dbb48;
-	border-radius   : 10px;
-	padding         : 0 10px;
+	border-radius	: 10px;
+	padding		 : 0 10px;
 }
 
 div.reveal section a:hover {
@@ -95,5 +95,5 @@ div.reveal section a:hover {
 
 .reveal section em {
 	font-size: .8em;
-	color    : lightgray;
+	color	: lightgray;
 }
