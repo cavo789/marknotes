@@ -114,7 +114,8 @@ class HTML
 		$dom->preserveWhiteSpace = false;
 		$dom->encoding = 'utf-8';
 
-		@$dom->loadHTML(utf8_decode($html));
+		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>' .$html);
 
 		$xpath = new \DOMXPath($dom);
 

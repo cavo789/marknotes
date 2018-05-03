@@ -97,6 +97,7 @@ class Convert
 		$html = $aeHTML->addHeadingsID($html, false);
 
 		$html = $aeHTML->addParagraphsID($html);
+
 		if ($bRunContentPlugin) {
 			// --------------------------------
 			// Call content plugins

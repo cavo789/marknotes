@@ -92,8 +92,8 @@ class CleanHTML
 		// Don't worry about spaces
 		$dom->preserveWhiteSpace = false;
 
-		// Load the HTML content
-		@$dom->loadHTML(utf8_decode($this->html));
+		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->html);
 
 		// We'll search DOM elements
 		$xpath = new \DOMXPath($dom);
@@ -129,7 +129,8 @@ class CleanHTML
 		// Don't worry about spaces
 		$dom->preserveWhiteSpace = false;
 
-		@$dom->loadHTML(utf8_decode($this->html));
+		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->html);
 
 		$xpath = new \DOMXPath($dom);
 
@@ -164,7 +165,8 @@ class CleanHTML
 		$dom->preserveWhiteSpace = false;
 		$dom->encoding = 'utf-8';
 
-		@$dom->loadHTML(utf8_decode($this->html));
+		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->html);
 
 		$xpath = new \DOMXPath($dom);
 
@@ -201,8 +203,8 @@ class CleanHTML
 		// Don't worry about spaces
 		$dom->preserveWhiteSpace = false;
 
-		// Load the HTML content
-		@$dom->loadHTML(utf8_decode($this->html));
+		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->html);
 
 		// We'll search DOM elements
 		$xpath = new \DOMXPath($dom);
@@ -272,8 +274,8 @@ class CleanHTML
 		// Don't worry about spaces
 		$dom->preserveWhiteSpace = false;
 
-		// Load the HTML content
-		@$dom->loadHTML(utf8_decode($this->html));
+		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>'.$this->html);
 
 		// We'll search DOM elements
 		$xpath = new \DOMXPath($dom);
@@ -332,7 +334,7 @@ class CleanHTML
 	/**
 	 * h1, h2, ... should be on a new line; can't follow
 	 * other elements and the text should follow the start
-	 * tag (i.e. "<h2>TEXT"   and not "<h2>   (can be CRLF) text"
+	 * tag (i.e. "<h2>TEXT"	and not "<h2>	(can be CRLF) text"
 	 */
 	private function updateHeadings() {
 		// Match all headings
@@ -340,13 +342,13 @@ class CleanHTML
 		$this->html = preg_replace($regex, "\n\n$0",
 			$this->html);
 
-		// No space after the tag (match '<h2>   TEXT'
+		// No space after the tag (match '<h2>	TEXT'
 		// and replace by '<h2>TEXT')
 		$regex = '~(<h[1-6^>]+>)(\s*)~im';
 		$this->html = preg_replace($regex, "$1",
 			$this->html);
 
-		// No space after the text (match '<h2>TEXT    </h2>'
+		// No space after the text (match '<h2>TEXT	</h2>'
 		// and replace by '<h2>TEXT</h2>')
 		$regex = '~(<h[1-6^>]+>)(.*)(\s*)(</h[1-6^>]+>)~im';
 		if (preg_match_all($regex, $this->html, $matches)) {
