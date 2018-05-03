@@ -194,9 +194,14 @@ Reveal.addEventListener('slidechanged', function (evt) {
 		}
 
 		if (evt.indexh > 0) {
+
 			// Remove the background image during the presentation
 			// but not on the very first slide
-			// $('body').css('background-image', 'none');
+			$('body').css('background-image', 'none');
+
+			if ($('#title-footer').length > 0) {
+				$('#title-footer').hide();
+			}
 
 			// Logos should be visible only on the first slide
 			if ($('.logo').length > 0) {
@@ -253,13 +258,17 @@ Reveal.addEventListener('slidechanged', function (evt) {
 			if ($('.skiptranslate').length > 0) {
 				$('.skiptranslate').show();
 			}
+
+			if ($('#title-footer').length > 0) {
+				$('#title-footer').show();
+			}
 		}
 	} // if ($hide===1)
 
 });
 
 /* Title-footer plugin : initialize the footer title */
-Reveal.addEventListener('ready', function(evt) {          
+Reveal.addEventListener('ready', function(evt) {
 	if (evt.indexh === 0 && evt.indexv === 0) {
 		pushHelpNotification();
 	} else {
@@ -270,20 +279,20 @@ Reveal.addEventListener('ready', function(evt) {
 /* Title-footer plugin : adjust the footer text when showing a new slide */
 Reveal.addEventListener('slidechanged', function(evt) {
 	if (evt.indexh === 0 && evt.indexv === 0) {
-		// First slide, show help like how to navigate 
+		// First slide, show help like how to navigate
 		pushHelpNotification();
 	} else {
 		// As from the second slide
 		pushFootnoteNotification();
-	}	
+	}
 });
 
 /* Title-footer plugin */
 function pushNotification(msg, fade) {
-	
+
 	var footer = document.getElementById('title-footer')
 	var notification = document.getElementById('notification')
-	
+
 	if(window.innerWidth < 700) {
 		// Not large enough, hide the footer
 		footer.className = "footer-hidden";
@@ -300,7 +309,7 @@ function pushNotification(msg, fade) {
 }
 
 /* Title-footer plugin */
-function pushHelpNotification() {	
+function pushHelpNotification() {
 	if(window.innerWidth < 700)
 		pushNotification("<a href='#' onclick='RevealMenu.toggle()'>Menu</a> | <a href='#' onclick='enterFullscreen()'>Fullscreen</a> | <a href='#' onclick='enterOverview()'>Overview</a> | <a href='#' onclick='enterBlackout()'>Blackout</a> | <a href='#' onclick='RevealNotes.open()'>Speaker</a> | <a href='#' onclick='enterHelp()'>Help</a>");
 	else
