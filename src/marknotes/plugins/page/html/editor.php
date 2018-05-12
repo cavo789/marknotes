@@ -43,6 +43,12 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$script =
 			"\n<script ". "src=\"".$url."libs/simplemde-markdown-editor/simplemde.min.js\" defer=\"defer\"></script>\n";
 
+		// Add keymaster.js
+		$script .=
+			"\n<script ". "src=\"".$url."libs/keymaster/keymaster.js\" defer=\"defer\"></script>\n";
+		$script .=
+			"\n<script ". "src=\"".$url."keys.js\" defer=\"defer\"></script>\n";
+
 		// Add the dropzone library to allow image upload
 		$script.="<script ".
 			"src=\"".$rootURL."/marknotes/plugins/page/html/upload".
