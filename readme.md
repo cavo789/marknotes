@@ -1,6 +1,6 @@
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
 
-![PHP 7.1](https://img.shields.io/badge/PHP-7.1-blue.svg) ![License MIT](https://img.shields.io/badge/License-MIT-green.svg) [![star this repo](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
+![PHP 7.1](https://img.shields.io/badge/PHP-7.1-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg)  [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://github.com/cavo789/marknotes) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
 
 By **Christophe Avonture**
 
