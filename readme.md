@@ -1,5 +1,7 @@
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
 
+![PHP 7.1](https://img.shields.io/badge/PHP-7.1-blue.svg) ![License MIT](https://img.shields.io/badge/License-MIT-green.svg) [![star this repo](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
+
 By **Christophe Avonture**
 
 Marknotes is a tool that will exploit your documents through a powerful web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
@@ -7,8 +9,6 @@ Marknotes is a tool that will exploit your documents through a powerful web inte
 By adopting Marknotes, you'll never ask yourself, "Where did I save my document ?" or "I had read an interesting piece of information but I don't know where it is any more". The answer will be, of course, "The information is saved in Marknotes and will really fast retrieve."
 
 >If you like marknotes, please give him a :star: and fork it.
-
-![Licence MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
 **marknotes requires PHP 7.1 or greater**
 
@@ -182,14 +182,14 @@ Let's imagine this structure :
 ```text
  /docs
   /GitHub
-   /repo_1
-   /repo_2
+	/repo_1
+	/repo_2
   /marknotes
-   /en
-    / ... (a lot of subfolders)
-   /fr
-    / ... (a lot of subfolders)
-   /nl
+	/en
+	/ ... (a lot of subfolders)
+	/fr
+	/ ... (a lot of subfolders)
+	/nl
 ```
 
 You've a lot of subfolders in `/docs` and, for marknotes, you've three subfolders, one by language (English, French or Dutch).
@@ -240,11 +240,11 @@ There are dozens of plugins for marknotes, you can choose to enable them or not 
 {
  "plugins": {
   "content": {
-   "html": {
-    "font-awesome": {
-     "enabled": 0
-    }
-   }
+	"html": {
+	"font-awesome": {
+	 "enabled": 0
+	}
+	}
   }
  }
 }
@@ -298,7 +298,7 @@ marknotes has been created and is maintained by [Christophe Avonture](https://gi
 
 ## 11. Want to help
 
-MarkNotes is maintained by one person in spare time. 
+MarkNotes is maintained by one person in spare time.
 
 MarkNotes needs your help!
 
