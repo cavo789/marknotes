@@ -36,7 +36,7 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// in the resulting HTML
 		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
 
-		if (($html=='') || (preg_match_all($pattern, $html, $matches))) {
+		if (($html=='') && (preg_match_all($pattern, $html, $matches))) {
 			// At least one block found, load .js
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$url = rtrim($aeFunctions->getCurrentURL(), '/');
@@ -46,7 +46,9 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 			$script = "<script src=\"".$url."mermaid.min.js\" ".
 				"defer=\"defer\"></script>\n".
 				"<script>\n".
-				"$('document').ready(function(){mermaid.initialize({startOnLoad:true});;});\n".
+				"$(document).ready(function () {\n".
+					"mermaid.initialize({startOnLoad:true});\n".
+				"});\n".
 				"</script>\n";
 
 			$js .= $aeFunctions->addJavascriptInline($script);

@@ -197,7 +197,10 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 				}
 
 				// Get the filename to include
-				$sFile = realpath(str_replace('/', DS, $file[$i]));
+				//$sFile = realpath(str_replace('/', DS, $file[$i]));
+				/*<!-- build:debug -->*/
+
+				$sFile = str_replace('/', DS, $file[$i]);
 
 				if ($sFile=='') {
 					// The file doensn't exists
@@ -222,10 +225,17 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 
 					$sCSV2MD = self::getMarkup($sCSVContent);
 				} else {
+
+					$sCSV2MD = '';
+
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug->log('	Failure : file ['.$sFile.'] '.
 							'not found !', 'error');
+
+						$sCSV2MD = '<span class="devmode">'.
+							DEV_MODE_PREFIX.' Failure : '.
+						 	'file ['.$sFile.'] not found!</span>';
 					}
 					/*<!-- endbuild -->*/
 
