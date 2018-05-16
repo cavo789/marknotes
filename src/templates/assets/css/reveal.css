@@ -87,6 +87,7 @@ div.reveal section a {
 	color: white;
 	background-color: #7dbb48;
 	border-radius: 10px;
+	word-wrap: break-word;
 }
 
 div.reveal section a:hover {

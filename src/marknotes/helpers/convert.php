@@ -63,7 +63,10 @@ class Convert
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_REGEX);
 			$pageBreak = $arrSettings['page_break'] ?? '\n+^-{3,5}$\n+';
 
-			$markdown = preg_replace('/('.$pageBreak.')/m', '', $markdown);
+			// Replace the page break (---) in a HTML version by a double
+			// empty line. Should not be an empty string otherwise lines
+			// before and after the --- mark will be only one.
+			$markdown = preg_replace('/('.$pageBreak.')/m', PHP_EOL.PHP_EOL, $markdown);
 		}
 
 		include_once $folder.$file.'.php';

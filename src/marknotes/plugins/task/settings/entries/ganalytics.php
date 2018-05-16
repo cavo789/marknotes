@@ -31,7 +31,7 @@ class MN_Ganalytics extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		$opt = 'enable_localhost';
 		$text = self::getTranslation($key.'.'.$opt);
-		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

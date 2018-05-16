@@ -718,26 +718,29 @@
 							"pattern": "%RUN_JS%{text=\"(.*)\",function=\"(.*)\"}",
 							"value": "*<a href=\"javascript:$2();\">$1</a>*"
 						}, {
+							"pattern": "Joomla",
+							"value": ":fa-joomla: Joomla"
+						},{
 							"pattern": "WordPress",
-							"value": "WordPress :fa-wordpress:"
+							"value": ":fa-wordpress: WordPress"
 						}, {
 							"pattern": "Drupal",
-							"value": "Drupal :fa-drupal:"
+							"value": ":fa-drupal: Drupal"
 						}, {
 							"pattern": "Prestashop",
-							"value": "Prestashop :fa-shopping-cart:"
+							"value": ":fa-shopping-cart: Prestashop"
 						}, {
 							"pattern": "Magento",
-							"value": "Magento :fa-shopping-cart:"
+							"value": ":fa-shopping-cart: Magento"
 						}, {
 							"pattern": "Moodle",
-							"value": "Moodle :fa-pencil:"
+							"value": ":fa-pencil: Moodle"
 						}, {
 							"pattern": "phpBB",
-							"value": "phpBB :fa-pencil:"
+							"value": ":fa-pencil: phpBB"
 						}, {
 							"pattern": "Github",
-							"value": "Github :fa-github:"
+							"value": ":fa-github: Github"
 						}
 					]
 				},

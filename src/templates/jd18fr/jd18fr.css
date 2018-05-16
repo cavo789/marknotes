@@ -94,6 +94,11 @@ div.reveal section a:hover {
 	color: red;
 }
 
+.reveal section img {
+	border: none;
+	background-color: transparent;
+}
+
 .reveal .big {
 	font-size: 2em;
 }
