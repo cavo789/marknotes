@@ -131,6 +131,14 @@ class HTML
 
 		$html = $dom->saveHTML($dom->documentElement);
 
+		// The saveHTML method here above will automatically add <html>
+		// and <body> tags and we don't want them since the HTML string
+		// will be injected into a template file so remove these tags
+		$tags = array( 'html', 'body');
+		foreach ($tags as $tag) {
+			$html = preg_replace("/<\\/?" . $tag . "(.|\\s)*?>/",'',$html);
+		}
+
 		return $html;
 	}
 
@@ -187,6 +195,12 @@ class HTML
 			$arr = $aeSettings->getPlugins('plugins.task.homepage', array('enabled'=>1));
 			$show_tips = boolval($arr['enabled']);
 			$template = str_replace('%SHOW_TIPS%', $show_tips?1:0, $template);
+		}
+
+		if (strpos($template, '%SHOW_FAVORITES%') !== false) {
+			$arr = $aeSettings->getPlugins('plugins.task.favorites', array('enabled'=>1));
+			$show_fav = boolval($arr['enabled']);
+			$template = str_replace('%SHOW_FAVORITES%', $show_fav?1:0, $template);
 		}
 
 		if (strpos($template, '%VERSION%') !== false) {
