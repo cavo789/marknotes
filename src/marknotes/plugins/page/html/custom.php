@@ -22,6 +22,11 @@
  *			}
  *		}
  *	}
+ *
+ * Filenames should be specified from the root folder of marknotes
+ * So "your_own.css" (without foldername) means that this file in stored in
+ * the root folder. "/templates/assets/myfile.css" if you've store the file
+ * in that folder
  */
 namespace MarkNotes\Plugins\Page\HTML;
 

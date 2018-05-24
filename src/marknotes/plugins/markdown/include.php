@@ -37,6 +37,11 @@
  *					folder will be processed
  *					(f.i. %INCLUDE foldername/*.md%)
  *
+ * increment_headings:0 => by default, when including a .md file, h1 will become h2,
+ * 					h2 will become h3 (in the included file) so the hierarchy of
+ * 					the master file will be respected. This is done by scanning
+ * 					the presence of markdown # tags in the file.
+ *
  * Note : the Include plugin also support dynamic list files like
  *		%INCLUDE *.md%
  *		In that case, all .md files in the same folder will be
@@ -146,6 +151,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 */
 	private static function cleanMarkdown(string $markdown) : string
 	{
+
+		if (trim($markdown) === '') return '';
+
 		/**
 		 * When including a file, remove any %TOC% calls
 		 * (TOC plugin) since a table of content should never
@@ -154,7 +162,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		 * inclusions)
 		*/
 		$regex = '/%TOC_(\\d)%/m';
-		$markdown = preg_replace($regex, '', $markdown);
+		$tmp = preg_replace($regex, '', $markdown);
+		if ($tmp!==null) $markdown = $tmp;
 
 		/**
 		 * Replace non breaking space to spaces
@@ -166,7 +175,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		 * Replace by a space character
 		*/
 		$regex = '/\x{00a0}/siu';
-		$markdown=preg_replace($regex, ' ', $markdown);
+		$tmp = preg_replace($regex, ' ', $markdown);
+		if ($tmp!==null) $markdown = $tmp;
 
 		return $markdown;
 	}
@@ -426,6 +436,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 				for ($j=0; $j<count($arrFiles); $j++) {
 					$filename = $arrFiles[$j];
+
+					$filename = str_replace('/', DS, $filename);
+
 					$tag2 = $arrTags[$j];
 
 					$sContent='';
@@ -448,6 +461,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 							// Read the file
 							$sContent = trim($aeFiles->getContent($filename));
+
+							// Correctly process accentuated chars.
+							$sContent = utf8_decode($sContent);
 
 							// Be sure to have two empty lines so
 							// headings will be correctly understand
@@ -478,7 +494,34 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// a heading 1, it should become
 							// a heading 2 => headings should be
 							// incremented by one
-							$sContent = self::IncrementHeadings($sContent);
+							//
+							// But incrementHeadings only if not disabled.
+							// %INCLUDE file.vb{"incrementHeadings":0}%
+
+							$ext = $aeFiles->getExtension($filename);
+
+							// When the extension is "md", default is Yes, we'll
+							// increment headings
+							$incrementHeadings=($ext=='md');
+
+							if ($json[$i]!=='') {
+								$tmp = json_decode($json[$i], true);
+								if (isset($tmp['increment_headings'])) {
+									$incrementHeadings=boolval($tmp['increment_headings']);
+								}
+							}
+
+							// We always need to increment heading but
+							// don't give the content of the included file if
+							// $incrementHeadings is unset, this way, only
+							// increment the master file
+							if ($incrementHeadings) {
+								$sContent = self::IncrementHeadings($sContent);
+							}
+
+							// Sometimes the file on the disk contains
+							// accentuated characters
+							$sContent = utf8_encode($sContent);
 
 						/*<!-- build:debug -->*/
 						} else {
@@ -496,6 +539,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					} // if (!self::wasAlreadyProcessed
 
 					$markdown = str_replace($tag2, $sContent, $markdown);
+
 				} // for ($j=0; $j<count($arrFiles)
 			} // if ($before[$i] !== '')
 		} // for ($i=0; $i<count($matches[0]

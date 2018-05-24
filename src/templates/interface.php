@@ -157,6 +157,7 @@
 			marknotes.settings = {};
 			marknotes.settings.debug='%DEBUG%';
 			marknotes.settings.language='%LANGUAGE%';
+			marknotes.settings.show_favorites=%SHOW_FAVORITES%;
 			marknotes.settings.show_tips=%SHOW_TIPS%;
 			marknotes.settings.version='%VERSION%';
 			marknotes.settings.version_url='%VERSION_URL%';

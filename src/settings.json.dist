@@ -718,7 +718,7 @@
 							"pattern": "%RUN_JS%{text=\"(.*)\",function=\"(.*)\"}",
 							"value": "*<a href=\"javascript:$2();\">$1</a>*"
 						}, {
-							"pattern": "Joomla",
+							"pattern": "J__oomla",
 							"value": ":fa-joomla: Joomla"
 						},{
 							"pattern": "WordPress",
@@ -858,7 +858,8 @@
 						"appearance": {
 							"theme": "beige",
 							"custom": {
-								"css": [],
+								"css": [
+								],
 								"js": []
 							}
 						},
@@ -1081,7 +1082,6 @@
 					},
 					"kill_old_ones": {
 						"enabled": 0,
-						"TEMP":"This plugin is no more needed since MN use the cache system and doesn't create anymore .html files in the note's folder",
 						"not_if_task": ["task.search.search"],
 						"only_if_task": []
 					}

@@ -11,7 +11,12 @@ DirectoryIndex index.php
 	# For instance : http://localhost:8080/notes/docs/Development/atom/plugins.html
 	# will be valid and will display the html rendering of
 	# the plugins.md file
+
+	# Uncomment the two following lines if the URL rewriting isn't working
+	# correctly (depending on your web hoster, these instructions can be needed)
 	#Options +FollowSymlinks
+	#RewriteBase /
+
 	RewriteEngine On
 
 	# Special URLs (robots.txt, tags.json, sitemap.xml, ...)

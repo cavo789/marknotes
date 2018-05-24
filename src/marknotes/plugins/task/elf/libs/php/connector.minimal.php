@@ -60,7 +60,11 @@ $opts = array(
 			'uploadDeny'	=> array('all'),
 			// Mimetype `image` and `text/plain` allowed to upload
 			// Allow .docx files too
-			'uploadAllow'	=> array('image', 'text/html', 'text/plain', 'text/x-markdown', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
+			// 'text/x-c++' because sometines .md files are recognized as c++ source
+			'uploadAllow'	=> array('image', 'text/html', 'text/plain',
+				'text/x-markdown', 'text/x-c++',
+				'application/json', 'application/pdf',
+				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
 			// allowed Mimetype : the one specified here above
 			'uploadOrder'	=> array('deny', 'allow'),
 			// Set locale. Currently only UTF-8 locales are supported.

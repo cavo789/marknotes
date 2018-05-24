@@ -146,8 +146,9 @@ class Convert
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$fname=$aeFiles->makeFileNameAbsolute($this->sMDFileName);
+		$fname=str_replace('/', DS, $fname);
 
-		$fname = $aeFiles->replaceExtension(str_replace('/', DS, $fname), $this->sLayout);
+		$fname = $aeFiles->replaceExtension($fname, $this->sLayout);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {

@@ -189,7 +189,7 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		// and not for "normal" html rendering
 		$layout = $params['layout'] ?? '';
 		if (!in_array($layout, array('remark','reveal'))) {
-			return false;
+			return array(false, '');
 		}
 
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -199,7 +199,7 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		$arrSettings = $aeSettings->getPlugins('plugins.options.task.export.decktape');
 
 		if ($arrSettings === array()) {
-			return false;
+			return array(false, '');
 		}
 
 		$sScriptName = $root.ltrim($arrSettings['script'], DS);
@@ -208,10 +208,10 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		if (!$aeFiles->exists($sScriptName)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
-				$aeDebug->here('Decktape, file '.$sScriptName.' not found', 5);
+				$aeDebug->here('ERROR - Decktape, file '.$sScriptName.' not found', 5);
 			}
 			/*<!-- endbuild -->*/
-			return false;
+			return array(false, '');
 		}
 
 		// $params['filename'] is f.i. note.reveal.pdf or
@@ -298,18 +298,22 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$aeConvert = \MarkNotes\Tasks\Convert::getInstance($params['filename'], static::$extension, 'pandoc');
+		$aeConvert->setLayout(static::$extension);
 
 		// Get the filename, once exported (f.i. notes.txt)
 		$final = $aeConvert->getFileName();
 
 		// Generate the file ... only if not yet there
 		if (!$aeFiles->exists($final)) {
+
 			$layout = $params['layout'] ?? '';
+
 			if (in_array($layout, array('remark','reveal'))) {
 				// This is a slideshow => use deckTape for
 				// the exportation
 				list($bReturn, $final) = self::deckTape($params);
 			} else {
+
 				// Check if domPDF is installed
 				$domPDF = $aeSettings->getFolderLibs().'Dompdf/dompdf/autoload.inc.php';
 				if ($aeFiles->exists($domPDF)) {
@@ -317,9 +321,9 @@ class PDF extends \MarkNotes\Plugins\Task\Plugin
 				} else {
 					list($bReturn, $final) = self::pandoc($params);
 				}
+
 			} // if (in_array($layout, array('remark','reveal')))
 		} //if(!$aeFiles->exists($final))
-
 		// In case of error, there is no output at all
 		$params['output'] = ($bReturn ? $final : '');
 		return $bReturn;

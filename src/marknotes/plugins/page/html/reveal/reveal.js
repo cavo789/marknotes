@@ -208,10 +208,11 @@ Reveal.addEventListener('slidechanged', function (evt) {
 				$('.logo').hide();
 			}
 
-			// No need to display the navigation controls button
-			// during the slideshow
+			// Reduce the size of the controls (left, right, top, bottom)
+			// and be sure to make them visible (not under the number of
+			// the current slide)
 			if ($('.controls').length > 0) {
-				$('.controls').hide();
+				$('.controls').css('font-size', '5px').css('margin-bottom', '15px');
 			}
 
 			// If the menu-reveal.js plugin has been loaded,
