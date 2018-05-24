@@ -12,23 +12,30 @@ REM ----------------------------------------------------------------------------
 :ShowInfo
 CLS
 
-ECHO  ===========================================================================
-ECHO  =																		 =
-ECHO  = Marknotes																=
-ECHO  =																		 =
-ECHO  = Quickly deploy a copy of marknotes, on a localhost, by just referencing =
-ECHO  = source files so a change in a source file will be reflected in the copy =
-ECHO  =																		 =
-ECHO  = The added-value of this script is to avoid, when you need to have more  =
-ECHO  = than one "marknotes" website on your system, to duplicate every files.  =
-ECHO  =																		 =
-ECHO  = Under Windows OS, the mklink command allow to create a symlink (like a  =
-ECHO  = shortcut) and files should only be there once on your system.			=
-ECHO  =																		 =
-ECHO  = NOTE : THIS SCRIPT  SHOULD BE EXECUTED IN A COMMAND  PROMPT BUT ONLY IF =
-ECHO  = YOU'VE STARTED THE PROMPT WITH "RUN AS AN ADMIN"						=
-ECHO  =																		 =
-ECHO  ===========================================================================
+ECHO  ===============================================
+ECHO  =                                             =
+ECHO  = Marknotes                                   =
+ECHO  =                                             =
+ECHO  = Quickly deploy a copy of marknotes, on a    =
+ECHO  = localhost, by just referencing source       =
+ECHO  = files so a change in a source file will be  =
+ECHO  = reflected in the copy                       =
+ECHO  =                                             =
+ECHO  = The added-value of this script is to avoid, =
+ECHO  = when you need to have more than one         =
+ECHO  = "marknotes" website on your system, to      =
+ECHO  = duplicate every files.                      =
+ECHO  =                                             =
+ECHO  = Under Windows OS, the mklink command allow  =
+ECHO  = to create a symlink (like a shortcut) and   =
+ECHO  = files should only be there once on your     =
+ECHO  = system.                                     =
+ECHO  =                                             =
+ECHO  = NOTE : THIS SCRIPT SHOULD BE EXECUTED IN A  =
+ECHO  = COMMAND PROMPT BUT ONLY IF YOU'VE STARTED   =
+ECHO  = THE PROMPT WITH "RUN AS AN ADMIN"           =
+ECHO  =                                             =
+ECHO  ===============================================
 
 ECHO.
 ECHO  This script can be used to quickly create a new local website for marknotes.
@@ -57,10 +64,10 @@ if not exist "docs" mkdir docs
 if not exist "tmp" mkdir tmp
 
 if not exist ".htaccess.txt" copy %MASTER%.htaccess.txt .htaccess
-mklink browserconfig.xml %MASTER%browserconfig.xml
-mklink index.php %MASTER%index.php
-mklink router.php %MASTER%router.php
-mklink settings.json.dist %MASTER%settings.json.dist
+if not exist "browserconfig.xml" mklink browserconfig.xml %MASTER%browserconfig.xml
+if not exist "index.php" mklink index.php %MASTER%index.php
+if not exist "router.php" mklink router.php %MASTER%router.php
+if not exist "settings.json.dist" mklink settings.json.dist %MASTER%settings.json.dist
 
 if not exist "tags.json" echo {} > tags.json
 
