@@ -21,39 +21,47 @@ class GetList extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$arrOptions = self::getOptions('list', array());
-
-		// Sort the array
-		sort($arrOptions);
-
 		$arr = array();
 
-		$arr['title'] = $aeSettings->getText('favorites_title', 'Your favorites notes');
+		// 1. Be sure the task is well enabled
+		$arrSettings = $aeSettings->getPlugins(self::$json_settings, array('enabled'=>0));
+		$bContinue = boolval($arrSettings['enabled']??0);
 
-		// Get the docs folder
-		$docs = $aeSettings->getFolderDocs(false);
+		if ($bContinue) {
 
-		// $arrOptions, if not empty, is a list of filenames like
-		//
-		//		christophe/note
-		//		marknotes/Ideas
-		//		homepage
-		//
-		// the root "docs/" folder is not mentionned and the ".md"
-		// extension not needed too.
-		foreach ($arrOptions as $file) {
-			$file = $aeFiles->removeExtension($file);
+			// Get the list of favorites from the settings.json file
+			$arrOptions = self::getOptions('list', array());
 
-			$file = str_replace('/', DS, $file);
+			// Sort the array
+			sort($arrOptions);
 
-			// Make sure the favorites still exists
-			$fullname = $aeFiles->makeFileNameAbsolute($file).'.md';
+			$arr['title'] = $aeSettings->getText('favorites_title', 'Your favorites notes');
 
-			if ($aeFiles->exists($fullname)) {
-				$arr['files'][] = array(
-					'file'=>$file,
-					'id'=>md5($docs.$file) // md5 needs "docs/"
-				);
+			// Get the docs folder
+			$docs = $aeSettings->getFolderDocs(false);
+
+			// $arrOptions, if not empty, is a list of filenames like
+			//
+			//		christophe/note
+			//		marknotes/Ideas
+			//		homepage
+			//
+			// the root "docs/" folder is not mentionned and the ".md"
+			// extension not needed too.
+			foreach ($arrOptions as $file) {
+				$file = $aeFiles->removeExtension($file);
+
+				$file = str_replace('/', DS, $file);
+
+				// Make sure the favorites still exists
+				$fullname = $aeFiles->makeFileNameAbsolute($file).'.md';
+
+				if ($aeFiles->exists($fullname)) {
+					$arr['files'][] = array(
+						'file'=>$file,
+						'id'=>md5($docs.$file) // md5 needs "docs/"
+					);
+				}
 			}
 		}
 

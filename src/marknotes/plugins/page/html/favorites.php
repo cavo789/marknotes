@@ -10,7 +10,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Favorites extends \MarkNotes\Plugins\Page\HTML\Plugin
 {
 	protected static $me = __CLASS__;
-	protected static $json_settings = 'plugins.page.html.favorites';
+	protected static $json_settings = 'plugins.task.favorites';
 	protected static $json_options = 'plugins.options.task.favorites';
 
 	/**
@@ -70,5 +70,20 @@ class Favorites extends \MarkNotes\Plugins\Page\HTML\Plugin
 	public static function doIt(&$html = null) : bool
 	{
 		return true;
+	}
+
+	/**
+	 * Verify if the plugin is well needed and thus have a reason
+	 * to be fired
+	 */
+	final protected static function canRun() : bool
+	{
+		$bCanRun = parent::canRun();
+
+		if ($bCanRun) {
+			$bCanRun = self::isEnabled(true);
+		}
+
+		return $bCanRun;
 	}
 }

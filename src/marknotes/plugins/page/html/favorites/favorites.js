@@ -41,6 +41,7 @@ function fnPluginHTMLFavoritesShowIcon() {
 			param: window.btoa(encodeURIComponent(JSON.stringify(marknotes.note.file))),
 			callback: 'afterGetFavoritesIcon(data)',
 			dataType: 'json',
+			target: 'FAVORITES',
 			useStore: 0
 		});
 	}
@@ -118,12 +119,17 @@ function afterGetFavoritesIcon($data) {
  * Also called by the Show Favorites button
  */
 function fnPluginHTMLFavoritesShow() {
-	ajaxify({
-		task: 'task.favorites.getlist',
-		callback: 'afterShowFavorites(data)',
-		dataType: 'json',
-		useStore: 1
-	});
+
+	// Only if the favorites has been enabled
+	if (marknotes.settings.show_favorites == 1) {
+		ajaxify({
+			task: 'task.favorites.getlist',
+			callback: 'afterShowFavorites(data)',
+			dataType: 'json',
+			target: 'FAVORITES',
+			useStore: 1
+		});
+	}
 
 	return true;
 }
@@ -173,33 +179,33 @@ function afterShowFavorites($data) {
 	// The FAVORITES id exists on the homepage (when the interface
 	// is displayed). As soon as a note is displayed, only the
 	// CONTENT node id exists
-	$domID = ($('#FAVORITES').length == 0) ? '#CONTENT' : '#FAVORITES';
+	if ($('#FAVORITES').length !== 0) {
+		$('#FAVORITES').html(
+			'<h2>' + $title + '</h2>' +
+			'<div class="animated bounceInLeft">' +
+				'<ul id="favorites">' + $ul.innerHTML + '</ul>' +
+			'</div>');
 
-	$($domID).html(
-		'<h2>' + $title + '</h2>' +
-		'<div class="animated bounceInLeft">' +
-			'<ul id="favorites">' + $ul.innerHTML + '</ul>' +
-		'</div>');
+		// And handle clicks
+		$("#favorites li").click(function (event) {
 
-	// And handle clicks
-	$("#favorites li").click(function (event) {
+			/*<!-- build:debug -->*/
+			if (marknotes.settings.debug) {
+				console.log('Select node with id ' +
+					$(this).attr('id')+' in the treeview');
+			}
+			/*<!-- endbuild -->*/
 
-		/*<!-- build:debug -->*/
-		if (marknotes.settings.debug) {
-			console.log('Select node with id ' +
-				$(this).attr('id')+' in the treeview');
-		}
-		/*<!-- endbuild -->*/
-
-		try {
-			$(this).attr('id')
-			$('#TOC').jstree('select_node', $(this).attr('id'));
-		} catch (e) {
-			// Problem in jstree ???
-			console.warn('Error when selecting the node : ' +
-				e.message);
-		}
-	});
+			try {
+				$(this).attr('id')
+				$('#TOC').jstree('select_node', $(this).attr('id'));
+			} catch (e) {
+				// Problem in jstree ???
+				console.warn('Error when selecting the node : ' +
+					e.message);
+			}
+		});
+	} // if ($('#FAVORITES').length !== 0)
 
 	return true;
 }

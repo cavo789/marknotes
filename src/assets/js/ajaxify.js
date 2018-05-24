@@ -182,8 +182,7 @@ function ajaxify_get_target($params, $bTaskReload) {
 		/*<!-- endbuild -->*/
 
 	} else {
-
-		$target = '#' + (($params.target === 'undefined') ? 'CONTENT' : $params.target);
+		$target = '#' + (($params.target === undefined) ? 'CONTENT' : $params.target);
 
 	}
 
@@ -282,6 +281,13 @@ function ajaxify($params) {
 	$bTaskReload = false;
 	if ((typeof $params.task !== 'undefined') && ($params.task == 'reload')) {
 		$bTaskReload = true;
+	}
+
+	// Default : asynchronous tasks (severall tasks in parallel)
+	$bAsync = true;
+	if (typeof $params.async !== 'undefined') {
+		// Type cast so we're sure to have True or False, nothing else
+		$bAsync = Boolean($params.async);
 	}
 
 	// Get parameters. This is a little more complex than just reading
@@ -398,7 +404,7 @@ function ajaxify($params) {
 							$.i18n('please_wait') + '</span></div>');
 				}
 			}, // beforeSend()
-			async: true,
+			async: $bAsync,
 			cache: true,
 			type: (marknotes.settings.debug ? 'GET' : 'POST'),
 			url: $url,

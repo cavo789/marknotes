@@ -18,7 +18,9 @@ function fnPluginHTMLLastModified() {
 		task: 'task.lastmodified.getlist',
 		callback: 'afterShowLastModified(data)',
 		dataType: 'json',
-		useStore: 1
+		useStore: 1,
+		async: 0,
+		target: 'LASTMODIFIED'
 	});
 
 	return true;
@@ -74,34 +76,34 @@ function afterShowLastModified($data) {
 		// The LASTMODIFIED id exists on the homepage (when the
 		// interface is displayed). As soon as a note is displayed,
 		// only the CONTENT node id exists
-		$domID = ($('#LASTMODIFIED').length == 0) ? '#CONTENT' : '#LASTMODIFIED';
+		if ($('#LASTMODIFIED').length !== 0) {
 
-		$($domID).html(
-			'<h2>' + $title + '</h2>' +
-			'<div class="animated bounceInLeft">' +
-				'<ul id="lastmodified">' + $ul.innerHTML + '</ul>' +
-			'</div>');
+			$('#LASTMODIFIED').html(
+				'<h2>' + $title + '</h2>' +
+				'<div class="animated bounceInLeft">' +
+					'<ul id="lastmodified">' + $ul.innerHTML + '</ul>' +
+				'</div>');
 
-		// And handle clicks
-		$("#lastmodified li").click(function (event) {
+			// And handle clicks
+			$("#lastmodified li").click(function (event) {
 
-			/*<!-- build:debug -->*/
-			if (marknotes.settings.debug) {
-				console.log('Select node with id ' +
-					$(this).attr('id')+' in the treeview');
-			}
-			/*<!-- endbuild -->*/
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.log('Select node with id ' +
+						$(this).attr('id')+' in the treeview');
+				}
+				/*<!-- endbuild -->*/
 
-			try {
-				$(this).attr('id')
-				$('#TOC').jstree('select_node', $(this).attr('id'));
-			} catch (e) {
-				// Problem in jstree ???
-				console.warn('Error when selecting the node : ' +
-					e.message);
-			}
-		});
+				try {
+					$(this).attr('id')
+					$('#TOC').jstree('select_node', $(this).attr('id'));
+				} catch (e) {
+					// Problem in jstree ???
+					console.warn('Error when selecting the node : ' +
+						e.message);
+				}
+			});
+		} // if ($('#LASTMODIFIED').length !== 0)
 	}
-
 	return true;
 }
