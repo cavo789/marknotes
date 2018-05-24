@@ -3,6 +3,9 @@
  * Based on PHPFastCache
  *
  * @link https://github.com/PHPSocialNetwork/phpfastcache
+ *
+ * The cache system will be enabled only if enabled in settings.json
+ * See plugins.options.task.optimize.cache.enabled
  */
 
 /* REQUIRES PHP 7.x AT LEAST */
@@ -23,36 +26,46 @@ class Cache
 	{
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Initialize the cache folder
-		if ($folder!=='') {
-			static::$sCacheFolder = rtrim($folder, DS).DS.'cache';
+		// Only if enabled in settings.json
+		$options = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$enabled = $options['enabled']??1;
 
-			if (!is_dir(static::$sCacheFolder)) {
-				mkdir(static::$sCacheFolder, CHMOD_FOLDER);
-			}
+		if ($enabled) {
+			// Initialize the cache folder
+			if ($folder!=='') {
+				static::$sCacheFolder = rtrim($folder, DS).DS.'cache';
 
-			if (!is_file($fname = static::$sCacheFolder.'/.gitignore')) {
-				file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
-			}
+				if (!is_dir(static::$sCacheFolder)) {
+					mkdir(static::$sCacheFolder, CHMOD_FOLDER);
+				}
 
-			if (!is_file($fname = static::$sCacheFolder.'/.htaccess')) {
-				file_put_contents($fname, 'deny from all');
-			}
+				if (!is_file($fname = static::$sCacheFolder.'/.gitignore')) {
+					file_put_contents($fname, '# Ignore everything'.PHP_EOL.'*');
+				}
 
-			// Setup File Path on your config files
-			CacheManager::setDefaultConfig(
-				array('path' => static::$sCacheFolder)
-			);
+				if (!is_file($fname = static::$sCacheFolder.'/.htaccess')) {
+					file_put_contents($fname, 'deny from all');
+				}
 
-			// In your class, function, you can call the Cache
-			static::$InstanceCache = CacheManager::getInstance('files');
+				// Setup File Path on your config files
+				CacheManager::setDefaultConfig(
+					array('path' => static::$sCacheFolder)
+				);
 
-			if (!isset(static::$InstanceCache)) {
-				throw new Exception('Marknotes - Cache library not '.
-					'loaded.');
-			}
+				// files : can raise a server error (500) in some cases, need
+				// 		furthers investigations (permissions, owner, ... ) ?
+				//static::$InstanceCache = CacheManager::getInstance('files');
+				//static::$InstanceCache = CacheManager::getInstance('cookie');
+				static::$InstanceCache = CacheManager::getInstance('auto');
 
-		} // if ($folder!=='')
+				if (!isset(static::$InstanceCache)) {
+					throw new Exception('Marknotes - Cache library not '.
+						'loaded.');
+				}
+
+			} // if ($folder!=='')
+
+		}
 
 		return true;
 	}
