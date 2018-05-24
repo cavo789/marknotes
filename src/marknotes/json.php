@@ -35,7 +35,16 @@ class JSON
 		return self::$hInstance;
 	}
 
-	private static function showLintError(object $e, string $fname, string $json) : bool
+	/**
+	 * !!! Under PHP P7.0 the "object" type seems to be not supported.
+	 * The $e parameter is thus untype
+	 *
+	 * @param  object $e	 [description]
+	 * @param  string $fname [description]
+	 * @param  string $json  [description]
+	 * @return bool		  [description]
+	 */
+	private static function showLintError($e, string $fname, string $json) : bool
 	{
 		if (self::$hDebug == true) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
