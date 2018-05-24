@@ -25,7 +25,14 @@ class Save
 			$docs = $aeSettings->getFolderDocs(true);
 			$base64 = trim(rawurldecode($aeFunctions->getParam('folder', 'string', '', false)));
 
-			$folder = $docs.base64_decode($base64);
+			// decode
+			$folder = base64_decode($base64);
+
+			// Make the path absolute
+			if (!$aeFunctions->startsWith($folder , $docs)) {
+				$folder = $docs.$folder;
+			}
+
 			$folder = str_replace('/', DS, $folder);
 
 			// Be sure to have the final slashes
