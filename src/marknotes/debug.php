@@ -98,39 +98,45 @@ class Debug
 		self::$bDevMode = $bOnOff;
 
 		/*<!-- build:debug -->*/
-		// Load tracy if found otherwise check php-error
-		$lib = self::$root.'libs/tracy/tracy';
-		if (is_dir($lib)) {
-			// @https://github.com/nette/tracy
-			\Tracy\Debugger::enable();
-			\Tracy\Debugger::$showBar = $bOnOff;
-			\Tracy\Debugger::$strictMode = $bOnOff;
-			\Tracy\Debugger::$showLocation = $bOnOff;
-		} else {
-			// include php_error library to make life easier
-			// @link : https://github.com/JosephLenton/PHP-Error
-			$lib = self::$root.'libs/php_error/php_error.php';
+		// Load the Tracy toolbar only in DEV mode
+		if (self::$bDevMode) {
+			// Load tracy if found otherwise check php-error
+			$lib = self::$root.'libs/tracy/tracy';
+			if (is_dir($lib)) {
+				// @https://github.com/nette/tracy
+				\Tracy\Debugger::enable();
+				\Tracy\Debugger::$showBar = $bOnOff;
+				\Tracy\Debugger::$strictMode = $bOnOff;
+				\Tracy\Debugger::$showLocation = $bOnOff;
+			} else {
+				// include php_error library to make life easier
+				// @link : https://github.com/JosephLenton/PHP-Error
+				$lib = self::$root.'libs/php_error/php_error.php';
 
-			$aeFiles = \MarkNotes\Files::getInstance();
-			if ($aeFiles->exists($lib)) {
-				$aeFunctions = \MarkNotes\Functions::getInstance();
+				$aeFiles = \MarkNotes\Files::getInstance();
+				if ($aeFiles->exists($lib)) {
+					$aeFunctions = \MarkNotes\Functions::getInstance();
 
-				// Seems to not work correctly with ajax; the return
-				// JSON isn't correctly understand by JS
-				$options = array(
-					// Don't enable ajax is not ajax call
-					'catch_ajax_errors' => $aeFunctions->isAjaxRequest(),
-					// Don't allow to modify sources from php-error
-					'enable_saving' => 0,
-					// Capture everything
-					'error_reporting_on' => $bOnOff
-				);
+					// Seems to not work correctly with ajax; the return
+					// JSON isn't correctly understand by JS
+					$options = array(
+						// Don't enable ajax is not ajax call
+						'catch_ajax_errors' => $aeFunctions->isAjaxRequest(),
+						// Don't allow to modify sources from php-error
+						'enable_saving' => 0,
+						// Capture everything
+						'error_reporting_on' => $bOnOff
+					);
 
-				include_once $lib;
-				\php_error\reportErrors($options);
-			} // if ($aeFiles->exists($lib))
+					include_once $lib;
+					\php_error\reportErrors($options);
+				} // if ($aeFiles->exists($lib))
+			}
 		}
 		/*<!-- endbuild -->*/
+
+		return true;
+
 	}
 
 	public function getDevMode() : bool
