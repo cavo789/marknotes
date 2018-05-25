@@ -19,7 +19,7 @@ function fnPluginHTMLLastModified() {
 		callback: 'afterShowLastModified(data)',
 		dataType: 'json',
 		useStore: 1,
-		async: 0,
+		async: 1,
 		target: 'LASTMODIFIED'
 	});
 

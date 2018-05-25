@@ -49,7 +49,6 @@ class GetList extends \MarkNotes\Plugins\Task\Plugin
 		//
 		// The index used is the timestamp of the file so
 		// making a revert sort will give us the last modified files
-
 		krsort($arrFiles);
 
 		// Retrieve the number of notes to displayed in the lastmod
@@ -88,14 +87,26 @@ class GetList extends \MarkNotes\Plugins\Task\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$arrOptions = self::getOptions('list', array());
-
-		// Sort the array
-		sort($arrOptions);
+		// 1. Be sure the task is well enabled
+		$arrSettings = $aeSettings->getPlugins(self::$json_settings, array('enabled'=>0));
+		$bContinue = boolval($arrSettings['enabled']??0);
 
 		$arr = array();
 
-		$arr['files'] = self::getFiles();
+		if ($bContinue) {
+			// 2. Ok, retrieve the list of files and
+			// then get the last modified ones
+
+			$arrOptions = self::getOptions('list', array());
+
+			// Sort the array
+			sort($arrOptions);
+
+			$arr['files'] = self::getFiles();
+
+		} else {
+			$arr['files'] =  array();
+		}
 
 		$count = count($arr['files']);
 		$arr['title'] = $aeSettings->getText('lastmodified_title', 'Notes modified recently');
