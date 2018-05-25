@@ -526,7 +526,7 @@
 				"only_if_task": ["main", "interface", "task.export.html"]
 			},
 			"yaml": {
-				"enabled": 1,
+				"enabled": 0,
 				"not_if_task": ["task.search.search", "task.timeline.get"],
 				"only_if_task": []
 			},
@@ -645,7 +645,7 @@
 					"microdata": {
 						"not_in_tags": ["a", "abbr", "code", "dd", "dt", "img", "pre", "span"],
 						"keywords": [
-							"marknotes"
+							""
 						]
 					},
 					"tags": {
@@ -746,7 +746,7 @@
 				},
 				"yaml": {
 					"separator": "---",
-					"add_if_missing": 1,
+					"add_if_missing": 0,
 					"defaults": {
 						"title": "%TITLE%",
 						"created_time": "%TODAY%",
