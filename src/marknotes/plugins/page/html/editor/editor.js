@@ -97,6 +97,7 @@ function fnPluginButtonEdit($params) {
  * EDIT MODE - Render the textarea in an editor
  */
 function afterEdit($ajax_request, $form) {
+
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
 		console.log('	  Plugin Page html - Editor - afterEdit');
@@ -329,6 +330,14 @@ function fnPluginButtonEdit_Exit($params) {
  * @returns {boolean}
  */
 function buttonSave($fname, $markdown) {
+
+	if ($fname === undefined) {
+		Noty({
+			message: $.i18n('error_filename_missing'),
+			type: 'error'
+		});
+		return false;
+	}
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {

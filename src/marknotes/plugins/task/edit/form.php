@@ -7,6 +7,8 @@ namespace MarkNotes\Plugins\Task\Export;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
+use Symfony\Component\Yaml\Exception\ParseException;
+
 class Form extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
@@ -87,8 +89,19 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 			$lib=$aeSettings->getFolderLibs()."symfony/yaml/Yaml.php";
 			if ($aeFiles->exists($lib)) {
 				include_once $lib;
-				$arrYAML =  \Symfony\Component\Yaml\Yaml::parse($yaml);
-				$lang = $arrYAML['language']??$lang;
+				try {
+					$arrYAML = \Symfony\Component\Yaml\Yaml::parse($yaml);
+					$lang = $arrYAML['language']??$lang;
+				} catch (ParseException $exception) {
+					/*<!-- build:debug -->*/
+					if ($aeSettings->getDebugMode()) {
+						$aeDebug = \MarkNotes\Debug::getInstance();
+						if ($aeDebug->getDevMode()) {
+							printf('Task edit.form - Unable to parse the YAML string: %s', $exception->getMessage());
+						}
+					}
+					/*<!-- endbuild -->*/
+				}
 			}
 		}
 

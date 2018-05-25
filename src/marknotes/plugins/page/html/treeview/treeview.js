@@ -302,7 +302,6 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 
 		// Get the parent node : when adding a new folder or note,
 		// we need to retrieve the parent paths (f.i. docs/folder/sub)
-
 		var $parent = $('#TOC').jstree('get_node', data.node.parent);
 
 		// In case of the creation of a new note, the "oldname" is
@@ -310,12 +309,14 @@ function fnPluginTaskTreeView_CRUD(e, data, $task) {
 		// i.e. the default name suggested by jsTree.
 		// The real name will be $newname; the one typed by the user
 
-		var $oldname = $parent.data.path + data.old;
+		var $path = ($parent.data.path !== undefined) ? $parent.data.path : '';
+
+		var $oldname = $path + data.old;
 
 		// Get the name of the file; use the node.data.file info
 		// and not node.text which is the displayed name (and
 		// can be truncated)
-		var $newname = $parent.data.path + data.node.text;
+		var $newname = $path + data.node.text;
 
 		// Remove the starting slash character if present
 		if ($newname.charAt(0) === marknotes.settings.DS) {
@@ -523,7 +524,7 @@ function fnPluginTaskTreeView_editNode($node) {
 	ajaxify({
 		task: 'task.edit.form',
 		param: $fname,
-		callback: 'afterEdit($data.param, data)'
+		callback: 'afterEdit($data, data)'
 	});
 
 	return true;
