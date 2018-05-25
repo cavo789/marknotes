@@ -146,6 +146,20 @@
 
 		<script src="%ROOT%libs/noty/jquery.noty.packaged.min.js" defer="defer"></script>
 
+		<!--
+		SweetAlert2 requires Promise to work and, of course, IE
+		requires an external script.
+		https://github.com/sweetalert2/sweetalert2/wiki/Migration-from-SweetAlert-to-SweetAlert2#1-ie-support
+		The statement below will include the script only if Promises
+		are not supported, it's safe to write this like below and
+		not using IE conditional statements
+		-->
+		<script>
+			if (typeof Promise !== "function") {
+				document.write('<script src="cdn.jsdelivr.net/npm/promise-polyfill@7.1.0/dist/promise.min.js"><\/script>');
+			}
+		</script>
+
 		<script src="%ROOT%libs/sweetalert2/sweetalert2.min.js" defer="defer"></script>
 
 		<script src="%ROOT%libs/js-cookie/js.cookie.js" defer="defer"></script>

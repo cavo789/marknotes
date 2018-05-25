@@ -2,7 +2,7 @@
 
 ![License MIT](.images/license.png)
 
-The default credentials are **admin** / **marknotes**. You'll need them for editing notes and to change settings to yours (language, regional info, plugins, ...). Please click on the :fa-sign-in: button that you can see at the top right. Once connected, please change these credentials by clicking on the Settings button (icon is :fa-gears:), then click on the fourth 'tab' (icon is :fa-sign-in:) of the menu and click on the "Update application's settings" item (icon is :fa-toggle-on:). You'll find the credentials in the "Authentication" part.{class=note}
+The default credentials are **admin** / **marknotes**. You'll need them for editing notes and to change settings to yours (language, regional info, plugins, ...). Please click on the :fa-sign-in: button that you can see at the top right. Once connected, please change these credentials by clicking on the Settings button (icon is :fa-gears:), then click on the fourth 'tab' (icon is :fa-sun-o:) of the menu and click on the "Update application's settings" item (icon is :fa-toggle-on:). You'll find the credentials in the "Authentication" part.{class=note}
 
 %TOC_5%
 

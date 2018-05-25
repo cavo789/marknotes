@@ -252,7 +252,8 @@ class Markdown
 			}
 			/*<!-- endbuild -->*/
 
-			$markdown = $aeFiles->getContent($filename);
+			// remove empty lines if needed
+			$markdown = trim($aeFiles->getContent($filename));
 
 			// --------------------------------
 			// Call content plugins

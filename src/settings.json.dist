@@ -526,7 +526,7 @@
 				"only_if_task": ["main", "interface", "task.export.html"]
 			},
 			"yaml": {
-				"enabled": 0,
+				"enabled": 1,
 				"not_if_task": ["task.search.search", "task.timeline.get"],
 				"only_if_task": []
 			},
@@ -746,7 +746,7 @@
 				},
 				"yaml": {
 					"separator": "---",
-					"add_if_missing": 0,
+					"add_if_missing": 1,
 					"defaults": {
 						"title": "%TITLE%",
 						"created_time": "%TODAY%",

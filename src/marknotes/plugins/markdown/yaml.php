@@ -143,6 +143,7 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 
 					if ($add) {
 						$params['yaml'] = self::BuildYAML($md);
+
 						// Remember the note's YAML header
 						$yaml = YAML::dump($params['yaml']);
 					}
