@@ -44,6 +44,7 @@ class MN_Editor extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		// Translate-to language
 		$opt = 'language_to';
+		$arr = self::getArray($key);
 		// Should use double quotes
 		$value = str_replace("'", '"', trim($arr[$opt]));
 

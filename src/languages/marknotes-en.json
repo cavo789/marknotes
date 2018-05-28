@@ -6,6 +6,8 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "en"
 	},
+	"button_save_done_backup_taken":"Note: A backup was first taken and save into the %1 folder",
+	"settings_plugins_options_task_backup_make_backup_before_updating":"Make a backup of the note before saving a newer version",
 	"settings_plugins_options_page_html_anchor_paragraph_prefix":"Do you want to use a custom prefix for paragraphs IDs ? (default is \"par\"). If you just type yours here",
 	"settings_plugins_page_html_introjs_title":"Intro plugin",
 	"settings_plugins_page_html_introjs_enabled":"Enable the plugin, display the welcome tour when the interface is displayed",

@@ -25,7 +25,7 @@ class Grabber
 
 	// Name of the folder where to store ZIP files
 	// Can be adjusted in the plugin options
-	private $backup_folder = 'backup';
+	private $backup_folder = '.backups';
 
 	// Name of the ZIP file that will contain the backup
 	// Stored in the backup_folder
@@ -97,7 +97,7 @@ class Grabber
 			$this->root = $aeSettings->getFolderWebRoot();
 
 			// Get the location of the backup folder
-			$this->backup_folder = $arr['folder']??'backup';
+			$this->backup_folder = $arr['folder']??'.backups';
 			$this->backup_folder = rtrim($this->backup_folder, DS);
 			// And make the folder name absolute
 			$this->backup_folder = $this->root.$this->backup_folder.DS;
@@ -170,7 +170,8 @@ class Grabber
 			$aeFolders->create($this->backup_folder);
 
 			// No one can access the backup folder by URL
-			$content = 'deny from all';
+			$content = '# marknotes - Deny access to this folder'.PHP_EOL.
+				'deny from all';
 			$aeFiles->create($this->backup_folder.'.htaccess', $content);
 		}
 

@@ -334,7 +334,6 @@ class Settings
 
 		$return = isset($json_lang[$variable]) ? $json_lang[$variable] : trim($default);
 
-
 		if ($jsProtect) {
 			$return = str_replace("'", "\'", @html_entity_decode($return));
 		}
@@ -505,7 +504,9 @@ class Settings
 			}
 
 			if (!$aeFiles->exists($fname = $folder.'/.htaccess')) {
-				$aeFiles->create($fname, 'deny from all');
+				$content = '# marknotes - Deny access to this folder'.PHP_EOL.
+					'deny from all';
+				$aeFiles->create($fname, $content);
 			}
 		}
 
@@ -535,7 +536,9 @@ class Settings
 			}
 
 			if (!$aeFiles->exists($fname = $folder.'/.htaccess')) {
-				$aeFiles->create($fname, 'deny from all');
+				$content = '# marknotes - Deny access to this folder'.PHP_EOL.
+					'deny from all';
+				$aeFiles->create($fname,  $content);
 			}
 		}
 

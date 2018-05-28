@@ -44,7 +44,8 @@ class Cache
 				}
 
 				if (!is_file($fname = static::$sCacheFolder.'/.htaccess')) {
-					file_put_contents($fname, 'deny from all');
+					file_put_contents($fname, $content = '# marknotes - Deny '.
+						'access to this folder'.PHP_EOL.'deny from all');
 				}
 
 				// Setup File Path on your config files

@@ -118,7 +118,26 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 			$aeCache->save($cached);
 		}
 
-		$status = array('status' => 1,'message' => $aeSettings->getText('button_save_done', 'The file has been successfully saved'));
+		$msg = $aeSettings->getText('button_save_done', 'The file has been successfully saved');
+
+		// Should we need to make a backup first ?
+		// Take a look on the settings
+		$arrSettings = $aeSettings->getPlugins('plugins.options.task.backup');
+
+		// Take an archive before updating ?
+		$make_backups = boolval($arrSettings['make_backup_before_updating']??1);
+
+		if ($make_backups) {
+			// Add a message so the user knows that a backup has been taken
+			$tmp = $aeSettings->getText('button_save_done_backup_taken', '');
+
+			$backup_folder = $arrSettings['folder']??'.backups';
+			$tmp = str_replace('%1', $backup_folder, $tmp);
+
+			$msg .= "<br/><br/><i>".$tmp."</i>";
+		}
+
+		$status = array('status' => 1,'message' => $msg);
 
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');

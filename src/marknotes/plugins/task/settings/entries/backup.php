@@ -45,12 +45,21 @@ class MN_Backup extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 	{
 		$key = static::$json_settings;
 
-		$arr = self::getArray();
 		$box = self::getBox($key, self::$icon);
 
-		$opt = 'enabled';
+		// Make backups before updating a note
+		$key = 'plugins.options.task.backup';
+		$arr = self::getArray($key);
+		$opt = 'make_backup_before_updating';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// Backup plugin options
+		$key = static::$json_settings;
+		$arr = self::getArray();
+		$opt = 'enabled';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		// folder
 		$key = 'plugins.options.task.backup';
