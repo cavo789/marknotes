@@ -39,6 +39,7 @@ REM call :fnCopyParsedown
 REM call :fnCopyParsedownCheckbox
 REM call :fnCopyMinify
 REM call :fnCopyGitHubMarkdownCSS
+REM call :fnCopyInputPicker
 REM call :fnCopyPHPFONT
 REM call :fnCopyPHPSVG
 REM call :fnCopyPHP_error
@@ -252,6 +253,20 @@ ECHO.
 XCOPY %VENDOR%monolog\monolog\src\*.* %LIBS%monolog\monolog\src\ /E /Y >> %LOG%
 XCOPY %VENDOR%psr\*.* %LIBS%psr\*.* /E /Y >> %LOG%
 
+goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyInputPicker
+::--------------------------------------------------------
+
+:fnCopyInputPicker
+
+ECHO  === inputpicker ===
+ECHO	COPY TO %LIBS%inputpicker\
+ECHO.
+IF NOT EXIST %LIBS%inputpicker\ MKDIR %LIBS%inputpicker\ >> %LOG%
+COPY %VENDOR%inputpicker\src\jquery.inputpicker.css %LIBS%inputpicker\ /Y >> %LOG%
+COPY %VENDOR%inputpicker\src\jquery.inputpicker.js %LIBS%inputpicker\ /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

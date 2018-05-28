@@ -266,7 +266,9 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 
 		// Restrict folder will allow to limit the search to a given
 		// subfolder and not search for everyting under /docs
-		$restrict_folder = trim($aeFunctions->getParam('restrict_folder', 'string', '', false, SEARCH_MAX_LENGTH));
+		$restrict_folder = trim(urldecode($aeFunctions->getParam('restrict_folder', 'string', '', true)));
+		$restrict_folder = json_decode($restrict_folder);
+		if ($restrict_folder==null) $restrict_folder='';
 
 		$arr = null;
 

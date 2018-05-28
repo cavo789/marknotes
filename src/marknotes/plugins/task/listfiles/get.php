@@ -85,8 +85,9 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 		// If $subfolder isn't empty, restrict the list to that
 		// subfolder and not all files/folders under /docs
+
 		if ($subfolder!=='') {
-			$docs=rtrim($docs, DS).DS.$subfolder;
+			$docs = $aeFiles->makeFileNameAbsolute($subfolder);
 		}
 
 		$arr = $aeFolders->getContent($docs, true);

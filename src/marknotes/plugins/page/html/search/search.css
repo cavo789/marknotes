@@ -14,8 +14,8 @@
 
 /*#search {
 	position: fixed;
-	left    : 5px;
-	top     : 5px;
+	left	: 5px;
+	top	 : 5px;
 	z-index : 1;
 }*/
 
@@ -29,10 +29,10 @@
 }
 */
 #sidebar .flexdatalist-multiple {
-	/*z-index     : 1;*/
+	/*z-index	 : 1;*/
 	display: none;
 	/*border-width: 1px !important;
-	height      : 37px;*/
+	height	  : 37px;*/
 }
 
 #search-flexdatalist {
@@ -41,16 +41,16 @@
 }
 
 .flexdatalist-multiple li.value {
-	color           : white;
+	color			: white;
 	background-color: transparent;
-	display         : inline !important;
-	margin-top      : 5px !important;
+	display		 : inline !important;
+	margin-top	  : 5px !important;
 }
 
 .skin-blue .sidebar-form .btn,
 .skin-blue .sidebar-form input[type="text"] {
 	background-color: #3c8dbc !important;
-	color           : white !important;
+	color			: white;
 }
 
 ::-webkit-input-placeholder {
@@ -82,9 +82,13 @@
 #divSearch {
 	max-width: 100px;
 	min-width: 100px;
-	float    : left;
+	float	: left;
 	display  : inline-block;
-	margin   : 5px 0 0 !important;
-	border   : 1px solid #f6e9e9;
-	color    : white;
+	margin	: 5px 0 0 !important;
+	border	: 1px solid #f6e9e9;
+	color	: white;
+}
+
+.btn-restrict-active {
+	color: yellow !important;
 }

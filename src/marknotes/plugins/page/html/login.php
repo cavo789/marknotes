@@ -39,16 +39,6 @@ class Login  extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addCSS(&$css = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-
-		$root = rtrim($aeFunctions->getCurrentURL(), '/');
-
-		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$root."/marknotes/plugins/page/html/login/login.css\">\n";
-
-		$css .= $aeFunctions->addStyleInline($script);
-
 		return true;
 	}
 

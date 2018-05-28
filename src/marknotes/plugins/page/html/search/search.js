@@ -210,7 +210,71 @@ function fnPluginTaskSearchClearCache() {
 // The user has clicked on the Folder button : show a list of
 // folder so we can restrict the search action only on these folders
 function fnPluginTaskSearchRestrictFolder() {
-	alert('fnPluginTaskSearchRestrictFolder - search.php?str=Keyword&restrict_folder=xxxx');
+
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('	  Plugin Page html - Search - restrict_folder');
+	}
+	/*<!-- endbuild -->*/
+
+	$.ajax({
+		beforeSend: function () {
+			// Remove the form if already present
+			if ($('#modal-box').length) {
+				$('#modal-box').remove();
+			}
+		},
+		type: "POST",
+		url: "index.php",
+		data: "task=task.search.getfolders",
+		dataType: "json",
+		success: function (data) {
+			if (data.hasOwnProperty("form")) {
+				// The result of the task 'task.search.getfolders' is a HTML
+				// string
+				// Add that form to the parent of the content DOM element
+				$("#CONTENT").parent().append(data['form']);
+				// And show the form.
+				fnPluginTaskShowForm();
+			} else {
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.error('	  Invalid JSON returned by task.search.getfolders');
+				}
+				/*<!-- endbuild -->*/
+
+			}
+		}
+	});
+
+	return true;
+}
+
+function fnPluginTaskShowForm() {
+
+	//Fade in the Popup
+	$('#modal-box').fadeIn(300);
+	$('#cbxFolderList').focus();
+
+	//Set the center alignment padding + border see css style
+	var popMargTop = ($('#modal-box').height() + 24) / 2;
+	var popMargLeft = ($('#modal-box').width() + 24) / 2;
+
+	$('#modal-box').css({
+		'margin-top': -popMargTop,
+		'margin-left': -popMargLeft
+	});
+
+	// Add the mask to body
+	$('body').append('<div id="mask"></div>');
+	$('#mask').fadeIn(300);
+
+	$('#modal-box .submit').click(function (e) {
+		$('#mask, .modal-popup').fadeOut(300, function () {
+			$('#mask').remove();
+		});
+	});
+
 }
 
 // When the user click on the Search button and doesn't press the Enter key

@@ -244,7 +244,7 @@ function jstree_init($data) {
 							url: 'search.php',
 							dataType: 'json',
 							data : {
-							  restrict_folder : ''
+								restrict_folder : ''
 							},
 							type: (marknotes.settings.debug ? 'GET' : 'POST'),
 							beforeSend: function () {
@@ -254,6 +254,7 @@ function jstree_init($data) {
 
 								var loading = '<div id="ajax_loading" class="lds-css"><div style="width:100%;height:100%" class="lds-ellipsis"><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div></div>';
 								$('#TOC').hide().parent().append(loading);
+
 							}, // beforeSend()
 							success: function (data) {
 								/*<!-- build:debug -->*/

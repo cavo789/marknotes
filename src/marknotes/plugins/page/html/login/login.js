@@ -6,7 +6,7 @@ function fnPluginTaskLogout() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Login - Log out');
+		console.log('	  Plugin Page html - Login - Log out');
 	}
 	/*<!-- endbuild -->*/
 
@@ -31,14 +31,14 @@ function fnPluginTaskLogout() {
 function fnPluginTaskShowForm() {
 
 	//Fade in the Popup
-	$('#login-box').fadeIn(300);
+	$('#modal-box').fadeIn(300);
 	$('#username').focus();
 
 	//Set the center alignment padding + border see css style
-	var popMargTop = ($('#login-box').height() + 24) / 2;
-	var popMargLeft = ($('#login-box').width() + 24) / 2;
+	var popMargTop = ($('#modal-box').height() + 24) / 2;
+	var popMargLeft = ($('#modal-box').width() + 24) / 2;
 
-	$('#login-box').css({
+	$('#modal-box').css({
 		'margin-top': -popMargTop,
 		'margin-left': -popMargLeft
 	});
@@ -48,18 +48,18 @@ function fnPluginTaskShowForm() {
 	$('#mask').fadeIn(300);
 
 	$('a.close, #mask').click(function () {
-		$('#mask, .login-popup').fadeOut(300, function () {
+		$('#mask, .modal-popup').fadeOut(300, function () {
 			$('#mask').remove();
 		});
 	});
 
 	$("#password").keyup(function (event) {
 		if (event.keyCode == 13) {
-			$("#login-box .submit").click();
+			$("#modal-box .submit").click();
 		}
 	});
 
-	$('#login-box .submit').click(function () {
+	$('#modal-box .submit').click(function () {
 		var $login = $('#username').val();
 		var $password = $('#password').val();
 
@@ -91,7 +91,7 @@ function fnPluginTaskShowForm() {
 					}
 
 					if ($status) {
-						$('#mask , .login-popup').fadeOut(300, function () {
+						$('#mask , .modal-popup').fadeOut(300, function () {
 							$('#mask').remove();
 						});
 						Noty({
@@ -123,15 +123,15 @@ function fnPluginTaskLogin() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Login - Log in');
+		console.log('	  Plugin Page html - Login - Log in');
 	}
 	/*<!-- endbuild -->*/
 
 	$.ajax({
 		beforeSend: function () {
 			// Remove the form if already present
-			if ($('#login-box').length) {
-				$('#login-box').remove();
+			if ($('#modal-box').length) {
+				$('#modal-box').remove();
 			}
 		},
 		type: "POST",
@@ -149,7 +149,7 @@ function fnPluginTaskLogin() {
 			} else {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
-					console.error('      Invalid JSON returned by the login.getform task');
+					console.error('	  Invalid JSON returned by the login.getform task');
 				}
 				/*<!-- endbuild -->*/
 

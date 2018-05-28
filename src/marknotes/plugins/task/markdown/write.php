@@ -44,10 +44,9 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 	 *
 	 * @param  string $filename Full path the to .md file that needs to be
 	 * 					updated
-	 * @param  string $content  Newer content	 *
 	 * @return bool
 	 */
-	private static function makeBackup(string $filename, string $content) : bool
+	private static function makeBackup(string $filename) : bool
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFolders = \MarkNotes\Folders::getInstance();
@@ -115,7 +114,8 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- endbuild -->*/
 
 			// And write the file
-			$aeFiles->rewrite($backup_file, $content);
+			$oldContent = $aeFiles->getContent($filename);
+			$aeFiles->rewrite($backup_file, $oldContent);
 
 		} // if ($make_backups)
 

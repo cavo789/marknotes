@@ -23,6 +23,8 @@
 
 		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%templates/assets/css/interface.css" />
 
+		<link media="screen" rel="stylesheet" type="text/css" href="%ROOT%assets/css/modal_form.css" />
+
   		<!--%ADDITIONNAL_CSS%-->
 
 	</head>

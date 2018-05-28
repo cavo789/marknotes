@@ -1,4 +1,4 @@
-<div id="login-box" class="login-popup">
+<div id="modal-box" class="modal-popup">
 	<a href="#" class="close"><img src="%ROOT%/marknotes/plugins/page/html/login/close_pop.png" class="btn_close" title="Close Window" alt="Close" /></a>
 	<form method="post" class="signin" action="#">
 		<fieldset class="textbox">
@@ -10,7 +10,7 @@
 				<span>%PASSWORD%</span>
 				<input id="password" name="password" value="" type="password" placeholder="Password" />
 			</label>
-			<button class="submit button" type="button">%SIGNIN%</button>
+			<button class="submit button" type="button" style="align:center;">%SIGNIN%</button>
 		</fieldset>
 	</form>
 </div>

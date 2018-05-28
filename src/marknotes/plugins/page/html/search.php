@@ -44,6 +44,7 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$script .=
 			"<script>\n".
 			"marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
+			"marknotes.settings.restrict_folder='docs';\n".
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
@@ -92,11 +93,14 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$intro = $aeSettings->getText('intro_js_search', '');
 
+			$restrict = $aeSettings->getText('search_restrict_folder', '');
+
 			$sSearch='<div id="divSearch" class="search sidebar-form" data-intro="'.$intro.'">
 			  <div class="input-group">
 				<input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
 				<span class="input-group-btn">
-					<button type="button" name="folder" id="search-folder-btn" class="btn btn-flat"><i class="fa fa-folder"></i>
+					<button type="button" name="folder" id="search-folder-btn"
+						class="btn btn-flat" title="'.$restrict.'"><i class="fa fa-folder"></i>
 					</button>'.
 					//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
 					//</button>

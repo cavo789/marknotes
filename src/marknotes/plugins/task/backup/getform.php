@@ -34,7 +34,7 @@ class Getform extends \MarkNotes\Plugins\Task\Plugin
 		// folder names, make unique and sort the list
 		$arrFolders = array_map('dirname', $arrFiles);
 		$arrFolders = array_unique($arrFolders);
-		sort($arrFolders);
+		natcasesort($arrFolders);
 
 		// Get the "default_folder" settings
 		$docs = rtrim($aeSettings->getFolderDocs(false), DS);
