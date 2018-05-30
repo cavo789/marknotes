@@ -43,8 +43,9 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$script .=
 			"<script>\n".
-			"marknotes.settings.search_max_width=".SEARCH_MAX_LENGTH.";\n".
-			"marknotes.settings.restrict_folder='docs';\n".
+			"marknotes.search = {};\n".
+			"marknotes.search.max_width=".SEARCH_MAX_LENGTH.";\n".
+			"marknotes.search.restrict_folder='.';\n".
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

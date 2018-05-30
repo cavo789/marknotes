@@ -119,7 +119,7 @@ function fnPluginTaskSearch_afterDisplay() {
 	if ($.isFunction($.fn.highlight)) {
 		// Get the searched keywords.
 		// Apply the restriction on the size.
-		var $searchKeywords = $('#search').val().substr(0, marknotes.settings.search_max_width).trim();
+		var $searchKeywords = $('#search').val().substr(0, marknotes.serach.max_width).trim();
 
 		if ($searchKeywords !== '') {
 			$arrKeywords = $searchKeywords.split(',');
@@ -255,6 +255,12 @@ function fnPluginTaskShowForm() {
 	//Fade in the Popup
 	$('#modal-box').fadeIn(300);
 	$('#cbxFolderList').focus();
+
+	try {
+		$("#cbxFolderList").val(marknotes.search.restrict_folder);
+	} catch (e) {
+	} finally {
+	}
 
 	//Set the center alignment padding + border see css style
 	var popMargTop = ($('#modal-box').height() + 24) / 2;

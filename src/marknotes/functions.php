@@ -250,6 +250,7 @@ class Functions
 		}
 		return $return;
 	}
+
 	/**
 	* Add CSS inline and, in case of debugging mode, add information's
 	* about the caller
@@ -270,6 +271,7 @@ class Functions
 		}
 		return $css;
 	}
+
 	/**
 	* Add JS script inline and, in case of debugging mode, add information's
 	* about the caller
@@ -290,6 +292,7 @@ class Functions
 		}
 		return $js;
 	}
+
 	/**
 	* Generic function for adding a js in the HTML response
 	*
@@ -318,6 +321,7 @@ class Functions
 		}
 		return $return;
 	}
+
 	/**
 	* Generic function for adding a css in the HTML response
 	*
@@ -345,6 +349,7 @@ class Functions
 		}
 		return $return;
 	}
+
 	/**
 	* Wrapper for array_unique but for insensitive comparaison  (Images or images should be considered as one value)
 	*
@@ -356,6 +361,7 @@ class Functions
 	{
 		return array_intersect_key($array, array_unique(array_map("StrToLower", $array)));
 	}
+
 	/**
 	* Return true when the call to the php script has been done through an ajax request
 	*
@@ -366,6 +372,7 @@ class Functions
 		$bAjax = boolval(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
 		return $bAjax;
 	}
+
 	/**
 	* For instance :
 	*	 if (startsWith("Debug - This is a test", "Debug")) {
@@ -378,6 +385,7 @@ class Functions
 		$length = strlen($sPattern);
 		return (substr($sLine, 0, $length) === $sPattern);
 	}
+
 	public static function endsWith(string $sLine, string $sPattern) : bool
 	{
 		$length = strlen($sPattern);

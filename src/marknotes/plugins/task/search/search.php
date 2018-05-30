@@ -105,6 +105,11 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
+		// Restrict on "." means everything so no restriction
+		if (trim($restrict_folder)=='.') {
+			$restrict_folder='';
+		}
+
 		// Retrieve the list of files
 		$arrFiles = self::getFiles($restrict_folder);
 

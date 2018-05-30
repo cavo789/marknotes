@@ -1,13 +1,17 @@
 <div id="modal-box" class="modal-popup">
 
+	<span>%SEARCHED_ADVANCED_FORM%</span>
+	<hr/>
 	<form method="post" action="#">
 
+		<span>%SEARCH_DEFINE_TITLE%</span>
 		<fieldset class="textbox">
 			<select id="cbxFolderList">%FOLDERS%</select>
 		</fieldset>
 
-		<button class="submit button" type="button">%SEARCH_DEFINE%</button>
-		<button id="btn_search_remove_restrict" class="submit button" type="button">%SEARCH_REMOVE%</button>
+		<br/>
+		<button class="submit" type="button">%SEARCH_APPLY%</button>
+		<button id="btn_search_remove_restrict" class="submit" type="button">%SEARCH_REMOVE%</button>
 
 	</form>
 
@@ -28,13 +32,7 @@ $("#cbxFolderList").change(function() {
 	selectedFolders = selectedFolders.substring(0, selectedFolders.length - 1);
 
 	// Remove the final ";"
-	marknotes.settings.restrict_folder = selectedFolders;
-
-	if (marknotes.settings.restrict_folder !== marknotes.store.prefix) {
-		$('#search-folder-btn').addClass('btn-restrict-active');
-	} else {
-		$('#search-folder-btn').removeClass('btn-restrict-active');
-	}
+	marknotes.search.restrict_folder = selectedFolders;
 
 	// Reinitialize the treeview to search only on the selected folder
 	var $param = window.btoa(encodeURIComponent(JSON.stringify(selectedFolders)));
@@ -43,10 +41,19 @@ $("#cbxFolderList").change(function() {
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
 		console.log('	  fnPluginTaskSearchRestrictFolder - restrict searchs to ');
-		console.log('	 '+marknotes.settings.restrict_folder);
+		console.log('	  '+marknotes.search.restrict_folder);
 	}
 	/*<!-- endbuild -->*/
 
+	if (marknotes.search.restrict_folder!=='.') {
+		$('#search-folder-btn').addClass('btn-restrict-active');
+		$('.search-flexdatalist').attr('placeholder', marknotes.search.restrict_folder);
+		$('.search-flexdatalist').attr('title', $.i18n('search_restricted_to')+' '+marknotes.search.restrict_folder);
+	} else {
+		$('#search-folder-btn').removeClass('btn-restrict-active');
+		$('.search-flexdatalist').attr('placeholder', $.i18n('search_placeholder'));
+		$('.search-flexdatalist').attr('title', '');
+	}
 	return true;
 
 });
@@ -54,11 +61,11 @@ $("#cbxFolderList").change(function() {
 $('#btn_search_remove_restrict').click(function() {
 
 	// No restriction
-	marknotes.settings.restrict_folder = '';
+	marknotes.search.restrict_folder = '.';
 	$('#search-folder-btn').removeClass('btn-restrict-active');
 
 	// Reinitialize the treeview to search only on the selected folder
-	$('#TOC').jstree(true).settings.search.ajax.data = {restrict_folder : '' };
+	$('#TOC').jstree(true).settings.search.ajax.data = {restrict_folder : '.'};
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {

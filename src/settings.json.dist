@@ -334,7 +334,7 @@
 				"ganalytics": {
 					"enabled": 0,
 					"not_if_task": ["main", "interface"],
-					"only_if_task": ["task.export.html"]
+					"only_if_task": ["task.export.html", "task.export.reveal", "task.export.remark"]
 				},
 				"github_banner": {
 					"description": "Add a GitHub Fork to the page",
@@ -1044,6 +1044,9 @@
 				"robots-txt": {
 					"bots_only": 0,
 					"disallow_all": 0
+				},
+				"search": {
+					"restrict_folders_first_level": 1
 				},
 				"tags": {
 					"min_chars": 6,

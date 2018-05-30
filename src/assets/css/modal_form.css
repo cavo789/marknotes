@@ -116,3 +116,7 @@ form.signin input::-webkit-input-placeholder {
 	color	  : #bbb;
 	text-shadow: 0 0 2px #000;
 }
+
+#modal-box span {
+	color: white;
+}
