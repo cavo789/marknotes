@@ -93,8 +93,12 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 			// Add a .gitignore too
 			self::protectFolder($backup_folder);
 
-			$docs = $aeSettings->getFolderDocs(true);
-			$backup_file = $backup_folder.DS.str_replace($docs, '', $filename);
+			$root = $aeSettings->getFolderWebRoot();
+			$backup_file = $backup_folder.DS.str_replace($root, '', $filename);
+
+			if (!$aeFolders->exists(dirname($backup_file))) {
+				$aeFolders->create(dirname($backup_file));
+			}
 
 			// Get the timestamp (like "20180528_092700")
 			$datetime = new \DateTime();
@@ -161,9 +165,14 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 			// Check if there is a YAML header and if so,
 			// add in back in the .md file
 			if ($params['yaml']!=='') {
-				$yaml = $aeSession->get('yaml');
+				$yaml = $aeSession->get('yaml').PHP_EOL;
+
+				// Should use $html and not $content here below
+				// $html is the note's content; without the YAML block
+				// (removed by markdown.yaml::markdown.read)
+				// So, add the YAML block back
 				$content = "---".PHP_EOL.$yaml."---".PHP_EOL.
-					PHP_EOL.$content;
+					PHP_EOL.$html;
 			}
 
 			// Keep an archive of the note before saving the new version
