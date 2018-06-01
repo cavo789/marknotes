@@ -234,8 +234,8 @@ function fnPluginTaskSearchRestrictFolder() {
 				// string
 				// Add that form to the parent of the content DOM element
 				$("#CONTENT").parent().append(data['form']);
-				// And show the form.
-				fnPluginTaskShowForm();
+				// And show the restrict folder form.
+				fnPluginTaskShowRestrictForm();
 			} else {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
@@ -250,7 +250,7 @@ function fnPluginTaskSearchRestrictFolder() {
 	return true;
 }
 
-function fnPluginTaskShowForm() {
+function fnPluginTaskShowRestrictForm() {
 
 	//Fade in the Popup
 	$('#modal-box').fadeIn(300);

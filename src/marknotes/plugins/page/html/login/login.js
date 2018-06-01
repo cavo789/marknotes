@@ -28,7 +28,7 @@ function fnPluginTaskLogout() {
 	return true;
 }
 
-function fnPluginTaskShowForm() {
+function fnPluginTaskShowLoginForm() {
 
 	//Fade in the Popup
 	$('#modal-box').fadeIn(300);
@@ -60,6 +60,7 @@ function fnPluginTaskShowForm() {
 	});
 
 	$('#modal-box .submit').click(function () {
+
 		var $login = $('#username').val();
 		var $password = $('#password').val();
 
@@ -144,8 +145,10 @@ function fnPluginTaskLogin() {
 				// string : the login screen.
 				// Add that form to the parent of the content DOM element
 				$("#CONTENT").parent().append(data['form']);
+
 				// And show the form.
-				fnPluginTaskShowForm();
+				fnPluginTaskShowLoginForm();
+
 			} else {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
