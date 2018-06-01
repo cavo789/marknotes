@@ -167,8 +167,13 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
-		// Remember this filename i.e. the "master" file.
-		$filename = $aeSettings->getFolderDocs(true).$aeSession->get('filename');
+		// Retrieve the name of the file being processed but, from
+		// $params and not from $aeSession->get('filename')
+		// This is important :
+		// 		$aeSession->get('filename') is the file being DISPLAYED
+		//		$params['filename'] is the file being PROCESSED since
+		//			the displayed file can have INCLUDE files (is a master file then)
+		$filename = $params['filename'];
 
 		// Retrieve every occurences of %CSV filename%
 		if (preg_match_all('/^%CSV ([^{\\n]*)%/m', $markdown, $matches)) {
