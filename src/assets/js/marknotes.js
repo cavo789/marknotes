@@ -313,7 +313,26 @@ function initializeTasks() {
 
 		case 'file':
 
-			window.open(marknotes.docs + $file);
+			// The attribute data_file is set by f.i. the
+			// sitemap or timeline button.
+			// The value can be "sitemap.xml" f.i.
+			var $data_file = '';
+
+			try {
+				// If set, it means that the user has click
+				// on a button like sitemap or timeline
+				$data_file = $(this).data('file');
+			} catch (e) {
+			}
+
+			if ($data_file!=='') {
+				// data_file are in the root
+				window.open(marknotes.webroot + $data_file);
+			} else {
+				// It's a note (not a data_file so a note);
+				// under the /docs folder
+				window.open(marknotes.docs + $file);
+			}
 			break;
 
 		default:
