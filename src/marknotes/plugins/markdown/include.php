@@ -90,7 +90,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 * included files, if we've a H1 in the included content,
 	 * scan every headings in that content and increment by one
 	 */
-	private static function IncrementHeadings(string $sContent) : string
+	private static function IncrementHeadings(string $sContent, string $prefix = '#') : string
 	{
 		$increment = boolval(self::getOptions('increment_headings', 0));
 
@@ -99,7 +99,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				list($tag, $heading, $title) = $matches;
 
 				for ($i = 0; $i < count($heading); $i++) {
-					$sContent = str_replace($tag[$i], '#'.$heading[$i].$title[$i], $sContent);
+					$sContent = str_replace($tag[$i], $prefix.$heading[$i].$title[$i], $sContent);
 				}
 			}
 		}
@@ -193,6 +193,12 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		$params['markdown'] = $markdown;
 		$params['filename'] = $filename;
 		$params['dont_include'] = true;
+
+		// Don't run the hierarchy plugin for each included files
+		// The plugin need to be fired only once, at the end i.e.
+		// when the markdown content has been retrieved.
+		$params['dont_run_hierarchy'] = true;
+
 		$args = array(&$params);
 
 		$aeEvents->trigger('markdown::markdown.read', $args);
@@ -310,6 +316,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFolders = \MarkNotes\Folders::getInstance();
 
+		$arrFiles = array();
+		$arrTags = array();
+
 		// $filename is an absolute path, extract the folder name
 		$folder = '';
 		if (strlen($filename)>4) {
@@ -345,7 +354,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 		// Just to be sure, sort the list of files
 		// in an ascending way
-		sort($arrFiles);
+		if (!is_null($arrFiles)) {
+			sort($arrFiles);
+		}
 
 		return array($sContent, $arrFiles, $arrTags);
 	}
@@ -516,7 +527,36 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// $incrementHeadings is unset, this way, only
 							// increment the master file
 							if ($incrementHeadings) {
-								$sContent = self::IncrementHeadings($sContent);
+
+								// The increment will be one position
+								// i.e. # TITRE will become ## TITRE
+								$prefix = '#';
+
+								// But, if the master file is something like
+								// ### Title
+								// %INCLUDE file.md%
+								//
+								// In that case the included file should respect
+								// this indentation : since "Title" is h3, the included
+								// file should start at h4 ==> we need to retrive
+								// the "###" just before the INCLUDE tag.
+								//
+								// The substr here below will do this job
+								// (get the markdown content from the first character
+								// until the position of the INCLUDE tag then make a
+								// str_rev to reverse the string so we can search
+								// ### followed by an end of line (since str_rev).
+								$tmp = substr($markdown, 0, strpos($markdown, $tag2));
+								$tmp = strrev($tmp);
+
+								if (preg_match_all('~(#{1,})$~m', $tmp, $match)) {
+									// Ok, we've found the # (or ## or ### ...)
+									// before the line with %INCLUDE ...%
+									// Get that prefix
+									$prefix = $match[0][0];
+								}
+
+								$sContent = self::IncrementHeadings($sContent, $prefix);
 							}
 
 							// Sometimes the file on the disk contains
