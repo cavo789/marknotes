@@ -96,10 +96,20 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 		if ($increment) {
 			if (preg_match_all('/^(#{1,} )(.*)/m', $sContent, $matches)) {
+
 				list($tag, $heading, $title) = $matches;
 
 				for ($i = 0; $i < count($heading); $i++) {
-					$sContent = str_replace($tag[$i], $prefix.$heading[$i].$title[$i], $sContent);
+					$new = $prefix.$heading[$i].$title[$i];
+					// Use a regex since the tag should be on a line
+					// followed by an end of line; this is important
+					// for targetting the correct title
+					$regex = '~'.preg_quote($tag[$i]).'$~m';
+					try {
+						$sContent = preg_replace($regex, $new, $sContent);
+					} catch (\Exception $e) {
+					}
+
 				}
 			}
 		}
@@ -394,6 +404,72 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		// Don't make an IF since we know there are INCLUDE tags
 		preg_match_all(static::$include_regex, $markdown, $matches);
 
+		$arrPrefixes = array();
+
+		// Loop and process every %INCLUDE ...% tags
+		// First, prior the inclusion, analyze the master document
+		// and retrieve the position of each %INCLUDE ...% tags for
+		// getting the hierarchical level (i.e. the number of # chars
+		// in the block)
+		for ($i=0; $i<count($matches[0]); $i++) {
+			list($tag, $before, $file, $json) = $matches;
+
+			// Make filenames absolute
+			for($j=0; $j<count($file); $j++) {
+				if(!is_file($file[$j])) {
+					// Make file absolute
+					$absFile = $folder.$file[$j];
+
+					if (realpath($absFile) !== FALSE) {
+						$absFile = realpath($absFile);
+					}
+
+					// Replace the tag from f.i. %INCLUDE file.md% to
+					// %INCLUDE full_path/file.md%
+					$old = $matches[0][$j];
+					$matches[0][$j] = str_replace($file[$j], $absFile, $matches[0][$j]);
+					$markdown = str_replace($old, $matches[0][$j], $markdown);
+
+					// And do the same for the filename itself
+					$matches[2][$j] = str_replace($file[$j], $absFile, $matches[2][$j]);
+				}
+			} // for($j=0)
+
+			list($tag, $before, $file, $json) = $matches;
+
+			/*<!-- build:debug -->*/
+			//die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($matches,  true)."</pre>");
+			/*<!-- endbuild -->*/
+			// By default, increment heading means add one # to
+			// the titles in the included document
+			// i.e. # TITRE will become ## TITRE
+			$arrPrefixes[$i]  = '#';
+
+			// But, if the master file is something like
+			// ### Title
+			// %INCLUDE file.md%
+			//
+			// In that case the included file should respect
+			// this indentation : since "Title" is h3, the included
+			// file should start at h4 ==> we need to retrive
+			// the "###" just before the INCLUDE tag.
+			//
+			// The substr here below will do this job
+			// (get the markdown content from the first character
+			// until the position of the INCLUDE tag then make a
+			// str_rev to reverse the string so we can search
+			// ### followed by an end of line (since str_rev).
+			$tmp = substr($markdown, 0, strpos($markdown, $tag[$i]));
+			$tmp = strrev($tmp);
+
+			if (preg_match_all('~(#{1,})$~m', $tmp, $match)) {
+				// Ok, we've found the # (or ## or ### ...)
+				// before the line with %INCLUDE ...%
+				// Get that prefix
+				$arrPrefixes[$tag[$i]] = $match[0][0];
+			}
+		} // for ($i=0
+
 		// Loop and process every %INCLUDE ..% tags
 		for ($i=0; $i<count($matches[0]); $i++) {
 			/**
@@ -414,10 +490,11 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 			if ($before[$i] !== '') {
 				$markdown = self::tagDisabled($indent, $markdown, $tag[$i]);
 			} else {
+				$file[$i] = trim($file[$i]);
+
 				if (substr($file[$i], -4) == '*.md') {
 					// Special case : the "filename" ends with
 					// "*.md" so get the list of files
-
 					$recursive = true;
 
 					if ($json!=='') {
@@ -425,7 +502,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 						$recursive = boolval($tmp['recursive'])??true;
 					}
 
-					list ($files, $arrFiles, $arrTags) = self::getListNotes($filename, $folder.$file[$i], $recursive);
+					list($files, $arrFiles, $arrTags) = self::getListNotes($filename, $folder.$file[$i], $recursive);
 
 					/**
 					 * Replace the tag
@@ -441,14 +518,14 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				} else {
 					// $file[$i] is a single file (f.i. note.md)
 					// Load only that file
-					$arrFiles[] = $folder.$file[$i];
+					$arrFiles[] = $file[$i];
 					$arrTags[] = $tag[$i];
 				}
 
 				for ($j=0; $j<count($arrFiles); $j++) {
-					$filename = $arrFiles[$j];
 
-					$filename = str_replace('/', DS, $filename);
+					$fname = $arrFiles[$j];
+					$fname = str_replace('/', DS, $fname);
 
 					$tag2 = $arrTags[$j];
 
@@ -456,22 +533,45 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 					// If required ("once":1), process the
 					// same file only once
-					if (!self::wasAlreadyProcessed($filename, trim($json[$i]))) {
+					if (!self::wasAlreadyProcessed($fname, trim($json[$i]))) {
 						// In case of ... be sure the file
 						// exists
-						if ($aeFiles->exists($filename)) {
+
+						if ($aeFiles->exists($fname)) {
 							$aeFiles = \MarkNotes\Files::getInstance();
 							$aeSettings = \MarkNotes\Settings::getInstance();
 
 							/*<!-- build:debug -->*/
 							if ($aeSettings->getDebugMode()) {
 								$aeDebug = \MarkNotes\Debug::getInstance();
-								$aeDebug->log($indent.'Including '.$filename, 'debug');
+								$aeDebug->log($indent.'Including '.$fname, 'debug');
 							}
 							/*<!-- endbuild -->*/
 
 							// Read the file
-							$sContent = trim($aeFiles->getContent($filename));
+							$sContent = trim($aeFiles->getContent($fname));
+
+							// Retrieve every occurences of %INCLUDE filename%
+							// and make filename absolute
+							preg_match_all(static::$include_regex, $sContent, $matches_2);
+
+							if (count($matches_2[0])>0) {
+
+								list($tag_2, $before_2, $file_2, $json_2) = $matches_2;
+
+								for($j=0; $j<count($file_2); $j++) {
+									if(!is_file($file_2[$j])) {
+										$absFile = str_replace('/', DS, dirname($fname).DS.$file_2[$j]);
+
+										if (realpath($absFile) !== FALSE) {
+											$absFile = realpath($absFile);
+										}
+
+										$new_tag = str_replace($file_2[$j], $absFile, $tag_2[$j]);
+										$sContent = str_replace($tag_2[$j], $new_tag, $sContent);
+									}
+								} // for($j=0)
+							}
 
 							// Correctly process accentuated chars.
 							$sContent = utf8_decode($sContent);
@@ -481,24 +581,23 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// when appending multiples files.
 							$sContent .= PHP_EOL.PHP_EOL;
 
-							// Check if there are another
-							// INCLUDE tags (take care to use
-							// a regex and not a strpos !)
-							// The tag should comply the regex
-							while (preg_match(static::$include_regex, $sContent)) {
-								$sContent = self::processIncludes($sContent, $filename, $indent.'	');
-
-							} // while
-
 							// Remove unneeded plugins tags
 							$sContent = self::cleanMarkdown($sContent);
 
 							// Replace variables
-							$sContent = self::replaceVariables($filename, $sContent);
+							$sContent = self::replaceVariables($fname, $sContent);
+
+							// And loop... Perhaps included files also contains
+							// %INCLUDE ...% file.
+							// Take care to use a regex and not a strpos !
+							// The tag should comply the regex
+							//while (preg_match(static::$include_regex, $sContent)) {
+							//	$sContent = self::processIncludes($sContent, $filename, $indent.'	');
+							//} // while
 
 							// Fire markdown plugins (like the
 							// encryption or lastupdate plugins)
-							$sContent = self::runMarkdownPlugins($filename, $sContent);
+							$sContent = self::runMarkdownPlugins($fname, $sContent);
 
 							// We're including a file inside a
 							// file => if the included file has
@@ -508,12 +607,11 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							//
 							// But incrementHeadings only if not disabled.
 							// %INCLUDE file.vb{"incrementHeadings":0}%
-
-							$ext = $aeFiles->getExtension($filename);
+							$ext = $aeFiles->getExtension($fname);
 
 							// When the extension is "md", default is Yes, we'll
 							// increment headings
-							$incrementHeadings=($ext=='md');
+							$incrementHeadings = ($ext == 'md');
 
 							if ($json[$i]!=='') {
 								$tmp = json_decode($json[$i], true);
@@ -527,35 +625,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// $incrementHeadings is unset, this way, only
 							// increment the master file
 							if ($incrementHeadings) {
-
-								// The increment will be one position
-								// i.e. # TITRE will become ## TITRE
-								$prefix = '#';
-
-								// But, if the master file is something like
-								// ### Title
-								// %INCLUDE file.md%
-								//
-								// In that case the included file should respect
-								// this indentation : since "Title" is h3, the included
-								// file should start at h4 ==> we need to retrive
-								// the "###" just before the INCLUDE tag.
-								//
-								// The substr here below will do this job
-								// (get the markdown content from the first character
-								// until the position of the INCLUDE tag then make a
-								// str_rev to reverse the string so we can search
-								// ### followed by an end of line (since str_rev).
-								$tmp = substr($markdown, 0, strpos($markdown, $tag2));
-								$tmp = strrev($tmp);
-
-								if (preg_match_all('~(#{1,})$~m', $tmp, $match)) {
-									// Ok, we've found the # (or ## or ### ...)
-									// before the line with %INCLUDE ...%
-									// Get that prefix
-									$prefix = $match[0][0];
-								}
-
+								$prefix = $arrPrefixes[$tag2]??'#';
 								$sContent = self::IncrementHeadings($sContent, $prefix);
 							}
 
@@ -565,8 +635,10 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 						/*<!-- build:debug -->*/
 						} else {
+
 							if ($aeSettings->getDebugMode()) {
-								$aeDebug->log('	Failure : file ['.$filename.'] not found ! If the path is relative, think to add %NOTE_FOLDER% in your call so the file will be correctly retrieved (f.i. %INCLUDE %NOTE_FOLDER%file-to-include.md%)', 'error');
+								$sContent = 'Failure: file ['.$fname.'] not found!';
+								$aeDebug->log($sContent, 'error');
 							}
 						/*<!-- endbuild -->*/
 						}
@@ -583,6 +655,14 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				} // for ($j=0; $j<count($arrFiles)
 			} // if ($before[$i] !== '')
 		} // for ($i=0; $i<count($matches[0]
+
+		// And loop... Perhaps included files also contains
+		// %INCLUDE ...% file.
+		// Take care to use a regex and not a strpos !
+		// The tag should comply the regex
+		while (preg_match(static::$include_regex, $markdown)) {
+			$markdown = self::processIncludes($markdown, $fname, $indent.'	');
+		} // while
 
 		return $markdown;
 	}

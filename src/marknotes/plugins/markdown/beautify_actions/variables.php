@@ -27,9 +27,9 @@ class Variables
 
 		// Replace links to the folder where the note resides by the
 		// %NOTE_FOLDER% variable
-		$folder=rtrim(str_replace('/', DS, dirname($params['filename'])), DS);
-		$markdown = str_replace($folder.DS, '%NOTE_FOLDER%', $markdown);
-		$markdown = str_replace($folder, '%NOTE_FOLDER%', $markdown);
+		//$folder=rtrim(str_replace('/', DS, dirname($params['filename'])), DS);
+		//$markdown = str_replace($folder.DS, '%NOTE_FOLDER%', $markdown);
+		//$markdown = str_replace($folder, '%NOTE_FOLDER%', $markdown);
 
 		/*<!-- build:debug -->*/
 		$aeSettings = \MarkNotes\Settings::getInstance();

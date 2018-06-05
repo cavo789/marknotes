@@ -15,6 +15,7 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 
 	public static function readMD(array &$params = array()) : bool
 	{
+
 		if (trim($params['markdown']) === '') {
 			return true;
 		}
@@ -57,7 +58,6 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 		// ----------------------------------------------
 
 		$arrCodeBlock = array();
-		$i=0;
 
 		// EXCEPTION - Remove temporarily the code block
 		// If we've code blocks, replace the current content by a
@@ -75,11 +75,14 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 		// 	processed as titles in the markdown text
 
 		if (preg_match_all('~```[a-z]*\n[\s\S]*?\n```~m',$params['markdown'], $match_code)) {
+
 			foreach($match_code as $code) {
-				$arrCodeBlock[$i] = $code[0];
-				$params['markdown'] = str_replace($code[0], '@~@CODE_'.$i.'@~@', $params['markdown']);
-				$i++;
+				for ($i=0; $i<count($code); $i++) {
+					$arrCodeBlock[$i] = $code[$i];
+					$params['markdown'] = str_replace($code[$i], '@~@CODE_'.$i.'@~@', $params['markdown']);
+				}
 			}
+
 		}
 
 		if (preg_match_all('/^(#{1,})\\s*([0-9.]*)?(.*)/m', $params['markdown'], $matches)) {
@@ -135,16 +138,6 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 				$markdown=preg_replace('~'.$tags[$i].'~', $sTitle, $markdown, 1);
 			} // for ($i
 
-			// EXCEPTION - Restore the code block
-			// Here above, we've replaced code blocks to @~@CODE_0@~@
-			// Do the opposite, restore the content once the numbering
-			// has been added
-			if (!empty($arrCodeBlock)) {
-				foreach($arrCodeBlock as $key => $code) {
-					$markdown = str_replace('@~@CODE_'.$key.'@~@', $code, $markdown);
-				}
-			} // if (!empty($arrCodeBlock))
-
 			// Now, check if there is an added value to add number i.e.
 			// if there is only one title, it isn't really not usefull to put
 			// "1. MyTitle" since there is no "2. Something".
@@ -165,6 +158,17 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 				$params['markdown']=$markdown;
 			}
 		} // if (preg_match_all
+
+		// EXCEPTION - Restore the code block
+		// Here above, we've replaced code blocks to @~@CODE_0@~@
+		// Do the opposite, restore the content once the numbering
+		// has been added
+		if (!empty($arrCodeBlock)) {
+			foreach($arrCodeBlock as $key => $code) {
+				$params['markdown'] = str_replace('@~@CODE_'.$key.'@~@', $code, $params['markdown']);
+			}
+		} // if (!empty($arrCodeBlock))
+
 		return true;
 	}
 }
