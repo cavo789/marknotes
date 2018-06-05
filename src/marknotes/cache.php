@@ -57,7 +57,7 @@ class Cache
 				// 		furthers investigations (permissions, owner, ... ) ?
 				//static::$InstanceCache = CacheManager::getInstance('files');
 				//static::$InstanceCache = CacheManager::getInstance('cookie');
-				static::$InstanceCache = CacheManager::getInstance('auto');
+				static::$InstanceCache = CacheManager::getInstance('files');
 
 				if (!isset(static::$InstanceCache)) {
 					throw new Exception('Marknotes - Cache library not '.
@@ -85,6 +85,12 @@ class Cache
 	public static function clear() {
 		if (!static::$InstanceCache==null) {
 			static::$InstanceCache->clear();
+		}
+	}
+
+	public static function deleteItem(string $key) {
+		if (!static::$InstanceCache==null) {
+			static::$InstanceCache->deleteItem($key);
 		}
 	}
 
