@@ -339,6 +339,15 @@ class Markdown
 
 			$arr['markdown'] = self::doReadContent($filename, $params);
 
+			// Markdown support only H1 to H6; this is specified in
+			// the CommonMark specification :
+			// https://github.com/commonmark/CommonMark/blob/master/spec.txt#L783
+			// Read "More than six `#` characters is not a heading"
+			// So, the regex here below will replace 7 or more # to only 6
+			// This once every markdown plugins have already be called
+			$regex = '/^(#{7,}(.*))$/m';
+			$arr['markdown'] = preg_replace($regex, '######$2', $arr['markdown']);
+
 			if (trim($arr['markdown'])=='') {
 				// Don't cache if the content is empty.
 				$bCache = false;
