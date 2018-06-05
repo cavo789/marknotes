@@ -119,7 +119,7 @@ function fnPluginTaskSearch_afterDisplay() {
 	if ($.isFunction($.fn.highlight)) {
 		// Get the searched keywords.
 		// Apply the restriction on the size.
-		var $searchKeywords = $('#search').val().substr(0, marknotes.serach.max_width).trim();
+		var $searchKeywords = $('#search').val().substr(0, marknotes.search.max_width).trim();
 
 		if ($searchKeywords !== '') {
 			$arrKeywords = $searchKeywords.split(',');
