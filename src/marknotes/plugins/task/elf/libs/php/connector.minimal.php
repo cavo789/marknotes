@@ -61,7 +61,8 @@ $opts = array(
 			// Mimetype `image` and `text/plain` allowed to upload
 			// Allow .docx files too
 			// 'text/x-c++' because sometines .md files are recognized as c++ source
-			'uploadAllow'	=> array('image', 'text/html', 'text/plain',
+			'uploadAllow'	=> array('image',
+				'text/csv','text/html', 'text/plain',
 				'text/x-markdown', 'text/x-c++',
 				'application/json', 'application/pdf',
 				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
