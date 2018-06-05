@@ -523,7 +523,7 @@
 			"csv": {
 				"enabled": 1,
 				"not_if_task": [],
-				"only_if_task": ["main", "interface", "task.export.html"]
+				"only_if_task": ["main", "interface", "task.export.html", "task.export.docx"]
 			},
 			"yaml": {
 				"enabled": 1,
