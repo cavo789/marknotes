@@ -130,6 +130,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$bReturn = true;
 
+		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
@@ -138,13 +139,14 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 
 		$html = '';
 
+		$fullname = $aeFiles->makeFileNameAbsolute($params['filename']);
+
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();
 
-			// The list of tags can vary from one user to an
-			// another so we need to use his username
-			$key = $aeSession->getUser().'###'.
-				$params['filename'];
+			// Set the HTML of the note in the cache but prefixed by
+			// the connected user name
+			$key = $aeSession->getUser().'###'.$fullname;
 
 			$cached = $aeCache->getItem(md5($key));
 			$data = $cached->get();
@@ -167,7 +169,7 @@ class Reveal extends \MarkNotes\Plugins\Task\Plugin
 				// note so we can kill with a
 				// $aeCache->deleteItemsByTag(md5($fullname));
 				// every cached items concerning this note
-				$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($key));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}

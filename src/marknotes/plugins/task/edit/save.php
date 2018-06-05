@@ -102,10 +102,14 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();
 
+			// Set the HTML of the note in the cache but prefixed by
+			// the connected user name
+			$key = $aeSession->getUser().'###'.$fullname;
+
 			// Clear the cache for this note : clear every cached
 			// items with a tag equal to $fullname i.e. the fullname
 			// of the note
-			$aeCache->deleteItemsByTag(md5($fullname));
+			$aeCache->deleteItem(md5($key));
 
 			// And create a new markdown content in the cache
 			$key = 'task.markdown.read###'.$fullname;

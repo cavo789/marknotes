@@ -14,34 +14,83 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 
 	private static function restrictFistFolderLevel(array $arrFolders) : array
 	{
+		$arr = null;
 
-		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// Get the docs folders (like "docs/")
-		$doc = $aeSettings->getFolderDocs(false);
+		// Check if the cache is enable
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = $arrSettings['enabled'] ?? false;
 
-		$arrRootFolders=array();
-		$arrRootFolders[] = '.';
+		if ($bCache) {
+			$aeCache = \MarkNotes\Cache::getInstance();
+			$aeSession = \MarkNotes\Session::getInstance();
 
-		foreach ($arrFolders  as $key => $value) {
+			// The list of files can vary from one user to an
+			// another so we need to use his username
+			$key = $aeSession->getUser().'###search_getfolders';
 
-			if ($aeFunctions->startsWith($value, $doc)) {
-				$value = substr($value, strlen($doc));
-			}
+			$cached = $aeCache->getItem(md5($key));
+			$arr = $cached->get();
 
-			$value = str_replace(DS, '/', $value);
-
-			preg_match("/([^\/]*)/mi", $value, $matches);
-
-			$firstFolderLevel = $matches[0];
-
-			if (!in_array($firstFolderLevel, $arrRootFolders)) {
-				$arrRootFolders[] = $firstFolderLevel;
+			if ($arr['folders']==array()) {
+				$arr=null;
 			}
 		}
 
-		natcasesort($arrRootFolders);
+		if (is_null($arr)) {
+
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+
+			// Get the docs folders (like "docs/")
+			$doc = $aeSettings->getFolderDocs(false);
+
+			$arrRootFolders=array();
+			$arrRootFolders[] = '.';
+
+			foreach ($arrFolders  as $tmp => $value) {
+
+				if ($aeFunctions->startsWith($value, $doc)) {
+					$value = substr($value, strlen($doc));
+				}
+
+				$value = str_replace(DS, '/', $value);
+
+				preg_match("/([^\/]*)/mi", $value, $matches);
+
+				$firstFolderLevel = $matches[0];
+
+				if (!in_array($firstFolderLevel, $arrRootFolders)) {
+					$arrRootFolders[] = $firstFolderLevel;
+				}
+			}
+
+			// Sort the list
+			natcasesort($arrRootFolders);
+
+			$arr['folders'] = $arrRootFolders;
+
+			if ($bCache) {
+				// Save the list in the cache
+				$duration = $arrSettings['duration']['default'];
+				$cached->set($arr)->expiresAfter($duration);
+				$aeCache->save($cached);
+				$arr['from_cache'] = 0;
+			}
+
+		} else {
+
+			$arr['from_cache'] = 1;
+
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log('	Retrieving from the cache', 'debug');
+			}
+			/*<!-- endbuild -->*/
+		} // if (is_null($arr))
+
+		$arrRootFolders = $arr['folders'];
 
 		return $arrRootFolders;
 
@@ -98,7 +147,7 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 
 				// Build the html select
 				$values = '';
-				foreach ($arrFolders  as $key => $value) {
+				foreach ($arrFolders  as $tmp => $value) {
 					$values .= '<option value="'.$value.'">'.$value.'</option>';
 				}
 

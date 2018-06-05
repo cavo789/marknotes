@@ -18,6 +18,27 @@ class Logout extends \MarkNotes\Plugins\Task\Plugin
 		$aeSession->set('authenticated', 0);
 		$aeSession->destroy();
 
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
+		// Check if the cache is enable
+		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+		$bCache = $arrSettings['enabled'] ?? false;
+
+		if ($bCache) {
+			try {
+				// Clear the cache since the cache probably
+				// contains informations that was only accessible
+				// to connected people; now, need to contains only
+				// public features; no more connected ones
+				// (like buttons on the toolbar; now should only
+				// contain buttons accessible publicly and not more
+				// for connected people
+				$aeCache = \MarkNotes\Cache::getInstance();
+				$aeCache->clear();
+			} catch (\Exception $e) {
+			}
+		}
+
 		header('Content-Type: application/json');
 		echo json_encode(array('status' => 1));
 

@@ -50,7 +50,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 	{
 		// The variable plugin should avoid to process keywords
 		// in these tags :
-		$arrNotIn = self::getOptions('not_in_tags', array('a','abbr','code','pre'));
+		$arrNotIn = self::getOptions('not_in_tags', array('a','abbr','pre'));
 
 		// Get the plugin options, get the list of variables
 		// Stored in $json_options
@@ -91,7 +91,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 					// Don't process words between one or more `
 					// In markdown a `...` is a <pre> and ```....```
 					// is a <code>
-					$tmp = preg_replace('/`{1,}[^`]*`{1,}/m', '', $tmp);
+					//$tmp = preg_replace('/`{1,}[^`]*`{1,}/m', '', $tmp);
 
 					if ($arrNotIn !== array()) {
 						foreach ($arrNotIn as $tag) {
@@ -147,12 +147,12 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 
 	/**
 	 * Replace variables like '%ROOT%', '%URL%', ... in the
-	 * content but but not when inside a <pre> or a <code> tag i.e.,
-	 * in markdown's language not between `pre` or ```code```
+	 * content but not when inside specific tags (like <a>, <pre>, ...)
+	 * (specified in the $arrNotIn array)
 	 */
 	private static function replaceVar(string $var, string $value, string $markdown, array $arrNotIn = array()) : string
 	{
-		// Remove any <a>, <abbr>, <code>, ... from the content
+		// Remove any <a>, <abbr>,  ... from the content
 		// Don't keep tag and content, just remove it before the
 		// process
 		// The variable plugin should avoid to process keywords in
@@ -161,9 +161,6 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 			$arrNotIn = self::getOptions('not_in_tags', array('a','abbr','code','pre'));
 		}
 
-		// Remove any <a>, <abbr>, <code>, ... from the content
-		// Don't keep tag and content, just remove it before the
-		// process
 		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();
 
 		// When $markdown is a ... markdown string, remove the code

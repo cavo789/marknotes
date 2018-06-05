@@ -160,13 +160,13 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 
 				if ($bCache) {
 					// Save the list in the cache
-					$arr['from_cache'] = 1;
 					$duration = $arrSettings['duration']['default'];
 					$cached->set($arr)->expiresAfter($duration);
 					$aeCache->save($cached);
 					$arr['from_cache'] = 0;
 				}
 			} else {
+				$arr['from_cache'] = 1;
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug->log('	Retrieving from the cache', 'debug');

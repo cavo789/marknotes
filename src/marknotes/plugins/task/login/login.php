@@ -47,6 +47,26 @@ class Login extends \MarkNotes\Plugins\Task\Plugin
 			// OK only if a strict equality
 			$status = ($bLogin && $bPassword) ? 1 : 0;
 
+			if ($status === 1) {
+				// Check if the cache is enable
+				$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+				$bCache = $arrSettings['enabled'] ?? false;
+
+				if ($bCache) {
+					try {
+						// Clear the cache since the cache probably
+						// contains informations that was only for "public"
+						// and now should be reevaluted for connected ones
+						// (like buttons on the toolbar; now can contains
+						// buttons for connected people)
+						$aeCache = \MarkNotes\Cache::getInstance();
+						$aeCache->clear();
+					} catch (\Exception $e) {
+					}
+				}
+
+			}
+
 		} else {
 
 			// The login task isn't enabled

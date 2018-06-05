@@ -45,14 +45,15 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();
 
-			// The list of tags can vary from one user to an
-			// another so we need to use his username
+			// Set the HTML of the note in the cache but prefixed by
+			// the connected user name
 			$key = $aeSession->getUser().'###'.
-				$params['filename'];
+				$aeFiles->makeFileNameAbsolute($params['filename']);
 
 			$cached = $aeCache->getItem(md5($key));
 			$data = $cached->get();
 			$html = $data['html']??'';
+
 		}
 
 		if (trim($html) == '') {
@@ -83,9 +84,9 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 
 				// Add a tag to the cached item : the fullname of the
 				// note so we can kill with a
-				// $aeCache->deleteItemsByTag(md5($fullname));
+				// $aeCache->deleteItemsByTag(md5($key));
 				// every cached items concerning this note
-				$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($key));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
