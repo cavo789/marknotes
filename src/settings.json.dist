@@ -145,7 +145,7 @@
 		"content": {
 			"html": {
 				"tags": {
-					"enabled": 1,
+					"enabled": 0,
 					"not_if_task": ["task.search.search"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
@@ -453,7 +453,7 @@
 					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal", "task.export.remark"]
 				},
 				"tags": {
-					"enabled": 1,
+					"enabled": 0,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
@@ -708,7 +708,7 @@
 					]
 				},
 				"variables": {
-					"not_in_tags": ["a", "abbr", "code", "pre"],
+					"not_in_tags": ["a", "abbr", "pre"],
 					"var": [
 						{
 							"pattern": "%SEE_SOURCE%{filename=\"?(.*)\"?}",
@@ -990,6 +990,19 @@
 							"search": "~<sup>\\s*Spécial\\s*<\/sup>~im",
 							"replace_by": ""
 						}
+					]
+				},
+				"filemanager" : {
+					"accept_upload_mime": [
+						"image",
+						"text/csv",
+						"text/html",
+						"text/plain",
+						"text/x-markdown",
+						"text/x-c++",
+						"application/json",
+						"application/pdf",
+						"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 					]
 				},
 				"lastmodified": {

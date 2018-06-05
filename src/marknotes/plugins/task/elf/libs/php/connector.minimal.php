@@ -49,23 +49,17 @@ $opts = array(
 			//'attributes' => array(),
 			// path to the quarantine folder (in the temporary
 			// folder of marknotes
-			'quarantine' => $arrMN['root'].'tmp/.elf_quarantine',
+			'quarantine' => $arrMN['root'].'tmp'.DS.'.elf_quarantine',
 			// path to the thumbnails temp folder (in the temporary
 			// folder of marknotes
-			'tmbPath' => $arrMN['root'].'tmp/.elf_thumbnails',
+			'tmbPath' => $arrMN['root'].'tmp'.DS.'.elf_thumbnails',
 			'URL' => $arrMN['url'],
 			// to make hash same to Linux one on windows too
 			'winHashFix'	=> DIRECTORY_SEPARATOR !== '/',
 			// All Mimetypes not allowed to upload
 			'uploadDeny'	=> array('all'),
 			// Mimetype `image` and `text/plain` allowed to upload
-			// Allow .docx files too
-			// 'text/x-c++' because sometines .md files are recognized as c++ source
-			'uploadAllow'	=> array('image',
-				'text/csv','text/html', 'text/plain',
-				'text/x-markdown', 'text/x-c++',
-				'application/json', 'application/pdf',
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
+			'uploadAllow'	=> json_decode($arrMN['accept_upload_mime'],true),
 			// allowed Mimetype : the one specified here above
 			'uploadOrder'	=> array('deny', 'allow'),
 			// Set locale. Currently only UTF-8 locales are supported.
@@ -76,6 +70,7 @@ $opts = array(
 		)
 	)
 );
+
 // We can't never access to these folders :
 $protected = '.git|.htaccess|.htpasswd|';
 // $arrMN['acls'] is set by the Elf\Initialize::getSettings();

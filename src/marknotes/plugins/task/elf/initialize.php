@@ -10,6 +10,8 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 class Initialize
 {
+
+	protected static $json_options = 'plugins.options.task.filemanager';
 	/**
 	* Return the current URL
 	*
@@ -139,6 +141,11 @@ class Initialize
 			$username = trim($_SERVER['REMOTE_USER'] ?? '');
 		}
 
+		// Retrieve the list of accepted MIME type for
+		// the upload feature of ELF
+		$arr = $aeSettings->getPlugins(self::$json_options);
+		$arrUploadMIME = $arr['accept_upload_mime']??array();
+
 		// Finally return informations to ELF
 		$arr = array(
 			'root'=>$webRoot,
@@ -148,7 +155,8 @@ class Initialize
 			'locale'=>$locale,
 			'debug'=>$debug,
 			'username'=>$username,
-			'acls'=>json_encode($acls)
+			'acls'=>json_encode($acls),
+			'accept_upload_mime'=>json_encode($arrUploadMIME)
 		);
 
 		return $arr;
