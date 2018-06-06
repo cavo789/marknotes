@@ -135,7 +135,16 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 				// Will act exactly like a str_replace but only
 				// replace the first occurence which is really
 				// important here when using numbering
-				$markdown=preg_replace('~'.$tags[$i].'~', $sTitle, $markdown, 1);
+				try {
+					// The delimiter here is important. Use "%" and not
+					// f.i. "~" because that last character can be used in
+					// markdown to put a text as strikethrough (~~ text ~~)
+					// In that case, we can't use ~ as delimiter if used in
+					// the tag.
+					$markdown=preg_replace('%'.preg_quote($tags[$i]).'%', $sTitle, $markdown, 1);
+				} catch (\Exception $e) {
+				}
+
 			} // for ($i
 
 			// Now, check if there is an added value to add number i.e.
