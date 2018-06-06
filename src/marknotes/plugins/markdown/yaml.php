@@ -83,7 +83,7 @@ class YAMLHeader extends \MarkNotes\Plugins\Markdown\Plugin
 		$yaml = '';
 
 		// Get the separator used for the YAML block
-		$yaml_separator = self::getOptions('yaml_separator', '---');
+		$yaml_separator = self::getOptions('separator', '---');
 
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
