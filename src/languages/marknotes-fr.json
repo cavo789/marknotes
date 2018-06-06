@@ -6,6 +6,8 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "fr"
 	},
+	"settings_plugins_options_task_search_disable_plugins":"D\u00e9sactive les plugins lors d'une recherche; cela permet de fortement acc\u00e9l\u00e9rer la recherche mais rends impossible, p.ex. de rechercher sur un mot de passe qui aurait \u00e9t\u00e9 crypt\u00e9 (ou n'importe quel autre r\u00e9sultat provenant d'un plugin)",
+	"search_disable_plugins":"D\u00e9sactive les plugins (plus rapide mais non exhaustive; p.ex. ne retrouve aucune information crypt\u00e9e)",
 	"settings_plugins_options_task_search_title":"Recherche",
 	"settings_plugins_options_task_search_restrict_folders_first_level": "Affiche uniquement le nom du dossier de premier niveau (et pas toute l'arborescence) dans l'\u00e9cran de recherche avanc\u00e9e",
 	"search_advanded_form":"Recherche avanc\u00e9e",

@@ -1059,7 +1059,8 @@
 					"disallow_all": 0
 				},
 				"search": {
-					"restrict_folders_first_level": 1
+					"restrict_folders_first_level": 1,
+					"disable_plugins": 1
 				},
 				"tags": {
 					"min_chars": 6,

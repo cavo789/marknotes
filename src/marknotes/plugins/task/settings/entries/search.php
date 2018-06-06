@@ -19,10 +19,13 @@ class MN_Search extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$arr = self::getArray();
 		$box = self::getBox($key, self::$icon);
 
-		// Enabled
 		$opt = 'restrict_folders_first_level';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		$opt = 'disable_plugins';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);
 	}

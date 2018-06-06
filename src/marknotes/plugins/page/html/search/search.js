@@ -29,9 +29,9 @@ function fnPluginTaskSearch_init() {
 		}
 		/*<!-- endbuild -->*/
 
-		if ($('#search-folder-btn').length > 0) {
-			$("#search-folder-btn").click(function() {
-				fnPluginTaskSearchRestrictFolder();
+		if ($('#search-advanced-btn').length > 0) {
+			$("#search-advanced-btn").click(function() {
+				fnPluginTaskSearchAdvanced();
 			});
 		}
 
@@ -207,13 +207,13 @@ function fnPluginTaskSearchClearCache() {
 	return true;
 }
 
-// The user has clicked on the Folder button : show a list of
+// The user has clicked on the search advanced button : show a list of
 // folder so we can restrict the search action only on these folders
-function fnPluginTaskSearchRestrictFolder() {
+function fnPluginTaskSearchAdvanced() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Search - restrict_folder');
+		console.log('	  Plugin Page html - Search - Advanced form');
 	}
 	/*<!-- endbuild -->*/
 
@@ -234,8 +234,8 @@ function fnPluginTaskSearchRestrictFolder() {
 				// string
 				// Add that form to the parent of the content DOM element
 				$("#CONTENT").parent().append(data['form']);
-				// And show the restrict folder form.
-				fnPluginTaskShowRestrictForm();
+				// And show the search advanced  form.
+				fnPluginTaskShowAdvancedSearchForm();
 			} else {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
@@ -250,7 +250,7 @@ function fnPluginTaskSearchRestrictFolder() {
 	return true;
 }
 
-function fnPluginTaskShowRestrictForm() {
+function fnPluginTaskShowAdvancedSearchForm() {
 
 	//Fade in the Popup
 	$('#modal-box').fadeIn(300);
@@ -258,6 +258,7 @@ function fnPluginTaskShowRestrictForm() {
 
 	try {
 		$("#cbxFolderList").val(marknotes.search.restrict_folder);
+		$('#chkDisablePlugins').prop('checked', marknotes.search.disable_plugins);
 	} catch (e) {
 	} finally {
 	}

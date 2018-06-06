@@ -244,7 +244,8 @@ function jstree_init($data) {
 							url: 'search.php',
 							dataType: 'json',
 							data : {
-								restrict_folder : ''
+								restrict_folder : marknotes.search.restrict_folder,
+								disable_plugins : marknotes.search.disable_plugins
 							},
 							type: (marknotes.settings.debug ? 'GET' : 'POST'),
 							beforeSend: function () {

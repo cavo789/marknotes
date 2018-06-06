@@ -12,7 +12,7 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.page.html.search';
-	protected static $json_options = JSON_OPTIONS_TAGS;
+	protected static $json_options = 'plugins.options.task.search';
 
 	/**
 	 * Provide additionnal javascript
@@ -41,11 +41,14 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$script .= "<script src=\"".$url."search.js\" ".
 			"defer=\"defer\"></script>\n";
 
+		$disable_plugins = boolval(self::getOptions('disable_plugins',0));
+
 		$script .=
 			"<script>\n".
 			"marknotes.search = {};\n".
 			"marknotes.search.max_width=".SEARCH_MAX_LENGTH.";\n".
 			"marknotes.search.restrict_folder='.';\n".
+			"marknotes.search.disable_plugins=".($disable_plugins?1:0).";\n".
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
@@ -94,14 +97,14 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$intro = $aeSettings->getText('intro_js_search', '');
 
-			$restrict = $aeSettings->getText('search_restrict_folder', '');
+			$advanced_search = $aeSettings->getText('search_advanded_form', '');
 
 			$sSearch='<div id="divSearch" class="search sidebar-form" data-intro="'.$intro.'">
 			  <div class="input-group">
 				<input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
 				<span class="input-group-btn">
-					<button type="button" name="folder" id="search-folder-btn"
-						class="btn btn-flat" title="'.$restrict.'"><i class="fa fa-folder"></i>
+					<button type="button" name="folder" id="search-advanced-btn"
+						class="btn btn-flat" title="'.$advanced_search.'"><i class="fa fa-cog"></i>
 					</button>'.
 					//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
 					//</button>
@@ -109,12 +112,6 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 			  </div>
 			</div>';
 
-/*
-$sSearch='<input id="search" name="search" type="text" '.
-'class="flexdatalist" placeholder="'.$placeHolder.'" '.
-'maxlength="'.SEARCH_MAX_LENGTH.'" '.
-'data-data="tags.json" data-search-in="name" data-min-lenght="3" />';
-*/
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$sSearch = "\n<!-- Lines below are added by ".__FILE__."-->\n".

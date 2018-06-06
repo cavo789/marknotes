@@ -10,7 +10,15 @@
 		</fieldset>
 
 		<br/>
-		<button class="submit" type="button">%SEARCH_APPLY%</button>
+
+		<div class="form-check">
+		  <input class="form-check-input" type="checkbox" value="" id="chkDisablePlugins">
+		  <span class="form-check-label" for="chkDisablePlugins">%SEARCH_DISABLE_PLUGINS%</span>
+		</div>
+
+		<br/>
+
+		<button id="btn_search_apply" class="submit" type="button">%SEARCH_APPLY%</button>
 		<button id="btn_search_remove_restrict" class="submit" type="button">%SEARCH_REMOVE%</button>
 
 	</form>
@@ -18,25 +26,21 @@
 </div>
 
 <script>
-$("#cbxFolderList").change(function() {
+$("#btn_search_apply").click(function() {
+//$("#cbxFolderList").change(function() {
 
-	// The user has selected one or more folders from the listbox
-	// Get them
+	// Get the selected folder
+	marknotes.search.restrict_folder = $("#cbxFolderList").val();
 
-	var selectedFolders = "";
-
-	$("select option:selected").each(function() {
- 		selectedFolders += $(this).text() + ";";
-	});
-
-	selectedFolders = selectedFolders.substring(0, selectedFolders.length - 1);
-
-	// Remove the final ";"
-	marknotes.search.restrict_folder = selectedFolders;
+	// Disable or not plugins ?
+	marknotes.search.disable_plugins = $('#chkDisablePlugins').is(":checked") ? 1 : 0;
 
 	// Reinitialize the treeview to search only on the selected folder
-	var $param = window.btoa(encodeURIComponent(JSON.stringify(selectedFolders)));
-	$('#TOC').jstree(true).settings.search.ajax.data = {restrict_folder : $param };
+	$('#TOC').jstree(true).settings.search.ajax.data =
+		{
+			restrict_folder : window.btoa(encodeURIComponent(JSON.stringify(marknotes.search.restrict_folder))),
+			disable_plugins : marknotes.search.disable_plugins
+		 };
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
@@ -46,26 +50,29 @@ $("#cbxFolderList").change(function() {
 	/*<!-- endbuild -->*/
 
 	if (marknotes.search.restrict_folder!=='.') {
-		$('#search-folder-btn').addClass('btn-restrict-active');
+		$('#search-advanced-btn').addClass('btn-restrict-active');
 		$('.search-flexdatalist').attr('placeholder', marknotes.search.restrict_folder);
 		$('.search-flexdatalist').attr('title', $.i18n('search_restricted_to')+' '+marknotes.search.restrict_folder);
 	} else {
-		$('#search-folder-btn').removeClass('btn-restrict-active');
+		$('#search-advanced-btn').removeClass('btn-restrict-active');
 		$('.search-flexdatalist').attr('placeholder', $.i18n('search_placeholder'));
 		$('.search-flexdatalist').attr('title', '');
 	}
 	return true;
-
 });
 
 $('#btn_search_remove_restrict').click(function() {
 
 	// No restriction
 	marknotes.search.restrict_folder = '.';
-	$('#search-folder-btn').removeClass('btn-restrict-active');
+	$('#search-advanced-btn').removeClass('btn-restrict-active');
 
 	// Reinitialize the treeview to search only on the selected folder
-	$('#TOC').jstree(true).settings.search.ajax.data = {restrict_folder : '.'};
+	$('#TOC').jstree(true).settings.search.ajax.data =
+		{
+			restrict_folder : '.',
+			disable_plugins: 0
+		};
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {

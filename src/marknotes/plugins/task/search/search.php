@@ -97,22 +97,25 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	/**
 	 * Make the search.
 	 */
-	private static function doSearch(array $keywords, string $pattern, string $restrict_folder = '') : array
+	private static function doSearch(array $keywords, string $pattern, array $params) : array
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
-		// Restrict on "." means everything so no restriction
-		if (trim($restrict_folder)=='.') {
-			$restrict_folder='';
-		}
-
 		// Retrieve the list of files
-		$arrFiles = self::getFiles($restrict_folder);
+		$arrFiles = self::getFiles($params['restrict_folder']);
 
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			if (!$aeFunctions->isAjaxRequest()) {
+				echo '<p>Number of files : '.count($arrFiles).'</h1>';
+			}
+		}
+		/*<!-- endbuild -->*/
 		// Absolute root folder
 		$root = $aeSettings->getFolderWebRoot();
 
@@ -171,13 +174,18 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				$fullname = $root.$file;
 
 				// Read the note content
-				// The read() method will fires any plugin linked
-				// to the markdown.read event
-				// so encrypted notes will be automatically unencrypted
-
-				$params['filename']=$fullname;
-				$params['encryption'] = 0;
-				$content = $aeMarkdown->read($fullname, $params);
+				if ($params['disable_plugins']==0) {
+					// The read() method will fires any plugin linked
+					// to the markdown.read event
+					// so encrypted notes will be automatically unencrypted
+					$params['filename']=$fullname;
+					$params['encryption'] = 0;
+					$content = $aeMarkdown->read($fullname, $params);
+				} else {
+					// Don't fire plugins for speed purposes
+					// Immediatly read the file's content
+					$content=file_get_contents($fullname);
+				}
 
 				$bFound = true;
 
@@ -230,15 +238,25 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	*/
  	public static function run(&$params = null) : bool
 	{
+		$startedAt = microtime(true);
+
 		$aeCache = \MarkNotes\Cache::getInstance();
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
+		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		// String to search (can be something like
 		// 'invoices,2017,internet') i.e. multiple keywords
 		$pattern = trim($aeFunctions->getParam('str', 'string', '', false, SEARCH_MAX_LENGTH));
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			if (!$aeFunctions->isAjaxRequest()) {
+				echo '<h1>Start searching for **'.$pattern.'**</h1>';
+			}
+		}
+		/*<!-- endbuild -->*/
 
 		if ($pattern==='') {
 			self::noParam();
@@ -273,7 +291,22 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		// subfolder and not search for everyting under /docs
 		$restrict_folder = trim(urldecode($aeFunctions->getParam('restrict_folder', 'string', '', true)));
 		$restrict_folder = json_decode($restrict_folder);
-		if ($restrict_folder==null) $restrict_folder='';
+		if ($restrict_folder==null) {
+			$restrict_folder='';
+		} else {
+			if ($restrict_folder=='.') {
+				// Restrict on "." means everything so no restriction
+				$restrict_folder='';
+			}
+		}
+		$params['restrict_folder'] = $restrict_folder;
+
+		// Look for the ""&disable_plugins" querystring variable
+		// If set and if on 1, plugins won't be fired; the search will be
+		// faster than running every plugins for every files
+		// Speed can be x10
+		$disable_plugins = $aeFunctions->getParam('disable_plugins', 'boolean', false);
+		$params['disable_plugins'] = $disable_plugins?1:0;
 
 		$arr = null;
 
@@ -291,7 +324,8 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		}
 
 		if (is_null($arr)) {
-			$arr = self::doSearch($keywords, $pattern, $restrict_folder);
+
+			$arr = self::doSearch($keywords, $pattern, $params);
 
 			if ($bCache) {
 				$arr['from_cache'] = 1;
@@ -308,6 +342,20 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 			}
 			/*<!-- endbuild -->*/
 		}
+
+		$arr['restrict_folder'] = $params['restrict_folder'];
+		$arr['disable_plugins'] = $params['disable_plugins'];
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			if (!$aeFunctions->isAjaxRequest()) {
+				$timeTaken =  microtime(true) - $startedAt;
+				echo "<h5>Time taken : ".$timeTaken." seconds</h5>";
+				echo '<pre>'.json_encode($arr, JSON_PRETTY_PRINT).'</pre>';
+				die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+			}
+		}
+		/*<!-- endbuild -->*/
 
 		// Nothing should be returned, the list of files
 		// can be immediatly displayed
