@@ -426,12 +426,14 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 					// Replace the tag from f.i. %INCLUDE file.md% to
 					// %INCLUDE full_path/file.md%
-					$old = $matches[0][$j];
-					$matches[0][$j] = str_replace($file[$j], $absFile, $matches[0][$j]);
-					$markdown = str_replace($old, $matches[0][$j], $markdown);
+					if (is_file($absFile)) {
+						$old = $matches[0][$j];
+						$matches[0][$j] = str_replace($file[$j], $absFile, $matches[0][$j]);
+						$markdown = str_replace($old, $matches[0][$j], $markdown);
 
-					// And do the same for the filename itself
-					$matches[2][$j] = str_replace($file[$j], $absFile, $matches[2][$j]);
+						// And do the same for the filename itself
+						$matches[2][$j] = str_replace($file[$j], $absFile, $matches[2][$j]);
+					}
 				}
 			} // for($j=0)
 
@@ -528,6 +530,15 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					$fname = str_replace('/', DS, $fname);
 
 					$tag2 = $arrTags[$j];
+
+					// Avoid infinite loop : a file like "a.md" with an
+					// include for itself (%INCLUDE a.md%)
+					// Always a very bad idea
+					if ($fname == $filename) {
+						$tmp = str_replace('%INCLUDE', '%INCLUDE_disabled_itself', $tag2);
+						$markdown = str_replace($tag2, $tmp, $markdown);
+						break;
+					}
 
 					$sContent='';
 
@@ -635,6 +646,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 						/*<!-- build:debug -->*/
 						} else {
+$tmp = str_replace('%INCLUDE', '%INCLUDE_disabled_notfound', $tag[$i]);
+$markdown = str_replace($tag[$i], $tmp, $markdown);
 
 							if ($aeSettings->getDebugMode()) {
 								$sContent = 'Failure: file ['.$fname.'] not found!';
