@@ -9,16 +9,16 @@
  *
  * 1. Replace one of these characters by ...
  *
- *    Search      Replace by
- *    ------      ----------
- *    “           `
- *    ”           `
+ *	Search	  Replace by
+ *	------	  ----------
+ *	“			`
+ *	”			`
  *
  * 2. replace non breaking spaces introduced by Pandoc when the .md file
- *    is the result of a conversion from .docx to .md
+ *	is the result of a conversion from .docx to .md
  * 3. replace CRLF (Windows) by LF (Unix)
  * 4. replace empty lines (or lines with only spaces) by one single empty lines
- * 5. remove unneeded spaces between ### and the title (like in "###    My title")
+ * 5. remove unneeded spaces between ### and the title (like in "###	My title")
  * x. replace links to image with absolute filename by the %URL% variable
  * x. replace links to the folder where the note resides by the %NOTE_FOLDER% variable
  */
@@ -31,6 +31,48 @@ class Beautify extends \MarkNotes\Plugins\Markdown\Plugin
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.markdown.beautify';
 	protected static $json_options = 'plugins.options.markdown.beautify';
+
+	/**
+	 * Get the list of actions under the /beautify_actions folder
+	 *
+	 * @param  string $folder  The path like
+	 * 						C:\marknotes\plugins\markdown\beautify_actions\
+	 * @return array		The list of files found; one item by filename
+	 */
+	private static function getActions(string $folder) : array
+	{
+		$aeFolders = \MarkNotes\Folders::getInstance();
+
+		/*
+		  Old way : using a rglob. Don't use it anymore and give
+		  preference to $aeFolders->getContent()
+		  $arrActions = $aeFiles->rglob($pattern = '*.php', $path = $folder);
+		  	for ($i = count($arrActions); $i>0; $i--) {
+	  			$action = $arrActions[$i-1];
+				if (substr(basename($action), 0, 1) === '_') {
+					unset($arrActions[$i-1]);
+				}
+			} // for($i
+		*/
+
+		// Get the list of files in the beautify_actions folder
+		$arrFiles = $aeFolders->getContent($folder, false);
+
+		// Loop and keep only .php file and only when the name is not
+		// starting with a "_" (convention : if the filename start with
+		// an underscore (like in _addThings.php)
+		// consider that file as disabled so don't call it)
+		$arrActions = array();
+		foreach ($arrFiles as $file) {
+			if (($file['type']=='file') && ($file['extension']=='php')) {
+				if (substr($file['basename'],0,1) !== '_') {
+					$arrActions[] = $folder.$file['basename'];
+				}
+			}
+		}
+
+		return $arrActions;
+	}
 
 	public static function readMD(array &$params = array()) : bool
 	{
@@ -54,22 +96,14 @@ class Beautify extends \MarkNotes\Plugins\Markdown\Plugin
 		// of .php files in the folder beautify_actions and then
 		// load and run each file, ony by one. No priority needed
 		$aeFiles = \MarkNotes\Files::getInstance();
+		$aeFolders = \MarkNotes\Folders::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeSession = \MarkNotes\Session::getInstance();
 
 		// Look in the beautify_actions subfolder and take every .php file
 		$folder = __DIR__.'/beautify_actions/';
-		$arrActions = $aeFiles->rglob($pattern = '*.php', $path = $folder);
 
-		// Convention : if the filename start with an underscore
-		// (like in _addThings.php)
-		// consider that file as disabled so don't call it
-		for ($i = count($arrActions); $i>0; $i--) {
-			$action = $arrActions[$i-1];
-			if (substr(basename($action), 0, 1) === '_') {
-				unset($arrActions[$i-1]);
-			}
-		} // for($i
+		$arrActions = self::getActions($folder);
 
 		// Run each actions sequentially
 		if (count($arrActions)>0) {
@@ -77,7 +111,7 @@ class Beautify extends \MarkNotes\Plugins\Markdown\Plugin
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("   Load [".$action."]", "debug");
+					$aeDebug->log("	Load [".$action."]", "debug");
 				}
 				/*<!-- endbuild -->*/
 
