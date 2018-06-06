@@ -95,6 +95,26 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
+	 * Don't search into hidden files i.e. files in a folder
+	 * with a name starting with a dot (like ".files") or
+	 * filename starting with a dot (like ".secrets.md")
+	 *
+	 * @param  array $arrFiles [description]
+	 * @return array			[description]
+	 */
+	private static function removeHiddenFiles(array $arrFiles) : array
+	{
+		$arrTmp = array();
+		foreach ($arrFiles as $key=>$value) {
+			if (strpos($value, DS.'.')===FALSE) {
+				$arrTmp[$key] = $value;
+			}
+		}
+
+		return $arrTmp;
+	}
+
+	/**
 	 * Make the search.
 	 */
 	private static function doSearch(array $keywords, string $pattern, array $params) : array
@@ -106,13 +126,19 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
 
+		/*<!-- build:debug -->*/
+		$debug_output = '';
+		/*<!-- endbuild -->*/
+
 		// Retrieve the list of files
 		$arrFiles = self::getFiles($params['restrict_folder']);
+
+		$arrFiles = self::removeHiddenFiles($arrFiles);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			if (!$aeFunctions->isAjaxRequest()) {
-				echo '<p>Number of files : '.count($arrFiles).'</h1>';
+				$debug_output .= '<p>Number of files (excluding hidden files/folders): '.count($arrFiles).'</h1>';
 			}
 		}
 		/*<!-- endbuild -->*/
@@ -120,6 +146,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$root = $aeSettings->getFolderWebRoot();
 
 		$bDebug=false;
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$bDebug=true;
@@ -162,6 +189,9 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 
 				/*<!-- build:debug -->*/
 				if ($bDebug) {
+					if (!$aeFunctions->isAjaxRequest()) {
+						$debug_output .= '<li>FOUND IN ['.$file.']</li>';
+					}
 					$aeDebug->log("	FOUND IN [".$file."]", "debug");
 				}
 				/*<!-- endbuild -->*/
@@ -212,6 +242,9 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				if ($bFound) {
 					/*<!-- build:debug -->*/
 					if ($bDebug) {
+						if (!$aeFunctions->isAjaxRequest()) {
+							$debug_output .= '<li>FOUND IN ['.$file.']</li>';
+						}
 						$aeDebug->log("	FOUND IN [".$file."]", "debug");
 					}
 					/*<!-- endbuild -->*/
@@ -228,6 +261,12 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$arr['from_cache'] = 0;
 		$arr['pattern'] = $pattern;
 		$arr['files'] = json_encode(array_map("md5", $return));
+
+		/*<!-- build:debug -->*/
+		if ($debug_output !== '') {
+			echo $debug_output;
+		}
+		/*<!-- endbuild -->*/
 
 		return $arr;
 	}
@@ -254,6 +293,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		if ($aeSettings->getDebugMode()) {
 			if (!$aeFunctions->isAjaxRequest()) {
 				echo '<h1>Start searching for **'.$pattern.'**</h1>';
+				echo '<em>Appears only in debug mode and when not started by an ajax request</em>';
 			}
 		}
 		/*<!-- endbuild -->*/
