@@ -255,6 +255,9 @@ class Convert
 		// Get the template to use, if any
 		if ($this->sLayout!=='txt') {
 			$template = $aeSettings->getTemplateFile($this->sLayout, '');
+
+			$template = str_replace('/', DS, $template);
+
 			// Pandoc don't support --reference-txt
 			if ($template!=='') {
 				$template='--reference-'.$this->sLayout.'="'.$template.'" ';
@@ -271,10 +274,11 @@ class Convert
 		// tools/pandoc/pandoc.exe), make it absolute
 		$root = $aeSettings->getFolderWebRoot();
 		$script = '"'.$root.ltrim($this->arrConfig['script'], DS).'" ';
+		$script = str_replace('/', DS, $script);
 
 		// Output filename
 		$outFile='-o "'.basename($TargetFileName).'" ';
-		$inFile='"'.basename($InputFileName).'"' ;
+		$inFile=basename($InputFileName);
 
 		$killFiles='';
 
@@ -303,7 +307,7 @@ class Convert
 			// Kill the old debug informations
 			'if exist "'.$debugFile.'" del "'.$debugFile.'"'.PHP_EOL.
 			// run the tool
-			$script.$template.$options.' '.$outFile.$inFile.'> '.$debugFile.' 2>&1'.PHP_EOL.
+			$script.$template.$options.' '.$outFile.'"'.$inFile.'" > '.$debugFile.' 2>&1'.PHP_EOL.
 			// Copy the result file in the correct folder
 			'copy "'.basename($TargetFileName).'" "'.$TargetFileName.'"'.PHP_EOL.
 			$killFiles;
@@ -328,6 +332,7 @@ class Convert
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$fScriptFile = $aeSettings->getFolderTmp().self::getSlugName().'.bat';
+		$fScriptFile = str_replace('/', DS, $fScriptFile);
 
 		if ($aeFiles->exists($fScriptFile)) {
 			$aeFiles->delete($fScriptFile);

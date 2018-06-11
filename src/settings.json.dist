@@ -918,7 +918,7 @@
 					"pandoc": {
 						"script": "tools/pandoc/pandoc.exe",
 						"options": {
-							"docx": "--from markdown --standalone -S --smart --columns 1000 --to docx",
+							"docx": "--from markdown --highlight-style=tango --standalone -S --smart --columns 1000 --to docx",
 							"epub": "--from markdown --standalone -S --table-of-contents --smart --to epub",
 							"odt": "--from markdown --standalone -S --table-of-contents --smart --to odt",
 							"pdf": "--from markdown --standalone -S --table-of-contents  --latex-engine=tools/miktex/miktex/bin/x64/xelatex.exe -V geometry:margin=1in",

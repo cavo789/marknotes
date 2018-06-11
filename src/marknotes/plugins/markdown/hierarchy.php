@@ -141,7 +141,13 @@ class Hierarchy extends \MarkNotes\Plugins\Markdown\Plugin
 					// markdown to put a text as strikethrough (~~ text ~~)
 					// In that case, we can't use ~ as delimiter if used in
 					// the tag.
-					$markdown=preg_replace('%'.preg_quote($tags[$i]).'%', $sTitle, $markdown, 1);
+					$delim='%';
+					if (strpos('%', $tags[$i])===FALSE) {
+						$delim = '~';
+					}
+
+					$pattern = $delim.preg_quote($tags[$i]).$delim;
+					$markdown=preg_replace($pattern, $sTitle, $markdown, 1);
 				} catch (\Exception $e) {
 				}
 
