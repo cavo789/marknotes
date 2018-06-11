@@ -90,6 +90,11 @@ class Debug
 		return self::$hInstance;
 	}
 
+	public static function getLogFilename() : string
+	{
+		return self::$sDebugFileName;
+	}
+
 	/**
 	 * Set the developper mode or not
 	 */

@@ -114,6 +114,25 @@ class Debugging {
 		return $html;
 	}
 
+	private function getLogfile() : string
+	{
+
+		$html = self::makeHeading('Logfile','bug');
+
+		$content ='<li>'.
+			self::makeURL('index.php?task=task.debug.readfile',
+			'Display the log file\'s content', 'html').
+			'</li>';
+
+		$content .='<li>'.
+			self::makeURL('index.php?task=task.debug.clear',
+			'Clear the logfile', 'json').
+			'</li>';
+
+		$html = str_replace('%CONTENT%', $content, $html);
+		return $html;
+	}
+
 	private function getLogin() : string
 	{
 		$html = self::makeHeading('Login','sign-in');
@@ -368,6 +387,7 @@ class Debugging {
 		$content .= self::getActions();
 		$content .= self::getFiles();
 		$content .= self::getFolders();
+		$content .= self::getLogfile();
 		$content .= self::getLogin();
 		$content .= self::getProhibitedFiles();
 		$content .= self::getSearch();

@@ -6,6 +6,7 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "en"
 	},
+	"only_dev_mode_on":"To use this feature, please enable first the debug and development mode in the settings.json file. You can also do this in the settings screen.",
 	"settings_plugins_options_task_search_disable_plugins":"Disable plugins during the search, the search will be really faster but f.i. encrypted infos won't be decrypted so searching for a password won't work anymore (and this will be true for all plugins)",
 	"search_disable_plugins":"Disable plugins when search (faster but not exhaustive; won't retrieve encrypted infos f.i.)",
 	"settings_plugins_options_task_search_title":"Search",
