@@ -1,9 +1,8 @@
 <?php
 /**
- * Add a gallery of images in a HTML page.
- *
- * Find any '%GALLERY images_folder%' and get the list of imaages in that folder, then
- * insert <img> tags.
+ * Add a gallery of images in a HTML page. *
+ * Find any '%GALLERY images_folder%' and get the list of
+ * images in that folder, then insert <img> tags.
  */
 namespace MarkNotes\Plugins\Content\HTML;
 
@@ -28,15 +27,16 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 		$aeRegex = \MarkNotes\Helpers\Regex::getInstance();
 		$tmp = $aeRegex->removeTags($content, $arrNotIn);
 
-		// Check if the content contains things like '%GALLERY .images/folder/demo%'
+		// Check if the content contains things like
+		// '%GALLERY .images/folder/demo%'
 		// i.e. '%GALLERY ' followed by a foldername and ending by '%'
 
 		$pattern = '/%GALLERY ([^\\%]*)%/';
 
 		if (preg_match_all($pattern, $content, $matches)) {
 
-			// What should happens when the user click on a thumbnail ?
-			// Open in a modal or in a new tab ?
+			// What should happens when the user click on a thumbnail?
+			// Open in a modal or in a new tab?
 			$open_in_modal = boolval(self::getOptions('open_in_modal', 1));
 
 			$aeSession = \MarkNotes\Session::getInstance();
@@ -78,34 +78,35 @@ class Image_Gallery extends \MarkNotes\Plugins\Content\HTML\Plugin
 					// Retrieve the note URL
 					$url = rtrim($aeFunctions->getCurrentURL(), '/');
 					$url .= '/'.$aeSettings->getFolderDocs(false);
-					$url .= $imgFolder.'/';
+					//$url .= $imgFolder.'/';
 					$url = str_replace(DS, '/', $url);
 
-					$arrFiles = $aeFiles->rglob('*', $root.$folder);
+					$arrFiles = $aeFolders->getContent($root.$folder, true);
 
 					$images = '';
 
 					foreach ($arrFiles as $file) {
-						$ext = strtolower($aeFiles->getExtension($file));
 
-						if (in_array($ext, static::$arrImg)) {
-							$file = utf8_encode($file);
-							$file = str_replace($root, '', $file);
-							$file = str_replace(DS, '/', $file);
+						if ($file['type'] == 'file') {
 
-							$alt = $aeFiles->removeExtension(basename($file));
+							$ext = strtolower($file['extension']);
 
-							$img = '<img alt="'.$alt.'" src="'.$url.basename($file).'"/>';
+							if (in_array($ext, static::$arrImg)) {
 
-							$img='<a title="'.$alt.'" href="'.$url.basename($file).'" data-modal="'.$open_in_modal.'">'.$img.'</a>';
+								$basename = strtolower($file['basename']);
 
-							if (in_array($task, array('task.export.pdf', 'task.export.reveal'))) {
-								// Add the image in a section so this
-								// will create a new page in the
-								// pdf document
-								$images .= '<section>'.$img.'</section>';
-							} else {
-								$images .= '<div>'.$img.'</div>';
+								$img = '<img alt="'.$basename.'" src="'.$url.$file['path'].'"/>';
+
+								$img='<a title="'.$basename.'" href="'.$url.$file['path'].'" data-modal="'.$open_in_modal.'">'.$img.'</a>';
+
+								if (in_array($task, array('task.export.pdf', 'task.export.reveal'))) {
+									// Add the image in a section so this
+									// will create a new page in the
+									// pdf document
+									$images .= '<section>'.$img.'</section>';
+								} else {
+									$images .= '<div>'.$img.'</div>';
+								}
 							}
 						}
 					} // foreach

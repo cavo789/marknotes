@@ -5,8 +5,8 @@
  * the task is task.export.reveal because, then, the images are
  * not retrieved by the content HTML plugin
  *
- * Find any '%GALLERY images_folder%' and get the list of imaages in that folder, then
- * insert <section data-background=""> tags.
+ * Find any '%GALLERY images_folder%' and get the list of images in
+ * that folder, then insert <section data-background=""> tags.
  */
 namespace MarkNotes\Plugins\Markdown;
 
