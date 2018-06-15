@@ -121,15 +121,12 @@ class FilterList extends \MarkNotes\Plugins\Task\Plugin
 			 *
 			 * So remove all *protected* entries
 			 */
-
-			$i=0;
-			foreach ($params as $entry) {
+			foreach ($params as $key=>$entry) {
 				if ($entry == '*protected*') {
-					unset($params[$i]);
+					unset($params[$key]);
 				}
-
-				$i+=1;
 			}
+
 		} // if (count($arrOptions)>0)
 
 		return true;
