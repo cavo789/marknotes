@@ -69,7 +69,7 @@ function jstree_init($data) {
 					/*<!-- endbuild -->*/
 				})
 				.on('changed.jstree', function (e, data) {
-					var objNode = data.instance.get_node(data.selected);
+					var objNode = data.instance.get_node(data.node.id);
 
 					// Remember the ID of the note
 					// marknotes.node.id is defined in the template
@@ -202,6 +202,7 @@ function jstree_init($data) {
 
 							return operation === 'move_node' ? false : true;
 						},
+						// Only one node can be selected at a time
 						multiple: false,
 						// Automatically open the root node
 						initially_open: ['phtml_1'],
