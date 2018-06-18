@@ -272,7 +272,9 @@ function afterEditInitMDE($data) {
 				className: "fa fa-picture-o",
 				title: $.i18n('button_upload_image')
 			},
-			"|", "preview", "side-by-side", "|", //"fullscreen"
+			// Remove "side-by-side" since it seems to not work
+			// anymore in SimpleMDE; a JS error is generated
+			"|", "preview",  "|", //"side-by-side", "fullscreen"
 			"bold", "italic", "strikethrough", "|",
 			"heading-1", "heading-2", "heading-3", "|",
 			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
