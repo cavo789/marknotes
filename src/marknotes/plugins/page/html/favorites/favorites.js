@@ -177,17 +177,21 @@ function afterShowFavorites($data) {
 	// Put the list in the content area
 
 	// The FAVORITES id exists on the homepage (when the interface
-	// is displayed). As soon as a note is displayed, only the
-	// CONTENT node id exists
-	if ($('#FAVORITES').length !== 0) {
-		$('#FAVORITES').html(
+	// is displayed). If not exists, use the CONTENT so the "Show fav"
+	// buttons can works also when a note is displayed.
+	$DOMElem = ($('#FAVORITES').length !== 0) ? 'FAVORITES' : 'CONTENT';
+
+	if ($('#'+$DOMElem).length !== 0) {
+		$('#'+$DOMElem).html(
 			'<h2>' + $title + '</h2>' +
 			'<div class="animated bounceInLeft">' +
 				'<ul id="favorites">' + $ul.innerHTML + '</ul>' +
 			'</div>');
 
 		// And handle clicks
-		$("#favorites li").click(function (event) {
+		$('#favorites li').click(function (event) {
+
+			$id = $(this).attr('id');
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
@@ -197,8 +201,11 @@ function afterShowFavorites($data) {
 			/*<!-- endbuild -->*/
 
 			try {
-				$(this).attr('id')
-				$('#TOC').jstree('select_node', $(this).attr('id'));
+				// Use activate_node and not select_node since
+				// activate_node will ensure that only one node
+				// is selected at a time (respect the "multiple"
+				// settings of jstree.core
+				$('#TOC').jstree('activate_node', $id);
 			} catch (e) {
 				// Problem in jstree ???
 				console.warn('Error when selecting the node : ' +

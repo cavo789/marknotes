@@ -430,7 +430,7 @@
 				"remark": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["task.export.remark"]
+					"only_if_task": ["main", "interface","task.export.remark","task.export.html"]
 				},
 				"reveal": {
 					"enabled": 1,

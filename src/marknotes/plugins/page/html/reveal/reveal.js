@@ -16,7 +16,7 @@ if (typeof marknotes.slideshow.themes !== 'undefined') {
 	arr.forEach(function($theme) {
 	  $arrThemes.push({
 		  name: $theme,
-		  theme: marknotes.root + 'templates/assets/css/' + $theme +'.css'
+		  theme: marknotes.root + marknotes.slideshow.themes_folder + $theme +'.css'
 	  });
 	});
 }

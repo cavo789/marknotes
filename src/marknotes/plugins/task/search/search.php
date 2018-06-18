@@ -259,7 +259,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 
 		$arr = array();
 		$arr['from_cache'] = 0;
-		$arr['pattern'] = $pattern;
+		$arr['pattern'] = json_encode($pattern);
 		$arr['files'] = json_encode(array_map("md5", $return));
 
 		/*<!-- build:debug -->*/

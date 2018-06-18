@@ -63,9 +63,18 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 			// slideshow
 			$dir = __DIR__.'/reveal/libs/reveal.js/css/theme/';
 
-			$arrThemes = glob($dir.'*.css');
-			// Keep only the filename (f.i. beige.css)
-			$arrThemes = array_map("basename", $arrThemes);
+			$arrThemes = array();
+
+			$aeFolders = \MarkNotes\Folders::getInstance();
+			$arrFiles = $aeFolders->getContent($dir);
+
+			foreach ($arrFiles as $file) {
+				if ($file['type'] == 'file') {
+					if ($file['extension'] == 'css') {
+						$arrThemes[] = $file['basename'];
+					}
+				}
+			}
 
 			$themes = '';
 
@@ -147,6 +156,7 @@ class Reveal extends \MarkNotes\Plugins\Page\HTML\Plugin
 				"marknotes.slideshow.hideunnecessarythings=".($hide ? 1 : 0).";\n".
 				"marknotes.slideshow.pandoc=".($bPandoc ? 1 : 0).";\n".
 				"marknotes.slideshow.dependencies='".rtrim($dependencies, ',')."';\n".
+				"marknotes.slideshow.themes_folder='marknotes/plugins/page/html/reveal/libs/reveal.js/css/theme/';\n".
 				"marknotes.slideshow.themes='".$themes."';\n".
 				"</script>";
 		}

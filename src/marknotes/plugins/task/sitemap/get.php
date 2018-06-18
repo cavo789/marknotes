@@ -33,6 +33,13 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		return $args[0];
 	}
 
+	private static function url_encode(string $url) : string
+	{
+		$url = str_replace('&', '%26', $url);
+		$url = str_replace(' ', '%20', $url);
+		return $url;
+	}
+
 	private static function doGetSitemap() : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -56,7 +63,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			$xml .=
 				'	  <url>'.PHP_EOL.
-				'		 <loc>'.str_replace(' ', '%20', htmlspecialchars($urlHTML, ENT_HTML5)).'</loc>'.PHP_EOL.
+				'		 <loc>'.self::url_encode($urlHTML).'</loc>'.PHP_EOL.
 				'		 <lastmod>'.date('Y-m-d\TH:i:sP', $lastModified).'</lastmod>'.PHP_EOL.
 				'		 <changefreq>weekly</changefreq>'.PHP_EOL.
 				'		 <priority>1.0</priority>'.PHP_EOL.
