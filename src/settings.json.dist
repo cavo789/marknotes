@@ -712,7 +712,7 @@
 					"var": [
 						{
 							"pattern": "%SEE_SOURCE%{filename=\"?(.*)\"?}",
-							"value": "*[see the $1 source code](view-source:%URL%$1)*"
+							"value": "*[see the $1 source code](%URL%$1)*"
 						},
 						{
 							"pattern": "%RUN_JS%{text=\"(.*)\",function=\"(.*)\"}",
