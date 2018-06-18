@@ -86,7 +86,7 @@ class CSS extends Minify
      */
     protected function moveImportsToTop($content)
     {
-        if (preg_match_all('/(;?)(@import (?<url>url\()?(?P<quotes>["\']?).+?(?P=quotes)(?(url)\)))/', $content, $matches)) {
+        if (preg_match_all('/(;?)(@import (?<url>url\()?(?P<quotes>["\']?).+?(?P=quotes)(?(url)\)));?/', $content, $matches)) {
             // remove from content
             foreach ($matches[0] as $import) {
                 $content = str_replace($import, '', $content);
@@ -591,10 +591,11 @@ class CSS extends Minify
         // strip negative zeroes (-0 -> 0) & truncate zeroes (00 -> 0)
         $content = preg_replace('/'.$before.'-?0+'.$units.'?'.$after.'/', '0\\1', $content);
 
-        // IE doesn't seem to understand a unitless flex-basis value, so let's
-        // add it in again (make it `%`, which is only 1 char: 0%, 0px, 0
-        // anything, it's all just the same)
-        $content = preg_replace('/flex:([^ ]+ [^ ]+ )0([;\}])/', 'flex:${1}0%${2}', $content);
+        // IE doesn't seem to understand a unitless flex-basis value (correct -
+        // it goes against the spec), so let's add it in again (make it `%`,
+        // which is only 1 char: 0%, 0px, 0 anything, it's all just the same)
+        // @see https://developer.mozilla.org/nl/docs/Web/CSS/flex
+        $content = preg_replace('/flex:([0-9]+\s[0-9]+\s)0([;\}])/', 'flex:${1}0%${2}', $content);
         $content = preg_replace('/flex-basis:0([;\}])/', 'flex-basis:0%${1}', $content);
 
         // restore `calc()` expressions

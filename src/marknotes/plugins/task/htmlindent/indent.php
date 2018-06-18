@@ -1,15 +1,20 @@
 <?php
 /**
- * HTML indent
+ * HTML indent - Make generated HTML more readable by adding / removing
+ * 		indentation where needed
  * @src : https://github.com/vanilla/htmlawed/tree/master/src/htmLawed
  */
+
 namespace MarkNotes\Plugins\Task\HTMLIndent;
+
 defined('_MARKNOTES') or die('No direct access allowed');
+
 class Indent extends \MarkNotes\Plugins\Task\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.task.htmlindent';
 	protected static $json_options = 'plugins.content.html.htmlindent';
+
 	public static function run(&$params = null) : bool
 	{
 		if (self::isEnabled(false)) {

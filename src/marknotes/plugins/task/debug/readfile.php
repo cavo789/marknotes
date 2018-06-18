@@ -26,8 +26,22 @@ class Readfile extends \MarkNotes\Plugins\Task\Plugin
 		$handle  = fopen($sFileName,"r") or die("Error");
 
 		$html =
-			'<thead><tr><th>Type</th><th>Line</th></tr></thead>'.
-			'<tfoot><tr><th>Type</th><th>Line</th></tr></tfoot>'.
+			'<thead><tr>'.
+				'<th>Type</th>'.
+				'<th>Plugin</th>'.
+				'<th>Line</th>'.
+				'<th>Caller 1</th>'.
+				'<th>Caller 2</th>'.
+				'<th>Caller 3</th>'.
+			'</tr></thead>'.
+			'<tfoot><tr>'.
+				'<th>Type</th>'.
+				'<th>Plugin</th>'.
+				'<th>Line</th>'.
+				'<th>Caller 1</th>'.
+				'<th>Caller 2</th>'.
+				'<th>Caller 3</th>'.
+			'</tr></tfoot>'.
 			'<tbody>';
 
 		// Process the logfile line by line
@@ -70,9 +84,57 @@ class Readfile extends \MarkNotes\Plugins\Task\Plugin
 				$line = substr($line, strlen($type)+3);
 			}
 
+			// Get the plugin if the output was from a plubin
+			$pattern = '/(MarkNotes\\\\Plugins[^]\\:]*)/m';
+			$plugin = '';
+
+			if (preg_match($pattern, $line, $matches)) {
+				$plugin = trim($matches[1]);
+			}
+
+			// Get the callers : the log line is something like (on one line)
+			// 		MarkNotes\Debug::enable - *** START of marknotes ***
+			// 		[{"caller":"MarkNotes\\Debug::enable line 321"},
+			// 		{"caller":"MarkNotes\\Settings::setDebugMode line 423"},
+			// 		{"caller":"MarkNotes\\Settings::enableDebugMode line 90"}]
+			//
+			// 	Extract the three callers
+			$pattern = '/\[?({("caller":"[^}]*)\}(,?){1,})\]?/m';
+
+			$caller1 = '';
+			$caller2 = '';
+			$caller3 = '';
+
+			if (preg_match_all($pattern, $line, $matches)) {
+
+				$caller1 = trim($matches[2][0]);
+				$caller2 = trim($matches[2][1]??'');
+				$caller3 = trim($matches[2][2]??'');
+
+				$caller1 = str_replace('"caller":"', '', $caller1);
+				$caller2 = str_replace('"caller":"', '', $caller2);
+				$caller3 = str_replace('"caller":"', '', $caller3);
+
+				$caller1 = trim($caller1, '"');
+				$caller2 = trim($caller2, '"');
+				$caller3 = trim($caller3, '"');
+
+				// Remove the caller from the debug line (since already displayed)
+				$line = str_replace($matches[0][0], '', $line);
+				$line = str_replace($matches[0][1], '', $line);
+
+				if (isset($matches[0][2])) {
+					$line = str_replace($matches[0][2], '', $line);
+				}
+			}
+
 			$html.= '<tr class="'.$class.'">'.
 				'<td>'.$type.'</td>'.
-				'<td>'.$line.'</td>'.
+				'<td>'.$plugin.'</td>'.
+				'<td>'.trim($line).'</td>'.
+				'<td>'.trim($caller1).'</td>'.
+				'<td>'.trim($caller2).'</td>'.
+				'<td>'.trim($caller3).'</td>'.
 				'</tr>';
 		}
 

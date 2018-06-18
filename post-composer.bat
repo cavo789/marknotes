@@ -26,73 +26,73 @@ SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
 call :fnCopyComposer
-REM call :fnCopyBootstrap
-REM call :fnCopyjQuery
-REM call :fnCopySymfony
-REM call :fnCopySlugify
-REM call :fnCopydompdf
-REM call :fnCopyfontAwesome
-REM call :fnCopyJolicode
-REM call :fnCopyNoty
-REM call :fnCopyMonolog
-REM call :fnCopyParsedown
-REM call :fnCopyParsedownCheckbox
-REM call :fnCopyMinify
-REM call :fnCopyGitHubMarkdownCSS
-REM call :fnCopyInputPicker
-REM call :fnCopyPHPFONT
-REM call :fnCopyPHPSVG
-REM call :fnCopyPHP_error
-REM call :fnCopyCrawlerDetect
-REM call :fnCopyAnimateCSS
-REM call :fnCopyURLjs
-REM call :fnCopyIonIcons
-REM call :fnCopyAdminLTE
-REM call :fnCopySlimScroll
-REM call :fnCopyJSONLint
-REM call :fnCopyFlySystem
-REM call :fnCopyScrollDir
-REM call :fnCopyCSSCheckboxLib
-REM call :fnCopySweetAlert
-REM call :fnCopyjs-cookie
-REM call :fnCopyTracy
-REM call :fnCopyMultiDownload
+call :fnCopyBootstrap
+call :fnCopyjQuery
+call :fnCopySymfony
+call :fnCopySlugify
+call :fnCopydompdf
+call :fnCopyfontAwesome
+call :fnCopyJolicode
+call :fnCopyNoty
+call :fnCopyMonolog
+call :fnCopyParsedown
+call :fnCopyParsedownCheckbox
+call :fnCopyMinify
+call :fnCopyGitHubMarkdownCSS
+call :fnCopyInputPicker
+call :fnCopyPHPFONT
+call :fnCopyPHPSVG
+call :fnCopyPHP_error
+call :fnCopyCrawlerDetect
+call :fnCopyAnimateCSS
+call :fnCopyURLjs
+call :fnCopyIonIcons
+call :fnCopyAdminLTE
+call :fnCopySlimScroll
+call :fnCopyJSONLint
+call :fnCopyFlySystem
+call :fnCopyScrollDir
+call :fnCopyCSSCheckboxLib
+call :fnCopySweetAlert
+call :fnCopyjs-cookie
+call :fnCopyTracy
+call :fnCopyMultiDownload
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
-REM call :fnCopyDatatables
-REM call :fnCopyjsTree
-REM call :fnCopyjsTreeProton
-REM call :fnCopySimpleMDE
-REM call :fnCopyPrism
-REM call :fnCopyFlexDataList
-REM call :fnCopyjQueryHighLight
-REM call :fnCopyPrintPreview
-REM call :fnCopyClipboardJS
-REM call :fnCopyLinkify
-REM call :fnCopyStoreJS
-REM call :fnCopyLazySizes
-REM call :fnCopyAnchor
-REM call :fnCopyTimeline
-REM call :fnCopyFakeLoader
-REM call :fnCopyEmoji
-REM call :fnCopyGoogoose
-REM call :fnCopyRemark
-REM call :fnCopyReveajJS
-REM call :fnCopyReveajJS-Menu
-REM call :fnCopyReveajJS-ElapsedTimeBar
-REM call :fnCopyReveajJS-TitleFooter
-REM call :fnCopyBalloon
-REM call :fnCopyjqueryi18n
-REM call :fnCopyCLDRPluralRuleParser
-REM call :fnCopyFileSaver
-REM call :fnCopyGitHubCorners
-REM call :fnCopyUpload
-REM call :fnCopyHTML2MD
-REM call :fnCopyGuzzle
-REM call :fnCopyGoogleTranslate
-REM call :fnCopyHTMLLawed
+call :fnCopyDatatables
+call :fnCopyjsTree
+call :fnCopyjsTreeProton
+call :fnCopySimpleMDE
+call :fnCopyPrism
+call :fnCopyFlexDataList
+call :fnCopyjQueryHighLight
+call :fnCopyPrintPreview
+call :fnCopyClipboardJS
+call :fnCopyLinkify
+call :fnCopyStoreJS
+call :fnCopyLazySizes
+call :fnCopyAnchor
+call :fnCopyTimeline
+call :fnCopyFakeLoader
+call :fnCopyEmoji
+call :fnCopyGoogoose
+call :fnCopyRemark
+call :fnCopyReveajJS
+call :fnCopyReveajJS-Menu
+call :fnCopyReveajJS-ElapsedTimeBar
+call :fnCopyReveajJS-TitleFooter
+call :fnCopyBalloon
+call :fnCopyjqueryi18n
+call :fnCopyCLDRPluralRuleParser
+call :fnCopyFileSaver
+call :fnCopyGitHubCorners
+call :fnCopyUpload
+call :fnCopyHTML2MD
+call :fnCopyGuzzle
+call :fnCopyGoogleTranslate
+call :fnCopyHTMLLawed
 call :fnCopyIntroJS
-REM call :fnFinalize
+call :fnFinalize
 GOTO END:
 
 REM -----------------------------------------------

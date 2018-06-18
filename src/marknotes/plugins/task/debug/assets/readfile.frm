@@ -31,7 +31,7 @@
 					$('#debugLog').DataTable({
 						"fixedHeader": true,
 						// So column's headings will scroll with
-						// "scrollX": "100%",
+						 "scrollX": "100%",
 						// vertical height : not greater than 50% of the client height
 						"scrollY": "50vh",
 						"scrollCollapse": true,
@@ -48,7 +48,7 @@
 							// Don't use this.api().columns().every(
 							// but this.api() .columns([0]).every( so the list will be
 							// 		made only for the first column; the one with the type
-							this.api().columns([0]).every( function () {
+							this.api().columns([0,1]).every( function () {
 								var column = this;
 								var select = $('<select><option value=""></option></select>')
 									// Append the listbox with unique values

@@ -1,0 +1,173 @@
+/**
+ * jQuery-inputpicker - A jQuery input picker plugin. It supports showing multiple columns select in input.
+ * Copyright (c) 2017 Ukalpa@gmail.com - https://ukalpa.com/inputpicker
+ * License: MIT
+ */
+
+.inputpicker-div {
+    position: relative;
+    /*display: inline-block;*/
+    overflow: hidden;
+    height: 100%;
+}
+
+.inputpicker-arrow {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+    height: 20px;
+    cursor:pointer;
+}
+
+.inputpicker-arrow b {
+    border-color:#888 transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0;
+    height: 0;
+    left: 50%;
+    top: 50%;
+    margin-left: -4px;
+    margin-top: -2px;
+    position: absolute;
+    width: 0;
+    font-weight: 700;
+}
+
+.inputpicker-wrapped-list {
+    margin:0;
+    background-color:#ffffff;
+    z-index: 10000;
+}
+
+.inputpicker-wrapped-list {
+    overflow-y: auto;
+}
+
+.inputpicker-wrapped-list .table {
+    margin-bottom: 0px;
+    border:1px solid #cccccc;
+}
+
+.inputpicker-wrapped-list .table>tbody>tr>td, .inputpicker-wrapped-list .table>tbody>tr>th, .inputpicker-wrapped-list .table>tfoot>tr>td, .inputpicker-wrapped-list .table>tfoot>tr>th, .inputpicker-wrapped-list .table>thead>tr>td, .inputpicker-wrapped-list .table>thead>tr>th {
+    padding: 5px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+
+.inputpicker-wrapped-list .inputpicker-selected{
+    background-color: #d9edf7;
+}
+
+.inputpicker-wrapped-list .inputpicker-active{
+    background-color: #248cb5 !important;
+}
+
+.inputpicker-wrapped-list .inputpicker-highlight-active{
+    background-color: #bddef9
+}
+
+/*.loading*/
+
+.inputpicker-div input{
+    display: inline-block;
+}
+
+
+.inputpicker-div input.loading {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJzdmctc3Bpbm5lciIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggaWQ9InNwaW5uZXIiIGZpbGw9IiM2NjY2NjYiIGQ9Ik00MCw3MkMyMi40LDcyLDgsNTcuNiw4LDQwQzgsMjIuNCwyMi40LDgsNDAsOGMxNy42LDAsMzIsMTQuNCwzMiwzMmMwLDEuMS0wLjksMi0yLDJzLTItMC45LTItMmMwLTE1LjQtMTIuNi0yOC0yOC0yOFMxMiwyNC42LDEyLDQwczEyLjYsMjgsMjgsMjhjMS4xLDAsMiwwLjksMiwyUzQxLjEsNzIsNDAsNzJ6Ij48YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVUeXBlPSJ4bWwiIGF0dHJpYnV0ZU5hbWU9InRyYW5zZm9ybSIgdHlwZT0icm90YXRlIiBmcm9tPSIwIDQwIDQwIiB0bz0iMzYwIDQwIDQwIiBkdXI9IjAuOHMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPjwvcGF0aD48L3N2Zz4=');
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-position:right 5px center;
+}
+
+.inputpicker-div input.loading-msie-patch {
+    background-image: url("./res/spinner.gif");
+}
+
+.inputpicker-multiple-selected{
+    display: inline-block;
+    float:left;
+}
+/* multiple ul */
+.inputpicker-multiple-selected ul {
+    display: inline-block;
+    padding:4px;
+    margin:0px;
+}
+
+
+.inputpicker-multiple-selected ul > li {
+    list-style-type:none;
+    display: inline-block;
+    margin-right:5px;
+    border:1px solid #888888;
+    padding:1px;
+    cursor:pointer;
+}
+
+.inputpicker-multiple input, .input-span {
+    padding:0;
+    margin:0;
+    border:0 none;
+    font-family:Sans-serif;
+    white-space:pre;
+    max-width: 100%;
+    max-height: none;
+    min-height: 0;
+    text-indent:0;
+    background:transparent;
+    box-shadow: none;
+    outline:0;
+}
+
+
+.inputpicker-multiple {
+    display: inline-block;
+    float: left;
+}
+
+
+
+
+.inputpicker-multiple ul {
+    margin:0;
+    padding:0;
+}
+
+.inputpicker-multiple ul > li {
+    list-style-type:none;
+    display: inline-block;
+    /*margin-right:5px;*/
+    cursor:pointer;
+
+}
+
+.inputpicker-multiple ul > li.inputpicker-element {
+    /*border:1px solid #888888;*/
+    margin: 2px;
+    padding:1px;
+    background-color: #f3f3f3;
+}
+
+.inputpicker-multiple ul > li.inputpicker-multiple-input {
+    margin-left:2px;
+    /*padding-left:5px;*/
+}
+
+.inputpicker-pagination {
+    background: transparent;
+}
+
+.inputpicker-pagination a {
+    padding-left:3px;
+    padding-right:3px;
+}
+
+.inputpicker-pagination span.current-page {
+    min-width:50px;
+    text-align: center;
+    display: inline-block;
+}

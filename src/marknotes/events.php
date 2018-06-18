@@ -129,7 +129,7 @@ class Events
 							// Get the value returned by the function in $bReturn
 							$bReturn = call_user_func_array($func, $args);
 							if ($bReturn && $bStopOnFirstTrue) {
-							/*<!-- build:debug -->*/
+								/*<!-- build:debug -->*/
 								if ($aeSettings->getDebugMode()) {
 									$aeDebug->log('	'.$func.' has done the job, stop', 'debug');
 								}

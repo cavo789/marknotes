@@ -107,6 +107,46 @@ class PhpDumperTest extends TestCase
         $this->assertStringEqualsFile(self::$fixturesPath.'/php/services12.php', $dumper->dump(array('file' => __FILE__)), '->dump() dumps __DIR__ relative strings');
     }
 
+    public function testDumpCustomContainerClassWithoutConstructor()
+    {
+        $container = new ContainerBuilder();
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/custom_container_class_without_constructor.php', $dumper->dump(array('base_class' => 'NoConstructorContainer', 'namespace' => 'Symfony\Component\DependencyInjection\Tests\Fixtures\Container')));
+    }
+
+    public function testDumpCustomContainerClassConstructorWithoutArguments()
+    {
+        $container = new ContainerBuilder();
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/custom_container_class_constructor_without_arguments.php', $dumper->dump(array('base_class' => 'ConstructorWithoutArgumentsContainer', 'namespace' => 'Symfony\Component\DependencyInjection\Tests\Fixtures\Container')));
+    }
+
+    public function testDumpCustomContainerClassWithOptionalArgumentLessConstructor()
+    {
+        $container = new ContainerBuilder();
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/custom_container_class_with_optional_constructor_arguments.php', $dumper->dump(array('base_class' => 'ConstructorWithOptionalArgumentsContainer', 'namespace' => 'Symfony\Component\DependencyInjection\Tests\Fixtures\Container')));
+    }
+
+    public function testDumpCustomContainerClassWithMandatoryArgumentLessConstructor()
+    {
+        $container = new ContainerBuilder();
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+
+        $this->assertStringEqualsFile(self::$fixturesPath.'/php/custom_container_class_with_mandatory_constructor_arguments.php', $dumper->dump(array('base_class' => 'ConstructorWithMandatoryArgumentsContainer', 'namespace' => 'Symfony\Component\DependencyInjection\Tests\Fixtures\Container')));
+    }
+
     /**
      * @dataProvider provideInvalidParameters
      * @expectedException \InvalidArgumentException
@@ -960,6 +1000,26 @@ class PhpDumperTest extends TestCase
         $container = new \Symfony_DI_PhpDumper_Test_Parameter_With_Lower_Case();
 
         $this->assertSame('bar', $container->getParameter('FOO'));
+    }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation Service identifiers will be made case sensitive in Symfony 4.0. Using "foo" instead of "Foo" is deprecated since Symfony 3.3.
+     * @expectedDeprecation The "Foo" service is deprecated. You should stop using it, as it will soon be removed.
+     */
+    public function testReferenceWithLowerCaseId()
+    {
+        $container = new ContainerBuilder();
+        $container->register('Bar', 'stdClass')->setProperty('foo', new Reference('foo'))->setPublic(true);
+        $container->register('Foo', 'stdClass')->setDeprecated();
+        $container->compile();
+
+        $dumper = new PhpDumper($container);
+        eval('?>'.$dumper->dump(array('class' => 'Symfony_DI_PhpDumper_Test_Reference_With_Lower_Case_Id')));
+
+        $container = new \Symfony_DI_PhpDumper_Test_Reference_With_Lower_Case_Id();
+
+        $this->assertEquals((object) array('foo' => (object) array()), $container->get('Bar'));
     }
 }
 

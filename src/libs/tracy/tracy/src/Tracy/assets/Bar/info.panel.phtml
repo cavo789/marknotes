@@ -9,8 +9,6 @@
 
 namespace Tracy;
 
-use Tracy;
-
 if (isset($this->cpuUsage) && $this->time) {
 	foreach (getrusage() as $key => $val) {
 		$this->cpuUsage[$key] -= $val;
@@ -20,7 +18,7 @@ if (isset($this->cpuUsage) && $this->time) {
 }
 
 $countClasses = function ($list) {
-	return count(array_filter($list, function($name) {
+	return count(array_filter($list, function ($name) {
 		return (new \ReflectionClass($name))->isUserDefined();
 	}));
 };
@@ -47,6 +45,16 @@ $info = [
 
 $info = array_map('strval', array_filter($info + (array) $this->data));
 
+$packages = $devPackages = [];
+if (class_exists('Composer\Autoload\ClassLoader', false)) {
+	$lockFile = dirname((new \ReflectionClass('Composer\Autoload\ClassLoader'))->getFileName()) . '/../../composer.lock';
+	$composer = @json_decode(file_get_contents($lockFile)); // @ may not exist or be valid
+	$packages = (array) @$composer->packages;
+	$devPackages = (array) @$composer->{'packages-dev'};
+	usort($packages, function ($a, $b) { return strcmp($a->name, $b->name); });
+	usort($devPackages, function ($a, $b) { return strcmp($a->name, $b->name); });
+}
+
 ?>
 <style class="tracy-debug">
 	#tracy-debug .tracy-InfoPanel td {
@@ -54,6 +62,7 @@ $info = array_map('strval', array_filter($info + (array) $this->data));
 	}
 	#tracy-debug .tracy-InfoPanel td:nth-child(2) {
 		font-weight: bold;
+		width: 30%;
 	}
 	#tracy-debug .tracy-InfoPanel td[colspan='2'] b {
 		float: right;
@@ -64,6 +73,7 @@ $info = array_map('strval', array_filter($info + (array) $this->data));
 <h1>System info</h1>
 
 <div class="tracy-inner tracy-InfoPanel">
+<div class="tracy-inner-container">
 <table>
 <?php foreach ($info as $key => $val): ?>
 <tr>
@@ -75,4 +85,28 @@ $info = array_map('strval', array_filter($info + (array) $this->data));
 </tr>
 <?php endforeach ?>
 </table>
+
+<?php if ($packages || $devPackages): ?>
+	<h2><a class="tracy-toggle tracy-collapsed" data-tracy-ref="^div .tracy-InfoPanel-packages">Composer Packages (<?= count($packages), $devPackages ? ' + ' . count($devPackages) . ' dev' : '' ?>)</a></h2>
+
+	<div class="tracy-InfoPanel-packages tracy-collapsed">
+	<?php if ($packages): ?>
+	<table>
+	<?php foreach ($packages as $package): ?>
+		<tr><td><?= Helpers::escapeHtml($package->name) ?></td><td><?= Helpers::escapeHtml($package->version . (strpos($package->version, 'dev') === false ? '' : ' #' . substr(isset($package->source) ? $package->source->reference : $package->dist->reference, 0, 4))) ?></td></tr>
+	<?php endforeach ?>
+	</table>
+	<?php endif ?>
+
+	<?php if ($devPackages): ?>
+	<h2>Dev Packages</h2>
+	<table>
+	<?php foreach ($devPackages as $package): ?>
+		<tr><td><?= Helpers::escapeHtml($package->name) ?></td><td><?= Helpers::escapeHtml($package->version . (strpos($package->version, 'dev') === false ? '' : ' #' . substr(isset($package->source) ? $package->source->reference : $package->dist->reference, 0, 4))) ?></td></tr>
+	<?php endforeach ?>
+	</table>
+	<?php endif ?>
+	</div>
+<?php endif ?>
+</div>
 </div>

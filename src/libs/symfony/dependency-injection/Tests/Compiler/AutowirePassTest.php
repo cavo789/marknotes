@@ -17,6 +17,7 @@ use Symfony\Component\DependencyInjection\Compiler\AutowireRequiredMethodsPass;
 use Symfony\Component\DependencyInjection\Compiler\AutowirePass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveClassPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\AutowiringFailedException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -435,6 +436,7 @@ class AutowirePassTest extends TestCase
             // args are: A, Foo, Dunglas
             ->setArguments(array(
                 1 => new Reference('foo'),
+                3 => array('bar'),
             ));
 
         (new ResolveClassPass())->process($container);
@@ -446,6 +448,7 @@ class AutowirePassTest extends TestCase
                 new TypedReference(A::class, A::class, MultipleArguments::class),
                 new Reference('foo'),
                 new TypedReference(Dunglas::class, Dunglas::class, MultipleArguments::class),
+                array('bar'),
             ),
             $definition->getArguments()
         );
@@ -453,9 +456,27 @@ class AutowirePassTest extends TestCase
 
     /**
      * @expectedException \Symfony\Component\DependencyInjection\Exception\AutowiringFailedException
-     * @expectedExceptionMessage Cannot autowire service "arg_no_type_hint": argument "$foo" of method "Symfony\Component\DependencyInjection\Tests\Compiler\MultipleArguments::__construct()" must have a type-hint or be given a value explicitly.
+     * @expectedExceptionMessage Cannot autowire service "arg_no_type_hint": argument "$bar" of method "Symfony\Component\DependencyInjection\Tests\Compiler\MultipleArguments::__construct()" is type-hinted "array", you should configure its value explicitly.
      */
     public function testScalarArgsCannotBeAutowired()
+    {
+        $container = new ContainerBuilder();
+
+        $container->register(A::class);
+        $container->register(Dunglas::class);
+        $container->register('arg_no_type_hint', __NAMESPACE__.'\MultipleArguments')
+            ->setArguments(array(1 => 'foo'))
+            ->setAutowired(true);
+
+        (new ResolveClassPass())->process($container);
+        (new AutowirePass())->process($container);
+    }
+
+    /**
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\AutowiringFailedException
+     * @expectedExceptionMessage Cannot autowire service "arg_no_type_hint": argument "$foo" of method "Symfony\Component\DependencyInjection\Tests\Compiler\MultipleArguments::__construct()" has no type-hint, you should configure its value explicitly.
+     */
+    public function testNoTypeArgsCannotBeAutowired()
     {
         $container = new ContainerBuilder();
 
@@ -684,10 +705,6 @@ class AutowirePassTest extends TestCase
         $this->assertTrue($container->hasDefinition('bar'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\AutowiringFailedException
-     * @expectedExceptionMessage Cannot autowire service "setter_injection_collision": argument "$collision" of method "Symfony\Component\DependencyInjection\Tests\Compiler\SetterInjectionCollision::setMultipleInstancesForOneArg()" references interface "Symfony\Component\DependencyInjection\Tests\Compiler\CollisionInterface" but no such service exists. You should maybe alias this interface to one of these existing services: "c1", "c2".
-     */
     public function testSetterInjectionCollisionThrowsException()
     {
         $container = new ContainerBuilder();
@@ -700,7 +717,14 @@ class AutowirePassTest extends TestCase
         (new AutowireRequiredMethodsPass())->process($container);
 
         $pass = new AutowirePass();
-        $pass->process($container);
+
+        try {
+            $pass->process($container);
+        } catch (AutowiringFailedException $e) {
+        }
+
+        $this->assertNotNull($e);
+        $this->assertSame('Cannot autowire service "setter_injection_collision": argument "$collision" of method "Symfony\Component\DependencyInjection\Tests\Compiler\SetterInjectionCollision::setMultipleInstancesForOneArg()" references interface "Symfony\Component\DependencyInjection\Tests\Compiler\CollisionInterface" but no such service exists. You should maybe alias this interface to one of these existing services: "c1", "c2".', $e->getMessage());
     }
 
     /**

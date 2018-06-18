@@ -67,7 +67,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
             $value = clone $value;
         }
 
-        if (!$value instanceof Reference || !$this->container->hasDefinition($id = (string) $value)) {
+        if (!$value instanceof Reference || !$this->container->hasDefinition($id = $this->container->normalizeId($value))) {
             return parent::processValue($value, $isRoot);
         }
 
@@ -138,6 +138,6 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
             return false;
         }
 
-        return true;
+        return !$ids || $this->container->getDefinition($ids[0])->isShared();
     }
 }
