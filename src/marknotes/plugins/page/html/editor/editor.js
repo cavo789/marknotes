@@ -208,6 +208,15 @@ function afterEditInitMDE($data) {
 				title: $.i18n('button_encrypt')
 			},
 			{
+				// Multiusers
+				name: "Multiusers",
+				action: function customFunction(editor) {
+					Multiusers(editor);
+				},
+				className: "fa fa-users",
+				title: $.i18n('button_edit_multiusers')
+			},
+			{
 				// Table of content
 				name: "AddTOC",
 				action: function customFunction(editor) {
@@ -463,6 +472,33 @@ function buttonEncrypt(editor) {
 	output = '<encrypt>' + text + '</encrypt>';
 	cm.replaceSelection(output);
 
+	return true;
+}
+
+/**
+ * [Multiusers description]
+ * @param		{[type]} editor [description]
+ * @constructor
+ */
+function Multiusers(editor) {
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log('	  Plugin Page html - Editor - Multiusers');
+	}
+	/*<!-- endbuild -->*/
+
+	if (typeof TogetherJS === "function") {
+		// Call the TogetherJS function
+		// See https://togetherjs.com/ for more information
+		TogetherJS();
+	} else {
+		Noty({
+			message: $.i18n('error_together_not_loaded'),
+			type: 'error'
+		});
+	}
+
+	return true;
 }
 
 /**

@@ -462,6 +462,11 @@
 					"not_if_task": ["task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal", "task.timeline.get"],
 					"only_if_task": []
 				},
+				"together": {
+					"enabled": 0,
+					"not_if_task": ["task.search.search", "task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal"],
+					"only_if_task": ["main", "interface"]
+				},
 				"treeview": {
 					"description": "**Mandatory** Load css and js for the treeview",
 					"enabled": 1,
