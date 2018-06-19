@@ -24,16 +24,43 @@ class Together extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		$sitename = str_replace('"', '\"', $aeSettings->getSiteName());
 
-		// See https://togetherjs.com/docs/, Configuration part for
-		// explanations of configuration options
-		$script = "<script>\n".
-			"TogetherJSConfig_siteName = \"".$sitename."\";\n".
-			"TogetherJSConfig_toolName = \"marknotes collaboration\";\n".
-			"TogetherJSConfig_findRoom = \"marknotes\";\n".
+		$script = "<script src=\"https://togetherjs.com/togetherjs-min.js\">".
 			"</script>\n";
 
-		$script .= "<script src=\"https://togetherjs.com/togetherjs-min.js\" ".
-			"defer=\"defer\"></script>\n";
+		// See https://togetherjs.com/docs/#configuring-togetherjs,
+		// for explanations of configuration options
+		$script .= "<script>\n".
+			// Used in some help text.
+			"TogetherJSConfig_siteName = \"".$sitename."\";\n".
+			// This is the name that you are giving this tool.
+			// If you use this then "TogetherJS" won't be in the UI
+			"TogetherJSConfig_toolName = \"marknotes collaboration\";\n".
+			// Name of the room that will appears f.i. in the
+			// "invitation" link
+			"TogetherJSConfig_findRoom = \"marknotes\";\n".
+			// When a person is invited to a session,
+			// they'll be asked if they want to join in browsing with
+			// the other person. Set this to true and they won't be
+			// asked to confirm joining.
+			"TogetherJSConfig_suppressJoinConfirmation = true;\n".
+			// Don't show the "Start TogetherJS" button,
+			// when someone click on the "invitation" link :
+			// immediatly start the collaboration session
+			"TogetherJSConfig_enableShortcut = true;\n".
+			"TogetherJSConfig_includeHashInUrl = true;\n".
+			// Initialize the username for TogetherJS by using the
+			// username used to establish a connection to the site
+			// (within the .htpasswd protection or in the login
+			// form f.i.)
+			// https://togetherjs.com/docs/#setting-identity-information
+			"TogetherJSConfig_getUserName = function () {return marknotes.settings.username;};\n\n".
+			//"if (TogetherJS.running) {\n".
+			//"	TogetherJS.hub.on(\"edit\", function (data) {\n".
+			// "console.log(data);\n".
+			//"	  alert(data.info);\n".
+			//"	});\n".
+			//"}\n".
+			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

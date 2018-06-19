@@ -75,7 +75,7 @@
 			</section>
 			<section class="content container-fluid">
 				<div id="content" class="page content markdown-body">
-					<article id="CONTENT">
+					<article id="CONTENT">			
 						<div id="HOMEPAGE" data-intro="%INTRO_HOMEPAGE%">&nbsp;</div>
 						<div id="FAVORITES" data-intro="%INTRO_FAVORITES%">&nbsp;</div>
 						<div id="LASTMODIFIED" data-intro="%INTRO_LASTMOD%">&nbsp;</div>
@@ -196,6 +196,5 @@
 		<script src="%ROOT%libs/scrolldir/scrolldir.min.js" defer="defer"></script>
 
 		<script src="%ROOT%templates/assets/js/interface.js" defer="defer"></script>
-
 	</body>
 </html>

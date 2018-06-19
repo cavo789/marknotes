@@ -165,6 +165,8 @@ class ShowInterface
 		// the plugin isn't yet loaded...
 		"marknotes.files_found = '".$aeSettings->getText('files_found', '', true)."';\n".
 		"marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
+		// Get the username user for the connection
+		"marknotes.settings.username=\"".$aeSession->getUser()."\";\n".
 		"marknotes.settings.DS='".preg_quote(DS)."';\n".
 		"marknotes.settings.locale='".$aeSettings->getLocale()."';\n";
 		$html = str_replace('<!--%MARKDOWN_GLOBAL_VARIABLES%-->', '<script>'.$javascript.'</script>', $html);

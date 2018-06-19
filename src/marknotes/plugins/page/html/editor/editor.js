@@ -291,6 +291,27 @@ function afterEditInitMDE($data) {
 	});
 
 	// --------------------------------------------------------------
+	// Check if the TogetherJS plugin is enabled
+	// If yes, by typing something in the editor, broadcast
+	// an information and tells who is editing which note.
+	if (typeof TogetherJS === "function") {
+		simplemde.codemirror.on("change", function(){
+			try {
+				if (TogetherJS.running) {
+					TogetherJS.send({type: "edit", info: marknotes.settings.username + " is editing [" + marknotes.note.file + "]"});
+				}
+			} catch (err) {
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.warn(err.message + ' --- More info below ---');
+					console.log(err);
+				}
+				/*<!-- endbuild -->*/
+			}
+		});
+	}
+
+	// --------------------------------------------------------------
 	//
 	// Fixed the toolbar when scrolling
 	// @https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
