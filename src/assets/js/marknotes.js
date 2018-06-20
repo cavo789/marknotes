@@ -547,12 +547,13 @@ function Noty($params) {
 			}
 
 			$type = (($params.type === 'undefined') ? 'info' : $params.type);
+			$timeout = ((typeof $params.timeout === 'undefined') ? '2400' : $params.timeout);
 
 			// More options, see http://ned.im/noty/options.html
 			var n = noty({
 				text: $params.message,
 				theme: 'relax',
-				timeout: 2400,
+				timeout: $timeout,
 				layout: 'bottomRight',
 				type: $type
 			}); // noty()
