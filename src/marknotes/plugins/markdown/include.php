@@ -584,7 +584,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 						// In case of ... be sure the file
 						// exists
 
-						if ($aeFiles->exists($fname)) {
+						// Don't use $aeFiles->exists since it doesn't support
+						// symlinks
+						if (is_file($fname)) {
 							$aeFiles = \MarkNotes\Files::getInstance();
 							$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -596,7 +598,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							/*<!-- endbuild -->*/
 
 							// Read the file
-							$sContent = trim($aeFiles->getContent($fname));
+							// Don't use $aeFiles->getContent since it
+							// doesn't support symlinks
+							$sContent = trim(file_get_contents($fname));
 
 							// Replace %INCLUDE .file/filename.md% by
 							// %INCLUDE fullpath/.file/filename.md%
