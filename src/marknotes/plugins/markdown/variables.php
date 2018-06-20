@@ -217,11 +217,34 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 
 		$markdown = self::replaceVar('%ROOT%', $sRoot, $markdown, array('abbr','code','pre'));
 
+		// Retrieve the list of all plugins
 		if (strpos($markdown, '%PLUGINS%')!==false) {
 			$aeEvents = \MarkNotes\Events::getInstance();
 			$arr = $aeEvents->getEvents();
 			$tmp = print_r($arr, true);
 			$markdown = self::replaceVar('%PLUGINS%', "```\n".$tmp."\n```\n", $markdown);
+		}
+
+		// Output the content of the settings
+		if (strpos($markdown, '%JSON_SETTINGS%')!==false) {
+			$arr = $aeSettings->getAll();
+
+			// No error reporting needed for this section
+			$errorlevel = error_reporting();
+			error_reporting(0);
+			// Remove sensitive informations
+			$msg = '***removed for security purposes***';
+			$arr['cloud']['token'] = $msg;
+			$arr['plugins']['options']['markdown']['encrypt']['password'] = $msg;
+			$arr['plugins']['options']['markdown']['encrypt']['method'] = $msg;
+			$arr['plugins']['options']['task']['acls']['folders'] = $msg;
+			$arr['plugins']['options']['task']['login']['username'] = $msg;
+			$arr['plugins']['options']['task']['login']['password'] = $msg;
+			error_reporting($errorlevel);
+
+			$tmp = print_r($arr, true);
+
+			$markdown = self::replaceVar('%JSON_SETTINGS%', "```\n".$tmp."\n```\n", $markdown);
 		}
 
 		// The %URL% variable should be relative to the note
