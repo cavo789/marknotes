@@ -75,10 +75,12 @@
 			</section>
 			<section class="content container-fluid">
 				<div id="content" class="page content markdown-body">
-					<article id="CONTENT">			
+					<article id="CONTENT">
 						<div id="HOMEPAGE" data-intro="%INTRO_HOMEPAGE%">&nbsp;</div>
-						<div id="FAVORITES" data-intro="%INTRO_FAVORITES%">&nbsp;</div>
-						<div id="LASTMODIFIED" data-intro="%INTRO_LASTMOD%">&nbsp;</div>
+						<div class="row">
+							<div id="FAVORITES" class="col-md-6" data-intro="%INTRO_FAVORITES%">&nbsp;</div>
+							<div id="LASTMODIFIED" class="col-md-6" data-intro="%INTRO_LASTMOD%">&nbsp;</div>
+						</div>
 					</article>
 				</div>
 			</section>
