@@ -372,6 +372,42 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	}
 
 	/**
+	 * Retrieve every occurences of %INCLUDE filename% and make filename absolute
+	 * @param  string $content [description]
+	 * @return string		  [description]
+	 */
+	private static function makeFileNameAbsolute(string $content, string $fname) : string
+	{
+		//echo '<h1>Before</h1><pre>'.$content.'</pre>';
+		$aeFiles = \MarkNotes\Files::getInstance();
+
+		$matches = array();
+
+		preg_match_all(static::$include_regex, $content, $matches);
+
+		if (count($matches[0])>0) {
+
+			list($tag_2, $before_2, $file_2, $json_2) = $matches;
+
+			for($j=0; $j<count($file_2); $j++) {
+				if(!$aeFiles->exists($file_2[$j])) {
+					$absFile = str_replace('/', DS, dirname($fname).DS.$file_2[$j]);
+
+					if (realpath($absFile) !== FALSE) {
+						$absFile = realpath($absFile);
+					}
+
+					$new_tag = str_replace($file_2[$j], $absFile, $tag_2[$j]);
+					$content = str_replace($tag_2[$j], $new_tag, $content);
+				}
+			} // for($j=0)
+		}
+
+		//echo '<h1>After</h1><pre>'.$content.'</pre>';
+		return $content;
+	}
+
+	/**
 	 * Main function : read the markdown file and process every
 	 * %INCLUDE% tag and this recursively
 	 */
@@ -562,27 +598,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							// Read the file
 							$sContent = trim($aeFiles->getContent($fname));
 
-							// Retrieve every occurences of %INCLUDE filename%
-							// and make filename absolute
-							preg_match_all(static::$include_regex, $sContent, $matches_2);
-
-							if (count($matches_2[0])>0) {
-
-								list($tag_2, $before_2, $file_2, $json_2) = $matches_2;
-
-								for($j=0; $j<count($file_2); $j++) {
-									if(!is_file($file_2[$j])) {
-										$absFile = str_replace('/', DS, dirname($fname).DS.$file_2[$j]);
-
-										if (realpath($absFile) !== FALSE) {
-											$absFile = realpath($absFile);
-										}
-
-										$new_tag = str_replace($file_2[$j], $absFile, $tag_2[$j]);
-										$sContent = str_replace($tag_2[$j], $new_tag, $sContent);
-									}
-								} // for($j=0)
-							}
+							// Replace %INCLUDE .file/filename.md% by
+							// %INCLUDE fullpath/.file/filename.md%
+							$sContent = self::makeFileNameAbsolute($sContent, $fname);
 
 							// Correctly process accentuated chars.
 							$sContent = utf8_decode($sContent);
@@ -646,8 +664,9 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 						/*<!-- build:debug -->*/
 						} else {
-$tmp = str_replace('%INCLUDE', '%INCLUDE_disabled_notfound', $tag[$i]);
-$markdown = str_replace($tag[$i], $tmp, $markdown);
+
+							$tmp = str_replace('%INCLUDE', '%INCLUDE_disabled_notfound', $tag[$i]);
+							$markdown = str_replace($tag[$i], $tmp, $markdown);
 
 							if ($aeSettings->getDebugMode()) {
 								$sContent = 'Failure: file ['.$fname.'] not found!';
