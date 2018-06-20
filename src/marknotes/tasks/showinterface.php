@@ -150,6 +150,8 @@ class ShowInterface
 		$aeEvents->trigger('page.html::render.css', $args);
 		$html = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $html);
 
+		$sitename = str_replace('"', '\"', $aeSettings->getSiteName());
+
 		// Initialize the global marknotes variable (defined in /templates/screen.php)
 		$javascript =
 		"marknotes.autoload=1;\n".
@@ -163,8 +165,9 @@ class ShowInterface
 		"marknotes.note.md5='';\n".
 		// Don't use jQuery.i18n yet since at this stage,
 		// the plugin isn't yet loaded...
-		"marknotes.files_found = '".$aeSettings->getText('files_found', '', true)."';\n".
+		"marknotes.files_found='".$aeSettings->getText('files_found', '', true)."';\n".
 		"marknotes.settings.authenticated=".($aeSession->get('authenticated', 0)?1:0).";\n".
+		"marknotes.settings.sitename=\"".$sitename."\";\n".
 		// Get the username user for the connection
 		"marknotes.settings.username=\"".$aeSession->getUser()."\";\n".
 		"marknotes.settings.DS='".preg_quote(DS)."';\n".

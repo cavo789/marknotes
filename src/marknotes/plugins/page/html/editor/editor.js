@@ -104,6 +104,38 @@ function afterEdit($ajax_request, $form) {
 	}
 	/*<!-- endbuild -->*/
 
+	// --------------------------------------------------------------
+	// Check if the TogetherJS plugin is enabled
+	// If yes, by typing something in the editor, broadcast
+	// an information and tells who is editing which note.
+	try {
+		if (typeof TogetherJS === "function") {
+			if (TogetherJS.running) {
+				/*<!-- build:debug -->*/
+				if (marknotes.settings.debug) {
+					console.log('	  Plugin Page html - Editor - '+
+						'afterEdit - Inform connected people about the fact '+
+						'that the connected user is editing a note');
+				}
+				/*<!-- endbuild -->*/
+
+				TogetherJS.send({
+					type: "editor-started",
+					name: TogetherJS.require("peers").Self.name,
+					note_name: marknotes.note.file,
+					note_id: marknotes.note.id
+				});
+			}
+		}
+	} catch (err) {
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.warn(err.message + ' --- More info below ---');
+			console.log(err);
+		}
+		/*<!-- endbuild -->*/
+	}
+
 	$('#CONTENT').html($form);
 
 	if (document.getElementById("sourceMarkDown") !== null) {
@@ -289,27 +321,6 @@ function afterEditInitMDE($data) {
 			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
 		] // toolbar
 	});
-
-	// --------------------------------------------------------------
-	// Check if the TogetherJS plugin is enabled
-	// If yes, by typing something in the editor, broadcast
-	// an information and tells who is editing which note.
-	if (typeof TogetherJS === "function") {
-		simplemde.codemirror.on("change", function(){
-			try {
-				if (TogetherJS.running) {
-					TogetherJS.send({type: "edit", info: marknotes.settings.username + " is editing [" + marknotes.note.file + "]"});
-				}
-			} catch (err) {
-				/*<!-- build:debug -->*/
-				if (marknotes.settings.debug) {
-					console.warn(err.message + ' --- More info below ---');
-					console.log(err);
-				}
-				/*<!-- endbuild -->*/
-			}
-		});
-	}
 
 	// --------------------------------------------------------------
 	//

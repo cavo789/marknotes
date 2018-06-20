@@ -6,6 +6,7 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "fr"
 	},
+	"together_editor_started":"$1 vient de d\u00e9buter l'\u00e9dition de la note $2",
 	"settings_plugins_page_html_together_title":"TogetherJS",
 	"settings_plugins_page_html_together_enabled":"Activer le plugin TogetherJS qui permet de collaborer \u00e0 plusieurs sur un m\u00eame document (il faudra rafra\u00eechir l'interface apr\u00e8s modification de ce param\u00e8tre)",
 	"only_dev_mode_on":"Afin d'utiliser cette fonctionnalit\u00e9, veuillez d'abord activer le mode debug ainsi que le mode d\u00e9veloppement dans le fichier settings.json. Cela peut aussi \u00eatre vrai depuis l'\u00e9cran de configuration.",

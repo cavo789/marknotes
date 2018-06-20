@@ -6,6 +6,7 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "en"
 	},
+	"together_editor_started":"$1 is editing the note $2",
 	"settings_plugins_page_html_together_title":"TogetherJS",
 	"settings_plugins_page_html_together_enabled":"Enable the TogetherJS plugin that allows multiple users to collaborate on a single document (you'll need to refresh the page if you change this setting)",
 	"only_dev_mode_on":"To use this feature, please enable first the debug and development mode in the settings.json file. You can also do this in the settings screen.",
