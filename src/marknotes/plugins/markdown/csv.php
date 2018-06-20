@@ -3,9 +3,13 @@
  * Allow to insert a .csv file in the note; convert the
  * .csv into an array
  *
- * For instance :
+ * For instance:
  *
  *	%CSV file.csv%
+ *
+ * The separator can be specified as json data:
+ *
+ *  %CSV file.csv{"separator":","}%
  *
  * Inspired by https://github.com/mre/CSVTable/blob/master/CSVTable.php
  */
@@ -19,7 +23,9 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 	protected static $json_settings = 'plugins.markdown.csv';
 	protected static $json_options = 'plugins.options.markdown.csv';
 
-	static $delim = ';';
+	private static $csv_regex = '/^([ \\t])*%CSV ([^{\\n]*)({.*})?%/m';
+
+	static $separator = ';';
 	static $enclosure = '"';
 	static $md_sep = '|';
 	static $length = 0;
@@ -29,10 +35,12 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 	* Convert the CSV into a PHP array
 	*/
 	private static function toArray($csv) : array {
-		$parsed = str_getcsv($csv, "\n"); // Parse the rows
+		// Parse the rows
+		$parsed = str_getcsv($csv, "\n");
 		$output = array();
 		foreach($parsed as &$row) {
-			$row = str_getcsv($row, static::$delim, static::$enclosure); // Parse the items in rows
+			// Parse the items in rows
+			$row = str_getcsv($row, static::$separator, static::$enclosure);
 			array_push($output, $row);
 		}
 		return $output;
@@ -133,11 +141,6 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 
 	private static function getMarkup(string $CSV) : string
 	{
-		// read options from settings.json
-		static::$delim = self::getOptions('separator',';');
-		static::$enclosure = self::getOptions('value_separator',';');
-		static::$md_sep = self::getOptions('md_column_separator',';');
-
 		$arrCSV = self::toArray($CSV);
 		self::$length = self::minRowLength($arrCSV);
 		self::$col_widths = self::maxColumnWidths($arrCSV);
@@ -159,7 +162,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 
 		$aeDebug = \MarkNotes\Debug::getInstance();
 
-		if (!(preg_match('/^%CSV ([^{\\n]*)%/m', $markdown, $match))) {
+		if (!(preg_match(static::$csv_regex, $markdown, $match))) {
 			// No CSV found; return
 			return true;
 		}
@@ -176,7 +179,7 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 		$filename = $params['filename'];
 
 		// Retrieve every occurences of %CSV filename%
-		if (preg_match_all('/^%CSV ([^{\\n]*)%/m', $markdown, $matches)) {
+		if (preg_match_all(static::$csv_regex, $markdown, $matches)) {
 
 			$aeFiles = \MarkNotes\Files::getInstance();
 			$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -186,11 +189,25 @@ class CSV extends \MarkNotes\Plugins\Markdown\Plugin
 
 			// Loop and process every %CSV ..% tags
 			for ($i=0; $i<count($matches[0]); $i++) {
-				// $tag	=> $matches[0][0] will be f.i.
-				//					"  %CSV file.csv%"
+				// $tag		=> $matches[0][0] will be f.i.
+				//					"  %CSV file.csv{json_data}%"
+				// $before	=> $matches[1][0] will be f.i.
+				//					"  "
 				// $file	=> $matches[2][0] will be f.i.
 				//					"file.csv"
-				list($tag, $file) = $matches;
+				// $json	=> $matches[3][0] will be f.i.
+				//					"json_data"
+				list($tag, $before, $file, $json) = $matches;
+
+				// read options from settings.json
+				static::$separator = self::getOptions('separator',';');
+				static::$enclosure = self::getOptions('value_separator',';');
+				static::$md_sep = self::getOptions('md_column_separator',';');
+
+				if ($json[$i]!=='') {
+					$tmp = json_decode($json[$i], true);
+					static::$separator = $tmp['separator']??static::$separator;
+				}
 
 				// %CSV file.csv% => when no path has been
 				// modified, it means that the file is in the same
