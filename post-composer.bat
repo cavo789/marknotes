@@ -8,9 +8,10 @@ ECHO Copy - Start at %DATE% - %TIME% > %LOG%
 ECHO Copy - Start at %DATE% - %TIME%
 ECHO.
 
-SET VENDOR=%cd%\vendor\
-SET MANUAL=%cd%\vendor_manual\
+SET BOWER=%cd%\bower_components\
 SET NODE=%cd%\node_modules\
+SET MANUAL=%cd%\vendor_manual\
+SET VENDOR=%cd%\vendor\
 
 REM "src" folder i.e. the root folder of marknotes
 SET SRC=%cd%\src\
@@ -25,74 +26,75 @@ SET PAGE=%SRC%marknotes\plugins\page\
 SET TASK=%SRC%marknotes\plugins\task\
 
 REM USED IN PHP SO COPY INTO /libs
-call :fnCopyComposer
-call :fnCopyBootstrap
-call :fnCopyjQuery
-call :fnCopySymfony
-call :fnCopySlugify
-call :fnCopydompdf
-call :fnCopyfontAwesome
-call :fnCopyJolicode
-call :fnCopyNoty
-call :fnCopyMonolog
-call :fnCopyParsedown
-call :fnCopyParsedownCheckbox
-call :fnCopyMinify
-call :fnCopyGitHubMarkdownCSS
-call :fnCopyInputPicker
-call :fnCopyPHPFONT
-call :fnCopyPHPSVG
-call :fnCopyPHP_error
-call :fnCopyCrawlerDetect
-call :fnCopyAnimateCSS
-call :fnCopyURLjs
-call :fnCopyIonIcons
-call :fnCopyAdminLTE
-call :fnCopySlimScroll
-call :fnCopyJSONLint
-call :fnCopyFlySystem
-call :fnCopyScrollDir
-call :fnCopyCSSCheckboxLib
-call :fnCopySweetAlert
-call :fnCopyjs-cookie
-call :fnCopyTracy
-call :fnCopyMultiDownload
+REM call :fnCopyComposer
+REM call :fnCopyBootstrap
+REM call :fnCopyjQuery
+REM call :fnCopySymfony
+REM call :fnCopySlugify
+REM call :fnCopydompdf
+REM call :fnCopyfontAwesome
+REM call :fnCopyJolicode
+REM call :fnCopyNoty
+REM call :fnCopyMonolog
+REM call :fnCopyParsedown
+REM call :fnCopyParsedownCheckbox
+REM call :fnCopyMinify
+REM call :fnCopyGitHubMarkdownCSS
+REM call :fnCopyInputPicker
+REM call :fnCopyPHPFONT
+REM call :fnCopyPHPSVG
+REM call :fnCopyPHP_error
+REM call :fnCopyCrawlerDetect
+REM call :fnCopyAnimateCSS
+REM call :fnCopyURLjs
+REM call :fnCopyIonIcons
+REM call :fnCopyAdminLTE
+REM call :fnCopySlimScroll
+REM call :fnCopyJSONLint
+REM call :fnCopyFlySystem
+REM call :fnCopyScrollDir
+REM call :fnCopyCSSCheckboxLib
+REM call :fnCopySweetAlert
+REM call :fnCopyjs-cookie
+REM call :fnCopyTracy
+REM call :fnCopyMultiDownload
 
 REM USED IN PLUGINS SO COPY INTO /plugins/page/xxx folder (i.e. where the lib is used)
-call :fnCopyDatatables
-call :fnCopyjsTree
-call :fnCopyjsTreeProton
-call :fnCopySimpleMDE
-call :fnCopyPrism
-call :fnCopyFlexDataList
-call :fnCopyjQueryHighLight
-call :fnCopyPrintPreview
-call :fnCopyClipboardJS
-call :fnCopyLinkify
-call :fnCopyStoreJS
-call :fnCopyLazySizes
-call :fnCopyAnchor
-call :fnCopyTimeline
-call :fnCopyFakeLoader
-call :fnCopyEmoji
-call :fnCopyGoogoose
-call :fnCopyRemark
-call :fnCopyReveajJS
-call :fnCopyReveajJS-Menu
-call :fnCopyReveajJS-ElapsedTimeBar
-call :fnCopyReveajJS-TitleFooter
-call :fnCopyBalloon
-call :fnCopyjqueryi18n
-call :fnCopyCLDRPluralRuleParser
-call :fnCopyFileSaver
-call :fnCopyGitHubCorners
-call :fnCopyUpload
-call :fnCopyHTML2MD
-call :fnCopyGuzzle
-call :fnCopyGoogleTranslate
-call :fnCopyHTMLLawed
-call :fnCopyIntroJS
-call :fnFinalize
+REM call :fnCopyDatatables
+REM call :fnCopyjsTree
+REM call :fnCopyjsTreeProton
+REM call :fnCopySimpleMDE
+call :fnCopyTUIEditor
+REM call :fnCopyPrism
+REM call :fnCopyFlexDataList
+REM call :fnCopyjQueryHighLight
+REM call :fnCopyPrintPreview
+REM call :fnCopyClipboardJS
+REM call :fnCopyLinkify
+REM call :fnCopyStoreJS
+REM call :fnCopyLazySizes
+REM call :fnCopyAnchor
+REM call :fnCopyTimeline
+REM call :fnCopyFakeLoader
+REM call :fnCopyEmoji
+REM call :fnCopyGoogoose
+REM call :fnCopyRemark
+REM call :fnCopyReveajJS
+REM call :fnCopyReveajJS-Menu
+REM call :fnCopyReveajJS-ElapsedTimeBar
+REM call :fnCopyReveajJS-TitleFooter
+REM call :fnCopyBalloon
+REM call :fnCopyjqueryi18n
+REM call :fnCopyCLDRPluralRuleParser
+REM call :fnCopyFileSaver
+REM call :fnCopyGitHubCorners
+REM call :fnCopyUpload
+REM call :fnCopyHTML2MD
+REM call :fnCopyGuzzle
+REM call :fnCopyGoogleTranslate
+REM call :fnCopyHTMLLawed
+REM call :fnCopyIntroJS
+REM call :fnFinalize
 GOTO END:
 
 REM -----------------------------------------------
@@ -565,13 +567,43 @@ goto:eof
 ::-- fnCopySimpleMDE
 ::--------------------------------------------------------
 
-:fnCopySimpleMDE
-ECHO  === simplemde-markdown-editor ===
-ECHO	COPY TO %PAGE%html\editor\libs\simplemde-markdown-editor\
+REM :fnCopySimpleMDE
+REM ECHO  === simplemde-markdown-editor ===
+REM ECHO	COPY TO %PAGE%html\editor\libs\simplemde-markdown-editor\
+REM ECHO.
+REM IF NOT EXIST %PAGE%html\editor\libs\simplemde-markdown-editor\ MKDIR %PAGE%html\editor\libs\simplemde-markdown-editor\ >> %LOG%
+REM COPY %VENDOR%simplemde-markdown-editor\dist\simplemde.min.css %PAGE%html\editor\libs\simplemde-markdown-editor\ /Y >> %LOG%
+REM COPY %VENDOR%simplemde-markdown-editor\dist\simplemde.min.js %PAGE%html\editor\libs\simplemde-markdown-editor\ /Y >> %LOG%
+REM goto:eof
+
+::--------------------------------------------------------
+::-- fnCopyTUIEditor
+::
+:: List of dependencies here : 
+:: https://github.com/nhnent/tui.editor/blob/master/docs/getting-started-with-bower.md#dependencies
+::
+:: Updating the library, run "bower install --save tui-editor" from
+:: a command prompt, in the root folder of marknotes
+::--------------------------------------------------------
+
+:fnCopyTUIEditor
+ECHO  === tui.editor ===
+ECHO	COPY TO %PAGE%html\editor\libs\tui-editor\
 ECHO.
-IF NOT EXIST %PAGE%html\editor\libs\simplemde-markdown-editor\ MKDIR %PAGE%html\editor\libs\simplemde-markdown-editor\ >> %LOG%
-COPY %VENDOR%simplemde-markdown-editor\dist\simplemde.min.css %PAGE%html\editor\libs\simplemde-markdown-editor\ /Y >> %LOG%
-COPY %VENDOR%simplemde-markdown-editor\dist\simplemde.min.js %PAGE%html\editor\libs\simplemde-markdown-editor\ /Y >> %LOG%
+IF NOT EXIST %PAGE%html\editor\libs\tui-editor\ MKDIR %PAGE%html\editor\libs\tui-editor\ >> %LOG%
+COPY %BOWER%markdown-it\dist\markdown-it.min.js %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%to-mark\dist\to-mark.min.js %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%tui-code-snippet\dist\tui-code-snippet.min.js %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%codemirror\lib\codemirror.js %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%highlightjs\highlight.pack.min.js %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%squire-rte\build\squire-raw.js %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+
+COPY %BOWER%codemirror\lib\codemirror.css %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%highlightjs\styles\github.css %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%tui-editor\dist\tui-editor.css %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+COPY %BOWER%tui-editor\dist\tui-editor-contents.css %PAGE%html\editor\libs\tui-editor\ /Y >> %LOG%
+
+XCOPY %BOWER%tui-editor\dist\*.* %PAGE%html\editor\libs\tui-editor\ /E /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------
@@ -583,8 +615,8 @@ ECHO  === prism ===
 ECHO	COPY TO %PAGE%html\prism\libs\prism\
 ECHO.
 IF NOT EXIST %PAGE%html\prism\libs\prism\ MKDIR %PAGE%html\prism\libs\prism\ >> %LOG%
-COPY %VENDOR_MANUAL%prism\prism.css %PAGE%html\prism\libs\prism\ /Y >> %LOG%
-COPY %VENDOR_MANUAL%prism\prism.js %PAGE%html\prism\libs\prism\ /Y >> %LOG%
+COPY %MANUAL%prism\prism.css %PAGE%html\prism\libs\prism\ /Y >> %LOG%
+COPY %MANUAL%prism\prism.js %PAGE%html\prism\libs\prism\ /Y >> %LOG%
 goto:eof
 
 ::--------------------------------------------------------

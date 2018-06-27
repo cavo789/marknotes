@@ -1,7 +1,7 @@
 <?php
 /**
  * Add CSS and JS for the editor
- * @link https://github.com/sparksuite/simplemde-markdown-editor
+ * @link http://nhnent.github.io/tui.editor
  */
 
 namespace MarkNotes\Plugins\Page\HTML;
@@ -20,49 +20,18 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 	public static function addJS(&$js = null) : bool
 	{
 		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
-
-		// Get the options for the plugin
-		$bSpellCheck = boolval(self::getOptions('spellchecker', true));
-
-		// Get the options for the plugin
-		$default = "'en':'English','es':'Spanish','fr':'French','it':'Italian','nl':'Dutch'";
-
-		$sLang = trim(self::getOptions('language_to', $default));
-		if ($sLang==='') {
-			$sLang = $default;
-		}
-
-		// Should be a double quote and not a single
-		$sLang = str_replace("'", '"', $sLang);
 
 		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
 
-		// Add Simple Markdown Editor
-		$script =
-			"\n<script ". "src=\"".$url."libs/simplemde-markdown-editor/simplemde.min.js\" defer=\"defer\"></script>\n";
-
-		// Add keymaster.js
-		$script .=
-			"\n<script ". "src=\"".$url."libs/keymaster/keymaster.js\" defer=\"defer\"></script>\n";
-		$script .=
-			"\n<script ". "src=\"".$url."keys.js\" defer=\"defer\"></script>\n";
-
-		// Add the dropzone library to allow image upload
-		$script.="<script ".
-			"src=\"".$rootURL."/marknotes/plugins/page/html/upload".
-			"/libs/dropzone/dropzone.min.js\" ".
-			"defer=\"defer\"></script>\n";
-
-		$script .= "<script ".
-			"src=\"".$url."editor.js\" ".
-			"defer=\"defer\"></script>".
-			"\n<script>\n".
-			"marknotes.editor={};\n".
-			"marknotes.editor.language_to={".$sLang."};\n".
-			"marknotes.editor.spellChecker=".($bSpellCheck?"true":"false").";\n".
-			"</script>";
+		// load only editor.js.
+		// The marknotes\plugins\task\edit\form.php script will load
+		// all other .js files since there are numberous and these .js
+		// files are only neede when the editor is displayed.
+		// If .js are referenced in this script, files will be always loaded
+		// which will be counter-effective
+		$script = "<script src=\"".$url."editor.js\" ".
+			"defer=\"defer\"></script>";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 
@@ -74,26 +43,6 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 	 */
 	public static function addCSS(&$css = null) : bool
 	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-
-		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
-		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
-
-		// Simple Markdown Editor
-		$script =
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$url."libs/simplemde-markdown-editor/simplemde.min.css\" />\n";
-
-		// Dropzone
-		$script .=
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
-			"href=\"".$rootURL."/marknotes/plugins/page/html/".
-			"upload/libs/dropzone/dropzone.min.css\">\n";
-
-		$script .=
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ". "href=\"".$url."editor.css\" />\n";
-
-		$css .= $aeFunctions->addStyleInline($script);
-
 		return true;
 	}
 

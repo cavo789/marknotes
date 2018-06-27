@@ -339,6 +339,7 @@ class Markdown
 
 			$arr['markdown'] = self::doReadContent($filename, $params);
 
+			/*<!-- endbuild -->*/
 			// Markdown support only H1 to H6; this is specified in
 			// the CommonMark specification :
 			// https://github.com/commonmark/CommonMark/blob/master/spec.txt#L783

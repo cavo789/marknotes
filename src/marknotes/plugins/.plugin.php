@@ -74,7 +74,6 @@ abstract class Plugin
 
 		// Be sure is initialized to the null value
 		static::$arrOptions[static::$me] = null;
-
 		return true;
 	}
 
@@ -135,7 +134,15 @@ abstract class Plugin
 
 		// Initialize the array, only once (the array is set to null
 		// only during the initialization of the plugin)
+		if (!isset(static::$arrOptions[static::$me])) {
+			static::$arrOptions[static::$me]=null;
+		}
+
 		if (static::$arrOptions[static::$me]===null) {
+			if (static::$json_options=='') {
+				static::$json_options = static::$json_settings;
+			}
+
 			if (static::$json_options!=='') {
 				$aeSettings = \MarkNotes\Settings::getInstance();
 

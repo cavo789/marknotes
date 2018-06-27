@@ -1,5 +1,7 @@
 marknotes.arrPluginsFct.push("fnPluginEditInit");
 
+var editor;
+
 // Variables used in order to be able to fixed the toolbar
 // when scrolling then page.
 var toolbarAffixAt = 0;
@@ -20,16 +22,6 @@ function fnPluginEditInit(params) {
 	//	$Spelling.SpellCheckAsYouType('sourceMarkDown');
 	//}
 
-	// the btn-exit-editor is added in the edit form by task.edit.form
-	//$(".btn-exit-editor").click(function (event) {
-	//	fnPluginButtonEdit_Exit(null);
-	//});
-
-	// Hide the upload area, show back the editor
-	$(".btn-exit-upload-droparea").click(function (event) {
-		$('#divEditUpload').hide();
-	});
-
 	return true;
 }
 
@@ -37,19 +29,15 @@ function fnPluginEditInit(params) {
  * Fix toolbar at set distance from top and adjust toolbar width
  * @link https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
  */
-function fnAffix() {
+function fnPluginEditToolbarAffix() {
 
 	if ($(document).scrollTop() > toolbarAffixAt) {
-		$(".editor-toolbar").addClass("toolbar-fixed");
-		$(".editor-toolbar").css({top: toolbarFixedTop + "px"});
-		$(".CodeMirror.cm-s-paper.CodeMirror-wrap").css({
-			top: cmPaperTop + "px"
-		});
-		fnSetWidth();
+		$(".te-toolbar-section").addClass("toolbar-fixed");
+		$(".te-toolbar-section").css({"top": toolbarFixedTop + "px"});
+		fnPluginEditToolbarSetWidth();
 	} else {
-		$(".editor-toolbar").removeClass("toolbar-fixed");
-		$(".editor-toolbar").css({top: ""});
-		$(".CodeMirror.cm-s-paper.CodeMirror-wrap").css({top: ""});
+		$(".te-toolbar-section").removeClass("toolbar-fixed");
+		$(".te-toolbar-section").css({top: ""});
 	}
 }
 
@@ -57,9 +45,9 @@ function fnAffix() {
  * Adjust fixed toolbar width to the width of CodeMirror
  * @link https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
  */
-function fnSetWidth() {
+function fnPluginEditToolbarSetWidth() {
 	$(".toolbar-fixed").width(
-		$(".CodeMirror.cm-s-paper.CodeMirror-wrap").width()
+		$(".CodeMirror-code").width()
 	);
 }
 
@@ -194,6 +182,50 @@ function afterEditInitMDE($data) {
 
 	filename = $data.param;
 
+	// Should be en_US and not en-US
+	var editor_language = marknotes.settings.language_ISO;
+	editor_language = editor_language.replace('-','_');
+
+	var editor = new tui.Editor({
+		"el": document.querySelector('#editorMarkDown'),
+		//"initialValue": $('#sourceMarkDown').text(),
+		"initialEditType": "markdown",
+		"previewStyle": "tab",
+		"minHeight": "300px",
+		"height": "auto",
+		// Hide mode switch tab bar
+		//"hideModeSwitch": "true",
+		// Use default htmlSanitizer
+		"useDefaultHTMLSanitizer": false,
+		// Otherwise tui.editor make use of Google Analytics for his own stats
+		"usageStatistics": "false",
+		"language": editor_language,
+		"events": {
+			// It would be emitted when editor fully load
+			"load": fnPluginEditLoaded,
+			//"load": fnPluginEditLoaded(),
+			//It would be emitted when content changed
+			//"change": fnPluginEditChange()
+			//It would be emitted when format change by cursor position
+			//"stateChange": function() {
+			//	console.log('State has changed');
+			//}
+		}
+	});
+
+	// Call the fnPluginEditAddButtonsToolbar() function
+	// Function created by marknotes/plugins/task/edit/form.php
+	// with the javascript code for each button to add in the
+	// toolbar
+	var fn = window["fnPluginEditAddButtonsToolbar"];
+	if (typeof fn === "function") {
+		// Custom functions will need a pointer to the
+		// editor and the name of the file under editing
+		fnPluginEditAddButtonsToolbar(editor, filename);
+	}
+	// **************************************************
+
+	/*
 	// Create the Simple Markdown Editor
 	// @link https://github.com/NextStepWebs/simplemde-markdown-editor
 	var simplemde = new SimpleMDE({
@@ -221,42 +253,6 @@ function afterEditInitMDE($data) {
 		styleSelectedText: false,
 		tabSize: 4,
 		toolbar: [
-			{
-				// Add a custom button for saving
-				name: "Save",
-				action: function customFunction(editor) {
-					buttonSave(filename, simplemde.value());
-				},
-				className: "fa fa-floppy-o",
-				title: $.i18n('button_save')
-			},
-			{
-				// Encrypt
-				name: "Encrypt",
-				action: function customFunction(editor) {
-					buttonEncrypt(editor);
-				},
-				className: "fa fa-user-secret",
-				title: $.i18n('button_encrypt')
-			},
-			{
-				// Multiusers
-				name: "Multiusers",
-				action: function customFunction(editor) {
-					Multiusers(editor);
-				},
-				className: "fa fa-users",
-				title: $.i18n('button_edit_multiusers')
-			},
-			{
-				// Table of content
-				name: "AddTOC",
-				action: function customFunction(editor) {
-					buttonAddTOC(editor);
-				},
-				className: "fa fa-map-o",
-				title: $.i18n('button_addTOC')
-			},
 			//{
 			//	// Spell check
 			//	name: "SpellCheck",
@@ -267,52 +263,6 @@ function afterEditInitMDE($data) {
 			//	title: $.i18n('button_spellcheck')
 			//},
 			"|",
-			{
-				// Add a custom button for saving
-				name: "Exit",
-				action: function customFunction(editor) {
-					fnPluginButtonEdit_Exit()
-				},
-				className: "fa fa-sign-out",
-				title: $.i18n('button_exit_edit_mode')
-			},
-			"|",
-			{
-				// Retrieve the HTML of an article on the web
-				name: "curlBlog",
-				action: function customFunction(editor) {
-					buttonCurlBlog(filename, editor);
-				},
-				className: "fa fa-download",
-				title: $.i18n('button_curlBlog')
-			},
-			{
-				// Convert the content (HTML) to markdown
-				name: "convertMD",
-				action: function customFunction(editor) {
-					button_convertMD(editor);
-				},
-				className: "fa fa-flash",
-				title: $.i18n('button_convertMD')
-			},
-			{
-				// Translate the content
-				name: "translate",
-				action: function customFunction(editor) {
-					button_translate(editor);
-				},
-				className: "fa fa-book",
-				title: $.i18n('button_translate')
-			},
-			"|",
-			{
-				name: "uploadImage",
-				action: function customFunction(editor) {
-					buttonUploadImage(editor);
-				},
-				className: "fa fa-picture-o",
-				title: $.i18n('button_upload_image')
-			},
 			// Remove "side-by-side" since it seems to not work
 			// anymore in SimpleMDE; a JS error is generated
 			"|", "preview",  "|", //"side-by-side", "fullscreen"
@@ -321,14 +271,35 @@ function afterEditInitMDE($data) {
 			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
 		] // toolbar
 	});
+*/
+	// --------------------------------------------------------------
+	// Check if the TogetherJS plugin is enabled
+	// If yes, by typing something in the editor, broadcast
+	// an information and tells who is editing which note.
+	/*if (typeof TogetherJS === "function") {
+		simplemde.codemirror.on("change", function(){
+			try {
+				if (TogetherJS.running) {
+					TogetherJS.send({
+						type: "editor-change",
+						name: TogetherJS.require("peers").Self.name,
+						note_name: marknotes.note.file,
+						note_id: marknotes.note.id,
+						note_content: simplemde.value()
+					});
+				}
+			} catch (err) {
+			}
+		});
+	}*/
 
 	// --------------------------------------------------------------
 	//
 	// Fixed the toolbar when scrolling
 	// @https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
 
-	toolbarInitialTop = $(".editor-toolbar").offset().top;
-	toolbarOuterHeight = $(".editor-toolbar").outerHeight();
+	toolbarInitialTop = $(".tui-editor-defaultUI-toolbar").offset().top;
+	toolbarOuterHeight = $(".tui-editor-defaultUI-toolbar").outerHeight();
 
 	toolbarFixedTop = 0;
 	if ($(".main-header").length != 0) {
@@ -341,214 +312,89 @@ function afterEditInitMDE($data) {
 
 	toolbarAffixAt = toolbarInitialTop - toolbarFixedTop;
 
-	$(document).scroll(fnAffix);
-	$(document).resize(fnSetWidth);
+	$(document).scroll(fnPluginEditToolbarAffix);
+	$(document).resize(fnPluginEditToolbarSetWidth);
 
 	//
 	// --------------------------------------------------------------
 
 	return true;
 }
-
-/*
- * Exit, quit the editor and display the note as an html content
- */
-function fnPluginButtonEdit_Exit($params) {
-	$('#sourceMarkDown').parent().hide();
-	ajaxify({
-		task: 'task.export.html',
-		param: filename,
-		callback: 'afterDisplay($data.param)',
-		target: 'CONTENT'
-	});
-	return true;
-}
-
 /**
- * EDIT MODE - Save the new content.  Called by the "Save" button
- * of the simplemde editor, initialized in the afterEdit function)
  *
- * @param {type} $fname		Filename
- * @param {type} $markdown	 The new content
- * @returns {boolean}
+ *  tui.editor is using css sprite as image for
+ *  buttons; prefer to use Font-awesome so
+ *  standard buttons of tui use the same font than
+ *  our custom buttons (added by the editor plugins)
+ * @return {[type]} [description]
  */
-function buttonSave($fname, $markdown) {
+function fnPluginEditUseFontAwesome() {
 
-	if ($fname === undefined) {
-		Noty({
-			message: $.i18n('error_filename_missing'),
-			type: 'error'
-		});
-		return false;
-	}
+	var arrClass = [
+		['tui-heading', 'fa-header'],
+		['tui-bold', 'fa-bold'],
+		['tui-italic', 'fa-italic'],
+		['tui-strike', 'fa-strikethrough'],
+		['tui-hrline', 'fa-ellipsis-h'],
+		['tui-quote', 'fa-quote-left'],
+		['tui-ul', 'fa-list-ul'],
+		['tui-ol', 'fa-list-ol'],
+		['tui-task', 'fa-tasks'],
+		['tui-indent', 'fa-indent'],
+		['tui-outdent', 'fa-outdent'],
+		['tui-table', 'fa-table'],
+		['tui-image', 'fa-image'],
+		['tui-link', 'fa-link'],
+		['tui-code', 'fa-code'],
+		['tui-codeblock', 'fa-angle-double-left']
+	];
 
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - Save');
-	}
-	/*<!-- endbuild -->*/
-
-	// If LocalStorage is enabled, remove the old saved note since we've
-	// just modify it.
-	var $useStore = (typeof store === 'object');
-	if ($useStore && (typeof fnPluginTaskOptimizeStore_Remove === 'function')) {
-		fnPluginTaskOptimizeStore_Remove($fname);
-	}
-
-	var $data = {};
-	$data.task = 'task.edit.save';
-	$data.param = $fname;
-	$data.markdown = window.btoa(encodeURIComponent(JSON.stringify($markdown)));
-
-	$.ajax({
-		async: true,
-		// GET can't be used because note's content can be
-		// too big for URLs
-		type: 'POST',
-		url: marknotes.url,
-		data: $data,
-		datatype: 'json',
-		success: function (data) {
-			Noty({
-				message: data.message,
-				type: (data.status == 1 ? 'success' : 'error')
-			});
-
-			var $useStore = (typeof store === 'object');
-			if ($useStore) {
-				// Be sure the localStorage array is up-to-date and willn't
-				// contains the previous content
-				fnPluginTaskOptimizeStore_Remove({
-					"name": $fname
-				});
-			}
-		}
-	}); // $.ajax()
-
-	return true;
-
-}
-
-function buttonUploadImage(editor) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - Upload');
-	}
-	/*<!-- endbuild -->*/
-
-	$('#divEditUpload').toggle();
-
-	// And initialize DropZone
-	var myDropzone = new Dropzone("#upload_droparea", {
-		url: "index.php?task=task.upload.save"
-	});
-
-	var $imgFileName = '';
-
-	// Get filenames and add them into the editor
-	myDropzone.on("success", function (file) {
-
-		// The upload is successfull, retrieve the size of the image
-		var $data = {};
-		$data.task = 'task.image.getsize';
-		$data.file = file.name;
-		$data.note = marknotes.note.file;
-
-		$size = "";
-
-		$.ajax({
-			url: marknotes.url,
-			data: $data,
-			method: 'POST',
-			success: function(data){
-				if (data.hasOwnProperty("width")) {
-					// Get the JSON answer with width and height
-					$size = data['width']+"x"+data['height'];
-					$size = " \"" + $size + "\"";
-				}
-
-				// Generate the tag
-				$img = file.name;
-				$imgFileName = "!["+$img+"](%URL%.images/"+$img+$size+")\n\n";
-
-				var cm = editor.codemirror;
-				// Just add the img tag where the cursor is located
-				cm.replaceSelection($imgFileName);
-			}
-		});
-
+	// Remove the tui-xxxx class and add the fa-class
+	arrClass.forEach(function(elem) {
+		$('.tui-toolbar-icons.' + elem[0])
+			.removeClass(elem[0])
+			.addClass('MN_button fa ' + elem[1]);
 	});
 
 	return true;
 }
 
 /**
- * EDIT MODE - Encrypt the selection.  Add the <encrypt> tag
- *
- * @returns {boolean}
+ * When the editor has been fully loaded
  */
-function buttonEncrypt(editor) {
+function fnPluginEditLoaded(editor) {
 
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - Encrypt');
-	}
-	/*<!-- endbuild -->*/
+	fnPluginEditUseFontAwesome();
 
-	var cm = editor.codemirror;
-	var output = '';
-	var selectedText = cm.getSelection();
-	var text = selectedText || 'your_confidential_info';
+	// #sourceMarkDown can contains HTML tags like
+	// <encrypt> but in this way : &lt;encrypt&gt;
+	// This because tui.editor remove tags and keep
+	// only the text.
+	// So, here, restore tags.
+	var $MD = $('#sourceMarkDown').text();
+	$MD = $MD
+		.replace(/&lt;/g,'<')
+		.replace(/&gt;/g,'>')
+		.replace(/&amp;/g,'&');
 
-	output = '<encrypt>' + text + '</encrypt>';
-	cm.replaceSelection(output);
+	editor.setValue($MD);
 
-	return true;
-}
-
-/**
- * [Multiusers description]
- * @param		{[type]} editor [description]
- * @constructor
- */
-function Multiusers(editor) {
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - Multiusers');
-	}
-	/*<!-- endbuild -->*/
-
-	if (typeof TogetherJS === "function") {
-		// Call the TogetherJS function
-		// See https://togetherjs.com/ for more information
-		TogetherJS();
-	} else {
-		Noty({
-			message: $.i18n('error_together_not_loaded'),
-			type: 'error'
-		});
+	// Be sure the editor is displaying first lines
+	try {
+		// For Chrome, Firefox, IE and Opera
+		document.documentElement.scrollTop = 0;
+	} catch (e) {
+		document.body.scrollTop = 0; // For Safari
+	} finally {
 	}
 
 	return true;
 }
 
 /**
- * ADD TOC - Add the %TOC_3% tag
- *
- * @returns {boolean}
+ * When the content has been modified
  */
-function buttonAddTOC(editor) {
-
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - Add TOC tag');
-	}
-	/*<!-- endbuild -->*/
-
-	var cm = editor.codemirror;
-	// Just add the tag where the cursor is located
-	cm.replaceSelection('%TOC_5%');
+function fnPluginEditChange() {
 }
 
 /**
@@ -561,119 +407,3 @@ function buttonAddTOC(editor) {
 //	}
 //	return true;
 //}
-
-/**
- * Call the "task.fetch.gethtml" task and specify an URL
- * A cURL action will be fired and try to retrieve the HTML content
- * of that page
- */
-function buttonCurlBlog($fname, editor) {
-
-	var $default_url = '';
-
-	swal({
-		html:
-			'<label>'+$.i18n('fetch_specify_url')+'</label>'+
-			'<input id="swal-fetch-url" class="swal2-input" '+ 'value="'+$default_url+'">',
-		onOpen: function () {
-			$('#swal-fetch-url').focus()
-		}
-	}).then(function (result) {
-		$url = $('#swal-fetch-url').val();
-
-		if (($url != null) && ($url != $default_url)) {
-			// Start the ajax request and fetch the HTML of that page.
-			// The gethtml task will also clean the code and only
-			// keep content's HTML and not footer, navigation, comments,
-			// ...
-			var $data = {};
-			$data.task = 'task.fetch.gethtml';
-			$data.param = $fname;
-			$data.url = $url;
-
-			$.ajax({
-				async: true,
-				type: 'GET',
-				url: marknotes.url,
-				data: $data,
-				datatype: 'html',
-				success: function (data) {
-					editor.codemirror.setValue(data);
-				}
-			}); // $.ajax()
-		}
-	}).catch(swal.noop);
-
-	return true;
-}
-
-/**
- * Call the task "task.convert.fromHTML" so the content of the
- * editor can be converted (best try) to a markdown string
- */
-function button_convertMD(editor) {
-
-	var $data = {};
-	$data.task = 'task.convert.fromHTML';
-	$data.content = editor.codemirror.getValue();
-
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: marknotes.url,
-		data: $data,
-		datatype: 'html',
-		success: function (data) {
-			editor.codemirror.setValue(data);
-		}
-	}); // $.ajax()
-
-}
-
-/**
- * Call the translate task and get the translated content
- */
-function button_translate(editor) {
-
-	swal({
-		title: $.i18n('editor_translate_alert_title'),
-		type: 'question',
-		input: 'select',
-		inputOptions: marknotes.editor.language_to,
-		inputPlaceholder:  $.i18n('editor_translate_select'),
-		inputValidator: function (value) {
-			return new Promise(function (resolve, reject) {
-				if (value !== '') {
-					// value contains the selected language
-					// for instance "en" or "fr"
-					var $data = {};
-					$data.task = 'task.translate.run';
-					$data.param = value;
-					$data.content = editor.codemirror.getValue();
-
-					$.ajax({
-						async: true,
-						type: 'POST',
-						url: marknotes.url,
-						data: $data,
-						datatype: 'html',
-						success: function (data) {
-							editor.codemirror.setValue(data);
-						}
-					}); // $.ajax()
-
-					resolve();
-				} else {
-					reject($.i18n('error_please_select_a_value'));
-				}
-			})
-		},
-		showCancelButton: true,
-		cancelButtonText: $.i18n('cancel'),
-		confirmButtonText: $.i18n('editor_translate_doit')
-	});
-
-	/*
-
-*/
-}

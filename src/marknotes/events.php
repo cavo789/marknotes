@@ -117,10 +117,6 @@ class Events
 					foreach (self::$arrEvents[$plugin][$event] as $func) {
 						if (is_callable($func)) {
 							/*<!-- build:debug -->*/
-							//if ($aeDebug->getDevMode()) {
-							//	$aeDebug->here("	call [".$func."]", 1);
-							//}
-
 							if ($aeSettings->getDebugMode()) {
 								$aeDebug->log('	call ['.$func.']', 'debug');
 							}
@@ -142,7 +138,7 @@ class Events
 							/*<!-- build:debug -->*/
 							if ($aeDebug->getDevMode()) {
 								$aeDebug->here('Event '.$event.', '.$func.' is not '.
-								' callable [plugin '.$plugin.']', 3);
+								'callable [plugin '.$plugin.']', 3);
 							}
 							/*<!-- endbuild -->*/
 						}

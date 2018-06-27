@@ -87,6 +87,6 @@ Christophe Avonture | [https://www.aesecure.com](https://www.aesecure.com)
 
 This application could not have been created without the **amazing Open Source community**.
 
-A tremendous thank you to every library maintainers who give time and robust software (like, a.o.t, AdminLTE, Bootstrap, FontAwesome, jQuery, jsTree, Parsedown, Reveal.js, SimpleMDE, ...)
+A tremendous thank you to every library maintainers who give time and robust software (like, a.o.t, AdminLTE, Bootstrap, FontAwesome, jQuery, jsTree, Parsedown, Reveal.js, ...)
 
 Thank you to GitHub.

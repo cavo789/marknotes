@@ -44,6 +44,78 @@
 		"img_maxwidth": 800
 	},
 	"plugins": {
+		"editor": {
+			"save": {
+				"enabled": 1,
+				"position": 0
+			},
+			"together": {
+				"enabled": 1,
+				"position": 1
+			},
+			"exit": {
+				"enabled": 1,
+				"position": 2,
+				"add_divider": "after"
+			},
+			"encrypt": {
+				"enabled": 1,
+				"position": 9,
+				"add_divider": "after"
+			},
+
+			"toc": {
+				"enabled": 1,
+				"position": 11
+			},
+			"todos": {
+				"enabled": 1,
+				"position": 12
+			},
+			"lastupdate": {
+				"enabled": 1,
+				"position": 13
+			},
+			"image_gallery": {
+				"enabled": 1,
+				"position": 14
+			},
+			"listfiles": {
+				"enabled": 1,
+				"position": 15
+			},
+			"csv": {
+				"enabled": 1,
+				"position": 16
+			},
+			"include": {
+				"enabled": 1,
+				"position": 17,
+				"add_divider": "after"
+			},
+			"upload": {
+				"enabled": 1,
+				"position": 31
+			},
+			"curlblog": {
+				"enabled": 1,
+				"position": 36,
+				"add_divider": "before"
+			},
+			"convertmd": {
+				"enabled": 1,
+				"position": 41
+			},
+			"translate": {
+				"enabled": 1,
+				"position": 42,
+				"add_divider": "after"
+			},
+			"mermaid": {
+				"enabled": 1,
+				"position": 50
+			}
+		},
 		"buttons": {
 			"backup": {
 				"enabled": 1,
@@ -525,6 +597,11 @@
 				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
+			"anchors": {
+				"enabled": 1,
+				"not_if_task": [],
+				"only_if_task": ["main", "interface", "task.export.html", "task.export.remarks", "task.export.reveal", "task.export.docx"]
+			},
 			"csv": {
 				"enabled": 1,
 				"not_if_task": [],
@@ -693,7 +770,7 @@
 					"increment_headings": 1
 				},
 				"lastupdate": {
-					"text": "> Last update: *%s*"
+					"text": "Last update: *%s*"
 				},
 				"todos": {
 					"introduction": "## Summary",
@@ -848,6 +925,19 @@
 								"filename": "marknotes/plugins/page/html/metadata/favicon.txt"
 							}
 						]
+					},
+					"remark": {
+						"class": {
+							"1": "middle",
+							"2": "inverse middle",
+							"3": "middle",
+							"5": "middle",
+							"5": "middle",
+							"6": "middle"
+						},
+						"name": {
+							"1": "cover"
+						}
 					},
 					"reveal": {
 						"addVerticalSlides": 1,

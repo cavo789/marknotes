@@ -1,8 +1,48 @@
+/* Class for buttons in the editor */
+.MN_button {
+background-color:orange !important;
+	background-image: none;
+	display: inline-block;
+	text-align: center;
+	text-decoration: none!important;
+	color: #909daa!important;
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+}
+
 .toolbar-fixed {
   z-index: 100;
   position: fixed;
   border-bottom: 1px solid #f00;
   opacity: 0.9;
-  background: #fff;
+  background: red;
   background: rgba(255, 255, 255, 0.95);
+}
+
+/*
+  We don't want that the tui.editor is showing the "Preview" mode
+  since that mode won't support marknotes tags and plugins.
+  By type %LASTUPDATE% f.i. in the markdown editor, the plugin won't
+  be replaced so don't show this feature
+*/
+.te-markdown-tab-section, .te-mode-switch-section {
+	display: none !important;
+}
+
+/*
+  Set the space between two buttons on the toolbar to zero
+  so we can place more buttons on it
+ */
+.tui-editor-defaultUI-toolbar button {
+	margin: 0 !important;
+	border: none !important;
+}
+
+/*
+  Get more space by reducing the left and right padding on the toolbar
+  so, here too, we can have more buttons displayed on the toolbar
+ */
+.tui-editor-defaultUI-toolbar {
+	padding: 4px 4px;
 }
