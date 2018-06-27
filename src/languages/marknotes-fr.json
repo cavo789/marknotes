@@ -67,6 +67,7 @@
 	"button_encrypt": "Encrypte la s\u00e9lection",
 	"button_exit_edit_mode": "Quitte le mode \u00e9dition",
 	"button_exit_not_save": "Souhaitez-vous quitter l'\u00e9diteur sans sauvegarder votre travail ?",
+	"button_preview": "Pr\u00e9visualiser sans sauvegarder vos modifications",
 	"button_save": "Enregistre vos modifications sur le serveur",
 	"button_edit_multiusers": "\u00c9ditez cette note \u00e0 plusieurs",
 	"button_save_done": "Le fichier a \u00e9t\u00e9 enregistr\u00e9 avec succ\u00e8s",

@@ -49,71 +49,75 @@
 				"enabled": 1,
 				"position": 0
 			},
+			"preview": {
+				"enabled": 0,
+				"position": 1
+			},
 			"together": {
 				"enabled": 1,
-				"position": 1
+				"position": 2
 			},
 			"exit": {
 				"enabled": 1,
-				"position": 2,
+				"position": 3,
 				"add_divider": "after"
 			},
 			"encrypt": {
 				"enabled": 1,
-				"position": 9,
+				"position": 10,
 				"add_divider": "after"
 			},
 
 			"toc": {
 				"enabled": 1,
-				"position": 11
+				"position": 12
 			},
 			"todos": {
 				"enabled": 1,
-				"position": 12
+				"position": 13
 			},
 			"lastupdate": {
 				"enabled": 1,
-				"position": 13
+				"position": 14
 			},
 			"image_gallery": {
 				"enabled": 1,
-				"position": 14
+				"position": 15
 			},
 			"listfiles": {
 				"enabled": 1,
-				"position": 15
+				"position": 16
 			},
 			"csv": {
 				"enabled": 1,
-				"position": 16
+				"position": 17
 			},
 			"include": {
 				"enabled": 1,
-				"position": 17,
+				"position": 18,
 				"add_divider": "after"
 			},
 			"upload": {
 				"enabled": 1,
-				"position": 31
+				"position": 32
 			},
 			"curlblog": {
 				"enabled": 1,
-				"position": 36,
+				"position": 37,
 				"add_divider": "before"
 			},
 			"convertmd": {
 				"enabled": 1,
-				"position": 41
+				"position": 42
 			},
 			"translate": {
 				"enabled": 1,
-				"position": 42,
+				"position": 43,
 				"add_divider": "after"
 			},
 			"mermaid": {
 				"enabled": 1,
-				"position": 50
+				"position": 51
 			}
 		},
 		"buttons": {
