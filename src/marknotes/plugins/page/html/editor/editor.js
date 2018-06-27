@@ -198,7 +198,7 @@ function afterEditInitMDE($data) {
 		// Use default htmlSanitizer
 		"useDefaultHTMLSanitizer": false,
 		// Otherwise tui.editor make use of Google Analytics for his own stats
-		"usageStatistics": "false",
+		"usageStatistics": false,
 		"language": editor_language,
 		"events": {
 			// It would be emitted when editor fully load

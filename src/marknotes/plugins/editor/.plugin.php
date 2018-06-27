@@ -87,7 +87,8 @@ abstract class Plugin extends \MarkNotes\Plugins\Plugin
 		// MarkNotes\Plugins\Buttons\TOCButton
 		// extract the last part : TOCButton and then
 		// remove "Button"
-		$fname = strtolower(basename(static::$me));
+		$fname = str_replace('\\', '/', static::$me);
+		$fname = strtolower(basename($fname));
 		$fname = str_replace('button', '', $fname);
 
 		// Try to find the .js script.
