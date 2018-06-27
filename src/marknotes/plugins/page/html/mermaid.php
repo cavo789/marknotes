@@ -36,7 +36,8 @@ class Mermaid extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// in the resulting HTML
 		$pattern = '/<div class="mermaid">([\s\S]*?)<\/div>/m';
 
-		if (($html=='') && (preg_match_all($pattern, $html, $matches))) {
+		if (($html=='') || (preg_match_all($pattern, $html, $matches))) {
+
 			// At least one block found, load .js
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$url = rtrim($aeFunctions->getCurrentURL(), '/');

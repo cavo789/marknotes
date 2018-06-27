@@ -2,166 +2,602 @@
 	display: none;
 }
 
-body {
-	font-family: 'Droid Serif';
-}
-
-h1,
-h2,
-h3 {
-	font-family  : 'Yanone Kaffeesatz';
-	font-weight  : 400;
-	margin-bottom: 0;
-}
-
-img {
-	max-width: 800px;
-}
-
-.remark-slide-content h1 {
-	font-size: 3em;
-}
-
-.remark-slide-content h2 {
-	font-size: 2em;
-}
-
-.remark-slide-content h3 {
-	font-size: 1.6em;
-}
-
 .footnote {
 	position: absolute;
 	bottom  : 1em;
-}
-
-li p {
-	line-height: 1.25em;
 }
 
 .italic {
 	font-style: italic;
 }
 
-.red {
-	color: #fa0000;
+@font-face {
+    font-family: Sinzano;
+    font-style: normal;
+    font-weight: 400;
+    src: url("../webfonts/sinzano-regular.woff2") format('woff2')
 }
 
-.large {
-	font-size: 2em;
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 300;
+    src: url("../webfonts/sourcesanspro-light.woff2") format('woff2')
 }
 
-a,
-a > code {
-	color          : rgb(249, 38, 114);
-	text-decoration: none;
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../webfonts/sourcesanspro-regular.woff2") format('woff2')
 }
 
-code {
-	background   : #e7e8e2;
-	border-radius: 5px;
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: normal;
+    font-weight: 700;
+    src: url("../webfonts/sourcesanspro-bold.woff2") format('woff2')
 }
 
-.remark-code,
-.remark-inline-code {
-	font-family: 'Ubuntu Mono';
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: italic;
+    font-weight: 400;
+    src: url("../webfonts/sourcesanspro-italic.woff2") format('woff2')
 }
 
-.remark-code-line-highlighted {
-	background-color: #373832;
+@font-face {
+    font-family: 'Source Sans Pro';
+    font-style: italic;
+    font-weight: 700;
+    src: url("../webfonts/sourcesanspro-bold-italic.woff2") format('woff2')
 }
 
-.pull-left {
-	float: left;
-	width: 47%;
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../webfonts/sourcecodepro-regular.woff2") format('woff2')
 }
 
-.pull-right {
-	float: right;
-	width: 47%;
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 700;
+    src: url("../webfonts/sourcecodepro-bold.woff2") format('woff2')
 }
 
-.pull-right ~ p {
-	clear: both;
+.remark-container {
+    font-family: 'Source Sans Pro';
+    background-color: #303641;
+    color: #53626b
 }
 
-#slideshow .slide .content code {
-	font-size: .8em;
+.remark-slide-scaler {
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 0 30px #101115
 }
 
-#slideshow .slide .content pre code {
-	font-size: .9em;
-	padding  : 15px;
+.remark-slide-number {
+    font-size: 15px;
+    font-weight: bold;
+    color: #66757f
 }
 
-.inverse {
-	background : #272822;
-	color      : #777872;
-	text-shadow: 0 0 20px #333;
+.remark-slide-content {
+    padding-top: 5em
 }
 
-.inverse h1,
-.inverse h2 {
-	color      : #f3f3f3;
-	line-height: .8em;
+.remark-slide-content.section,
+.remark-slide-content.single,
+.remark-slide-content.stickit {
+    padding-top: 1em;
 }
 
-/* Slide-specific styling */
-#slide-inverse .footnote {
-	bottom: 12px;
-	left  : 20px;
+.remark-slide-content.section h1,
+.remark-slide-content.single h1,
+.remark-slide-content.stickit h1 {
+    position: static
 }
 
-#slide-how .slides {
-	font-size: .9em;
-	position : absolute;
-	top      : 151px;
-	right    : 140px;
+.remark-slide-content.section {
+    padding: 1em 0
 }
 
-#slide-how .slides h3 {
-	margin-top: .2em;
+.remark-slide-content.carbon img {
+    border: none;
+    box-shadow: none;
+    width: 100%
 }
 
-#slide-how .slides .first,
-#slide-how .slides .second {
-	padding           : 1px 20px;
-	height            : 90px;
-	width             : 120px;
-	-moz-box-shadow   : 0 0 10px #777;
-	-webkit-box-shadow: 0 0 10px #777;
-	box-shadow        : 0 0 10px #777;
+.remark-slide-content.carbon.vertical img {
+    width: unset;
+    height: 65vh
 }
 
-#slide-how .slides .first {
-	background: #fff;
-	position  : absolute;
-	top       : 20%;
-	left      : 20%;
-	z-index   : 1;
+.remark-slide-content h1,
+.remark-slide-content h2,
+.remark-slide-content h3 {
+    margin: 0
 }
 
-#slide-how .slides .second {
-	position  : relative;
-	background: #fff;
-	z-index   : 0;
+.remark-slide-content h1 {
+    position: absolute;
+    top: .8888888888888888em;
+    left: 1.777777777777778em
 }
 
-/* Two-column layout */
-.left-column {
-	color : #777;
-	width : 20%;
-	height: 92%;
-	float : left;
+.remark-slide-content.section h1 {
+    margin: 0;
+    padding: .3em
 }
 
-.left-column h2:last-of-type,
-.left-column h3:last-child {
-	color: #000;
+.remark-slide-content ul {
+    margin: 0
 }
 
-.right-column {
-	width      : 75%;
-	float      : right;
-	padding-top: 1em;
+.remark-slide-content li {
+    margin: .5em 0;
+}
+
+.remark-slide-content li img {
+    display: block
+}
+
+.remark-slide-content img,
+.remark-slide-content iframe {
+    width: 65%
+}
+
+.remark-slide-content .large img,
+.remark-slide-content .large svg,
+.remark-slide-content .large iframe,
+.remark-slide-content .large video {
+    width: 100% !important
+}
+
+.remark-slide-content .large li {
+    margin: .35em 0
+}
+
+.remark-slide-content .small img,
+.remark-slide-content .small svg,
+.remark-slide-content .small iframe {
+    width: 45%
+}
+
+.remark-slide-content blockquote {
+    position: relative;
+}
+
+.remark-slide-content blockquote::before {
+    position: absolute;
+    top: 0;
+    left: -.45em;
+    display: block;
+    line-height: .3em
+}
+
+.remark-slide-content .twitter-tweet-rendered {
+    margin: 0 auto
+}
+
+.remark-slide-content pre {
+    width: 100%
+}
+
+.remark-slide-content .breadcrumb {
+    position: absolute;
+    top: 1.25em;
+    left: 5em
+}
+
+.wide .remark-slide-content img,
+.wide .remark-slide-content iframe {
+    width: 45%
+}
+
+.wide .remark-slide-content .small img,
+.wide .remark-slide-content .small svg,
+.wide .remark-slide-content .small iframe {
+    width: 30%
+}
+
+.remark-slide-content.inverse {
+    background-color: #2196ed
+}
+
+.remark-slide-content.section {
+    background-size: cover;
+}
+
+.remark-slide-content.section h1 {
+    background-color: rgba(83, 98, 107, 0.65)
+}
+
+.remark-slide-content .remark-inline-code {
+    padding: 0 .3em
+}
+
+.remark-slide-content h1,
+.remark-slide-content a,
+.remark-slide-content blockquote::before,
+.remark-slide-content em {
+    color: #2196ed
+}
+
+.remark-slide-content.inverse,
+.remark-slide-content.section {
+    color: #fff;
+}
+
+.remark-slide-content.inverse h1,
+.remark-slide-content.section h1,
+.remark-slide-content.inverse a,
+.remark-slide-content.section a,
+.remark-slide-content.inverse em,
+.remark-slide-content.section em,
+.remark-slide-content.inverse blockquote::before,
+.remark-slide-content.section blockquote::before,
+.remark-slide-content.inverse .remark-slide-number,
+.remark-slide-content.section .remark-slide-number {
+    color: #fff
+}
+
+.remark-slide-content a {
+    text-decoration: none;
+}
+
+.remark-slide-content a::before {
+    content: "?? ";
+    font-size: .5em;
+    vertical-align: middle;
+    white-space: nowrap
+}
+
+.remark-slide-content a:hover {
+    color: #ef723a
+}
+
+.remark-slide-content h1,
+.remark-slide-content ul,
+.remark-slide-content ol,
+.remark-slide-content blockquote,
+.remark-slide-content blockquote + p {
+    font-weight: 300
+}
+
+.remark-slide-content h1 {
+    font-size: 45px;
+}
+
+.remark-slide-content h1 strong {
+    font-weight: 400;
+    font-family: Sinzano
+}
+
+.remark-slide-content h1 svg {
+    height: .85em;
+    width: .85em;
+    margin-left: .25em;
+    fill: #2196ed;
+    vertical-align: middle
+}
+
+.remark-slide-content.section h1 {
+    border-top: 3px solid rgba(255, 255, 255, 0.45);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.45);
+    font-size: 65px;
+    font-family: Sinzano;
+    text-shadow: 1px 1px 3px #53626b, -1px -1px 2px #66757f
+}
+
+.remark-slide-content.single h1 {
+    font-size: 75px
+}
+
+.remark-slide-content.not(.longlist) ul,
+.remark-slide-content.not(.longlist) ol {
+    font-size: 40px;
+}
+
+.remark-slide-content.not(.longlist) ul ul,
+.remark-slide-content.not(.longlist) ol ul,
+.remark-slide-content.not(.longlist) ul ol,
+.remark-slide-content.not(.longlist) ol ol {
+    font-size: .55em
+}
+
+.remark-slide-content small,
+.remark-slide-content .small {
+    font-size: .6em
+}
+
+.remark-slide-content .medium {
+    font-size: 1.2em
+}
+
+.remark-slide-content .large {
+    font-size: 1.5em
+}
+
+.remark-slide-content pre,
+.remark-slide-content img,
+.remark-slide-content video {
+    border: 3px solid #e1e9ec;
+    box-shadow: 0 0 30px rgba(83, 98, 107, 0.4)
+}
+
+.remark-slide-content blockquote::before {
+    content: '«';
+    font-size: 6em
+}
+
+.remark-slide-content blockquote + p {
+    font-size: 20px !important;
+}
+
+.remark-slide-content blockquote + p em {
+    color: #66757f
+}
+
+.remark-slide-content code {
+    font-family: 'Source Code Pro'
+}
+
+.remark-slide-content svg {
+    fill: #53626b;
+}
+
+.remark-slide-content svg .accent {
+    fill: #2196ed
+}
+
+.remark-slide-content.inverse svg {
+    fill: #e1e9ec;
+}
+
+.remark-slide-content.inverse svg .accent {
+    fill: #fff
+}
+
+.remark-slide-content .remark-inline-code {
+    white-space: nowrap;
+    border-radius: 3px;
+    font-size: .9em;
+    color: #2196ed;
+    background-color: #e1e9ec
+}
+
+.remark-slide-content .breadcrumb {
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 700;
+    color: #e1e9ec
+}
+
+.remark-slide-content .round img {
+    border-radius: 50%
+}
+
+.remark-slide-content.tiles ul {
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: space-around
+}
+
+.remark-slide-content.tiles li {
+    box-sizing: border-box;
+    position: relative;
+    margin: 2em 0;
+    min-width: 30%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase
+}
+
+.remark-slide-content.tiles:not(h1) svg {
+    z-index: 1;
+    min-width: 3.8em;
+    max-width: 9.4em;
+    height: auto;
+    padding: 2.6em;
+    margin-bottom: 1em;
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox=%220 0 120 120%22 xmlns=%22http://www.w3.org/2000/svg%22%3E %3Ccircle cx=%2260%22 cy=%2260%22 r=%2260%22 fill=%22%23E1E9EC%22/%3E %3C/svg%3E")
+}
+
+.remark-slide-content.logos img {
+    border: none;
+    box-shadow: none
+}
+
+.remark-slide-content.bottom-up {
+    padding-top: 1em;
+    padding-top: 3em;
+    font-size: 30px;
+    color: #2196ed;
+}
+
+.remark-slide-content.bottom-up h1 {
+    position: static
+}
+
+.remark-slide-content.bottom-up h1 {
+    margin-bottom: .5em;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase
+}
+
+.remark-slide-content.bottom-up p {
+    margin: 0
+}
+
+.remark-slide-content.bottom-up svg,
+.remark-slide-content.bottom-up img:not([src$=gif]) {
+    width: 30%;
+    height: auto;
+    margin: 1em 0;
+    border: none;
+    box-shadow: none
+}
+
+.remark-slide-content.bottom-up.inverse p {
+    color: #fff
+}
+
+.remark-slide-content.punchline {
+    padding-top: 1em;
+    padding-left: 6em;
+    padding-bottom: 6em;
+}
+
+.remark-slide-content.punchline h1 {
+    position: static
+}
+
+.remark-slide-content.punchline img,
+.remark-slide-content.punchline svg {
+    width: 30%;
+    height: auto;
+    position: absolute;
+    top: .5em;
+    right: 2em;
+    border: none;
+    box-shadow: none
+}
+
+.remark-slide-content.punchline h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase
+}
+
+.remark-slide-content.punchline p {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 300
+}
+
+.wide .remark-slide-content.punchline img,
+.wide .remark-slide-content.punchline svg {
+    width: 20%
+}
+
+#slide-cover {
+    border-left: 10px solid #2196ed;
+    color: #2196ed;
+}
+
+#slide-cover h1 {
+    position: static
+}
+
+#slide-cover h1,
+#slide-cover p {
+    margin: 0
+}
+
+#slide-cover h1 {
+    font-family: Sinzano;
+    font-size: 75px
+}
+
+#slide-cover p {
+    font-size: 30px;
+    font-weight: 300
+}
+
+#slide-cover .ref {
+    position: absolute;
+    left: 4.5em;
+    bottom: 10px;
+}
+
+#slide-cover .ref a {
+    font-weight: 400;
+    text-decoration: none;
+    color: #66757f;
+}
+
+#slide-cover .ref a::before {
+    content: '? ';
+    font-size: 1em;
+    vertical-align: baseline
+}
+
+#slide-cover .remark-slide-number {
+    display: none
+}
+
+#slide-speaker {
+    font-weight: 300;
+}
+
+#slide-speaker h1 {
+    position: static
+}
+
+#slide-speaker p {
+    margin: 0
+}
+
+#slide-speaker .org {
+    position: absolute;
+    bottom: 1em;
+    left: 50%;
+    transform: translateX(-50%)
+}
+
+#slide-speaker img {
+    width: 10em;
+    border-radius: 50%
+}
+
+#slide-speaker .org img {
+    width: 1.6em
+}
+
+#slide-speaker .org img,
+#slide-speaker.squared img {
+    box-shadow: none;
+    border: none;
+    border-radius: 0
+}
+
+#slide-speaker a {
+    text-decoration: none
+}
+
+#slide-speaker strong {
+    font-weight: 700
+}
+
+#slide-speaker .extras {
+    font-size: 18px
+}
+
+#slide-speaker h1 {
+    margin-top: .25em;
+    font-family: Sinzano;
+    font-size: 60px;
+    font-weight: 400
+}
+
+#slide-speaker.speakers {
+    display: flex
+}
+
+#slide-speaker .speaker {
+    flex: 1 0 50%
 }

@@ -21,6 +21,9 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
+		// Get the settings for Remark slideshow
+		$arrSettings = $aeSettings->getPlugins(self::$json_options);
+
 		if ($params['filename'] !== "") {
 			$fullname = $aeSettings->getFolderDocs(true).$params['filename'];
 
@@ -48,11 +51,11 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 			// name to each slide by just adding "name: NAME"
 			// in the markdown string
 
-			$arrHeading = array('##','###','####','#####','######');
+			$arrHeading = array('#','##','###','####','#####','######');
 			foreach ($arrHeading as $head) {
 				$matches = array();
 
-				preg_match_all("/\\n".$head." (.*)/", $markdown, $matches);
+				preg_match_all("/^".$head." (.*)/m", $markdown, $matches);
 
 				if (count($matches) > 0) {
 					// Process one by one
@@ -70,20 +73,54 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 						//	---
 						//	## TITLE
 
+						// Dissociate #### heading 4
+						$pattern = '/^(#*)(.*)/';
+						preg_match($pattern, trim($matches[0][$i]), $arr);
+
+						// Get #### and therefore 4
+						$lenght = intval(strlen($arr[1]));
+						// Get "heading 4"
+						$title = trim($arr[2]);
+
+						// The CommonMarks standard doesn't support
+						// H7 or more.
+						if ($lenght > 6) $lenght = 6;
+
+						// Get the class to assign for each
+						// headings (H1 -> H6)
+						$class = '';
+						if (isset($arrSettings['class'][$lenght])) {
+
+							$class = $arrSettings['class'][$lenght];
+						}
+
+						// Get the class to assign for each
+						// headings (H1 -> H6)
+						$name = $title;
+						if (isset($arrSettings['name'][$lenght])) {
+							$name = $arrSettings['name'][$lenght];
+						}
+
+						$slide_break = '---'.PHP_EOL;
+						if ($lenght==1) {
+							// No slide break before h1 since it's the
+							// first slide of the presentation
+							$slide_break = '';
+						}
+
 						$markdown = str_replace(
 							$matches[0][$i],
-							//"???".PHP_EOL.str_replace('/',DS,$filename).PHP_EOL.
-							// Add speaker note : ??? followed
-							// by a line and the text
-							"---".PHP_EOL.
-							"name: ".rtrim($matches[1][$i], " #").PHP_EOL.
+							// Add a slide break (for ## till ######)
+							PHP_EOL.$slide_break.
+							"name: ".$name.PHP_EOL.
+							"class: ". $class.PHP_EOL.
 							// Be sure to not have a title
 							// like ## Heading2 ## (==> remove
 							// final # and space if there are
 							// ones)
 							".footnote[.italic[".$pageTitle."]]".PHP_EOL.
-							$matches[0][$i],
-							$markdown
+							"# ".$title, //$matches[0][$i],
+							$markdown.PHP_EOL
 						);
 					} // for ($i)
 				} // if(count($matches)>0)
@@ -97,6 +134,18 @@ class Remark extends \MarkNotes\Plugins\Content\Slides\Plugin
 			foreach ($matches[0] as $tmp) {
 				$markdown = str_replace($tmp, '---', $markdown);
 			}
+
+			// Remove empty slides i.e. blocks like
+			// 	---
+			//
+			//
+			// 	---
+			//
+			// 	i.e. a slide break followed by one or more empty
+			// 	lines followed by a slide break.
+			$pattern = '/---[\n\r]{2,}---[\n\r]/';
+			$replacement = '---'.PHP_EOL;
+			$markdown=  preg_replace($pattern, $replacement, $markdown);
 
 			// -----------------------
 			// Get the remark template
