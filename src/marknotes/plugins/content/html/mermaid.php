@@ -71,27 +71,27 @@ class Mermaid extends \MarkNotes\Plugins\Content\HTML\Plugin
 				$mermaid = $matches[1][$i];
 				self::undoHTMLChanges($content, $mermaid);
 			}
+		}
+		// À priori just for a demo : when the mermaid
+		// code has been put in a
+		//
+		// ```mermaid
+		// THE CONTENT
+		// ```
+		//
+		// In this case "```mermaid" has been converted into
+		// <code class="language-mermaid">...</code> but,
+		// there too, the HTML shouldn't be modified
 
-			// À priori just for a demo : when the mermaid
-			// code has been put in a
-			//
-			// ```mermaid
-			// THE CONTENT
-			// ```
-			//
-			// In this case "```mermaid" has been converted into
-			// <code class="language-mermaid">...</code> but,
-			// there too, the HTML shouldn't be modified
+		$pattern = '/<code class="language-mermaid">([\s\S]*?)<\/code>/m';
 
-			$pattern = '/<code class="language-mermaid">([\s\S]*?)<\/code>/m';
+		if (preg_match_all($pattern, $content, $matches)) {
 
-			if (preg_match_all($pattern, $content, $matches)) {
-				$j = count($matches[0]);
+			$j = count($matches[0]);
 
-				for ($i=0; $i<$j; $i++) {
-					$mermaid = $matches[1][$i];
-					self::undoHTMLChanges($content, $mermaid);
-				}
+			for ($i=0; $i<$j; $i++) {
+				$mermaid = $matches[1][$i];
+				self::undoHTMLChanges($content, $mermaid);
 			}
 		}
 

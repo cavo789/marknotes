@@ -294,6 +294,7 @@ class Variables extends \MarkNotes\Plugins\Markdown\Plugin
 
 		$markdown = self::replaceVar('%DEBUG%', $aeSettings->getDebugMode(), $markdown);
 		$markdown = self::replaceVar('%LANGUAGE%', $aeSettings->getLanguage(), $markdown);
+		$markdown = self::replaceVar('%LANGUAGE_ISO%', $aeSettings->getLocale(), $markdown);
 		$markdown = self::replaceVar('%SITE_NAME%', $aeSettings->getSiteName(), $markdown);
 		//
 		// ---------------------------------------------------------------

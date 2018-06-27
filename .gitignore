@@ -1,6 +1,7 @@
 backups/
 gulp/
 logs/
+bower_components/
 node_modules/
 src/templates/AFUJ/*
 src/templates/bosa/*

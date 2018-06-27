@@ -519,7 +519,15 @@ function fnPluginTaskTreeView_editNode($node) {
 	}
 	/*<!-- endbuild -->*/
 
-	var $fname = window.btoa(encodeURIComponent(JSON.stringify($node.data.file)));
+	// Sometimes (like in marknotes\plugins\page\html\together\together.js)
+	// we don't have a $node.data object. In that case, read the
+	// marknotes.note.file for getting the name of the note to edit
+	var $fname = marknotes.note.file;
+	if ($node.hasOwnProperty('data')) {
+		$fname = $node.data.file;
+	}
+
+	$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
 
 	ajaxify({
 		task: 'task.edit.form',

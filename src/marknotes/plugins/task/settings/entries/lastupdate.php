@@ -29,6 +29,7 @@ class MN_Lastupdate extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$arr = self::getArray($key);
 		$opt = 'text';
 		$text = self::getTranslation($key.'.'.$opt);
+
 		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
 		return str_replace('%CONTENT%', $content, $box);

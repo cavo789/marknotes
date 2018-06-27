@@ -390,8 +390,22 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 			list($tag_2, $before_2, $file_2, $json_2) = $matches;
 
 			for($j=0; $j<count($file_2); $j++) {
+
+				$file_2[$j] = str_replace('/', DS, $file_2[$j]);
+
+				$folder = dirname($fname);
+
+				// Special case : the included file starts with ""../"
+				// i.e. the file should be found upper in the folder's structure
+				if (substr($file_2[$j], 0, 3) == '..'.DS) {
+					while(substr($file_2[$j], 0, 3) == '..'.DS) {
+						$folder = dirname($folder);
+						$file_2[$j] = substr($file_2[$j], 3);
+					}
+				}
+
 				if(!$aeFiles->exists($file_2[$j])) {
-					$absFile = str_replace('/', DS, dirname($fname).DS.$file_2[$j]);
+					$absFile = str_replace('/', DS, $folder.DS.$file_2[$j]);
 
 					if (realpath($absFile) !== FALSE) {
 						$absFile = realpath($absFile);
@@ -531,6 +545,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				$file[$i] = trim($file[$i]);
 
 				if (substr($file[$i], -4) == '*.md') {
+
 					// Special case : the "filename" ends with
 					// "*.md" so get the list of files
 					$recursive = true;
@@ -538,6 +553,12 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					if ($json!=='') {
 						$tmp = json_decode($json[$i], true);
 						$recursive = boolval($tmp['recursive'])??true;
+					}
+
+					if ($aeFunctions->startswith($file[$i], $folder)) {
+						// In case of $file[$i] is already absolute,
+						// remove the folder name since will be added
+						$file[$i] = substr($file[$i], strlen($folder));
 					}
 
 					list($files, $arrFiles, $arrTags) = self::getListNotes($filename, $folder.$file[$i], $recursive);
