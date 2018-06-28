@@ -17,6 +17,46 @@ function fnPluginEditInit(params) {
 }
 
 /**
+ * Easily disable a stylesheet.css file; for instance:
+ *
+ * 	toggleEditorCSS('editor.min.css')
+ *
+ * This will disable the mentionned css file and, on the next call,
+ * enable it again (the way a toggle button works)
+ *
+ * Needed by the Preview feature to disable a CSS file of tui.editor
+ * and allow CSS files of marknotes to format the note
+ *
+ * @param  {[type]} css_filename_part [description]
+ * @return {[type]}			[description]
+ */
+var toggleStateEditorCSS = function(css_filename_part, state) {
+	var stylesheets = document.styleSheets;
+	var length = stylesheets.length;
+	var i;
+
+	try {
+		for (i=0; i < length; i++){
+			var ss = stylesheets[i];
+
+			// If part of the href URL match the css_filename_part
+			// parameter then update the state (true / false)
+			// Don't use a toggle state so we're sure that if the
+			// function is called twice, the disabled is well what
+			// we wish
+			if ((ss.href!==null) && (ss.href.indexOf(css_filename_part) !== -1)) {
+				ss.disabled = state;
+			}
+		}
+	} catch (e) {
+
+	} finally {
+
+	}
+
+};
+
+/**
  * Fix toolbar at set distance from top and adjust toolbar width
  * @link https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
  */
@@ -270,25 +310,6 @@ function fnPluginEditAfterShowEditorInitialize($data) {
 }
 
 /**
- * Scroll the editor to the top of the page so we can see, a.o.t.,
- * the toolbar
- * @return {[type]} [description]
- */
-function fnPluginEditScrollTop() {
-
-	// Be sure the editor is displaying first lines
-	try {
-		// For Chrome, Firefox, IE and Opera
-		document.documentElement.scrollTop = 0;
-	} catch (e) {
-		document.body.scrollTop = 0; // For Safari
-	} finally {
-	}
-
-	return true;
-}
-
-/**
  * #sourceMarkDown can contains HTML tags
  * <encrypt> but in this way : &lt;encrypt&gt;
  * This because tui.editor remove tags and keep
@@ -306,7 +327,9 @@ function fnPluginEditSetContent(editor) {
 
 	editor.setValue($MD);
 
-	fnPluginEditScrollTop();
+	// Reset the page to the top so the first line of the
+	// note can be displayed
+	$(document).scrollTop(0);
 
 	return true;
 }
@@ -350,7 +373,7 @@ function fnPluginEditUseFontAwesome() {
 	return true;
 }
 
-/**
+/*
  * tui.editor display a "Write" and a "Preview"
  * button at the left of the editor inside
  * a .te-markdown-tab-section div.
@@ -370,9 +393,13 @@ function fnPluginEditOverridePreview(editor) {
 
 	// Add click event
 	$($selector).on('click', function(e) {
+
+		// enable back the CSS of tui.editor for the contents part
+		toggleStateEditorCSS('tui-editor-contents.min.css', false);
+
 		fnPluginEditSetContent(editor);
 		$('.tui-editor-defaultUI-toolbar').show();
-		fnPluginEditToolbarAffix();
+		//fnPluginEditToolbarAffix();
 	});
 
 	// Add a font-awesome icon and remove the text ("Write")
@@ -393,6 +420,8 @@ function fnPluginEditOverridePreview(editor) {
 		options = options || {};
 
 		if ( !options.getHTML ) {
+
+			toggleStateEditorCSS('tui-editor-contents.min.css', true);
 
 			// Keep a copy of the markdown before switching
 			// to the HTML preview

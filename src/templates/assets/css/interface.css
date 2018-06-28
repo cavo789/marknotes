@@ -160,11 +160,13 @@ article {
 		display: none;
 	}
 }
+
 .content-headerFixed > h1 {
 	margin	 : 0;
 	font-size  : 24px;
 	margin-left: 10px;
 }
+
 .logo-lg img,
 .logo-mini img {
 	/*width: 100%;*/
