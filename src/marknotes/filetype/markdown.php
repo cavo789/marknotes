@@ -252,8 +252,19 @@ class Markdown
 			}
 			/*<!-- endbuild -->*/
 
-			// remove empty lines if needed
-			$markdown = trim($aeFiles->getContent($filename));
+			// Don't read the mentionned file when
+			// markdown has been specified. This feature is used
+			// by the editor and the Preview button : show a given
+			// file (fullname is needed for plugins) but don't read
+			// the file on disk but used the given markdown string
+			$markdown = '';
+			if (isset($params['markdown'])) {
+				$markdown = trim($params['markdown']);
+			}
+
+			if ($markdown == '') {
+				$markdown = trim($aeFiles->getContent($filename));
+			}
 
 			// --------------------------------
 			// Call content plugins

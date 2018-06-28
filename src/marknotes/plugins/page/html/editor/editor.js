@@ -1,6 +1,7 @@
 marknotes.arrPluginsFct.push("fnPluginEditInit");
 
-var editor;
+var editor;	// Remember the editor
+var filename; // Remember the filename
 
 // Variables used in order to be able to fixed the toolbar
 // when scrolling then page.
@@ -12,16 +13,6 @@ var cmPaperTop = 0;
  * @returns boolean
  */
 function fnPluginEditInit(params) {
-
-	// Initialize the spellchecker
-	//if (marknotes.editor.spellChecker) {
-	//	if (marknotes.settings.language==='fr') {
-	//		$Spelling.DefaultDictionary='Francais';
-	//	}
-	//
-	//	$Spelling.SpellCheckAsYouType('sourceMarkDown');
-	//}
-
 	return true;
 }
 
@@ -39,6 +30,8 @@ function fnPluginEditToolbarAffix() {
 		$(".te-toolbar-section").removeClass("toolbar-fixed");
 		$(".te-toolbar-section").css({top: ""});
 	}
+
+	return true;
 }
 
 /**
@@ -70,10 +63,11 @@ function fnPluginButtonEdit($params) {
 
 	} else {
 
+		// Get the HTML and javascript for the editor
 		ajaxify({
 			task: 'task.edit.form',
 			param: marknotes.note.md5,
-			callback: 'afterEdit($data, data)',
+			callback: 'fnPluginEditShowEditor($data, data)',
 			useStore: false
 		});
 	}
@@ -82,13 +76,13 @@ function fnPluginButtonEdit($params) {
 }
 
 /**
- * EDIT MODE - Render the textarea in an editor
+ * EDIT MODE - Render the editor
  */
-function afterEdit($ajax_request, $form) {
+function fnPluginEditShowEditor($ajax_request, $form) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - afterEdit');
+		console.log('	  Plugin Page html - Editor - fnPluginEditAfterShowEditor');
 	}
 	/*<!-- endbuild -->*/
 
@@ -102,8 +96,9 @@ function afterEdit($ajax_request, $form) {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
 					console.log('	  Plugin Page html - Editor - '+
-						'afterEdit - Inform connected people about the fact '+
-						'that the connected user is editing a note');
+						'fnPluginEditShowEditor - Inform connected '+
+						'people about the fact that the connected '+
+						'user is editing a note');
 				}
 				/*<!-- endbuild -->*/
 
@@ -135,7 +130,7 @@ function afterEdit($ajax_request, $form) {
 		  will be displayed and not the HTML rendering (it's not
 		  usefull since the note is empty).
 
-		  When the editor is displayed, here in afterEdit, the
+		  When the editor is displayed, here in fnPluginEditShowEditor, the
 		  default task can become task.export.html otherwise,
 		  each time the note is clicked in the treeview, the editor
 		  will be displayed.
@@ -147,7 +142,7 @@ function afterEdit($ajax_request, $form) {
 			$('#TOC').jstree(true).get_node(marknotes.note.id).data.task = 'task.export.html';
 		}
 
-		afterEditInitMDE($ajax_request);
+		fnPluginEditAfterShowEditorInitialize($ajax_request);
 
 		// Initialize events
 		fnPluginEditInit();
@@ -171,11 +166,12 @@ function afterEdit($ajax_request, $form) {
 /**
  * Initialize the editor
  */
-function afterEditInitMDE($data) {
+function fnPluginEditAfterShowEditorInitialize($data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - afterEdit');
+		console.log('	  Plugin Page html - Editor - '+
+			'fnPluginEditAfterShowEditorInitialize');
 		console.log($data);
 	}
 	/*<!-- endbuild -->*/
@@ -186,15 +182,19 @@ function afterEditInitMDE($data) {
 	var editor_language = marknotes.settings.language_ISO;
 	editor_language = editor_language.replace('-','_');
 
+	/**
+	 * Initialize the tui.editor
+	 * @type {tui}
+	 */
 	var editor = new tui.Editor({
 		"el": document.querySelector('#editorMarkDown'),
-		//"initialValue": $('#sourceMarkDown').text(),
 		"initialEditType": "markdown",
 		"previewStyle": "tab",
 		"minHeight": "300px",
 		"height": "auto",
-		// Hide mode switch tab bar
-		//"hideModeSwitch": "true",
+		// Hide mode switch tab bar (displayed in
+		// the right bottom corner)
+		"hideModeSwitch": true,
 		// Use default htmlSanitizer
 		"useDefaultHTMLSanitizer": false,
 		// Otherwise tui.editor make use of Google Analytics for his own stats
@@ -203,7 +203,6 @@ function afterEditInitMDE($data) {
 		"events": {
 			// It would be emitted when editor fully load
 			"load": fnPluginEditLoaded,
-			//"load": fnPluginEditLoaded(),
 			//It would be emitted when content changed
 			//"change": fnPluginEditChange()
 			//It would be emitted when format change by cursor position
@@ -213,65 +212,17 @@ function afterEditInitMDE($data) {
 		}
 	});
 
-	// Call the fnPluginEditAddButtonsToolbar() function
-	// Function created by marknotes/plugins/task/edit/form.php
-	// with the javascript code for each button to add in the
-	// toolbar
-	var fn = window["fnPluginEditAddButtonsToolbar"];
+	/* Call the fnPluginEditAddButtonsToolbar() function
+		Function created by marknotes/plugins/task/edit/form.php
+		with the javascript code for each button to add in the
+		toolbar
+	*/
+	var fn = window.fnPluginEditAddButtonsToolbar;
 	if (typeof fn === "function") {
 		// Custom functions will need a pointer to the
 		// editor and the name of the file under editing
 		fnPluginEditAddButtonsToolbar(editor, filename);
 	}
-	// **************************************************
-
-	/*
-	// Create the Simple Markdown Editor
-	// @link https://github.com/NextStepWebs/simplemde-markdown-editor
-	var simplemde = new SimpleMDE({
-		autoDownloadFontAwesome: false,
-		autofocus: true,
-		autosave: {
-			enabled: false
-		},
-		codeSyntaxHighlighting: false,
-		element: document.getElementById("sourceMarkDown"),
-		indentWithTabs: true,
-		insertTexts: {
-			horizontalRule: ["", "\n\n---\n\n"],
-			image: ["![](https://", ")"],
-			link: ["[", "](https://)"],
-			table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| --- | --- | --- |\n| Text | Text | Text |\n\n"],
-		},
-		// marknotes.editor.spellChecker is read from settings.json,
-		// plugins.options.page.html.editor.spellchecker
-		// Note : SimpleMDE only support english. Other languages seems
-		// to be downloadable from https://github.com/titoBouzout/Dictionaries
-		// but SimpleMDE don't support them at this time.
-		spellChecker: marknotes.editor.spellChecker,
-		status: ["autosave", "lines", "words", "cursor"], // Optional usage
-		styleSelectedText: false,
-		tabSize: 4,
-		toolbar: [
-			//{
-			//	// Spell check
-			//	name: "SpellCheck",
-			//	action: function customFunction(editor) {
-			//		buttonSpellCheck(editor);
-			//	},
-			//	className: "fa fa-check",
-			//	title: $.i18n('button_spellcheck')
-			//},
-			"|",
-			// Remove "side-by-side" since it seems to not work
-			// anymore in SimpleMDE; a JS error is generated
-			"|", "preview",  "|", //"side-by-side", "fullscreen"
-			"bold", "italic", "strikethrough", "|",
-			"heading-1", "heading-2", "heading-3", "|",
-			"code", "quote", "unordered-list", "ordered-list", "clean-block", "|", "link", "image", "table", "horizontal-rule"
-		] // toolbar
-	});
-*/
 	// --------------------------------------------------------------
 	// Check if the TogetherJS plugin is enabled
 	// If yes, by typing something in the editor, broadcast
@@ -285,7 +236,7 @@ function afterEditInitMDE($data) {
 						name: TogetherJS.require("peers").Self.name,
 						note_name: marknotes.note.file,
 						note_id: marknotes.note.id,
-						note_content: simplemde.value()
+						note_content: editor.getMarkdown()
 					});
 				}
 			} catch (err) {
@@ -298,8 +249,8 @@ function afterEditInitMDE($data) {
 	// Fixed the toolbar when scrolling
 	// @https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
 
-	toolbarInitialTop = $(".tui-editor-defaultUI-toolbar").offset().top;
-	toolbarOuterHeight = $(".tui-editor-defaultUI-toolbar").outerHeight();
+	toolbarInitialTop = $(".te-toolbar-section").offset().top;
+	toolbarOuterHeight = $(".te-toolbar-section").outerHeight();
 
 	toolbarFixedTop = 0;
 	if ($(".main-header").length != 0) {
@@ -315,11 +266,51 @@ function afterEditInitMDE($data) {
 	$(document).scroll(fnPluginEditToolbarAffix);
 	$(document).resize(fnPluginEditToolbarSetWidth);
 
-	//
-	// --------------------------------------------------------------
+	return true;
+}
+
+/**
+ * Scroll the editor to the top of the page so we can see, a.o.t.,
+ * the toolbar
+ * @return {[type]} [description]
+ */
+function fnPluginEditScrollTop() {
+
+	// Be sure the editor is displaying first lines
+	try {
+		// For Chrome, Firefox, IE and Opera
+		document.documentElement.scrollTop = 0;
+	} catch (e) {
+		document.body.scrollTop = 0; // For Safari
+	} finally {
+	}
 
 	return true;
 }
+
+/**
+ * #sourceMarkDown can contains HTML tags
+ * <encrypt> but in this way : &lt;encrypt&gt;
+ * This because tui.editor remove tags and keep
+ * only the text.
+ * So, here, restore tags.
+ * @return {[type]} [description]
+ */
+function fnPluginEditSetContent(editor) {
+
+	var $MD = $('#sourceMarkDown').text();
+	$MD = $MD
+		.replace(/&lt;/g,'<')
+		.replace(/&gt;/g,'>')
+		.replace(/&amp;/g,'&');
+
+	editor.setValue($MD);
+
+	fnPluginEditScrollTop();
+
+	return true;
+}
+
 /**
  *
  *  tui.editor is using css sprite as image for
@@ -360,33 +351,123 @@ function fnPluginEditUseFontAwesome() {
 }
 
 /**
+ * tui.editor display a "Write" and a "Preview"
+ * button at the left of the editor inside
+ * a .te-markdown-tab-section div.
+ * The Preview button has a data-index attribute
+ * set to 1 so, here below, capture the click event
+ *  on that button.
+ * @param  {[type]} editor [description]
+ * @return {[type]}		[description]
+ */
+function fnPluginEditOverridePreview(editor) {
+
+	// ------------------------------------
+	// 1. Write
+
+	// Target the "Write" button of tui.editor
+	var $selector = '.te-markdown-tab-section [data-index=0]';
+
+	// Add click event
+	$($selector).on('click', function(e) {
+		fnPluginEditSetContent(editor);
+		$('.tui-editor-defaultUI-toolbar').show();
+		fnPluginEditToolbarAffix();
+	});
+
+	// Add a font-awesome icon and remove the text ("Write")
+	try {
+		$($selector).addClass('fa fa-pencil-square-o').text('');
+	} catch (e) {
+	} finally {
+	}
+
+	// ------------------------------------
+	// 2. Preview
+
+	// Target the "Preview" button of tui.editor
+	$selector = '.te-markdown-tab-section [data-index=1]';
+
+	// Add click event
+	$($selector).on('click', function(e, options) {
+		options = options || {};
+
+		if ( !options.getHTML ) {
+
+			// Keep a copy of the markdown before switching
+			// to the HTML preview
+			$('#sourceMarkDown').text(editor.getMarkdown());
+
+			$('.tui-editor-defaultUI-toolbar').hide();
+			// The getHTML option wasn't set : before
+			// showing the Preview mode, first call the
+			// task.edit.preview task to retrieve the HTML content
+			// (!! rendered by marknotes !!). Once done, the
+			// getHTML option will be set to True then the normal
+			// JS code of tui.editor will be fired
+			var $data = {};
+			$data.task = 'task.edit.preview';
+			$data.param = filename;
+			$data.markdown = window.btoa(encodeURIComponent(JSON.stringify(editor.getMarkdown())));
+
+			$.ajax({
+				async: false,
+				// GET can't be used because note's content can be
+				// too big for URLs
+				type: 'POST',
+				url: marknotes.url,
+				data: $data,
+				datatype: 'json',
+				success: function (data) {
+					// Ok, we've retrieved the HTML generated by
+					// marknotes, set that HTML to the html
+					// By using the timeout "trick", the HTML content
+					// won't be sanitized i.e. our HTML tags won't be
+					// removed (as seen in the example on
+					// https://nhnent.github.io/tui.editor/api/latest/tutorial-example12-writing-extension.html#
+					// -see JS tab-)
+					setTimeout(function(){
+						$('.tui-editor-contents').html(data.html);
+					}, 0);
+					// And retrigger the onclick event with
+					// getHTML=true so the normal behavior of tui.editor
+					// can be fired and the Preview pane will be displayed
+					$(e.currentTarget).trigger('click', {
+						"getHTML": true
+					});
+				}
+			}); // $.ajax()
+
+		} else {
+			// Allow default behavior of tui.editor to happen
+		}
+
+	});
+
+	// Add a font-awesome icon and remove the text ("Preview")
+	//  !!! STRANGE !!!
+	//  When the text is empty (nothing at all), the preview
+	//  button isn't working. But with a space or anything else;
+	//  it's work
+	try {
+		$($selector).addClass('fa fa-eye').text(' ');
+	} catch (e) {
+	} finally {
+	}
+
+	return true;
+}
+
+/**
  * When the editor has been fully loaded
  */
 function fnPluginEditLoaded(editor) {
 
+	fnPluginEditSetContent(editor);
+
 	fnPluginEditUseFontAwesome();
 
-	// #sourceMarkDown can contains HTML tags like
-	// <encrypt> but in this way : &lt;encrypt&gt;
-	// This because tui.editor remove tags and keep
-	// only the text.
-	// So, here, restore tags.
-	var $MD = $('#sourceMarkDown').text();
-	$MD = $MD
-		.replace(/&lt;/g,'<')
-		.replace(/&gt;/g,'>')
-		.replace(/&amp;/g,'&');
-
-	editor.setValue($MD);
-
-	// Be sure the editor is displaying first lines
-	try {
-		// For Chrome, Firefox, IE and Opera
-		document.documentElement.scrollTop = 0;
-	} catch (e) {
-		document.body.scrollTop = 0; // For Safari
-	} finally {
-	}
+	fnPluginEditOverridePreview(editor);
 
 	return true;
 }
@@ -396,14 +477,3 @@ function fnPluginEditLoaded(editor) {
  */
 function fnPluginEditChange() {
 }
-
-/**
- * The suer has clicked on the spell check button
- */
-//function buttonSpellCheck(editor) {
-//	if (marknotes.editor.spellChecker) {
-//		$Spelling.DefaultDictionary = "Francais";
-//		$Spelling.SpellCheckInWindow('sourceMarkDown');
-//	}
-//	return true;
-//}

@@ -71,7 +71,7 @@
 	"button_encrypt": "Add encryption for the selection",
 	"button_exit_edit_mode": "Exit the editing mode",
 	"button_exit_not_save": "Do you wish to quit the editor without saving your work?",
-	"button_preview": "Preview without saving your changes",
+	"editor_preview": "<li>This is a preview of your note, the note wasn't saved.</li><li>The visual of the note can be different from the final version due to the editor's stylesheets (i.e. his CSS rules).</li>",
 	"button_save": "Submit your changes",
 	"button_save_done": "The note has been successfully saved",
 	"button_save_error": "There was an error while saving the note",

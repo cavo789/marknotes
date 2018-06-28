@@ -312,8 +312,8 @@ class CleanHTML
 
 			if (isset($regex['replace_by'])) {
 				$replace = $regex['replace_by'];
-
 				if (preg_match_all($search, $this->html, $matches)) {
+
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
 						$aeDebug->log("Regex - Search for ".$search.
@@ -325,6 +325,7 @@ class CleanHTML
 				foreach($matches as $match) {
 					$this->html = str_replace($match, $replace, $this->html);
 				}
+
 			}
 		} // foreach ($this->_arrRegex as $regex)
 

@@ -67,7 +67,7 @@
 	"button_encrypt": "Encrypte la s\u00e9lection",
 	"button_exit_edit_mode": "Quitte le mode \u00e9dition",
 	"button_exit_not_save": "Souhaitez-vous quitter l'\u00e9diteur sans sauvegarder votre travail ?",
-	"button_preview": "Pr\u00e9visualiser sans sauvegarder vos modifications",
+	"editor_preview": "<li>Pr\u00e9visualisation de votre note, celle-ci n'a donc pas \u00e9t\u00e9 sauv\u00e9e.<\/li><li>Le visuel de la note peut \u00eatre alt\u00e9r\u00e9 \u00e0 cause des feuilles de style de l'\u00e9diteur (ses fichiers CSS); le rendu final peut donc \u00eatre diff\u00e9rent.</li>",
 	"button_save": "Enregistre vos modifications sur le serveur",
 	"button_edit_multiusers": "\u00c9ditez cette note \u00e0 plusieurs",
 	"button_save_done": "Le fichier a \u00e9t\u00e9 enregistr\u00e9 avec succ\u00e8s",

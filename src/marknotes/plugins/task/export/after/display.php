@@ -94,6 +94,7 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					// interface (i.e. using Ajax), we just need to
 					// have the content and that content is inside
 					// the article tag
+
 					if ($aeFunctions->isAjaxRequest()) {
 						// The page has been accessed by an URL
 						// (and not through the interface)

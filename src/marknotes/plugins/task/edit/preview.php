@@ -1,6 +1,8 @@
 <?php
 /**
- * Edit form - Handle the Preview action
+ * Edit form - Handle the Preview action and return the HTML content
+ * of the markdown note but don't modify / save the file on the disk,
+ * just render the HTML and return it
  */
 namespace MarkNotes\Plugins\Task\Edit;
 
@@ -56,6 +58,27 @@ class Preview extends \MarkNotes\Plugins\Task\Plugin
 		}
 		/*<!-- endbuild -->*/
 
+		// Get the filename from the querystring
+		$filename = $aeFunctions->getParam('param', 'string', '', true);
+
+		if ($filename=='') {
+			echo $aeSettings->getText('error_filename_missing', 'Error - a filename is expected and none has been specified');
+			die();
+		}
+
+		$filename = json_decode(urldecode($filename));
+
+		// Be sure to have the .md extension
+		$filename = $aeFiles->RemoveExtension($filename).'.md';
+
+		// Make filename absolute
+		$fullname = $aeFiles->makeFileNameAbsolute($filename);
+
+		if (!$aeFiles->exists($fullname)) {
+			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
+			die();
+		}
+
 		$markdown = json_decode(urldecode($aeFunctions->getParam('markdown', 'string', '', true)));
 
 		// Be sure to have content with LF and not CRLF in order to
@@ -63,19 +86,62 @@ class Preview extends \MarkNotes\Plugins\Task\Plugin
 		// generic regex expression (match \n for new lines)
 		$markdown = str_replace("\r\n", "\n", $markdown);
 
-		$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
-		$html = $aeConvert->getHTML($markdown, array(), true);
+		// Call the convert class so the markdown content will be
+		// translated into HTML; by running all plugins and, also,
+		// retrieving the HTML template for displaying the note.
+		$params = array(
+			'markdown'=>$markdown,
+			'filename'=>$fullname);
 
-/*<!-- build:debug -->*/
-echo ("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__.PHP_EOL.str_replace('<','&lt;',trim($html))."</pre>");
-/*<!-- build:debug -->*/
-$aeDebug = \MarkNotes\Debug::getInstance();
-$aeDebug->here("LIRE LE TEMPLATE ET RETOURNER UN HTML CORRECT", 1);
-/*<!-- endbuild -->*/
-die();
-/*<!-- endbuild -->*/
+		$aeTask = \MarkNotes\Tasks\Display::getInstance();
+		$sHTML = $aeTask->run($params);
 
-		$status = array('status' => 1,'html' => $html);
+		// Now, remove, from the final HTML, a few things
+		// like the navigation bar; which is not needed in the preview
+		// pane in the editor
+		$helpers = $aeSettings->getFolderAppRoot();
+		$helpers .= 'marknotes/plugins/task/fetch/helpers/';
+		$helpers = str_replace('/', DS, $helpers);
+
+		if (is_file($helpers.'clean_html.php')) {
+
+			require_once($helpers.'clean_html.php');
+
+			$aeClean = new \MarkNotes\Plugins\Task\Fetch\Helpers\CleanHTML($sHTML, '');
+
+			$arrRemoveDOM=array(
+				"//footer","//link","//meta","//title"
+			);
+
+			$aeClean->setRemoveDOM($arrRemoveDOM);
+
+			// Make some changes on the content like
+			// converting "container" to "container-fluid"
+			// so the HTML will use the full area and not only
+			// a limited width
+			// Also add a notice
+			$arrRegex = array(
+				[
+					"search" => '~<div class="container">~i',
+					"replace_by" =>
+						'<div class="container-fluid">'.
+						'<div class="alert alert-warning" role="alert"><ol>'.
+						$aeSettings->getText('editor_preview','').
+						'</ol></div>'
+				]
+			);
+
+			$aeClean->setRegex($arrRegex);
+
+			$sHTML = $aeClean->doIt();
+
+			unset($aeClean);
+		}
+
+		$status = array(
+			'status' => 1,
+			'html' => $sHTML
+		);
 
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');

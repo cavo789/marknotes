@@ -138,6 +138,21 @@ class Write extends \MarkNotes\Plugins\Task\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
+		// Never rewrite the file is the task is
+		// task.edit.preview
+		$aeSession = \MarkNotes\Session::getInstance();
+		$task = $aeSession->get('task');
+
+		if (in_array($task, array('task.edit.preview'))) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug->log("DON'T REWRITE THE FILE IN PREVIEW MODE","debug");
+			}
+			/*<!-- endbuild -->*/
+			// Leave the plugin; don't rewrite the file
+			return false;
+		}
+
 		// Retrieve the filename from the session
 		$filename = $aeSession->get('filename', '');
 
