@@ -500,6 +500,9 @@ function fnPluginEditOverridePreview(editor) {
  */
 function fnPluginEditLoaded(editor) {
 
+	// Don't show the standard image button
+	$('.tui-toolbar-icons.tui-image').hide();
+
 	fnPluginEditSetContent(editor);
 
 	fnPluginEditUseFontAwesome();
