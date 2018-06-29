@@ -52,19 +52,8 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
 
-		// Load tui.editor dependencies
-		// https://github.com/nhnent/tui.editor/blob/master/docs/getting-started-with-bower.md
-		$script =
-		"\n<script src=\"".$url."libs/tui-editor/markdown-it.min.js\"></script>\n".
-		"\n<script src=\"".$url."libs/tui-editor/to-mark.min.js\"></script>\n".
-		"\n<script src=\"".$url."libs/tui-editor/tui-code-snippet.min.js\"></script>\n".
-		"\n<script src=\"".$url."libs/tui-editor/codemirror.js\"></script>\n".
-		"\n<script src=\"".$url."libs/tui-editor/highlight.pack.min.js\"></script>\n".
-		"\n<script src=\"".$url."libs/tui-editor/squire-raw.js\"></script>\n".
-		"\n<script src=\"".$url."libs/tui-editor/tui-editor-Editor.js\"></script>\n";
-
 		// Add keymaster.js
-		$script .=
+		$script =
 			"\n<script ". "src=\"".$url."libs/keymaster/keymaster.js\" defer=\"defer\"></script>\n";
 		$script .=
 			"\n<script ". "src=\"".$url."keys.js\" defer=\"defer\"></script>\n";
@@ -89,8 +78,34 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		// Should be a double quote and not a single
 		$sLang = str_replace("'", '"', $sLang);
 
+		// Get options
+		$aeSettings = \MarkNotes\Settings::getInstance();
+		$arr = $aeSettings->getPlugins('plugins.options.task.upload');
+
+		// Get the list of allowed mime types
+		// This types will allow the Upload batch form (Dropzone)
+		// to not upload unallowed files
+		$arrMime = $arr['accept_upload_mime']??array();
+		$mime = '';
+		if (count($arrMime)>0) {
+			foreach ($arrMime as $tmp) {
+				if (strpos($tmp, '/')===false) {
+					$tmp.='/*';
+				}
+				$mime .= $tmp.',';
+			}
+			$mime = rtrim($mime, ',');
+		}
+
+		// Maximum filesize allowed
+		$max_size = $arr['max_size']??5;
+
+		// Output the configuration
 		$script .= "<script>\n".
 			"marknotes.editor={};\n".
+			"marknotes.editor.upload = {};\n".
+			"marknotes.editor.upload.accepted_mime = \"".$mime."\";\n".
+			"marknotes.editor.upload.max_size = ".$max_size.";\n".
 			"marknotes.editor.language_to={".$sLang."};\n".
 			"marknotes.editor.spellChecker=".($bSpellCheck?"true":"false").";\n".
 			"</script>";
@@ -157,14 +172,17 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 			$html = str_replace('%FULLNAME%', utf8_encode($fullname), $html);
 
 			// --------------------------------------------------------
-			// Define where to store images : in a folder called .images
-			// under the folder where the note is stored
+			// Define where to store uploaded files (images or not)
 			$docs = $aeSettings->getFolderDocs(true);
-			$imageFolder = dirname($fullname);
-			$imageFolder = rtrim(str_replace($docs, '', $imageFolder),DS);
-			$imageFolder .= '/.images';
+			$uploadFolder = dirname($fullname);
+			$uploadFolder = rtrim(str_replace($docs, '', $uploadFolder),DS).DS;
 
-			$html = str_replace('%IMAGEFOLDER%', base64_encode($imageFolder), $html);
+			// The subfolder is the name the edited file without
+			// the extension
+			$uploadSubFolder = basename($aeFiles->RemoveExtension($fullname));
+
+			$html = str_replace('%UPLOADFOLDER%', base64_encode($uploadFolder), $html);
+			$html = str_replace('%SUBFOLDER%', base64_encode($uploadSubFolder), $html);
 
 			// --------------------------------------------------------
 			// Get the options for the plugin

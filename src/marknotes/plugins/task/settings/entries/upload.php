@@ -24,6 +24,13 @@ class MN_Upload extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
+		// Max size
+		$key = 'plugins.options.task.upload';
+		$arr = self::getArray($key);
+		$opt = 'max_size';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
+
 		return str_replace('%CONTENT%', $content, $box);
 	}
 }

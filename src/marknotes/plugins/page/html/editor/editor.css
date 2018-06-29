@@ -47,3 +47,21 @@
 .tui-editor-defaultUI-toolbar {
 	padding: 4px 4px;
 }
+
+/**
+ * DropZone area. Make it fixed so when scrolling into a
+ * long note content, the dropzone stay on the screen
+ */
+#divEditUpload {
+	background-color: rgba(194, 139, 137, 0.35);
+	position: fixed;
+	max-width: 250px;
+	right: 0;
+	z-index: 999;
+}
+
+.dropzone .dz-message {
+	font-size: 0.6em;
+	text-align: left;
+	margin: 0;
+}

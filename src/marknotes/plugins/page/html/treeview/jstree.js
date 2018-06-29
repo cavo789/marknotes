@@ -133,7 +133,7 @@ function jstree_init($data) {
 								ajaxify({
 									task: 'task.edit.form',
 									param: marknotes.note.md5,
-									callback: 'afterEdit($data, data)',
+									callback: 'fnPluginEditAfterShowEditorInitialize($data, data)',
 									useStore: false,
 									target: 'CONTENT'
 								});

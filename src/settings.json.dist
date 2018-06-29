@@ -50,7 +50,7 @@
 				"position": 0
 			},
 			"together": {
-				"enabled": 1,
+				"enabled": 0,
 				"position": 1
 			},
 			"exit": {
@@ -1087,19 +1087,6 @@
 						}
 					]
 				},
-				"filemanager" : {
-					"accept_upload_mime": [
-						"image",
-						"text/csv",
-						"text/html",
-						"text/plain",
-						"text/x-markdown",
-						"text/x-c++",
-						"application/json",
-						"application/pdf",
-						"application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-					]
-				},
 				"lastmodified": {
 					"items_count": "25"
 				},
@@ -1170,6 +1157,25 @@
 				"update": {
 					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",
 					"version_url":"https://raw.githubusercontent.com/cavo789/marknotes/master/package.json"
+				},
+				"upload" : {
+					"accept_upload_mime": [
+						"image",
+						"text",
+						"application/x-7z-compressed",
+						"application/json",
+						"application/postscript",
+						"application/vnd.oasis.opendocument.text",
+						"application/vnd.oasis.opendocument.spreadsheet",
+						"application/pdf",
+						"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+						"application/vnd.ms-excel",
+						"application/vnd.ms-powerpoint",
+						"application/msword",
+						"application/xml",
+						"application/zip"
+					],
+					"max_size": 10
 				}
 			}
 		},

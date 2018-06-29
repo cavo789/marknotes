@@ -8,7 +8,7 @@
 
 			<!-- Upload form -->
 			<div class="box-body pad" style="display:none;" id="divEditUpload">
-				<div class="editor-wrapper">'
+				<div class="editor-wrapper">
 					<div class="pull-right box-tools" style="margin:5px;">
 						<button type="button" class="btn btn-default btn-sm btn-exit-upload-droparea">
 							<i class="fa fa-times"></i>
@@ -16,7 +16,8 @@
 					</div>
 					<form action="" class="dropzone" id="upload_droparea">
 						<div>
-							<input type="hidden" name="folder" value="%IMAGEFOLDER%">
+							<input type="hidden" name="folder" value="%UPLOADFOLDER%">
+							<input type="hidden" name="subfolder" value="%SUBFOLDER%">
 						</div>
 					</form>
 				</div>

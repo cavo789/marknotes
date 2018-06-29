@@ -11,7 +11,7 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 class Initialize
 {
 
-	protected static $json_options = 'plugins.options.task.filemanager';
+	protected static $json_options = 'plugins.options.task.upload';
 	/**
 	* Return the current URL
 	*

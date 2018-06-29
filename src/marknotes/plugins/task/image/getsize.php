@@ -28,14 +28,8 @@ class GetSize
 
 		$docs = $aeSettings->getFolderDocs(true);
 
-		// Note is f.i. /docs/folder/note_name.
-		$note = trim($aeFunctions->getParam('note', 'string', '', false));
-		// Retrieve the folder name (i.. /docs/folder)
-		$folder = rtrim(dirname($note), DS);
-
 		$file = trim($aeFunctions->getParam('file', 'string', '', false));
-
-		$file = str_replace('/', DS, $docs.$folder.'/.images/'.$file);
+		$file = $aeFiles->makeFileNameAbsolute($file);
 
 		$arrReturn = array();
 

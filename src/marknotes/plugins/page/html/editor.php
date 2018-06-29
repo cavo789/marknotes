@@ -24,14 +24,35 @@ class Editor extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url = $rootURL.'/marknotes/plugins/page/html/editor/';
 
-		// load only editor.js.
+		// load all (and there are a lot) .js files to make the
+		// editor working.
+		//
 		// The marknotes\plugins\task\edit\form.php script will load
-		// all other .js files since there are numberous and these .js
-		// files are only neede when the editor is displayed.
-		// If .js are referenced in this script, files will be always loaded
-		// which will be counter-effective
+		// EXTRA .js files not required by tui but well during the
+		// editing time.
+		// We need to load the files here to make it possible to, f.i.,
+		// right click on the treeview and choose "edit". If one .js
+		// was missing, an error will be raised and the action won't
+		// continue.
+
 		$script = "<script src=\"".$url."editor.js\" ".
-			"defer=\"defer\"></script>";
+			"defer=\"defer\"></script>\n";
+
+		// tui's dependencies
+		$script .= 	"\n<script src=\"".$url.
+			"libs/tui-editor/markdown-it.min.js\"></script>\n";
+		$script .= "<script src=\"".$url.
+			"libs/tui-editor/to-mark.min.js\"></script>\n";
+		$script .= "<script src=\"".$url.
+			"libs/tui-editor/tui-code-snippet.min.js\"></script>\n";
+		$script .= "<script src=\"".$url.
+			"libs/tui-editor/codemirror.js\"></script>\n";
+			$script .= "<script src=\"".$url.
+			"libs/tui-editor/highlight.pack.min.js\"></script>\n";
+		$script .= 	"\n<script src=\"".$url.
+			"libs/tui-editor/squire-raw.js\"></script>\n";
+		$script .= "<script src=\"".$url.
+			"libs/tui-editor/tui-editor-Editor.js\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
 

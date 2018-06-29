@@ -61,14 +61,22 @@ var toggleStateEditorCSS = function(css_filename_part, state) {
  * @link https://codepen.io/bleutzinn/pen/KmNWmp?editors=0010
  */
 function fnPluginEditToolbarAffix() {
-
 	if ($(document).scrollTop() > toolbarAffixAt) {
-		$(".te-toolbar-section").addClass("toolbar-fixed");
-		$(".te-toolbar-section").css({"top": toolbarFixedTop + "px"});
+		$(".te-toolbar-section")
+			.addClass("toolbar-fixed")
+			.css({"top": toolbarFixedTop + "px"});
+
+		$("#divEditUpload")
+			.css({"top": toolbarFixedTop + "px"});
+
 		fnPluginEditToolbarSetWidth();
 	} else {
-		$(".te-toolbar-section").removeClass("toolbar-fixed");
-		$(".te-toolbar-section").css({top: ""});
+		$(".te-toolbar-section")
+			.removeClass("toolbar-fixed")
+			.css({top: ""});
+
+		$("#divEditUpload")
+			.css({top: ""});
 	}
 
 	return true;

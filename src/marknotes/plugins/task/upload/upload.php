@@ -15,8 +15,6 @@ class Drop
 	 */
 	public static function run(&$params = null)
 	{
-		$form = '<h1>'.__FILE__.' - '.__LINE__.'</h1>';
-
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -40,11 +38,14 @@ class Drop
 			$form.= '<form class="dropzone" id="upload_droparea">'.
 				'<input type="hidden" name="folder" value="'.$base64.'">'.
 				'</form>';
-
-			header('Content-Transfer-Encoding: ascii');
-			header('Content-Type: text/html; charset=utf-8');
-			echo $form;
+		} else {
+			$form = '<h2>Error, no folder specified.</h2>'.
+				'<p>The call to this task should mention the folder name '.
+				'on the query string, in the param variable.</p>';
 		}
+		header('Content-Transfer-Encoding: ascii');
+		header('Content-Type: text/html; charset=utf-8');
+		echo $form;
 
 		return true;
 	}
