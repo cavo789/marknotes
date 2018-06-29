@@ -302,6 +302,12 @@ function ajaxify($params) {
 	$target = ajaxify_get_target($params, $bTaskReload);
 	$callback = ajaxify_get_callback($params, $bTaskReload);
 
+	// Is there a callback if an error is encountered ?
+	$error_callback = null;
+	if (typeof $params.error_callback !== 'undefined') {
+		$error_callback = $params.error_callback;
+	}
+
 	$select_node = ajaxify_get_select_node($params, false);
 
 	$reload=false;
@@ -464,7 +470,21 @@ function ajaxify($params) {
 
 			}, // success
 			error: function (Request, textStatus, errorThrown) {
-				ajaxify_show_error($target, Request, textStatus, errorThrown);
+
+				if ($error_callback) {
+					/* jshint ignore:start */
+					if ($callback !== '') {
+						/*<!-- build:debug -->*/
+						if (marknotes.settings.debug) {
+							console.log('Run the error callback function : ' + $error_callback);
+						}
+						/*<!-- endbuild -->*/
+						eval($error_callback);
+					} // if ($callback !== '')
+					/* jshint ignore:end */
+				} else {
+					ajaxify_show_error($target, Request, textStatus, errorThrown);
+				}
 			} // error
 		}); // $.ajax()
 	} else { // if ($bAjax)
@@ -495,13 +515,13 @@ function ajaxify($params) {
  * Display an error message to inform the user about the problem
  */
 function ajaxify_show_error(Target, Request, textStatus, errorThrown) {
-	var $msg = '<div class="bg-danger text-danger img-rounded" style="margin-top:25px;padding:10px;">';
-	$msg = $msg + '<strong>An error has occured :</strong><br/>';
-	$msg = $msg + 'Internal status: ' + textStatus + '<br/>';
-	$msg = $msg + 'HTTP Status: ' + Request.status + ' (' + Request.statusText + ')<br/>';
-	$msg = $msg + 'XHR ReadyState: ' + Request.readyState + '<br/>';
-	$msg = $msg + 'Raw server response:<br/>' + Request.responseText + '<br/>';
-	$msg = $msg + '</div>';
+
+	var $msg = '<div class="bg-danger text-danger img-rounded" '+
+		'style="margin-top:25px;padding:10px;">' +
+		$.i18n('ajax_error', textStatus, Request.status,
+		Request.statusText, Request.readyState, Request.responseText) +
+		'</div><hr/>';
+
 	$(Target).html($msg);
 	return;
 }

@@ -50,13 +50,39 @@ $(document).ready(function () {
 		ajaxify({
 			filename: 'listfiles.json', // same of task: 'task.listfiles.treeview'
 			dataType: 'json',
-			callback: 'initFiles(data)'
+			callback: 'initFiles(data)',
+			error_callback: 'initFiles_ERROR($target, Request, textStatus, errorThrown)',
 		});
 
 	} // if (marknotes.autoload === 1)
 
 });
 
+/**
+ * The listfiles.json wasn't accessible by URL and has returned
+ * a 404 error. This can't be the case except in only one scenario:
+ * the Apache Rewrite mode wasn't set on the server.
+ *
+ * Because this is a prerequisite,
+ *
+ * @param  {[type]} $target	 [description]
+ * @param  {[type]} Request	 [description]
+ * @param  {[type]} textStatus  [description]
+ * @param  {[type]} errorThrown [description]
+ * @return {[type]}			 [description]
+ */
+function initFiles_ERROR($target, Request, textStatus, errorThrown) {
+
+	var $msg = $.i18n('check_SEF_Mode') +
+		'<div class="bg-danger text-danger img-rounded" '+
+		'style="margin-top:25px;padding:10px;">' +
+		$.i18n('ajax_error', textStatus, Request.status,
+		Request.statusText, Request.readyState, Request.responseText) +
+		'</div><hr/>';
+
+	$('#CONTENT').html($msg);
+	return true;
+}
 /**
  * The ajax request has returned the list of files.  Build the table and
  * initialize the #TOC DOM object

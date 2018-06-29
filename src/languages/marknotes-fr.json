@@ -6,6 +6,8 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "fr"
 	},
+	"ajax_error": "<strong>Une erreur est survenue :<\/strong><br\/>Statut : $1<br\/>Code HTTP retourn\u00e9 : $2 ($3)<br\/>XHR ReadyState : $4<br\/>R\u00e9ponse du serveur :<br\/>$5",
+	"check_SEF_Mode":"L'erreur ci-dessous semble indiquer que le mode rewrite (`mod_rewrite`) d'Apache ne pas actif; veuillez l'activer pour garantir le bon fonctionnement de marknotes. Si votre serveur est d\u00e9j\u00e0 configur\u00e9 correctement, il faut ajouter une ligne `RewriteEngine On` dans votre fichier `.htaccess` et, \u00e9ventuellement, une seconde ligne telle que `RewriteBase \/`. Veuillez lire les commentaires pr\u00e9sents dans le fichier htaccess.txt.",
 	"together_editor_started":"$1<span style=\"white-space:normal;\"<strong>$2<\/strong> commence \u00e0 \u00e9diter la note $3</span>. (<strong><a href='javascript:fnPluginTogetherShow(\"$4\", \"$5\");'>Afficher la note en cours d'\u00e9dition<\/a>",
 	"settings_plugins_page_html_together_title":"TogetherJS",
 	"settings_plugins_page_html_together_enabled":"Activer le plugin TogetherJS qui permet de collaborer \u00e0 plusieurs sur un m\u00eame document (il faudra rafra\u00eechir l'interface apr\u00e8s modification de ce param\u00e8tre)",

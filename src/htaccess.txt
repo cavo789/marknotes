@@ -4,20 +4,23 @@ ErrorDocument 403 '<html xmlns="http://www.w3.org/1999/xhtml"><head><style type=
 
 DirectoryIndex index.php
 
+# Marknotes requires that mod_rewrite is enable
+# If it isn't the case on your server please configure it and load
+# mod_rewrite
 <IfModule mod_rewrite.c>
 
-	# Own router : if the URL points to a .html file and if that
-	# file doesn't exists, redirect to router.php
-	# For instance : http://localhost:8080/notes/docs/Development/atom/plugins.html
-	# will be valid and will display the html rendering of
-	# the plugins.md file
+	RewriteEngine On
 
-	# Uncomment the two following lines if the URL rewriting isn't working
-	# correctly (depending on your web hoster, these instructions can be needed)
-	#Options +FollowSymlinks
+	# If the URL rewriting isn't working fine, try to uncomment this
+	# line (i.e. remove the "#" before the RewriteBase word)
 	#RewriteBase /
 
-	RewriteEngine On
+	# If still not working fine, try also to uncomment this line.
+	# And, if still not working, you'll probably check with your hoster
+	# how to enable mod_rewrite on your server.
+	# NOTE : uncommenting the Options line below can generate a
+	# 500 - Server Error so, if you see that error, comment the line back.
+	#Options +FollowSymlinks
 
 	# Special URLs (robots.txt, tags.json, sitemap.xml, ...)
 
@@ -56,6 +59,7 @@ DirectoryIndex index.php
 	RewriteCond %{REQUEST_URI} .*\.epub$
 	RewriteRule (.*) router.php?task=task.export.epub&file=$1 [L]
 	RewriteCond %{REQUEST_URI} .*\.html?$
+
 	# Exception for ELF
 	RewriteCond %{REQUEST_URI} !.*/elf/libs/elf/*
 	RewriteRule (.*) router.php?task=task.export.html&file=$1 [L]

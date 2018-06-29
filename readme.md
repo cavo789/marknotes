@@ -10,7 +10,7 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document 
 
 >If you like marknotes, please give him a :star: and fork it.
 
-**marknotes requires PHP 7.1 or greater**
+**marknotes requires PHP 7.1 or greater and mod_rewrite enabled**
 
 *(There is a [bug in PHP 7.0](https://github.com/php/php-src/blob/PHP-7.1.0beta2/UPGRADING#L321) when working with filenames having accentuated characters (UTF8) so if you wish to use such name, please be sure to use at least PHP 7.1)*
 
@@ -26,36 +26,44 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document 
 8. **[Debugging](#8-debugging)**
 9. **[:closed_lock_with_key: Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
 10. **[:man: Author](#10-man-author)**
-11. **[Want to help](#11-want-to-help)
-12. **[Licence](#12-licence)**
+11. **[Want to help](#11-want-to-help)**
+12. **[Support](#12-support)**
+13. **[License](#13-license)**
 
 ## 1. Description
 
 ### 1.1 What is marknotes ?
 
-Marknotes is a PHP application that you can **self-hosted** and who will help you to manage your "notes" : documentation, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
+Marknotes is a PHP application that you can **self-hosted** and who will help you to manage your "notes": documentation, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
 
-Notes are written in pure [Markdown](https://daringfireball.net/projects/markdown/syntax) : this is a plain text language with only a few codes (like `#` or `*`) for text formatting. Yes !!!  You'll write your notes with a very stupid text editor (`Notepad` on Windows will do the work) (note : marknotes provide an online editor) and save them as a flat file on your server.
+Notes are written in pure [Markdown](https://daringfireball.net/projects/markdown/syntax): this is a plain text language with only a few codes (like `#` or `*`) for text formatting. Yes!!!  You'll write your notes with a very stupid text editor (`Notepad` on Windows will do the work) (note: marknotes provide an online editor) and save them as a flat file on your server.
 
-Marknotes will display your notes in a folder approach and files will be displayed in a nice HTML5 output with a lot of extra features : export the note as a .docx, .epub, .odt, .pdf, .txt, ... file or display it like a slideshow (support of [Reveal.Js](https://github.com/hakimel/reveal.js) and [Remark](http://gnab.github.com/remark) included)
+Marknotes will display your notes in a folder approach and files will be displayed in a nice HTML5 output with a lot of extra features: export the note as a .docx, .epub, .odt, .pdf, .txt, ... file or display it like a slideshow (support of [Reveal.Js](https://github.com/hakimel/reveal.js) and [Remark](http://gnab.github.com/remark) included)
 
 Marknotes is fully Open Source and is using just *stupid* text files (markdown ones). It's really easy to create files, edit them in any text editor, ... and due to the file format, the integration with any tools and existing process is easy.
 
-### 1.2 Notes are yours !
+### 1.2 Prerequisites
 
-Want to move to another application and leave marknotes ? No problem ! Notes are flat files and written in a text format and use markdown which is a standard.
+During the development of marknotes, two choices have been made:
+
+* Use PHP 7.1 or greater to get benefits of all advantages of the latest version of PHP and because other versions were, already, obsolete (if you're interested, see [PHP end of life page](http://php.net/eol.php)).
+* Consider that mod_rewrite will be enabled; this is needed to have nice URLs like `yoursite/docs/folder/slideshow.reveal` or `yoursite/index.php?task=...&param=...&second=....` i.e. a URL with a very long query string and not really friendly for search engines.
+
+### 1.3 Notes are yours!
+
+Want to move to another application and leave marknotes? No problem! Notes are flat files and written in a text format and use markdown which is a standard.
 
 Even if I'd be really sad to see you leave, you'll certainly not have any problem to do it. Just move your .md files and that's all.
 
-And remember : notes are yours ! Unlike Evernote®, Google®, Microsoft® of other companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on the internet at all.
+And remember: notes are yours! Unlike Evernote®, Google®, Microsoft® or other companies, notes will be saved on your website only (can be local). If you don't want to put them on the internet, they won't be on the internet at all.
 
-### 1.3 Background
+### 1.4 Background
 
 During years, I've used Evernotes® to manage my notes (can be documentation, user guides, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
 
 In 2016, Evernote has introduced more restriction with the Free version and by the end of the year, has stated that some employees will have access to **our** notes for administration tasks.
 
-Then I've said, "No !" : no, even if the tool was easy and free, no, I didn't want to a human can get access to my knowledge base, I wish to be able to better manage who / when / why and, on top of this, some features were missing for me : easily display notes as an HTML page, as a slideshow, convert them in f.i. a Word document, and so on.
+Then I've said, "No!": no, even if the tool was easy and free, no, I didn't want to a human can get access to my knowledge base, I wish to be able to better manage who / when / why and, on top of this, some features were missing for me: easily display notes as an HTML page, as a slideshow, convert them in f.i. a Word document, and so on.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -97,9 +105,9 @@ You'll find the source files in the `/src` folder. Take a copy of all these file
 
 ## 4. :book: Documentation
 
-Marknotes's documentation is available on the marknotes demo site : [https://www.marknotes.fr](https://www.marknotes.fr). See the marknotes entry.
+Marknotes's documentation is available on the marknotes demo site: [https://www.marknotes.fr](https://www.marknotes.fr). See the marknotes entry.
 
-You can also find the previous documentation (for the version 1 of the tool) on the wiki here : [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki)
+You can also find the previous documentation (for the version 1 of the tool) on the wiki here: [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki)
 
 ---
 
@@ -107,7 +115,7 @@ You can also find the previous documentation (for the version 1 of the tool) on 
 
 ## 5. Features
 
-Thanks to his dozens of plugins, there are many functionalities like :
+Thanks to his dozens of plugins, there are many functionalities like:
 
 * Works perfectly in offline mode (since all notes are files stored on your disk)
 * Login screen to get access to feature like add / delete / rename notes or folder
@@ -115,8 +123,8 @@ Thanks to his dozens of plugins, there are many functionalities like :
 * Cache mode enable (on the server and on the local browser)
 * Note's encryption to hide sensitive data's and show it only to logged in people
 * ACLs to restrict some notes to a few users
-* Automatic rendering of tables : table of content, todos list, decisions taken list, ...
-* Variables replacement : create your own variable like f.i. %VERSION%, %AUTHOR%, %CUSTOMER_NAME%, ...
+* Automatic rendering of tables: table of content, todos list, decisions taken list, ...
+* Variables replacement: create your own variable like f.i. %VERSION%, %AUTHOR%, %CUSTOMER_NAME%, ...
 * File inclusions so you can write very big documentation in smaller files and publish the master document without effort
 * Image gallery plugin
 * Exportation to .docx, .epub, .odt, .pdf, .txt, ...
@@ -134,19 +142,19 @@ And, if a feature is missing, consider writing your own plugin, it's really easy
 
 ## 6. :hammer: Configuration
 
-Marknotes will fit yours needs, without any exceptions : you can change everything by overwriting the [settings.json](https://github.com/cavo789/marknotes/blob/master/src/settings.json.dist) file.
+Marknotes will fit yours needs, without any exceptions: you can change everything by overwriting the [settings.json](https://github.com/cavo789/marknotes/blob/master/src/settings.json.dist) file.
 
-Every settings are indeed stored as a value-key entry in the [settings.json](https://github.com/cavo789/marknotes/blob/master/src/settings.json.dist) file.
+Every setting are indeed stored as a value-key entry in the [settings.json](https://github.com/cavo789/marknotes/blob/master/src/settings.json.dist) file.
 
-The master file is called `settings.json.dist` and is stored in the root folder of marknotes. That file is part of the repository so ... don't change it (because on the next update of marknotes, settings.json.dist will be replaced by a fresh copy).
+The master file is called `settings.json.dist` and is stored in the root folder of marknotes. That file is part of the repository so **don't change it** (because on the next update of marknotes, settings.json.dist will be replaced by a fresh copy).
 
-**Don't update it but copy it !** Duplicate the `settings.json.dist` file and name the new one `settings.json`.
+Marknotes has a `Settings` screen built-in: through the interface you'll be able to update more than 250 settings easily. Use the interface, don't modify the file manually.
 
-Marknotes will always first read `settings.json.dist` and, only then, if a file called `settings.json` exists, will load that second file. In other words : marknotes will read his default settings and will load yours then. So, yours will overwrite the default one.
+Marknotes will always first read `settings.json.dist` and, only then, if a file called `settings.json` exists, will load that second file. In other words: marknotes will read his default settings and will load yours then. So, yours will overwrite the default one.
 
 In fact, the `settings.json` shouldn't be a full copy of `settings.json.dist` but, it's the best approach, should only contain the updated value.
 
-For instance, if you wish to change the value of the `site_name` property, your settings.json should (can) only contains this :
+For instance, if you wish to change the value of the `site_name` property, your settings.json should (can) only contains this:
 
 ```json
 {
@@ -154,9 +162,9 @@ For instance, if you wish to change the value of the `site_name` property, your 
 }
 ```
 
-And that's all since, like explained here above, marknotes will first read `settings.json.dist` (he'll get all default settings) and you only need to say : please overwrite the `site_name` setting and take mine.
+And that's all since, like explained here above, marknotes will first read `settings.json.dist` (he'll get all default settings) and you only need to say: please overwrite the `site_name` setting and take mine.
 
-The example below show how you can modify more than one setting : here, you'll set your regional settings to fr-FR and you'll also mention that the folder contains notes isn't the default `docs` folder but, on your site, is called `my_notes`.
+The example below show how you can modify more than one setting: here, you'll set your regional settings to fr-FR and you'll also mention that the folder contains notes isn't the default `docs` folder but, on your site, is called `my_notes`.
 
 You can use this approach and overwrite every single setting of marknotes.
 
@@ -177,19 +185,19 @@ You can use this approach and overwrite every single setting of marknotes.
 
 The file settings.json can be placed in your root folder (then will apply to every notes) but you can also place this file in a given folder.
 
-Let's imagine this structure :
+Let's imagine this structure:
 
 ```text
  /docs
   /GitHub
-	/repo_1
-	/repo_2
+ /repo_1
+ /repo_2
   /marknotes
-	/en
-	/ ... (a lot of subfolders)
-	/fr
-	/ ... (a lot of subfolders)
-	/nl
+ /en
+ / ... (a lot of subfolders)
+ /fr
+ / ... (a lot of subfolders)
+ /nl
 ```
 
 You've a lot of subfolders in `/docs` and, for marknotes, you've three subfolders, one by language (English, French or Dutch).
@@ -218,7 +226,7 @@ while, in `/docs/marknotes/fr`, you'll have
 }
 ```
 
-The `settings.json` file **can be placed in any folder of your site** and you can have more than one `settings.json` file, marknotes will always respect the `hierarchy` (just like Apache does with a .htaccess file f.i.) :
+The `settings.json` file **can be placed in any folder of your site** and you can have more than one `settings.json` file, marknotes will always respect the `hierarchy` (just like Apache does with a .htaccess file f.i.):
 
 1. `/settings.json.dist`
 2. `/settings.json`
@@ -226,7 +234,7 @@ The `settings.json` file **can be placed in any folder of your site** and you ca
 4. `/docs/marknotes/settings.json`
 5. `/docs/marknotes/fr/settings.json`
 
-And one more step : you can name the file `my_note.json` and store it in the same folder of  `my_note.md` so the file will only apply for that specific note and not every note of the folder.
+And one more step: you can name the file `my_note.json` and store it in the same folder of  `my_note.md` so the file will only apply for that specific note and not every note of the folder.
 
 ---
 
@@ -240,11 +248,11 @@ There are dozens of plugins for marknotes, you can choose to enable them or not 
 {
  "plugins": {
   "content": {
-	"html": {
-	"font-awesome": {
-	 "enabled": 0
-	}
-	}
+ "html": {
+ "font-awesome": {
+  "enabled": 0
+ }
+ }
   }
  }
 }
@@ -260,13 +268,13 @@ Each plugin can be enabled / disabled and configured directly in the `settings.j
 
 ## 7. Tips
 
-### GitHub - Synchronisation
+### GitHub - Synchronization
 
-Thanks to GitHub, you can synchronise your documentation folder (by default, folder called `/docs`) with your online site.
+Thanks to GitHub, you can synchronize your documentation folder (by default, folder called `/docs`) with your online site.
 
 The idea is to manage your notes on your localhost, the /docs folder can be a specific repository saved on GitHub. By updating yours notes, simply push changes to GitHub.
 
-There, on github.com, in the `settings` of your repository, add a webhook. This mechanism will can a specific URL on every changes of the repository.
+There, on github.com, in the `settings` of your repository, add a web hook. This mechanism will can a specific URL on every changes of the repository.
 
 On my own, I use the `deploy.php` script (you'll find the script [here](https://github.com/cavo789/git_scripts/tree/master/deploy)) of [Marko Marković](https://github.com/markomarkovic). This script will download the repo and install the latest version.
 
@@ -290,7 +298,7 @@ If you wish to debug marknotes, please [read the documentation](readme_debugging
 
 >Everything is yours, for now and always
 
-Please read [Privacy and protection : everything is yours, for now and always](readme_privacy.md) to obtain a lot of information concerning privacy and how to secure access to your notes.
+Please read [Privacy and protection: everything is yours, for now and always](readme_privacy.md) to obtain a lot of information concerning privacy and how to secure access to your notes.
 
 ## 10. :man: Author
 
@@ -302,21 +310,25 @@ MarkNotes is maintained by one person in spare time.
 
 MarkNotes needs your help!
 
-* Use it !
+* Use it!
 * Add a star in the project page.
 * Tell others about MarkNotes.
 * Suggest improvements (templating, CSS, PHP, images, documentation, ...)
 * Test and report [issues](issues), [help to fix them](issues) or [implement new features](pulls)
 
-Note : before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
+Note: before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
 
-Thanks in advance !
+Thanks in advance!
 
-## 12. Licence
+## 12. Support
 
-![Licence MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
+The support is done through [GitHub Issues](https://github.com/cavo789/marknotes/issues); however depending on a single person and his free time, taken on leisure time, the support (as well as the development of new features) will depend on his ability to be available.
 
-You are free to copy, modify, and distribute Marknotes with attribution under the terms of the MIT licence. See the [LICENCE](LICENCE) file for details.
+## 13. License
+
+![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
+
+You are free to copy, modify, and distribute Marknotes with attribution under the terms of the MIT licence. See the [LICENSE](LICENCE) file for details.
 
 **[⬆ back to top](#table-of-contents)**
 

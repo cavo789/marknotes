@@ -187,6 +187,14 @@
 
 		<!--%ADDITIONNAL_JS%-->
 
+		<!-- Translate the interface -->
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/i18n.js" defer="defer"></script>
+		<script>
+		$(document).ready(function () {
+			fnPluginHTMLi18n();
+		});
+		</script>
+
 		<!--%MARKDOWN_GLOBAL_VARIABLES%-->
 		<script src="%ROOT%assets/js/ajaxify.js" defer="defer"></script>
 

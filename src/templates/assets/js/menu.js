@@ -1,9 +1,11 @@
 $(document).ready(function () {
+
 	// Get buttons for the toolbar
 	ajaxify({
 		filename: 'buttons.json', // same of task: 'task.buttons.get'
 		dataType: 'json',
 		callback: 'fnInterfaceInitButtons(data)',
+		error_callback: 'initFiles_ERROR($target, Request, textStatus, errorThrown)',
 		useStore: false
 	});
 
