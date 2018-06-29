@@ -6,7 +6,7 @@ By **Christophe Avonture**
 
 Marknotes is a tool that will exploit your documents through a powerful web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
 
-By adopting Marknotes, you'll never ask yourself, "Where did I save my document ?" or "I had read an interesting piece of information but I don't know where it is any more". The answer will be, of course, "The information is saved in Marknotes and will really fast retrieve."
+By adopting Marknotes, you'll never ask yourself, "Where did I save my document?" or "I had read an interesting piece of information but I don't know where it is any more". The answer will be, of course, "The information is saved in Marknotes and will really fast retrieve."
 
 >If you like marknotes, please give him a :star: and fork it.
 
@@ -32,7 +32,7 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document 
 
 ## 1. Description
 
-### 1.1 What is marknotes ?
+### 1.1 What is marknotes?
 
 Marknotes is a PHP application that you can **self-hosted** and who will help you to manage your "notes": documentation, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
 
@@ -79,7 +79,7 @@ Marknotes is available in French and in English. The configuration on the demo s
 
 **[⬆ back to top](#table-of-contents)**
 
-## 3. How to install or update ?
+## 3. How to install or update?
 
 Please take in consideration that marknotes needs PHP 7. You'll perhaps need to enable PHP 7 on your server; this can be done through a specific line in the `.htaccess` file or from your control panel (see your hoster if you need more information).
 
