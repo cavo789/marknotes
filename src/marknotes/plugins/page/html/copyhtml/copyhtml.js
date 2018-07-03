@@ -21,9 +21,21 @@ function copyHTMLSource(text) {
 	// The 'text' variable contains the HTML string.
 	// Make a few cleaning
 
+	// Quick replace
+	regex = /[“”]/gm;
+	text = text.replace(regex, '"');
+	regex = /[’]/gm;
+	text = text.replace(regex, "'");
+
 	// Remove empty style property
 	regex = /style=" *"/gm;
 	text = text.replace(regex, '');
+
+	// Remove the "par_" id added by the anchor plugin
+	// Replace thus "<p id="par_25">any text</p>" by
+	// <p>any text</p>  (only work on the opening tag)
+	regex = /<p id="par_\d{1,}">/gm;
+	text = text.replace(regex, '<p>');
 
 	// Remove empty paragraphs
 	regex = /<p><\/p>/gm;
@@ -41,6 +53,10 @@ function copyHTMLSource(text) {
 
 	// Remove the noopener noreferrer attributes for anchor
 	regex = /(<a .*)(rel="noopener noreferrer")([^>]*>)/gm;
+	text = text.replace(regex, "$1$3");
+
+	// Remove the noopener attributes for anchor
+	regex = /(<a .*)(rel="noopener")([^>]*>)/gm;
 	text = text.replace(regex, "$1$3");
 
 	// Remove unneeded classes
