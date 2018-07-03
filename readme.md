@@ -4,11 +4,13 @@
 
 By **Christophe Avonture**
 
-Marknotes is a tool that will exploit your documents through a powerful web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
+>If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**
+
+Marknotes is a tool that will display your documents through a powerful web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
+
+Thanks to its plugin oriented architecture, Marknotes is rich in dozens of features and it is quite easy to add more. Even the buttons in the editor toolbar are plugins! Tasks (like file upload, file format conversion,. ..) are also plugins! The code is highly scalable but also easier to maintain since everything is perfectly divided into small portions of code.
 
 By adopting Marknotes, you'll never ask yourself, "Where did I save my document?" or "I had read an interesting piece of information but I don't know where it is any more". The answer will be, of course, "The information is saved in Marknotes and will really fast retrieve."
-
->If you like marknotes, please give him a :star: and fork it.
 
 **marknotes requires PHP 7.1 or greater and mod_rewrite enabled**
 
@@ -16,21 +18,21 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document?
 
 ## Table of Contents
 
-1. **[Description](#1-description)**
-2. **[:game_die: Demo](#2-game_die-demo-site)**
+1. **[Introduction](#1-introduction)**
+2. **[Demo](#2-game_die-demo-site)**
 3. **[How to install](#3-how-to-install-or-update-)**
-4. **[:book: Documentation](#4-book-documentation)**
+4. **[Documentation](#4-book-documentation)**
 5. **[Features](#5-features)**
-6. **[:hammer: Configuration](#6-hammer-configuration)**
+6. **[Configuration](#6-hammer-configuration)**
 7. **[Tips](#7-tips)**
 8. **[Debugging](#8-debugging)**
-9. **[:closed_lock_with_key: Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
-10. **[:man: Author](#10-man-author)**
-11. **[Want to help](#11-want-to-help)**
+9. **[Privacy and protection](#9-closed_lock_with_key-privacy-and-protection)**
+10. **[Author](#10-man-author)**
+11. **[Ready to help?](#11-ready-to-help)**
 12. **[Support](#12-support)**
 13. **[License](#13-license)**
 
-## 1. Description
+## 1. Introduction
 
 ### 1.1 What is marknotes?
 
@@ -42,12 +44,14 @@ Marknotes will display your notes in a folder approach and files will be display
 
 Marknotes is fully Open Source and is using just *stupid* text files (markdown ones). It's really easy to create files, edit them in any text editor, ... and due to the file format, the integration with any tools and existing process is easy.
 
+**Using markdown requires a very light learning to e.g. know how to put in bold but it goes very fast. The gain is then enormous: you will type your texts without using the mouse any more, with the kilometric keystroke. Really fast.**
+
 ### 1.2 Prerequisites
 
-During the development of marknotes, two choices have been made:
+During the development of marknotes, two technical choices have been made:
 
-* Use PHP 7.1 or greater to get benefits of all advantages of the latest version of PHP and because other versions were, already, obsolete (if you're interested, see [PHP end of life page](http://php.net/eol.php)).
-* Consider that mod_rewrite will be enabled; this is needed to have nice URLs like `yoursite/docs/folder/slideshow.reveal` or `yoursite/index.php?task=...&param=...&second=....` i.e. a URL with a very long query string and not really friendly for search engines.
+* Use PHP 7.1 or greater to get benefits of all advantages of the latest version of PHP *and because other versions were, already, obsolete (if you're interested, see [PHP end of life page](http://php.net/eol.php))*.
+* Consider that mod_rewrite is on the server enabled; this is needed to have nice URLs like `yoursite/docs/folder/slideshow.reveal` and NOT `yoursite/index.php?task=...&param=...&second=....` i.e. a URL with a very long query string and not really friendly for search engines.
 
 ### 1.3 Notes are yours!
 
@@ -59,11 +63,11 @@ And remember: notes are yours! Unlike Evernote®, Google®, Microsoft® or other
 
 ### 1.4 Background
 
-During years, I've used Evernotes® to manage my notes (can be documentation, user guides, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
+During years, I've used Evernotes to manage my notes (can be documentation, user guides, ebooks, billing, ... i.e. everything I need to keep in one central place and being able to retrieve them easily).
 
 In 2016, Evernote has introduced more restriction with the Free version and by the end of the year, has stated that some employees will have access to **our** notes for administration tasks.
 
-Then I've said, "No!": no, even if the tool was easy and free, no, I didn't want to a human can get access to my knowledge base, I wish to be able to better manage who / when / why and, on top of this, some features were missing for me: easily display notes as an HTML page, as a slideshow, convert them in f.i. a Word document, and so on.
+That was too much for me: no, even if the tool was easy and free, no, I didn't want to a human can get access to my knowledge base, I wish to be able to better manage who / when / why and, on top of this, some features were missing for me: easily display notes as an HTML page, as a slideshow, convert them in f.i. a Word document, and so on.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -71,17 +75,17 @@ Then I've said, "No!": no, even if the tool was easy and free, no, I didn't want
 
 ## 2. :game_die: Demo site
 
-The demo is available on [https://www.marknotes.fr](https://www.marknotes.fr). Please take a look.
+You can find a working demo on [https://www.marknotes.fr](https://www.marknotes.fr). Please take a look.
 
-Marknotes is available in French and in English. The configuration on the demo site is done for French-speaking people.
+Marknotes is available in French and in English. The configuration on the demo site is done for French-speaking people. Marknotes uses a text file (json format) for retrieving translations. Want to translate in Dutch, German, Spanish, ...? Don't hesitate.
 
 ---
 
 **[⬆ back to top](#table-of-contents)**
 
-## 3. How to install or update?
+## :computer: 3. How to install or update?
 
-Please take in consideration that marknotes needs PHP 7. You'll perhaps need to enable PHP 7 on your server; this can be done through a specific line in the `.htaccess` file or from your control panel (see your hoster if you need more information).
+Please take in consideration that marknotes needs PHP 7.x. You'll perhaps need to enable PHP 7.x on your server; this can be done through a specific line in the `.htaccess` file or from your control panel (see your hoster if you need more information).
 
 >If you already have a version of marknotes, if this is the old version 1; I recommend removing all files **except the /docs folder** (don't loose your notes!). Otherwise, let files there and overwrite them by using the easy or hard way here below
 
@@ -93,11 +97,17 @@ Download `install.php` from there, save the file in the folder where you wish to
 
 The script will get the latest version of marknotes, download his zip from GitHub and save it on your server, unzip the file and prepare the site. After two seconds, you should have a running site.
 
-### 3.2 Hard way
+### 3.2 :muscle: Hard way
 
 You can, of course, download a copy of this repo by getting the [ZIP version](https://github.com/cavo789/marknotes/archive/master.zip) or making a clone (`git clone https://github.com/cavo789/marknotes`).
 
 You'll find the source files in the `/src` folder. Take a copy of all these files and put them in your marknotes folder.
+
+### 3.3 :hatched_chick: Update marknotes
+
+Once installed, if enabled, your marknotes installation will check on github if there is a newer version. If so, an icon will be displayed on your toolbar (by default in the upper right part of the screen). Just click on the icon and after you agree, the newer version will be installed.
+
+![new_version_available](images/new_version_available.png)
 
 ---
 
@@ -107,13 +117,13 @@ You'll find the source files in the `/src` folder. Take a copy of all these file
 
 Marknotes's documentation is available on the marknotes demo site: [https://www.marknotes.fr](https://www.marknotes.fr). See the marknotes entry.
 
-You can also find the previous documentation (for the version 1 of the tool) on the wiki here: [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki)
+You can also find a "not-updated-version" documentation on the wiki here: [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki) **that documentation needs review**
 
 ---
 
 **[⬆ back to top](#table-of-contents)**
 
-## 5. Features
+## 5. :trophy: Features
 
 Thanks to his dozens of plugins, there are many functionalities like:
 
@@ -122,13 +132,13 @@ Thanks to his dozens of plugins, there are many functionalities like:
 * Online editor for allowed people
 * Cache mode enable (on the server and on the local browser)
 * Note's encryption to hide sensitive data's and show it only to logged in people
-* ACLs to restrict some notes to a few users
+* ACLs to restrict visibility of folders to a few users (people not on the `whitelist` won't see protected folders)
 * Automatic rendering of tables: table of content, todos list, decisions taken list, ...
-* Variables replacement: create your own variable like f.i. %VERSION%, %AUTHOR%, %CUSTOMER_NAME%, ...
+* Variables replacement: create your own variable like f.i. `%VERSION%`, `%AUTHOR%`, `%CUSTOMER_NAME%`, ...
 * File inclusions so you can write very big documentation in smaller files and publish the master document without effort
 * Image gallery plugin
 * Exportation to .docx, .epub, .odt, .pdf, .txt, ...
-* Slideshows mode (Reveal.JS or Remark)
+* Slideshows mode (`reveal.js` or `Remark`)
 * Each templates can be overridden; define yours
 * Powerful search functionnalities allowing multi-word search and using caching functionality too
 * Multiple languages support
@@ -136,7 +146,62 @@ Thanks to his dozens of plugins, there are many functionalities like:
 
 And, if a feature is missing, consider writing your own plugin, it's really easy.
 
----
+### Plugins
+
+Just a few ideas of existing plugins...
+
+#### Include
+
+Marknotes comes with a lot of plugins, somes are really basic like the `lastmod` one (make easy to show the last modification date of the note), somes are really powerful.
+
+One of them is the include plugin. Imagine that you have to write a very long documentation: you will immediately think in chapter and subchapter, you will cut your material in main and appendices. You could write a single note in which you write everything; this note could be thousands of lines long and become unmanageable. **And documentation that is complex to update is dead documentation**.
+
+But you could also write dozens of notes for each part of your document (a note per sub-chapter then a note to consolidate those notes into a chapter then a note to consolidate all the chapters; a final note that will consolidate the whole as well as the appendices).
+
+You will have much easier to maintain your long documentation, you will be able more easily to make reread sections (which will be autonomous notes), make them translate, etc.. You will have all the facilities to move them from one chapter to another, to reverse their order, etc..
+
+You can also subcontract parts: such note for such contributor (ideal when you wish to make a presentation where different actors follow one another; you create the main note which would include the notes of each speaker).
+
+The Include plugin is undoubtedly one of the most powerful. The plugin will merge the documents into a single document that you can then view or export as if it were one and only one document.
+
+Example:
+
+```markdown
+# Our famous KeyNote...
+
+%INCLUDE christophe.md%
+%INCLUDE marc.md%
+%INCLUDE loic.md%
+%INCLUDE david.md%
+```
+
+#### ListFiles
+
+On another one is ListFiles who will scan a folder (and its subfolders if recursiveness is enabled) and generate a list of files as hyperlinks.
+
+For example, you have a "Miscellaneous Documents" note where you would use the ListFiles plugin and it would be enough to upload the files on your server so that, without even modifying the note, they appear as hyperlinks.
+
+Example:
+
+```markdown
+# Documentation
+
+## Main
+
+...
+
+## Appendices
+
+%LISTFILES appendices/*%
+```
+
+#### Conversions
+
+Of course, every conversion plugins that will make easy to reuse your content: you write in markdown and you can display your content like a slideshow (`Reveal.Js` and `Remark`), export as a Microsoft Word document (`.docx`), Adobe Reader (`.pdf`), Open Office Document (`.odt`) and many more.
+
+#### Favorites
+
+But there are also plugins for making the interface easier to use like the Favorites plugin : want to retrieve easily the link to your note? Add it into your favorites.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -149,6 +214,11 @@ Every setting are indeed stored as a value-key entry in the [settings.json](http
 The master file is called `settings.json.dist` and is stored in the root folder of marknotes. That file is part of the repository so **don't change it** (because on the next update of marknotes, settings.json.dist will be replaced by a fresh copy).
 
 Marknotes has a `Settings` screen built-in: through the interface you'll be able to update more than 250 settings easily. Use the interface, don't modify the file manually.
+
+*Below an example for the `Authentification` plugin*
+![Settings](images/settings_screen.png)
+
+*Start of july 2018, there are 230 settings that can be configured there.*
 
 Marknotes will always first read `settings.json.dist` and, only then, if a file called `settings.json` exists, will load that second file. In other words: marknotes will read his default settings and will load yours then. So, yours will overwrite the default one.
 
@@ -240,33 +310,7 @@ And one more step: you can name the file `my_note.json` and store it in the same
 
 **[⬆ back to top](#table-of-contents)**
 
-### 6.1 Plugins
-
-There are dozens of plugins for marknotes, you can choose to enable them or not just by updating the `settings.json`. The example below disable the plugin called "font-awesome" (this plugin will replace f.i. `:fa-star:` by a star (thanks the integration of [Font-awesome](https://github.com/FortAwesome/Font-Awesome))
-
-```json
-{
- "plugins": {
-  "content": {
- "html": {
- "font-awesome": {
-  "enabled": 0
- }
- }
-  }
- }
-}
-```
-
-There are plugins for the generation of a table of content, table of "todos", for image gallery generation, to get a list of files, for displaying the last update date/time of the note, for encryption support and much more.
-
-Each plugin can be enabled / disabled and configured directly in the `settings.json` file; for the entire site or for a given folder.
-
----
-
-**[⬆ back to top](#table-of-contents)**
-
-## 7. Tips
+## 7. :bulb: Tips
 
 ### GitHub - Synchronization
 
@@ -290,7 +334,7 @@ So, if you already have a lot of documentation, **good news**, you can convert t
 
 **[⬆ back to top](#table-of-contents)**
 
-## 8. Debugging
+## 8. :hammer: Debugging
 
 If you wish to debug marknotes, please [read the documentation](readme_debugging.md)
 
@@ -304,9 +348,9 @@ Please read [Privacy and protection: everything is yours, for now and always](re
 
 marknotes has been created and is maintained by [Christophe Avonture](https://github.com/cavo789) | [https://www.aesecure.com](https://www.aesecure.com)
 
-## 11. Want to help
+## 11. :hand: Ready to help
 
-MarkNotes is maintained by one person in spare time.
+MarkNotes is maintained by one person in his spare time.
 
 MarkNotes needs your help!
 
@@ -320,11 +364,11 @@ Note: before working on a big change, please, post first an issue and explain to
 
 Thanks in advance!
 
-## 12. Support
+## 12. :question: Support
 
 The support is done through [GitHub Issues](https://github.com/cavo789/marknotes/issues); however depending on a single person and his free time, taken on leisure time, the support (as well as the development of new features) will depend on his ability to be available.
 
-## 13. License
+## 13. :ledger: License
 
 ![License MIT](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/license.png)
 
@@ -332,4 +376,4 @@ You are free to copy, modify, and distribute Marknotes with attribution under th
 
 **[⬆ back to top](#table-of-contents)**
 
->If you like marknotes, please give him a :star: and fork it.
+>If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**

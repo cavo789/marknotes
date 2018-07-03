@@ -1,6 +1,6 @@
 {
 	"name": "marknotes",
-	"version": "2.0.2",
+	"version": "2.1.0",
 	"description": "marknotes will transform your notes taken in the markdown format (.md files) into a full featured website.",
 	"main": "index.php",
 	"devDependencies": {
