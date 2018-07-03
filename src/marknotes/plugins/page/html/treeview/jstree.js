@@ -69,7 +69,12 @@ function jstree_init($data) {
 					/*<!-- endbuild -->*/
 				})
 				.on('changed.jstree', function (e, data) {
-					var objNode = data.instance.get_node(data.node.id);
+					var objNode = null;
+					if (data.node) {
+						objNode = data.instance.get_node(data.node.id);
+					} else {
+						objNode = data.instance.get_node(data.selected[0]);
+					}
 
 					// Remember the ID of the note
 					// marknotes.node.id is defined in the template
@@ -133,7 +138,7 @@ function jstree_init($data) {
 								ajaxify({
 									task: 'task.edit.form',
 									param: marknotes.note.md5,
-									callback: 'fnPluginEditAfterShowEditorInitialize($data, data)',
+									callback: 'fnPluginEditShowEditor($data, data)',
 									useStore: false,
 									target: 'CONTENT'
 								});

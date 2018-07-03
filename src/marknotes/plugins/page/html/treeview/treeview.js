@@ -532,7 +532,8 @@ function fnPluginTaskTreeView_editNode($node) {
 	ajaxify({
 		task: 'task.edit.form',
 		param: $fname,
-		callback: 'fnPluginEditAfterShowEditorInitialize($data, data)'
+		callback: 'fnPluginEditShowEditor($data, data)',
+		useStore: false
 	});
 
 	return true;
