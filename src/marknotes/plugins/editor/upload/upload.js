@@ -26,72 +26,81 @@
 		}
 		/*<!-- endbuild -->*/
 
-		$('#divEditUpload').toggle();
+		$.ajax({
+			"type": "GET",
+			"url": "marknotes/plugins/page/html/upload/libs/dropzone/dropzone.min.js",
+			"dataType": "script",
+			"cache": true,
+			"success": function (data) {
 
-		// And initialize DropZone
-		var myDropzone = new Dropzone("#upload_droparea", {
-			// Add a link so we can remove a file from the preview area
-			"addRemoveLinks":true,
-			// Max size (in MB; for instance 10)
-			// http://www.dropzonejs.com/#config-maxFilesize
-			"maxFilesize": marknotes.editor.upload.max_size,
-			// Comma separated list of allowed mime types or file extensions.
-			// http://www.dropzonejs.com/#config-acceptedFiles
-			"acceptedFiles": marknotes.editor.upload.accepted_mime,
-			// Allow files from a hidden folder to be dropped
-			"ignoreHiddenFiles": false,
-			// URL for saving the image
-			"url": "index.php?task=task.upload.save",
-			// Replace standard messages
-			// Place holder; drop area
-			"dictDefaultMessage": $.i18n('editor_dropzone_placeholder'),
-			// MIME type not allowed
-			"dictInvalidFileType": $.i18n('error_js_mime_not_allowed')
-		});
+				$('#divEditUpload').toggle();
 
-		var $imgFileName = '';
+				// And initialize DropZone
+				var myDropzone = new Dropzone("#upload_droparea", {
+					// Add a link so we can remove a file from the preview area
+					"addRemoveLinks":true,
+					// Max size (in MB; for instance 10)
+					// http://www.dropzonejs.com/#config-maxFilesize
+					"maxFilesize": marknotes.editor.upload.max_size,
+					// Comma separated list of allowed mime types or file extensions.
+					// http://www.dropzonejs.com/#config-acceptedFiles
+					"acceptedFiles": marknotes.editor.upload.accepted_mime,
+					// Allow files from a hidden folder to be dropped
+					"ignoreHiddenFiles": false,
+					// URL for saving the image
+					"url": "index.php?task=task.upload.save",
+					// Replace standard messages
+					// Place holder; drop area
+					"dictDefaultMessage": $.i18n('editor_dropzone_placeholder'),
+					// MIME type not allowed
+					"dictInvalidFileType": $.i18n('error_js_mime_not_allowed')
+				});
 
-		// Get filenames and add them into the editor
-		myDropzone.on("success", function (file, data) {
+				var $imgFileName = '';
 
-			if (data.status == 1) {
+				// Get filenames and add them into the editor
+				myDropzone.on("success", function (file, data) {
 
-				// Ok, the file has been successfully uploaded
-				// Remove it from the Dropzone area
-				// (Keep only files with error)
-				this.removeFile(file);
+					if (data.status == 1) {
 
-				if (data.type == 'image') {
-					// It's an image
+						// Ok, the file has been successfully uploaded
+						// Remove it from the Dropzone area
+						// (Keep only files with error)
+						this.removeFile(file);
 
-					// Retrieve the size of the image
-					$size = data.width+"x"+data.height;
-					$size = " \"" + $size + "\"";
+						if (data.type == 'image') {
+							// It's an image
 
-					// Generate the tag
-					// Don't add a new line after the image
-					$tag = "!["+data.basename+"](%URL%"+data.url+$size+") ";
+							// Retrieve the size of the image
+							$size = data.width+"x"+data.height;
+							$size = " \"" + $size + "\"";
 
-					// Add the tag where the cursor is located
-					editor.insertText($tag);
+							// Generate the tag
+							// Don't add a new line after the image
+							$tag = "!["+data.basename+"](%URL%"+data.url+$size+") ";
 
-				} else {
-					// It's a file
+							// Add the tag where the cursor is located
+							editor.insertText($tag);
 
-					// Generate the tag
-					$tag = "["+data.basename+"](%URL%"+data.url+")\n\n";
+						} else {
+							// It's a file
 
-					// Add the tag where the cursor is located
-					editor.insertText($tag);
-				} // if (data.type == 'image')
-			} else {
-				Noty({
-					message: data.message,
-					type: 'error',
-					timeout: 10200
+							// Generate the tag
+							$tag = "["+data.basename+"](%URL%"+data.url+")\n\n";
+
+							// Add the tag where the cursor is located
+							editor.insertText($tag);
+						} // if (data.type == 'image')
+					} else {
+						Noty({
+							message: data.message,
+							type: 'error',
+							timeout: 10200
+						});
+					}
+
 				});
 			}
-
 		});
 
 		return true;

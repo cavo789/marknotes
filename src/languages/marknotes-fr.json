@@ -6,6 +6,7 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "fr"
 	},
+	"button_zip_note":"T\u00e9l\u00e9charge la note au format ZIP",
 	"editor_dropzone_placeholder":"Zone de t\u00e9l\u00e9versement en masse :<ol><li>Positionnez le curseur dans l'\u00e9diteur \u00e0 l'endroit o\u00f9 doivent appara\u00eetre les images \/ les hyperliens vers les fichiers,<\/li><li>Depuis votre disque dur, glissez \/d\u00e9posez les fichiers ici.<\/li><\/ol>Les fichiers seront alors envoy\u00e9s sur le serveur un par un et seront repris dans votre note.<br\/><em>Les fichiers ayant \u00e9t\u00e9 charg\u00e9s avec succ\u00e8s dispara\u00eetront de cette zone, si des fichiers y restent, ces derniers n'auront pas \u00e9t\u00e9 accept\u00e9s par la configuration du serveur.<\/em>",
 	"ajax_error": "<strong>Une erreur est survenue :<\/strong><br\/>Statut : $1<br\/>Code HTTP retourn\u00e9 : $2 ($3)<br\/>XHR ReadyState : $4<br\/>R\u00e9ponse du serveur :<br\/>$5",
 	"check_SEF_Mode":"L'erreur ci-dessous semble indiquer que le mode rewrite (`mod_rewrite`) d'Apache n'est pas actif; veuillez l'activer pour garantir le bon fonctionnement de marknotes. Si votre serveur est d\u00e9j\u00e0 configur\u00e9 correctement, il faut ajouter une ligne `RewriteEngine On` dans votre fichier `.htaccess` et, \u00e9ventuellement, une seconde ligne telle que `RewriteBase \/`. Veuillez lire les commentaires pr\u00e9sents dans le fichier htaccess.txt.",

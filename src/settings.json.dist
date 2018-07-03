@@ -114,6 +114,10 @@
 			"mermaid": {
 				"enabled": 1,
 				"position": 50
+			},
+			"zip": {
+				"enabled": 1,
+				"position": 51
 			}
 		},
 		"buttons": {

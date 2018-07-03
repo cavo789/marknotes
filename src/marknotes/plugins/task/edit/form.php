@@ -58,12 +58,6 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 		$script .=
 			"\n<script ". "src=\"".$url."keys.js\" defer=\"defer\"></script>\n";
 
-		// Add the dropzone library to allow image upload
-		$script.="<script ".
-			"src=\"".$rootURL."/marknotes/plugins/page/html/upload".
-			"/libs/dropzone/dropzone.min.js\" ".
-			"defer=\"defer\"></script>\n";
-
 		// Get the options for the plugin
 		$bSpellCheck = boolval(self::getOptions('spellchecker', true));
 
@@ -257,6 +251,7 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 
 		$js = '';
 		$css = '';
+		$script = '';
 
 		if (count($arrButtons)>0) {
 
@@ -264,7 +259,27 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 			$debug = '';
 
 			// --------------------------------------------
+			// 1. Get external .js scripts
+			// See plugins/editor/zip.php for an example.
+			$aeFunctions = \MarkNotes\Functions::getInstance();
 
+			$rootURL = rtrim($aeFunctions->getCurrentURL(), '/');
+			$url = $rootURL.'/marknotes/plugins/editor/';
+
+			if (isset($arrButtons['script'])) {
+				foreach ($arrButtons['script'] as $key=>$value) {
+					/*<!-- build:debug -->*/
+					if ($aeSettings->getDebugMode()) {
+						$debug =
+							"<!-- Loaded by ".$key." --> \n";
+					}
+					/*<!-- endbuild -->*/
+					$script .= $debug."<script src=\"".$url.$value."\"></script>\n";
+				}
+			}
+
+			// --------------------------------------------
+			// 2. Get inline js
 			if (isset($arrButtons['js'])) {
 				foreach ($arrButtons['js'] as $key=>$value) {
 
@@ -293,8 +308,8 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 				"</script>\n";
 
 			// --------------------------------------------
-			// 2. Process the css
-			//
+			// 3. Process the css
+			// Get inline CSS
 			$css = '';
 
 			$tmp = '';
@@ -316,7 +331,7 @@ class Form extends \MarkNotes\Plugins\Task\Plugin
 			$css .= "<style>\n".$tmp."</style>\n";
 		}
 
-		return $js."\n".$css;
+		return $script."\n".$js."\n".$css;
 
 	}
 
