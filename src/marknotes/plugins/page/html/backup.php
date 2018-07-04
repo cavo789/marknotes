@@ -2,8 +2,6 @@
 /**
  * Include backup.js
  *
- * Use multi-download of sindresorhus
- * @link https://github.com/sindresorhus/multi-download
  */
 namespace MarkNotes\Plugins\Page\HTML;
 
@@ -23,12 +21,9 @@ class Backup extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$aeFunctions = \MarkNotes\Functions::getInstance();
 
 		$url = rtrim($aeFunctions->getCurrentURL(), '/').'/';
-
-		$script = "<script src=\"".$url."libs/multi-download/multi-download.js\" ".
-				"defer=\"defer\"></script>\n";
-
 		$url .= 'marknotes/plugins/page/html/backup/';
-		$script .= "<script src=\"".$url."backup.js\" ".
+
+		$script = "<script src=\"".$url."backup.js\" ".
 			"defer=\"defer\"></script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);

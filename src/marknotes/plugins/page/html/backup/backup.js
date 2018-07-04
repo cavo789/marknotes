@@ -1,3 +1,6 @@
+// Implementation of multi-download.js
+// @link https://github.com/sindresorhus/multi-download
+
 //marknotes.arrPluginsFct.push("fnPluginTaskBackup");
 
 function fnPluginTaskBackup() {
@@ -62,12 +65,25 @@ function fnPluginTaskBackup() {
 }
 
 function fnPluginTaskBackupInitStart() {
-	// Initialize the click event on the button
-	$("#backup_start").click(function(e) {
-		e.stopImmediatePropagation();
-		$('#backup_start').attr('disabled', true);
-		$('#backup_start').attr('id', 'status');
-		fnPluginTaskBackupStart();
+
+	// Load multi-download of sindresorhus
+	// @link https://github.com/sindresorhus/multi-download
+	// Then handle the click on the button
+	$.ajax({
+		"type": "GET",
+		"url": "libs/multi-download/multi-download.js",
+		"dataType": "script",
+		"cache": true,
+		"success": function (data) {
+
+			// Initialize the click event on the button
+			$("#backup_start").click(function(e) {
+				e.stopImmediatePropagation();
+				$('#backup_start').attr('disabled', true);
+				$('#backup_start').attr('id', 'status');
+				fnPluginTaskBackupStart();
+			});
+		}
 	});
 
 	return true;
