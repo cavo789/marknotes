@@ -15,7 +15,7 @@ function fnPluginHTMLDOCX() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - DOCX');
+		console.log('	  Plugin Page html - DOCX');
 	}
 	/*<!-- endbuild -->*/
 
@@ -39,31 +39,43 @@ function fnPluginHTMLDOCX() {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('         Generate ' + fname);
+			console.log('		 Generate ' + fname);
 		}
 		/*<!-- endbuild -->*/
 
-		// See https://github.com/aadel112/googoose#options for
-		// explanation of the options
-		var o = {
-			area: 'article', // The content is inside the article tag
-			lang: marknotes.settings.locale, // language of the content
-			filename: fname // name of the file, will be the one of the downloaded file
-		};
+		// Load clipboard.min.js
+		// @link @https://github.com/zenorocha/clipboard.js
+		// Then handle the click on the button
+		$.ajax({
+			"type": "GET",
+			"url": "marknotes/plugins/page/html/docx/libs/googoose/jquery.googoose.js",
+			"dataType": "script",
+			"cache": true,
+			"async": false,
+			"success": function (data) {
+				// See https://github.com/aadel112/googoose#options for
+				// explanation of the options
+				var o = {
+					area: 'article', // The content is inside the article tag
+					lang: marknotes.settings.locale, // language of the content
+					filename: fname // name of the file, will be the one of the downloaded file
+				};
 
-		try {
+				try {
 
-			// Googoose will not export the note's title if
-			// that title is hidden so, check if we need to show
-			// it => show it, export and hide it back
-			var $bVisible = $('#CONTENT h1').is(':visible');
-			if (!$bVisible) $('#CONTENT h1').show();
-			$(document).googoose(o);
-			if (!$bVisible) $('#CONTENT h1').hide();
+					// Googoose will not export the note's title if
+					// that title is hidden so, check if we need to show
+					// it => show it, export and hide it back
+					var $bVisible = $('#CONTENT h1').is(':visible');
+					if (!$bVisible) $('#CONTENT h1').show();
+					$(document).googoose(o);
+					if (!$bVisible) $('#CONTENT h1').hide();
 
-		} catch (e) {
-			console.warn('Error when trying to convert with Googoose : [' + e.message + ']');
-		}
+				} catch (e) {
+					console.warn('Error when trying to convert with Googoose : [' + e.message + ']');
+				}
+			}
+		});
 	}
 
 	return true;
