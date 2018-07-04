@@ -5,7 +5,7 @@ function fnPluginHTMLPrintPreview() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - Print preview');
+		console.log('	  Plugin Page html - Print preview');
 	}
 	/*<!-- endbuild -->*/
 
@@ -18,8 +18,19 @@ function fnPluginHTMLPrintPreview() {
 			type: 'error'
 		});
 	} else {
-		$('article').printThis();
+
+		$.ajax({
+			"type": "GET",
+			"url": "marknotes/plugins/page/html/print_preview/libs/printThis/printThis.js",
+			"dataType": "script",
+			"cache": true,
+			"success": function (data) {
+				$('article').printThis();
+			}
+		});
+
 	}
+
 	return true;
 
 }
