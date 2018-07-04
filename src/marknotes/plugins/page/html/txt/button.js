@@ -24,13 +24,22 @@ function fnPluginHTMLTXT() {
 			type: 'error'
 		});
 	} else {
-		var article = $.trim($('article').text()); // use .html() if tags are needed
-		var blob = new Blob([article], {
-			type: "text/plain; charset=utf-8"
-		});
 
-		// Download : use a basename (like note.txt)
-		saveAs(blob, marknotes.note.file + ".txt");
+		$.ajax({
+			"type": "GET",
+			"url": "marknotes/plugins/page/html/txt/libs/FileSaver.js/FileSaver.min.js",
+			"dataType": "script",
+			"cache": true,
+			"success": function (data) {
+				var article = $.trim($('article').text()); // use .html() if tags are needed
+				var blob = new Blob([article], {
+					type: "text/plain; charset=utf-8"
+				});
+
+				// Download : use a basename (like note.txt)
+				saveAs(blob, marknotes.note.file + ".txt");
+			}
+		});
 	}
 	return true;
 }
