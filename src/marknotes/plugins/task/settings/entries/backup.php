@@ -27,15 +27,18 @@ class MN_Backup extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 
 		// Now extract only folder name, remove duplicates
 		// and sort
-		$arrFiles = array_map('dirname', $arrFiles);
-		$arrFiles = array_unique($arrFiles);
-		sort($arrFiles);
-
-		$arrFiles = $args[0];
-
 		$sFolders = '';
-		foreach ($arrFiles as $file) {
-			$sFolders.=str_replace(DS, '/', $file).';';
+
+		if (is_array($arrFiles)) {
+			$arrFiles = array_map('dirname', $arrFiles);
+			$arrFiles = array_unique($arrFiles);
+			sort($arrFiles);
+
+			$arrFiles = $args[0];
+
+			foreach ($arrFiles as $file) {
+				$sFolders.=str_replace(DS, '/', $file).';';
+			}
 		}
 
 		return rtrim($sFolders, ';');

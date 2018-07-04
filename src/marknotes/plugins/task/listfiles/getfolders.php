@@ -124,11 +124,17 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
+		$showLogin = boolval($arrSettings['show_login'] ?? 1);
 
-		$canSee = boolval($arrSettings['can_see'] ?? 1);
+		$aeSession = \MarkNotes\Session::getInstance();
+		$bAuthenticated = boolval($aeSession->get('authenticated', 0));
 
-		if ($canSee) {
-			// Call the ACLs plugin
+		if ($showLogin && !$bAuthenticated) {
+			// The site owner wish to show the login screen before
+			// showing the interface and the user is not authenticated
+			// Don't return any files since the user should be
+			// logged in
+
 			$aeEvents = \MarkNotes\Events::getInstance();
 
 			$aeEvents->loadPlugins('task.acls.load');
@@ -173,7 +179,7 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 			} // if (is_null($arr))
-		} // if ($can_see)
+		} // if ($showLogin)
 
 		// Now extract only folder name, remove duplicates
 		// and sort

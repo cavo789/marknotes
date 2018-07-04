@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>%SITE_NAME%</title>
+		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+		<link rel="stylesheet" href="%ROOT%libs/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="%ROOT%libs/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="%ROOT%libs/AdminLTE/css/AdminLTE.min.css">
+		<link rel="stylesheet" href="%ROOT%libs/ionicons/css/ionicons.min.css">
+		<link rel="stylesheet" href="%ROOT%assets/css/modal_form.css">
+
+	</head>
+
+	<body class="hold-transition login-page">
+		<div class="login-box">
+			<div class="login-logo">
+				<a href="%GITHUB%" target="_blank" rel="noopener"><img src="assets/images/marknotes.svg"/></a>
+			</div>
+			<div class="login-box-body">
+				<p data-i18n="login_session" class="login-box-msg">Sign in to start your session</p>
+				<form>
+					<div class="form-group has-feedback">
+						<input id="username" type="text" class="form-control"
+							placeholder="Username" />
+						<span class="glyphicon glyphicon-user form-control-feedback"></span>
+					</div>
+					<div class="form-group has-feedback">
+						<input  id="password" type="password" class="form-control" placeholder="Password" />
+						<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+					</div>
+					<div>
+						<input type="button" class="submit btn btn-primary btn-block btn-flat" value="Sign In" />
+					</div>
+				</form>
+				<hr/>
+				%LOGIN_SCREEN_EXTRA_INFO%
+			</div>
+		</div>
+
+		<script>
+			var marknotes = {};
+			marknotes.arrPluginsFct = [];
+			marknotes.isBot = 0;
+			marknotes.settings = {};
+			marknotes.settings.debug=%DEBUG%;
+			marknotes.webroot='%ROOT%';
+		</script>
+
+		<script src="%ROOT%libs/jquery/jquery.min.js"></script>
+		<script src="%ROOT%libs/bootstrap/js/bootstrap.min.js"></script>
+		<script src="%ROOT%libs/noty/jquery.noty.packaged.min.js"></script>
+		<script src="%ROOT%templates/assets/js/noty.js"></script>
+		<script src="%ROOT%templates/assets/js/interface.js"></script>
+
+		<script src="%ROOT%libs/js-url/url.min.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/CLDRPluralRuleParser/CLDRPluralRuleParser.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/jquery.i18n/jquery.i18n.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/jquery.i18n/jquery.i18n.messagestore.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/jquery.i18n/jquery.i18n.fallbacks.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/jquery.i18n/jquery.i18n.parser.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/jquery.i18n/jquery.i18n.emitter.js"></script>
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/libs/jquery.i18n/jquery.i18n.language.js"></script>
+
+		<script src="%ROOT%marknotes/plugins/page/html/i18n/i18n.js" ></script>
+
+		<script>
+			$(document).ready(function () {
+				fnPluginHTMLi18n();
+
+				$(".submit").click(function (event) {
+					var $login = $('#username').val();
+					var $password = $('#password').val();
+
+					if (($login === null) || ($login === '') ||
+						($password === null) || ($password === '')) {
+
+						Noty({
+							message: $.i18n('login_error'),
+							type: 'error'
+						});
+
+						$('#username').addClass("errorLogin");
+						$('#password').addClass("errorLogin");
+					} else {
+						// Ok, try to connect
+						$login = window.btoa(encodeURIComponent(JSON.stringify($login.trim())));
+						$password = window.btoa(encodeURIComponent(JSON.stringify($password.trim())));
+
+						$.post(
+							"index.php", {
+								"task": "task.login.login",
+								"username": $login,
+								"password": $password
+							},
+							function (data) {
+
+								var $status = false;
+
+								if (data.hasOwnProperty('status')) {
+									$status = (data.status === 1 ? true : false);
+								}
+
+								if ($status) {
+									Noty({
+										message: $.i18n('login_success'),
+										type: 'success'
+									});
+
+									// Reload the page
+									location.reload();
+
+								} else {
+
+									Noty({
+										message: $.i18n('login_error'),
+										type: 'error',
+										timeout:10200
+									});
+
+									$('#username').addClass("errorLogin");
+									$('#password').addClass("errorLogin");
+								}
+							}
+						)
+
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

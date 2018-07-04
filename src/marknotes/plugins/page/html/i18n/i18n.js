@@ -22,7 +22,7 @@ function fnPluginHTMLi18n() {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('      Plugin Page html - i18n');
+		console.log('	  Plugin Page html - i18n');
 	}
 	/*<!-- endbuild -->*/
 
@@ -55,7 +55,7 @@ function fnPluginHTMLi18n() {
  *
  * For instance : the file
  * /marknotes/plugins/page/html/datatables/datatables.js contains this line :
- *    marknotes.arri18nFct.push("PluginBfnPluginHTMLDataTablesootstrap");
+ *	marknotes.arri18nFct.push("PluginBfnPluginHTMLDataTablesootstrap");
  *
  * This to tell to this code that the fnPluginHTMLDataTables function should
  * be fired once the i18n plugin has finish to load languages.  So, let's do it
@@ -85,7 +85,7 @@ function runi18nFunctions() {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('   call ' + ($i + 1) + '/' + $j + ' : ' + $arrFct[$i]);
+				console.log('	call ' + ($i + 1) + '/' + $j + ' : ' + $arrFct[$i]);
 			}
 			/*<!-- endbuild -->*/
 

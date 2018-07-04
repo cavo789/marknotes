@@ -29,7 +29,10 @@ $(document).ready(function () {
 	// Set the data-slide option to false ==> push the content
 	//$controlSidebar.options.slide = false;
 
-	initializeTasks();
+	var fn = window.initializeTasks;
+	if (typeof fn === "function") {
+		initializeTasks();
+	}
 
 	if (typeof marknotes.arri18nFct !== "undefined") {
 		marknotes.arri18nFct.push("fnTranslateInterface");

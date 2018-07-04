@@ -104,6 +104,33 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		return $arr['homepage'];
 	}
 
+	/**
+	 * Determine if this plugin can be fired or not
+	 */
+	final protected static function canRun() : bool
+	{
+		$bCanRun = parent::canRun();
+
+		if ($bCanRun) {
+
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$arrSettings = $aeSettings->getPlugins('/interface');
+			$showLogin = boolval($arrSettings['show_login'] ?? 1);
+			$aeSession = \MarkNotes\Session::getInstance();
+			$bAuthenticated = boolval($aeSession->get('authenticated', 0));
+
+			if ($showLogin && !$bAuthenticated) {
+				$bCanRun = false;
+				// The site owner wish to show the login screen before
+				// showing the interface and the user is not
+				// authenticated
+				die($aeSettings->getText('not_authenticated'));
+			}
+		}
+
+		return $bCanRun;
+	}
+
 	public static function run(&$params = null) : bool
 	{
 		if (self::isEnabled(false)) {

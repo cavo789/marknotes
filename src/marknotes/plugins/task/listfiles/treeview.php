@@ -341,10 +341,20 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$return = array();
 
+		$aeSettings = \MarkNotes\Settings::getInstance();
+
 		$return['count'] = 0;
 		$return['status'] = 0;
-		$return['message'] = 'The administrator has disabled '.
-			'access to the interface.';
+		$return['message'] = $aeSettings->getText('not_authenticated');
+
+		/*<!-- build:debug -->*/
+		if ($aeSettings->getDebugMode()) {
+			$return['debug'] = 'The show_login settings is set to '.
+				'1 and the user isn\'t yet connected. In that case, '.
+				'the list of files should be keept hidden';
+		}
+		/*<!-- endbuild -->*/
+
 		return $return;
 	}
 
@@ -433,10 +443,18 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		// Does the interface can be visible ?
 		$arrSettings = $aeSettings->getPlugins('/interface');
-		$canSee = boolval($arrSettings['can_see'] ?? 1);
+		$showLogin = boolval($arrSettings['show_login'] ?? 1);
 
-		if (!$canSee) {
-			$sReturn = json_encode(self::notAllowed());
+		$aeSession = \MarkNotes\Session::getInstance();
+		$bAuthenticated = boolval($aeSession->get('authenticated', 0));
+
+		if ($showLogin && !$bAuthenticated) {
+			// The site owner wish to show the login screen before
+			// showing the interface and the user is not authenticated
+			// Don't return any files since the user should be
+			// logged in
+			$arr = self::notAllowed();
+
 		} else {
 
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);

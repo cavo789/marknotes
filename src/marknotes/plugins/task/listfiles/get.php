@@ -162,10 +162,18 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$arr = null;
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
+		$showLogin = boolval($arrSettings['show_login'] ?? 1);
+		$aeSession = \MarkNotes\Session::getInstance();
+		$bAuthenticated = boolval($aeSession->get('authenticated', 0));
 
-		$canSee = boolval($arrSettings['can_see'] ?? 1);
+		if ($showLogin && !$bAuthenticated) {
+			// The site owner wish to show the login screen before
+			// showing the interface and the user is not authenticated
+			// Don't return any files since the user should be
+			// logged in
+			$arr = null;
+		} else {
 
-		if ($canSee) {
 			// Call the ACLs plugin
 			$aeEvents = \MarkNotes\Events::getInstance();
 
@@ -211,7 +219,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 			} // if (is_null($arr))
-		} // if ($can_see)
+		} // if ($showLogin)
 
 		// Return the array with files accessible to the current user
 		$params = $arr['files'];
