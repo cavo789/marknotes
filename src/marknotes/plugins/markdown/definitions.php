@@ -37,7 +37,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Definitions extends \MarkNotes\Plugins\Markdown\Plugin
 {
 	protected static $me = __CLASS__;
-	protected static $json_settings = 'plugins.markdown.definitions';
+	protected static $json_settings = 'plugins.task.definitions';
 	protected static $json_options = 'plugins.options.markdown.definitions';
 
 	public static function readMD(array &$params = array()) : bool
@@ -56,7 +56,7 @@ class Definitions extends \MarkNotes\Plugins\Markdown\Plugin
 			$key = $definitions['pattern'];
 
 			if (stripos($params['markdown'], $key) !== false) {
-				$def_MD .= $definitions['pattern']."\n:   ".$definitions['value']."\n\n";
+				$def_MD .= $definitions['pattern']."\n:	".$definitions['value']."\n\n";
 			}
 		}
 
