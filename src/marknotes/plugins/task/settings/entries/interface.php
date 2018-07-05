@@ -23,9 +23,14 @@ class MN_Interface extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content = self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
 
-		$opt = 'can_see';
+		$opt = 'show_login';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getRadio($key.'.'.$opt, $text, $arr[$opt]);
+
+		// Extra message to show on the login screen
+		$opt = 'login_message';
+		$text = self::getTranslation($key.'.'.$opt);
+		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
 		$opt = 'demo_mode';
 		$text = self::getTranslation($key.'.'.$opt);

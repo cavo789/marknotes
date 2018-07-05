@@ -26,8 +26,11 @@ class MN_Homepage extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$arrFiles = $args[0];
 
 		$sFiles = ';';
-		foreach ($arrFiles as $file) {
-			$sFiles.=str_replace(DS, '/',str_replace($docs, '', $file)).';';
+
+		if (is_array($arrFiles)) {
+			foreach ($arrFiles as $file) {
+				$sFiles.=str_replace(DS, '/',str_replace($docs, '', $file)).';';
+			}
 		}
 
 		return rtrim($sFiles, ';');

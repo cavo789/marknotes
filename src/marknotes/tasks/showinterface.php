@@ -34,13 +34,27 @@ class ShowInterface
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 
-		$fname = self::$root.'errors/error_interface_disabled.html';
-		$content = str_replace('%ROOT%', self::$root, $aeFiles->getContent($fname));
+		$fname = self::$root.'errors/login_screen.html';
+		$content = $aeFiles->getContent($fname);
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$github = $aeSettings->getPlugins('/github', array('url'=>''));
 		$content = str_replace('%GITHUB%', $github['url'], $content);
+
+		$content = str_replace('%SITE_NAME%', $aeSettings->getSiteName(), $content);
+
+		$arrSettings = $aeSettings->getPlugins('/interface');
+		$sLoginMsg = trim($arrSettings['login_message']??'');
+		if ($sLoginMsg!=='') {
+			$sLoginMsg='<em style="font-size:0.8em;">'.$sLoginMsg.'</em>';
+		}
+		$content = str_replace('%LOGIN_SCREEN_EXTRA_INFO%', $sLoginMsg, $content);
+
+		$content = str_replace('%DEBUG%', $aeSettings->getDebugMode()?1:0, $content);
+
+		$aeFunctions = \MarkNotes\Functions::getInstance();
+		$content = str_replace('%ROOT%', rtrim($aeFunctions->getCurrentURL(), '/').'/', $content);
 
 		header('Content-Transfer-Encoding: ascii');
 		header('Content-Type: text/html; charset=utf-8');
@@ -99,11 +113,19 @@ class ShowInterface
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
 		$arrSettings = $aeSettings->getPlugins('/interface');
-		$canSee = boolval($arrSettings['can_see'] ?? 1);
+		$showLogin = boolval($arrSettings['show_login'] ?? 1);
 
-		if (!$canSee) {
-			// The access to the interface can be disabled in settings.json
-			self::interfaceDisabled();
+		if ($showLogin) {
+			// The site owner wish to show the login screen before
+			// showing the interface : the list of files get be
+			// returned only if the user is logged in
+			$aeSession = \MarkNotes\Session::getInstance();
+			$bAuthenticated = boolval($aeSession->get('authenticated', 0));
+
+			if (!$bAuthenticated) {
+				// Not authenticated ==> show the login page.
+				self::interfaceDisabled();
+			}
 		}
 
 		// @link https://github.com/JayBizzle/Crawler-Detect
