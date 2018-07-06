@@ -6,6 +6,7 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "fr"
 	},
+	"zip_create_package_file":"La note sera bient\u00f4t t\u00e9l\u00e9charg\u00e9e, merci de patienter un peu jusqu'\u00e0 ce que la note, ses images et ressources locales (p.ex. fichiers pdf, ...) soient rassembl\u00e9es et zipp\u00e9es. L'archive sera alors t\u00e9l\u00e9charg\u00e9s d\u00e8s qu'elle est pr\u00eate.",
 	"button_zip_note":"T\u00e9l\u00e9charge la note au format ZIP",
 	"editor_dropzone_placeholder":"Zone de t\u00e9l\u00e9versement en masse :<ol><li>Positionnez le curseur dans l'\u00e9diteur \u00e0 l'endroit o\u00f9 doivent appara\u00eetre les images \/ les hyperliens vers les fichiers,<\/li><li>Depuis votre disque dur, glissez \/d\u00e9posez les fichiers ici.<\/li><\/ol>Les fichiers seront alors envoy\u00e9s sur le serveur un par un et seront repris dans votre note.<br\/><em>Les fichiers ayant \u00e9t\u00e9 charg\u00e9s avec succ\u00e8s dispara\u00eetront de cette zone, si des fichiers y restent, ces derniers n'auront pas \u00e9t\u00e9 accept\u00e9s par la configuration du serveur.<\/em>",
 	"ajax_error": "<strong>Une erreur est survenue :<\/strong><br\/>Statut : $1<br\/>Code HTTP retourn\u00e9 : $2 ($3)<br\/>XHR ReadyState : $4<br\/>R\u00e9ponse du serveur :<br\/>$5",

@@ -6,6 +6,7 @@
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "en"
 	},
+	"zip_create_package_file":"The note will be downloaded soon, please wait a bit until the note, its images and local resources (e.g. pdf files, ...) are collected and zipped. The archive will then be downloaded as soon as it is ready.",
 	"button_zip_note":"Download the note as a ZIP file",
 	"settings_plugins_options_task_upload_max_size":"Max allowed filesize in MB (f.i. 10)",
 	"editor_dropzone_placeholder":"Mass upload area:<ol><li>Place the cursor in the editor where the images / hyperlinks to the files should appear,</li><li>From your hard disk, drag and drop the files here.</li></ol>The files will then be sent to the server one by one and will be included in your note.<br/><em>Files that have been successfully loaded will disappear from this area, if files remain there, they will not have been accepted by the server configuration.</em>",
