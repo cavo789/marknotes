@@ -2,6 +2,12 @@
 /**
  * Optimize the HTML rendering, remove comments, minify css, ... *
  * @link https://github.com/matthiasmullie/minify/
+ *
+ * Note : the optimization can be disabled on the URL by using
+ *		the "optimization" parameter. Setting it to 0 will disable
+ *		the optimization even if well enabled in settings.json
+ *
+ * Example index.php?task=task.export.html&param=xxxxx&optimization=0
  */
 namespace MarkNotes\Plugins\Page\HTML;
 
@@ -170,15 +176,25 @@ class Optimize extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 		if ($bCanRun) {
 
-			$aeSession = \MarkNotes\Session::getInstance();
-			$filename = trim($aeSession->get('filename', ''));
+			$aeFunctions = \MarkNotes\Functions::getInstance();
 
-			if ($filename !== '') {
-				// Don't run add_icons for PDF exportation
-				// (will give errors with decktape)
-				$aeFiles = \MarkNotes\Files::getInstance();
-				$ext = $aeFiles->getExtension($filename);
-				$bCanRun = !(in_array($ext, array('pdf', 'reveal.pdf', 'remark.pdf')));
+			// Check if the optimization parameter is set
+			// on the querystring and if yes, don't run the
+			// optimize plugin if set to 0
+			$bCanRun = $aeFunctions->getParam('optimization', 'boolean', true);
+
+			if ($bCanRun) {
+
+				$aeSession = \MarkNotes\Session::getInstance();
+				$filename = trim($aeSession->get('filename', ''));
+
+				if ($filename !== '') {
+					// Don't run add_icons for PDF exportation
+					// (will give errors with decktape)
+					$aeFiles = \MarkNotes\Files::getInstance();
+					$ext = $aeFiles->getExtension($filename);
+					$bCanRun = !(in_array($ext, array('pdf', 'reveal.pdf', 'remark.pdf')));
+				}
 			}
 		}
 

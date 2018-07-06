@@ -3,13 +3,18 @@
  * Optimize the content
  *
  * Will be enabled when :
- *     * plugins.content.html.optimize is enabled
- *     * plugins.page.html.optimize is enabled
- *     * plugins.options.page.html.optimize.images.lazyload is enabled
+ *	 * plugins.content.html.optimize is enabled
+ *	 * plugins.page.html.optimize is enabled
+ *	 * plugins.options.page.html.optimize.images.lazyload is enabled
  *
  * Won't be enabled otherwise
+ *
+ * Note : the optimization can be disabled on the URL by using
+ *		the "optimization" parameter. Setting it to 0 will disable
+ *		the optimization even if well enabled in settings.json
+ *
+ * Example index.php?task=task.export.html&param=xxxxx&optimization=0
  */
-
 namespace MarkNotes\Plugins\Content\HTML;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -55,18 +60,30 @@ class Optimize extends \MarkNotes\Plugins\Content\HTML\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
-			// This plugin is only needed when, in settings.json, the key
-			// plugins.options.page.html.optimize.images.lazyload is set
-			// to 1 i.e. active
-			$arrOptions = self::getOptions('images', array());
-			$bCanRun = boolval($arrOptions['lazyload'] ?? 1);
 
-			// Ok, the lazyload feature is enabled but, perhaps, the optimize
-			// plugin not.
+			$aeFunctions = \MarkNotes\Functions::getInstance();
+
+			// Check if the optimization parameter is set
+			// on the querystring and if yes, don't run the
+			// optimize plugin if set to 0
+			$bCanRun = $aeFunctions->getParam('optimization', 'boolean', true);
+
 			if ($bCanRun) {
-				$aeSettings = \MarkNotes\Settings::getInstance();
-				$arrSettings = $aeSettings->getPlugins('plugins.page.html.optimize');
-				$bCanRun = $arrSettings['enabled'] ?? 0;
+
+				// This plugin is only needed when, in settings.json,
+				// the key
+				// plugins.options.page.html.optimize.images.lazyload
+				// is set to 1 i.e. active
+				$arrOptions = self::getOptions('images', array());
+				$bCanRun = boolval($arrOptions['lazyload'] ?? 1);
+
+				// Ok, the lazyload feature is enabled but, perhaps, the optimize
+				// plugin not.
+				if ($bCanRun) {
+					$aeSettings = \MarkNotes\Settings::getInstance();
+					$arrSettings = $aeSettings->getPlugins('plugins.page.html.optimize');
+					$bCanRun = $arrSettings['enabled'] ?? 0;
+				}
 			}
 		}
 
