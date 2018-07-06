@@ -10,7 +10,7 @@ class MN_Definitions extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 {
 	protected static $me = __CLASS__;
 	protected static $icon = 'square';
-	protected static $json_settings =  'plugins.page.html.definitions';
+	protected static $json_settings =  'plugins.task.definitions';
 
 	public function getFormItem() : string
 	{

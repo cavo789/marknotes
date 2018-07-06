@@ -20,6 +20,11 @@ function fnPluginTaskSearch_init() {
 		// Get place for other DOM elements
 		$width = $width - 100;
 
+		// Not too big...
+		if ($width>500) {
+			$widht=500;
+		}
+
 		$('#divSearch').css("max-width", $width +"px");
 
 		/*<!-- build:debug -->*/

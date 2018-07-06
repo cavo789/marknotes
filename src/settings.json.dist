@@ -1190,6 +1190,9 @@
 			"backup" : {
 				"enabled" : 1
 			},
+			"definitions" : {
+				"enabled" : 1
+			},
 			"editor" : {
 				"enabled" : 1
 			},

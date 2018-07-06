@@ -38,7 +38,7 @@ defined('_MARKNOTES') or die('No direct access allowed');
 class Definition extends \MarkNotes\Plugins\Page\HTML\Plugin
 {
 	protected static $me = __CLASS__;
-	protected static $json_settings = 'plugins.page.html.definition';
+	protected static $json_settings = 'plugins.task.definitions';
 	protected static $json_options = 'plugins.options.markdown.definitions';
 
 	/**
