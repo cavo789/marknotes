@@ -6,7 +6,7 @@ var filename; // Remember the filename
 // Variables used in order to be able to fixed the toolbar
 // when scrolling then page.
 var toolbarAffixAt = 0;
-var toolbarFixedTop= 0;
+var toolbarFixedTop = 0;
 var cmPaperTop = 0;
 
 /**
@@ -30,13 +30,13 @@ function fnPluginEditInit(params) {
  * @param  {[type]} css_filename_part [description]
  * @return {[type]}			[description]
  */
-var toggleStateEditorCSS = function(css_filename_part, state) {
+var toggleStateEditorCSS = function (css_filename_part, state) {
 	var stylesheets = document.styleSheets;
 	var length = stylesheets.length;
 	var i;
 
 	try {
-		for (i=0; i < length; i++){
+		for (i = 0; i < length; i++) {
 			var ss = stylesheets[i];
 
 			// If part of the href URL match the css_filename_part
@@ -44,7 +44,7 @@ var toggleStateEditorCSS = function(css_filename_part, state) {
 			// Don't use a toggle state so we're sure that if the
 			// function is called twice, the disabled is well what
 			// we wish
-			if ((ss.href!==null) && (ss.href.indexOf(css_filename_part) !== -1)) {
+			if ((ss.href !== null) && (ss.href.indexOf(css_filename_part) !== -1)) {
 				ss.disabled = state;
 			}
 		}
@@ -64,19 +64,19 @@ function fnPluginEditToolbarAffix() {
 	if ($(document).scrollTop() > toolbarAffixAt) {
 		$(".te-toolbar-section")
 			.addClass("toolbar-fixed")
-			.css({"top": toolbarFixedTop + "px"});
+			.css({ "top": toolbarFixedTop + "px" });
 
 		$("#divEditUpload")
-			.css({"top": toolbarFixedTop + "px"});
+			.css({ "top": toolbarFixedTop + "px" });
 
 		fnPluginEditToolbarSetWidth();
 	} else {
 		$(".te-toolbar-section")
 			.removeClass("toolbar-fixed")
-			.css({top: ""});
+			.css({ top: "" });
 
 		$("#divEditUpload")
-			.css({top: ""});
+			.css({ top: "" });
 	}
 
 	return true;
@@ -143,9 +143,9 @@ function fnPluginEditShowEditor($ajax_request, $form) {
 			if (TogetherJS.running) {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
-					console.log('	  Plugin Page html - Editor - '+
-						'fnPluginEditShowEditor - Inform connected '+
-						'people about the fact that the connected '+
+					console.log('	  Plugin Page html - Editor - ' +
+						'fnPluginEditShowEditor - Inform connected ' +
+						'people about the fact that the connected ' +
 						'user is editing a note');
 				}
 				/*<!-- endbuild -->*/
@@ -218,7 +218,7 @@ function fnPluginEditAfterShowEditorInitialize($data) {
 
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Editor - '+
+		console.log('	  Plugin Page html - Editor - ' +
 			'fnPluginEditAfterShowEditorInitialize');
 		console.log($data);
 	}
@@ -228,7 +228,7 @@ function fnPluginEditAfterShowEditorInitialize($data) {
 
 	// Should be en_US and not en-US
 	var editor_language = marknotes.settings.language_ISO;
-	editor_language = editor_language.replace('-','_');
+	editor_language = editor_language.replace('-', '_');
 
 	/**
 	 * Initialize the tui.editor
@@ -329,9 +329,9 @@ function fnPluginEditSetContent(editor) {
 
 	var $MD = $('#sourceMarkDown').text();
 	$MD = $MD
-		.replace(/&lt;/g,'<')
-		.replace(/&gt;/g,'>')
-		.replace(/&amp;/g,'&');
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+		.replace(/&amp;/g, '&');
 
 	editor.setValue($MD);
 
@@ -372,7 +372,7 @@ function fnPluginEditUseFontAwesome() {
 	];
 
 	// Remove the tui-xxxx class and add the fa-class
-	arrClass.forEach(function(elem) {
+	arrClass.forEach(function (elem) {
 		$('.tui-toolbar-icons.' + elem[0])
 			.removeClass(elem[0])
 			.addClass('MN_button fa ' + elem[1]);
@@ -400,7 +400,7 @@ function fnPluginEditOverridePreview(editor) {
 	var $selector = '.te-markdown-tab-section [data-index=0]';
 
 	// Add click event
-	$($selector).on('click', function(e) {
+	$($selector).on('click', function (e) {
 
 		// enable back the CSS of tui.editor for the contents part
 		toggleStateEditorCSS('tui-editor-contents.min.css', false);
@@ -424,10 +424,10 @@ function fnPluginEditOverridePreview(editor) {
 	$selector = '.te-markdown-tab-section [data-index=1]';
 
 	// Add click event
-	$($selector).on('click', function(e, options) {
+	$($selector).on('click', function (e, options) {
 		options = options || {};
 
-		if ( !options.getHTML ) {
+		if (!options.getHTML) {
 
 			toggleStateEditorCSS('tui-editor-contents.min.css', true);
 
@@ -463,7 +463,7 @@ function fnPluginEditOverridePreview(editor) {
 					// removed (as seen in the example on
 					// https://nhnent.github.io/tui.editor/api/latest/tutorial-example12-writing-extension.html#
 					// -see JS tab-)
-					setTimeout(function(){
+					setTimeout(function () {
 						$('.tui-editor-contents').html(data.html);
 					}, 0);
 					// And retrigger the onclick event with

@@ -68,6 +68,10 @@ class HTML
 				// In order to have nice URLs, extract the title
 				// (stored in $tmp)
 				// $tmp is equal, f.i., to <h2>My slide title</h2>
+
+				// Don't take the font-awesome icon when getting the ID
+				$tmp = preg_replace("/:fa-.*:/","",$tmp);
+
 				$id = $aeFunctions->slugify(strip_tags($tmp));
 
 				// The ID can't start with one of these chars
