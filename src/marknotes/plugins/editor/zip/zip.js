@@ -1,8 +1,10 @@
-// Add a ZIP button that will allow to download the note
-// Based on https://github.com/Stuk/jszip-utils
-//
-// $POSITION$ will be replaced by the position configured in
-// settings.json->plugins->editor->zip->position
+/**
+ *	Add a ZIP button that will allow to download the note
+ *	Based on https://github.com/Stuk/jszip-utils
+ *
+ *	$POSITION$ will be replaced by the position configured in
+ *	settings.json->plugins->editor->zip->position
+*/
 toolbar.insertItem($POSITION$, {
 	type: 'button',
 	options: {
@@ -25,11 +27,13 @@ editor.eventManager.listen('fnPluginEditButtonZIPClicked', function () {
 	}
 	/*<!-- endbuild -->*/
 
-	// Add an external script, load jszip.min.js but since JSZip
-	// rely on FileSaver, get that script too.
-	// @Link https://github.com/Stuk/jszip
-	// Use an ajax request to load the script so it's loaded
-	// only when needed.
+	/**
+	 * Add an external script, load jszip.min.js but since JSZip
+	 * rely on FileSaver, get that script too.
+	 * @Link https://github.com/Stuk/jszip
+	 * Use an ajax request to load the script so it's loaded
+	 * only when needed.
+	*/
 
 	var $urls = [];
 	$urls[0] = 'marknotes/plugins/editor/zip/libs/jszip.min.js';
@@ -64,7 +68,7 @@ editor.eventManager.listen('fnPluginEditButtonZIPClicked', function () {
 });
 
 // Implement a .replaceAll() function of strings
-String.prototype.replaceAll = function(search, replacement) {
+String.prototype.replaceAll = function (search, replacement) {
 	var target = this;
 	var pattern = search;
 
@@ -76,9 +80,9 @@ String.prototype.replaceAll = function(search, replacement) {
 
 // https://stackoverflow.com/a/49003082/1065340
 function fnPluginEditButtonZIPurlToPromise(url) {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function (resolve, reject) {
 		JSZipUtils.getBinaryContent(url, function (err, data) {
-			if(err) {
+			if (err) {
 				/*<!-- build:debug -->*/
 				if (marknotes.settings.debug) {
 					console.error('Error getting ' + url +
@@ -86,12 +90,12 @@ function fnPluginEditButtonZIPurlToPromise(url) {
 					console.log(err);
 				}
 				/*<!-- endbuild -->*/
-/**
-@TODO : Gérer les erreurs comme des images non trouvées (erreur 404)
-Si cette fonction-ci rencontre une erreur le fichier ZIP n'est
-pas généré or, au mieux, il faudrait juste ignorer l'erreur et
-bel et bien générer le fichier.
-*/
+				/**
+				@TODO : Gérer les erreurs comme des images non trouvées (erreur 404)
+				Si cette fonction-ci rencontre une erreur le fichier ZIP n'est
+				pas généré or, au mieux, il faudrait juste ignorer l'erreur et
+				bel et bien générer le fichier.
+				*/
 			} else {
 				resolve(data);
 			}
@@ -134,23 +138,22 @@ function fnPluginEditButtonZIPDoIt() {
 			var noteFolderName = '';
 
 			myRegexp = /^(.+)\/([^\/]+)$/g;
-			match = myRegexp.exec(marknotes.note.file);
-			noteFolderName = marknotes.docs + match[1] + '/';
+			if (match = myRegexp.exec(marknotes.note.file)) {
+				noteFolderName = marknotes.docs + match[1] + '/';
+				pageHTML = html.replaceAll(noteFolderName, '');
+
+				try {
+					pageHTML = decodeURI(pageHTML);
+					pageHTML = pageHTML.replaceAll(noteFolderName, '');
+				} catch (error) {
+				}
+
+			} else {
+				pageHTML = html;
+			}
 
 			// Once loaded, use the library
 			var zip = new JSZip();
-
-			// marknotes.note.basename contains the note's filename
-			// without the extension, so add the .html extension
-			// The line here below will dynamically create a "fake"
-			// file with the basename of the note and put in it
-			// the note's content (html format).
-			tmp = html.replaceAll(noteFolderName, '');
-
-			tmp = decodeURI(tmp);
-			tmp = tmp.replaceAll(noteFolderName, '');
-
-			zip.file(marknotes.note.basename + ".html", tmp);
 
 			// Get the rendered HTML of the note
 			// and loop for all images
@@ -161,33 +164,42 @@ function fnPluginEditButtonZIPDoIt() {
 			var images = temp.getElementsByTagName('img');
 
 			// process images
-			if (images.length>0) {
-				for (var i=0; i<images.length; i++) {
+			if (images.length > 0) {
+				for (var i = 0; i < images.length; i++) {
 
 					// Convert http://site/docs/folder/subfolder/images/image.png)
 					// to relative one (images/image.png)
-					src=images[i].src.replaceAll(noteFolderName, '');
+					src = images[i].src.replaceAll(noteFolderName, '');
+
+					// Remove protocol so the image can be saved into the
+					// zip file. The URL to the image will become the
+					// folder name and, for this reason, remove the protocol
+					src = src.replaceAll('https://', '');
+					src = src.replaceAll('http://', '');
+
+					pageHTML = pageHTML.replaceAll(images[i].src, src);
 
 					// Extract the dirname (/folder/images/) and the
 					// name of the image (file.png)
 					// https://stackoverflow.com/a/3821597/1065340
 					myRegexp = /^(.+)\/([^\/]+)$/g;
-					match = myRegexp.exec(src);
 
-					dirName = match[1]; // so f.i. "images"
-					zip.folder(dirName);
+					if (match = myRegexp.exec(src)) {
+						dirName = match[1]; // so f.i. "images" or "www.site.com"
+						zip.folder(dirName);
+					}
 
 					//imgName = match[2]; // so f.i. "image.png"
 
 					data = fnPluginEditButtonZIPurlToPromise(images[i].src);
-					zip.file(src, data, {binary:true});
+					zip.file(src, data, { binary: true });
 				} // for
 			} // if (images.length>0)
 
 			// Process links
-
 			var links = temp.getElementsByTagName('a');
-			for(i = 0; i<links.length; i++) {
+
+			for (i = 0; i < links.length; i++) {
 				src = decodeURI(links[i].href);
 
 				// The link points to a file in our note's folder ?
@@ -199,35 +211,55 @@ function fnPluginEditButtonZIPDoIt() {
 					// Extract the dirname (/folder/ressource/) and the
 					// name of the file (report.pdf)
 					myRegexp = /^(.+)\/([^\/]+)$/g;
-					match = myRegexp.exec(src);
 
-					dirName = match[1];
-					zip.folder(dirName);
+					if (match = myRegexp.exec(src)) {
+						dirName = match[1];
+						zip.folder(dirName);
+					}
 
 					data = fnPluginEditButtonZIPurlToPromise(links[i].href);
-					zip.file(src, data, {binary:true});
-				}
-			} // for
+					zip.file(src, data, { binary: true });
+
+				} // if (src.startsWith(noteFolderName))
+
+			} // for (i = 0; i < links.length; i++)
+
+			/**
+			 * Add the HTML
+			 * marknotes.note.basename contains the note's filename
+			 * without the extension, so add the .html extension
+			 * The line here below will dynamically create a "fake"
+			 * file with the basename of the note and put in it
+			 * the note's content (html format).
+			 */
+			zip.file(marknotes.note.basename + ".html", pageHTML);
 
 			// Generate the zip and send it to the browser
-			zip.generateAsync({type:"blob"},
+			zip.generateAsync({ type: "blob" },
 				function updateCallback(metadata) {
-					var msg = "progression : " + metadata.percent.toFixed(2) + " %";
-					if(metadata.currentFile) {
-						msg += ", current file = " + metadata.currentFile;
+					/*<!-- build:debug -->*/
+					if (marknotes.settings.debug) {
+						var msg = "progression : " + metadata.percent.toFixed(2) + " %";
+						if (metadata.currentFile) {
+							msg += ", current file = " + metadata.currentFile;
+						}
+						console.log(msg);
+						console.log(metadata.percent | 0);
 					}
-					console.log(msg);
-					console.log(metadata.percent|0);
-				})
-				.then(function(content) {
-					saveAs(content, marknotes.note.basename + ".zip");
-				},
-				function (e) {
-					console.log(e);
-				});
+					/*<!-- endbuild -->*/
+				}
+			)
+				.then(
+					function (content) {
+						saveAs(content, marknotes.note.basename + ".zip");
+					},
+					function (e) {
+						console.log(e);
+					}
+				);
 
-		}
-	});
+		} // success
+	}); // $.ajax
 
 	return true;
 }
