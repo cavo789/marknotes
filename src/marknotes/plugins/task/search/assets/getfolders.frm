@@ -12,8 +12,8 @@
 		<br/>
 
 		<div class="form-check">
-		  <input class="form-check-input" type="checkbox" value="" id="chkDisablePlugins">
-		  <span class="form-check-label" for="chkDisablePlugins">%SEARCH_DISABLE_PLUGINS%</span>
+			<input class="form-check-input" type="checkbox" value="" id="chkDisablePlugins">
+			<span class="form-check-label" for="chkDisablePlugins">%SEARCH_DISABLE_PLUGINS%</span>
 		</div>
 
 		<br/>
@@ -26,62 +26,62 @@
 </div>
 
 <script>
-$("#btn_search_apply").click(function() {
-//$("#cbxFolderList").change(function() {
+	$("#btn_search_apply").click(function () {
+		//$("#cbxFolderList").change(function() {
 
-	// Get the selected folder
-	marknotes.search.restrict_folder = $("#cbxFolderList").val();
+		// Get the selected folder
+		marknotes.search.restrict_folder = $("#cbxFolderList").val();
 
-	// Disable or not plugins ?
-	marknotes.search.disable_plugins = $('#chkDisablePlugins').is(":checked") ? 1 : 0;
+		// Disable or not plugins ?
+		marknotes.search.disable_plugins = $('#chkDisablePlugins').is(":checked") ? 1 : 0;
 
-	// Reinitialize the treeview to search only on the selected folder
-	$('#TOC').jstree(true).settings.search.ajax.data =
-		{
-			restrict_folder : window.btoa(encodeURIComponent(JSON.stringify(marknotes.search.restrict_folder))),
-			disable_plugins : marknotes.search.disable_plugins
-		 };
+		// Reinitialize the treeview to search only on the selected folder
+		$('#TOC').jstree(true).settings.search.ajax.data =
+			{
+				restrict_folder: window.btoa(encodeURIComponent(JSON.stringify(marknotes.search.restrict_folder))),
+				disable_plugins: marknotes.search.disable_plugins
+			};
 
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  fnPluginTaskSearchRestrictFolder - restrict searchs to ');
-		console.log('	  '+marknotes.search.restrict_folder);
-	}
-	/*<!-- endbuild -->*/
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.log('	  fnPluginTaskSearchRestrictFolder - restrict searchs to ');
+			console.log('	  ' + marknotes.search.restrict_folder);
+		}
+		/*<!-- endbuild -->*/
 
-	if (marknotes.search.restrict_folder!=='.') {
-		$('#search-advanced-btn').addClass('btn-restrict-active');
-		$('.search-flexdatalist').attr('placeholder', marknotes.search.restrict_folder);
-		$('.search-flexdatalist').attr('title', $.i18n('search_restricted_to')+' '+marknotes.search.restrict_folder);
-	} else {
+		if (marknotes.search.restrict_folder !== '.') {
+			$('#search-advanced-btn').addClass('btn-restrict-active');
+			$('.search-flexdatalist').attr('placeholder', marknotes.search.restrict_folder);
+			$('.search-flexdatalist').attr('title', $.i18n('search_restricted_to') + ' ' + marknotes.search.restrict_folder);
+		} else {
+			$('#search-advanced-btn').removeClass('btn-restrict-active');
+			$('.search-flexdatalist').attr('placeholder', $.i18n('search_placeholder'));
+			$('.search-flexdatalist').attr('title', '');
+		}
+		return true;
+	});
+
+	$('#btn_search_remove_restrict').click(function () {
+
+		// No restriction
+		marknotes.search.restrict_folder = '.';
 		$('#search-advanced-btn').removeClass('btn-restrict-active');
-		$('.search-flexdatalist').attr('placeholder', $.i18n('search_placeholder'));
-		$('.search-flexdatalist').attr('title', '');
-	}
-	return true;
-});
 
-$('#btn_search_remove_restrict').click(function() {
+		// Reinitialize the treeview to search only on the selected folder
+		$('#TOC').jstree(true).settings.search.ajax.data =
+			{
+				restrict_folder: '.',
+				disable_plugins: 0
+			};
 
-	// No restriction
-	marknotes.search.restrict_folder = '.';
-	$('#search-advanced-btn').removeClass('btn-restrict-active');
+		/*<!-- build:debug -->*/
+		if (marknotes.settings.debug) {
+			console.log('	  fnPluginTaskSearchRestrictFolder - Remove restriction');
+		}
+		/*<!-- endbuild -->*/
 
-	// Reinitialize the treeview to search only on the selected folder
-	$('#TOC').jstree(true).settings.search.ajax.data =
-		{
-			restrict_folder : '.',
-			disable_plugins: 0
-		};
+		return true;
 
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  fnPluginTaskSearchRestrictFolder - Remove restriction');
-	}
-	/*<!-- endbuild -->*/
-
-	return true;
-
-});
+	});
 
 </script>
