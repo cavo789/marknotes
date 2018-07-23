@@ -118,16 +118,55 @@ function fnPluginButtonCopyHTML() {
 			type: 'error'
 		});
 	} else {
+
+		/**
+		 * Two possibile scenarios : the note is displayed as a
+		 * HTML note (so html can be retrieved in $('article').html())
+		 * or the editor is displayed (so no HTML can be retrieved)
+		 *
+		 * In both cases, get a fresh copy of the HTML (don't rely on what is
+		 * displayed); this to allow us to disable the optimization
+		 * (so, f.i. don't lazyload images)
+		 */
+		var html = '';
+
+		var $data = {};
+		$data.task = 'task.export.html';
+		$data.param = marknotes.note.md5;
+		$data.optimization = 0;
+
+		$.ajax({
+			async: false,
+			type: (marknotes.settings.debug ? 'GET' : 'POST'),
+			url: marknotes.url,
+			data: $data,
+			datatype: 'json',
+			success: function (data) {
+				html = data;
+			}
+		}); // $.ajax()
+
+		// Create a temporary div
+		// So we can change the HTML (css, ...) without any effects
+		// on the displayed note
+		var temp = document.createElement('div');
+		temp.setAttribute('id', 'tmpdivCopyHTML');
+		temp.innerHTML = html;
+
+		document.getElementById('CONTENT').appendChild(temp);
+
+		// Make the H1 visible
+		$('#tmpdivCopyHTML h1').show();
+
 		// Remove unneeded DOM objects there was added by,
 		// f.i., the DataTable Plugin
-
 		try {
 			var $arrElem = ['dtmn-Bottom', 'dtmn-Buttons', 'dtmn-Find', 'dtmn-List', 'dataTables_scrollHead'];
 			var $j = $arrElem.length;
 			var $elements = null;
 
 			for (var $i = 0; $i < $j; $i++) {
-				$elements = document.getElementById('note_content').parentNode.getElementsByClassName($arrElem[$i]);
+				$elements = document.getElementById('tmpdivCopyHTML').parentNode.getElementsByClassName($arrElem[$i]);
 
 				while ($elements.length > 0) {
 					/*<!-- build:debug -->*/
@@ -139,15 +178,16 @@ function fnPluginButtonCopyHTML() {
 					$elements[0].parentNode.removeChild($elements[0]);
 				}
 			}
-		} catch (e) {}
+		} catch (e) {
+		}
 
-		// In case of the heading 1 isn't visible (it's the
-		// case with the AdminLTE template), be sure to make
-		// it visible in the copied HTML
-		var $show = $('article h1').css('display');
-		$('article h1').show();
-		copyHTMLSource($('article').html());
-		$('article h1').css('display', $show);
+		// Retrieve the HTML, store it into a variable and release the
+		// DIV; no more needed
+		html = $('#tmpdivCopyHTML').html();
+		temp.remove();
+
+		// Copy the HTML in the clipboard
+		copyHTMLSource(html);
 
 		Noty({
 			message: $.i18n('copy_html_done'),
