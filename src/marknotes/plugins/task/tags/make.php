@@ -66,18 +66,17 @@ class Make extends \MarkNotes\Plugins\Task\Plugin
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		// This one will be absolute
-		$docFolder = $aeSettings->getFolderDocs(true);
-
 		// Get the list of files
 		$arrFiles = self::getFiles();
 
 		$arrIndex = array();
 
-		// Process each files
+		// Process each files and make an array with the occurence of
+		// each words
 		foreach ($arrFiles as $file) {
-			$fullname = $docFolder.$file;
+			$fullname = $aeFiles->makeFileNameAbsolute($file);
 			$content = str_replace("\n", " ", $aeFiles->getContent($fullname));
+
 			$arrIndex = self::makeIndex($content, $arrIndex);
 		}
 
@@ -87,13 +86,24 @@ class Make extends \MarkNotes\Plugins\Task\Plugin
 		// position in the array
 		arsort($arrIndex);
 
-		$minOccurences = self::getOptions('min_occurences', '10');
+		// Read settings and get the number of tags to keep :
+		// f.i. if max_tags is equal to 100 so keep the top 100 first
+		// tags (with the highests occurences of course)
+		$nbrTags = self::getOptions('max_tags', '500');
+
+		if ($nbrTags > count($arrIndex)) {
+			$nbrTags = count($arrIndex);
+		}
+
+
 		$arrTags = array();
+		$i = 0;
 		foreach ($arrIndex as $word => $arrIndex) {
-			if ($arrIndex < $minOccurences) {
+			if ($i > $nbrTags) {
 				break;
 			}
 			$arrTags[] = utf8_encode($word);
+			$i++;
 		}
 
 		sort($arrTags);

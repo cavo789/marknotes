@@ -33,7 +33,7 @@ class MN_Tags extends \MarkNotes\Plugins\Task\Settings\Entries\Plugin
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 
-		$opt = 'min_occurences';
+		$opt = 'max_tags';
 		$text = self::getTranslation($key.'.'.$opt);
 		$content .= self::getText($key.'.'.$opt, $text, $arr[$opt]);
 

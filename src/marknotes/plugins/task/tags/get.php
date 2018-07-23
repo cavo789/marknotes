@@ -122,7 +122,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				$content = json_decode($aeFiles->getContent($fname), true);
 				foreach ($content as $tag) {
 					if($tag!=='') {
-						$arrTags[] = array('name'=>$tag);
+						$arrTags[] = array('name'=>utf8_decode($tag));
 					}
 				}
 			}

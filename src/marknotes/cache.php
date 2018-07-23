@@ -111,6 +111,29 @@ class Cache
 	}
 
 	/**
+	 * Debugging : return every objects stored in the cache for a given
+	 * tag
+	 *
+	 * Example :
+	 * 	$aeCache = \MarkNotes\Cache::getInstance();
+	 *		$arr = $aeCache->debug_getItemsByTag('search');
+	 *		header('Content-Type: application/json');
+	 *		echo json_encode($arr, JSON_PRETTY_PRINT);
+	 */
+	public static function debug_getItemsByTag(string $tag) : array {
+
+		$keys = static::$InstanceCache->getItemsByTag(md5($tag));
+
+		$arr = array();
+		foreach ($keys as $key) {
+			$arr[$key->getKey()] = $key->get();
+		}
+
+		return $arr;
+
+	}
+
+	/**
 	 * Save an information into the cache
 	 */
 	public static function save($info) {

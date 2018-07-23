@@ -203,6 +203,10 @@ class Debugging {
 				self::makeURL('index.php?task=task.search.search&str='.$item,'Searching for keyword='.$item).'</li>';
 		}
 
+		$content .='<li>'.
+			self::makeURL('index.php?task=task.search.debug',
+				'Show the cache\'s content', 'json', 'Show the cache').'</li>';
+
 		$html = str_replace('%CONTENT%', $content, $html);
 		return $html;
 	}

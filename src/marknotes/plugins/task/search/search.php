@@ -321,6 +321,10 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		sort($keywords);
 		$pattern = implode($keywords, ',');
 
+		// The cache can vary from one user to an
+		// another so we need to use his username
+		$pattern = $aeSession->getUser().'###'.$pattern;
+
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug->log('Searching for ['.$pattern.']', 'debug');
@@ -331,6 +335,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		// subfolder and not search for everyting under /docs
 		$restrict_folder = trim(urldecode($aeFunctions->getParam('restrict_folder', 'string', '', true)));
 		$restrict_folder = json_decode($restrict_folder);
+
 		if ($restrict_folder==null) {
 			$restrict_folder='';
 		} else {
@@ -339,6 +344,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				$restrict_folder='';
 			}
 		}
+
 		$params['restrict_folder'] = $restrict_folder;
 
 		// Look for the ""&disable_plugins" querystring variable
@@ -354,10 +360,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$bCache = $arrSettings['enabled'] ?? false;
 
 		if ($bCache) {
-			// The cache can vary from one user to an
-			// another so we need to use his username
-			$key = $aeSession->getUser().'###'.$pattern;
-			$cached = self::getFromCache(md5($key));
+			$cached = self::getFromCache(md5($pattern));
 			if (!is_null($cached)) {
 				$arr = $cached->get();
 			}
@@ -371,7 +374,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				$arr['from_cache'] = 1;
 				// Cache the result; read duration from settings.json
 				$duration = $arrSettings['duration']['default'];
-				$cached->set($arr)->expiresAfter($duration);
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5('search'));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
@@ -392,7 +395,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				$timeTaken =  microtime(true) - $startedAt;
 				echo "<h5>Time taken : ".$timeTaken." seconds</h5>";
 				echo '<pre>'.json_encode($arr, JSON_PRETTY_PRINT).'</pre>';
-				die("<h1>Died in ".__FILE__.", line ".__LINE__." : </h1>");
+				die();
 			}
 		}
 		/*<!-- endbuild -->*/
