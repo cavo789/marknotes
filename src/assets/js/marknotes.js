@@ -27,6 +27,7 @@ RegExp.quote = function (str) {
 };
 
 $(document).ready(function () {
+
 	if (marknotes.autoload === 1) {
 
 		// Be sure that this plugin is well part of the current
@@ -47,12 +48,17 @@ $(document).ready(function () {
 			});
 		}
 
-		ajaxify({
-			filename: 'listfiles.json', // same of task: 'task.listfiles.treeview'
-			dataType: 'json',
-			callback: 'initFiles(data)',
-			error_callback: 'initFiles_ERROR($target, Request, textStatus, errorThrown)',
-		});
+		// Only when the page isn't viewed from the disk
+		var isFile = (window.location.protocol == 'file:');
+
+		if (!isFile) {
+			ajaxify({
+				filename: 'listfiles.json', // same of task: 'task.listfiles.treeview'
+				dataType: 'json',
+				callback: 'initFiles(data)',
+				error_callback: 'initFiles_ERROR($target, Request, textStatus, errorThrown)',
+			});
+		}
 
 	} // if (marknotes.autoload === 1)
 
@@ -74,10 +80,10 @@ $(document).ready(function () {
 function initFiles_ERROR($target, Request, textStatus, errorThrown) {
 
 	var $msg = $.i18n('check_SEF_Mode') +
-		'<div class="bg-danger text-danger img-rounded" '+
+		'<div class="bg-danger text-danger img-rounded" ' +
 		'style="margin-top:25px;padding:10px;">' +
 		$.i18n('ajax_error', textStatus, Request.status,
-		Request.statusText, Request.readyState, Request.responseText) +
+			Request.statusText, Request.readyState, Request.responseText) +
 		'</div><hr/>';
 
 	$('#CONTENT').html($msg);
@@ -314,7 +320,7 @@ function initializeTasks() {
 
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			if ($file!=='') {
+			if ($file !== '') {
 				console.log('Running task [' + $task + '] for ' +
 					'file [' + $file + ']');
 			} else {
@@ -324,85 +330,85 @@ function initializeTasks() {
 		/*<!-- endbuild -->*/
 
 		switch ($task) {
-		case 'task.export.html':
+			case 'task.export.html':
 
-			// export.html i.e. display the file by calling the Ajax function.
-			// Display its content in the CONTENT DOM element
+				// export.html i.e. display the file by calling the Ajax function.
+				// Display its content in the CONTENT DOM element
 
-			ajaxify({
-				task: $task,
-				param: $file,
-				callback: 'afterDisplay($data.param)',
-				target: 'CONTENT'
-			});
-			break;
+				ajaxify({
+					task: $task,
+					param: $file,
+					callback: 'afterDisplay($data.param)',
+					target: 'CONTENT'
+				});
+				break;
 
-		case 'file':
+			case 'file':
 
-			// The attribute data_file is set by f.i. the
-			// sitemap or timeline button.
-			// The value can be "sitemap.xml" f.i.
-			var $data_file = '';
+				// The attribute data_file is set by f.i. the
+				// sitemap or timeline button.
+				// The value can be "sitemap.xml" f.i.
+				var $data_file = '';
 
-			try {
-				// If set, it means that the user has click
-				// on a button like sitemap or timeline
-				$data_file = $(this).data('file');
-			} catch (e) {
-			}
+				try {
+					// If set, it means that the user has click
+					// on a button like sitemap or timeline
+					$data_file = $(this).data('file');
+				} catch (e) {
+				}
 
-			if ($data_file!=='') {
-				// data_file are in the root
-				window.open(marknotes.webroot + $data_file);
-			} else {
-				// It's a note (not a data_file so a note);
-				// under the /docs folder
-				window.open(marknotes.docs + $file);
-			}
-			break;
+				if ($data_file !== '') {
+					// data_file are in the root
+					window.open(marknotes.webroot + $data_file);
+				} else {
+					// It's a note (not a data_file so a note);
+					// under the /docs folder
+					window.open(marknotes.docs + $file);
+				}
+				break;
 
-		default:
+			default:
 
-			// The task is perhaps a function that was added
-			// by a plugin. For instance the login form is
-			// a plugin and the data-task
-			// is set to "fnPluginTaskLogin", defined in login.js
-			// => try and call this function
-			try {
+				// The task is perhaps a function that was added
+				// by a plugin. For instance the login form is
+				// a plugin and the data-task
+				// is set to "fnPluginTaskLogin", defined in login.js
+				// => try and call this function
+				try {
 
-				var fn = window[$task];
+					var fn = window[$task];
 
-				// is object a function?
-				if (typeof fn === "function") {
+					// is object a function?
+					if (typeof fn === "function") {
 
+						/*<!-- build:debug -->*/
+						if (marknotes.settings.debug) {
+							console.log('Running the function called [' + $task + ']');
+						}
+						/*<!-- endbuild -->*/
+
+						// Check if there is a data-param attribute
+						// (plugins/content/html/tag/tags.php is an example
+						// of how specify a parameter)
+						var data_param = $(this).attr('data-param') ? $(this).data('param') : '';
+
+						// Give parameters to the function
+						var params = {};
+						params.param = data_param; // Set the param property
+						params.filename = $file; // and the filename if defined
+						fn(params);
+
+					} else {
+						console.warn('Sorry, unknown task [' + $task + ']');
+					}
+				} catch (err) {
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
-						console.log('Running the function called [' + $task + ']');
+						console.warn('Problem when trying to evaluate [' + $task + '][' + err.message + ']');
+						console.log(err);
 					}
 					/*<!-- endbuild -->*/
-
-					// Check if there is a data-param attribute
-					// (plugins/content/html/tag/tags.php is an example
-					// of how specify a parameter)
-					var data_param = $(this).attr('data-param') ? $(this).data('param') : '';
-
-					// Give parameters to the function
-					var params = {};
-					params.param = data_param; // Set the param property
-					params.filename = $file; // and the filename if defined
-					fn(params);
-
-				} else {
-					console.warn('Sorry, unknown task [' + $task + ']');
 				}
-			} catch (err) {
-				/*<!-- build:debug -->*/
-				if (marknotes.settings.debug) {
-					console.warn('Problem when trying to evaluate [' + $task + '][' + err.message + ']');
-					console.log(err);
-				}
-				/*<!-- endbuild -->*/
-			}
 
 		} // switch($task)
 

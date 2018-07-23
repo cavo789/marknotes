@@ -1,13 +1,18 @@
 $(document).ready(function () {
 
-	// Get buttons for the toolbar
-	ajaxify({
-		filename: 'buttons.json', // same of task: 'task.buttons.get'
-		dataType: 'json',
-		callback: 'fnInterfaceInitButtons(data)',
-		error_callback: 'initFiles_ERROR($target, Request, textStatus, errorThrown)',
-		useStore: false
-	});
+	// Only when the page isn't viewed from the disk
+	var isFile = (window.location.protocol == 'file:');
+
+	if (!isFile) {
+		// Get buttons for the toolbar
+		ajaxify({
+			filename: 'buttons.json', // same of task: 'task.buttons.get'
+			dataType: 'json',
+			callback: 'fnInterfaceInitButtons(data)',
+			error_callback: 'initFiles_ERROR($target, Request, textStatus, errorThrown)',
+			useStore: false
+		});
+	}
 
 });
 
