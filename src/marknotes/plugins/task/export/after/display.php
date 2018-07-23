@@ -94,13 +94,17 @@ class Display extends \MarkNotes\Plugins\Task\Plugin
 					// interface (i.e. using Ajax), we just need to
 					// have the content and that content is inside
 					// the article tag
+					// EXCEPT if &full=1 has been added on the querystring
+					$full = $aeFunctions->getParam('full', 'boolean', false);
 
-					if ($aeFunctions->isAjaxRequest()) {
-						// The page has been accessed by an URL
-						// (and not through the interface)
-						if (preg_match("/<article[^>]*>(.+)<\\/article>/s", $content, $match)) {
-							list($pattern, $article) = $match;
-							$content = trim($article);
+					if (!$full) {
+						if ($aeFunctions->isAjaxRequest()) {
+							// The page has been accessed by an URL
+							// (and not through the interface)
+							if (preg_match("/<article[^>]*>(.+)<\\/article>/s", $content, $match)) {
+								list($pattern, $article) = $match;
+								$content = trim($article);
+							}
 						}
 					}
 
