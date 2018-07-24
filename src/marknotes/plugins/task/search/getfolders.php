@@ -123,7 +123,6 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 				$form = str_replace('%SEARCH_DEFINE_TITLE%', $aeSettings->getText('search_define_folder_title', ''), $form);
 				$form = str_replace('%SEARCH_REMOVE%', $aeSettings->getText('search_remove_folder', ''), $form);
 				$form = str_replace('%SEARCHED_ADVANCED_FORM%', $aeSettings->getText('search_advanded_form', ''), $form);
-				$form = str_replace('%SEARCH_DISABLE_PLUGINS%', $aeSettings->getText('search_disable_plugins', ''), $form);
 
 				// Now, build the list of folders
 				$arrFiles = array();

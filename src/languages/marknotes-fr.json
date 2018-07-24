@@ -1,46 +1,74 @@
 {
 	"@metadata": {
-		"authors": [
-			"Christophe Avonture"
-		],
+		"authors": ["Christophe Avonture"],
 		"last-updated": "2018-03-13 15:28:15",
 		"locale": "fr"
 	},
-	"zip_create_package_file":"La note sera bient\u00f4t t\u00e9l\u00e9charg\u00e9e, merci de patienter un peu jusqu'\u00e0 ce que la note, ses images et ressources locales (p.ex. fichiers pdf, ...) soient rassembl\u00e9es et zipp\u00e9es. L'archive sera alors t\u00e9l\u00e9charg\u00e9s d\u00e8s qu'elle est pr\u00eate.",
-	"button_zip_note":"T\u00e9l\u00e9charge la note au format ZIP",
-	"editor_dropzone_placeholder":"Zone de t\u00e9l\u00e9versement en masse :<ol><li>Positionnez le curseur dans l'\u00e9diteur \u00e0 l'endroit o\u00f9 doivent appara\u00eetre les images \/ les hyperliens vers les fichiers,<\/li><li>Depuis votre disque dur, glissez \/d\u00e9posez les fichiers ici.<\/li><\/ol>Les fichiers seront alors envoy\u00e9s sur le serveur un par un et seront repris dans votre note.<br\/><em>Les fichiers ayant \u00e9t\u00e9 charg\u00e9s avec succ\u00e8s dispara\u00eetront de cette zone, si des fichiers y restent, ces derniers n'auront pas \u00e9t\u00e9 accept\u00e9s par la configuration du serveur.<\/em>",
-	"ajax_error": "<strong>Une erreur est survenue :<\/strong><br\/>Statut : $1<br\/>Code HTTP retourn\u00e9 : $2 ($3)<br\/>XHR ReadyState : $4<br\/>R\u00e9ponse du serveur :<br\/>$5",
-	"check_SEF_Mode":"L'erreur ci-dessous semble indiquer que le mode rewrite (`mod_rewrite`) d'Apache n'est pas actif; veuillez l'activer pour garantir le bon fonctionnement de marknotes. Si votre serveur est d\u00e9j\u00e0 configur\u00e9 correctement, il faut ajouter une ligne `RewriteEngine On` dans votre fichier `.htaccess` et, \u00e9ventuellement, une seconde ligne telle que `RewriteBase \/`. Veuillez lire les commentaires pr\u00e9sents dans le fichier htaccess.txt.",
-	"together_editor_started":"$1<span style=\"white-space:normal;\"<strong>$2<\/strong> commence \u00e0 \u00e9diter la note $3</span>. (<strong><a href='javascript:fnPluginTogetherShow(\"$4\", \"$5\");'>Afficher la note en cours d'\u00e9dition<\/a>",
-	"settings_plugins_page_html_together_title":"TogetherJS",
-	"settings_plugins_page_html_together_enabled":"Activer le plugin TogetherJS qui permet de collaborer \u00e0 plusieurs sur un m\u00eame document (il faudra rafra\u00eechir l'interface apr\u00e8s modification de ce param\u00e8tre)",
-	"only_dev_mode_on":"Afin d'utiliser cette fonctionnalit\u00e9, veuillez d'abord activer le mode debug ainsi que le mode d\u00e9veloppement dans le fichier settings.json. Cela peut aussi \u00eatre vrai depuis l'\u00e9cran de configuration.",
-	"settings_plugins_options_task_search_disable_plugins":"D\u00e9sactive les plugins lors d'une recherche; cela permet de fortement acc\u00e9l\u00e9rer la recherche mais rends impossible, p.ex. de rechercher sur un mot de passe qui aurait \u00e9t\u00e9 crypt\u00e9 (ou n'importe quel autre r\u00e9sultat provenant d'un plugin)",
-	"search_disable_plugins":"D\u00e9sactive les plugins (plus rapide mais non exhaustive; p.ex. ne retrouve aucune information crypt\u00e9e)",
-	"settings_plugins_options_task_search_title":"Recherche",
-	"settings_plugins_options_task_search_restrict_folders_first_level": "Affiche uniquement le nom du dossier de premier niveau (et pas toute l'arborescence) dans l'\u00e9cran de recherche avanc\u00e9e",
-	"search_advanded_form":"Recherche avanc\u00e9e",
-	"button_save_done_backup_taken":"Note: une sauvegarde de la note a d'abord \u00e9t\u00e9 r\u00e9alis\u00e9e et sauv\u00e9e dans le dossier %1",
-	"settings_plugins_options_task_backup_make_backup_before_updating":"Prends une copie de sauvegarde de la note avant de la mettre \u00e0 jour",
-	"intro_js_disabled":"Le plugin intro a \u00e9t\u00e9 d\u00e9publi\u00e9",
-	"intro_js_hide_toc":"Ce bouton va masquer la liste des fichiers et des dossiers (aussi connu comme \u00e9tant le 'treeview')",
-	"intro_js_toc":"Vos notes sont organis\u00e9es dans des dossiers et des fichiers. Ne manquez pas le menu contextuel accessible avec un clic droit ;-) Essayez-le sur un dossier ou une note.",
-	"intro_js_note_h1":"Le titre de la note va appara\u00eetre ici. Une ic\u00f4ne sera affich\u00e9 apr\u00e8s le titre lorsque le plugin Favorites est actif : cliquez sur cette \u00eec\u00f4ne pour ajouter ou supprimer la note de la liste des favoris.",
-	"intro_js_homepage":"Quand le plugin Homepage est actif, vous pouvez d\u00e9cider d'afficher une note ici, imm\u00e9diatement apr\u00e8s l'affichage de l'interface. Vous pouvez p.ex. souhaiter la bienvenue \u00e0 vos utilisateurs.",
-	"intro_js_favorites":"Afin de retrouvez facilement une note, vous pouvez l'ajouter \u00e0 la liste de vos favoris. Il y a une ic\u00f4ne \u00e0 la droite du titre de la note pour cela. La liste des notes favorites sera affich\u00e9 ici (lorsque le plugin Favorites est actif)",
-	"intro_js_lastmod":"La liste des notes ayant \u00e9t\u00e9 ajout\u00e9es\/modifi\u00e9es r\u00e9cemment appara\u00eetra ici afin de simplifier l'acc\u00e8s \u00e0 une note et de continuer votre travail de r\u00e9daction (le plugin LastMod doit \u00eatre actif)",
-	"intro_js_reveal":"Affichage de la note sous la forme d'un slideshow, vraiment sympa!",
-	"intro_js_search":"\u00c0 la recherche de quelque chose, d\u00e9marrez ici et introduisez un ou plusieurs mots-clefs ici.",
-	"intro_js_quickicons":"Vous allez trouver ici un acc\u00e8s rapide aux fonctions les plus utilis\u00e9es. Vous pouvez compl\u00e8tement personnaliser ce qui doit appara\u00eetre ici en vous rendant dans l'\u00e9cran de configuration et en activant \/ d\u00e9sactivant les boutons dits 'Quick icons'",
-	"intro_js_settings_button":"Cliquez ici pour acc\u00e9der \u00e0 la liste compl\u00e8te des fonctionnalit\u00e9s ainsi qu'\u00e0 l'\u00e9cran de configuration.",
+	"zip_create_package_file":
+		"La note sera bient\u00f4t t\u00e9l\u00e9charg\u00e9e, merci de patienter un peu jusqu'\u00e0 ce que la note, ses images et ressources locales (p.ex. fichiers pdf, ...) soient rassembl\u00e9es et zipp\u00e9es. L'archive sera alors t\u00e9l\u00e9charg\u00e9s d\u00e8s qu'elle est pr\u00eate.",
+	"button_zip_note": "T\u00e9l\u00e9charge la note au format ZIP",
+	"editor_dropzone_placeholder":
+		"Zone de t\u00e9l\u00e9versement en masse :<ol><li>Positionnez le curseur dans l'\u00e9diteur \u00e0 l'endroit o\u00f9 doivent appara\u00eetre les images / les hyperliens vers les fichiers,</li><li>Depuis votre disque dur, glissez /d\u00e9posez les fichiers ici.</li></ol>Les fichiers seront alors envoy\u00e9s sur le serveur un par un et seront repris dans votre note.<br/><em>Les fichiers ayant \u00e9t\u00e9 charg\u00e9s avec succ\u00e8s dispara\u00eetront de cette zone, si des fichiers y restent, ces derniers n'auront pas \u00e9t\u00e9 accept\u00e9s par la configuration du serveur.</em>",
+	"ajax_error":
+		"<strong>Une erreur est survenue :</strong><br/>Statut : $1<br/>Code HTTP retourn\u00e9 : $2 ($3)<br/>XHR ReadyState : $4<br/>R\u00e9ponse du serveur :<br/>$5",
+	"check_SEF_Mode":
+		"L'erreur ci-dessous semble indiquer que le mode rewrite (`mod_rewrite`) d'Apache n'est pas actif; veuillez l'activer pour garantir le bon fonctionnement de marknotes. Si votre serveur est d\u00e9j\u00e0 configur\u00e9 correctement, il faut ajouter une ligne `RewriteEngine On` dans votre fichier `.htaccess` et, \u00e9ventuellement, une seconde ligne telle que `RewriteBase /`. Veuillez lire les commentaires pr\u00e9sents dans le fichier htaccess.txt.",
+	"together_editor_started":
+		"$1<span style=\"white-space:normal;\"<strong>$2</strong> commence \u00e0 \u00e9diter la note $3</span>. (<strong><a href='javascript:fnPluginTogetherShow(\"$4\", \"$5\");'>Afficher la note en cours d'\u00e9dition</a>",
+	"settings_plugins_page_html_together_title": "TogetherJS",
+	"settings_plugins_page_html_together_enabled":
+		"Activer le plugin TogetherJS qui permet de collaborer \u00e0 plusieurs sur un m\u00eame document (il faudra rafra\u00eechir l'interface apr\u00e8s modification de ce param\u00e8tre)",
+	"only_dev_mode_on":
+		"Afin d'utiliser cette fonctionnalit\u00e9, veuillez d'abord activer le mode debug ainsi que le mode d\u00e9veloppement dans le fichier settings.json. Cela peut aussi \u00eatre vrai depuis l'\u00e9cran de configuration.",
+	"settings_plugins_options_task_search_disable_plugins":
+		"D\u00e9sactive les plugins lors d'une recherche; cela permet de fortement acc\u00e9l\u00e9rer la recherche mais rends impossible, p.ex. de rechercher sur un mot de passe qui aurait \u00e9t\u00e9 crypt\u00e9 (ou n'importe quel autre r\u00e9sultat provenant d'un plugin)",
+	"search_disable_cache_ON":
+		"Le cache serveur ne sera pas utilis\u00e9, la recherche se fera dans toutes les notes",
+	"search_disable_cache_OFF":
+		"Le cache serveur sera utilis\u00e9 : si la recherche a d\u00e9j\u00e0 \u00e9t\u00e9 faite pr\u00e9alablement, les r\u00e9sultats seront retrouv\u00e9s depuis le cache",
+	"search_disable_plugins_ON":
+		"La recherche n'ex\u00e9cutera pas les plugins, elle sera bien plus rapide mais, p.ex., ne cherchera pas dans le contenu qui aurait \u00e9t\u00e9 crypt\u00e9",
+	"search_disable_plugins_OFF":
+		"Les plugins seront ex\u00e9cut\u00e9s lors de la recherche. Elle sera plus lente mais elle sera exhaustive",
+	"settings_plugins_options_task_search_title": "Recherche",
+	"settings_plugins_options_task_search_restrict_folders_first_level":
+		"Affiche uniquement le nom du dossier de premier niveau (et pas toute l'arborescence) dans l'\u00e9cran de recherche avanc\u00e9e",
+	"search_advanded_form": "Recherche avanc\u00e9e",
+	"button_save_done_backup_taken":
+		"Note: une sauvegarde de la note a d'abord \u00e9t\u00e9 r\u00e9alis\u00e9e et sauv\u00e9e dans le dossier %1",
+	"settings_plugins_options_task_backup_make_backup_before_updating":
+		"Prends une copie de sauvegarde de la note avant de la mettre \u00e0 jour",
+	"intro_js_disabled": "Le plugin intro a \u00e9t\u00e9 d\u00e9publi\u00e9",
+	"intro_js_hide_toc":
+		"Ce bouton va masquer la liste des fichiers et des dossiers (aussi connu comme \u00e9tant le 'treeview')",
+	"intro_js_toc":
+		"Vos notes sont organis\u00e9es dans des dossiers et des fichiers. Ne manquez pas le menu contextuel accessible avec un clic droit ;-) Essayez-le sur un dossier ou une note.",
+	"intro_js_note_h1":
+		"Le titre de la note va appara\u00eetre ici. Une ic\u00f4ne sera affich\u00e9 apr\u00e8s le titre lorsque le plugin Favorites est actif : cliquez sur cette \u00eec\u00f4ne pour ajouter ou supprimer la note de la liste des favoris.",
+	"intro_js_homepage":
+		"Quand le plugin Homepage est actif, vous pouvez d\u00e9cider d'afficher une note ici, imm\u00e9diatement apr\u00e8s l'affichage de l'interface. Vous pouvez p.ex. souhaiter la bienvenue \u00e0 vos utilisateurs.",
+	"intro_js_favorites":
+		"Afin de retrouvez facilement une note, vous pouvez l'ajouter \u00e0 la liste de vos favoris. Il y a une ic\u00f4ne \u00e0 la droite du titre de la note pour cela. La liste des notes favorites sera affich\u00e9 ici (lorsque le plugin Favorites est actif)",
+	"intro_js_lastmod":
+		"La liste des notes ayant \u00e9t\u00e9 ajout\u00e9es/modifi\u00e9es r\u00e9cemment appara\u00eetra ici afin de simplifier l'acc\u00e8s \u00e0 une note et de continuer votre travail de r\u00e9daction (le plugin LastMod doit \u00eatre actif)",
+	"intro_js_reveal":
+		"Affichage de la note sous la forme d'un slideshow, vraiment sympa!",
+	"intro_js_search":
+		"\u00c0 la recherche de quelque chose, d\u00e9marrez ici et introduisez un ou plusieurs mots-clefs ici.",
+	"intro_js_quickicons":
+		"Vous allez trouver ici un acc\u00e8s rapide aux fonctions les plus utilis\u00e9es. Vous pouvez compl\u00e8tement personnaliser ce qui doit appara\u00eetre ici en vous rendant dans l'\u00e9cran de configuration et en activant / d\u00e9sactivant les boutons dits 'Quick icons'",
+	"intro_js_settings_button":
+		"Cliquez ici pour acc\u00e9der \u00e0 la liste compl\u00e8te des fonctionnalit\u00e9s ainsi qu'\u00e0 l'\u00e9cran de configuration.",
 	"action_download": "T\u00e9l\u00e9charger le fichier",
 	"action_html": "Afficher la pr\u00e9sentation comme un article",
-	"action_prohibited": "La configuration de l'application interdit cette action",
+	"action_prohibited":
+		"La configuration de l'application interdit cette action",
 	"action_slideshow": "Voir cet article sous le format pr\u00e9sentation",
-	"allow_popup_please": "La nouvelle fen\u00eatre a \u00e9t\u00e9 bloqu\u00e9e par votre navigateur, veuillez s'il vous pla\u00eet autoriser les 'popups' pour votre domaine",
+	"allow_popup_please":
+		"La nouvelle fen\u00eatre a \u00e9t\u00e9 bloqu\u00e9e par votre navigateur, veuillez s'il vous pla\u00eet autoriser les 'popups' pour votre domaine",
 	"app_download": "T\u00e9l\u00e9chargez Marknotes sur GitHub",
 	"app_name": "Marknotes - Gestionnaire de prise de notes",
-	"app_website": "https:\/\/www.marknotes.fr",
+	"app_website": "https://www.marknotes.fr",
 	"apply_filter": "Limite la liste des notes \u00e0 [$1]",
 	"apply_filter_tag": "Affiche les notes reprennant ce mot",
 	"are_you_sure": "\u00cates-vous s\u00fbr ?",
@@ -48,48 +76,70 @@
 	"backup_download": "T\u00e9l\u00e9charger les archives",
 	"backup_file_created": "Le fichier $1 a \u00e9t\u00e9 cr\u00e9\u00e9",
 	"backup_files_generated": "Archive(s) g\u00e9n\u00e9r\u00e9e(s) :",
-	"backup_folder_location": "L'archive sera plac\u00e9e dans le dossier prot\u00e9g\u00e9 $1",
-	"backup_getfiles_error": "Avant de lancer la cr\u00e9ation de l'archive, une liste de fichiers doit \u00eatre g\u00e9n\u00e9r\u00e9e et il y a eu un probl\u00e8me durant cette \u00e9tape pr\u00e9cise",
-	"backup_getfiles_ok": "La liste des fichiers \u00e0 sauvegarder a \u00e9t\u00e9 cr\u00e9\u00e9e avec succ\u00e8s",
-	"backup_ignore_extensions": "Extensions \u00e0 ignorer lors de la sauvegarde",
-	"backup_only_can_see_folders": "Si certains dossiers ne vous \u00e9taient pas accessibles parce que vous n'avez pas l'autorisation d'y acc\u00e9der, ils ne seront pas repris dans la liste ci-contre ni dans la sauvegarde. Dans ce cas de figure, une sauvegarde compl\u00e8te ne peut \u00eatre faite que par quelqu'un qui poss\u00e8de tous les acc\u00e8s.",
+	"backup_folder_location":
+		"L'archive sera plac\u00e9e dans le dossier prot\u00e9g\u00e9 $1",
+	"backup_getfiles_error":
+		"Avant de lancer la cr\u00e9ation de l'archive, une liste de fichiers doit \u00eatre g\u00e9n\u00e9r\u00e9e et il y a eu un probl\u00e8me durant cette \u00e9tape pr\u00e9cise",
+	"backup_getfiles_ok":
+		"La liste des fichiers \u00e0 sauvegarder a \u00e9t\u00e9 cr\u00e9\u00e9e avec succ\u00e8s",
+	"backup_ignore_extensions":
+		"Extensions \u00e0 ignorer lors de la sauvegarde",
+	"backup_only_can_see_folders":
+		"Si certains dossiers ne vous \u00e9taient pas accessibles parce que vous n'avez pas l'autorisation d'y acc\u00e9der, ils ne seront pas repris dans la liste ci-contre ni dans la sauvegarde. Dans ce cas de figure, une sauvegarde compl\u00e8te ne peut \u00eatre faite que par quelqu'un qui poss\u00e8de tous les acc\u00e8s.",
 	"backup_start": "D\u00e9marre le processus de sauvegarde",
-	"backup_this_folder": "Nom du dossier \u00e0 sauvegarder (sous-dossiers inclus)",
+	"backup_this_folder":
+		"Nom du dossier \u00e0 sauvegarder (sous-dossiers inclus)",
 	"backup_this_settings": "Param\u00e9trisation de cette sauvegarde",
 	"backuplog": "Progression de l'archivage",
 	"button_addImage_Gallery": "Ajouter une galerie d'images dans votre contenu",
-	"button_addListFiles": "G\u00e9n\u00e9rer une liste dynamique avec tous les fichiers pr\u00e9sents dans un dossier sp\u00e9cifique",
-	"button_addInclude":"Fusionner le contenu d'une autre note \u00e0 l'int\u00e9rieur de votre note actuelle. Ce plugin est extr\u00eamement puissant car il permet d'inclure, en cascade, des notes qui ont aussi des instructions INCLUDEMerge the content of another note inside your current one. This plugin is extremly powerfull, allowing to include notes that also have INCLUDE statements",
-	"button_addCSV": "Ajout d'un fichier CSV externe qui sera affich\u00e9 sous forme de tableau HTML",
-	"button_addLastUpdate": "R\u00e9cup\u00e9rer et afficher la date de la derni\u00e8re modification de la note",
+	"button_addListFiles":
+		"G\u00e9n\u00e9rer une liste dynamique avec tous les fichiers pr\u00e9sents dans un dossier sp\u00e9cifique",
+	"button_addInclude":
+		"Fusionner le contenu d'une autre note \u00e0 l'int\u00e9rieur de votre note actuelle. Ce plugin est extr\u00eamement puissant car il permet d'inclure, en cascade, des notes qui ont aussi des instructions INCLUDEMerge the content of another note inside your current one. This plugin is extremly powerfull, allowing to include notes that also have INCLUDE statements",
+	"button_addCSV":
+		"Ajout d'un fichier CSV externe qui sera affich\u00e9 sous forme de tableau HTML",
+	"button_addLastUpdate":
+		"R\u00e9cup\u00e9rer et afficher la date de la derni\u00e8re modification de la note",
 	"button_addMermaid": "Ajoute un diagramme de type mermaid",
 	"button_addTOC": "Ins\u00e8re une table des mati\u00e8res",
-	"button_addTODOS": "Ins\u00e8re une table des t\u00e2ches \u00e0 r\u00e9aliser",
-	"button_addLASTUPDATE": "Ins\u00e8re la date de derni\u00e8re mise \u00e0 jour du fichier",
+	"button_addTODOS":
+		"Ins\u00e8re une table des t\u00e2ches \u00e0 r\u00e9aliser",
+	"button_addLASTUPDATE":
+		"Ins\u00e8re la date de derni\u00e8re mise \u00e0 jour du fichier",
 	"button_backup": "Cr\u00e9e un backup de vos notes",
 	"button_convertMD": "Converti le contenu HTML de la note en Markdown",
 	"button_curlBlog": "R\u00e9cup\u00e8re le code HTML d'une page sur le web",
 	"button_encrypt": "Encrypte la s\u00e9lection",
 	"button_exit_edit_mode": "Quitte le mode \u00e9dition",
-	"button_exit_not_save": "Souhaitez-vous quitter l'\u00e9diteur sans sauvegarder votre travail ?",
-	"editor_preview": "<li>Pr\u00e9visualisation de votre note, celle-ci n'a donc pas \u00e9t\u00e9 sauv\u00e9e.<\/li><li>Le visuel de la note peut \u00eatre alt\u00e9r\u00e9 \u00e0 cause des feuilles de style de l'\u00e9diteur (ses fichiers CSS); le rendu final peut donc \u00eatre diff\u00e9rent.</li>",
+	"button_exit_not_save":
+		"Souhaitez-vous quitter l'\u00e9diteur sans sauvegarder votre travail ?",
+	"editor_preview":
+		"<li>Pr\u00e9visualisation de votre note, celle-ci n'a donc pas \u00e9t\u00e9 sauv\u00e9e.</li><li>Le visuel de la note peut \u00eatre alt\u00e9r\u00e9 \u00e0 cause des feuilles de style de l'\u00e9diteur (ses fichiers CSS); le rendu final peut donc \u00eatre diff\u00e9rent.</li>",
 	"button_save": "Enregistre vos modifications sur le serveur",
 	"button_edit_multiusers": "\u00c9ditez cette note \u00e0 plusieurs",
-	"button_save_done": "Le fichier a \u00e9t\u00e9 enregistr\u00e9 avec succ\u00e8s",
-	"button_save_error": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la sauvegarde",
+	"button_save_done":
+		"Le fichier a \u00e9t\u00e9 enregistr\u00e9 avec succ\u00e8s",
+	"button_save_error":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la sauvegarde",
 	"button_translate": "Traduit le texte",
-	"button_upload_image": "T\u00e9l\u00e9verse une image et ins\u00e8re le tag d'affichage de l'image \u00e0 l'endroit o\u00f9 se situe le curseur",
+	"button_upload_image":
+		"T\u00e9l\u00e9verse une image et ins\u00e8re le tag d'affichage de l'image \u00e0 l'endroit o\u00f9 se situe le curseur",
 	"cancel": "Annuler",
 	"cancelled": "Annulation",
 	"confidential": "confidentiel",
-	"copy_clipboard": "Copie le contenu de la note, avec mise en page, dans le presse-papier",
-	"copy_clipboard_done": "La note a \u00e9t\u00e9 copi\u00e9e. Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
+	"copy_clipboard":
+		"Copie le contenu de la note, avec mise en page, dans le presse-papier",
+	"copy_clipboard_done":
+		"La note a \u00e9t\u00e9 copi\u00e9e. Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
 	"copy_html": "Copier le code source HTML de la note dans le presse-papier",
-	"copy_html_done": "Le code source HTML de la note a \u00e9t\u00e9 copi\u00e9. Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
+	"copy_html_done":
+		"Le code source HTML de la note a \u00e9t\u00e9 copi\u00e9. Vous pouvez vous rendre dans l'application de destination et coller le contenu du presse-papier",
 	"copy_link": "Copier le lien vers cette note dans le presse-papier",
-	"copy_link_done": "L'URL $1 a \u00e9t\u00e9 copi\u00e9e dans le presse-papier.",
+	"copy_link_done":
+		"L'URL $1 a \u00e9t\u00e9 copi\u00e9e dans le presse-papier.",
 	"datatable_copy": "Copier",
-	"datatable_copyKeys": "Appuyez sur <i>ctrl<\/i> ou <i>\u2318<\/i> + <i>C<\/i> pour copier les donn\u00e9es du tableau \u00e0 votre presse-papiers. <br><br>Pour annuler, cliquez sur ce message ou appuyez sur Echap.",
+	"datatable_copyKeys":
+		"Appuyez sur <i>ctrl</i> ou <i>\u2318</i> + <i>C</i> pour copier les donn\u00e9es du tableau \u00e0 votre presse-papiers. <br><br>Pour annuler, cliquez sur ce message ou appuyez sur Echap.",
 	"datatable_copySuccess_Many": "$1 lignes copi\u00e9es",
 	"datatable_copySuccess_One": "1 ligne copi\u00e9e",
 	"datatable_copyTitle": "Ajout\u00e9 au presse-papiers",
@@ -97,28 +147,44 @@
 	"deleted": "Supprim\u00e9",
 	"display_that_note": "Afficher cette note",
 	"edit_file": "\u00c9diter la note",
-	"editor_translate_alert_title": "Vers quelle langue souhaitez-vous traduire ?",
+	"editor_translate_alert_title":
+		"Vers quelle langue souhaitez-vous traduire ?",
 	"editor_translate_doit": "Traduire",
 	"editor_translate_select": "Veuillez s\u00e9lectionner une langue",
 	"encrypted": "Cette information est crypt\u00e9e.",
-	"encrypted_hint": "Cette information est crypt\u00e9e. Vous devez d'abord vous connecter pour y avoir acc\u00e8s.",
-	"encrypt_decrypt_error": "Une erreur est survenue lors du d\u00e9cryptage, veuillez v\u00e9rifier si votre mot de passe est correct",
+	"encrypted_hint":
+		"Cette information est crypt\u00e9e. Vous devez d'abord vous connecter pour y avoir acc\u00e8s.",
+	"encrypt_decrypt_error":
+		"Une erreur est survenue lors du d\u00e9cryptage, veuillez v\u00e9rifier si votre mot de passe est correct",
 	"error": "Erreur",
-	"error_js_mime_not_allowed": "Ce type de fichier n'est pas autoris\u00e9. Si n\u00e9cessaire, veuillez \u00e9diter les param\u00e8tres d'upload de marknotes pour autoriser l'extension ou le type mime de ce fichier.",
-	"error_mime_not_allowed": "Le fichier [$1] n'est pas autoris\u00e9 (type MIME : [$2]). Si vous souhaitez l'autoriser, veuillez adapter vos param\u00e8tres d'upload.",
-	"error_together_not_loaded": "Le plugin TogetherJS n'est pas actif, veuillez vous rendre dans l'\u00e9cran de param\u00e9trage de marknotes pour l'activer si vous souhaitez collaborer \u00e0 plusieurs sur un m\u00eame document",
-	"error_create_file": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation du fichier [$1]",
-	"error_create_folder": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation du dossier [$1]",
-	"error_delete_file": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la suppression du fichier [$1]",
-	"error_delete_files": "Une erreur est survenue lors de la suppression des fichiers",
-	"error_delete_folder": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la suppression du dossier [$1] (c'est le cas lorsque le dossier contient des sous-dossiers ou des notes en lecture seule)",
-	"error_file_access_denied": "Acc\u00e8s interdit - Vous n'\u00eates pas autoris\u00e9 \u00e0 acc\u00e9der \u00e0 ce fichier",
-	"error_filename_missing": "Erreur - Un nom de fichier est attendu et aucun n'a \u00e9t\u00e9 sp\u00e9cifi\u00e9",
+	"error_js_mime_not_allowed":
+		"Ce type de fichier n'est pas autoris\u00e9. Si n\u00e9cessaire, veuillez \u00e9diter les param\u00e8tres d'upload de marknotes pour autoriser l'extension ou le type mime de ce fichier.",
+	"error_mime_not_allowed":
+		"Le fichier [$1] n'est pas autoris\u00e9 (type MIME : [$2]). Si vous souhaitez l'autoriser, veuillez adapter vos param\u00e8tres d'upload.",
+	"error_together_not_loaded":
+		"Le plugin TogetherJS n'est pas actif, veuillez vous rendre dans l'\u00e9cran de param\u00e9trage de marknotes pour l'activer si vous souhaitez collaborer \u00e0 plusieurs sur un m\u00eame document",
+	"error_create_file":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation du fichier [$1]",
+	"error_create_folder":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation du dossier [$1]",
+	"error_delete_file":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la suppression du fichier [$1]",
+	"error_delete_files":
+		"Une erreur est survenue lors de la suppression des fichiers",
+	"error_delete_folder":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la suppression du dossier [$1] (c'est le cas lorsque le dossier contient des sous-dossiers ou des notes en lecture seule)",
+	"error_file_access_denied":
+		"Acc\u00e8s interdit - Vous n'\u00eates pas autoris\u00e9 \u00e0 acc\u00e9der \u00e0 ce fichier",
+	"error_filename_missing":
+		"Erreur - Un nom de fichier est attendu et aucun n'a \u00e9t\u00e9 sp\u00e9cifi\u00e9",
 	"error_invalid_task": "T\u00e2che non valide [$1]",
-	"error_lib_not_found": "Erreur - La librairie [$1] n'a pas \u00e9t\u00e9 trouv\u00e9e",
+	"error_lib_not_found":
+		"Erreur - La librairie [$1] n'a pas \u00e9t\u00e9 trouv\u00e9e",
 	"error_please_select_a_value": "Veuillez s\u00e9lectionner une valeur",
-	"error_rename_file": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la tentative de renommer le fichier [$1] en [$2]",
-	"error_rename_folder": "Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la tentative de renommer le dossier [$1] en [$2]",
+	"error_rename_file":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la tentative de renommer le fichier [$1] en [$2]",
+	"error_rename_folder":
+		"Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la tentative de renommer le dossier [$1] en [$2]",
 	"error_select_first": "Veuillez d'abord s\u00e9lectionner une note",
 	"export_docx": "Format .docx",
 	"export_epub": "Format .epub",
@@ -130,91 +196,134 @@
 	"export_txt": "Format .txt",
 	"favorites_added": "La note a \u00e9t\u00e9 ajout\u00e9e \u00e0 vos favoris",
 	"favorites_addto": "Ajouter cette note \u00e0 vos favoris",
-	"favorites_removed": "La note a \u00e9t\u00e9 retir\u00e9e de la liste des favoris",
+	"favorites_removed":
+		"La note a \u00e9t\u00e9 retir\u00e9e de la liste des favoris",
 	"favorites_removefrom": "Retirer cette note de vos favoris",
 	"favorites_show": "Afficher vos notes favorites",
 	"favorites_title": "Vos notes favorites",
-	"fetch_specify_url": "Cette option va r\u00e9cup\u00e9rer le code HTML d'une page accessible publiquement sur internet, veuillez sp\u00e9cifier ci-apr\u00e8s l'URL de la page",
+	"fetch_specify_url":
+		"Cette option va r\u00e9cup\u00e9rer le code HTML d'une page accessible publiquement sur internet, veuillez sp\u00e9cifier ci-apr\u00e8s l'URL de la page",
 	"file_already_exists": "La note [$1] existe d\u00e9j\u00e0",
-	"file_cant_delete": "Vous ne pouvez pas supprimer le fichier [$1] \u00e9tant donn\u00e9 que vous n'avez pas les permissions requises pour voir le dossier parent",
+	"file_cant_delete":
+		"Vous ne pouvez pas supprimer le fichier [$1] \u00e9tant donn\u00e9 que vous n'avez pas les permissions requises pour voir le dossier parent",
 	"file_created": "La note [$1] a \u00e9t\u00e9 cr\u00e9\u00e9 sur le disque",
 	"file_deleted": "La note [$1] a \u00e9t\u00e9 supprim\u00e9e sur le disque",
-	"file_empty": "D\u00e9sol\u00e9, la note [$1] est vide; il n'y a rien \u00e0  afficher",
+	"file_empty":
+		"D\u00e9sol\u00e9, la note [$1] est vide; il n'y a rien \u00e0  afficher",
 	"file_manager": "Gestionnaire de fichiers",
 	"file_not_found": "Le fichier [$1] n'existe pas",
-	"file_read_only": "Le fichier [$1] est en lecture seule, il n'est pas possible de le supprimer",
+	"file_read_only":
+		"Le fichier [$1] est en lecture seule, il n'est pas possible de le supprimer",
 	"file_renamed": "Le fichier [$1] a \u00e9t\u00e9 renomm\u00e9 en [$2]",
 	"files_found": "$1 fichiers ont \u00e9t\u00e9 retrouv\u00e9s",
 	"folder_already_exists": "Le dossier [$1] existe d\u00e9j\u00e0",
-	"folder_cant_delete": "Vous ne pouvez pas supprimer le dossier [$1] \u00e9tant donn\u00e9 que vous ne disposez pas des permissions requises pour y acc\u00e9der",
-	"folder_created": "Le dossier [$1] a \u00e9t\u00e9 cr\u00e9\u00e9 sur le disque",
-	"folder_deleted": "Le dossier [$1] et son contenu a \u00e9t\u00e9 supprim\u00e9",
-	"folder_not_deleted": "Le dossier [$1] se trouve en dehors du dossier qui contient vos notes et par cons\u00e9quent n'a pas \u00e9t\u00e9 supprim\u00e9",
+	"folder_cant_delete":
+		"Vous ne pouvez pas supprimer le dossier [$1] \u00e9tant donn\u00e9 que vous ne disposez pas des permissions requises pour y acc\u00e9der",
+	"folder_created":
+		"Le dossier [$1] a \u00e9t\u00e9 cr\u00e9\u00e9 sur le disque",
+	"folder_deleted":
+		"Le dossier [$1] et son contenu a \u00e9t\u00e9 supprim\u00e9",
+	"folder_not_deleted":
+		"Le dossier [$1] se trouve en dehors du dossier qui contient vos notes et par cons\u00e9quent n'a pas \u00e9t\u00e9 supprim\u00e9",
 	"folder_not_found": "Erreur - Le dossier [$1] ne semble pas exister",
-	"folder_parent_not_accessible": "Erreur - Le dossier parent de [$1] ne vous est pas accessible",
+	"folder_parent_not_accessible":
+		"Erreur - Le dossier parent de [$1] ne vous est pas accessible",
 	"folder_read_only": "D\u00e9sol\u00e9, le dossier [$1] est en lecture seule",
 	"folder_renamed": "Le dossier [$1] a \u00e9t\u00e9 renomm\u00e9 en [$2]",
 	"fullscreen": "Affiche la note en plein \u00e9cran",
-	"hide_treeview": "Cache la liste des fichiers, donne plus de place au contenu",
-	"htpasswd_added": "L'utilisateur [$1] a \u00e9t\u00e9 ajout\u00e9, il peut maintenant utiliser l'application",
+	"hide_treeview":
+		"Cache la liste des fichiers, donne plus de place au contenu",
+	"htpasswd_added":
+		"L'utilisateur [$1] a \u00e9t\u00e9 ajout\u00e9, il peut maintenant utiliser l'application",
 	"incorrect_parameter": "Le param\u00e8tre [$1] est incorrect",
-	"json_error": "La t\u00e2che [$1] a retourn\u00e9 une r\u00e9ponse JSON incorrecte",
-	"lastmodified_title": "$1 derni\u00e8res notes \u00e0 avoir \u00e9t\u00e9 modifi\u00e9es",
-	"loaded_from_localStorage": "Charg\u00e9 depuis le cache de votre navigateur (<strong><a href='javascript:fnPluginTaskOptimizeReloadNote();'>recharger cette note<\/a><\/strong>)",
+	"json_error":
+		"La t\u00e2che [$1] a retourn\u00e9 une r\u00e9ponse JSON incorrecte",
+	"lastmodified_title":
+		"$1 derni\u00e8res notes \u00e0 avoir \u00e9t\u00e9 modifi\u00e9es",
+	"loaded_from_localStorage":
+		"Charg\u00e9 depuis le cache de votre navigateur (<strong><a href='javascript:fnPluginTaskOptimizeReloadNote();'>recharger cette note</a></strong>)",
 	"loading_tree": "Chargement de la liste des notes, merci de patienter...",
 	"logged_out": "Vous \u00eates maintenant d\u00e9connect&eacute",
 	"login": "Nom d'utilisateur",
-	"login_session":"Connectez-vous pour d\u00e9marrer une session",
-	"login_error": "Erreur de connexion, veuillez r\u00e9essayer s'il vous pla\u00eet",
+	"login_session": "Connectez-vous pour d\u00e9marrer une session",
+	"login_error":
+		"Erreur de connexion, veuillez r\u00e9essayer s'il vous pla\u00eet",
 	"login_success": "Connexion r\u00e9ussie",
 	"loginform": "Formulaire de connexion",
 	"loginform_in": "Se connecter",
 	"loginform_out": "Se d\u00e9connecter",
-	"no_save_allowed": "Erreur, l'\u00e9dition des notes n'est pas autoris\u00e9e.",
-	"not_authenticated": "Cette fonctionnalit\u00e9 n'est accessible qu'une fois connect\u00e9; merci de vous authentifier gr\u00e2ce au formulaire de connexion",
+	"no_save_allowed":
+		"Erreur, l'\u00e9dition des notes n'est pas autoris\u00e9e.",
+	"not_authenticated":
+		"Cette fonctionnalit\u00e9 n'est accessible qu'une fois connect\u00e9; merci de vous authentifier gr\u00e2ce au formulaire de connexion",
 	"ok": "Oui",
 	"open_html": "Ouvrir dans une nouvelle fen\u00eatre",
 	"open_slideshow": "Lancer le mode pr\u00e9sentation",
 	"password": "Mot de passe",
 	"please_wait": "Un peu de patience s'il vous pla&#xEE;t...",
 	"print_preview": "Aper&ccedil;u avant impression",
-	"search_from_cache": "R\u00e9sultats retrouv\u00e9s depuis le syst\u00e8me de cache (<strong><a href='javascript:fnPluginTaskSearchClearCache();'>nettoyer le cache<\/a><\/strong>)",
-	"search_no_result": "D\u00e9sol\u00e9, votre recherche n'a pas retourn\u00e9 de r\u00e9sultat",
+	"search_from_cache":
+		"R\u00e9sultats retrouv\u00e9s depuis le syst\u00e8me de cache (<strong><a href='javascript:fnPluginTaskSearchClearCache();'>nettoyer le cache</a></strong>)",
+	"search_no_result":
+		"D\u00e9sol\u00e9, votre recherche n'a pas retourn\u00e9 de r\u00e9sultat",
 	"search_placeholder": "Recherchez...",
-	"search_restricted_to": "La recherche est limit\u00e9e au dossier",
-	"search_define_folder_title": "Restreint la recherche \u00e0 ce dossier (sous-dossiers inclus)",
+	"search_restricted_to_removed":
+		"La recherche se fera \u00e0 nouveau sur l'ensemble des dossiers",
+	"search_restricted_to": "La recherche sera limit\u00e9e au dossier",
+	"search_define_folder_title":
+		"Restreint la recherche \u00e0 ce dossier (sous-dossiers inclus)",
 	"search_apply_folder": "Appliquer",
 	"search_remove_folder": "\u00d4ter",
-	"search_restrict_folder": "Restreint la recherche \u00e0 un dossier pr\u00e9cis afin de l'acc\u00e9l\u00e9rer",
-	"settings_interface_show_login":"Affiche un \u00e9cran de connexion avant d'afficher l'interface avec la liste des notes",
-	"settings_interface_login_message":"Texte d'information additionnel \u00e0 afficher dans l'\u00e9cran de connexion",
+	"search_restrict_folder":
+		"Restreint la recherche \u00e0 un dossier pr\u00e9cis afin de l'acc\u00e9l\u00e9rer",
+	"settings_interface_show_login":
+		"Affiche un \u00e9cran de connexion avant d'afficher l'interface avec la liste des notes",
+	"settings_interface_login_message":
+		"Texte d'information additionnel \u00e0 afficher dans l'\u00e9cran de connexion",
 	"settings_clean": "Nettoie le cache de l'application",
-	"settings_clean_done": "Le cache de l'application a \u00e9t\u00e9 nettoy\u00e9",
-	"settings_erase": "Supprime les fichiers ayant \u00e9t\u00e9 pr\u00e9c\u00e9demment g\u00e9n\u00e9r\u00e9s par marknotes comme les fichiers .epub, .docx, .html, .pdf, ...",
+	"settings_clean_done":
+		"Le cache de l'application a \u00e9t\u00e9 nettoy\u00e9",
+	"settings_erase":
+		"Supprime les fichiers ayant \u00e9t\u00e9 pr\u00e9c\u00e9demment g\u00e9n\u00e9r\u00e9s par marknotes comme les fichiers .epub, .docx, .html, .pdf, ...",
 	"settings_erase_done": "Les fichiers ont \u00e9t\u00e9 supprim\u00e9s",
-	"settings_erase_nofile": "Il n'y a rien \u00e0 supprimer; aucun fichier n'a \u00e9t\u00e9 trouv\u00e9",
+	"settings_erase_nofile":
+		"Il n'y a rien \u00e0 supprimer; aucun fichier n'a \u00e9t\u00e9 trouv\u00e9",
 	"settings_form_title": "Configuration de marknotes",
-	"settings_plugins_options_task_backup_default_folder": "Dossier par d\u00e9faut qui sera s\u00e9lectionn\u00e9 lorsque l'\u00e9cran de sauvegarde sera affich\u00e9 (s\u00e9lectionner le dossier racine pour faire une sauvegarde compl\u00e8te de vos notes)",
-	"settings_plugins_options_task_backup_folder": "Nom du dossier o\u00f9 les sauvegardes seront plac\u00e9es (f.i. 'mes_sauvegardes'); le dossier sera cr\u00e9\u00e9 si n\u00e9cessaire",
-	"settings_plugins_options_task_backup_ignore_extensions": "Liste des extensions de fichiers \u00e0 ignorer durant de la sauvegarde",
-	"settings_plugins_options_task_backup_max_count_files": "Nombre de fichiers pouvant \u00eatre compress\u00e9 en une fois. Plus ce nombre est \u00e9lev\u00e9, plus rapide sera la compression mais le risque de timeout sera d'autant plus important (valeur par d\u00e9faut : 50).",
-	"settings_plugins_options_task_backup_max_size_files": "Taille maximale exprim\u00e9e en m\u00e9gabytes des fichiers pouvant \u00eatre compress\u00e9e en une fois. Plus ce nombre est \u00e9lev\u00e9, plus rapide sera la compression mais le risque de timeout sera d'autant plus important (cette valeur est prioritaire sur le nombre de fichiers) (valeur par d\u00e9faut : 10)",
-	"settings_plugins_options_task_backup_prefix": "Pr\u00e9fixe \u00e0 ajouter au fichier ZIP (p.ex. '%DATE%' afin d'ajouter la date et l'heure du jour  comme p.ex. <i>20181225235930<\/i> pour le <i>25 d\u00e9cembre 2018 23:59:30 <\/i>)",
-	"settings_plugins_options_task_backup_zip_max_size": "Taille maximale <strong>approximative<\/strong> d'une archive, en MB. Lorsque, p.ex., la taille totale aurait \u00e9t\u00e9 de 250 MB et que vous avez sp\u00e9cifi\u00e9 ici le chiffre 100, le processus de sauvegarde va tenter de cr\u00e9er trois fichiers, ayant _000.zip, _001.zip and _002.zip comme suffixe. <i>Veuillez prendre en compte que la taille de l'archive est calcul\u00e9e apr\u00e8s chaque ajout d'un fichier, la taille r\u00e9elle d'une archive sera donc toujours plus grande que le fichier mentionn\u00e9<\/i> (valeur par d\u00e9faut : 250)",
-	"settings_plugins_task_backup_enabled": "Permet la sauvegarde depuis l'interface de marknotes",
-	"settings_saved": "Les donn\u00e9es de configuration ont \u00e9t\u00e9 sauv\u00e9es",
-	"show_tree_not_allowed": "L'acc\u00e8s a cet \u00e9cran a \u00e9t\u00e9 d\u00e9sactiv\u00e9, d\u00e9sol\u00e9",
+	"settings_plugins_options_task_backup_default_folder":
+		"Dossier par d\u00e9faut qui sera s\u00e9lectionn\u00e9 lorsque l'\u00e9cran de sauvegarde sera affich\u00e9 (s\u00e9lectionner le dossier racine pour faire une sauvegarde compl\u00e8te de vos notes)",
+	"settings_plugins_options_task_backup_folder":
+		"Nom du dossier o\u00f9 les sauvegardes seront plac\u00e9es (f.i. 'mes_sauvegardes'); le dossier sera cr\u00e9\u00e9 si n\u00e9cessaire",
+	"settings_plugins_options_task_backup_ignore_extensions":
+		"Liste des extensions de fichiers \u00e0 ignorer durant de la sauvegarde",
+	"settings_plugins_options_task_backup_max_count_files":
+		"Nombre de fichiers pouvant \u00eatre compress\u00e9 en une fois. Plus ce nombre est \u00e9lev\u00e9, plus rapide sera la compression mais le risque de timeout sera d'autant plus important (valeur par d\u00e9faut : 50).",
+	"settings_plugins_options_task_backup_max_size_files":
+		"Taille maximale exprim\u00e9e en m\u00e9gabytes des fichiers pouvant \u00eatre compress\u00e9e en une fois. Plus ce nombre est \u00e9lev\u00e9, plus rapide sera la compression mais le risque de timeout sera d'autant plus important (cette valeur est prioritaire sur le nombre de fichiers) (valeur par d\u00e9faut : 10)",
+	"settings_plugins_options_task_backup_prefix":
+		"Pr\u00e9fixe \u00e0 ajouter au fichier ZIP (p.ex. '%DATE%' afin d'ajouter la date et l'heure du jour  comme p.ex. <i>20181225235930</i> pour le <i>25 d\u00e9cembre 2018 23:59:30 </i>)",
+	"settings_plugins_options_task_backup_zip_max_size":
+		"Taille maximale <strong>approximative</strong> d'une archive, en MB. Lorsque, p.ex., la taille totale aurait \u00e9t\u00e9 de 250 MB et que vous avez sp\u00e9cifi\u00e9 ici le chiffre 100, le processus de sauvegarde va tenter de cr\u00e9er trois fichiers, ayant _000.zip, _001.zip and _002.zip comme suffixe. <i>Veuillez prendre en compte que la taille de l'archive est calcul\u00e9e apr\u00e8s chaque ajout d'un fichier, la taille r\u00e9elle d'une archive sera donc toujours plus grande que le fichier mentionn\u00e9</i> (valeur par d\u00e9faut : 250)",
+	"settings_plugins_task_backup_enabled":
+		"Permet la sauvegarde depuis l'interface de marknotes",
+	"settings_saved":
+		"Les donn\u00e9es de configuration ont \u00e9t\u00e9 sauv\u00e9es",
+	"show_tree_not_allowed":
+		"L'acc\u00e8s a cet \u00e9cran a \u00e9t\u00e9 d\u00e9sactiv\u00e9, d\u00e9sol\u00e9",
 	"signin": "Se connecter",
 	"sitemap": "Afficher la carte du site",
 	"slideshow": "Affiche le document au format 'pr\u00e9sentation'",
-	"timeline": "Affiche la liste des notes, par ordre chronologique invers\u00e9",
+	"timeline":
+		"Affiche la liste des notes, par ordre chronologique invers\u00e9",
 	"tree_collapse": "Fermer l'arbre",
-	"tree_delete_cancelled": "L'op\u00e9ration a \u00e9t\u00e9 annul\u00e9e; rien n'a \u00e9t\u00e9 supprim\u00e9",
+	"tree_delete_cancelled":
+		"L'op\u00e9ration a \u00e9t\u00e9 annul\u00e9e; rien n'a \u00e9t\u00e9 supprim\u00e9",
 	"tree_delete_file": "Supprimer la note [$1]",
-	"tree_delete_file_confirm": "\u00cates-vous certain de vouloir supprimer la note [$1] ?",
+	"tree_delete_file_confirm":
+		"\u00cates-vous certain de vouloir supprimer la note [$1] ?",
 	"tree_delete_file_done": "Le fichier a \u00e9t\u00e9 supprim\u00e9",
 	"tree_delete_folder": "Supprimer l'int\u00e9gralit\u00e9 du dossier [$1]",
-	"tree_delete_folder_confirm": "\u00cates-vous certain de vouloir supprimer le dossier [$1] et tout ce qu'il contient ?",
+	"tree_delete_folder_confirm":
+		"\u00cates-vous certain de vouloir supprimer le dossier [$1] et tout ce qu'il contient ?",
 	"tree_delete_folder_done": "Le dossier a \u00e9t\u00e9 supprim\u00e9",
 	"tree_expand": "D\u00e9plier l'arbre",
 	"tree_new_folder": "Cr\u00e9er un nouveau dossier",
@@ -223,9 +332,12 @@
 	"tree_new_note_name": "Nouvelle note",
 	"tree_rename": "Renommer",
 	"unknown_error": "Une erreur est survenue, merci d'essayer \u00e0 nouveau",
-	"update_newer": "Une nouvelle version de Marknotes est disponible en t\u00e9l\u00e9chargement, cliquez sur ce bouton pour t\u00e9l\u00e9charger et installer la nouvelle version",
-	"update_redirect": "Vous allez \u00eatre redirig\u00e9 vers le script d'installation pour poursuivre la mise-\u00e0-jour de marknotes",
+	"update_newer":
+		"Une nouvelle version de Marknotes est disponible en t\u00e9l\u00e9chargement, cliquez sur ce bouton pour t\u00e9l\u00e9charger et installer la nouvelle version",
+	"update_redirect":
+		"Vous allez \u00eatre redirig\u00e9 vers le script d'installation pour poursuivre la mise-\u00e0-jour de marknotes",
 	"update_settings": "\u00c9dite la configuration de marknotes",
-	"update_software": "Mettre \u00e0 jour Marknotes, installe la derni\u00e8re version du logiciel",
+	"update_software":
+		"Mettre \u00e0 jour Marknotes, installe la derni\u00e8re version du logiciel",
 	"upload_files": "T\u00e9l\u00e9verser des fichiers (notes, images, pdf, ...)"
 }

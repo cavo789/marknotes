@@ -49,6 +49,7 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 			"marknotes.search.max_width=".SEARCH_MAX_LENGTH.";\n".
 			"marknotes.search.restrict_folder='.';\n".
 			"marknotes.search.disable_plugins=".($disable_plugins?1:0).";\n".
+			"marknotes.search.disable_cache=0;\n".
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
@@ -99,18 +100,28 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$advanced_search = $aeSettings->getText('search_advanded_form', '');
 
-			$sSearch='<div id="divSearch" class="search sidebar-form" data-intro="'.$intro.'">
-			  <div class="input-group">
-				<input id="search" type="text" name="search" class="flexdatalist form-control" data-data="tags.json" data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
-				<span class="input-group-btn">
-					<button type="button" name="folder" id="search-advanced-btn"
-						class="btn btn-flat" title="'.$advanced_search.'"><i class="fa fa-cog"></i>
-					</button>'.
-					//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
-					//</button>
-				  '</span>
-			  </div>
-			</div>';
+
+$sSearch = file_get_contents(__DIR__.'/search/assets/search.frm');
+$sSearch = str_replace('%INTRO%', $intro, $sSearch);
+$sSearch = str_replace('%PLACEHOLDER%', $placeHolder, $sSearch);
+
+/*
+$sSearch='<div id="divSearch" class="search sidebar-form"
+ data-intro="'.$intro.'">
+<div class="input-group">
+<input id="search" type="text" name="search"
+class="flexdatalist form-control" data-data="tags.json"
+data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
+<span class="input-group-btn">
+<button type="button" name="folder" id="search-advanced-btn"
+class="btn btn-flat" title="'.$advanced_search.'">
+<i class="fa fa-cog"></i>
+</button>'.
+//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
+//</button>
+'</span>
+</div>
+</div>';*/
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {

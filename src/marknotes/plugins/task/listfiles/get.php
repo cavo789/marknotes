@@ -182,7 +182,13 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$aeEvents->trigger('task.acls.load::run', $args);
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 
-			$bCache = $arrSettings['enabled'] ?? false;
+			// Don't use the cache when the list of files is restricted
+			// to a specific folder
+			if ($restrict_folder !== "") {
+				$bCache = false;
+			} else {
+				$bCache = $arrSettings['enabled'] ?? false;
+			}
 
 			if ($bCache) {
 				$aeCache = \MarkNotes\Cache::getInstance();

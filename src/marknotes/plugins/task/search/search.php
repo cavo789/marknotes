@@ -6,6 +6,15 @@
  *
  * Answer to /search.php?str=Marknotes or
  * index.php?task=task.search.search&str=Marknotes
+ *
+ * Parameters :
+ *
+ * 	- str=xxxx	: the keyword to search
+ * 	- disable_cache=1 : Don't use the cache (slower)
+ * 	- disable_plugins=1 : Don't execute plugins (faster)
+ * 	- restrict_folder=XXX (base64_ecoded) - Restrict to that folder
+ *
+ * Using https://github.com/PHPSocialNetwork/phpfastcache
  */
 namespace MarkNotes\Plugins\Task\Search;
 
@@ -78,17 +87,22 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$bCache = $arrSettings['cache']['enabled'] ?? false;
 
 		// Allow to override the "cache_search_results" setting
-		// Read, on the querystring, if there is a ?cache parameter
-		// Can we use the cache system ? Default is true
-		$useCache = $aeFunctions->getParam('cache', 'bool', true);
+		// Read, on the querystring, if there is a ?disable_cache parameter
+		// Can we use the cache system ? Default is false (use the cache)
+		$disableCache = $aeFunctions->getParam('disable_cache', 'bool', false);
 
 		if ($bCache) {
 			// Read from the cache
 			$aeCache = \MarkNotes\Cache::getInstance();
 
-			if ($useCache) {
-				$return = $aeCache->getItem(md5($pattern));
+			if ($disableCache) {
+				// Disable cache ? Remove the current object so we won't
+				// use the cache and will create a new one
+				$return = $aeCache->deleteItem(md5($pattern));
 			}
+
+			$return = $aeCache->getItem(md5($pattern));
+
 		} // if ($bCache)
 
 		return $return;

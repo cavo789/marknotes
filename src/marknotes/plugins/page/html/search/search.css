@@ -1,94 +1,182 @@
-#sidebar .flexdatalist-multiple {
-	background: none !important;
-}
-
 .flexdatalist-multiple li {
 	margin: 0 !important;
 }
 
-.flexdatalist-multiple li.input-container,
-.flexdatalist-multiple li.input-container input {
-	/*width: 100% !important;*/
-}
 /* The search area.  The width will be initialized by javascript */
-
-/*#search {
+#search {
 	position: fixed;
-	left	: 5px;
-	top	 : 5px;
-	z-index : 1;
-}*/
-
-#sidebar .flexdatalist-multiple {
-	border: none !important;
+	left: 5px;
+	top: 5px;
+	z-index: 1;
 }
-/*
+
+.flexdatalist-multiple {
+	border: none !important;
+	padding: 5px 5px 5px 36px;
+	display: inline-block;
+	position: absolute;
+}
+
 #sidebar .flexdatalist-multiple li.input-container,
 #sidebar .flexdatalist-multiple li.input-container input {
 	width: 212px;
 }
-*/
-#sidebar .flexdatalist-multiple {
-	/*z-index	 : 1;*/
-	display: none;
-	/*border-width: 1px !important;
-	height	  : 37px;*/
-}
 
 #search-flexdatalist {
+	left: 0;
+	top: 0;
 	max-width: 150px;
 	min-width: 100px;
 }
 
 .flexdatalist-multiple li.value {
-	color			: white;
+	color: #1608ea;
 	background-color: transparent;
-	display		 : inline !important;
-	margin-top	  : 5px !important;
-}
-
-.skin-blue .sidebar-form .btn,
-.skin-blue .sidebar-form input[type="text"] {
-	background-color: #3c8dbc !important;
-	color			: white;
-}
-
-::-webkit-input-placeholder {
-	color: #f6e9e9 !important;
-}
-
-:-moz-placeholder {
-	/* Mozilla Firefox 4 to 18 */
-	color  : #f6e9e9 !important;
-	opacity: 1;
-}
-
-::-moz-placeholder {
-	/* Mozilla Firefox 19+ */
-	color  : #f6e9e9 !important;
-	opacity: 1;
-}
-
-:-ms-input-placeholder {
-	/* Internet Explorer 10-11 */
-	color: #f6e9e9 !important;
-}
-
-::-ms-input-placeholder {
-	/* Microsoft Edge */
-	color: #f6e9e9 !important;
+	/*display		 : inline !important;*/
 }
 
 #divSearch {
 	max-width: 100px;
 	min-width: 100px;
-	float	: left;
-	display  : inline-block;
-	margin	: 5px 0 0 !important;
-	border	: 1px solid #f6e9e9;
-	color	: white;
+	float: left;
+	margin: 5px 0 0 !important;
+	border: 1px solid #f6e9e9;
+	color: white;
+	border-radius: none;
 }
 
-.btn-restrict-active {
-	color: yellow !important;
+.search_form {
+	width: 100%;
+	min-width: 350px;
+	height: 40px;
+	border-radius: 40px;
+	box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+	background: #fff;
+	transition: all 0.3s ease;
+}
+
+.search_input {
+	position: absolute;
+	top: 6px;
+	left: 38px;
+	font-size: 14px;
+	background: none;
+	color: #5a6674;
+	width: 195px;
+	height: 20px;
+	border: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	outline: none;
+}
+.search_input::-webkit-search_cancel-button {
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.search_button {
+	position: relative;
+	top: 10px;
+	left: 15px;
+	height: 20px;
+	width: 20px;
+	padding: 0;
+	margin: 0;
+	border: none;
+	background: none;
+	outline: none !important;
+	cursor: pointer;
+}
+.search_button svg {
+	width: 20px;
+	height: 20px;
+	float: left;
+	fill: #5a6674;
+}
+
+.search_option {
+	position: relative;
+	display: inline-block;
+	text-align: right;
+	float: right;
+	top: 6px;
+	right: 15px;
+}
+.search_option div {
+	position: relative;
+	display: inline-block;
+	margin: 0 1px;
+	cursor: pointer;
+}
+.search_option div input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0.01;
+	cursor: pointer;
+}
+
+.search_option div span {
+	position: absolute;
+	display: block;
+	text-align: center;
+	left: 50%;
+
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+
+	opacity: 0;
+	background: #929aa3;
+	color: #fff;
+	font-size: 9px;
+	letter-spacing: 1px;
+	line-height: 1;
+	text-transform: uppercase;
+	padding: 4px 7px;
+	border-radius: 12px;
+	top: -18px;
+	transition: all 0.2s ease-in-out;
+}
+
+.search_option div span::after {
+	content: "";
+	position: absolute;
+	bottom: -3px;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+	border-top: 4px solid #929aa3;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	transition: all 0.2s ease-in-out;
+}
+.search_option div:hover span {
+	opacity: 1;
+	top: -21px;
+}
+.search_option div label {
+	display: block;
+	cursor: pointer;
+}
+.search_option div svg {
+	height: 20px;
+	width: 20px;
+	fill: #5a6674;
+	opacity: 0.6;
+	transition: all 0.2s ease-in-out;
+	pointer-events: none;
+}
+.search_option div:hover svg {
+	opacity: 1;
+}
+.search_option div input:checked + label svg {
+	fill: #e24040;
+	opacity: 0.9;
+}
+.search_option div input:checked + label span {
+	background: #e24040;
+}
+.search_option div input:checked + label span::after {
+	border-top-color: #e24040;
 }

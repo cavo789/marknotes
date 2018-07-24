@@ -1,4 +1,4 @@
-var jsTree_Search_Result = '';
+var jsTree_Search_Result = "";
 
 // Used by the search plugin to filter on notes having an ID as
 // returned by the ajax search task
@@ -14,15 +14,20 @@ function jsTree_ajax_search(str, node) {
  * @returns {undefined}
  */
 function jstree_init($data) {
-
 	try {
 		if ($.isFunction($.fn.jstree)) {
+			$("#TOC")
+				.jstree("destroy")
+				.empty();
+			$("#TOC").jstree("true");
 
-			$('#TOC').jstree("destroy").empty();
-			$('#TOC').jstree("true");
-
-			var $arrPlugins = ['contextmenu', 'types', 'search',
-				'types', 'unique'];
+			var $arrPlugins = [
+				"contextmenu",
+				"types",
+				"search",
+				"types",
+				"unique"
+			];
 
 			try {
 				// Use the "state" plugin of jsTree to remember
@@ -30,7 +35,7 @@ function jstree_init($data) {
 				// if the LocalStore setting was set i.e. when
 				// the store.min.js script has been loaded and
 				// define the store object
-				if (typeof store === 'object') {
+				if (typeof store === "object") {
 					// Ok, localStore is set, use the state plugin
 					//$arrPlugins.push('state');
 				}
@@ -54,21 +59,21 @@ function jstree_init($data) {
 
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('List of jstree plugins');
+				console.log("List of jstree plugins");
 				console.log($arrPlugins);
 			}
 			/*<!-- endbuild -->*/
 
 			// Use jsTree for the display
-			$('#TOC')
-				.on('loaded.jstree', function () {
+			$("#TOC")
+				.on("loaded.jstree", function() {
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
-						console.log('Tree has been successfully loaded');
+						console.log("Tree has been successfully loaded");
 					}
 					/*<!-- endbuild -->*/
 				})
-				.on('changed.jstree', function (e, data) {
+				.on("changed.jstree", function(e, data) {
 					var objNode = null;
 					if (data.node) {
 						objNode = data.instance.get_node(data.node.id);
@@ -86,11 +91,11 @@ function jstree_init($data) {
 						// Get the note's filename
 						// for instance subfolder/note.md
 						// and remove the extension
-						$fname = objNode.data.file.replace(/\.[^/.]+$/, "")
+						$fname = objNode.data.file.replace(/\.[^/.]+$/, "");
 						marknotes.note.file = $fname;
 					}
 
-					if (typeof (objNode.parent) !== "undefined") {
+					if (typeof objNode.parent !== "undefined") {
 						// Get the filename : objNode.parent
 						// mention the relative parent folder
 						// (f.. /development/jquery/)
@@ -99,7 +104,11 @@ function jstree_init($data) {
 
 						/*<!-- build:debug -->*/
 						if (marknotes.settings.debug) {
-							console.log('Tree - Selected item : ' + objNode.parent + objNode.text);
+							console.log(
+								"Tree - Selected item : " +
+									objNode.parent +
+									objNode.text
+							);
 							console.log(objNode);
 						}
 						/*<!-- endbuild -->*/
@@ -110,18 +119,21 @@ function jstree_init($data) {
 							// the treeview when a note is
 							// being displayed
 							if ($(window).width() < 1024) {
-								$('body').removeClass('sidebar-open');
+								$("body").removeClass("sidebar-open");
 							}
 
 							// data-url contains the relative URL
 							// starting with /docs/xxxx
 							var $fname = objNode.data.url;
 
-							$fname = window.btoa(encodeURIComponent(JSON.stringify($fname)));
+							$fname = window.btoa(
+								encodeURIComponent(JSON.stringify($fname))
+							);
 
 							// Remember the URL of the note
 							// Use the full URL like (http://localhost/notes/docs/jsTree.html)
-							marknotes.note.url = marknotes.docs + '/' + objNode.data.url;
+							marknotes.note.url =
+								marknotes.docs + "/" + objNode.data.url;
 							marknotes.note.basename = objNode.data.basename;
 
 							// And remember the hash (md5) of
@@ -129,39 +141,38 @@ function jstree_init($data) {
 							marknotes.note.md5 = $fname;
 
 							// Default task
-							var task = 'task.export.html';
-							if (typeof (objNode.data.task) !== "undefined") {
+							var task = "task.export.html";
+							if (typeof objNode.data.task !== "undefined") {
 								task = objNode.data.task;
 							}
 
-							if (task == 'task.edit.form') {
+							if (task == "task.edit.form") {
 								ajaxify({
-									task: 'task.edit.form',
+									task: "task.edit.form",
 									param: marknotes.note.md5,
-									callback: 'fnPluginEditShowEditor($data, data)',
+									callback: "fnPluginEditShowEditor($data, data)",
 									useStore: false,
-									target: 'CONTENT'
+									target: "CONTENT"
 								});
 							} else {
 								ajaxify({
 									task: task,
 									param: $fname,
-									callback: 'afterDisplay($data.param)',
-									target: 'CONTENT',
+									callback: "afterDisplay($data.param)",
+									target: "CONTENT",
 									useStore: true
 								});
 							}
 						} // if (objNode.data !== null)
 					} // if (typeof(objNode.parent)!="undefined")
 				})
-				.on('click', '.jstree-anchor', function (e) {
-
+				.on("click", ".jstree-anchor", function(e) {
 					// By clicking (single-click) on a folder, open / close it
-					$(this).jstree(true).toggle_node(e.target);
-
+					$(this)
+						.jstree(true)
+						.toggle_node(e.target);
 				})
-				.on('keydown.jstree', '.jstree-anchor', function (e) {
-
+				.on("keydown.jstree", ".jstree-anchor", function(e) {
 					// @TODO : Problem : e.currentTarget is not
 					// yet the current one but the one when the
 					// move was done.
@@ -169,18 +180,19 @@ function jstree_init($data) {
 					// I need to capture child4 (the next one)
 					// and e.currentTarget is still on child3.
 					// Not found a solution...
-					var objNode = $('#TOC').jstree(true).get_node(e.currentTarget);
+					var objNode = $("#TOC")
+						.jstree(true)
+						.get_node(e.currentTarget);
 
 					/*<!-- build:debug -->*/
 					if (marknotes.settings.debug) {
 						if (objNode.data) {
-							console.log('changed.jstree - ' + objNode.data.file);
+							console.log("changed.jstree - " + objNode.data.file);
 						}
 					}
 					/*<!-- endbuild -->*/
-
 				})
-				.on('search.jstree', function (nodes, str, res) {
+				.on("search.jstree", function(nodes, str, res) {
 					if (str.nodes.length === 0) {
 						// No nodes found, hide all
 						//$('#TOC').jstree(true).hide_all();
@@ -194,8 +206,13 @@ function jstree_init($data) {
 						animation: 1,
 						progressive_render: true,
 						data: $data.tree,
-						check_callback: function (operation, node, node_parent, node_position, more) {
-
+						check_callback: function(
+							operation,
+							node,
+							node_parent,
+							node_position,
+							more
+						) {
 							// Return true to allow the
 							// operation, return false otherwise
 							//
@@ -205,29 +222,29 @@ function jstree_init($data) {
 							// 'delete_node', 'move_node' or
 							// 'copy_node'
 
-							return operation === 'move_node' ? false : true;
+							return operation === "move_node" ? false : true;
 						},
 						// Only one node can be selected at a time
 						multiple: false,
 						// Automatically open the root node
-						initially_open: ['phtml_1'],
+						initially_open: ["phtml_1"],
 						themes: {
 							name: marknotes.jstree.theme,
 							responsive: 0,
 							dots: 1,
 							ellipsis: 1,
 							stripes: 0,
-							variant: 'small'
+							variant: "small"
 						},
 						types: {
 							default: {
-								icon: 'folder'
+								icon: "folder"
 							},
 							file: {
-								icon: 'file file-md'
+								icon: "file file-md"
 							},
 							folder: {
-								icon: 'folder'
+								icon: "folder"
 							}
 						}
 					},
@@ -247,39 +264,45 @@ function jstree_init($data) {
 						ajax: {
 							// This request will be fired with
 							// the '&str=SEARCH_TERM' parameter
-							url: 'search.php',
-							dataType: 'json',
-							data : {
-								restrict_folder : marknotes.search.restrict_folder,
-								disable_plugins : marknotes.search.disable_plugins
+							url: "search.php",
+							dataType: "json",
+							data: {
+								restrict_folder: marknotes.search.restrict_folder,
+								disable_cache: marknotes.search.disable_cache,
+								disable_plugins: marknotes.search.disable_plugins
 							},
-							type: (marknotes.settings.debug ? 'GET' : 'POST'),
-							beforeSend: function () {
+							type: marknotes.settings.debug ? "GET" : "POST",
+							beforeSend: function() {
 								/*<!-- build:debug -->*/
-								console.time('Search time');
+								console.time("Search time");
 								/*<!-- endbuild -->*/
 
-								var loading = '<div id="ajax_loading" class="lds-css"><div style="width:100%;height:100%" class="lds-ellipsis"><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div></div>';
-								$('#TOC').hide().parent().append(loading);
-
+								var loading =
+									'<div id="ajax_loading" class="lds-css"><div style="width:100%;height:100%" class="lds-ellipsis"><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div></div>';
+								$("#TOC")
+									.hide()
+									.parent()
+									.append(loading);
 							}, // beforeSend()
-							success: function (data) {
+							success: function(data) {
 								/*<!-- build:debug -->*/
 								if (marknotes.settings.debug) {
-									console.log('Success');
-									console.timeEnd('Search time');
-									console.log('Search - success, list of IDs returned :');
+									console.log("Success");
+									console.timeEnd("Search time");
+									console.log(
+										"Search - success, list of IDs returned :"
+									);
 									console.log(data);
 								}
 								/*<!-- endbuild -->*/
 
-								$('#ajax_loading').remove();
-								$('#TOC').fadeIn();
+								$("#ajax_loading").remove();
+								$("#TOC").fadeIn();
 
-								if (data.hasOwnProperty('message')) {
+								if (data.hasOwnProperty("message")) {
 									Noty({
 										message: data.message,
-										type: 'information'
+										type: "information"
 									});
 								}
 
@@ -311,12 +334,11 @@ function jstree_init($data) {
 		if (marknotes.settings.debug) {
 			Noty({
 				message: err.message,
-				type: 'error'
+				type: "error"
 			});
 		}
 		/*<!-- endbuild -->*/
 	}
-
 }
 
 /**
@@ -332,13 +354,13 @@ function jstree_init($data) {
  * @returns {context_menu.items}
  */
 function jstree_context_menu(node) {
+	var $tree = $("#TOC").jstree(true);
 
-	var $tree = $('#TOC').jstree(true);
-
-	var $type = 'file';
+	var $type = "file";
 
 	try {
-		$type = (node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file");
+		$type =
+			node.icon.substr(0, 6).toLowerCase() === "folder" ? "folder" : "file";
 	} catch (err) {
 		console.warn(err.message);
 	}
@@ -348,9 +370,9 @@ function jstree_context_menu(node) {
 	$items.Search = {
 		separator_before: false,
 		separator_after: false,
-		label: $.i18n('search_placeholder'),
-		icon: 'fa fa-search',
-		action: function () {
+		label: $.i18n("search_placeholder"),
+		icon: "fa fa-search",
+		action: function() {
 			var fn = window["fnPluginTaskSearch_addSearchEntry"];
 			if (typeof fn === "function") {
 				fnPluginTaskSearch_addSearchEntry({
@@ -364,20 +386,20 @@ function jstree_context_menu(node) {
 	$items.Collapse = {
 		separator_before: false,
 		separator_after: false,
-		label: $.i18n('tree_collapse'),
-		icon: 'fa fa-plus-square-o',
-		action: function () {
-			$('#TOC').jstree('close_all');
+		label: $.i18n("tree_collapse"),
+		icon: "fa fa-plus-square-o",
+		action: function() {
+			$("#TOC").jstree("close_all");
 		}
 	};
 
 	$items.Expand = {
 		separator_before: false,
 		separator_after: true,
-		label: $.i18n('tree_expand'),
-		icon: 'fa fa-minus-square-o',
-		action: function () {
-			$('#TOC').jstree('open_all');
+		label: $.i18n("tree_expand"),
+		icon: "fa fa-minus-square-o",
+		action: function() {
+			$("#TOC").jstree("open_all");
 		}
 	};
 
@@ -386,9 +408,9 @@ function jstree_context_menu(node) {
 	$items.Open_NewWindow = {
 		separator_before: false,
 		separator_after: true,
-		label: $.i18n('open_html'),
-		icon: 'fa fa-external-link',
-		action: function () {
+		label: $.i18n("open_html"),
+		icon: "fa fa-external-link",
+		action: function() {
 			contextMenuNewWindow(node);
 		}
 	};
@@ -397,9 +419,9 @@ function jstree_context_menu(node) {
 	$items.Open_Slideshow = {
 		separator_before: false,
 		separator_after: true,
-		label: $.i18n('open_slideshow'),
-		icon: 'fa fa-desktop',
-		action: function () {
+		label: $.i18n("open_slideshow"),
+		icon: "fa fa-desktop",
+		action: function() {
 			contextMenuSlideshow(node);
 		}
 	};
@@ -409,15 +431,14 @@ function jstree_context_menu(node) {
 	// js function has been defined)
 	var fn = window.fnPluginTaskLogin;
 	if (typeof fn === "function") {
-
-		$type = (marknotes.settings.authenticated === 0 ? 'in' : 'out');
+		$type = marknotes.settings.authenticated === 0 ? "in" : "out";
 
 		$items.Login = {
 			separator_before: true,
 			separator_after: false,
-			label: $.i18n('loginform_'+$type),
-			icon: 'fa fa-sign-'+$type,
-			action: function () {
+			label: $.i18n("loginform_" + $type),
+			icon: "fa fa-sign-" + $type,
+			action: function() {
 				contextMenuLogin(node);
 			}
 		};
@@ -432,10 +453,11 @@ function jstree_context_menu(node) {
 
 	// is object a function?
 	if (typeof fn === "function") {
-
 		/*<!-- build:debug -->*/
 		if (marknotes.settings.debug) {
-			console.log('Run fnPluginTaskTreeViewContextMenu(), retrieve what should appears in the contextual menu');
+			console.log(
+				"Run fnPluginTaskTreeViewContextMenu(), retrieve what should appears in the contextual menu"
+			);
 		}
 		/*<!-- endbuild -->*/
 
@@ -444,10 +466,11 @@ function jstree_context_menu(node) {
 		$extraItems = fn(node);
 
 		if (Object.keys($extraItems).length > 0) {
-
 			/*<!-- build:debug -->*/
 			if (marknotes.settings.debug) {
-				console.log('Below items returned by fnPluginTaskTreeViewContextMenu()');
+				console.log(
+					"Below items returned by fnPluginTaskTreeViewContextMenu()"
+				);
 				console.log($extraItems);
 			}
 			/*<!-- endbuild -->*/
@@ -455,27 +478,23 @@ function jstree_context_menu(node) {
 			// $extraItems is a JSON object
 			// Loop and add any entries (i.e. actions) into the $item JSON object
 
-			jQuery.each($extraItems, function ($action, $node) {
+			jQuery.each($extraItems, function($action, $node) {
 				$items[$action] = $node;
 			});
-
 		}
-
 	}
 	// ------------------------------------------------------------------------
 
 	return $items;
-
 }
 
 /**
  * The treeview context menu - Open in a new window function has been clicked
  */
 function contextMenuNewWindow(node) {
-
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('Context menu - Open in a new window');
+		console.log("Context menu - Open in a new window");
 		console.log(node);
 	}
 	/*<!-- endbuild -->*/
@@ -489,13 +508,12 @@ function contextMenuNewWindow(node) {
  * plugin-page->>html->login
  */
 function contextMenuLogin(node) {
-
- 	/*<!-- build:debug -->*/
- 	if (marknotes.settings.debug) {
- 		console.log('Context menu - Login');
- 		console.log(node);
- 	}
- 	/*<!-- endbuild -->*/
+	/*<!-- build:debug -->*/
+	if (marknotes.settings.debug) {
+		console.log("Context menu - Login");
+		console.log(node);
+	}
+	/*<!-- endbuild -->*/
 
 	if (marknotes.settings.authenticated === 0) {
 		fnPluginTaskLogin();
@@ -504,7 +522,6 @@ function contextMenuLogin(node) {
 	}
 
 	return true;
-
 }
 
 /**
@@ -512,10 +529,9 @@ function contextMenuLogin(node) {
  * function has been clicked
  */
 function contextMenuSlideshow(node) {
-
 	/*<!-- build:debug -->*/
 	if (marknotes.settings.debug) {
-		console.log('Context menu - Start the slideshow');
+		console.log("Context menu - Start the slideshow");
 		console.log(node);
 	}
 	/*<!-- endbuild -->*/
