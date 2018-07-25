@@ -4,6 +4,9 @@
  * ONLY WHEN the note will not contains encrypted informations.
  * If it's the case, markdown can't be put in the cache otherwise
  * we'll store unencrypted informations which is a bad idea.
+ *
+ * Parameters
+ * 	- disable_cache 1/0 (default 0) - Don't read from the cache when 1
  */
 namespace MarkNotes\FileType;
 
@@ -341,6 +344,17 @@ class Markdown
 			// "task.export.html###c:\notes\docs\a.md"
 			$key = 'task.markdown.read###'.$filename;
 			$aeCache = \MarkNotes\Cache::getInstance();
+
+			if ($params['disable_cache']??1) {
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->log("disable_cache has been set, kill the key in the cache if present so always a fresh copy is returned", "debug");
+				}
+				/*<!-- endbuild -->*/
+				$aeCache->deleteItem(md5($key));
+			}
+
 			$cached = $aeCache->getItem(md5($key));
 			$arr = $cached->get();
 		}

@@ -93,6 +93,11 @@ class Markdown
 		$aeSession->set('filename', $filename);
 		$aeSession->set('layout', ($params['layout'] ?? ''));
 
+		// Read, on the querystring, if there is a ?disable_cache parameter
+		// Can we use the cache system ? Default is false (use the cache)
+		$disableCache = $aeFunctions->getParam('disable_cache', 'bool', false);
+		$params['disable_cache'] = $disableCache ? 1 : 0;
+
 		// Process "core" tasks i.e. not part of a plugin
 		switch ($task) {
 			case 'index':
