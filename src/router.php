@@ -5,7 +5,6 @@
  *
  * Documentation : https://github.com/cavo789/marknotes/wiki
  * Demo : https://www.marknotes.fr
- * History : https://github.com/cavo789/marknotes/blob/master/changelog.md
  */
 namespace MarkNotes;
 
@@ -32,6 +31,22 @@ if ($bReturn) {
 	$filename = str_replace('/', DS, $filename);
 
 	$task = rawurldecode($aeFunctions->getParam('task', 'string', '', false));
+
+	// Very special case : when accessing to a file called index.html,
+	// the task is task.index.get like defined in the .htaccess file.
+	// But, if a file, in the same folder, is called index.md, so, don't
+	// call the index task plugin but well the export.html one
+
+	if (basename($filename) == 'index.html') {
+
+		$aeFiles = \MarkNotes\Files::getInstance();
+		$md = $aeFiles->makeFileNameAbsolute($filename);
+		$md = $aeFiles->replaceExtension($md, 'md');
+
+		if ($aeFiles->exists($md)) {
+			$task = "task.export.html";
+		}
+	}
 
 	$params = array('filename' => $filename);
 	// Retrieve the file's extension
