@@ -49,8 +49,11 @@ class Cache
 				}
 
 				// Setup File Path on your config files
+				// https://github.com/PHPSocialNetwork/phpfastcache/wiki/%5BV4%CB%96%5D-Configuration-Options
 				CacheManager::setDefaultConfig(
-					array('path' => static::$sCacheFolder)
+					array(
+						'path' => static::$sCacheFolder,
+						'itemDetailedDate' => true)
 				);
 
 				// files : can raise a server error (500) in some cases, need
