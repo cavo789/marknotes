@@ -2,6 +2,7 @@
 /**
  * Return the HTML rendering of a .md file
  */
+
 namespace MarkNotes\Tasks;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -16,7 +17,9 @@ class Display
 	public function __construct()
 	{
 		return true;
-	} // function __construct()
+	}
+
+	// function __construct()
 
 	public static function getInstance()
 	{
@@ -25,7 +28,9 @@ class Display
 		}
 
 		return self::$hInstance;
-	} // function getInstance()
+	}
+
+	// function getInstance()
 
 	private function insertHR(&$markdown)
 	{
@@ -46,12 +51,12 @@ class Display
 
 		// Because --- is used in reveal or remark presentations
 		// just replace with <hr/> for these tasks
-		$arr = array('task.export.remark','task.export.reveal');
+		$arr = ['task.export.remark', 'task.export.reveal'];
 		if (in_array($task, $arr)) {
-			$matches = array();
+			$matches = [];
 			preg_match_all('/\n\r?-{3,5}(\s*(\n\r?)*)*/', $markdown, $matches);
 			foreach ($matches[0] as $tmp) {
-				$markdown = str_replace($tmp, '<hr/>'.PHP_EOL, $markdown);
+				$markdown = str_replace($tmp, '<hr/>' . PHP_EOL, $markdown);
 			}
 		}
 
@@ -69,12 +74,12 @@ class Display
 		//				  (empty line)
 		//
 
-		$matches = array();
+		$matches = [];
 		preg_match_all('/\n\r?(\*{3,5}(\s*(\n\r?)*)*){2}(\s*\n\r?)*/', $markdown, $matches);
-		$break='<p style="page-break-after: always;">&nbsp;</p>'.
+		$break = '<p style="page-break-after: always;">&nbsp;</p>' .
 			'<p style="page-break-before: always;">&nbsp;</p>';
 		foreach ($matches[0] as $tmp) {
-			$markdown = str_replace($tmp, $break.PHP_EOL, $markdown);
+			$markdown = str_replace($tmp, $break . PHP_EOL, $markdown);
 		}
 
 		return true;
@@ -90,10 +95,10 @@ class Display
 
 		// If the filename doesn't mention the file's extension, add it.
 		if (substr($params['filename'], -3) != '.md') {
-			$params['filename'] = $aeFiles->removeExtension($params['filename']).'.md';
+			$params['filename'] = $aeFiles->removeExtension($params['filename']) . '.md';
 		}
 
-		$fullname = $aeSettings->getFolderDocs(true).ltrim($params['filename'], DS);
+		$fullname = $aeSettings->getFolderDocs(true) . ltrim($params['filename'], DS);
 		$fullname = str_replace('/', DS, $fullname);
 
 		if (!$aeFiles->exists($fullname)) {
@@ -102,7 +107,23 @@ class Display
 			// code works both on Windows and Unix...
 			$fullname = utf8_decode($fullname);
 			if (!$aeFiles->exists($fullname)) {
-				$aeFunctions->fileNotFound($fullname);
+				/*<!-- build:debug -->*/
+				if ($aeSettings->getDebugMode()) {
+					$aeFunctions->fileNotFound($fullname);
+				} else {
+					/*<!-- endbuild -->*/
+					header('HTTP/1.0 404 Not Found');
+					$str = file_get_contents('marknotes/errors/error_404.html');
+					$str = str_replace('%MSG%', $aeSettings->getText('error_404', ''), $str);
+					$str = str_replace('%HOME%', $aeSettings->getText('error_404_home', ''), $str);
+
+					$sRoot = rtrim($aeFunctions->getCurrentURL(), '/') . '/';
+					$str = str_replace('%ROOT%', $sRoot, $str);
+					echo $str;
+					die();
+					/*<!-- build:debug -->*/
+				}
+				/*<!-- endbuild -->*/
 			}
 		}
 
@@ -112,10 +133,10 @@ class Display
 		$markdown = trim($aeMD->read($fullname, $params));
 
 		// If the file is empty, display an information message
-		if ($markdown=='') {
+		if ($markdown == '') {
 			$empty = $aeSettings->getText('file_empty', 'Sorry, the note [$1] is empty; nothing to display');
-			$markdown = "# ".basename($params['filename'])."\n\n".
-				"*".str_replace('$1', $params['filename'], $empty)."*";
+			$markdown = '# ' . basename($params['filename']) . "\n\n" .
+				'*' . str_replace('$1', $params['filename'], $empty) . '*';
 		}
 
 		self::insertHR($markdown);
@@ -128,15 +149,15 @@ class Display
 
 		// Call htmlindent to correctly indent HTML
 		$aeEvents->loadPlugins('task.htmlindent.indent');
-		$params['html']=$htmlNote;
-		$args = array(&$params);
+		$params['html'] = $htmlNote;
+		$args = [&$params];
 		$aeEvents->trigger('task.htmlindent.indent::run', $args);
 		$htmlNote = $args[0]['html'];
 
 		// Now, get the template and add the content
 		// (from $htmlNote) in the page
 		$html = '';
-		if (trim($htmlNote)!=='') {
+		if (trim($htmlNote) !== '') {
 			$aeConvert = \MarkNotes\Tasks\Converter\HTML::getInstance();
 			$html = $aeConvert->run($htmlNote, $params);
 		}

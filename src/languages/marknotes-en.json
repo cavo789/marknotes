@@ -155,6 +155,8 @@
 	"encrypt_decrypt_error":
 		"An error has occurred, please verify f.i. if your password is well correct",
 	"error": "Error",
+	"error_404": "Error, this page doesn't exists",
+	"error_404_home": "Go back to the homepage",
 	"error_js_mime_not_allowed":
 		"This file type isn't allowed. If needed, please update the upload settings of marknotes to allow this file's extension or mime type.",
 	"error_mime_not_allowed":

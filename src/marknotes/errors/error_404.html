@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>marknotes</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="%ROOT%libs/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+
+	<div id="lottie" style="height:250px;" />
+
+	<div class="page-header text-center">
+		<img src="%ROOT%assets/images/marknotes.svg" />
+	</div>
+
+	<div class="container">
+		<div class="row" style="text-align:center;">
+			<p>%MSG%</p>
+			<a href="%ROOT%">%HOME%</a>
+		</div>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.min.js" type="text/javascript"></script>
+	<script>
+		var animation = bodymovin.loadAnimation({
+			container: document.getElementById('lottie'),
+			autoplay: true,
+			path: '%ROOT%marknotes/errors/error_404_data.json', // https://www.lottiefiles.com/1408-network-lost
+			renderer: 'svg',
+			loop: true
+		})
+	</script>
+
+	<script src="%ROOT%libs/jquery/jquery.min.js" type="text/javascript"></script>
+	<script src="%ROOT%libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+</body>
+
+</html>

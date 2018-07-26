@@ -1,6 +1,7 @@
 #AddHandler application/x-httpd-php70 .php
 
 ErrorDocument 403 '<html xmlns="http://www.w3.org/1999/xhtml"><head><style type="text/css" >body{color:#fff;background-color:#851507;font:14px/1.5 Helvetica,Arial,sans-serif};</style><title>Access denied</title></head><body><div style="margin:20px auto;width:700px;padding-top:50px"><h1>Access denied, unauthorized access.<br/><br/>If you think it\'s an error, please inform the webmaster to help him to adjust his security rules.  Thank you.</h1><pre style="padding:20px;white-space:pre-line;border-radius:10px;background-color:#b34334">Code : 403 - Deny access</pre></div></body></html>'
+ErrorDocument 404 /marknotes/errors/error_404.html
 
 DirectoryIndex index.php
 

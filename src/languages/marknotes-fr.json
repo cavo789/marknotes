@@ -157,6 +157,8 @@
 	"encrypt_decrypt_error":
 		"Une erreur est survenue lors du d\u00e9cryptage, veuillez v\u00e9rifier si votre mot de passe est correct",
 	"error": "Erreur",
+	"error_404": "Erreur, cette page n'existe pas",
+	"error_404_home": "Revenir \u00e0 la page d'accueil du site",
 	"error_js_mime_not_allowed":
 		"Ce type de fichier n'est pas autoris\u00e9. Si n\u00e9cessaire, veuillez \u00e9diter les param\u00e8tres d'upload de marknotes pour autoriser l'extension ou le type mime de ce fichier.",
 	"error_mime_not_allowed":
