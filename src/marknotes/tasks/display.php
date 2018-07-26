@@ -107,23 +107,29 @@ class Display
 			// code works both on Windows and Unix...
 			$fullname = utf8_decode($fullname);
 			if (!$aeFiles->exists($fullname)) {
+				$msg = $aeSettings->getText('error_404', '');
+
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
-					$aeFunctions->fileNotFound($fullname);
-				} else {
-					/*<!-- endbuild -->*/
-					header('HTTP/1.0 404 Not Found');
-					$str = file_get_contents('marknotes/errors/error_404.html');
-					$str = str_replace('%MSG%', $aeSettings->getText('error_404', ''), $str);
-					$str = str_replace('%HOME%', $aeSettings->getText('error_404_home', ''), $str);
+					$aeDebug = \MarkNotes\Debug::getInstance();
+					$aeDebug->here('#DebugMode# - File ' . $fullname . ' not found', 10);
 
-					$sRoot = rtrim($aeFunctions->getCurrentURL(), '/') . '/';
-					$str = str_replace('%ROOT%', $sRoot, $str);
-					echo $str;
-					die();
-					/*<!-- build:debug -->*/
+					$msg = $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists');
+					$msg = str_replace('$1', '<strong>' . $fullname . '</strong>', $msg);
 				}
 				/*<!-- endbuild -->*/
+
+				header('HTTP/1.0 404 Not Found');
+				$str = file_get_contents('marknotes/errors/error_404.html');
+				$str = str_replace('%MSG%', $msg, $str);
+				$str = str_replace('%HOME%', $aeSettings->getText('error_404_home', ''), $str);
+
+				$sRoot = rtrim($aeFunctions->getCurrentURL(), '/') . '/';
+				$str = str_replace('%ROOT%', $sRoot, $str);
+
+				echo $str;
+
+				die();
 			}
 		}
 
