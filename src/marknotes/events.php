@@ -213,7 +213,8 @@ class Events
 			$sReturn = '\\'.trim($matches[1]);
 		}
 
-		if (preg_match('/^class ([^ \n]*).*$/m', $content, $matches)) {
+		if (preg_match('/^class ([^ \n]*).*$/m', $content, $matches)) 
+		{
 			$sReturn .= '\\'. trim($matches[1]);
 		}
 

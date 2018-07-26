@@ -6,7 +6,9 @@
 * Demo : https://marknotes.cavo789.com
 * History : https://github.com/cavo789/marknotes/blob/master/changelog.md
 */
+
 namespace MarkNotes;
+
 define('_MARKNOTES', 1);
 
 // As fast as possible, enable debugging mode if
@@ -24,7 +26,6 @@ $root = $class->getWebRoot();
 unset($class);
 
 if ($bReturn) {
-
 	error_reporting(E_ALL);
 
 	$aeFunctions = \MarkNotes\Functions::getInstance($root);
@@ -32,8 +33,8 @@ if ($bReturn) {
 	if (isset($_GET['file'])) {
 		$filename = rawurldecode($aeFunctions->getParam('file', 'string', '', false));
 	} else {
-		$tmp=urldecode($aeFunctions->getParam('param', 'string', '', true));
-		$filename=((json_decode($tmp)!='')?json_decode($tmp):$tmp);
+		$tmp = urldecode($aeFunctions->getParam('param', 'string', '', true));
+		$filename = ((json_decode($tmp) != '') ? json_decode($tmp) : $tmp);
 	}
 
 	$filename = rtrim($filename, DS);
@@ -41,13 +42,13 @@ if ($bReturn) {
 
 	$task = rawurldecode($aeFunctions->getParam('task', 'string', '', false));
 
-	$params = array('filename' => $filename);
+	$params = ['filename' => $filename];
 	$aeSettings = \MarkNotes\Settings::getInstance($root, $params);
 
 	/*<!-- build:debug -->*/
 	if ($aeSettings->getDebugMode()) {
 		$aeDebug = \MarkNotes\Debug::getInstance();
-		$aeDebug->log("*** START of marknotes - index.php ***","debug");
+		$aeDebug->log('*** START of marknotes - index.php ***', 'debug');
 	}
 	/*<!-- endbuild -->*/
 
@@ -74,5 +75,4 @@ if ($bReturn) {
 		$aeDebug->logEnd();
 	}
 	/*<!-- endbuild -->*/
-
 } // if ($bReturn)

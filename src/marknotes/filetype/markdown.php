@@ -8,6 +8,7 @@
  * Parameters
  * 	- disable_cache 1/0 (default 0) - Don't read from the cache when 1
  */
+
 namespace MarkNotes\FileType;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -26,22 +27,27 @@ class Markdown
 		if (self::$hInstance === null) {
 			self::$hInstance = new Markdown();
 		}
+
 		return self::$hInstance;
 	}
 
 	/**
-	* From a markdown content, return an heading text
-	* (by default the ""# TEXT" i.e. the heading 1)
-	*/
+	 * From a markdown content, return an heading text
+	 * (by default the "# TEXT" i.e. the heading 1)
+	 *
+	 * @param  string $markdown
+	 * @param  string $heading
+	 * @return string
+	 */
 	public function getHeadingText(string $markdown, string $heading = '#') : string
 	{
 		// Try to find a heading 1 and if so use that text for the
 		// title tag of the generated page
-		$matches = array();
+		$matches = [];
 		$title = '';
 
 		try {
-			preg_match("/".$heading." ?(.*)/", $markdown, $matches);
+			preg_match('/' . $heading . ' ?(.*)/', $markdown, $matches);
 			$title = (count($matches) > 0) ? trim($matches[1]) : '';
 
 			// Be sure that the heading 1 wasn't type like
@@ -56,9 +62,13 @@ class Markdown
 	}
 
 	/**
-	* Convert any links like ![alt](image/file.png) or
-	* <img src='image/file.php' /> to an absolute link to the image
-	*/
+	 * Convert any links like ![alt](image/file.png) or
+	 * <img src='image/file.php' /> to an absolute link to the image
+	 *
+	 * @param  string $markdown
+	 * @param  array  $params
+	 * @return string
+	 */
 	private static function setImagesAbsolute(string $markdown, array $params = null) : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -70,22 +80,22 @@ class Markdown
 		// referred locally i.e. not through a http:// syntax but
 		// like c:\folder, local on the filesystem so the convertor
 		// program can retrieve the file (the image)
-		$arrFilePaths = array('doc','epub','pdf');
+		$arrFilePaths = ['doc', 'epub', 'pdf'];
 
 		$task = $aeSession->get('task');
 
-		$folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS).'/');
+		$folderNote = str_replace('/', DS, rtrim($aeSettings->getFolderDocs(true), DS) . '/');
 
 		if (isset($params['filename'])) {
 			$params['filename'] = str_replace($folderNote, '', $params['filename']);
 
-			$folderNote .= rtrim(dirname($params['filename']), DS).DS;
+			$folderNote .= rtrim(dirname($params['filename']), DS) . DS;
 
 			$subfolder = trim(str_replace(basename($params['filename']), '', $params['filename']));
 
 			// Get the full path to this note
 			// $url will be, f.i., http://localhost/notes/docs/
-			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/') . '/' . rtrim($aeSettings->getFolderDocs(false), DS) . '/';
 
 			// Extract the subfolder f.i. private/home/dad/
 			if ($subfolder !== '') {
@@ -97,7 +107,7 @@ class Markdown
 			if (in_array($task, $arrFilePaths)) {
 				// PDF exportation : links to images should remains
 				// relative
-				$url = rtrim($aeSettings->getFolderDocs(true), DS).DS;
+				$url = rtrim($aeSettings->getFolderDocs(true), DS) . DS;
 				if ($subfolder !== '') {
 					$url .= $subfolder;
 				}
@@ -110,19 +120,19 @@ class Markdown
 
 			$imgTag = '\!\[(.*)\]\((.*)\)';
 
-			$matches = array();
+			$matches = [];
 
 			// When the task is DOCX, PDF, ... links to
 			// images should be from the disk and not from an
 			// url so replace absolute links by relative ones,
 			// then, replace links by hard disk filepaths
 			if (in_array($task, $arrFilePaths)) {
-				if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+				if (preg_match_all('/' . $imgTag . '/', $markdown, $matches)) {
 					for ($i = 0; $i < count($matches[2]); $i++) {
 						$matches[2][$i] = str_replace($pageURL, '', $matches[2][$i]);
 						$matches[2][$i] = str_replace(str_replace(' ', '%20', $pageURL), '', $matches[2][$i]);
 
-						$markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$matches[2][$i].')', $markdown);
+						$markdown = str_replace($matches[0][$i], '![' . $matches[1][$i] . '](' . $matches[2][$i] . ')', $markdown);
 					}
 				}
 			} // if(in_array($task, $arrFilePaths))
@@ -136,8 +146,8 @@ class Markdown
 			//
 			// ![My image](.images/local.jpg) to an absolute path
 			// ![My image](http://localhost/folder/.images/local.jpg)
-			$matches = array();
-			if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+			$matches = [];
+			if (preg_match_all('/' . $imgTag . '/', $markdown, $matches)) {
 				$j = count($matches[0]);
 				for ($i = 0; $i <= $j; $i++) {
 					if (isset($matches[2][$i])) {
@@ -147,7 +157,7 @@ class Markdown
 							$filename = str_replace('/', DS, $matches[2][$i]);
 
 							if (strpos($filename, $folderNote) === false) {
-								$filename = $folderNote.$filename;
+								$filename = $folderNote . $filename;
 							}
 
 							// Relative name to the image
@@ -155,8 +165,8 @@ class Markdown
 							// If the image url doesn't start with
 							// http, make the url absolute by adding
 							// the full url of the note
-							if (strpos($img, 'http')!== 0) {
-								$img=$url.$img;
+							if (strpos($img, 'http') !== 0) {
+								$img = $url . $img;
 							}
 
 							if (in_array($task, $arrFilePaths)) {
@@ -174,7 +184,7 @@ class Markdown
 							} // if($task==='pdf')
 
 							if ($aeFiles->exists($filename)) {
-								$markdown = str_replace($matches[0][$i], '!['.$matches[1][$i].']('.$img.')', $markdown);
+								$markdown = str_replace($matches[0][$i], '![' . $matches[1][$i] . '](' . $img . ')', $markdown);
 							} else {
 								/*<!-- build:debug -->*/
 								/*if (in_array($task, array('task.export.html','main','html'))) {
@@ -193,8 +203,8 @@ class Markdown
 			// And process <img> tags
 			$imgTag = '<img (.*)src *= *["\']([^"\']+["\']*)[\'|"]';
 
-			$matches = array();
-			if (preg_match_all('/'.$imgTag.'/', $markdown, $matches)) {
+			$matches = [];
+			if (preg_match_all('/' . $imgTag . '/', $markdown, $matches)) {
 				$j = count($matches);
 				for ($i = 0; $i <= $j; $i++) {
 					// Derive the image fullname
@@ -220,11 +230,11 @@ class Markdown
 								$img = str_replace('\.', '\\\.', $img);
 							} // if($task==='pdf')
 
-							$filename = $folderNote.str_replace('/', DS, $matches[2][$i]);
+							$filename = $folderNote . str_replace('/', DS, $matches[2][$i]);
 
 							if ($aeFiles->exists($filename)) {
-								$img = $url.trim($matches[2][$i]);
-								$markdown = str_replace($matches[0][$i], '<img src="'.$img.'" '.$matches[1][$i], $markdown);
+								$img = $url . trim($matches[2][$i]);
+								$markdown = str_replace($matches[0][$i], '<img src="' . $img . '" ' . $matches[1][$i], $markdown);
 							}
 						}
 					}
@@ -251,7 +261,7 @@ class Markdown
 		if ($aeFiles->exists($filename)) {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
-				$aeDebug->log("Process file ".$filename,"debug");
+				$aeDebug->log('Process file ' . $filename, 'debug');
 			}
 			/*<!-- endbuild -->*/
 
@@ -276,13 +286,13 @@ class Markdown
 			$params['markdown'] = $markdown;
 			$params['filename'] = $filename;
 
-			$args = array(&$params);
+			$args = [&$params];
 			$aeEvents->trigger('markdown::markdown.read', $args);
 			$markdown = $args[0]['markdown'];
 
 			// Get the full path to this note
-			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
-			$noteFolder = $url.str_replace(DS, '/', dirname($params['filename'])).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/') . '/' . rtrim($aeSettings->getFolderDocs(false), DS) . '/';
+			$noteFolder = $url . str_replace(DS, '/', dirname($params['filename'])) . '/';
 			// --------------------------------
 
 			// In the markdown file, two syntax are possible
@@ -290,16 +300,16 @@ class Markdown
 			// Be sure to have the correct relative path i.e.
 			// pointing to the folder of the note
 			$task = $aeSession->get('task');
-			if ($task!=='task.search.search') {
+			if ($task !== 'task.search.search') {
 				$markdown = self::setImagesAbsolute($markdown, $params);
 			}
 
 			// And do it too for links to the files folder
-			$markdown = str_replace('href=".files/', 'href="'.$noteFolder.'.files/', $markdown);
+			$markdown = str_replace('href=".files/', 'href="' . $noteFolder . '.files/', $markdown);
 		} else {
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
-				$aeDebug->log('Error while opening '.$filename, 'error');
+				$aeDebug->log('Error while opening ' . $filename, 'error');
 			}
 			/*<!-- endbuild -->*/
 
@@ -310,14 +320,14 @@ class Markdown
 	}
 
 	/**
-	* Read a markdown file and return its content.
-	*
-	* $params['encryption'] = 0 : encrypted data should
-	*			be displayed unencrypted
-	*						 1 : encrypted infos should
-	*			stay encrypted
-	*/
-	public function read(string $filename, array $params = array()) : string
+	 * Read a markdown file and return its content.
+	 *
+	 * $params['encryption'] = 0 : encrypted data should
+	 *			be displayed unencrypted
+	 *						 1 : encrypted infos should
+	 *			stay encrypted
+	 */
+	public function read(string $filename, array $params = []) : string
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
@@ -336,20 +346,20 @@ class Markdown
 		$bCache = $arrSettings['enabled'] ?? false;
 		$task = $aeSession->get('task');
 
-		$arr=null;
+		$arr = null;
 
 		if ($bCache) {
 			// The content isn't the same, depending on the task
 			// key will be f.i.
 			// "task.export.html###c:\notes\docs\a.md"
-			$key = 'task.markdown.read###'.$filename;
+			$key = 'task.markdown.read###' . $filename;
 			$aeCache = \MarkNotes\Cache::getInstance();
 
-			if ($params['disable_cache']??1) {
+			if ($params['disable_cache'] ?? 1) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("disable_cache has been set, kill the key in the cache if present so always a fresh copy is returned", "debug");
+					$aeDebug->log('disable_cache has been set, kill the key in the cache if present so always a fresh copy is returned', 'debug');
 				}
 				/*<!-- endbuild -->*/
 				$aeCache->deleteItem(md5($key));
@@ -360,7 +370,7 @@ class Markdown
 		}
 
 		if (is_null($arr)) {
-			$arr = array();
+			$arr = [];
 
 			$arr['markdown'] = self::doReadContent($filename, $params);
 
@@ -374,10 +384,10 @@ class Markdown
 			$regex = '/^(#{7,}(.*))$/m';
 			$arr['markdown'] = preg_replace($regex, '######$2', $arr['markdown']);
 
-			if (trim($arr['markdown'])=='') {
+			if (trim($arr['markdown']) == '') {
 				// Don't cache if the content is empty.
 				$bCache = false;
-			} elseif (strpos($arr['markdown'], ENCRYPT_MARKDOWN_TAG)>0) {
+			} elseif (strpos($arr['markdown'], ENCRYPT_MARKDOWN_TAG) > 0) {
 				// Check if the markdown contains the encrypt tag.
 				// If yes, this means that this note contains
 				// encrypted informations and if we store the

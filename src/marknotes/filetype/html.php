@@ -1,12 +1,14 @@
 <?php
+
 /* REQUIRES PHP 7.x AT LEAST */
+
 namespace MarkNotes\FileType;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
 class HTML
 {
-	protected static $hInstance =	null;
+	protected static $hInstance = null;
 
 	public function __construct()
 	{
@@ -26,13 +28,13 @@ class HTML
 	{
 		// Try to find a heading 1 and if so use that text
 		// for the title tag of the generated page
-		$matches = array();
+		$matches = [];
 		$title = '';
 
 		try {
-			preg_match_all('/<'.$heading.'[^>]*>(.*)<\/'.$heading.'>/', $html, $matches);
+			preg_match_all('/<' . $heading . '[^>]*>(.*)<\/' . $heading . '>/', $html, $matches);
 			if (count($matches[1]) > 0) {
-				$title = ((count($matches) > 0)?rtrim(@$matches[1][0]):'');
+				$title = ((count($matches) > 0) ? rtrim(@$matches[1][0]) : '');
 			}
 		} catch (Exception $e) {
 		}
@@ -58,7 +60,7 @@ class HTML
 
 		try {
 			// Retrieve headings
-			$matches = array();
+			$matches = [];
 			preg_match_all('|<h\d{1}[^>]?>(.*)</h\d{1}[^>]?>|iU', $html, $matches);
 
 			// $matches contains the list of titles (including the
@@ -70,18 +72,18 @@ class HTML
 				// $tmp is equal, f.i., to <h2>My slide title</h2>
 
 				// Don't take the font-awesome icon when getting the ID
-				$tmp = preg_replace("/:fa-.*:/","",$tmp);
+				$tmp = preg_replace('/:fa-.*:/', '', $tmp);
 
 				$id = $aeFunctions->slugify(strip_tags($tmp));
 
 				// The ID can't start with one of these chars
-				$id = preg_replace("/^[.|\-|\(|\[|\{|,|;]+/", "", $id);
+				$id = preg_replace("/^[.|\-|\(|\[|\{|,|;]+/", '', $id);
 
 				// The tag (like h2)
 				$head = substr($tmp, 1, 2);
 
-				$value = '<'.$head.' id="'.$id.'">'.
-					strip_tags($tmp).'</'.$head.'>';
+				$value = '<' . $head . ' id="' . $id . '">' .
+					strip_tags($tmp) . '</' . $head . '>';
 
 				$html = str_replace($tmp, $value, $html);
 			}
@@ -95,6 +97,9 @@ class HTML
 	 * Loop any <p> element and give them an "id"
 	 * This way the reader will be able to immediatly reference
 	 * that paragraph from the URL, with a # anchor
+	 *
+	 * @param  string $html
+	 * @return string
 	 */
 	public function addParagraphsID(string $html) : string
 	{
@@ -103,7 +108,7 @@ class HTML
 		$aeSettings = \MarkNotes\Settings::getInstance();
 		$options = 'plugins.options.page.html.anchor';
 		$arr = $aeSettings->getPlugins($options);
-		$prefix = trim($arr['paragraph_prefix'])??'par';
+		$prefix = trim($arr['paragraph_prefix']) ?? 'par';
 
 		// Small cleaning in case of
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -111,25 +116,25 @@ class HTML
 
 		// And add a final underscore before starting the
 		// numbering
-		$prefix = rtrim($prefix, '_').'_';
+		$prefix = rtrim($prefix, '_') . '_';
 
-		$dom = new \DOMDocument;
+		$dom = new \DOMDocument();
 
 		$dom->preserveWhiteSpace = false;
 		$dom->encoding = 'utf-8';
 
 		// IMPORTANT !!! Add xml encoding to keep emoji f.i.
-		@$dom->loadHTML('<?xml encoding="utf-8" ?>' .$html);
+		@$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
 
 		$xpath = new \DOMXPath($dom);
 
-		$arrDOM = array('p');
+		$arrDOM = ['p'];
 
-		for ($i=0; $i<count($arrDOM); ++$i) {
-			$list = $xpath->query("//".$arrDOM[$i]);
-			for ($j=0; $j<$list->length; ++$j) {
+		for ($i = 0; $i < count($arrDOM); ++$i) {
+			$list = $xpath->query('//' . $arrDOM[$i]);
+			for ($j = 0; $j < $list->length; ++$j) {
 				$node = $list->item($j);
-				$node->setAttribute('id', $prefix.$j);
+				$node->setAttribute('id', $prefix . $j);
 			}
 		}
 
@@ -138,9 +143,9 @@ class HTML
 		// The saveHTML method here above will automatically add <html>
 		// and <body> tags and we don't want them since the HTML string
 		// will be injected into a template file so remove these tags
-		$tags = array( 'html', 'body');
+		$tags = ['html', 'body'];
 		foreach ($tags as $tag) {
-			$html = preg_replace("/<\\/?" . $tag . "(.|\\s)*?>/",'',$html);
+			$html = preg_replace('/<\\/?' . $tag . '(.|\\s)*?>/', '', $html);
 		}
 
 		return $html;
@@ -165,8 +170,8 @@ class HTML
 		// (the markdown.variables can be called even if, here, the
 		// content is a HTML string)
 		$aeEvents->loadPlugins('markdown.variables');
-		$tmp = array('markdown'=>$template, 'filename'=>$params['filename']);
-		$args = array(&$tmp);
+		$tmp = ['markdown' => $template, 'filename' => $params['filename']];
+		$args = [&$tmp];
 		$aeEvents->trigger('markdown.variables::markdown.read', $args);
 		$template = $args[0]['markdown'];
 
@@ -177,34 +182,34 @@ class HTML
 		// Customization of the interface
 		$interface = $aeSettings->getPlugins('/interface');
 
-		$skin = $interface['skin'] ?? array('skin'=>'blue');
+		$skin = $interface['skin'] ?? ['skin' => 'blue'];
 
-		$skin = "skin-".$skin;
+		$skin = 'skin-' . $skin;
 		$template = str_replace('%SKIN%', $skin, $template);
 
 		$logo = $interface['logo'] ?? 'marknotes.svg';
 
-		$logo = $url.'assets/images/'.$logo;
+		$logo = $url . 'assets/images/' . $logo;
 		$template = str_replace('%LOGO%', $logo, $template);
 
-		$footer = $interface['footer'] ?? array('left'=>'', 'right'=>'');
+		$footer = $interface['footer'] ?? ['left' => '', 'right' => ''];
 		$template = str_replace('%FOOTER_LEFT%', $footer['left'], $template);
-		$footer_right = $footer['right']??'';
+		$footer_right = $footer['right'] ?? '';
 		$template = str_replace('%FOOTER_RIGHT%', $footer['right'], $template);
 
-		$github = $aeSettings->getPlugins('/github', array('url'=>''));
+		$github = $aeSettings->getPlugins('/github', ['url' => '']);
 		$template = str_replace('%GITHUB%', $github['url'], $template);
 
 		if (strpos($template, '%SHOW_TIPS%') !== false) {
-			$arr = $aeSettings->getPlugins('plugins.task.homepage', array('enabled'=>1));
+			$arr = $aeSettings->getPlugins('plugins.task.homepage', ['enabled' => 1]);
 			$show_tips = boolval($arr['enabled']);
-			$template = str_replace('%SHOW_TIPS%', $show_tips?1:0, $template);
+			$template = str_replace('%SHOW_TIPS%', $show_tips ? 1 : 0, $template);
 		}
 
 		if (strpos($template, '%SHOW_FAVORITES%') !== false) {
-			$arr = $aeSettings->getPlugins('plugins.task.favorites', array('enabled'=>1));
+			$arr = $aeSettings->getPlugins('plugins.task.favorites', ['enabled' => 1]);
 			$show_fav = boolval($arr['enabled']);
-			$template = str_replace('%SHOW_FAVORITES%', $show_fav?1:0, $template);
+			$template = str_replace('%SHOW_FAVORITES%', $show_fav ? 1 : 0, $template);
 		}
 
 		if (strpos($template, '%VERSION%') !== false) {
