@@ -34,11 +34,11 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 
 		$doc = $aeSettings->getFolderDocs(true);
 
-		$fullname = $params['filename'].'.md';
-		$fullname = $doc.ltrim(str_replace('/', DS, $fullname), DS);
+		$fullname = $params['filename'] . '.md';
+		$fullname = $doc . ltrim(str_replace('/', DS, $fullname), DS);
 
-		$final = $aeFiles->removeExtension($params['filename']).'.'.static::$extension;
-		$final = $aeSettings->getFolderDocs(true).$final;
+		$final = $aeFiles->removeExtension($params['filename']) . '.' . static::$extension;
+		$final = $aeSettings->getFolderDocs(true) . $final;
 
 		$html = '';
 
@@ -48,16 +48,17 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 		if ($bCache) {
 			$aeCache = \MarkNotes\Cache::getInstance();
 
+			$fullname = $aeFiles->makeFileNameAbsolute($params['filename']);
+
 			// Set the HTML of the note in the cache but prefixed by
 			// the connected user name
-			$key = $aeSession->getUser().'###'.
-				$aeFiles->makeFileNameAbsolute($params['filename']);
+			$key = $aeSession->getUser() . '###' . $fullname;
 
-			if ($params['disable_cache']??1) {
+			if ($params['disable_cache'] ?? 1) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("disable_cache has been set, kill the key in the cache if present so always a fresh copy is returned", "debug");
+					$aeDebug->log('disable_cache has been set, kill the key in the cache if present so always a fresh copy is returned', 'debug');
 				}
 				/*<!-- endbuild -->*/
 				$aeCache->deleteItem(md5($key));
@@ -65,7 +66,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 
 			$cached = $aeCache->getItem(md5($key));
 			$data = $cached->get();
-			$html = $data['html']??'';
+			$html = $data['html'] ?? '';
 		}
 
 		if (trim($html) == '') {
@@ -73,11 +74,11 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			$aeTask = \MarkNotes\Tasks\Display::getInstance();
 			$html = $aeTask->run($params);
 
-			if (trim($html)=='') {
+			if (trim($html) == '') {
 				// No cache if the HTML is empty, probably due
 				// to an error
 				$bCache = false;
-			} else if (strpos($html, 'data-encrypt="true"')>0) {
+			} elseif (strpos($html, 'data-encrypt="true"') > 0) {
 				// Check if the HTML contains the data-encrypt="true"
 				// attribute.
 				// If yes, this means that this note contains encrypted
@@ -88,7 +89,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 
 			if ($bCache) {
 				// Save the list in the cache
-				$arr = array();
+				$arr = [];
 				$arr['from_cache'] = 1;
 				$arr['html'] = $html;
 				// Get the duration for the HTML cache (default : 31 days)
@@ -98,7 +99,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 				// note so we can kill with a
 				// $aeCache->deleteItemsByTag(md5($key));
 				// every cached items concerning this note
-				$cached->set($arr)->expiresAfter($duration)->addTag(md5($key));
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
@@ -106,7 +107,7 @@ class HTML extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("	Retrieved from cache [".$key."]","debug");
+				$aeDebug->log('	Retrieved from cache [' . $key . ']', 'debug');
 			}
 			/*<!-- endbuild -->*/
 

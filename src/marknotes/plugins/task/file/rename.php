@@ -5,11 +5,12 @@
  * Anwser to URL like the one below (names are base64_encoded)
  * index.php?task=task.file.rename&oldname=emEyJTJGYQ%3D%3D&newname=emEyJTJGYWVyYXpl
  */
+
 namespace MarkNotes\Plugins\Task\File;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-require_once(dirname(__FILE__).DS.'.plugin.php');
+require_once dirname(__FILE__) . DS . '.plugin.php';
 
 class Rename extends \MarkNotes\Plugins\Task\File
 {
@@ -32,11 +33,11 @@ class Rename extends \MarkNotes\Plugins\Task\File
 
 		// Sanitize filenames
 		$oldname = $aeFiles->sanitize($oldname);
-		$oldname = $aeSettings->getFolderWebRoot().$oldname;
+		$oldname = $aeSettings->getFolderWebRoot() . $oldname;
 		$oldname = str_replace('/', DS, $oldname);
 
 		$newname = $aeFiles->sanitize($newname);
-		$newname = $aeSettings->getFolderWebRoot().$newname;
+		$newname = $aeSettings->getFolderWebRoot() . $newname;
 		$newname = str_replace('/', DS, $newname);
 
 		// Try to remove the folder, first, be sure that the user
@@ -45,14 +46,14 @@ class Rename extends \MarkNotes\Plugins\Task\File
 		$aeEvents->loadPlugins('task.acls.cansee');
 
 		// Note : the folder should start and end with the slash
-		$arr = array('folder' => dirname($oldname),'return' => true);
-		$args = array(&$arr);
+		$arr = ['folder' => dirname($oldname), 'return' => true];
+		$args = [&$arr];
 
 		$aeEvents->trigger('task.acls.cansee::run', $args);
 
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
-		if (intval($args[0]['return'])===1) {
+		if (intval($args[0]['return']) === 1) {
 			// Only if the user can see the parent folder,
 			// he can rename files
 			// Before renaming the file (f.i. note.md), check if
@@ -68,24 +69,26 @@ class Rename extends \MarkNotes\Plugins\Task\File
 			foreach ($arrFiles as $file) {
 				if ($file['type'] == 'file') {
 					if ($file['filename'] == $old) {
-
 						// Get the note's folder
 						$dir = str_replace('/', DS, $file['dirname']);
 
 						$dir = $aeFiles->makeFileNameAbsolute($dir);
 
 						// The old filename (absolute path)
-						$oldfile = $dir.DS.$file['basename'];
+						$oldfile = $dir . DS . $file['basename'];
 
 						// And the new one (absolute path)
-						$newfile = $dir.DS.$new.'.'.$file['extension'];
+						$newfile = $dir . DS . $new . '.' . $file['extension'];
 
 						$wReturn = $aeFiles->rename($oldfile, $newfile);
+
+						// Clear cache
+						self::clearCache();
 					}
 				}
 			}
 
-			return ($wReturn ? RENAME_SUCCESS : FILE_ERROR);
+			return $wReturn ? RENAME_SUCCESS : FILE_ERROR;
 		} else {
 			return NO_ACCESS;
 		}
@@ -121,23 +124,23 @@ class Rename extends \MarkNotes\Plugins\Task\File
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->log(__METHOD__, 'debug');
-			$aeDebug->log('Oldname=['.$oldname.']', 'debug');
-			$aeDebug->log('Newname=['.$newname.']', 'debug');
+			$aeDebug->log('Oldname=[' . $oldname . ']', 'debug');
+			$aeDebug->log('Newname=[' . $newname . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
 		if (trim($newname) === '') {
-			$return = array(
+			$return = [
 				'status' => 0,
 				'action' => 'rename',
 				'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
-			);
+			];
 		} else {
 			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
 			// Be sure to have the .md extension
-			$oldname = $aeFiles->removeExtension($oldname).'.md';
-			$newname = $aeFiles->removeExtension($newname).'.md';
+			$oldname = $aeFiles->removeExtension($oldname) . '.md';
+			$newname = $aeFiles->removeExtension($newname) . '.md';
 
 			// Relative filenames
 			$rel_oldname = str_replace($aeSettings->getFolderDocs(true), '', $oldname);
@@ -169,13 +172,13 @@ class Rename extends \MarkNotes\Plugins\Task\File
 			// (not docs\christophe\newname.md)
 			$md5 = md5($aeFiles->removeExtension($newname));
 
-			$return = array(
+			$return = [
 				'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
 				'action' => 'rename',
 				'msg' => $msg,
 				'md5' => $md5,
 				'filename' => utf8_encode($newname)
-			);
+			];
 		}
 
 		header('Content-Type: application/json');

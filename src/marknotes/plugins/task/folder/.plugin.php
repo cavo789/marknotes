@@ -4,13 +4,13 @@ namespace MarkNotes\Plugins\Task;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-require_once(dirname(dirname(__FILE__)).DS.'.plugin.php');
+require_once dirname(dirname(__FILE__)) . DS . '.plugin.php';
 
 class Folder extends \MarkNotes\Plugins\Task\Plugin
 {
 	public static function run(&$params = null) : bool
 	{
-		return $this->run($params);
+		return self::run($params);
 	}
 
 	/**
@@ -19,6 +19,7 @@ class Folder extends \MarkNotes\Plugins\Task\Plugin
 	protected static function returnInfo(array $arr) : string
 	{
 		$aeJSON = \MarkNotes\JSON::getInstance();
+
 		return $aeJSON->json_encode($arr);
 	}
 
@@ -39,7 +40,7 @@ class Folder extends \MarkNotes\Plugins\Task\Plugin
 			if (substr($params['oldname'], 0, strlen($docs)) == $docs) {
 				$params['oldname'] = substr($params['oldname'], strlen($docs));
 			}
-			$params['oldname'] = $aeSettings->getFolderDocs(true).$params['oldname'];
+			$params['oldname'] = $aeSettings->getFolderDocs(true) . $params['oldname'];
 		}
 
 		// filename is the new file/folder name or the name of the newly created file/folder
@@ -47,7 +48,38 @@ class Folder extends \MarkNotes\Plugins\Task\Plugin
 			if (substr($params['filename'], 0, strlen($docs)) == $docs) {
 				$params['filename'] = substr($params['filename'], strlen($docs));
 			}
-			$params['filename'] = $aeSettings->getFolderDocs(true).$params['filename'];
+			$params['filename'] = $aeSettings->getFolderDocs(true) . $params['filename'];
+		}
+
+		return true;
+	}
+
+	/**
+	 * Empty the cache after a create / rename / delete task
+	 *
+	 * @return boolean
+	 */
+	protected static function clearCache() : bool
+	{
+		try {
+			$aeSettings = \MarkNotes\Settings::getInstance();
+			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+
+			$bCache = $arrSettings['enabled'] ?? false;
+
+			if ($bCache) {
+				$aeSession = \MarkNotes\Session::getInstance();
+				$aeCache = \MarkNotes\Cache::getInstance();
+				$key = $aeSession->getUser() . '###listfiles';
+				$aeCache->deleteItemsByTag(md5($key));
+			}
+		} catch (Exception $e) {
+			/*<!-- build:debug -->*/
+			if ($aeSettings->getDebugMode()) {
+				$aeDebug = \MarkNotes\Debug::getInstance();
+				$aeDebug->log($e->getMessage(), 'error');
+			}
+			/*<!-- endbuild -->*/
 		}
 
 		return true;

@@ -5,11 +5,12 @@
  * Anwser to URL like the one below (names are base64_encoded)
  *  index.php?task=task.folder.rename&oldname=JTJGemEy&newname=JTJGenp6enp6
  */
+
 namespace MarkNotes\Plugins\Task\Folder;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-require_once(dirname(__FILE__).DS.'.plugin.php');
+require_once dirname(__FILE__) . DS . '.plugin.php';
 
 class Rename extends \MarkNotes\Plugins\Task\Folder
 {
@@ -32,11 +33,11 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 
 		// Sanitize foldernames
 		$oldname = $aeFiles->sanitize($oldname);
-		$oldname = $aeSettings->getFolderWebRoot().$oldname;
+		$oldname = $aeSettings->getFolderWebRoot() . $oldname;
 		$oldname = str_replace('/', DS, $oldname);
 
 		$newname = $aeFiles->sanitize($newname);
-		$newname = $aeSettings->getFolderWebRoot().$newname;
+		$newname = $aeSettings->getFolderWebRoot() . $newname;
 		$newname = str_replace('/', DS, $newname);
 
 		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
@@ -47,14 +48,14 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 		$aeEvents->loadPlugins('task.acls.cansee');
 
 		// Note : the folder should start and end with the slash
-		$arr = array('folder' => $oldname,'return' => true);
-		$args = array(&$arr);
+		$arr = ['folder' => $oldname, 'return' => true];
+		$args = [&$arr];
 
 		$aeEvents->trigger('task.acls.cansee::run', $args);
 
 		// cansee will initialize return to 0 if the user can't
 		// see the folder so can't see the note too
-		if (intval($args[0]['return'])===1) {
+		if (intval($args[0]['return']) === 1) {
 			// Only if the user can see the folder, he can rename it
 			if (!$aeFolders->exists($oldname)) {
 				// The "old" folder is not found
@@ -65,12 +66,14 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 					return ALREADY_EXISTS;
 				} else {
 					try {
-
 						$aeFolders->rename($oldname, $newname);
+
+						// Clear cache
+						self::clearCache();
 
 						//rename(mb_convert_encoding($oldname, "ISO-8859-1", "UTF-8"), mb_convert_encoding($newname, "ISO-8859-1", "UTF-8"));
 
-						return ($aeFolders->exists($newname) ? RENAME_SUCCESS : FILE_ERROR);
+						return $aeFolders->exists($newname) ? RENAME_SUCCESS : FILE_ERROR;
 					} catch (Exception $ex) {
 						/*<!-- build:debug -->*/
 						if ($aeSettings->getDebugMode()) {
@@ -116,17 +119,17 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->log(__METHOD__, 'debug');
-			$aeDebug->log('Oldname=['.$oldname.']', 'debug');
-			$aeDebug->log('Newname=['.$newname.']', 'debug');
+			$aeDebug->log('Oldname=[' . $oldname . ']', 'debug');
+			$aeDebug->log('Newname=[' . $newname . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
 		if (trim($newname) === '') {
-			$return = array(
+			$return = [
 				'status' => 0,
 				'action' => 'rename',
 				'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
-			);
+			];
 		} else {
 			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 
@@ -163,16 +166,16 @@ class Rename extends \MarkNotes\Plugins\Task\Folder
 			// something like docs\subfolder\newfolder\
 			$md5 = str_replace($aeSettings->getFolderDocs(true), $docs, $newname);
 
-			$md5 = rtrim(str_replace('/', DS, $md5), DS).DS;
+			$md5 = rtrim(str_replace('/', DS, $md5), DS) . DS;
 
-			$arr = array(
+			$arr = [
 				'status' => (($wReturn == RENAME_SUCCESS) ? 1 : 0),
 				'action' => 'rename',
 				'md5' => md5($md5),
 				'msg' => $msg,
 				'foldername' => utf8_encode($newname)
-			);
-			$return =  self::returnInfo($arr);
+			];
+			$return = self::returnInfo($arr);
 		}
 
 		header('Content-Type: application/json');

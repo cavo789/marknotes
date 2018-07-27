@@ -5,6 +5,7 @@
  *
  * Answer to URL like index.php?task=task.homepage.show
  */
+
 namespace MarkNotes\Plugins\Task\Homepage;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -28,13 +29,13 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		$bCache = $arrSettings['enabled'] ?? false;
 
 		if ($filename !== '') {
-			$filename = $aeSettings->getFolderDocs().$filename;
+			$filename = $aeSettings->getFolderDocs() . $filename;
 
 			if (!$aeFiles->exists($filename)) {
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("File ".$filename." not found", "debug");
+					$aeDebug->log('File ' . $filename . ' not found', 'debug');
 				}
 				/*<!-- endbuild -->*/
 				$filename = '';
@@ -50,18 +51,18 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 
 			if ($bCache) {
 				$aeCache = \MarkNotes\Cache::getInstance();
-				$key = 'homepage###'.$filename;
+				$key = 'homepage###' . $filename;
 
 				$cached = $aeCache->getItem(md5($key));
 				$arr = $cached->get();
 			}
 
 			if (is_null($arr)) {
-				$html='';
+				$html = '';
 
 				$aeFiles = \MarkNotes\Files::getInstance();
 				if ($aeFiles->exists($filename)) {
-					if ($aeFiles->getExtension($filename)=='md') {
+					if ($aeFiles->getExtension($filename) == 'md') {
 						// Read the markdown note and run any
 						// markdown plugins
 						$aeMarkdown = \MarkNotes\FileType\Markdown::getInstance();
@@ -69,15 +70,14 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 
 						// And convert MD to HTML
 						$aeConvert = \MarkNotes\Helpers\Convert::getInstance();
-						$html = $aeConvert->getHTML($content, array(), true);
+						$html = $aeConvert->getHTML($content, [], true);
 					} else {
 						$html = $aeFiles->getContent($filename);
 					}
 
 					$html .= '<hr/>';
-
 				} else {
-					$html = '<p class="error">Sorry the '.str_replace(__DIR__, '', $filename).' doesn\'t exists</p>';
+					$html = '<p class="error">Sorry the ' . str_replace(__DIR__, '', $filename) . ' doesn\'t exists</p>';
 				}
 
 				$arr['homepage'] = $html;
@@ -98,7 +98,6 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 				}
 				/*<!-- endbuild -->*/
 			} // if (is_null($arr))
-
 		} // if ($filename !== '')
 
 		return $arr['homepage'];
@@ -112,7 +111,6 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 		$bCanRun = parent::canRun();
 
 		if ($bCanRun) {
-
 			$aeSettings = \MarkNotes\Settings::getInstance();
 			$arrSettings = $aeSettings->getPlugins('/interface');
 			$showLogin = boolval($arrSettings['show_login'] ?? 1);
@@ -140,17 +138,16 @@ class Show extends \MarkNotes\Plugins\Task\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$note = trim(self::getOptions('note',''));
+			$note = trim(self::getOptions('note', ''));
 
 			if ($note !== '') {
-
 				$docs = $aeSettings->getFolderDocs(true);
-				$note = str_replace('/', DS, $docs.$note);
+				$note = str_replace('/', DS, $docs . $note);
 
 				/*<!-- build:debug -->*/
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("Homepage, show [".$note."]", "debug");
+					$aeDebug->log('Homepage, show [' . $note . ']', 'debug');
 				}
 				/*<!-- endbuild -->*/
 

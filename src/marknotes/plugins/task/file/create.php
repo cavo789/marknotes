@@ -10,7 +10,7 @@ namespace MarkNotes\Plugins\Task\File;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-require_once(dirname(__FILE__).DS.'.plugin.php');
+require_once dirname(__FILE__) . DS . '.plugin.php';
 
 class Create extends \MarkNotes\Plugins\Task\File
 {
@@ -38,14 +38,14 @@ class Create extends \MarkNotes\Plugins\Task\File
 		$aeEvents->loadPlugins('task.acls.cansee');
 
 		// Note : the folder should start and end with the slash
-		$arr = array('folder' => dirname($filename),'return' => true);
+		$arr = ['folder' => dirname($filename), 'return' => true];
 
-		$args = array(&$arr);
+		$args = [&$arr];
 		$aeEvents->trigger('task.acls.cansee::run', $args);
 
 		// cansee will initialize return to 0 if the user can't
 		// see the folder
-		if (intval($args[0]['return'])===1) {
+		if (intval($args[0]['return']) === 1) {
 			// Only if the user can see the parent folder, he can
 			// create a file
 
@@ -54,9 +54,12 @@ class Create extends \MarkNotes\Plugins\Task\File
 				// extension and set the content as heading 1.
 				// Don't use PHP_EOL but well PHP_LF
 
-				$content = '# '.basename($aeFiles->removeExtension($filename)).PHP_LF;
+				$content = '# ' . basename($aeFiles->removeExtension($filename)) . PHP_LF;
 
 				$wReturn = ($aeFiles->create($filename, $content, CHMOD_FILE) ? CREATE_SUCCESS : FILE_ERROR);
+
+				// Clear cache
+				self::clearCache();
 
 				// Remember the last added note (f.i. /subfolder/note)
 				// (with the extension)
@@ -66,7 +69,7 @@ class Create extends \MarkNotes\Plugins\Task\File
 				}
 			} else {
 				// The file already exists
-				$wReturn =  ALREADY_EXISTS;
+				$wReturn = ALREADY_EXISTS;
 			}
 		} else {
 			// The parent folder is protected so the user can't
@@ -102,20 +105,20 @@ class Create extends \MarkNotes\Plugins\Task\File
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->log(__METHOD__, 'debug');
-			$aeDebug->log('Newname=['.$filename.']', 'debug');
+			$aeDebug->log('Newname=[' . $filename . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
 		if (trim($filename) === '') {
-			$return = array(
+			$return = [
 				'status' => 0,
 				'action' => 'create',
 				'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
-			);
+			];
 		} else {
 			$docs = str_replace('/', DS, $aeSettings->getFolderDocs(false));
 			if (!$aeFunctions->endsWith($filename, '.md')) {
-				$filename.='.md';
+				$filename .= '.md';
 			}
 			// Be sure to have the .md extension
 			$wReturn = self::create($filename);
@@ -156,13 +159,13 @@ class Create extends \MarkNotes\Plugins\Task\File
 					break;
 			}
 
-			$return = array(
+			$return = [
 				'status' => (($wReturn == CREATE_SUCCESS) ? 1 : 0),
 				'action' => 'create',
 				'md5' => md5($rel_newname),
 				'msg' => $msg,
 				'filename' => utf8_encode($filename)
-			);
+			];
 		}
 
 		header('Content-Type: application/json');

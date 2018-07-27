@@ -13,6 +13,7 @@
 * Answer to /index.php?task=task.listfiles.treeview or the "fake"
 * file /listfiles.json
 */
+
 namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -31,15 +32,15 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 	private static $bACLsLoaded = 0;
 
 	/**
-	* Called by ListFiles().  Populate an array with the list of
-	* .md files.
-	* The structure of the array match the needed definition
-	* of the jsTree jQuery plugin
-	* http://stackoverflow.com/a/23679146/1065340
-	*
-	* @param  type	$dir	Root folder to scan
-	* @return array
-	*/
+	 * Called by ListFiles().  Populate an array with the list of
+	 * .md files.
+	 * The structure of the array match the needed definition
+	 * of the jsTree jQuery plugin
+	 * http://stackoverflow.com/a/23679146/1065340
+	 *
+	 * @param  type  $dir Root folder to scan
+	 * @return array
+	 */
 	private static function makeJSON(string $dir) : array
 	{
 		static $index = 0;
@@ -58,58 +59,54 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		// Now, prepare the JSON return
 		$sDirectoryText = basename($dir);
-		$sID = str_replace(dirname($root).DS, '', $dir);
-		$sID = rtrim($sID, DS).DS;
+		$sID = str_replace(dirname($root) . DS, '', $dir);
+		$sID = rtrim($sID, DS) . DS;
 
 		// It's a folder node
-		$dataURL=str_replace(DS, '/', str_replace(dirname($root).DS, '', $dir));
-		$dataURL.=(($root == $dir)?'':'/').'index.html';
+		$dataURL = str_replace(DS, '/', str_replace(dirname($root) . DS, '', $dir));
+		$dataURL .= (($root == $dir) ? '' : '/') . 'index.html';
 
 		if (PHP_7_0) {
-
 			// Avoid PHP 7.0.x bug : handle accents
 			$arrSettings = $aeSettings->getPlugins('/interface');
-			$bConvert  = boolval($arrSettings['accent_conversion']??1);
+			$bConvert = boolval($arrSettings['accent_conversion'] ?? 1);
 
 			if ($bConvert) {
-				$sID=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
+				$sID = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sID));
 
 				// accent_conversion in settings.json has
 				// been initialized to 1 => make the conversion
-				$sDirectoryText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
+				$sDirectoryText = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sDirectoryText));
 
-				$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
+				$dataURL = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 			}
 		}
 
-		$listDir = array
-		(
+		$listDir = [
 			'id' => md5($sID),
 			'type' => 'folder',
 			'icon' => 'folder',
 			'text' => str_replace(DS, '/', $sDirectoryText),
-			'state' => array(
+			'state' => [
 				// Opened only if the top root folder
-				'opened' => (($root == $dir)?1:0),
+				'opened' => (($root == $dir) ? 1 : 0),
 				'disabled' => 1
-			),
-			'data' => array(
+			],
+			'data' => [
 				//'task' => 'display',
 				// Right clic on the node ?
 				// Open the_folder/index.html page
 				'url' => $dataURL,
 				'path' => str_replace(DS, '/', $sID)
-			),
-			'children' => array()
-		);
+			],
+			'children' => []
+		];
 
-		$dirs = array();
-		$files = array();
+		$dirs = [];
+		$files = [];
 
 		foreach ($arrEntries as $entry) {
-
 			if ($entry['type'] == 'file') {
-
 				$entry['name'] = str_replace('/', DS, $entry['name']);
 
 				// We're processing a filename
@@ -126,16 +123,16 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					if ($bConvert) {
 						// accent_conversion in settings.json has
 						// been initialized to 1 => make the conversion
-						$id=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($id));
+						$id = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($id));
 					}
 				}
 
 				// Right-click on a file = open it's HTML version
-				$dataURL=str_replace($root, '', $entry['name']);
+				$dataURL = str_replace($root, '', $entry['name']);
 
 				// Should be relative to the /docs folder
-				$dataURL=$aeSettings->getFolderDocs(false).$dataURL;
-				$dataURL=str_replace(DS, '/', $dataURL).'.html';
+				$dataURL = $aeSettings->getFolderDocs(false) . $dataURL;
+				$dataURL = str_replace(DS, '/', $dataURL) . '.html';
 
 				$sFileText = $filename;
 
@@ -155,14 +152,14 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					try {
 						$wLen = TREEVIEW_MAX_FILENAME_LENGTH;
 						$tmp = json_encode(substr($sFileText, 0, $wLen));
-						if (json_last_error()===JSON_ERROR_UTF8) {
+						if (json_last_error() === JSON_ERROR_UTF8) {
 							$wLen--;
 							$tmp = json_encode(substr($sFileText, 0, $wLen));
 						}
-						$sFileText = substr($sFileText, 0, $wLen).' …';
+						$sFileText = substr($sFileText, 0, $wLen) . ' …';
 					} catch (Exception $e) {
 						/*<!-- build:debug -->*/
-						die("<pre style='background-color:yellow;'>".__FILE__." - ".__LINE__." ".print_r($sFileText, true)."</pre>");
+						die("<pre style='background-color:yellow;'>" . __FILE__ . ' - ' . __LINE__ . ' ' . print_r($sFileText, true) . '</pre>');
 						/*<!-- endbuild -->*/
 					}
 				}
@@ -178,7 +175,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// when the user click on the note that was just created
 				$lastAddedNote = trim($aeSession->get('last_added_note', ''));
 
-				if ($dataBasename===$lastAddedNote) {
+				if ($dataBasename === $lastAddedNote) {
 					$default_task = 'task.edit.form';
 				}
 
@@ -186,47 +183,47 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					if ($bConvert) {
 						// accent_conversion in settings.json has
 						// been initialized to 1 => make the conversion
-						$sFileText=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
+						$sFileText = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($sFileText));
 
-						$dataBasename=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
+						$dataBasename = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataBasename));
 
-						$dataFile=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
+						$dataFile = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataFile));
 
-						$dataURL=iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
+						$dataURL = iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($dataURL));
 					}
 				}
 
-				$files[] = array(
+				$files[] = [
 					'id' => md5($id),
 					'icon' => 'file file-md',
 					'text' => $sFileText,
-					'data' => array(
+					'data' => [
 						'basename' => $dataBasename,
 						'task' => $default_task,
 						'file' => $dataFile,
 						'url' => $dataURL
-					),
-					'state' => array(
+					],
+					'state' => [
 						'opened' => 0,	// A file isn't opened
 						'selected' => 0  // and isn't selected by default
-					)
-				);
+					]
+				];
 			} elseif ($entry['type'] == 'folder') {
 				// It's a folder
 
 				// Derive the folder name
 				// From c:/sites/marknotes/docs/the_folder, keep /the_folder/
 				$fname = str_replace($root, '', $entry['name']);
-				$fname = DS.ltrim(rtrim($fname, DS), DS).DS;
+				$fname = DS . ltrim(rtrim($fname, DS), DS) . DS;
 
 				// The folder should start and end with the slash
 				// so "/the_folder/" and not something else.
-				$tmp = array(
-					'folder' => rtrim($root, DS).$fname,
+				$tmp = [
+					'folder' => rtrim($root, DS) . $fname,
 					'return' => true
-				);
+				];
 
-				$args = array(&$tmp);
+				$args = [&$tmp];
 
 				// If the task.acls.cansee wasn't fired i.e. when
 				// there was no folder to protect, the trigger even
@@ -251,9 +248,9 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// for more information
 				//
 				// $bReturn === false ==> there was no protected folder.
-				if (($bReturn===false) || ($args[0]['return'] === 1)) {
+				if (($bReturn === false) || ($args[0]['return'] === 1)) {
 					//$dirs [] = utf8_decode($entry['name']);
-					$dirs [] = $entry['name'];
+					$dirs[] = $entry['name'];
 				}
 			} // if ($entry['type']=='folder')
 		} // foreach
@@ -271,13 +268,13 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			$listDir['children'][] = $file;
 		}
 
-		return array($listDir, $index);
+		return [$listDir, $index];
 	}
 
 	/**
-	* Get an array that represents directory tree
-	* @param string $directory	Directory path
-	*/
+	 * Get an array that represents directory tree
+	 * @param string $directory Directory path
+	 */
 	private static function directoryToArray($directory)
 	{
 		static $root = '';
@@ -290,7 +287,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			$root = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 		}
 
-		$arr = array();
+		$arr = [];
 
 		if ($aeFolders->exists($directory)) {
 			// Get the list of files/folders under $directory
@@ -301,19 +298,19 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 				// Don't take files/folders starting with a dot
 				if (substr($item['basename'], 0, 1) !== '.') {
 					// Absolute filename / foldername
-					$name = rtrim($directory, DS).DS.$item['basename'];
-					if ($item['type']=='dir') {
+					$name = rtrim($directory, DS) . DS . $item['basename'];
+					if ($item['type'] == 'dir') {
 						// It's a folder
-						$arr[] = array('name' => $name,'type' => 'folder');
-						//$arr[] = array('name' => iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($name)),'type' => 'folder');
+						$arr[] = ['name' => $name, 'type' => 'folder'];
+					//$arr[] = array('name' => iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($name)),'type' => 'folder');
 					} else {
 						// it's a file, get it only if the
 						// extension is .md
 						if (isset($item['extension'])) {
-							if ($item['extension']==='md') {
-								$arr[] = array(
-									'name' => rtrim($directory,DS).'/'.$item['filename'],
-									'type' => 'file');
+							if ($item['extension'] === 'md') {
+								$arr[] = [
+									'name' => rtrim($directory, DS) . '/' . $item['filename'],
+									'type' => 'file'];
 							}
 						}
 					} // if ($aeFolders->exists($directory.DS.$file))
@@ -321,7 +318,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			} // foreach
 		} // if ($aeFiles->folderExists($directory))
 
-		$name = array();
+		$name = [];
 
 		// Sort the array by name
 		foreach ($arr as $key => $row) {
@@ -339,7 +336,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function notAllowed() : array
 	{
-		$return = array();
+		$return = [];
 
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
@@ -349,8 +346,8 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
-			$return['debug'] = 'The show_login settings is set to '.
-				'1 and the user isn\'t yet connected. In that case, '.
+			$return['debug'] = 'The show_login settings is set to ' .
+				'1 and the user isn\'t yet connected. In that case, ' .
 				'the list of files should be keept hidden';
 		}
 		/*<!-- endbuild -->*/
@@ -367,7 +364,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 		// Call the ACLs plugin
 		$aeEvents->loadPlugins('task.acls.load');
 
-		$args=array();
+		$args = [];
 
 		$aeEvents->trigger('task.acls.load::run', $args);
 
@@ -409,23 +406,23 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			list($arr, $count) = self::makeJSON(str_replace('/', DS, $docs));
 
 			// Build the json
-			$return = array();
+			$return = [];
 			//$return['settings'] = array('root' => str_replace(DS, '/',
 			// $docs));
 			$return['from_cache'] = 0;
 			$return['count'] = $count;
 			$return['tree'] = $arr;
-/*
-			$aeJSON = \MarkNotes\JSON::getInstance();
+			/*
+						$aeJSON = \MarkNotes\JSON::getInstance();
 
-			$sReturn = $aeJSON->json_encode($return);
+						$sReturn = $aeJSON->json_encode($return);
 
-			if (!static::$bACLsLoaded) {
-				if ($bOptimize) {
-					// Remember for the next call
-					$aeSession->set('treeview_json', $sReturn);
-				}
-			} // if (!static::$bACLsLoaded)*/
+						if (!static::$bACLsLoaded) {
+							if ($bOptimize) {
+								// Remember for the next call
+								$aeSession->set('treeview_json', $sReturn);
+							}
+						} // if (!static::$bACLsLoaded)*/
 		} // if ($sReturn === '')
 
 		return $return;
@@ -454,19 +451,17 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 			// Don't return any files since the user should be
 			// logged in
 			$arr = self::notAllowed();
-
 		} else {
-
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 			$bCache = boolval($arrSettings['enabled'] ?? false);
 
 			if ($bCache) {
 				// The list of files can vary from one user to an
 				// another so we need to use his username
-				$key = $aeSession->getUser().'###listfiles.json';
+				$key = $aeSession->getUser() . '###listfiles';
 
 				$aeCache = \MarkNotes\Cache::getInstance();
-				$cached = $aeCache->getItem(md5($key));
+				$cached = $aeCache->getItem(md5($key . '.json'));
 				$arr = $cached->get();
 			}
 
@@ -478,7 +473,7 @@ class Treeview extends \MarkNotes\Plugins\Task\Plugin
 					// Save the list in the cache
 					$arr['from_cache'] = 1;
 					$duration = $arrSettings['duration']['default'];
-					$cached->set($arr)->expiresAfter($duration);
+					$cached->set($arr)->expiresAfter($duration)->addTag(md5('listfiles'));
 					$aeCache->save($cached);
 					$arr['from_cache'] = 0;
 				}

@@ -322,12 +322,16 @@ class Markdown
 	/**
 	 * Read a markdown file and return its content.
 	 *
-	 * $params['encryption'] = 0 : encrypted data should
-	 *			be displayed unencrypted
-	 *						 1 : encrypted infos should
-	 *			stay encrypted
+	 * @param string $fullname File that should be read (f.i. c:/notes/readme.md)
+	 * @param array  $params
+	 *
+	 * 	$params['encryption'] = 0 : encrypted data should
+	 *				be displayed unencrypted
+	 *							 1 : encrypted infos should
+	 *				stay encrypted
+	 * @return string
 	 */
-	public function read(string $filename, array $params = []) : string
+	public function read(string $fullname, array $params = []) : string
 	{
 		$aeDebug = \MarkNotes\Debug::getInstance();
 		$aeEvents = \MarkNotes\Events::getInstance();
@@ -352,7 +356,7 @@ class Markdown
 			// The content isn't the same, depending on the task
 			// key will be f.i.
 			// "task.export.html###c:\notes\docs\a.md"
-			$key = 'task.markdown.read###' . $filename;
+			$key = 'task.markdown.read###' . $fullname;
 			$aeCache = \MarkNotes\Cache::getInstance();
 
 			if ($params['disable_cache'] ?? 1) {
@@ -372,7 +376,7 @@ class Markdown
 		if (is_null($arr)) {
 			$arr = [];
 
-			$arr['markdown'] = self::doReadContent($filename, $params);
+			$arr['markdown'] = self::doReadContent($fullname, $params);
 
 			/*<!-- endbuild -->*/
 			// Markdown support only H1 to H6; this is specified in
@@ -400,7 +404,7 @@ class Markdown
 				// Save the content in the cache
 				$arr['from_cache'] = 1;
 				$duration = $arrSettings['duration']['html'];
-				$cached->set($arr)->expiresAfter($duration)->addTag(md5($filename));
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
 
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;

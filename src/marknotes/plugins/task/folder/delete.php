@@ -5,11 +5,12 @@
  * Anwser to URL like the one below (names are base64_encoded)
  * index.php?task=task.folder.delete&oldname=enp6enp6JTJGcWZxc2RmcWQ%3D
  */
+
 namespace MarkNotes\Plugins\Task\Folder;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-require_once(dirname(__FILE__).DS.'.plugin.php');
+require_once dirname(__FILE__) . DS . '.plugin.php';
 
 class Delete extends \MarkNotes\Plugins\Task\Folder
 {
@@ -57,11 +58,14 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 					// Still exists
 					/*<!-- build:debug -->*/
 					if ($aeSettings->getDebugMode()) {
-						$aeDebug->log('	Error, folder ['.utf8_encode($foldername).'] still present', 'debug');
+						$aeDebug->log('	Error, folder [' . utf8_encode($foldername) . '] still present', 'debug');
 					}
 					/*<!-- endbuild -->*/
 					return FILE_ERROR;
 				} else {
+					// Clear cache
+					self::clearCache();
+
 					return KILL_SUCCESS;
 				}
 			}
@@ -83,23 +87,23 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 		$docs = $aeSettings->getFolderDocs(false);
 
 		$foldername = $aeFiles->sanitize($foldername);
-		$foldername = $aeSettings->getFolderWebRoot().$foldername;
+		$foldername = $aeSettings->getFolderWebRoot() . $foldername;
 		$foldername = str_replace('/', DS, $foldername);
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->log(__METHOD__, 'debug');
-			$aeDebug->log('Oldname=['.$foldername.']', 'debug');
+			$aeDebug->log('Oldname=[' . $foldername . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
 		if (trim($foldername) === '') {
-			$return = array(
+			$return = [
 				'status' => 0,
 				'action' => 'delete',
 				'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
-			);
+			];
 		} else {
 			$docs = $aeSettings->getFolderDocs(false);
 
@@ -114,14 +118,14 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 
 			// Note : the folder should start and end with
 			// the slash
-			$arr = array('folder' => $foldername,'return' => true);
-			$args = array(&$arr);
+			$arr = ['folder' => $foldername, 'return' => true];
+			$args = [&$arr];
 
 			$aeEvents->trigger('task.acls.cansee::run', $args);
 
 			// cansee will initialize return to 0 if the user
 			// can't see the folder
-			if (intval($args[0]['return'])===1) {
+			if (intval($args[0]['return']) === 1) {
 				// Only if the user can see the folder,
 				// he can delete it
 				$wReturn = self::delete($foldername);
@@ -149,7 +153,7 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 					$msg = str_replace('$1', $rel_foldername, $msg);
 					break;
 				case FOLDER_IS_READONLY:
-					$msg = $aeSettings->getText('folder_read_only', 'Sorry but '.
+					$msg = $aeSettings->getText('folder_read_only', 'Sorry but ' .
 					'the folder [$1] is read-only');
 					$msg = str_replace('$1', $rel_foldername, $msg);
 					break;
@@ -159,18 +163,18 @@ class Delete extends \MarkNotes\Plugins\Task\Folder
 					break;
 			}
 
-			$md5 = md5(dirname($docs.$rel_foldername).DS);
+			$md5 = md5(dirname($docs . $rel_foldername) . DS);
 
-			$arr = array(
+			$arr = [
 				'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
 				'action' => 'delete',
 				'type' => 'folder',
 				'md5' => $md5,
 				'msg' => $msg,
 				'foldername' => utf8_encode($foldername)
-			);
+			];
 
-			$return =  self::returnInfo($arr);
+			$return = self::returnInfo($arr);
 		}
 
 		header('Content-Type: application/json');

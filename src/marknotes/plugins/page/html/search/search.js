@@ -91,11 +91,23 @@ function fnPluginTaskSearch_InitializeOptions() {
 		// When marknotes.search.disable_cache is set on True
 		// enable the search_refresh button : the search task willn't
 		// use the cache on the server
+
 		if ($("#search_refresh").length > 0) {
-			$("#search_refresh").prop("checked", marknotes.search.disable_cache);
-			$("#search_refresh").click(function() {
-				fnPluginTaskSearch_clickOptionCache();
-			});
+			if (marknotes.settings.cache == 1) {
+				// The refresh action is only needed if the cache feature
+				// has been enabled.
+				// marknotes.settings.cache is set in interface.php
+				$("#search_refresh")
+					.parent()
+					.show();
+				$("#search_refresh").prop(
+					"checked",
+					marknotes.search.disable_cache
+				);
+				$("#search_refresh").click(function() {
+					fnPluginTaskSearch_clickOptionCache();
+				});
+			}
 		}
 
 		// When marknotes.search.disable_plugins is set on True
@@ -121,10 +133,17 @@ function fnPluginTaskSearch_InitializeOptions() {
  */
 function fnPluginTaskSearch_resetSearchURL() {
 	// Reinitialize the treeview to search only on the selected folder
-	$("#TOC").jstree(true).settings.search.ajax.data = {
-		restrict_folder: window.btoa(
+
+	$restrict_folder = marknotes.search.restrict_folder;
+
+	if ($restrict_folder !== ".") {
+		$restrict_folder = window.btoa(
 			encodeURIComponent(JSON.stringify(marknotes.search.restrict_folder))
-		),
+		);
+	}
+
+	$("#TOC").jstree(true).settings.search.ajax.data = {
+		restrict_folder: $restrict_folder,
 		disable_cache: marknotes.search.disable_cache ? 1 : 0,
 		disable_plugins: marknotes.search.disable_plugins ? 1 : 0
 	};
@@ -408,16 +427,20 @@ function fnPluginTaskSearch_addSearchEntry($entry) {
  */
 function fnPluginTaskSearchClearCache() {
 	// Remember the old URL
-	var oldSearchURL = $("#TOC").jstree(true).settings.search.ajax.url;
+	var $old = marknotes.search.disable_cache;
+
+	// Disable the cache
+	marknotes.search.disable_cache = 1;
+	fnPluginTaskSearch_resetSearchURL();
 
 	$("#TOC")
 		.jstree(true)
 		.show_all();
-	$("#TOC").jstree(true).settings.search.ajax.url =
-		oldSearchURL + "?disable_cache=1";
 	$("#TOC").jstree("search", $("#search").val());
 
-	$("#TOC").jstree(true).settings.search.ajax.url = oldSearchURL;
+	// Reset it
+	marknotes.search.disable_cache = $old;
+	fnPluginTaskSearch_resetSearchURL();
 
 	return true;
 }

@@ -2,6 +2,7 @@
 /**
  * GetFolders - Return the HTML of the restrict_folder form
  */
+
 namespace MarkNotes\Plugins\Task\Search;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -28,28 +29,26 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 
 			// The list of files can vary from one user to an
 			// another so we need to use his username
-			$key = $aeSession->getUser().'###search_getfolders';
+			$key = $aeSession->getUser() . '###listfiles';
 
-			$cached = $aeCache->getItem(md5($key));
+			$cached = $aeCache->getItem(md5($key . '_search_folders'));
 			$arr = $cached->get();
 
-			if ($arr['folders']==array()) {
-				$arr=null;
+			if ($arr['folders'] == []) {
+				$arr = null;
 			}
 		}
 
 		if (is_null($arr)) {
-
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 
 			// Get the docs folders (like "docs/")
 			$doc = $aeSettings->getFolderDocs(false);
 
-			$arrRootFolders=array();
+			$arrRootFolders = [];
 			$arrRootFolders[] = '.';
 
 			foreach ($arrFolders  as $tmp => $value) {
-
 				if ($aeFunctions->startsWith($value, $doc)) {
 					$value = substr($value, strlen($doc));
 				}
@@ -73,13 +72,11 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 			if ($bCache) {
 				// Save the list in the cache
 				$duration = $arrSettings['duration']['default'];
-				$cached->set($arr)->expiresAfter($duration);
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5('listfiles'));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
-
 		} else {
-
 			$arr['from_cache'] = 1;
 
 			/*<!-- build:debug -->*/
@@ -93,8 +90,8 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 		$arrRootFolders = $arr['folders'];
 
 		return $arrRootFolders;
-
 	}
+
 	/**
 	 * Return the code for showing the login form and respond
 	 * to the login action
@@ -110,7 +107,7 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$filename = __DIR__.'/assets/getfolders.frm';
+			$filename = __DIR__ . '/assets/getfolders.frm';
 
 			if ($aeFiles->exists($filename)) {
 				// Get the root URL
@@ -125,8 +122,8 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 				$form = str_replace('%SEARCHED_ADVANCED_FORM%', $aeSettings->getText('search_advanded_form', ''), $form);
 
 				// Now, build the list of folders
-				$arrFiles = array();
-				$args=array(&$arrFiles);
+				$arrFiles = [];
+				$args = [&$arrFiles];
 				$aeEvents->loadPlugins('task.listfiles.get');
 				$aeEvents->trigger('task.listfiles.get::run', $args);
 
@@ -135,7 +132,7 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 				$arrFolders = array_map('dirname', $arrFiles);
 
 				$arrSettings = $aeSettings->getPlugins(self::$json_options);
-				$restrict_folders_first_level = $arrSettings['restrict_folders_first_level']??1;
+				$restrict_folders_first_level = $arrSettings['restrict_folders_first_level'] ?? 1;
 
 				if ($restrict_folders_first_level) {
 					// Keep only the root level (folders immediatly
@@ -148,7 +145,7 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 				// Build the html select
 				$values = '';
 				foreach ($arrFolders  as $tmp => $value) {
-					$values .= '<option value="'.$value.'">'.$value.'</option>';
+					$values .= '<option value="' . $value . '">' . $value . '</option>';
 				}
 
 				$form = str_replace('%FOLDERS%', $values, $form);
@@ -157,14 +154,14 @@ class Getfolders extends \MarkNotes\Plugins\Task\Plugin
 			} else { // if ($aeFiles->exists($filename))
 				if ($aeSettings->getDebugMode()) {
 					$aeDebug = \MarkNotes\Debug::getInstance();
-					$aeDebug->log("The file [".$filename."] is missing", "error");
+					$aeDebug->log('The file [' . $filename . '] is missing', 'error');
 				}
-			/*<!-- endbuild -->*/
+				/*<!-- endbuild -->*/
 			} // if ($aeFiles->exists($filename))
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(array('form'=>$form));
+		echo json_encode(['form' => $form]);
 
 		return true;
 	}

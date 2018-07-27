@@ -9,7 +9,6 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Get extends \MarkNotes\Plugins\Task\Plugin
 {
-
 	protected static $me = __CLASS__;
 	protected static $json_settings = 'plugins.task.sitemap';
 	protected static $json_options = 'plugins.options.task.sitemap';
@@ -22,11 +21,11 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function getFiles() : array
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		// Call the listfiles.get event and initialize $arrFiles
 		$aeEvents = \MarkNotes\Events::getInstance();
-		$args=array(&$arrFiles);
+		$args = [&$arrFiles];
 		$aeEvents->loadPlugins('task.listfiles.get');
 		$aeEvents->trigger('task.listfiles.get::run', $args);
 
@@ -37,6 +36,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	{
 		$url = str_replace('&', '%26', $url);
 		$url = str_replace(' ', '%20', $url);
+
 		return $url;
 	}
 
@@ -55,27 +55,27 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		foreach ($arrFiles as $file) {
 			$relFileName = str_replace($folder, '', $file);
 
-			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DS).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/') . '/' . rtrim($aeSettings->getFolderDocs(false), DS) . '/';
 
-			$urlHTML = $url.str_replace(DS, '/', $aeFiles->replaceExtension($relFileName, 'html'));
+			$urlHTML = $url . str_replace(DS, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
 			$lastModified = @filemtime($file);
 
 			$xml .=
-				'	  <url>'.PHP_EOL.
-				'		 <loc>'.self::url_encode($urlHTML).'</loc>'.PHP_EOL.
-				'		 <lastmod>'.date('Y-m-d\TH:i:sP', $lastModified).'</lastmod>'.PHP_EOL.
-				'		 <changefreq>weekly</changefreq>'.PHP_EOL.
-				'		 <priority>1.0</priority>'.PHP_EOL.
-				'	  </url>'.PHP_EOL;
+				'	  <url>' . PHP_EOL .
+				'		 <loc>' . self::url_encode($urlHTML) . '</loc>' . PHP_EOL .
+				'		 <lastmod>' . date('Y-m-d\TH:i:sP', $lastModified) . '</lastmod>' . PHP_EOL .
+				'		 <changefreq>weekly</changefreq>' . PHP_EOL .
+				'		 <priority>1.0</priority>' . PHP_EOL .
+				'	  </url>' . PHP_EOL;
 		} // foreach
 
 		$xml =
-			'<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL.
-			'<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '.
-				'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" '.
-				'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL.
-			'	'.$xml.PHP_EOL.
+			'<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL .
+			'<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' .
+				'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" ' .
+				'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL .
+			'	' . $xml . PHP_EOL .
 			'</urlset>';
 
 		return $xml;
@@ -97,7 +97,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("Get the sitemap","debug");
+				$aeDebug->log('Get the sitemap', 'debug');
 			}
 			/*<!-- endbuild -->*/
 
@@ -106,7 +106,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 				// The list of files can vary from one user to an
 				// another so we need to use his username
-				$key = $aeSession->getUser().'###sitemap';
+				$key = $aeSession->getUser() . '###sitemap';
 
 				$cached = $aeCache->getItem(md5($key));
 				$arr = $cached->get();
@@ -120,7 +120,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 					$arr['from_cache'] = 1;
 					// Default : 7 days.
 					$duration = $arrSettings['duration']['sitemap'];
-					$cached->set($arr)->expiresAfter($duration);
+					$cached->set($arr)->expiresAfter($duration)->addTags(md5('listfiles'));
 					$aeCache->save($cached);
 					$arr['from_cache'] = 0;
 				}
@@ -136,7 +136,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			header('Content-Type: application/xml; charset=utf-8');
 			echo $arr['xml'];
 		} else {
-			header("HTTP/1.0 404 Not Found");
+			header('HTTP/1.0 404 Not Found');
 			exit();
 		}
 

@@ -8,6 +8,7 @@
 *	/index.php?task=task.listfiles.getfolders&restrict_folder=PHP
 * which limit the list to folders under /docs/PHP
 */
+
 namespace MarkNotes\Plugins\Task\ListFiles;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -37,48 +38,48 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
-			$aeDebug->log('Get list of files in ['.$docs.']', 'debug');
+			$aeDebug->log('Get list of files in [' . $docs . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
 		$ext = '*.md';
-		$arr = array();
+		$arr = [];
 
 		$aeFolders = \MarkNotes\Folders::getInstance();
 
 		// If $subfolder isn't empty, restrict the list to that
 		// subfolder and not all files/folders under /docs
-		if ($subfolder!=='') {
-			$docs=rtrim($docs, DS).DS.$subfolder;
+		if ($subfolder !== '') {
+			$docs = rtrim($docs, DS) . DS . $subfolder;
 		}
 
 		$arr = $aeFolders->getContent($docs, true);
 
-		$arrFiles = array();
+		$arrFiles = [];
 
-		if (count($arr)>0) {
+		if (count($arr) > 0) {
 			// Only the name of the folder, not the fullpath
 			$docs = $aeSettings->getFolderDocs(false);
 
 			foreach ($arr as $item) {
-				$type = $item['type']??'';
+				$type = $item['type'] ?? '';
 
-				if ($type=='file') {
-					$extension = $item['extension']??'';
+				if ($type == 'file') {
+					$extension = $item['extension'] ?? '';
 
 					if ($extension == 'md') {
 						$file = str_replace('/', DS, $item['path']);
 						// Be sure the filename starts with
 						// docs/
 						if (!$aeFunctions->startsWith($file, $docs)) {
-							$file = $docs.$file;
+							$file = $docs . $file;
 						}
 
 						// Instead of using a unusefull index
 						// use the file timestamp (last mod date/time)
 						$dte = $aeFiles->timestamp($aeFiles->makeFileNameAbsolute($file));
 
-						$arrFiles[$dte.'_'.md5($file)] = $file;
+						$arrFiles[$dte . '_' . md5($file)] = $file;
 					}
 				}
 			}
@@ -92,13 +93,12 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 			// Run the filter_list task to remove any protected files
 			// not allowed for the current user
 			$aeEvents->loadPlugins('task.acls.filter_list');
-			$args=array(&$arrFiles);
+			$args = [&$arrFiles];
 			$aeEvents->trigger('task.acls.filter_list::run', $args);
 
 			// Retrieve the filtered array i.e. that Files
 			// well accessible to the current user
-			$arrFiles=$args[0];
-
+			$arrFiles = $args[0];
 		} // if ($bACLsLoaded)
 
 		return $arrFiles;
@@ -138,7 +138,7 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 			$aeEvents = \MarkNotes\Events::getInstance();
 
 			$aeEvents->loadPlugins('task.acls.load');
-			$args=array();
+			$args = [];
 			$aeEvents->trigger('task.acls.load::run', $args);
 			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 
@@ -149,12 +149,12 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 
 				// The list of files can vary from one user to an
 				// another so we need to use his username
-				$key = $aeSession->getUser().'###listfiles';
+				$key = $aeSession->getUser() . '###listfiles';
 				$cached = $aeCache->getItem(md5($key));
 				$arr = $cached->get();
 
-				if ($arr['files']==array()) {
-					$arr=null;
+				if ($arr['files'] == []) {
+					$arr = null;
 				}
 			}
 
@@ -167,7 +167,7 @@ class GetFolders extends \MarkNotes\Plugins\Task\Plugin
 				if ($bCache) {
 					// Save the list in the cache
 					$duration = $arrSettings['duration']['default'];
-					$cached->set($arr)->expiresAfter($duration);
+					$cached->set($arr)->expiresAfter($duration)->addTag(md5('listfiles'));
 					$aeCache->save($cached);
 					$arr['from_cache'] = 0;
 				}

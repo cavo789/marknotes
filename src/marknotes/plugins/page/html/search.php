@@ -28,28 +28,28 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		// For highligthing content in a note : after a search,
 		// the displayed note will have the search term highlighted
 		// @link https://github.com/knownasilya/jquery-highlight
-		$script = "<script ".
-			"src=\"".$url."libs/jquery-highlight/jquery.highlight.js\" ".
+		$script = '<script ' .
+			'src="' . $url . 'libs/jquery-highlight/jquery.highlight.js" ' .
 			"defer=\"defer\"></script>\n";
 
 		// Used by the search box, for auto-completion
 		// @link https://github.com/sergiodlopes/jquery-flexdatalist
-		$script .= "<script ".
-			"src=\"".$url."libs/jquery-flexdatalist/jquery.flexdatalist.min.js\" ".
+		$script .= '<script ' .
+			'src="' . $url . 'libs/jquery-flexdatalist/jquery.flexdatalist.min.js" ' .
 			"defer=\"defer\"></script>\n";
 
-		$script .= "<script src=\"".$url."search.js\" ".
+		$script .= '<script src="' . $url . 'search.js" ' .
 			"defer=\"defer\"></script>\n";
 
-		$disable_plugins = boolval(self::getOptions('disable_plugins',0));
+		$disable_plugins = boolval(self::getOptions('disable_plugins', 0));
 
 		$script .=
-			"<script>\n".
-			"marknotes.search = {};\n".
-			"marknotes.search.max_width=".SEARCH_MAX_LENGTH.";\n".
-			"marknotes.search.restrict_folder='.';\n".
-			"marknotes.search.disable_plugins=".($disable_plugins?1:0).";\n".
-			"marknotes.search.disable_cache=0;\n".
+			"<script>\n" .
+			"marknotes.search = {};\n" .
+			'marknotes.search.max_width=' . SEARCH_MAX_LENGTH . ";\n" .
+			"marknotes.search.restrict_folder='.';\n" .
+			'marknotes.search.disable_plugins=' . ($disable_plugins ? 1 : 0) . ";\n" .
+			"marknotes.search.disable_cache=0;\n" .
 			"</script>\n";
 
 		$js .= $aeFunctions->addJavascriptInline($script);
@@ -68,11 +68,11 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 		$url = rtrim($aeFunctions->getCurrentURL(), '/');
 		$url .= '/marknotes/plugins/page/html/search/';
 
-		$script = "<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
-			"href=\"".$url."libs/jquery-flexdatalist/jquery.flexdatalist.min.css\" />\n";
+		$script = '<link media="screen" rel="stylesheet" type="text/css" ' .
+			'href="' . $url . "libs/jquery-flexdatalist/jquery.flexdatalist.min.css\" />\n";
 		$script .=
-			"<link media=\"screen\" rel=\"stylesheet\" type=\"text/css\" ".
-			"href=\"".$url."search.css\">\n";
+			'<link media="screen" rel="stylesheet" type="text/css" ' .
+			'href="' . $url . "search.css\">\n";
 
 		$css .= $aeFunctions->addStyleInline($script);
 
@@ -100,34 +100,36 @@ class Search extends \MarkNotes\Plugins\Page\HTML\Plugin
 
 			$advanced_search = $aeSettings->getText('search_advanded_form', '');
 
+			$sSearch = file_get_contents(__DIR__ . '/search/assets/search.frm');
+			$sSearch = str_replace('%INTRO%', $intro, $sSearch);
+			$sSearch = str_replace('%PLACEHOLDER%', $placeHolder, $sSearch);
+			$sSearch = str_replace('%RESTRICT%', $aeSettings->getText('search_restrict_folder'), $sSearch);
+			$sSearch = str_replace('%DISABLE_CACHE%', $aeSettings->getText('search_disable_cache'), $sSearch);
+			$sSearch = str_replace('%ENABLE_PLUGINS%', $aeSettings->getText('search_enable_plugins'), $sSearch);
 
-$sSearch = file_get_contents(__DIR__.'/search/assets/search.frm');
-$sSearch = str_replace('%INTRO%', $intro, $sSearch);
-$sSearch = str_replace('%PLACEHOLDER%', $placeHolder, $sSearch);
-
-/*
-$sSearch='<div id="divSearch" class="search sidebar-form"
- data-intro="'.$intro.'">
-<div class="input-group">
-<input id="search" type="text" name="search"
-class="flexdatalist form-control" data-data="tags.json"
-data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
-<span class="input-group-btn">
-<button type="button" name="folder" id="search-advanced-btn"
-class="btn btn-flat" title="'.$advanced_search.'">
-<i class="fa fa-cog"></i>
-</button>'.
-//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
-//</button>
-'</span>
-</div>
-</div>';*/
+			/*
+			$sSearch='<div id="divSearch" class="search sidebar-form"
+			 data-intro="'.$intro.'">
+			<div class="input-group">
+			<input id="search" type="text" name="search"
+			class="flexdatalist form-control" data-data="tags.json"
+			data-search-in="name" data-min-lenght="3" placeholder="'.$placeHolder.'">
+			<span class="input-group-btn">
+			<button type="button" name="folder" id="search-advanced-btn"
+			class="btn btn-flat" title="'.$advanced_search.'">
+			<i class="fa fa-cog"></i>
+			</button>'.
+			//<button type="submit" name="search" //id="search-btn" class="btn btn-flat"><i //class="fa fa-search"></i>
+			//</button>
+			'</span>
+			</div>
+			</div>';*/
 
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
-				$sSearch = "\n<!-- Lines below are added by ".__FILE__."-->\n".
-					trim($sSearch, "\n")."\n".
-					"<!-- End for ".__FILE__."-->\n";
+				$sSearch = "\n<!-- Lines below are added by " . __FILE__ . "-->\n" .
+					trim($sSearch, "\n") . "\n" .
+					'<!-- End for ' . __FILE__ . "-->\n";
 			}
 			/*<!-- endbuild -->*/
 

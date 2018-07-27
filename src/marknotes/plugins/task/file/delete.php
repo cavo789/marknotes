@@ -5,11 +5,12 @@
  * Anwser to URL like the one below (names are base64_encoded)
  * index.php?task=task.file.delete&oldname=emEyJTJGYQ%3D%3D&newname=emEyJTJGYWVyYXpl
  */
+
 namespace MarkNotes\Plugins\Task\File;
 
 defined('_MARKNOTES') or die('No direct access allowed');
 
-require_once(dirname(__FILE__).DS.'.plugin.php');
+require_once dirname(__FILE__) . DS . '.plugin.php';
 
 class Delete extends \MarkNotes\Plugins\Task\File
 {
@@ -37,19 +38,19 @@ class Delete extends \MarkNotes\Plugins\Task\File
 		$aeEvents->loadPlugins('task.acls.cansee');
 
 		// Note : the folder should start and end with the slash
-		$arr = array('folder' => dirname($filename),'return' => true);
-		$args = array(&$arr);
+		$arr = ['folder' => dirname($filename), 'return' => true];
+		$args = [&$arr];
 
 		$aeEvents->trigger('task.acls.cansee::run', $args);
 
 		// cansee will initialize return to 0 if the user can't
 		// see the folder so can't see the note too
-		if (intval($args[0]['return'])===1) {
+		if (intval($args[0]['return']) === 1) {
 			// Continue only if the user can see the parent folder
 
 			if (!$aeFiles->exists($filename)) {
 				return FILE_NOT_FOUND;
-			} elseif (!is_writable(mb_convert_encoding($filename, "ISO-8859-1", "UTF-8"))) {
+			} elseif (!is_writable(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8'))) {
 				return FILE_IS_READONLY;
 			} else {
 				// Before removing the file (f.i. note.md),
@@ -63,7 +64,6 @@ class Delete extends \MarkNotes\Plugins\Task\File
 
 				$wReturn = true;
 				foreach ($arrFiles as $file) {
-
 					if ($file['type'] == 'file') {
 						if ($file['filename'] == $name) {
 							try {
@@ -73,10 +73,11 @@ class Delete extends \MarkNotes\Plugins\Task\File
 
 								$aeFiles->delete($tmp);
 
+								// Clear cache
+								self::clearCache();
+
 								$wReturn = (!$aeFiles->exists($file['path']) ? KILL_SUCCESS : FILE_ERROR);
-
 							} catch (Exception $ex) {
-
 								/*<!-- build:debug -->*/
 								if ($aeSettings->getDebugMode()) {
 									$aeDebug = \MarkNotes\Debug::getInstance();
@@ -117,22 +118,22 @@ class Delete extends \MarkNotes\Plugins\Task\File
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
 			$aeDebug->log(__METHOD__, 'debug');
-			$aeDebug->log('Oldname=['.$oldname.']', 'debug');
+			$aeDebug->log('Oldname=[' . $oldname . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
 		if (trim($oldname) === '') {
-			$return = array(
+			$return = [
 				'status' => 0,
 				'action' => 'delete',
 				'msg' => $aeSettings->getText('unknown_error', 'An error has occured, please try again')
-			);
+			];
 		} else {
 			$docs = $aeSettings->getFolderDocs(false);
 
 			$oldname = $aeFiles->sanitize($oldname);
-			$oldname = $aeSettings->getFolderWebRoot().$oldname;
-			$oldname = $aeFiles->removeExtension($oldname).'.md';
+			$oldname = $aeSettings->getFolderWebRoot() . $oldname;
+			$oldname = $aeFiles->removeExtension($oldname) . '.md';
 			$oldname = str_replace('/', DS, $oldname);
 
 			// Relative filenames
@@ -143,7 +144,7 @@ class Delete extends \MarkNotes\Plugins\Task\File
 
 			switch ($wReturn) {
 				case KILL_SUCCESS:
-					$msg = $aeSettings->getText('file_deleted', 'The note [$1] has '.
+					$msg = $aeSettings->getText('file_deleted', 'The note [$1] has ' .
 						'been successfully deleted');
 					$msg = str_replace('$1', $rel_oldname, $msg);
 					break;
@@ -170,17 +171,17 @@ class Delete extends \MarkNotes\Plugins\Task\File
 			// to the parent folder. The md5 should then be
 			// calculated on the parent folder of the removed
 			// note.
-			$md5 = md5(dirname($docs.$rel_oldname).DS);
+			$md5 = md5(dirname($docs . $rel_oldname) . DS);
 
-			$arr = array(
+			$arr = [
 				'status' => (($wReturn == KILL_SUCCESS) ? 1 : 0),
 				'action' => 'delete',
 				'msg' => $msg,
 				'md5' => $md5,
 				'filename' => utf8_encode($oldname)
-			);
+			];
 
-			$return =  self::returnInfo($arr);
+			$return = self::returnInfo($arr);
 		}
 
 		header('Content-Type: application/json');

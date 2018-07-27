@@ -225,6 +225,12 @@ class HTML
 			$template = str_replace('%VERSION_URL%', $url, $template);
 		}
 
+		if (strpos($template, '%CACHE%') !== false) {
+			$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
+			$bCache = $arrSettings['enabled'] ?? false;
+			$template = str_replace('%CACHE%', $bCache, $template);
+		}
+
 		return $template;
 	}
 }

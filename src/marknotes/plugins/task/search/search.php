@@ -16,6 +16,7 @@
  *
  * Using https://github.com/PHPSocialNetwork/phpfastcache
  */
+
 namespace MarkNotes\Plugins\Task\Search;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -34,16 +35,16 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function getFiles(string $restrict_folder = '') : array
 	{
-		$arrFiles = array(
-			'params'=>array(
-				'restrict_folder'=>$restrict_folder
-			),
-			'result'=>array()
-		);
+		$arrFiles = [
+			'params' => [
+				'restrict_folder' => $restrict_folder
+			],
+			'result' => []
+		];
 
 		// Call the listfiles.get event and initialize $arrFiles
 		$aeEvents = \MarkNotes\Events::getInstance();
-		$args=array(&$arrFiles);
+		$args = [&$arrFiles];
 		$aeEvents->loadPlugins('task.listfiles.get');
 		$aeEvents->trigger('task.listfiles.get::run', $args);
 
@@ -102,7 +103,6 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 			}
 
 			$return = $aeCache->getItem(md5($pattern));
-
 		} // if ($bCache)
 
 		return $return;
@@ -114,13 +114,13 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	 * filename starting with a dot (like ".secrets.md")
 	 *
 	 * @param  array $arrFiles [description]
-	 * @return array			[description]
+	 * @return array [description]
 	 */
 	private static function removeHiddenFiles(array $arrFiles) : array
 	{
-		$arrTmp = array();
-		foreach ($arrFiles as $key=>$value) {
-			if (strpos($value, DS.'.')===FALSE) {
+		$arrTmp = [];
+		foreach ($arrFiles as $key => $value) {
+			if (strpos($value, DS . '.') === false) {
 				$arrTmp[$key] = $value;
 			}
 		}
@@ -152,22 +152,22 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			if (!$aeFunctions->isAjaxRequest()) {
-				$debug_output .= '<p>Number of files (excluding hidden files/folders): '.count($arrFiles).'</h1>';
+				$debug_output .= '<p>Number of files (excluding hidden files/folders): ' . count($arrFiles) . '</h1>';
 			}
 		}
 		/*<!-- endbuild -->*/
 		// Absolute root folder
 		$root = $aeSettings->getFolderWebRoot();
 
-		$bDebug=false;
+		$bDebug = false;
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
-			$bDebug=true;
+			$bDebug = true;
 		}
 		/*<!-- endbuild -->*/
 
-		$return = array();
+		$return = [];
 
 		// Filenames in $arrFiles already start with the
 		// "docs/" part so, f.i.
@@ -204,9 +204,9 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				/*<!-- build:debug -->*/
 				if ($bDebug) {
 					if (!$aeFunctions->isAjaxRequest()) {
-						$debug_output .= '<li>FOUND IN ['.$file.']</li>';
+						$debug_output .= '<li>FOUND IN [' . $file . ']</li>';
 					}
-					$aeDebug->log("	FOUND IN [".$file."]", "debug");
+					$aeDebug->log('	FOUND IN [' . $file . ']', 'debug');
 				}
 				/*<!-- endbuild -->*/
 
@@ -215,38 +215,38 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 			} else { // if ($bFound)
 				// Open the file and check against its content
 				// (plain and encrypted)
-				$fullname = $root.$file;
+				$fullname = $root . $file;
 
 				// Read the note content
-				if ($params['disable_plugins']==0) {
+				if ($params['disable_plugins'] == 0) {
 					// The read() method will fires any plugin linked
 					// to the markdown.read event
 					// so encrypted notes will be automatically unencrypted
-					$params['filename']=$fullname;
+					$params['filename'] = $fullname;
 					$params['encryption'] = 0;
 					$content = $aeMarkdown->read($fullname, $params);
 				} else {
 					// Don't fire plugins for speed purposes
 					// Immediatly read the file's content
-					$content=file_get_contents($fullname);
+					$content = file_get_contents($fullname);
 				}
 
 				$bFound = true;
 
 				foreach ($keywords as $keyword) {
 					/**
-					* Add "$file" which is the filename in the
-					* content, just for the search.
-					* Because when f.i. search for two words;
-					* one can be in the filename and one in the
-					* content.
-					* By searching only in the content; that
-					* file won't
-					* appear while it should be the Collapse
-					* so "fake" and add the filename in the content,
-					* just for the search_no_result
-					*/
-					if (stripos($file.'#@#§§@'.$content, $keyword) === false) {
+					 * Add "$file" which is the filename in the
+					 * content, just for the search.
+					 * Because when f.i. search for two words;
+					 * one can be in the filename and one in the
+					 * content.
+					 * By searching only in the content; that
+					 * file won't
+					 * appear while it should be the Collapse
+					 * so "fake" and add the filename in the content,
+					 * just for the search_no_result
+					 */
+					if (stripos($file . '#@#§§@' . $content, $keyword) === false) {
 						// at least one term is not present in the content, stop
 						$bFound = false;
 						break;
@@ -257,9 +257,9 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 					/*<!-- build:debug -->*/
 					if ($bDebug) {
 						if (!$aeFunctions->isAjaxRequest()) {
-							$debug_output .= '<li>FOUND IN ['.$file.']</li>';
+							$debug_output .= '<li>FOUND IN [' . $file . ']</li>';
 						}
-						$aeDebug->log("	FOUND IN [".$file."]", "debug");
+						$aeDebug->log('	FOUND IN [' . $file . ']', 'debug');
 					}
 					/*<!-- endbuild -->*/
 
@@ -271,10 +271,10 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 			} // if ($bFound) {
 		} // foreach ($arrFiles as $file)
 
-		$arr = array();
+		$arr = [];
 		$arr['from_cache'] = 0;
 		$arr['pattern'] = json_encode($pattern);
-		$arr['files'] = json_encode(array_map("md5", $return));
+		$arr['files'] = json_encode(array_map('md5', $return));
 
 		/*<!-- build:debug -->*/
 		if ($debug_output !== '') {
@@ -286,10 +286,10 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 	}
 
 	/**
-	* $params['encryption'] = 0 : encrypted data should be unencrypted
-	*						 1 : encrypted infos should stay encrypted
-	*/
- 	public static function run(&$params = null) : bool
+	 * $params['encryption'] = 0 : encrypted data should be unencrypted
+	 *						 1 : encrypted infos should stay encrypted
+	 */
+	public static function run(&$params = null) : bool
 	{
 		$startedAt = microtime(true);
 
@@ -306,13 +306,13 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			if (!$aeFunctions->isAjaxRequest()) {
-				echo '<h1>Start searching for **'.$pattern.'**</h1>';
+				echo '<h1>Start searching for **' . $pattern . '**</h1>';
 				echo '<em>Appears only in debug mode and when not started by an ajax request</em>';
 			}
 		}
 		/*<!-- endbuild -->*/
 
-		if ($pattern==='') {
+		if ($pattern === '') {
 			self::noParam();
 		}
 
@@ -337,11 +337,11 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 
 		// The cache can vary from one user to an
 		// another so we need to use his username
-		$pattern = $aeSession->getUser().'###'.$pattern;
+		$pattern = $aeSession->getUser() . '###' . $pattern;
 
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
-			$aeDebug->log('Searching for ['.$pattern.']', 'debug');
+			$aeDebug->log('Searching for [' . $pattern . ']', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
@@ -350,12 +350,12 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		$restrict_folder = trim(urldecode($aeFunctions->getParam('restrict_folder', 'string', '', true)));
 		$restrict_folder = json_decode($restrict_folder);
 
-		if ($restrict_folder==null) {
-			$restrict_folder='';
+		if ($restrict_folder == null) {
+			$restrict_folder = '';
 		} else {
-			if ($restrict_folder=='.') {
+			if ($restrict_folder == '.') {
 				// Restrict on "." means everything so no restriction
-				$restrict_folder='';
+				$restrict_folder = '';
 			}
 		}
 
@@ -366,7 +366,7 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		// faster than running every plugins for every files
 		// Speed can be x10
 		$disable_plugins = $aeFunctions->getParam('disable_plugins', 'boolean', false);
-		$params['disable_plugins'] = $disable_plugins?1:0;
+		$params['disable_plugins'] = $disable_plugins ? 1 : 0;
 
 		$arr = null;
 
@@ -381,11 +381,12 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		}
 
 		if (is_null($arr)) {
-
 			$arr = self::doSearch($keywords, $pattern, $params);
+			$arr['message'] = '';
 
 			if ($bCache) {
 				$arr['from_cache'] = 1;
+
 				// Cache the result; read duration from settings.json
 				$duration = $arrSettings['duration']['default'];
 				$cached->set($arr)->expiresAfter($duration)->addTag(md5('search'));
@@ -393,6 +394,8 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 				$arr['from_cache'] = 0;
 			}
 		} else {
+			$arr['message'] = $aeSettings->getText('search_from_cache');
+
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug->log('	Retrieving from the cache', 'debug');
@@ -406,9 +409,9 @@ class Search extends \MarkNotes\Plugins\Task\Plugin
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			if (!$aeFunctions->isAjaxRequest()) {
-				$timeTaken =  microtime(true) - $startedAt;
-				echo "<h5>Time taken : ".$timeTaken." seconds</h5>";
-				echo '<pre>'.json_encode($arr, JSON_PRETTY_PRINT).'</pre>';
+				$timeTaken = microtime(true) - $startedAt;
+				echo '<h5>Time taken : ' . $timeTaken . ' seconds</h5>';
+				echo '<pre>' . json_encode($arr, JSON_PRETTY_PRINT) . '</pre>';
 				die();
 			}
 		}

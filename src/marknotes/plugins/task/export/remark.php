@@ -19,7 +19,7 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 	/**
 	 * Retrieve the template for the presentation and use it
 	 */
-	private static function getTemplate(array $params = array()) : string
+	private static function getTemplate(array $params = []) : string
 	{
 		$aeFiles = \MarkNotes\Files::getInstance();
 		$aeFunctions = \MarkNotes\Functions::getInstance();
@@ -32,7 +32,7 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log('Template used : '.$root.$template);
+			$aeDebug->log('Template used : ' . $root . $template);
 		}
 
 		if ($template === '') {
@@ -52,11 +52,11 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 		// If the filename doesn't mention the file's
 		// extension, add it.
 		if (substr($params['filename'], -3) != '.md') {
-			$params['filename'] = $aeFiles->removeExtension($params['filename']).'.md';
+			$params['filename'] = $aeFiles->removeExtension($params['filename']) . '.md';
 		}
 
 		$aeEvents->loadPlugins('content.slides.remark');
-		$args = array(&$params);
+		$args = [&$params];
 		$aeEvents->trigger('content.slides.remark::run', $args);
 		$content = $args[0]['html'];
 
@@ -83,11 +83,11 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 
 			// The list of tags can vary from one user to an
 			// another so we need to use his username
-			$key = $aeSession->getUser().'###'.$fullname;
+			$key = $aeSession->getUser() . '###' . $fullname;
 
 			$cached = $aeCache->getItem(md5($key));
 			$data = $cached->get();
-			$html = $data['html']??'';
+			$html = $data['html'] ?? '';
 		}
 
 		if (trim($html) == '') {
@@ -95,7 +95,7 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 
 			if ($bCache) {
 				// Save the list in the cache
-				$arr = array();
+				$arr = [];
 				$arr['from_cache'] = 1;
 				$arr['html'] = $html;
 				// Get the duration for the HTML cache (default : 31 days)
@@ -105,7 +105,7 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 				// note so we can kill with a
 				// $aeCache->deleteItemsByTag(md5($fullname));
 				// every cached items concerning this note
-				$cached->set($arr)->expiresAfter($duration)->addTag(md5($key));
+				$cached->set($arr)->expiresAfter($duration)->addTag(md5($fullname));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
@@ -113,7 +113,7 @@ class Remark extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("	Retrieved from cache [".$key."]","debug");
+				$aeDebug->log('	Retrieved from cache [' . $key . ']', 'debug');
 			}
 			/*<!-- endbuild -->*/
 

@@ -300,10 +300,12 @@ function jstree_init($data) {
 								$("#TOC").fadeIn();
 
 								if (data.hasOwnProperty("message")) {
-									Noty({
-										message: data.message,
-										type: "information"
-									});
+									if (data.message !== "") {
+										Noty({
+											message: data.message,
+											type: "information"
+										});
+									}
 								}
 
 								// data is a JSON string with a

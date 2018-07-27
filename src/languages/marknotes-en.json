@@ -24,10 +24,14 @@
 		"To use this feature, please enable first the debug and development mode in the settings.json file. You can also do this in the settings screen.",
 	"settings_plugins_options_task_search_disable_plugins":
 		"Disable plugins during the search, the search will be really faster but f.i. encrypted infos won't be decrypted so searching for a password won't work anymore (and this will be true for all plugins)",
+	"search_disable_cache":
+		"If enabled, the search will be performed without using the cache",
 	"search_disable_cache_ON":
 		"The cache on the server will not be used, the search will be slowed",
 	"search_disable_cache_OFF":
 		"The cache on the server will be used: if the same keyword is search again, results will comes from a cache memory",
+	"search_enable_plugins":
+		"If enabled, no plugin will be executed; the search will then be faster but not exhaustive",
 	"search_disable_plugins_ON":
 		"The search will not execute plugins like the Encryption plugin : the search will be faster but won't, f.i., search into encrypted text",
 	"search_disable_plugins_OFF":

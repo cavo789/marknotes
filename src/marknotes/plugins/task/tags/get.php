@@ -22,6 +22,7 @@
 *			}
 *		}
  */
+
 namespace MarkNotes\Plugins\Task\Tags;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -44,13 +45,13 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 		// Call the listfiles.get event and initialize $arrFiles
 		$aeEvents = \MarkNotes\Events::getInstance();
-		$args=array(&$arrFiles);
+		$args = [&$arrFiles];
 		$aeEvents->loadPlugins('task.listfiles.get');
 		$aeEvents->trigger('task.listfiles.get::run', $args);
 		$arrFiles = $args[0];
 
 		// Now, only keep directory name, not files
-		$arrFiles = array_map("dirname", $arrFiles);
+		$arrFiles = array_map('dirname', $arrFiles);
 
 		// And make the array unique (not the same folder twice)
 		$arrFolders = $aeFunctions->array_iunique($arrFiles, SORT_STRING);
@@ -62,7 +63,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		// Now, just keep relative name (like "folder_name")
 		// and not fullname
 		// (like c:\website\marknotes\docs\folder_name
-		$arrFolders = array_map("basename", $arrFolders);
+		$arrFolders = array_map('basename', $arrFolders);
 
 		return $arrFolders;
 	}
@@ -74,7 +75,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$aeSession = \MarkNotes\Session::getInstance();
 
 		$arr = null;
-		$arrTags = array();
+		$arrTags = [];
 
 		$arrSettings = $aeSettings->getPlugins(JSON_OPTIONS_CACHE);
 		$bCache = boolval($arrSettings['enabled'] ?? false);
@@ -84,7 +85,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			// The list of tags can vary from one user to an
 			// another so we need to use his username
-			$key = $aeSession->getUser().'###tags';
+			$key = $aeSession->getUser() . '###tags';
 			$cached = $aeCache->getItem(md5($key));
 			$arr = $cached->get();
 		}
@@ -94,7 +95,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$arr = self::getFolders();
 
 			// And append tags from settings.json
-			$arrTags = self::getOptions('keywords', array());
+			$arrTags = self::getOptions('keywords', []);
 
 			if (count($arrTags) > 0) {
 				foreach ($arrTags as $tag) {
@@ -109,32 +110,32 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			$aeFunctions = \MarkNotes\Functions::getInstance();
 			$arr = $aeFunctions->array_iunique($arr, SORT_STRING);
 			natcasesort($arr);
-			$arrTags = array();
+			$arrTags = [];
 			foreach ($arr as $key => $value) {
-				if($value!=='') {
-					$arrTags[] = array('name' => $value);
+				if ($value !== '') {
+					$arrTags[] = ['name' => $value];
 				}
 			}
 
 			// Get tags.json if the file exists
-			$fname = $aeSettings->getFolderWebRoot().'tags.json';
+			$fname = $aeSettings->getFolderWebRoot() . 'tags.json';
 			if ($aeFiles->exists($fname)) {
 				$content = json_decode($aeFiles->getContent($fname), true);
 				foreach ($content as $tag) {
-					if($tag!=='') {
-						$arrTags[] = array('name'=>utf8_decode($tag));
+					if ($tag !== '') {
+						$arrTags[] = ['name' => utf8_decode($tag)];
 					}
 				}
 			}
 
-			$arr=array();
+			$arr = [];
 			$arr['tags'] = $arrTags;
 
 			if ($bCache) {
 				// Save the list in the cache
 				$arr['from_cache'] = 1;
 				$duration = $arrSettings['duration']['default'];
-				$cached->set($arr)->expiresAfter($duration);
+				$cached->set($arr)->expiresAfter($duration)->addTags(md5('tags'));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
@@ -142,7 +143,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 			/*<!-- build:debug -->*/
 			if ($aeSettings->getDebugMode()) {
 				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("    Retrieved from cache","debug");
+				$aeDebug->log('    Retrieved from cache', 'debug');
 			}
 			/*<!-- endbuild -->*/
 		}
@@ -155,9 +156,9 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$sReturn = $aeJSON->json_encode($arr['tags']);
 
 		header('Content-Type: application/json; charset=UTF-8');
-		header("cache-control: must-revalidate");
+		header('cache-control: must-revalidate');
 		$offset = 48 * 60 * 60;  // 48 hours
-		$expire = "expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+		$expire = 'expires: ' . gmdate('D, d M Y H:i:s', time() + $offset) . ' GMT';
 		header($expire);
 
 		echo $sReturn;

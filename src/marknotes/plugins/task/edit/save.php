@@ -2,6 +2,7 @@
 /**
  * Edit form - Handle the Save action
  */
+
 namespace MarkNotes\Plugins\Task\Edit;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -27,7 +28,7 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		if (!$bCanRun) {
 			$aeSettings = \MarkNotes\Settings::getInstance();
 
-			$return = array();
+			$return = [];
 			$return['status'] = 0;
 			$return['message'] = $aeSettings->getText('not_authenticated', 'You need first to authenticate', true);
 
@@ -58,7 +59,7 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		// Get the filename from the querystring
 		$filename = $aeFunctions->getParam('param', 'string', '', true);
 
-		if ($filename=='') {
+		if ($filename == '') {
 			echo $aeSettings->getText('error_filename_missing', 'Error - a filename is expected and none has been specified');
 			die();
 		}
@@ -66,13 +67,13 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		$filename = json_decode(urldecode($filename));
 
 		// Be sure to have the .md extension
-		$filename = $aeFiles->RemoveExtension($filename).'.md';
+		$filename = $aeFiles->RemoveExtension($filename) . '.md';
 
 		// Make filename absolute
 		$fullname = $aeFiles->makeFileNameAbsolute($filename);
 
 		if (!$aeFiles->exists($fullname)) {
-			echo str_replace('%s', '<strong>'.$filename.'</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
+			echo str_replace('%s', '<strong>' . $filename . '</strong>', $aeSettings->getText('file_not_found', 'The file [%s] doesn\\&#39;t exists'));
 			die();
 		}
 
@@ -85,8 +86,8 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		// Rewrite the file on the disk
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeEvents->loadPlugins('task.markdown.write');
-		$params = array('markdown'=>$markdown);
-		$args = array(&$params);
+		$params = ['markdown' => $markdown];
+		$args = [&$params];
 		$aeEvents->trigger('task.markdown.write::run', $args);
 
 		// Remember the markdown content
@@ -104,17 +105,17 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 
 			// Set the HTML of the note in the cache but prefixed by
 			// the connected user name
-			$key = $aeSession->getUser().'###'.$fullname;
+			$key = $aeSession->getUser() . '###' . $fullname;
 
 			// Clear the cache for this note : clear every cached
 			// items with a tag equal to $fullname i.e. the fullname
 			// of the note
-			$aeCache->deleteItem(md5($key));
+			$aeCache->deleteItemsByTag(md5($key));
 
 			// And create a new markdown content in the cache
-			$key = 'task.markdown.read###'.$fullname;
+			$key = 'task.markdown.read###' . $fullname;
 			$cached = $aeCache->getItem(md5($key));
-			$arr = array();
+			$arr = [];
 			$arr['markdown'] = $content;
 			$arr['from_cache'] = 1;
 			$duration = $arrSettings['duration']['html'];
@@ -129,19 +130,19 @@ class Save extends \MarkNotes\Plugins\Task\Plugin
 		$arrSettings = $aeSettings->getPlugins('plugins.options.task.backup');
 
 		// Take an archive before updating ?
-		$make_backups = boolval($arrSettings['make_backup_before_updating']??1);
+		$make_backups = boolval($arrSettings['make_backup_before_updating'] ?? 1);
 
 		if ($make_backups) {
 			// Add a message so the user knows that a backup has been taken
 			$tmp = $aeSettings->getText('button_save_done_backup_taken', '');
 
-			$backup_folder = $arrSettings['folder']??'.backups';
+			$backup_folder = $arrSettings['folder'] ?? '.backups';
 			$tmp = str_replace('%1', $backup_folder, $tmp);
 
-			$msg .= "<br/><br/><i>".$tmp."</i>";
+			$msg .= '<br/><br/><i>' . $tmp . '</i>';
 		}
 
-		$status = array('status' => 1,'message' => $msg);
+		$status = ['status' => 1, 'message' => $msg];
 
 		header('Content-Type: application/json; charset=utf-8');
 		header('Content-Transfer-Encoding: ascii');

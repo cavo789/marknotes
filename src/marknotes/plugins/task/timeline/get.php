@@ -3,6 +3,7 @@
  * Return a timeline with the list of notes displayed in
  * a descending chronological order
  */
+
 namespace MarkNotes\Plugins\Task\Timeline;
 
 defined('_MARKNOTES') or die('No direct access allowed');
@@ -21,11 +22,11 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 	 */
 	private static function getFiles() : array
 	{
-		$arrFiles = array();
+		$arrFiles = [];
 
 		// Call the listfiles.get event and initialize $arrFiles
 		$aeEvents = \MarkNotes\Events::getInstance();
-		$args=array(&$arrFiles);
+		$args = [&$arrFiles];
 		$aeEvents->loadPlugins('task.listfiles.get');
 		$aeEvents->trigger('task.listfiles.get::run', $args);
 
@@ -39,7 +40,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		$aeMarkDown = \MarkNotes\FileType\MarkDown::getInstance();
 		$aeSettings = \MarkNotes\Settings::getInstance();
 
-		$json = array();
+		$json = [];
 
 		$docs = str_replace('/', DS, $aeSettings->getFolderDocs(true));
 
@@ -64,63 +65,63 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			$relFileName = utf8_encode(str_replace($docs, '', $file));
 
-			$url = rtrim($aeFunctions->getCurrentURL(), '/').'/'.rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR).'/';
+			$url = rtrim($aeFunctions->getCurrentURL(), '/') . '/' . rtrim($aeSettings->getFolderDocs(false), DIRECTORY_SEPARATOR) . '/';
 
-			$urlHTML = $url.str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
+			$urlHTML = $url . str_replace(DIRECTORY_SEPARATOR, '/', $aeFiles->replaceExtension($relFileName, 'html'));
 
 			$urlSlides = $aeFiles->replaceExtension($urlHTML, 'reveal');
 			$urlPDF = $aeFiles->replaceExtension($urlHTML, 'pdf');
 
 			$json[] =
-				array(
+				[
 					'fmtime' => $aeFiles->timestamp($fullname),
-					'time' => date("Y-m-d", $aeFiles->timestamp($fullname)),
+					'time' => date('Y-m-d', $aeFiles->timestamp($fullname)),
 					'header' => htmlentities($aeMarkDown->getHeadingText($content)),
-					'body' => array(
-						array(
+					'body' => [
+						[
 							'tag' => 'a',
 							'content' => $aeFiles->replaceExtension($relFileName, 'html'),
 							'rel' => 'noopener',
-							'attr' => array(
+							'attr' => [
 								'href' => $urlHTML,
 								'target' => '_blank',
 								'title' => $relFileName
-							) // attr
-						),
-						array(
+							] // attr
+						],
+						[
 							'tag' => 'span',
 							'content' => ' ('
-						),
-						array(
+						],
+						[
 							'tag' => 'a',
 							'content' => 'slide',
 							'rel' => 'noopener',
-							'attr' => array(
+							'attr' => [
 								'href' => $urlSlides,
 								'target' => '_blank',
 								'title' => $relFileName
-							) // attr
-						),
-						array(
+							] // attr
+						],
+						[
 							'tag' => 'span',
 							'content' => ' - '
-						),
-						array(
+						],
+						[
 							'tag' => 'a',
 							'content' => 'pdf',
 							'rel' => 'noopener',
-							'attr' => array(
+							'attr' => [
 								'href' => $urlPDF,
 								'target' => '_blank',
 								'title' => $relFileName
-							) // attr
-						),
-						array(
+							] // attr
+						],
+						[
 							'tag' => 'span',
 							'content' => ')'
-						)
-					) // body
-				); //
+						]
+					] // body
+				];
 		} // foreach
 
 		usort($json, function ($a, $b) {
@@ -147,7 +148,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		/*<!-- build:debug -->*/
 		if ($aeSettings->getDebugMode()) {
 			$aeDebug = \MarkNotes\Debug::getInstance();
-			$aeDebug->log("Get the timeline","debug");
+			$aeDebug->log('Get the timeline', 'debug');
 		}
 		/*<!-- endbuild -->*/
 
@@ -158,7 +159,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 
 			// The list of files can vary from one user to an
 			// another so we need to use his username
-			$key = $aeSession->getUser().'###timeline';
+			$key = $aeSession->getUser() . '###timeline';
 
 			$cached = $aeCache->getItem(md5($key));
 			$arr = $cached->get();
@@ -172,7 +173,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				$arr['from_cache'] = 1;
 				// Default : 7 days.
 				$duration = $arrSettings['duration']['sitemap'];
-				$cached->set($arr)->expiresAfter($duration);
+				$cached->set($arr)->expiresAfter($duration)->addTags(md5('listfiles'));
 				$aeCache->save($cached);
 				$arr['from_cache'] = 0;
 			}
@@ -194,7 +195,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		return true;
 	}
 
-	private static function getHTML(array $params = array()) : bool
+	private static function getHTML(array $params = []) : bool
 	{
 		$aeEvents = \MarkNotes\Events::getInstance();
 		$aeFiles = \MarkNotes\Files::getInstance();
@@ -211,23 +212,23 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 		// (the markdown.variables can be called even if, here, the
 		// content is a HTML string)
 		$aeEvents->loadPlugins('markdown.variables');
-		$tmp = array('markdown'=>$template, 'filename'=>$params['filename']);
-		$args = array(&$tmp);
+		$tmp = ['markdown' => $template, 'filename' => $params['filename']];
+		$args = [&$tmp];
 		$aeEvents->trigger('markdown.variables::markdown.read', $args);
 		$template = $args[0]['markdown'];
 
 		$aeEvents->loadPlugins('page.html');
-		$args = array(&$template);
+		$args = [&$template];
 		$aeEvents->trigger('page.html::render.html', $args);
 		$template = $args[0];
 
 		$additionnalJS = '';
-		$args = array(&$additionnalJS);
+		$args = [&$additionnalJS];
 		$aeEvents->trigger('page.html::render.js', $args);
 		$template = str_replace('<!--%ADDITIONNAL_JS%-->', $args[0], $template);
 
 		$additionnalCS = '';
-		$args = array(&$additionnalCS);
+		$args = [&$additionnalCS];
 		$aeEvents->trigger('page.html::render.css', $args);
 		$template = str_replace('<!--%ADDITIONNAL_CSS%-->', $args[0], $template);
 
@@ -253,7 +254,7 @@ class Get extends \MarkNotes\Plugins\Task\Plugin
 				self::getJSON();
 			}
 		} else {
-			header("HTTP/1.0 404 Not Found");
+			header('HTTP/1.0 404 Not Found');
 			exit();
 		}
 

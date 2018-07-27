@@ -6,7 +6,7 @@
 		</svg>
 	</button>
 	<div class="search_option">
-		<div>
+		<div title="%RESTRICT%">
 			<input type="checkbox" id="search_folder">
 			<label for="search_folder">
 				<svg class="icon" width="32" height="32" viewBox="0 0 32 32">
@@ -14,7 +14,7 @@
 				</svg>
 			</label>
 		</div>
-		<div>
+		<div title="%DISABLE_CACHE%" style="display:none;">
 			<input type="checkbox" id="search_refresh">
 			<label for="search_refresh">
 				<svg class="icon" width="32" height="32" viewBox="0 0 32 32">
@@ -22,8 +22,7 @@
 				</svg>
 			</label>
 		</div>
-
-		<div>
+		<div title="%ENABLE_PLUGINS%">
 			<input type="checkbox" id="search_plugins">
 			<label for="search_plugins">
 				<svg class="icon" width="32" height="32" viewBox="0 0 32 32">
