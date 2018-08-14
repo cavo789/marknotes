@@ -1,6 +1,6 @@
 <?php
 /**
- * Add the Include button into the toolbar of the editor
+ * Add the Mindmap button into the toolbar of the editor
  */
 
 namespace MarkNotes\Plugins\Buttons;

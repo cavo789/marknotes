@@ -15,7 +15,7 @@ class MindMap extends \MarkNotes\Plugins\Page\HTML\Plugin
 	protected static $json_options = 'plugins.options.page.html.mindmap';
 
 	/**
-	 * Provide additionnal javascript
+	 * Provide additional javascript
 	 */
 	public static function addJS(&$js = null) : bool
 	{
@@ -38,7 +38,7 @@ class MindMap extends \MarkNotes\Plugins\Page\HTML\Plugin
 	}
 
 	/**
-	 * Provide additionnal stylesheets
+	 * Provide additional stylesheets
 	 */
 	public static function addCSS(&$css = null) : bool
 	{

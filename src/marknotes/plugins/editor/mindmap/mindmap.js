@@ -1,6 +1,6 @@
-// Add a custom button that will insert a %INCLUDE note.md% tag
+// Add a custom button that will insert a %MINDMAP_START% ... %MINDMAP_END% tag
 // $POSITION$ will be replaced by the position configured in
-// settings.json->plugins->editor->include->position
+// settings.json->plugins->editor->mindmap->position
 toolbar.insertItem($POSITION$, {
 	type: "button",
 	options: {
