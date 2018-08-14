@@ -114,10 +114,14 @@
 			"mermaid": {
 				"enabled": 1,
 				"position": 50
+			},			
+			"mindmap": {
+				"enabled": 1,
+				"position": 51
 			},
 			"zip": {
 				"enabled": 1,
-				"position": 51
+				"position": 52
 			}
 		},
 		"buttons": {
