@@ -473,6 +473,11 @@
 					"not_if_task": ["task.timeline.get"],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
+				"mindmap": {
+					"enabled": 1,
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["main", "interface", "task.export.html"]
+				},
 				"new_window": {
 					"enabled": 1,
 					"not_if_task": [],
@@ -610,6 +615,11 @@
 				"enabled": 1,
 				"not_if_task": [],
 				"only_if_task": ["main", "interface", "task.export.html", "task.export.docx"]
+			},
+			"mindmap": {
+				"enabled": 1,
+				"not_if_task": ["task.timeline.get"],
+				"only_if_task": ["main", "interface", "task.export.html"]
 			},
 			"yaml": {
 				"enabled": 1,
