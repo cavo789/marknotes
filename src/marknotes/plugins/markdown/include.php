@@ -378,7 +378,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 */
 	private static function makeFileNameAbsolute(string $content, string $fname) : string
 	{
-		//echo '<h1>Before</h1><pre>'.$content.'</pre>';
+		// echo '<h1>Before</h1><pre>'.$content.'</pre>';
 		$aeFiles = \MarkNotes\Files::getInstance();
 
 		$matches = array();
@@ -393,6 +393,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 				$file_2[$j] = str_replace('/', DS, $file_2[$j]);
 
+				// Retrieve the folder of the processed note
 				$folder = dirname($fname);
 
 				// Special case : the included file starts with ""../"
@@ -405,19 +406,31 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				}
 
 				if(!$aeFiles->exists($file_2[$j])) {
-					$absFile = str_replace('/', DS, $folder.DS.$file_2[$j]);
 
-					if (realpath($absFile) !== FALSE) {
-						$absFile = realpath($absFile);
+					// Check if we can derive the full filename
+					// In principe $file_2[$j] is relative to the 
+					// folder of the note so $absFile here will
+					// make the filename absolute and should work
+					$absFile = rtrim($folder, DS) . DS . $file_2[$j];
+
+					if (!$aeFiles->exists($absFile)) {
+						$absFile = str_replace('/', DS, $folder.DS.$file_2[$j]);
+						if (realpath($absFile) !== FALSE) {
+							$absFile = realpath($absFile);
+						}
 					}
 
+					// The filename is with "/" in the markdown content
+					$file_2[$j] = str_replace(DS, '/',$file_2[$j]);
 					$new_tag = str_replace($file_2[$j], $absFile, $tag_2[$j]);
+
 					$content = str_replace($tag_2[$j], $new_tag, $content);
 				}
 			} // for($j=0)
 		}
 
-		//echo '<h1>After</h1><pre>'.$content.'</pre>';
+		// echo '<h1>After</h1><pre>'.$content.'</pre>';
+
 		return $content;
 	}
 
@@ -693,11 +706,22 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 							$tmp = str_replace('%INCLUDE', '%INCLUDE_disabled_notfound', $tag[$i]);
 							$markdown = str_replace($tag[$i], $tmp, $markdown);
 
+							$error = 'Failure: file [' . $fname . '] not found! '.
+								'Included in file [' . $file[$i]	.']';
+
 							if ($aeSettings->getDebugMode()) {
 								$sContent = 'Failure: file ['.$fname.'] not found!';
 								$aeDebug->log($sContent, 'error');
 							}
-						/*<!-- endbuild -->*/
+
+							if ($aeDebug->getDevMode()) {	
+								echo "<div style='background-color:yellow;'>" . 
+									__FILE__ . " - " . __LINE__ . " " .
+									"<h4>" . DEV_MODE_PREFIX . " Included file not found</h4>".
+									"<p>" . $error . "</p>".
+									"</div>";
+								die();
+							}
 						}
 					/*<!-- build:debug -->*/
 					} else {

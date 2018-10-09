@@ -362,6 +362,9 @@ class Convert
 
 		// Run the script.
 		// This part can be long depending on the size of the .md file
+		
+		set_time_limit(0);
+
 		$output = array();
 		exec("start cmd /c ".$fScriptFile, $output);
 

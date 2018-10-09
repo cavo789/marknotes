@@ -1,5 +1,6 @@
 <?php
 /**
+ * ===> Migrated to Laravel <===
  * Add support for font-Awesome
  *
  * 	"plugins": {
