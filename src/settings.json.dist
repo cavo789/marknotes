@@ -804,6 +804,12 @@
 							"pattern": "(Decision)( |\\a|\\t|:){1}(.*)",
 							"title": "### Decision points",
 							"column": "Decision"
+						},
+						{
+							"anchor": "tip",
+							"pattern": "(Tip)( |\\a|\\t|:){1}(.*)",
+							"title": "### List of tips",
+							"column": "Tip"
 						}
 					]
 				},
