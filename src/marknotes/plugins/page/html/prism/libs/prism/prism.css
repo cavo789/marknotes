@@ -1,5 +1,5 @@
-/* PrismJS 1.11.0
-http://prismjs.com/download.html?themes=prism-okaidia&languages=markup+css+clike+javascript+asciidoc+bash+basic+batch+diff+git+http+ini+json+markdown+nginx+pascal+php+php-extras+powershell+sql+vbnet&plugins=line-highlight+line-numbers+autolinker+toolbar+normalize-whitespace+copy-to-clipboard */
+/* PrismJS 1.15.0
+https://prismjs.com/download.html?#themes=prism-okaidia&languages=markup+css+clike+javascript+asciidoc+csharp+bash+basic+batch+diff+markup-templating+git+http+ini+json+markdown+nginx+pascal+php+php-extras+sql+powershell+vbnet&plugins=line-highlight+line-numbers+autolinker+toolbar+normalize-whitespace+copy-to-clipboard */
 /**
  * okaidia theme for JavaScript, CSS and HTML
  * Loosely based on Monokai textmate theme by http://www.monokai.nl/
@@ -97,7 +97,8 @@ pre[class*="language-"] {
 
 .token.atrule,
 .token.attr-value,
-.token.function {
+.token.function,
+.token.class-name {
 	color: #e6db74;
 }
 
@@ -172,13 +173,13 @@ pre[data-line] {
 	content: none;
 }
 
-pre.line-numbers {
+pre[class*="language-"].line-numbers {
 	position: relative;
 	padding-left: 3.8em;
 	counter-reset: linenumber;
 }
 
-pre.line-numbers > code {
+pre[class*="language-"].line-numbers > code {
 	position: relative;
 	white-space: inherit;
 }
@@ -213,6 +214,7 @@ pre.line-numbers > code {
 			padding-right: 0.8em;
 			text-align: right;
 		}
+
 .token a {
 	color: inherit;
 }
@@ -274,3 +276,4 @@ div.code-toolbar > .toolbar span:focus {
 	color: inherit;
 	text-decoration: none;
 }
+
