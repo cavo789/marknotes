@@ -84,7 +84,7 @@ Const cAskBeforeSave = True
    Private Declare PtrSafe Function GetOpenFileName Lib "comdlg32.dll" Alias "GetOpenFileNameA" _
       (pOpenfilename As OPENFILENAME) As Long
 
-   PrivateType OPENFILENAME
+   Private Type OPENFILENAME
         lStructSize As Long
         hwndOwner As LongPtr
         hInstance As LongPtr
