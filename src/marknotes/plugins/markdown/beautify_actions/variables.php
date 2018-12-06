@@ -12,35 +12,36 @@ defined('_MARKNOTES') or die('No direct access allowed');
 
 class Variables
 {
-	public function doIt(array $params) : string
-	{
-		$aeFunctions = \MarkNotes\Functions::getInstance();
-		$aeSession = \MarkNotes\Session::getInstance();
-		$aeSettings = \MarkNotes\Settings::getInstance();
+    public function doIt(array $params) : string
+    {
+        $aeFunctions = \MarkNotes\Functions::getInstance();
+        $aeSession = \MarkNotes\Session::getInstance();
+        $aeSettings = \MarkNotes\Settings::getInstance();
 
-		$markdown = $params['markdown'];
+        $markdown = $params['markdown'];
 
-		/*$sURL=$aeFunctions->getCurrentURL();
-		$sURL.=str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
-		$sURL=str_replace(' ', '%20', $sURL);
-		$markdown=str_replace($sURL, '%URL%', $markdown);*/
+        /*$sURL=$aeFunctions->getCurrentURL();
+        $sURL.=str_replace(DS, '/', dirname($aeSettings->getFolderDocs(false).$aeSession->get('filename'))).'/';
+        $sURL=str_replace(' ', '%20', $sURL);
+        $markdown=str_replace($sURL, '%URL%', $markdown);*/
 
-		// Replace links to the folder where the note resides by the
-		// %NOTE_FOLDER% variable
-		//$folder=rtrim(str_replace('/', DS, dirname($params['filename'])), DS);
-		//$markdown = str_replace($folder.DS, '%NOTE_FOLDER%', $markdown);
-		//$markdown = str_replace($folder, '%NOTE_FOLDER%', $markdown);
+        // Replace links to the folder where the note resides by the
+        // %NOTE_FOLDER% variable
+        $folder=rtrim(str_replace('/', DS, dirname($params['filename'])), DS);
+        $markdown = str_replace('%NOTE_FOLDER%', '', $markdown);
+        //$markdown = str_replace('%NOTE_FOLDER%/', $folder . DS, $markdown);
+        //$markdown = str_replace('%NOTE_FOLDER%', $folder, $markdown);
+       
+        /*<!-- build:debug -->*/
+        $aeSettings = \MarkNotes\Settings::getInstance();
+        if ($aeSettings->getDebugMode()) {
+            if ($params['markdown']!==$markdown) {
+                $aeDebug = \MarkNotes\Debug::getInstance();
+                $aeDebug->log("	".__CLASS__." has modify the markdown content", "debug");
+            }
+        }
+        /*<!-- endbuild -->*/
 
-		/*<!-- build:debug -->*/
-		$aeSettings = \MarkNotes\Settings::getInstance();
-		if ($aeSettings->getDebugMode()) {
-			if ($params['markdown']!==$markdown) {
-				$aeDebug = \MarkNotes\Debug::getInstance();
-				$aeDebug->log("	".__CLASS__." has modify the markdown content", "debug");
-			}
-		}
-		/*<!-- endbuild -->*/
-
-		return $markdown;
-	}
+        return $markdown;
+    }
 }

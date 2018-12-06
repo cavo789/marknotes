@@ -615,8 +615,16 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 					// If required ("once":1), process the
 					// same file only once
 					if (!self::wasAlreadyProcessed($fname, trim($json[$i]))) {
-						// In case of ... be sure the file
-						// exists
+
+						// A filename starting with ../ is invalid, remove this prefix
+						if (substr($fname, 0, 3) == '..' . DS) {
+							do {
+								$fname = substr($fname, 3, strlen($fname));
+							} while (substr($fname, 0, 3) == '..' . DS);
+						}
+
+                        // In case of ... be sure the file
+                        // exists
 
 						// Don't use $aeFiles->exists since it doesn't support
 						// symlinks

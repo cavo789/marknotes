@@ -20,7 +20,7 @@
 		"accent_conversion": 0,
 		"demo_mode": 0,
 		"footer": {
-			"left": "<strong>markNotes © 2016-2018<\/strong>",
+			"left": "<strong>markNotes © 2016-2018</strong>",
 			"right": "<a href='https://github.com/cavo789/marknotes' target='blank'>Fork me on GitHub</a>"
 		},
 		"show_login": 0,
@@ -114,7 +114,7 @@
 			"mermaid": {
 				"enabled": 1,
 				"position": 50
-			},			
+			},
 			"mindmap": {
 				"enabled": 1,
 				"position": 51
@@ -270,11 +270,19 @@
 				"image_gallery": {
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
-					"only_if_task": ["task.export.html", "task.export.pdf", "task.export.reveal"]
+					"only_if_task": [
+						"task.export.html",
+						"task.export.pdf",
+						"task.export.reveal"
+					]
 				},
 				"optimize": {
 					"enabled": 1,
-					"not_if_task": ["task.search.search", "task.edit.form", "task.export.docx"],
+					"not_if_task": [
+						"task.search.search",
+						"task.edit.form",
+						"task.export.docx"
+					],
 					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"format": {
@@ -289,7 +297,13 @@
 				},
 				"toc": {
 					"enabled": 1,
-					"not_if_task": ["task.search.search", "task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal"],
+					"not_if_task": [
+						"task.search.search",
+						"task.edit.form",
+						"task.export.pdf",
+						"task.export.remarks",
+						"task.export.reveal"
+					],
 					"only_if_task": []
 				},
 				"security": {
@@ -300,7 +314,13 @@
 				"mermaid": {
 					"enabled": 1,
 					"not_if_task": ["task.search.search"],
-					"only_if_task": ["main", "task.export.html", "task.export.pdf", "task.export.reveal", "task.export.remark"]
+					"only_if_task": [
+						"main",
+						"task.export.html",
+						"task.export.pdf",
+						"task.export.reveal",
+						"task.export.remark"
+					]
 				}
 			}
 		},
@@ -310,7 +330,12 @@
 					"description": "i18n is the internationalization plugin, should remains enabled to give the opportunity to offer content to your user in their mother languages",
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["interface", "main", "task.export.html", "task.timeline.get"]
+					"only_if_task": [
+						"interface",
+						"main",
+						"task.export.html",
+						"task.timeline.get"
+					]
 				},
 				"fakeLoader": {
 					"enabled": 1,
@@ -320,12 +345,21 @@
 				"animate": {
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
-					"only_if_task": ["main", "task.export.html", "task.export.reveal"]
+					"only_if_task": [
+						"main",
+						"task.export.html",
+						"task.export.reveal"
+					]
 				},
 				"add_icons": {
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
-					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.export.reveal"
+					]
 				},
 				"anchor": {
 					"enabled": 1,
@@ -344,7 +378,13 @@
 				"banner": {
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
-					"only_if_task": ["task.export.html", "task.export.reveal", "task.export.remark", "screen", "interface"]
+					"only_if_task": [
+						"task.export.html",
+						"task.export.reveal",
+						"task.export.remark",
+						"screen",
+						"interface"
+					]
 				},
 				"clipboard": {
 					"enabled": 1,
@@ -364,14 +404,19 @@
 				"definitions": {
 					"enabled": 0,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
-					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.export.reveal"
+					]
 				},
 				"docx": {
 					"enabled": 1,
 					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": ["interface", "main", "task.export.html"]
 				},
-				"favorites" : {
+				"favorites": {
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
@@ -379,7 +424,12 @@
 				"editor": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface", "task.export.html", "task.edit.form"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.edit.form"
+					]
 				},
 				"encrypt": {
 					"enabled": 1,
@@ -399,7 +449,12 @@
 				"filemanager": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface", "task.export.html", "task.elf.show"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.elf.show"
+					]
 				},
 				"font-awesome": {
 					"enabled": 1,
@@ -414,7 +469,11 @@
 				"ganalytics": {
 					"enabled": 0,
 					"not_if_task": ["main", "interface"],
-					"only_if_task": ["task.export.html", "task.export.reveal", "task.export.remark"]
+					"only_if_task": [
+						"task.export.html",
+						"task.export.reveal",
+						"task.export.remark"
+					]
 				},
 				"github_banner": {
 					"description": "Add a GitHub Fork to the page",
@@ -430,14 +489,20 @@
 				"image_gallery": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface", "task.export.html", "task.export.pdf", "task.export.reveal"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.export.pdf",
+						"task.export.reveal"
+					]
 				},
 				"introjs": {
 					"enabled": 1,
 					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
-				"lastmodified" : {
+				"lastmodified": {
 					"enabled": 1,
 					"not_if_task": [],
 					"only_if_task": ["main", "interface"]
@@ -460,7 +525,12 @@
 				"mermaid": {
 					"enabled": 1,
 					"not_if_task": ["task.timeline.get"],
-					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.export.reveal"
+					]
 				},
 				"md": {
 					"enabled": 1,
@@ -510,17 +580,32 @@
 				"prism": {
 					"enabled": 1,
 					"not_if_task": ["task.export.remark"],
-					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.export.reveal"
+					]
 				},
 				"remark": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface","task.export.remark","task.export.html"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.remark",
+						"task.export.html"
+					]
 				},
 				"reveal": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface", "task.export.reveal", "task.export.html"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.reveal",
+						"task.export.html"
+					]
 				},
 				"robots": {
 					"enabled": 1,
@@ -535,7 +620,13 @@
 				"smileys": {
 					"enabled": 0,
 					"not_if_task": [],
-					"only_if_task": ["main", "interface", "task.export.html", "task.export.reveal", "task.export.remark"]
+					"only_if_task": [
+						"main",
+						"interface",
+						"task.export.html",
+						"task.export.reveal",
+						"task.export.remark"
+					]
 				},
 				"tags": {
 					"enabled": 0,
@@ -544,12 +635,24 @@
 				},
 				"toc": {
 					"enabled": 1,
-					"not_if_task": ["task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal", "task.timeline.get"],
+					"not_if_task": [
+						"task.edit.form",
+						"task.export.pdf",
+						"task.export.remarks",
+						"task.export.reveal",
+						"task.timeline.get"
+					],
 					"only_if_task": []
 				},
 				"together": {
 					"enabled": 0,
-					"not_if_task": ["task.search.search", "task.edit.form", "task.export.pdf", "task.export.remarks", "task.export.reveal"],
+					"not_if_task": [
+						"task.search.search",
+						"task.edit.form",
+						"task.export.pdf",
+						"task.export.remarks",
+						"task.export.reveal"
+					],
 					"only_if_task": ["main", "interface"]
 				},
 				"treeview": {
@@ -595,7 +698,11 @@
 			"beautify": {
 				"description": "**The preferred order for this plugin is #1, just after the include plugin**",
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.timeline.get", "task.edit.form"],
+				"not_if_task": [
+					"task.search.search",
+					"task.timeline.get",
+					"task.edit.form"
+				],
 				"only_if_task": []
 			},
 			"encrypt": {
@@ -607,18 +714,34 @@
 			"include": {
 				"description": "**The preferred order for this plugin is #3, after beautify and encrypt**",
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": []
 			},
 			"anchors": {
 				"enabled": 1,
 				"not_if_task": [],
-				"only_if_task": ["main", "interface", "task.export.html", "task.export.remarks", "task.export.reveal", "task.export.docx"]
+				"only_if_task": [
+					"main",
+					"interface",
+					"task.export.html",
+					"task.export.remarks",
+					"task.export.reveal",
+					"task.export.docx"
+				]
 			},
 			"csv": {
 				"enabled": 1,
 				"not_if_task": [],
-				"only_if_task": ["main", "interface", "task.export.html", "task.export.docx"]
+				"only_if_task": [
+					"main",
+					"interface",
+					"task.export.html",
+					"task.export.docx"
+				]
 			},
 			"mindmap": {
 				"enabled": 1,
@@ -632,48 +755,88 @@
 			},
 			"hierarchy": {
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.export.md",
+					"task.timeline.get"
+				],
 				"only_if_task": []
 			},
 			"lastupdate": {
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": []
 			},
 			"variables": {
 				"description": "Allow to use variables like %URL%, %ROOT%, ... in the markdown content **mandatory**",
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.export.md"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.export.md"
+				],
 				"only_if_task": []
 			},
 			"abbreviations": {
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"definitions": {
 				"enabled": 0,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": ["interface", "main", "task.export.html"]
 			},
 			"footnotes": {
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": ["main", "task.export.html"]
 			},
 			"image_gallery": {
 				"enabled": 1,
-				"not_if_task": ["task.export.md", "task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.export.md",
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": ["task.export.reveal"]
 			},
 			"todos": {
 				"enabled": 1,
-				"not_if_task": ["task.export.md", "task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.export.md",
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": []
 			},
 			"toc": {
 				"enabled": 1,
-				"not_if_task": ["task.export.reveal", "task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.export.reveal",
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": []
 			},
 			"listfiles": {
@@ -683,7 +846,11 @@
 			},
 			"emoji": {
 				"enabled": 1,
-				"not_if_task": ["task.search.search", "task.edit.form", "task.timeline.get"],
+				"not_if_task": [
+					"task.search.search",
+					"task.edit.form",
+					"task.timeline.get"
+				],
 				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"docx": {
@@ -743,13 +910,29 @@
 						"open_in_modal": 1
 					},
 					"microdata": {
-						"not_in_tags": ["a", "abbr", "code", "dd", "dt", "img", "pre", "span"],
-						"keywords": [
-							""
-						]
+						"not_in_tags": [
+							"a",
+							"abbr",
+							"code",
+							"dd",
+							"dt",
+							"img",
+							"pre",
+							"span"
+						],
+						"keywords": [""]
 					},
 					"tags": {
-						"not_in_tags": ["a", "abbr", "code", "dd", "dt", "h1", "pre", "span"],
+						"not_in_tags": [
+							"a",
+							"abbr",
+							"code",
+							"dd",
+							"dt",
+							"h1",
+							"pre",
+							"span"
+						],
 						"class": "tag",
 						"keywords": [""]
 					},
@@ -769,7 +952,7 @@
 				},
 				"csv": {
 					"separator": ";",
-					"value_separator" : "",
+					"value_separator": "",
 					"md_column_separator": "| "
 				},
 				"definitions": {
@@ -823,28 +1006,36 @@
 						{
 							"pattern": "%RUN_JS%{text=\"(.*)\",function=\"(.*)\"}",
 							"value": "*<a href=\"javascript:$2();\">$1</a>*"
-						}, {
+						},
+						{
 							"pattern": "J__oomla",
 							"value": ":fa-joomla: Joomla"
-						},{
+						},
+						{
 							"pattern": "WordPress",
 							"value": ":fa-wordpress: WordPress"
-						}, {
+						},
+						{
 							"pattern": "Drupal",
 							"value": ":fa-drupal: Drupal"
-						}, {
+						},
+						{
 							"pattern": "Prestashop",
 							"value": ":fa-shopping-cart: Prestashop"
-						}, {
+						},
+						{
 							"pattern": "Magento",
 							"value": ":fa-shopping-cart: Magento"
-						}, {
+						},
+						{
 							"pattern": "Moodle",
 							"value": ":fa-pencil: Moodle"
-						}, {
+						},
+						{
 							"pattern": "phpBB",
 							"value": ":fa-pencil: phpBB"
-						}, {
+						},
+						{
 							"pattern": "Github",
 							"value": ":fa-github: Github"
 						}
@@ -912,8 +1103,8 @@
 							}
 						]
 					},
-					"anchor" : {
-						"paragraph_prefix":"par"
+					"anchor": {
+						"paragraph_prefix": "par"
 					},
 					"custom": {
 						"css": [],
@@ -921,7 +1112,7 @@
 					},
 					"editor": {
 						"spellchecker": 0,
-						"language_to":"'en':'English','es':'Spanish','fr':'French','it':'Italian','nl':'Dutch'"
+						"language_to": "'en':'English','es':'Spanish','fr':'French','it':'Italian','nl':'Dutch'"
 					},
 					"fakeLoader": {
 						"bgColor": "#3c8dbc",
@@ -977,8 +1168,7 @@
 						"appearance": {
 							"theme": "beige",
 							"custom": {
-								"css": [
-								],
+								"css": [],
 								"js": []
 							}
 						},
@@ -1016,11 +1206,11 @@
 				"acls": {
 					"folders": {}
 				},
-				"backup" : {
+				"backup": {
 					"make_backup_before_updating": 1,
 					"prefix": "%DATE%_",
 					"folder": ".backups",
-					"ignore_extensions":"7z;aiff;asf;avi;bak;eot;eot2;fla;flv;f4v;gz;jpa;m4v;mkv;mov;mp3;mp4;mpeg;mpg;ogg;ogv;otf;otf2;swf;tar;tif;ttf;ttf2;wav;woff;woff2;wma;zip",
+					"ignore_extensions": "7z;aiff;asf;avi;bak;eot;eot2;fla;flv;f4v;gz;jpa;m4v;mkv;mov;mp3;mp4;mpeg;mpg;ogg;ogv;otf;otf2;swf;tar;tif;ttf;ttf2;wav;woff;woff2;wma;zip",
 					"max_count_files": "50",
 					"max_size_files": "10",
 					"zip_max_size": "250"
@@ -1045,14 +1235,14 @@
 						}
 					}
 				},
-				"favorites" : {
-					"list": [ ]
+				"favorites": {
+					"list": []
 				},
 				"fetch": {
 					"querystring": "?tmpl=component",
-					"timeout" : 5,
-					"user-agent":"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36 FirePHP/4Chrome",
-					"content_DOM":[
+					"timeout": 5,
+					"user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36 FirePHP/4Chrome",
+					"content_DOM": [
 						"//article",
 						"//main",
 						"//div[contains(attribute::class, 'item-page')]",
@@ -1106,7 +1296,7 @@
 					],
 					"regex": [
 						{
-							"search": "~<sup>\\s*Spécial\\s*<\/sup>~im",
+							"search": "~<sup>\\s*Spécial\\s*</sup>~im",
 							"replace_by": ""
 						}
 					]
@@ -1125,11 +1315,11 @@
 					"localStorage": 0,
 					"server_session": 0,
 					"cache": {
-						"enabled" : 0,
+						"enabled": 0,
 						"duration": {
-							"default" : 86400,
-							"html" : 2678400,
-							"sitemap" : 604800
+							"default": 86400,
+							"html": 2678400,
+							"sitemap": 604800
 						}
 					},
 					"headers": {
@@ -1173,16 +1363,16 @@
 					"max_tags": 500
 				},
 				"translate": {
-					"include" : {
-						"after" : "Free translation of the article  %YAML_ORIGINAL_URL%"
+					"include": {
+						"after": "Free translation of the article  %YAML_ORIGINAL_URL%"
 					},
-					"url" : "https://translate.google.cn/translate_a/single"
+					"url": "https://translate.google.cn/translate_a/single"
 				},
 				"update": {
 					"url": "https://raw.githubusercontent.com/cavo789/marknotes_install/master/install.php",
-					"version_url":"https://raw.githubusercontent.com/cavo789/marknotes/master/package.json"
+					"version_url": "https://raw.githubusercontent.com/cavo789/marknotes/master/package.json"
 				},
-				"upload" : {
+				"upload": {
 					"accept_upload_mime": [
 						"image",
 						"text",
@@ -1204,27 +1394,32 @@
 			}
 		},
 		"task": {
-			"acls" : {
-				"enabled" : 1
+			"acls": {
+				"enabled": 1
 			},
-			"backup" : {
-				"enabled" : 1
+			"backup": {
+				"enabled": 1
 			},
-			"definitions" : {
-				"enabled" : 1
+			"definitions": {
+				"enabled": 1
 			},
-			"editor" : {
-				"enabled" : 1
+			"editor": {
+				"enabled": 1
 			},
-			"encrypt" : {
-				"enabled" : 0
+			"encrypt": {
+				"enabled": 0
 			},
 			"export": {
 				"before": {
 					"debug": {
 						"enabled": 1,
 						"not_if_task": ["task.search.search"],
-						"only_if_task": ["interface", "main", "task.export.html", "task.export.reveal"]
+						"only_if_task": [
+							"interface",
+							"main",
+							"task.export.html",
+							"task.export.reveal"
+						]
 					},
 					"kill_old_ones": {
 						"enabled": 0,
@@ -1250,32 +1445,32 @@
 					}
 				}
 			},
-			"favorites" : {
-				"enabled" : 1
+			"favorites": {
+				"enabled": 1
 			},
 			"fetch": {
-				"enabled" : 1
+				"enabled": 1
 			},
 			"filemanager": {
 				"enabled": 1
 			},
-			"homepage" : {
-				"enabled" : 1
+			"homepage": {
+				"enabled": 1
 			},
-			"htmlindent" : {
-				"enabled" : 1
+			"htmlindent": {
+				"enabled": 1
 			},
 			"index": {
-				"enabled" : 1
+				"enabled": 1
 			},
 			"image_gallery": {
-				"enabled" : 1
+				"enabled": 1
 			},
-			"lastmodified" : {
-				"enabled" : 1
+			"lastmodified": {
+				"enabled": 1
 			},
-			"login" : {
-				"enabled" : 1
+			"login": {
+				"enabled": 1
 			},
 			"markdown": {
 				"write": {
@@ -1285,23 +1480,23 @@
 					"only_if_task": []
 				}
 			},
-			"optimize" : {
-				"enabled" : 0
+			"optimize": {
+				"enabled": 0
 			},
 			"sitemap": {
-				"enabled" : 1
+				"enabled": 1
 			},
 			"timeline": {
-				"enabled" : 1
+				"enabled": 1
 			},
 			"translate": {
-				"enabled" : 1
+				"enabled": 1
 			},
 			"update": {
-				"enabled" : 1
+				"enabled": 1
 			},
 			"upload": {
-				"enabled" : 1
+				"enabled": 1
 			}
 		}
 	},
