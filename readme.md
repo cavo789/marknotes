@@ -1,10 +1,12 @@
+![banner](images/banner.jpg)
+
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
 
-![PHP 7.1](https://img.shields.io/badge/PHP-7.1-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg)  [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://www.marknotes.fr) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
+![PHP 7.1](https://img.shields.io/badge/PHP-7.1-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg) [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://www.marknotes.fr) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
 
 By **Christophe Avonture**
 
->If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**
+> If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**
 
 Marknotes is a tool that will display your documents through a powerful web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
 
@@ -14,7 +16,7 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document?
 
 **marknotes requires PHP 7.1 or greater and mod_rewrite enabled**
 
-*(There is a [bug in PHP 7.0](https://github.com/php/php-src/blob/PHP-7.1.0beta2/UPGRADING#L321) when working with filenames having accentuated characters (UTF8) so if you wish to use such name, please be sure to use at least PHP 7.1)*
+_(There is a [bug in PHP 7.0](https://github.com/php/php-src/blob/PHP-7.1.0beta2/UPGRADING#L321) when working with filenames having accentuated characters (UTF8) so if you wish to use such name, please be sure to use at least PHP 7.1)_
 
 ## Table of Contents
 
@@ -38,11 +40,11 @@ By adopting Marknotes, you'll never ask yourself, "Where did I save my document?
 
 Marknotes is a PHP application that you can **self-hosted** and who will help you to manage your "notes": documentation, meeting minutes, user guides, ebooks, emails, ... i.e. everything you put in it.
 
-Notes are written in pure [Markdown](https://daringfireball.net/projects/markdown/syntax): this is a plain text language with only a few codes (like `#` or `*`) for text formatting. Yes!!!  You'll write your notes with a very stupid text editor (`Notepad` on Windows will do the work) (note: marknotes provide an online editor) and save them as a flat file on your server.
+Notes are written in pure [Markdown](https://daringfireball.net/projects/markdown/syntax): this is a plain text language with only a few codes (like `#` or `*`) for text formatting. Yes!!! You'll write your notes with a very stupid text editor (`Notepad` on Windows will do the work) (note: marknotes provide an online editor) and save them as a flat file on your server.
 
 Marknotes will display your notes in a folder approach and files will be displayed in a nice HTML5 output with a lot of extra features: export the note as a .docx, .epub, .odt, .pdf, .txt, ... file or display it like a slideshow (support of [Reveal.Js](https://github.com/hakimel/reveal.js) and [Remark](http://gnab.github.com/remark) included)
 
-Marknotes is fully Open Source and is using just *stupid* text files (markdown ones). It's really easy to create files, edit them in any text editor, ... and due to the file format, the integration with any tools and existing process is easy.
+Marknotes is fully Open Source and is using just _stupid_ text files (markdown ones). It's really easy to create files, edit them in any text editor, ... and due to the file format, the integration with any tools and existing process is easy.
 
 **Using markdown requires a very light learning to e.g. know how to put in bold but it goes very fast. The gain is then enormous: you will type your texts without using the mouse any more, with the kilometric keystroke. Really fast.**
 
@@ -50,8 +52,8 @@ Marknotes is fully Open Source and is using just *stupid* text files (markdown o
 
 During the development of marknotes, two technical choices have been made:
 
-* Use PHP 7.1 or greater to get benefits of all advantages of the latest version of PHP *and because other versions were, already, obsolete (if you're interested, see [PHP end of life page](http://php.net/eol.php))*.
-* Consider that mod_rewrite is on the server enabled; this is needed to have nice URLs like `yoursite/docs/folder/slideshow.reveal` and NOT `yoursite/index.php?task=...&param=...&second=....` i.e. a URL with a very long query string and not really friendly for search engines.
+- Use PHP 7.1 or greater to get benefits of all advantages of the latest version of PHP _and because other versions were, already, obsolete (if you're interested, see [PHP end of life page](http://php.net/eol.php))_.
+- Consider that mod_rewrite is on the server enabled; this is needed to have nice URLs like `yoursite/docs/folder/slideshow.reveal` and NOT `yoursite/index.php?task=...&param=...&second=....` i.e. a URL with a very long query string and not really friendly for search engines.
 
 ### 1.3 Notes are yours!
 
@@ -87,7 +89,7 @@ Marknotes is available in French and in English. The configuration on the demo s
 
 Please take in consideration that marknotes needs PHP 7.x. You'll perhaps need to enable PHP 7.x on your server; this can be done through a specific line in the `.htaccess` file or from your control panel (see your hoster if you need more information).
 
->If you already have a version of marknotes, if this is the old version 1; I recommend removing all files **except the /docs folder** (don't loose your notes!). Otherwise, let files there and overwrite them by using the easy or hard way here below
+> If you already have a version of marknotes, if this is the old version 1; I recommend removing all files **except the /docs folder** (don't loose your notes!). Otherwise, let files there and overwrite them by using the easy or hard way here below
 
 ### 3.1 :smile: Easy way
 
@@ -127,22 +129,22 @@ You can also find a "not-updated-version" documentation on the wiki here: [https
 
 Thanks to his dozens of plugins, there are many functionalities like:
 
-* Works perfectly in offline mode (since all notes are files stored on your disk)
-* Login screen to get access to feature like add / delete / rename notes or folder
-* Online editor for allowed people
-* Cache mode enable (on the server and on the local browser)
-* Note's encryption to hide sensitive data's and show it only to logged in people
-* ACLs to restrict visibility of folders to a few users (people not on the `whitelist` won't see protected folders)
-* Automatic rendering of tables: table of content, todos list, decisions taken list, ...
-* Variables replacement: create your own variable like f.i. `%VERSION%`, `%AUTHOR%`, `%CUSTOMER_NAME%`, ...
-* File inclusions so you can write very big documentation in smaller files and publish the master document without effort
-* Image gallery plugin
-* Exportation to .docx, .epub, .odt, .pdf, .txt, ...
-* Slideshows mode (`reveal.js` or `Remark`)
-* Each templates can be overridden; define yours
-* Powerful search functionnalities allowing multi-word search and using caching functionality too
-* Multiple languages support
-* and much more
+- Works perfectly in offline mode (since all notes are files stored on your disk)
+- Login screen to get access to feature like add / delete / rename notes or folder
+- Online editor for allowed people
+- Cache mode enable (on the server and on the local browser)
+- Note's encryption to hide sensitive data's and show it only to logged in people
+- ACLs to restrict visibility of folders to a few users (people not on the `whitelist` won't see protected folders)
+- Automatic rendering of tables: table of content, todos list, decisions taken list, ...
+- Variables replacement: create your own variable like f.i. `%VERSION%`, `%AUTHOR%`, `%CUSTOMER_NAME%`, ...
+- File inclusions so you can write very big documentation in smaller files and publish the master document without effort
+- Image gallery plugin
+- Exportation to .docx, .epub, .odt, .pdf, .txt, ...
+- Slideshows mode (`reveal.js` or `Remark`)
+- Each templates can be overridden; define yours
+- Powerful search functionnalities allowing multi-word search and using caching functionality too
+- Multiple languages support
+- and much more
 
 And, if a feature is missing, consider writing your own plugin, it's really easy.
 
@@ -192,7 +194,7 @@ Example:
 
 ## Appendices
 
-%LISTFILES appendices/*%
+%LISTFILES appendices/\*%
 ```
 
 #### Conversions
@@ -215,10 +217,11 @@ The master file is called `settings.json.dist` and is stored in the root folder 
 
 Marknotes has a `Settings` screen built-in: through the interface you'll be able to update more than 250 settings easily. Use the interface, don't modify the file manually.
 
-*Below an example for the `Authentification` plugin*
+_Below an example for the `Authentification` plugin_
+
 ![Settings](images/settings_screen.png)
 
-*Start of july 2018, there are 230 settings that can be configured there.*
+_Start of july 2018, there are 230 settings that can be configured there._
 
 Marknotes will always first read `settings.json.dist` and, only then, if a file called `settings.json` exists, will load that second file. In other words: marknotes will read his default settings and will load yours then. So, yours will overwrite the default one.
 
@@ -228,7 +231,7 @@ For instance, if you wish to change the value of the `site_name` property, your 
 
 ```json
 {
- "site_name": "My awesome documentation site"
+  "site_name": "My awesome documentation site"
 }
 ```
 
@@ -240,12 +243,12 @@ You can use this approach and overwrite every single setting of marknotes.
 
 ```json
 {
- "regional": {
-  "locale": "fr-FR",
-  "language": "fr"
- },
- "folder": "my_notes",
- "site_name": "My awesome documentation site"
+  "regional": {
+    "locale": "fr-FR",
+    "language": "fr"
+  },
+  "folder": "my_notes",
+  "site_name": "My awesome documentation site"
 }
 ```
 
@@ -276,11 +279,11 @@ In the folder `/docs/marknotes/en`, you can decide to use international settings
 
 ```json
 {
- "regional": {
-  "locale": "en-GB",
-  "language": "en"
- },
- "site_name": "My awesome documentation site"
+  "regional": {
+    "locale": "en-GB",
+    "language": "en"
+  },
+  "site_name": "My awesome documentation site"
 }
 ```
 
@@ -288,11 +291,11 @@ while, in `/docs/marknotes/fr`, you'll have
 
 ```json
 {
- "regional": {
-  "locale": "fr-FR",
-  "language": "fr"
- },
- "site_name": "Mon site de documentation"
+  "regional": {
+    "locale": "fr-FR",
+    "language": "fr"
+  },
+  "site_name": "Mon site de documentation"
 }
 ```
 
@@ -304,7 +307,7 @@ The `settings.json` file **can be placed in any folder of your site** and you ca
 4. `/docs/marknotes/settings.json`
 5. `/docs/marknotes/fr/settings.json`
 
-And one more step: you can name the file `my_note.json` and store it in the same folder of  `my_note.md` so the file will only apply for that specific note and not every note of the folder.
+And one more step: you can name the file `my_note.json` and store it in the same folder of `my_note.md` so the file will only apply for that specific note and not every note of the folder.
 
 ---
 
@@ -340,7 +343,7 @@ If you wish to debug marknotes, please [read the documentation](readme_debugging
 
 ## 9. :closed_lock_with_key: Privacy and protection
 
->Everything is yours, for now and always
+> Everything is yours, for now and always
 
 Please read [Privacy and protection: everything is yours, for now and always](readme_privacy.md) to obtain a lot of information concerning privacy and how to secure access to your notes.
 
@@ -354,11 +357,11 @@ MarkNotes is maintained by one person in his spare time.
 
 MarkNotes needs your help!
 
-* Use it!
-* Add a star in the project page.
-* Tell others about MarkNotes.
-* Suggest improvements (templating, CSS, PHP, images, documentation, ...)
-* Test and report [issues](issues), [help to fix them](issues) or [implement new features](pulls)
+- Use it!
+- Add a star in the project page.
+- Tell others about MarkNotes.
+- Suggest improvements (templating, CSS, PHP, images, documentation, ...)
+- Test and report [issues](issues), [help to fix them](issues) or [implement new features](pulls)
 
 Note: before working on a big change, please, post first an issue and explain to me your idea. Just to be sure that we're aligned and that nobody will work a lot and can have disappointment.
 
@@ -376,4 +379,4 @@ You are free to copy, modify, and distribute Marknotes with attribution under th
 
 **[⬆ back to top](#table-of-contents)**
 
->If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**
+> If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**
