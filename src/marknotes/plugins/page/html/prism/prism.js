@@ -37,7 +37,7 @@ function fnPluginHTMLPrism() {
 			var script = document.createElement('script');
 			var head = document.querySelector('head');
 
-			script.onload = function() {
+			script.onload = function () {
 				Clipboard = window.Clipboard;
 
 				if (Clipboard) {
@@ -47,8 +47,12 @@ function fnPluginHTMLPrism() {
 				}
 			};
 
+			$url = rtrim($aeFunctions -> getCurrentURL(), '/').'/';
+			$url.= 'marknotes/plugins/page/html/clipboard/';
+			$url.= "libs/clipboard-js/clipboard.min.js";
+
 			// clipboard.min.js is already part of Marknotes
-			script.src = '../../../../../marknotes/plugins/page/html/clipboard/libs/clipboard-js/clipboard.min.js';
+			script.src = $url;
 			head.appendChild(script);
 		}
 
@@ -71,7 +75,7 @@ function fnPluginHTMLPrism() {
 					}
 				});
 
-				clip.on('success', function() {
+				clip.on('success', function () {
 					linkCopy.textContent = 'Copied!';
 
 					resetText();
