@@ -1,11 +1,13 @@
 # Only allow access to assets; nothing else
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !\.(ico?n|img|gif|jpe?g|png|css|map)$ [NC]
-RewriteCond %{REQUEST_FILENAME} !\.js(\?.*)?$ [NC]
-RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf2?|woff2?)(\?.*)?$ [NC]
-# Allow exception for the error folder
-RewriteCond %{REQUEST_URI} !.*/marknotes/errors/*
-# And allow an exception for ELF
-RewriteCond %{REQUEST_URI} !.*/task/elf/libs/*
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !\.(ico?n|img|gif|jpe?g|png|css|map)$ [NC]
+    RewriteCond %{REQUEST_FILENAME} !\.js(\?.*)?$ [NC]
+    RewriteCond %{REQUEST_FILENAME} !\.(eot|svg|ttf2?|woff2?)(\?.*)?$ [NC]
+    # Allow exception for the error folder
+    RewriteCond %{REQUEST_URI} !.*/marknotes/errors/*
+    # And allow an exception for ELF
+    RewriteCond %{REQUEST_URI} !.*/task/elf/libs/*
 
-RewriteRule .* - [R=403,L]
+    RewriteRule .* - [R=403,L]
+</IfModule>
