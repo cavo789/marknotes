@@ -47,9 +47,8 @@ function fnPluginHTMLPrism() {
 				}
 			};
 
-			$url = rtrim($aeFunctions -> getCurrentURL(), '/').'/';
-			$url.= 'marknotes/plugins/page/html/clipboard/';
-			$url.= "libs/clipboard-js/clipboard.min.js";
+			$url = marknotes.webroot + 'marknotes/plugins/page/html/clipboard/';
+			$url += 'libs/clipboard-js/clipboard.min.js';
 
 			// clipboard.min.js is already part of Marknotes
 			script.src = $url;
