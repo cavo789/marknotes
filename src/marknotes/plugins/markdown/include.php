@@ -123,7 +123,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 * %INCLUDE settings.md{"once":1}%
 	 *
 	 * i.e. the filename is followed by a JSON string with
-	 * perhaps {"once":1} meaning that the file shoud be loaded
+	 * perhaps {"once":1} meaning that the file should be loaded
 	 * only once even if called many times (in many included
 	 * documents)
 	*/
@@ -225,7 +225,13 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	{
 		// Retrieve the folder of the note
 		$folder=dirname($filename).DS;
+
 		$markdown = str_replace('%NOTE_FOLDER%', $folder, $markdown);
+
+		// When the included note contains an image and when the URL to the image
+		// was relative (f.i. ![](../images/test.png)), we need to make the 
+		// url absolute when including the file.
+		$markdown = str_replace('](../', '](%URL%../', $markdown);
 
 		if (strpos($markdown, '%URL%') !== false) {
 			// The %URL% variable should be relative
