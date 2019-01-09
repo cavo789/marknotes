@@ -525,9 +525,14 @@ class Files
 	*/
 	public static function replaceExtension(string $filename, string $new_extension) : string
 	{
+		$sResult = $filename;
 		$info = pathinfo($filename);
 
-		$sResult = self::removeExtension($filename).'.'.$new_extension;
+		if (($info['extension']??'')!== $new_extension) {
+			// Get the filename without the extension and add the new one
+			$sResult = $info['filename'] . '.' . $new_extension;
+			//$sResult = self::removeExtension($filename).'.'.$new_extension;
+		}
 
 		return $sResult;
 	}
@@ -573,18 +578,22 @@ class Files
 	*/
 	public static function getExtension(string $filename) : string
 	{
-		$filename = basename($filename);
+		$info = pathinfo($filename);
 
-		// Correctly handle double extension like docs\development\marknotes.reveal.pdf
-		$arr = explode('.', $filename);
+		return $info['extension'] ?? '';
 
-		$extension = '';
-		if (count($arr) > 0) {
-			unset($arr[0]);
-			$sResult = implode($arr, '.');
-		}
+		//$filename = basename($filename);
+		// Correctly handle double extension like
+		// docs\development\marknotes.reveal.pdf
+		//$arr = explode('.', $filename);
 
-		return $sResult;
+		//$extension = '';
+		//if (count($arr) > 0) {
+		//	unset($arr[0]);
+		//	$sResult = implode($arr, '.');
+		//}
+
+		//return $sResult;
 	}
 
 	/**
