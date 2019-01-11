@@ -2,21 +2,22 @@ marknotes.arrPluginsFct.push("fnPluginHTMLPrism");
 
 function fnPluginHTMLPrism() {
 
-	/*<!-- build:debug -->*/
-	if (marknotes.settings.debug) {
-		console.log('	  Plugin Page html - Prism - highlightAll');
-	}
-	/*<!-- endbuild -->*/
+    /*<!-- build:debug -->*/
+    if (marknotes.settings.debug) {
+        console.log('	  Plugin Page html - Prism - highlightAll');
+    }
+    /*<!-- endbuild -->*/
 
-	if (typeof Prism === 'object') {
-		// @link https://github.com/PrismJS/prism
-		Prism.highlightAll();
+    if (typeof Prism === 'object') {
+        // @link https://github.com/PrismJS/prism
+        Prism.highlightAll();
 
-		// ----------------------------------
-		// Load the "Copy to clipboard" button
-		//
-		// Code from http://prismjs.com/plugins/copy-to-clipboard/#how-to-use
-		if (!Prism.plugins.toolbar) {
+        // ----------------------------------
+        // Load the "Copy to clipboard" button
+        //
+        // Code from http://prismjs.com/plugins/copy-to-clipboard/#how-to-use
+
+		/*if (!Prism.plugins.toolbar) {
 			console.warn('Copy to Clipboard plugin loaded before Toolbar plugin.');
 			return;
 		}
@@ -92,6 +93,6 @@ function fnPluginHTMLPrism() {
 				}, 5000);
 			}
 		});
-
-	} // if (typeof Prism === 'object')
+*/
+    } // if (typeof Prism === 'object')
 }
