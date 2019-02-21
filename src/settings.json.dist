@@ -225,86 +225,50 @@
 			"html": {
 				"tags": {
 					"enabled": 0,
-					"not_if_task": [
-						"task.search.search"
-					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"not_if_task": ["task.search.search"],
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"attributes": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"balloon": {
 					"enabled": 0,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"bootstrap": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"encrypt": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"datatables": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search"
-					],
-					"only_if_task": [
-						"interface",
-						"task.export.html",
-						"main"
-					]
+					"not_if_task": ["task.search.search"],
+					"only_if_task": ["interface", "task.export.html", "main"]
 				},
 				"font-awesome": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"jolitypo": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search"
-					],
-					"only_if_task": [
-						"main",
-						"task.export.html",
-						"task.export.pdf"
-					]
+					"not_if_task": ["task.search.search"],
+					"only_if_task": ["main", "task.export.html", "task.export.pdf"]
 				},
 				"htmlindent": {
 					"indent_size": "4"
 				},
 				"image_gallery": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": [
 						"task.export.html",
 						"task.export.pdf",
@@ -318,31 +282,17 @@
 						"task.edit.form",
 						"task.export.docx"
 					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"format": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"microdata": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"not_if_task": ["task.search.search", "task.edit.form"],
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"toc": {
 					"enabled": 1,
@@ -357,21 +307,12 @@
 				},
 				"security": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
-					"only_if_task": [
-						"interface",
-						"main",
-						"task.export.html"
-					]
+					"not_if_task": ["task.search.search", "task.edit.form"],
+					"only_if_task": ["interface", "main", "task.export.html"]
 				},
 				"mermaid": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search"
-					],
+					"not_if_task": ["task.search.search"],
 					"only_if_task": [
 						"main",
 						"task.export.html",
@@ -398,17 +339,11 @@
 				"fakeLoader": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"animate": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": [
 						"main",
 						"task.export.html",
@@ -417,10 +352,7 @@
 				},
 				"add_icons": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": [
 						"main",
 						"interface",
@@ -430,34 +362,21 @@
 				},
 				"anchor": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"task.export.html"
-					]
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["task.export.html"]
 				},
 				"backup": {
 					"enabled": 1,
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"balloon": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
 				},
 				"banner": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": [
 						"task.export.html",
 						"task.export.reveal",
@@ -469,39 +388,21 @@
 				"clipboard": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"copyhtml": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"datatables": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"definitions": {
 					"enabled": 0,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": [
 						"main",
 						"interface",
@@ -511,23 +412,13 @@
 				},
 				"docx": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"interface",
-						"main",
-						"task.export.html"
-					]
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
+					"only_if_task": ["interface", "main", "task.export.html"]
 				},
 				"favorites": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"editor": {
 					"enabled": 1,
@@ -541,27 +432,18 @@
 				},
 				"encrypt": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
 					"only_if_task": []
 				},
 				"epub": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"erase": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"filemanager": {
 					"enabled": 1,
@@ -575,25 +457,17 @@
 				},
 				"font-awesome": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.timeline.get"],
 					"only_if_task": []
 				},
 				"fullscreen": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"ganalytics": {
 					"enabled": 0,
-					"not_if_task": [
-						"main",
-						"interface"
-					],
+					"not_if_task": ["main", "interface"],
 					"only_if_task": [
 						"task.export.html",
 						"task.export.reveal",
@@ -604,21 +478,12 @@
 					"description": "Add a GitHub Fork to the page",
 					"enabled": 0,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"gtranslate": {
 					"enabled": 0,
-					"not_if_task": [
-						"main",
-						"interface"
-					],
-					"only_if_task": [
-						"task.export.html"
-					]
+					"not_if_task": ["main", "interface"],
+					"only_if_task": ["task.export.html"]
 				},
 				"image_gallery": {
 					"enabled": 1,
@@ -633,52 +498,32 @@
 				},
 				"introjs": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search",
-						"task.edit.form"
-					],
+					"not_if_task": ["task.search.search", "task.edit.form"],
 					"only_if_task": []
 				},
 				"lastmodified": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"linkify": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get",
-						"task.edit.form"
-					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"not_if_task": ["task.timeline.get", "task.edit.form"],
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"links_target": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.timeline.get"],
 					"only_if_task": []
 				},
 				"login": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"mermaid": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
+					"not_if_task": ["task.timeline.get"],
 					"only_if_task": [
 						"main",
 						"interface",
@@ -689,92 +534,51 @@
 				"md": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"metadata": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form",
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"task.export.html"
-					]
+					"not_if_task": ["task.edit.form", "task.timeline.get"],
+					"only_if_task": ["task.export.html"]
 				},
 				"microdata": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"mindmap": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"new_window": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"odt": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"orgchart": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.timeline.get"
-					],
-					"only_if_task": [
-						"main",
-						"task.export.html"
-					]
+					"not_if_task": ["task.timeline.get"],
+					"only_if_task": ["main", "task.export.html"]
 				},
 				"pdf": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"print_preview": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"prism": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.export.remark"
-					],
+					"not_if_task": ["task.export.remark"],
 					"only_if_task": [
 						"main",
 						"interface",
@@ -804,17 +608,13 @@
 				},
 				"robots": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form"
-					],
+					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
 				},
 				"share": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"task.export.html"
-					]
+					"only_if_task": ["task.export.html"]
 				},
 				"smileys": {
 					"enabled": 0,
@@ -830,11 +630,7 @@
 				"tags": {
 					"enabled": 0,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"toc": {
 					"enabled": 1,
@@ -856,66 +652,43 @@
 						"task.export.remarks",
 						"task.export.reveal"
 					],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"treeview": {
 					"description": "**Mandatory** Load css and js for the treeview",
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"txt": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface",
-						"task.export.html"
-					]
+					"only_if_task": ["main", "interface", "task.export.html"]
 				},
 				"update": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"upload": {
 					"enabled": 0,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"custom": {
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form"
-					],
+					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
 				},
 				"search": {
 					"enabled": 1,
 					"not_if_task": [],
-					"only_if_task": [
-						"main",
-						"interface"
-					]
+					"only_if_task": ["main", "interface"]
 				},
 				"optimize": {
 					"description": "Optimization plugin; see options to know what this plugin will really do. **The best place for this plugin is to be fired as the last one (as defined in plugins.page.html)**",
 					"enabled": 1,
-					"not_if_task": [
-						"task.edit.form"
-					],
+					"not_if_task": ["task.edit.form"],
 					"only_if_task": []
 				}
 			}
@@ -934,10 +707,7 @@
 			"encrypt": {
 				"description": "**The preferred order for this plugin is #2, after the beautify plugin**",
 				"enabled": 1,
-				"not_if_task": [
-					"task.export.md",
-					"task.timeline.get"
-				],
+				"not_if_task": ["task.export.md", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"include": {
@@ -969,26 +739,18 @@
 					"main",
 					"interface",
 					"task.export.html",
-					"task.export.docx"
+					"task.export.docx",
+					"task.export.md"
 				]
 			},
 			"mindmap": {
 				"enabled": 1,
-				"not_if_task": [
-					"task.timeline.get"
-				],
-				"only_if_task": [
-					"main",
-					"interface",
-					"task.export.html"
-				]
+				"not_if_task": ["task.timeline.get"],
+				"only_if_task": ["main", "interface", "task.export.html"]
 			},
 			"yaml": {
 				"enabled": 1,
-				"not_if_task": [
-					"task.search.search",
-					"task.timeline.get"
-				],
+				"not_if_task": ["task.search.search", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"hierarchy": {
@@ -1027,11 +789,7 @@
 					"task.edit.form",
 					"task.timeline.get"
 				],
-				"only_if_task": [
-					"main",
-					"task.export.html",
-					"task.export.reveal"
-				]
+				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"definitions": {
 				"enabled": 0,
@@ -1040,11 +798,7 @@
 					"task.edit.form",
 					"task.timeline.get"
 				],
-				"only_if_task": [
-					"interface",
-					"main",
-					"task.export.html"
-				]
+				"only_if_task": ["interface", "main", "task.export.html"]
 			},
 			"footnotes": {
 				"enabled": 1,
@@ -1053,10 +807,7 @@
 					"task.edit.form",
 					"task.timeline.get"
 				],
-				"only_if_task": [
-					"main",
-					"task.export.html"
-				]
+				"only_if_task": ["main", "task.export.html"]
 			},
 			"image_gallery": {
 				"enabled": 1,
@@ -1066,14 +817,11 @@
 					"task.edit.form",
 					"task.timeline.get"
 				],
-				"only_if_task": [
-					"task.export.reveal"
-				]
+				"only_if_task": ["task.export.reveal"]
 			},
 			"todos": {
 				"enabled": 1,
 				"not_if_task": [
-					"task.export.md",
 					"task.search.search",
 					"task.edit.form",
 					"task.timeline.get"
@@ -1092,10 +840,7 @@
 			},
 			"listfiles": {
 				"enabled": 1,
-				"not_if_task": [
-					"task.edit.form",
-					"task.timeline.get"
-				],
+				"not_if_task": ["task.edit.form", "task.timeline.get"],
 				"only_if_task": []
 			},
 			"emoji": {
@@ -1105,18 +850,12 @@
 					"task.edit.form",
 					"task.timeline.get"
 				],
-				"only_if_task": [
-					"main",
-					"task.export.html",
-					"task.export.reveal"
-				]
+				"only_if_task": ["main", "task.export.html", "task.export.reveal"]
 			},
 			"docx": {
 				"enabled": 1,
 				"not_if_task": [],
-				"only_if_task": [
-					"task.export.docx"
-				]
+				"only_if_task": ["task.export.docx"]
 			}
 		},
 		"options": {
@@ -1180,9 +919,7 @@
 							"pre",
 							"span"
 						],
-						"keywords": [
-							""
-						]
+						"keywords": [""]
 					},
 					"tags": {
 						"not_in_tags": [
@@ -1196,9 +933,7 @@
 							"span"
 						],
 						"class": "tag",
-						"keywords": [
-							""
-						]
+						"keywords": [""]
 					},
 					"toc": {
 						"text": "**Table of content**",
@@ -1261,11 +996,7 @@
 					]
 				},
 				"variables": {
-					"not_in_tags": [
-						"a",
-						"abbr",
-						"pre"
-					],
+					"not_in_tags": ["a", "abbr", "pre"],
 					"var": [
 						{
 							"pattern": "%SEE_SOURCE%{filename=\"?(.*)\"?}",
@@ -1681,9 +1412,7 @@
 				"before": {
 					"debug": {
 						"enabled": 1,
-						"not_if_task": [
-							"task.search.search"
-						],
+						"not_if_task": ["task.search.search"],
 						"only_if_task": [
 							"interface",
 							"main",
@@ -1693,34 +1422,24 @@
 					},
 					"kill_old_ones": {
 						"enabled": 0,
-						"not_if_task": [
-							"task.search.search"
-						],
+						"not_if_task": ["task.search.search"],
 						"only_if_task": []
 					}
 				},
 				"after": {
 					"debug": {
 						"enabled": 1,
-						"not_if_task": [
-							"task.search.search"
-						],
-						"only_if_task": [
-							"task.export.docx"
-						]
+						"not_if_task": ["task.search.search"],
+						"only_if_task": ["task.export.docx"]
 					},
 					"copy": {
 						"enabled": 0,
-						"not_if_task": [
-							"task.search.search"
-						],
+						"not_if_task": ["task.search.search"],
 						"only_if_task": []
 					},
 					"display": {
 						"enabled": 1,
-						"not_if_task": [
-							"task.search.search"
-						],
+						"not_if_task": ["task.search.search"],
 						"only_if_task": []
 					}
 				}
@@ -1756,9 +1475,7 @@
 				"write": {
 					"description": "A few plugins like encrypt or beautify make changes to the content and will rewrite the file on the disk. This is done thanks to the write plugin (no files's rewriting if disabled). The preferred order for this plugin is at the last place.",
 					"enabled": 1,
-					"not_if_task": [
-						"task.search.search"
-					],
+					"not_if_task": ["task.search.search"],
 					"only_if_task": []
 				}
 			},

@@ -229,7 +229,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 		$markdown = str_replace('%NOTE_FOLDER%', $folder, $markdown);
 
 		// When the included note contains an image and when the URL to the image
-		// was relative (f.i. ![](../images/test.png)), we need to make the 
+		// was relative (f.i. ![](../images/test.png)), we need to make the
 		// url absolute when including the file.
 		$markdown = str_replace('](../', '](%URL%../', $markdown);
 
@@ -325,7 +325,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 	 *
 	 * @param $filename = the "filename" used like f.i.
 	 *		c:\notes\docs\*.md (i.e. the parent folder and the
-	 *		*.md pattern)
+	 *		*.md pattern). Filename should be absolute; not relative.
 	 */
 	private static function getListNotes(string $caller, string $filename, bool $recursive) : array
 	{
@@ -337,6 +337,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 
 		// $filename is an absolute path, extract the folder name
 		$folder = '';
+
 		if (strlen($filename)>4) {
 			$folder = substr($filename, 0, strlen($filename)-4);
 			if ($folder !== '') {
@@ -414,7 +415,7 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 				if(!$aeFiles->exists($file_2[$j])) {
 
 					// Check if we can derive the full filename
-					// In principe $file_2[$j] is relative to the 
+					// In principe $file_2[$j] is relative to the
 					// folder of the note so $absFile here will
 					// make the filename absolute and should work
 					$absFile = rtrim($folder, DS) . DS . $file_2[$j];
@@ -563,6 +564,8 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 			} else {
 				$file[$i] = trim($file[$i]);
 
+            $file[$i] = str_replace('\*', '*', str_replace('/', DS, $file[$i]));
+
 				if (substr($file[$i], -4) == '*.md') {
 
 					// Special case : the "filename" ends with
@@ -574,13 +577,13 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 						$recursive = boolval($tmp['recursive'])??true;
 					}
 
-					if ($aeFunctions->startswith($file[$i], $folder)) {
+					//if ($aeFunctions->startswith($file[$i], $folder)) {
 						// In case of $file[$i] is already absolute,
 						// remove the folder name since will be added
-						$file[$i] = substr($file[$i], strlen($folder));
-					}
+						//$file[$i] = substr($file[$i], strlen($folder));
+					//}
 
-					list($files, $arrFiles, $arrTags) = self::getListNotes($filename, $folder.$file[$i], $recursive);
+					list($files, $arrFiles, $arrTags) = self::getListNotes($filename, $file[$i], $recursive);
 
 					/**
 					 * Replace the tag
@@ -728,8 +731,12 @@ class Include_File extends \MarkNotes\Plugins\Markdown\Plugin
 								$aeDebug->log($sContent, 'error');
 							}
 
-							if ($aeDebug->getDevMode()) {	
-								echo "<div style='background-color:yellow;'>" . 
+							if (!isset($aeDebug)) {
+                        $aeDebug = \MarkNotes\Debug::getInstance();
+							}
+
+							if ($aeDebug->getDevMode()) {
+								echo "<div style='background-color:yellow;'>" .
 									__FILE__ . " - " . __LINE__ . " " .
 									"<h4>" . DEV_MODE_PREFIX . " Included file not found</h4>".
 									"<p>" . $error . "</p>".

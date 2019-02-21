@@ -527,10 +527,16 @@ class Files
 	{
 		$sResult = $filename;
 		$info = pathinfo($filename);
-
+		
 		if (($info['extension']??'')!== $new_extension) {
 			// Get the filename without the extension and add the new one
-			$sResult = $info['filename'] . '.' . $new_extension;
+			$path = '';
+
+			if (isset($info['dirname'])) {
+				$path = rtrim($info['dirname'], DS). DS;
+			}
+			// Keep the full path
+			$sResult = $path . $info['filename'] . '.' . $new_extension;
 			//$sResult = self::removeExtension($filename).'.'.$new_extension;
 		}
 
