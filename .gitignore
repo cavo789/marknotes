@@ -1,3 +1,4 @@
+.config/hooks.json
 backups/
 gulp/
 logs/
@@ -15,6 +16,7 @@ vendor_manual/
 vendor_manual/**/.git
 settings.json
 composer.log
+composer.lock
 gulpfile.js
 build.bat
 src/assets/aesecure.png
