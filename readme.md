@@ -2,11 +2,21 @@
 
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
 
-![PHP 7.1](https://img.shields.io/badge/PHP-7.1-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg) [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://www.marknotes.fr) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
+![PHP 7.3](https://img.shields.io/badge/PHP-7.3-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg) [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://www.marknotes.fr) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
 
 By **Christophe Avonture**
 
 > If you like marknotes, please give him a :star: and fork it. This way more people can be made aware of its existence. **Thanks!**
+
+**Marknotes is discontinuated**
+
+The development of Marknotes has ended: having integrated a team of PHP developers, the choice of the documentation solution is the wiki integrated into each repository.
+
+Over the past year, I have redeveloped a large number of Marknotes plugins for use within Gitlab - Wiki and to be more generic. Idea is to take each file from the project's wiki no matter where it is in the tree structure and generate a large master file where the marknotes plugins then do their job. In the end, there is only one `.md` file that can then be converted into multiple formats (html, pdf, word,...) or even a reveal.js presentation.
+
+For this reason, the development of Marknotes will not be continued.
+
+## Introduction
 
 Marknotes is a tool that will display your documents through a powerful web interface where they will be sorted and accessible quickly. Marknotes offers multiple features such as a powerful search engine, the ability to encrypt all or part of a document, display it in different ways and export it in multiple ways and much more (see below).
 
