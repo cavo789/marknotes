@@ -26,7 +26,7 @@ $root = $class->getWebRoot();
 unset($class);
 
 if ($bReturn) {
-	error_reporting(E_ALL);
+	error_reporting(0); // Disable notices, warnings, ... Not for PROD
 
 	$aeFunctions = \MarkNotes\Functions::getInstance($root);
 
