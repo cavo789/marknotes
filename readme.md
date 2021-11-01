@@ -1,6 +1,7 @@
-![banner](images/banner.jpg)
 
 [![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
+
+![banner](./banner.svg)
 
 ![PHP 7.3](https://img.shields.io/badge/PHP-7.3-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg) [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://www.marknotes.fr) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
 
