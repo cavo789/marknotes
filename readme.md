@@ -1,9 +1,9 @@
 
-[![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)](https://www.marknotes.fr)
+![Marknotes Logo](https://raw.githubusercontent.com/cavo789/marknotes/master/src/assets/images/marknotes.png)
 
 ![banner](./banner.svg)
 
-![PHP 7.3](https://img.shields.io/badge/PHP-7.3-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg) [![Demo site](https://img.shields.io/badge/demo-site-orange.svg)](https://www.marknotes.fr) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
+![PHP 7.3](https://img.shields.io/badge/PHP-7.3-blue.svg) ![License MIT](https://img.shields.io/badge/license-MIT-green.svg) [![If you like marknotes, please give him a ⭐️ and fork it.](http://githubbadges.com/star.svg?user=cavo789&repo=marknotes&background=FF0000)](https://github.com/cavo789/marknotes) [![fork this repo](http://githubbadges.com/fork.svg?user=cavo789&repo=marknotes&style=default)](https://github.com/cavo789/marknotes/fork)
 
 By **Christophe Avonture**
 
@@ -88,9 +88,7 @@ That was too much for me: no, even if the tool was easy and free, no, I didn't w
 
 ## 2. :game_die: Demo site
 
-You can find a working demo on [https://www.marknotes.fr](https://www.marknotes.fr). Please take a look.
-
-Marknotes is available in French and in English. The configuration on the demo site is done for French-speaking people. Marknotes uses a text file (json format) for retrieving translations. Want to translate in Dutch, German, Spanish, ...? Don't hesitate.
+*The demo site didn't exists anymore*
 
 ---
 
@@ -128,9 +126,7 @@ Once installed, if enabled, your marknotes installation will check on github if 
 
 ## 4. :book: Documentation
 
-Marknotes's documentation is available on the marknotes demo site: [https://www.marknotes.fr](https://www.marknotes.fr). See the marknotes entry.
-
-You can also find a "not-updated-version" documentation on the wiki here: [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki) **that documentation needs review**
+You can find a "not-updated-version" documentation on the wiki here: [https://github.com/cavo789/marknotes/wiki](https://github.com/cavo789/marknotes/wiki) **that documentation needs review**
 
 ---
 
